@@ -1,0 +1,707 @@
+{
+  "claim": "Expected deterministic behavior for the first neutral extraction; no LLM-policy claim.",
+  "commands": [
+    {
+      "action": {
+        "actor": "robinson",
+        "kind": "fill",
+        "source": "unsafe-pool",
+        "vessel": "clay-pot",
+        "volume_ml": 1000
+      },
+      "op": "action"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "action": {
+        "actor": "robinson",
+        "kind": "heat",
+        "target": "fire-camp",
+        "vessel": "clay-pot"
+      },
+      "op": "action"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "action": {
+        "actor": "robinson",
+        "kind": "unheat",
+        "vessel": "clay-pot"
+      },
+      "op": "action"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "action": {
+        "actor": "robinson",
+        "destination": "cup-robinson",
+        "kind": "pour",
+        "vessel": "clay-pot",
+        "volume_ml": 250
+      },
+      "op": "action"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "action": {
+        "actor": "robinson",
+        "kind": "drink",
+        "vessel": "cup-robinson",
+        "volume_ml": 250
+      },
+      "op": "action"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "action": {
+        "actor": "robinson",
+        "kind": "take",
+        "vessel": "clay-pot"
+      },
+      "op": "action"
+    },
+    {
+      "op": "tick"
+    },
+    {
+      "action": {
+        "actor": "robinson",
+        "kind": "give",
+        "target": "friday",
+        "vessel": "clay-pot"
+      },
+      "op": "action"
+    },
+    {
+      "op": "tick"
+    }
+  ],
+  "controller": "verification_script",
+  "expected": {
+    "checkpoints": [
+      {
+        "actors": {
+          "friday": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 50
+          },
+          "robinson": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 50
+          }
+        },
+        "label": "Declared workshop starting conditions",
+        "state_hash": "89e160f89071ee9f91f702ed025407b32708f2093c2d3585c8bb86d0accb3b3b",
+        "tick": 0,
+        "totals": {
+          "added": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "drunk": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "evaporated": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "heat_added": 0,
+          "heat_lost": 0,
+          "initial": {
+            "heat_units": 1468500,
+            "pathogens": 26700,
+            "salt_mg": 1890000,
+            "volume_ml": 66750
+          },
+          "latent_heat_used": 0,
+          "overflow_ml": 0,
+          "pathogens_killed": 0,
+          "spilled_ml": 0
+        },
+        "vessels": {
+          "clay-pot": {
+            "boiling_ticks": 0,
+            "capacity_ml": 1500,
+            "condition": 100,
+            "definition": "clay_pot",
+            "empty_weight": 2,
+            "id": "clay-pot",
+            "label": "Clay pot",
+            "last_cause": null,
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "on_fire": null,
+            "owner": "place:camp",
+            "temperature_c": 22
+          },
+          "cup-robinson": {
+            "boiling_ticks": 0,
+            "capacity_ml": 500,
+            "condition": 100,
+            "definition": "metal_cup",
+            "empty_weight": 1,
+            "id": "cup-robinson",
+            "label": "Metal cup",
+            "last_cause": null,
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "on_fire": null,
+            "owner": "actor:robinson",
+            "temperature_c": 22
+          }
+        }
+      },
+      {
+        "actors": {
+          "friday": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 49
+          },
+          "robinson": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 49
+          }
+        },
+        "label": "Filled with untreated liquid",
+        "state_hash": "f8455dfa36363b2a4d64c434ffa4f92b8abe06134b17cdd00e4dfdf63e3ff02f",
+        "tick": 1,
+        "totals": {
+          "added": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "drunk": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "evaporated": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "heat_added": 0,
+          "heat_lost": 0,
+          "initial": {
+            "heat_units": 1468500,
+            "pathogens": 26700,
+            "salt_mg": 1890000,
+            "volume_ml": 66750
+          },
+          "latent_heat_used": 0,
+          "overflow_ml": 0,
+          "pathogens_killed": 0,
+          "spilled_ml": 0
+        },
+        "vessels": {
+          "clay-pot": {
+            "boiling_ticks": 0,
+            "capacity_ml": 1500,
+            "condition": 100,
+            "definition": "clay_pot",
+            "empty_weight": 2,
+            "id": "clay-pot",
+            "label": "Clay pot",
+            "last_cause": "e00001",
+            "liquid": {
+              "heat_units": 22000,
+              "pathogens": 400,
+              "salt_mg": 0,
+              "volume_ml": 1000
+            },
+            "on_fire": null,
+            "owner": "place:camp",
+            "temperature_c": 22.0
+          },
+          "cup-robinson": {
+            "boiling_ticks": 0,
+            "capacity_ml": 500,
+            "condition": 100,
+            "definition": "metal_cup",
+            "empty_weight": 1,
+            "id": "cup-robinson",
+            "label": "Metal cup",
+            "last_cause": null,
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "on_fire": null,
+            "owner": "actor:robinson",
+            "temperature_c": 22
+          }
+        }
+      },
+      {
+        "actors": {
+          "friday": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 44
+          },
+          "robinson": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 44
+          }
+        },
+        "label": "Boiling removed pathogens; inspect remaining salt and volume",
+        "state_hash": "5da7daf570e8f330372ab7bb8c2f57f5b60cdbdf769b4a26a2fa8bcc74d17f1a",
+        "tick": 6,
+        "totals": {
+          "added": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "drunk": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "evaporated": {
+            "heat_units": 2200,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 22
+          },
+          "heat_added": 78000,
+          "heat_lost": 0,
+          "initial": {
+            "heat_units": 1468500,
+            "pathogens": 26700,
+            "salt_mg": 1890000,
+            "volume_ml": 66750
+          },
+          "latent_heat_used": 22000,
+          "overflow_ml": 0,
+          "pathogens_killed": 400,
+          "spilled_ml": 0
+        },
+        "vessels": {
+          "clay-pot": {
+            "boiling_ticks": 2,
+            "capacity_ml": 1500,
+            "condition": 100,
+            "definition": "clay_pot",
+            "empty_weight": 2,
+            "id": "clay-pot",
+            "label": "Clay pot",
+            "last_cause": "e00006",
+            "liquid": {
+              "heat_units": 97800,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 978
+            },
+            "on_fire": "fire-camp",
+            "owner": "place:camp",
+            "temperature_c": 100.0
+          },
+          "cup-robinson": {
+            "boiling_ticks": 0,
+            "capacity_ml": 500,
+            "condition": 100,
+            "definition": "metal_cup",
+            "empty_weight": 1,
+            "id": "cup-robinson",
+            "label": "Metal cup",
+            "last_cause": null,
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "on_fire": null,
+            "owner": "actor:robinson",
+            "temperature_c": 22
+          }
+        }
+      },
+      {
+        "actors": {
+          "friday": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 38
+          },
+          "robinson": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 38
+          }
+        },
+        "label": "Cooled and poured into a separate cup",
+        "state_hash": "1a2cd8fa240d1580e3ac9c448cd222aaa661e20b6de2e55e4ee600a3e989371a",
+        "tick": 12,
+        "totals": {
+          "added": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "drunk": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "evaporated": {
+            "heat_units": 2200,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 22
+          },
+          "heat_added": 78000,
+          "heat_lost": 62709,
+          "initial": {
+            "heat_units": 1468500,
+            "pathogens": 26700,
+            "salt_mg": 1890000,
+            "volume_ml": 66750
+          },
+          "latent_heat_used": 22000,
+          "overflow_ml": 0,
+          "pathogens_killed": 400,
+          "spilled_ml": 0
+        },
+        "vessels": {
+          "clay-pot": {
+            "boiling_ticks": 0,
+            "capacity_ml": 1500,
+            "condition": 100,
+            "definition": "clay_pot",
+            "empty_weight": 2,
+            "id": "clay-pot",
+            "label": "Clay pot",
+            "last_cause": "e00050",
+            "liquid": {
+              "heat_units": 26121,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 728
+            },
+            "on_fire": null,
+            "owner": "place:camp",
+            "temperature_c": 35.88
+          },
+          "cup-robinson": {
+            "boiling_ticks": 0,
+            "capacity_ml": 500,
+            "condition": 100,
+            "definition": "metal_cup",
+            "empty_weight": 1,
+            "id": "cup-robinson",
+            "label": "Metal cup",
+            "last_cause": "e00050",
+            "liquid": {
+              "heat_units": 8970,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 250
+            },
+            "on_fire": null,
+            "owner": "actor:robinson",
+            "temperature_c": 35.88
+          }
+        }
+      },
+      {
+        "actors": {
+          "friday": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 37
+          },
+          "robinson": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 62
+          }
+        },
+        "label": "Drank; hydration and harm came from executable rules",
+        "state_hash": "4864ee7f869a647f6c35c554e0c1407dca2788e1fa59e9f03a809bb008f518c0",
+        "tick": 13,
+        "totals": {
+          "added": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "drunk": {
+            "heat_units": 8970,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 250
+          },
+          "evaporated": {
+            "heat_units": 2200,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 22
+          },
+          "heat_added": 78000,
+          "heat_lost": 65236,
+          "initial": {
+            "heat_units": 1468500,
+            "pathogens": 26700,
+            "salt_mg": 1890000,
+            "volume_ml": 66750
+          },
+          "latent_heat_used": 22000,
+          "overflow_ml": 0,
+          "pathogens_killed": 400,
+          "spilled_ml": 0
+        },
+        "vessels": {
+          "clay-pot": {
+            "boiling_ticks": 0,
+            "capacity_ml": 1500,
+            "condition": 100,
+            "definition": "clay_pot",
+            "empty_weight": 2,
+            "id": "clay-pot",
+            "label": "Clay pot",
+            "last_cause": "e00050",
+            "liquid": {
+              "heat_units": 23594,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 728
+            },
+            "on_fire": null,
+            "owner": "place:camp",
+            "temperature_c": 32.41
+          },
+          "cup-robinson": {
+            "boiling_ticks": 0,
+            "capacity_ml": 500,
+            "condition": 100,
+            "definition": "metal_cup",
+            "empty_weight": 1,
+            "id": "cup-robinson",
+            "label": "Metal cup",
+            "last_cause": "e00057",
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "on_fire": null,
+            "owner": "actor:robinson",
+            "temperature_c": 32.41
+          }
+        }
+      },
+      {
+        "actors": {
+          "friday": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 35
+          },
+          "robinson": {
+            "health": 100,
+            "location": "camp",
+            "thirst": 60
+          }
+        },
+        "label": "Gave the same partly full pot to Friday",
+        "state_hash": "b913135c40d9003897ac35bdd396e97e79178847630675ef6c3bb1efd23aa2a0",
+        "tick": 15,
+        "totals": {
+          "added": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "drunk": {
+            "heat_units": 8970,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 250
+          },
+          "evaporated": {
+            "heat_units": 2200,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 22
+          },
+          "heat_added": 78000,
+          "heat_lost": 68552,
+          "initial": {
+            "heat_units": 1468500,
+            "pathogens": 26700,
+            "salt_mg": 1890000,
+            "volume_ml": 66750
+          },
+          "latent_heat_used": 22000,
+          "overflow_ml": 0,
+          "pathogens_killed": 400,
+          "spilled_ml": 0
+        },
+        "vessels": {
+          "clay-pot": {
+            "boiling_ticks": 0,
+            "capacity_ml": 1500,
+            "condition": 100,
+            "definition": "clay_pot",
+            "empty_weight": 2,
+            "id": "clay-pot",
+            "label": "Clay pot",
+            "last_cause": "e00071",
+            "liquid": {
+              "heat_units": 20278,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 728
+            },
+            "on_fire": null,
+            "owner": "actor:friday",
+            "temperature_c": 27.85
+          },
+          "cup-robinson": {
+            "boiling_ticks": 0,
+            "capacity_ml": 500,
+            "condition": 100,
+            "definition": "metal_cup",
+            "empty_weight": 1,
+            "id": "cup-robinson",
+            "label": "Metal cup",
+            "last_cause": "e00057",
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "on_fire": null,
+            "owner": "actor:robinson",
+            "temperature_c": 27.86
+          }
+        }
+      }
+    ],
+    "command_count": 22,
+    "event_count": 77,
+    "final_totals": {
+      "added": {
+        "heat_units": 0,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 0
+      },
+      "drunk": {
+        "heat_units": 8970,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 250
+      },
+      "evaporated": {
+        "heat_units": 2200,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 22
+      },
+      "heat_added": 78000,
+      "heat_lost": 68552,
+      "initial": {
+        "heat_units": 1468500,
+        "pathogens": 26700,
+        "salt_mg": 1890000,
+        "volume_ml": 66750
+      },
+      "latent_heat_used": 22000,
+      "overflow_ml": 0,
+      "pathogens_killed": 400,
+      "spilled_ml": 0
+    },
+    "replay": {
+      "actual": "b913135c40d9003897ac35bdd396e97e79178847630675ef6c3bb1efd23aa2a0",
+      "event_match": true,
+      "expected": "b913135c40d9003897ac35bdd396e97e79178847630675ef6c3bb1efd23aa2a0",
+      "ok": true,
+      "steps": 22
+    },
+    "restart_equal": true,
+    "tick": 15
+  },
+  "fixture_id": "castaway-freshwater-v0",
+  "llm_calls": 0,
+  "schema_version": "world-substrate-reference-fixture/v0",
+  "source": {
+    "branch": "world-systems",
+    "content_hash": "fb06fe5f7ce9eaa2e060245dda001fb15a6ca8bf926d3c88887ed8f3a9afa5a3",
+    "implementation_hash": "96d9838731be83a08b0a2f22cf0f182923127fe7ee3304d8f438ea0338af71b7",
+    "receipt_path": "../castaway-world-systems/docs/evidence/physical-world/freshwater.json",
+    "receipt_sha256": "fd61692c2f90f5abbf8e067e1a0b8e2dc84453964ec27a7b3f0947b1e7fecace",
+    "repository": "castaway-world",
+    "revision": "da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+  }
+}

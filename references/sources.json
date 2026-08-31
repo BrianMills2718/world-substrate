@@ -1,0 +1,71 @@
+{
+  "schema_version": "world-substrate-sources/v1",
+  "reviewed": "2026-08-31",
+  "path_base": "repository_root",
+  "sources": {
+    "castaway_world_systems": {
+      "role": "reference_world_donor",
+      "local_path": "../castaway-world-systems",
+      "repository": "castaway-world",
+      "branch": "world-systems",
+      "revision": "da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+      "remote": null,
+      "disposition": "extract",
+      "freshwater_receipt_path": "../castaway-world-systems/docs/evidence/physical-world/freshwater.json",
+      "freshwater_receipt_sha256": "fd61692c2f90f5abbf8e067e1a0b8e2dc84453964ec27a7b3f0947b1e7fecace",
+      "freshwater_run_path": "../castaway-world-systems/docs/evidence/physical-world/freshwater-run.json.gz"
+    },
+    "castaway_main": {
+      "role": "historical_reference_world",
+      "local_path": "../castaway-world",
+      "repository": "castaway-world",
+      "branch": "main",
+      "revision": "69672d6db61ad8a6db5fd59dad88ff5c92083539",
+      "remote": null,
+      "disposition": "retain_reference"
+    },
+    "cybernetic_influence_v3": {
+      "role": "capability_donor",
+      "local_path": "../cybernetic_influence_v3",
+      "revision": "da9f7a4e3e1cc8a65dc6553e1d5edcfe0136811b",
+      "remote": "git@github.com-personal:BrianMills2718/cybernetic_influence_v3.git",
+      "disposition": "reuse_selectively"
+    },
+    "linguistic_core": {
+      "role": "ontology_dependency",
+      "local_path": "../active/onto-canon6",
+      "revision": "83acffe4eb5b8bbab6dd0f9f4ce92678145490ec",
+      "remote": "git@github.com-personal:BrianMills2718/onto-canon6.git",
+      "artifact_path": "../castaway-world-systems/content/linguistic-core-subset.json",
+      "content_subset_sha256": "c3a5559166d6bf1a11531fd763da52dafbefd44a6cde245ffa05bd6b85a81d9f",
+      "worktree_caveat": "unrelated_uncommitted_changes_excluded",
+      "disposition": "pinned_dependency"
+    },
+    "dynamical_laboratory_spec": {
+      "role": "research_input",
+      "local_path": "../Dynamical_Laboratory_Coding_Agent_Spec.md",
+      "sha256": "54806f721efc2ed3dba5574f6dda1eb89ef6b1d92acf60ccb2167811b909a0b7",
+      "disposition": "research_only"
+    },
+    "dwarf_fortress_report": {
+      "role": "research_input",
+      "local_path": "../castaway-world-systems/docs/research/deep-research-report-dwarf-fortress.md",
+      "sha256": "f1cdd031b66f7cbff5877d34fafc0c3d9d327b250f8c09afd20e29c361361f04",
+      "disposition": "research_only"
+    },
+    "llm_client": {
+      "role": "policy_provider_dependency",
+      "local_path": "../active/llm_client",
+      "revision": "d7a9395a1935010119f5d42a6baf55b9d707443b",
+      "remote": "git@github.com-personal:BrianMills2718/llm_client.git",
+      "worktree_caveat": "unrelated_uncommitted_changes_excluded",
+      "disposition": "runtime_dependency"
+    },
+    "project_meta": {
+      "role": "governance_dependency",
+      "local_path": "../active/project-meta",
+      "revision": "7a9f9b78337a5e4a00093785ca362881a9ed1006",
+      "disposition": "policy_reference"
+    }
+  }
+}
