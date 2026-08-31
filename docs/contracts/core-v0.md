@@ -68,6 +68,47 @@ Each causal event records:
 - source/sink/conservation ledger where relevant; and
 - resulting state hash.
 
+## Transition kernel
+
+The records above form one canonical world `W`. The minimum state/action/
+transition semantics are:
+
+```text
+observe_i(W)                    -> O_i
+discover_i(W, query, cursor, limit) -> ActionPage_i
+apply_r(W, action)              -> (W', events, status)
+advance(W, steps)               -> (W', events)
+replay(W_0, commands, pinned identities) -> (W_n, events, hashes)
+```
+
+`observe` and `discover` are actor-authorized projections of `W`; they neither
+own alternate state nor calculate consequences. `O_i` is intentionally lossy:
+two actors can receive different projections of the same canonical world.
+A policy chooses a typed action from the discovered page. Only the registered
+rule selected by that action, or a due registered process during `advance`, may
+calculate a material state transition.
+
+For an accepted action, state changes and causal events commit atomically. For a
+rejected, invalid, stale, or unsupported action, the material entity, relation,
+and process projection of `W'` equals that of `W`; the rejection record may
+still be appended to the canonical journal. This separates evidence of an
+attempt from effects on the modeled world. Replay consumes recorded commands
+and pinned identities, not policy decisions, and must reproduce the same final
+state, events, and hashes.
+
+The intended interaction order is:
+
+```text
+actor observes -> engine projects authorized state
+actor discovers -> registry instantiates currently available actions
+policy chooses  -> typed action references the observed base revision
+engine applies  -> rule validates, then atomically commits or rejects
+engine advances -> due processes use the same transition authority
+observer checks -> events, deltas, versions, and replay comparison
+```
+
+This is a design contract, not evidence that the neutral runtime exists.
+
 ## Engine operations
 
 ### Discover
@@ -107,6 +148,13 @@ The observation contains authorized state, received information, recent actor-vi
 ### Snapshot and replay
 
 A snapshot retains complete canonical state and all pinned identities needed to resume. Replay starts from the recorded initial state and re-applies recorded accepted/rejected commands without policy calls. It compares final state, events, and hashes.
+
+## Implementation traceability obligation
+
+Each implemented M1 rule must connect its stable rule ID and version to its
+declared read/write paths, engine operation, positive and negative checks,
+retained observation, and any adapted donor source. A contract entry or diagram
+without that consumer path is proposed design, not an adopted capability.
 
 ## Canonical freshwater probe
 

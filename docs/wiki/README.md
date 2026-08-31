@@ -40,9 +40,10 @@ Read one route, then the relevant code or evidence. Do not load every donor repo
 - **Ontology:** identifiers, categories, properties, and relations used to describe what exists. It does not execute behavior.
 - **Content:** particular materials, objects, recipes, locations, actors, and initial states.
 - **Rule family:** an executable action or process over categories/properties, such as transfer between compatible containers.
-- **Affordance:** one rule instance currently available to one actor, derived from canonical state.
+- **Affordance:** one rule instance currently available to one actor, derived from canonical state. It establishes neither general reachability beyond that state nor reliable competency across variation.
 - **Process:** a rule that continues when authoritative time advances, such as burning, cooling, growth, or debt accrual.
 - **Canonical state:** the only material world truth. Prompts, narratives, UI views, and analysis are projections.
+- **Observation:** an actor-authorized, intentionally lossy projection of canonical state; it is not a second state authority.
 - **Causal closure:** every consequence claimed as mechanically enforced has a registered guard, transition, process, or declared source/sink.
 - **Reference world:** a bounded end-to-end world that exercises shared substrate contracts without owning a private engine.
 

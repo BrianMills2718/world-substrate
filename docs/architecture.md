@@ -14,6 +14,43 @@ Agent policy <─ observation + affordances <─ canonical world ─> events/rep
        └──────────── selects typed action ──────────>|
 ```
 
+## Architecture-description discipline
+
+This project uses a small architecture-description discipline to keep different
+representations of the same substrate consistent. It selectively borrows the
+distinction between concerns, reusable viewpoints, and project-specific views
+from [ISO/IEC/IEEE 42010](https://www.iso.org/standard/74393.html).
+[UML](https://www.omg.org/uml/),
+[SysML v2](https://www.omg.org/sysml/sysmlv2/), and
+[KerML](https://www.omg.org/spec/KerML/1.0/About-KerML) may supply useful
+notations or semantic patterns, but the project does not claim conformance and
+does not require their toolchains.
+
+- A **concern** is a question that a representation must answer.
+- A **viewpoint** defines the conventions for answering a recurring concern.
+- A **view** applies a viewpoint to a particular project revision.
+- A **model kind** is the form used by a view, such as a boundary table,
+  transition specification, sequence, or evidence trace.
+
+The maintained viewpoints are deliberately few:
+
+| Viewpoint | Concern | Model kind and maintained view | Current authority |
+| --- | --- | --- | --- |
+| `VP-BOUNDARY` | Who owns state, decisions, effects, and failure containment? | boundary/component table in this document | design authority; implementation remains open |
+| `VP-TRANSITION` | How can an action or process change state, and how does it fail? | transition kernel and operation contracts in [core contract v0](contracts/core-v0.md) | design authority; implementation remains open |
+| `VP-ACTOR-INFORMATION` | What can an actor observe and select versus what an observer can inspect? | projection and information-flow descriptions here and in the core contract | design authority; implementation remains open |
+| `VP-EVIDENCE-REPLAY` | How is each consequence explained and reproduced? | event schema, trace step-down, and replay contract | design authority; M1 evidence remains open |
+| `VP-ADOPTION` | When has a donor capability actually become a project capability? | source disposition plus consumer-path evidence | [source dispositions](source-dispositions.md) and revision-bound evidence |
+
+A view need not be a diagram. Every maintained view must use the native stable
+IDs and terms of the contract or implementation it represents, state its source
+revision and claim status, label the meaning of edges or arrows, and identify
+material omissions. Corresponding views must agree on authority boundaries,
+rule and operation identities, accepted/rejected status, and evidence links.
+After code exists, views that describe implementation must bind to real modules,
+interfaces, and tests. Visual agreement or standards-shaped notation is not
+evidence that the runtime behaves as shown.
+
 ## Authority boundaries
 
 | Boundary | Owns | Must not own |

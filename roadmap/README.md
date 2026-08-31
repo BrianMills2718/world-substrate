@@ -122,6 +122,9 @@ observed trace
 - integer or otherwise exact extensive quantities for conservation;
 - one state/time authority and atomic commit;
 - unsupported pressure remains explicit;
+- maintained architecture views use implemented identifiers and interfaces once
+  those exist, identify their source revision and status, and never substitute
+  diagram coherence for trace or replay evidence;
 - donor repositories remain unmodified.
 
 **Focused checks and authentic observation:**
@@ -130,7 +133,9 @@ observed trace
 2. run the equivalent World Substrate case;
 3. compare conserved quantities, process timing, vessel identity, final state, and replay;
 4. run saltwater retention, overfill rejection, and unsupported-pressure counterexamples;
-5. inspect the produced trace directly.
+5. inspect the produced trace directly; and
+6. trace each exercised rule ID through its operation, positive or negative
+   check, retained observation, and donor mapping.
 
 A scripted chooser is sufficient for M1 because the uncertainty is consequence composition. It is explicitly labeled and does not establish the LLM-policy criterion.
 
@@ -171,6 +176,11 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 - Copying donor implementations without a consumer-path proof would create parallel authorities.
 - One physical vertical cannot prove cross-domain generality; that claim remains blocked until M4.
 - Typed causal-closure checks cannot prove the author remembered every consequential dependency.
+- Whether maintained architecture views should be generated from contracts and
+  code or maintained manually remains open until M1 reveals stable identifiers
+  and interfaces.
+- A UML, SysML, or KerML toolchain is deferred unless observed cross-view
+  inconsistency justifies its added authority and maintenance cost.
 - Documentation can outrun implementation; the exact next action remains an executable trace, not another planning layer.
 
 ## Human decisions
