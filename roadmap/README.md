@@ -12,7 +12,7 @@ reviewed_through: 2026-08-31
 **Selected path:** durable solo; one writer, reversible local work, no external effects
 **Stage:** prototype
 **Consumer:** a fresh authorized implementation agent needs the outcome, invariants, evidence frontier, active slice, and next action without a handoff
-**Last outcome-bearing update:** M0 project foundation, in the revision containing this page
+**Last outcome-bearing update:** M1 first-fill consumer path, in the revision containing this page
 
 ## Outcome and success criteria
 
@@ -43,8 +43,8 @@ These criteria do not claim universal physics, unlimited affordances, real-world
 ## Current truth
 
 - This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
-- No neutral runtime is implemented here yet. The pinned donor freshwater command/checkpoint fixture is extracted and reproducible.
-- Castaway `world-systems` is the current implementation authority for the freshwater behavior and evidence.
+- The first neutral runtime path now implements registered fill, clock, and hydration rules; state-derived discovery, causal events, atomic overfill rejection, donor-checkpoint comparison, and replay pass here.
+- Castaway `world-systems` remains implementation authority for the freshwater mechanisms beyond the adopted first-fill path.
 - Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
 - Linguistic Core supplies reviewed vocabulary, not executable mechanics.
 - No public deployment, paid model execution, second reference world, or scale target is authorized or required now.
@@ -73,8 +73,8 @@ observed trace
 | Capability | Canonical owner or seam | Dependency | Current evidence | State |
 | --- | --- | --- | --- | --- |
 | Project direction | this roadmap | Decision 001 | repository documents | established |
-| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | design only | ready to implement |
-| Physical reference vertical | future shared core + Castaway content | Castaway `world-systems` | donor tests/traces | donor-only |
+| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | first-fill tests and evidence | partially implemented |
+| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | [first-fill evidence](../evidence/m1/first-fill-v0.json) plus donor tests/traces | first-fill adopted; remainder donor-only |
 | Policy selection | future policy adapter | shared `llm_client` | donor real run | not adopted here |
 | Authoring/causal closure | future compiler | CI V3 patterns | donor implementation/research | not adopted here |
 | Ontology bindings | content adapter | Linguistic Core | pinned Castaway subset | donor-only |
@@ -167,7 +167,8 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 | Project navigation is progressively disclosed | structural checker and Project Meta navigation validator | structure does not prove semantic truth | passed at this revision |
 | Castaway behavior exists | donor tests and evidence at pinned revision | not yet adopted here | external evidence |
 | Freshwater behavior is characterized locally | [pinned fixture](../tests/fixtures/castaway/freshwater-v0.json) and extractor `--check` | expected donor behavior only | established |
-| Neutral core works | M1 trace, checks, and replay | nonexistent until implemented | open |
+| Neutral first-fill path works | [retained evidence](../evidence/m1/first-fill-v0.json), executable probe, and focused tests | fill plus one clock/hydration tick only | established |
+| Full neutral freshwater core works | complete M1 trace, checks, and replay | first-fill evidence covers only a bounded subset | open |
 | LLM policy works through neutral seam | M2 provider trace | no claim from scripted M1 | conditional |
 
 ## Risks and needs resolution
@@ -193,4 +194,7 @@ Refresh this roadmap after a committed outcome-bearing slice, a material user co
 
 ## Exact next action
 
-Implement the minimum neutral world, rule-registry, event, and replay seams needed to execute the first fill command and compare its checkpoint with the pinned fixture.
+Implement registered heat and unheat actions plus the heat, fuel, boiling,
+pathogen-removal, and evaporation processes needed to reach and compare the
+pinned boiling checkpoint. Do not add pour, drink, give, policy calls, or UI in
+that slice.

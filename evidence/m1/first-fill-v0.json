@@ -1,0 +1,372 @@
+{
+  "accepted": true,
+  "checkpoint_comparison": {
+    "actual": {
+      "actors": {
+        "friday": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 49
+        },
+        "robinson": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 49
+        }
+      },
+      "tick": 1,
+      "vessels": {
+        "clay-pot": {
+          "boiling_ticks": 0,
+          "capacity_ml": 1500,
+          "condition": 100,
+          "definition": "clay_pot",
+          "empty_weight": 2,
+          "id": "clay-pot",
+          "label": "Clay pot",
+          "last_cause": "e00001",
+          "liquid": {
+            "heat_units": 22000,
+            "pathogens": 400,
+            "salt_mg": 0,
+            "volume_ml": 1000
+          },
+          "on_fire": null,
+          "owner": "place:camp",
+          "temperature_c": 22.0
+        },
+        "cup-robinson": {
+          "boiling_ticks": 0,
+          "capacity_ml": 500,
+          "condition": 100,
+          "definition": "metal_cup",
+          "empty_weight": 1,
+          "id": "cup-robinson",
+          "label": "Metal cup",
+          "last_cause": null,
+          "liquid": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "on_fire": null,
+          "owner": "actor:robinson",
+          "temperature_c": 22
+        }
+      }
+    },
+    "expected": {
+      "actors": {
+        "friday": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 49
+        },
+        "robinson": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 49
+        }
+      },
+      "tick": 1,
+      "vessels": {
+        "clay-pot": {
+          "boiling_ticks": 0,
+          "capacity_ml": 1500,
+          "condition": 100,
+          "definition": "clay_pot",
+          "empty_weight": 2,
+          "id": "clay-pot",
+          "label": "Clay pot",
+          "last_cause": "e00001",
+          "liquid": {
+            "heat_units": 22000,
+            "pathogens": 400,
+            "salt_mg": 0,
+            "volume_ml": 1000
+          },
+          "on_fire": null,
+          "owner": "place:camp",
+          "temperature_c": 22.0
+        },
+        "cup-robinson": {
+          "boiling_ticks": 0,
+          "capacity_ml": 500,
+          "condition": 100,
+          "definition": "metal_cup",
+          "empty_weight": 1,
+          "id": "cup-robinson",
+          "label": "Metal cup",
+          "last_cause": null,
+          "liquid": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "on_fire": null,
+          "owner": "actor:robinson",
+          "temperature_c": 22
+        }
+      }
+    },
+    "matched": true
+  },
+  "claim": "The neutral substrate discovered and executed one registered fill action, conserved modeled liquid quantities, matched the selected pinned donor checkpoint fields after one tick, and replayed exactly.",
+  "conservation": {
+    "after_fill": {
+      "heat_units": 132000,
+      "pathogens": 2400,
+      "salt_mg": 0,
+      "volume_ml": 6000
+    },
+    "before": {
+      "heat_units": 132000,
+      "pathogens": 2400,
+      "salt_mg": 0,
+      "volume_ml": 6000
+    },
+    "matched": true
+  },
+  "discovery": {
+    "actor_id": "robinson",
+    "available_fill_count": 4,
+    "selected_action": {
+      "actor": "robinson",
+      "base_revision": 0,
+      "controller": "verification_script",
+      "kind": "fill",
+      "source": "unsafe-pool",
+      "vessel": "clay-pot",
+      "volume_ml": 1000
+    },
+    "selected_action_id": "e37b2f354401"
+  },
+  "execution": {
+    "events": [
+      {
+        "cause": "c00001",
+        "changes": [
+          {
+            "after": "e00001",
+            "before": null,
+            "path": "entities.clay-pot.last_cause_event_id"
+          },
+          {
+            "after": 22000,
+            "before": 0,
+            "path": "entities.clay-pot.liquid.heat_units"
+          },
+          {
+            "after": 400,
+            "before": 0,
+            "path": "entities.clay-pot.liquid.pathogens"
+          },
+          {
+            "after": 1000,
+            "before": 0,
+            "path": "entities.clay-pot.liquid.volume_ml"
+          },
+          {
+            "after": 110000,
+            "before": 132000,
+            "path": "entities.unsafe-pool.liquid.heat_units"
+          },
+          {
+            "after": 2000,
+            "before": 2400,
+            "path": "entities.unsafe-pool.liquid.pathogens"
+          },
+          {
+            "after": 5000,
+            "before": 6000,
+            "path": "entities.unsafe-pool.liquid.volume_ml"
+          },
+          {
+            "after": 1,
+            "before": 0,
+            "path": "revision"
+          }
+        ],
+        "checks": [
+          {
+            "actual": 0,
+            "label": "Base revision is current",
+            "ok": true,
+            "required": 0
+          },
+          {
+            "actual": null,
+            "label": "Actor exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Source exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 1000,
+            "label": "Positive bounded liquid volume",
+            "ok": true,
+            "required": "1..10000 ml"
+          },
+          {
+            "actual": null,
+            "label": "Actor is alive",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is local or carried",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 100,
+            "label": "Vessel is intact",
+            "ok": true,
+            "required": ">0"
+          },
+          {
+            "actual": null,
+            "label": "Local liquid source",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 6000,
+            "label": "Source has volume",
+            "ok": true,
+            "required": 1000
+          },
+          {
+            "actual": 1500,
+            "label": "Vessel has room",
+            "ok": true,
+            "required": 1000
+          }
+        ],
+        "declared_read_paths": [
+          "entities.<actor>.location",
+          "entities.<vessel>.ownership",
+          "entities.<vessel>.condition",
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<source>.location",
+          "entities.<source>.liquid"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "entities.<vessel>.last_cause_event_id",
+          "entities.<source>.liquid"
+        ],
+        "event_id": "e00001",
+        "hash_after": "f761c709e62fe740ec227a19c9a30dbf045b482cfe262d6fc612465cf41627da",
+        "hash_before": "e9d427d15a141e97b224180c339aea1427e8516f082e705643b7224fde0f4cce",
+        "rule_id": "mechanism.liquid.fill",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 0,
+        "world_revision": 1
+      },
+      {
+        "cause": "c00002",
+        "changes": [
+          {
+            "after": 2,
+            "before": 1,
+            "path": "revision"
+          },
+          {
+            "after": 1,
+            "before": 0,
+            "path": "tick"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "tick"
+        ],
+        "declared_write_paths": [
+          "tick"
+        ],
+        "event_id": "e00002",
+        "hash_after": "708a5b779288743231a1c7c9f9c6043ed1013764bf5d5c19f04409aa219197b5",
+        "hash_before": "f761c709e62fe740ec227a19c9a30dbf045b482cfe262d6fc612465cf41627da",
+        "rule_id": "system.clock.advance",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 1,
+        "world_revision": 2
+      },
+      {
+        "cause": "c00002",
+        "changes": [
+          {
+            "after": 49,
+            "before": 50,
+            "path": "entities.friday.actor.hydration"
+          },
+          {
+            "after": 49,
+            "before": 50,
+            "path": "entities.robinson.actor.hydration"
+          },
+          {
+            "after": 3,
+            "before": 2,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "declared_write_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "event_id": "e00003",
+        "hash_after": "91257cdc8940563571aafa57d9e66ca815af7c5d1199b824b97f7b9d0c69c60b",
+        "hash_before": "708a5b779288743231a1c7c9f9c6043ed1013764bf5d5c19f04409aa219197b5",
+        "rule_id": "process.actor.hydration-decay",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 1,
+        "world_revision": 3
+      }
+    ],
+    "final_material_hash": "91257cdc8940563571aafa57d9e66ca815af7c5d1199b824b97f7b9d0c69c60b",
+    "status": "accepted"
+  },
+  "limitations": [
+    "This is a scripted first-fill slice, not the complete freshwater vertical.",
+    "The reference data contains only the entities needed for this checkpoint comparison, not the donor's complete workshop world.",
+    "The neutral state hash is not compared with the donor hash because the schemas differ.",
+    "This does not establish LLM policy behavior or cross-domain generality."
+  ],
+  "replay": {
+    "actual": "91257cdc8940563571aafa57d9e66ca815af7c5d1199b824b97f7b9d0c69c60b",
+    "event_match": true,
+    "expected": "91257cdc8940563571aafa57d9e66ca815af7c5d1199b824b97f7b9d0c69c60b",
+    "ok": true,
+    "steps": 2
+  },
+  "schema_version": "world-substrate-evidence/first-fill-v0",
+  "source": {
+    "donor_checkpoint_hash": "f8455dfa36363b2a4d64c434ffa4f92b8abe06134b17cdd00e4dfdf63e3ff02f",
+    "donor_revision": "da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+    "fixture_id": "castaway-freshwater-v0"
+  }
+}

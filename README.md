@@ -20,7 +20,7 @@ Start with:
 
 ## Current status
 
-The project authority and design are established. The neutral runtime is not yet implemented here. The first active slice will extract the Castaway freshwater vertical into the new substrate while preserving its deterministic effects, process behavior, evidence, and replay.
+The project authority and design are established. The first neutral runtime slice now discovers and executes a registered liquid-fill action, advances registered clock and hydration processes, retains causal events, rejects overfill atomically, and replays exactly. Its retained evidence matches the selected fields of the pinned Castaway post-fill checkpoint. The remaining freshwater mechanisms are not yet implemented here.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -29,4 +29,5 @@ Related repositories remain unchanged and are classified in [source dispositions
 ```sh
 python scripts/check_project.py
 python scripts/extract_castaway_fixture.py --check
+python scripts/run_first_fill_probe.py --check
 ```

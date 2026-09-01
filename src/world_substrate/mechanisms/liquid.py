@@ -1,0 +1,190 @@
+"""Exact extensive-liquid transfer rules."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from ..model import Entity, LiquidState, World
+from ..rules import Check, FillAction, TypedAction
+
+LIQUID_FIELDS = ("volume_ml", "salt_mg", "pathogens", "heat_units")
+
+
+def _accessible(world: World, actor: Entity, vessel: Entity) -> bool:
+    if actor.location is None or vessel.ownership is None:
+        return False
+    return vessel.ownership.owner_ref in {
+        f"actor:{actor.entity_id}",
+        f"place:{actor.location.location_id}",
+    }
+
+
+def _split(source: LiquidState, volume_ml: int) -> LiquidState:
+    original_volume = source.volume_ml
+    if not 0 < volume_ml <= original_volume:
+        raise ValueError("split volume is outside source contents")
+    portion = {
+        field: getattr(source, field) * volume_ml // original_volume
+        for field in LIQUID_FIELDS
+    }
+    for field in LIQUID_FIELDS:
+        setattr(source, field, getattr(source, field) - portion[field])
+    return LiquidState(**portion)
+
+
+def _mix(destination: LiquidState, portion: LiquidState) -> None:
+    for field in LIQUID_FIELDS:
+        setattr(
+            destination, field, getattr(destination, field) + getattr(portion, field)
+        )
+
+
+class FillRule:
+    rule_id = "mechanism.liquid.fill"
+    version = "1"
+    action_kind = "fill"
+    read_paths: tuple[str, ...] = (
+        "entities.<actor>.location",
+        "entities.<vessel>.ownership",
+        "entities.<vessel>.condition",
+        "entities.<vessel>.container",
+        "entities.<vessel>.liquid",
+        "entities.<source>.location",
+        "entities.<source>.liquid",
+    )
+    write_paths: tuple[str, ...] = (
+        "entities.<vessel>.liquid",
+        "entities.<vessel>.thermal",
+        "entities.<vessel>.last_cause_event_id",
+        "entities.<source>.liquid",
+    )
+
+    def action_from_dict(self, value: dict[str, Any]) -> FillAction:
+        return FillAction.from_dict(value)
+
+    def discover(self, world: World, actor_id: str) -> list[TypedAction]:
+        actor = world.entities.get(actor_id)
+        if actor is None or actor.actor is None or actor.location is None:
+            return []
+        vessels = [
+            entity
+            for entity in world.entities.values()
+            if entity.container is not None
+            and entity.liquid is not None
+            and _accessible(world, actor, entity)
+        ]
+        sources = [
+            entity
+            for entity in world.entities.values()
+            if "liquid_source" in entity.category_ids
+            and entity.location is not None
+            and entity.location.location_id == actor.location.location_id
+            and entity.liquid is not None
+        ]
+        actions: list[TypedAction] = []
+        for vessel in sorted(vessels, key=lambda item: item.entity_id):
+            assert vessel.container is not None and vessel.liquid is not None
+            room = vessel.container.capacity_ml - vessel.liquid.volume_ml
+            if room <= 0:
+                continue
+            for source in sorted(sources, key=lambda item: item.entity_id):
+                assert source.liquid is not None
+                maximum = min(room, source.liquid.volume_ml)
+                for amount in sorted({min(maximum, 250), min(maximum, 1000)}):
+                    if amount > 0:
+                        actions.append(
+                            FillAction(
+                                actor_id=actor_id,
+                                vessel_id=vessel.entity_id,
+                                source_id=source.entity_id,
+                                volume_ml=amount,
+                                base_revision=world.revision,
+                                controller_id="unselected",
+                            )
+                        )
+        return actions
+
+    def checks(self, world: World, action: TypedAction) -> list[Check]:
+        if not isinstance(action, FillAction):
+            raise TypeError("fill rule requires FillAction")
+        actor = world.entities.get(action.actor_id)
+        vessel = world.entities.get(action.vessel_id)
+        source = world.entities.get(action.source_id)
+        checks = [
+            Check("Actor exists", actor is not None and actor.actor is not None),
+            Check("Vessel exists", vessel is not None and vessel.container is not None),
+            Check(
+                "Source exists",
+                source is not None and "liquid_source" in source.category_ids
+                if source
+                else False,
+            ),
+            Check(
+                "Positive bounded liquid volume",
+                type(action.volume_ml) is int and 1 <= action.volume_ml <= 10_000,
+                action.volume_ml,
+                "1..10000 ml",
+            ),
+        ]
+        if actor is None or vessel is None or source is None:
+            return checks
+        checks.extend(
+            [
+                Check("Actor is alive", bool(actor.actor and actor.actor.alive)),
+                Check("Vessel is local or carried", _accessible(world, actor, vessel)),
+                Check(
+                    "Vessel is intact",
+                    bool(vessel.condition and vessel.condition.value > 0),
+                    vessel.condition.value if vessel.condition else None,
+                    ">0",
+                ),
+                Check(
+                    "Local liquid source",
+                    bool(
+                        actor.location
+                        and source.location
+                        and source.location.location_id == actor.location.location_id
+                    ),
+                ),
+            ]
+        )
+        if source.liquid is not None:
+            checks.append(
+                Check(
+                    "Source has volume",
+                    source.liquid.volume_ml >= action.volume_ml,
+                    source.liquid.volume_ml,
+                    action.volume_ml,
+                )
+            )
+        else:
+            checks.append(Check("Source has liquid state", False))
+        if vessel.container is not None and vessel.liquid is not None:
+            checks.append(
+                Check(
+                    "Vessel has room",
+                    vessel.liquid.volume_ml + action.volume_ml
+                    <= vessel.container.capacity_ml,
+                    vessel.container.capacity_ml - vessel.liquid.volume_ml,
+                    action.volume_ml,
+                )
+            )
+        else:
+            checks.append(Check("Vessel has container and liquid state", False))
+        return checks
+
+    def apply(self, world: World, action: TypedAction, event_id: str) -> None:
+        if not isinstance(action, FillAction):
+            raise TypeError("fill rule requires FillAction")
+        vessel = world.entities[action.vessel_id]
+        source = world.entities[action.source_id]
+        assert vessel.liquid is not None and source.liquid is not None
+        portion = _split(source.liquid, action.volume_ml)
+        _mix(vessel.liquid, portion)
+        if vessel.container is not None:
+            vessel.container.boiling_ticks = 0
+        if vessel.thermal is not None and vessel.liquid.volume_ml:
+            vessel.thermal.temperature_c = round(
+                vessel.liquid.heat_units / vessel.liquid.volume_ml, 2
+            )
+        vessel.last_cause_event_id = event_id

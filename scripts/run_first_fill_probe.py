@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""Generate or verify the retained neutral first-fill evidence."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
+sys.path.insert(0, str(REPO / "src"))
+
+from reference_worlds.castaway.probe import run_first_fill_probe
+
+OUTPUT = REPO / "evidence/m1/first-fill-v0.json"
+
+
+def encoded(payload: dict[str, object]) -> bytes:
+    return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output", type=Path, default=OUTPUT)
+    args = parser.parse_args()
+    payload = run_first_fill_probe(REPO)
+    expected = encoded(payload)
+    output = args.output.resolve()
+    if args.check:
+        if not output.exists() or output.read_bytes() != expected:
+            print(f"first-fill evidence drift: {output}", file=sys.stderr)
+            return 1
+        print(
+            f"first-fill evidence matches executable probe: {output.relative_to(REPO)}"
+        )
+        return 0
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_bytes(expected)
+    print(f"wrote {output.relative_to(REPO)}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

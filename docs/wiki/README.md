@@ -50,10 +50,11 @@ Read one route, then the relevant code or evidence. Do not load every donor repo
 ## What exists now?
 
 - The project goal, architecture, core contract, source dispositions, implementation roadmap, and pinned freshwater expected-behavior fixture are established here.
+- The first neutral consumer path implements registered fill, clock, and hydration rules; discovery, minimal observation, causal events, atomic overfill rejection, exact replay, and [retained donor-checkpoint comparison](../../evidence/m1/first-fill-v0.json) run here.
 - Castaway has a working deterministic survival/physical prototype and retained evidence in its donor repository.
 - Cybernetic Influence V3 has implemented authoring, canonical-world, typed transition, Concordia lifecycle, evidence, and analysis capabilities for socio-technical worlds.
 - Linguistic Core has a large reviewed vocabulary source, but not executable mechanics.
-- The neutral World Substrate runtime has **not** yet been extracted into this repository.
+- The rest of the neutral freshwater runtime—heat, fuel, boiling, evaporation, cooling, pouring, drinking, and ownership transfer—has **not** yet been extracted into this repository.
 
 The last point is the first implementation frontier. Documentation presence is not implementation.
 
@@ -109,7 +110,10 @@ See [Architecture](../architecture.md) for boundaries and the [core contract](..
 
 ## Human-reviewable artifacts
 
-The first outcome-bearing artifact will be a locally runnable freshwater trace and replay produced by this repository. Until that exists, the Castaway donor remains the implementation evidence.
+The first outcome-bearing artifact is the locally runnable
+[first-fill trace and replay](../../evidence/m1/first-fill-v0.json). It adopts
+only that consumer path; the Castaway donor remains implementation authority for
+the rest of the freshwater vertical.
 
 ## Roadmap
 

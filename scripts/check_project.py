@@ -29,11 +29,19 @@ REQUIRED = (
     "roadmap/README.md",
     "reference_worlds/CLAUDE.md",
     "reference_worlds/README.md",
+    "reference_worlds/castaway/probe.py",
     "references/sources.json",
     "scripts/extract_castaway_fixture.py",
+    "scripts/run_first_fill_probe.py",
+    "src/world_substrate/engine.py",
+    "src/world_substrate/model.py",
+    "src/world_substrate/rules.py",
     "tests/CLAUDE.md",
+    "tests/test_first_fill.py",
     "tests/fixtures/castaway/README.md",
     "tests/fixtures/castaway/freshwater-v0.json",
+    "reference_worlds/castaway/freshwater-fill-v0.json",
+    "evidence/m1/first-fill-v0.json",
 )
 WIKI_SECTIONS = (
     "## What this project is",
@@ -82,6 +90,7 @@ def git_has_revision(path: Path, revision: str) -> bool:
     """
     result = subprocess.run(
         ["git", "-C", str(path), "cat-file", "-e", f"{revision}^{{commit}}"],
+        check=False,
         capture_output=True,
         text=True,
     )
@@ -113,11 +122,16 @@ def main() -> int:
         if path != agents and not SKIP.intersection(path.relative_to(REPO).parts)
     ]
     if nested_agents:
-        failures.append("nested AGENTS.md files are forbidden: " + ", ".join(map(str, nested_agents)))
+        failures.append(
+            "nested AGENTS.md files are forbidden: "
+            + ", ".join(map(str, nested_agents))
+        )
 
     root = (REPO / "CLAUDE.md").read_text()
     if len(root.splitlines()) > 45:
-        failures.append(f"root CLAUDE.md is {len(root.splitlines())} lines; reorganize instead of expanding it")
+        failures.append(
+            f"root CLAUDE.md is {len(root.splitlines())} lines; reorganize instead of expanding it"
+        )
     for route in ("docs/wiki/README.md", "roadmap/README.md"):
         if route not in root:
             failures.append(f"root CLAUDE.md does not route to {route}")
@@ -125,7 +139,9 @@ def main() -> int:
             failures.append(f"root README.md does not route to {route}")
 
     if list(REPO.rglob("*HANDOFF*.md")):
-        failures.append("special handoff documents compete with normal project navigation")
+        failures.append(
+            "special handoff documents compete with normal project navigation"
+        )
 
     wiki = (REPO / "docs/wiki/README.md").read_text()
     for section in WIKI_SECTIONS:
@@ -172,7 +188,9 @@ def main() -> int:
                 failures.append(f"cannot inspect source revision {source_id}: {exc}")
             else:
                 if not revision_exists:
-                    failures.append(f"pinned source revision unavailable {source_id}: {expected_revision}")
+                    failures.append(
+                        f"pinned source revision unavailable {source_id}: {expected_revision}"
+                    )
         expected_hash = record.get("sha256")
         if expected_hash and sha256(source_path) != expected_hash:
             failures.append(f"source hash drift {source_id}")
@@ -186,12 +204,43 @@ def main() -> int:
 
     fixture_check = subprocess.run(
         [sys.executable, str(REPO / "scripts/extract_castaway_fixture.py"), "--check"],
+        check=False,
         capture_output=True,
         text=True,
     )
     if fixture_check.returncode != 0:
         detail = fixture_check.stderr.strip() or fixture_check.stdout.strip()
         failures.append(f"derived Castaway fixture check failed: {detail}")
+
+    first_fill_check = subprocess.run(
+        [sys.executable, str(REPO / "scripts/run_first_fill_probe.py"), "--check"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if first_fill_check.returncode != 0:
+        detail = first_fill_check.stderr.strip() or first_fill_check.stdout.strip()
+        failures.append(f"neutral first-fill evidence check failed: {detail}")
+
+    first_fill_tests = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            str(REPO / "tests"),
+            "-p",
+            "test_*.py",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+        cwd=REPO,
+    )
+    if first_fill_tests.returncode != 0:
+        detail = first_fill_tests.stderr.strip() or first_fill_tests.stdout.strip()
+        failures.append(f"neutral runtime tests failed: {detail}")
 
     if failures:
         print("World Substrate project check failed:")

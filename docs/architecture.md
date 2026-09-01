@@ -36,10 +36,10 @@ The maintained viewpoints are deliberately few:
 
 | Viewpoint | Concern | Model kind and maintained view | Current authority |
 | --- | --- | --- | --- |
-| `VP-BOUNDARY` | Who owns state, decisions, effects, and failure containment? | boundary/component table in this document | design authority; implementation remains open |
-| `VP-TRANSITION` | How can an action or process change state, and how does it fail? | transition kernel and operation contracts in [core contract v0](contracts/core-v0.md) | design authority; implementation remains open |
-| `VP-ACTOR-INFORMATION` | What can an actor observe and select versus what an observer can inspect? | projection and information-flow descriptions here and in the core contract | design authority; implementation remains open |
-| `VP-EVIDENCE-REPLAY` | How is each consequence explained and reproduced? | event schema, trace step-down, and replay contract | design authority; M1 evidence remains open |
+| `VP-BOUNDARY` | Who owns state, decisions, effects, and failure containment? | boundary/component table in this document | implemented for the first-fill path; remaining M1 mechanisms open |
+| `VP-TRANSITION` | How can an action or process change state, and how does it fail? | transition kernel and operation contracts in [core contract v0](contracts/core-v0.md) | fill, clock, hydration, rejection, and replay implemented; remaining M1 transitions open |
+| `VP-ACTOR-INFORMATION` | What can an actor observe and select versus what an observer can inspect? | projection and information-flow descriptions here and in the core contract | minimal first-fill observation/discovery implemented; broader authorization and paging open |
+| `VP-EVIDENCE-REPLAY` | How is each consequence explained and reproduced? | event schema, trace step-down, and replay contract | [first-fill evidence](../evidence/m1/first-fill-v0.json) established; full M1 evidence open |
 | `VP-ADOPTION` | When has a donor capability actually become a project capability? | source disposition plus consumer-path evidence | [source dispositions](source-dispositions.md) and revision-bound evidence |
 
 A view need not be a diagram. Every maintained view must use the native stable

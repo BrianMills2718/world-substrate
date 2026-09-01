@@ -4,13 +4,17 @@ Reference worlds prove that the shared substrate supports real end-to-end behavi
 
 ## Castaway
 
-**State:** donor implementation exists; migration not started.
+**State:** first-fill migration implemented; full vertical remains donor-only.
 
 **Donor:** `../castaway-world-systems` at the pinned revision in `references/sources.json`.
 
 **First vertical:** one persistent vessel participates in ownership, carrying, finite liquid transfer, shared finite heating, boiling, evaporation, cooling, damage, pouring, drinking, and transfer between actors.
 
-Castaway becomes adopted here only when that vertical runs and replays through the neutral core contract with no Castaway-specific engine branch.
+The registered fill consumer path now runs and replays through the neutral core
+without Castaway-specific dispatch. Its [retained evidence](../evidence/m1/first-fill-v0.json)
+matches the selected pinned donor checkpoint fields. The reference world as a
+whole becomes adopted only when the remaining vertical runs through the same
+neutral contracts.
 
 ## Later reference worlds
 

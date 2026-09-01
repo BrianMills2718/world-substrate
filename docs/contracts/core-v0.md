@@ -107,7 +107,11 @@ engine advances -> due processes use the same transition authority
 observer checks -> events, deltas, versions, and replay comparison
 ```
 
-This is a design contract, not evidence that the neutral runtime exists.
+The first-fill subset of this contract is implemented and evidenced in
+[the retained M1 receipt](../../evidence/m1/first-fill-v0.json). Apply,
+discovery, minimal observation, registered clock/hydration processes, atomic
+rejection, causal events, and replay exist for that path. The remaining
+freshwater operations and generality claims remain design obligations.
 
 ## Engine operations
 
