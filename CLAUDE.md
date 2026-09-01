@@ -27,6 +27,14 @@ Before editing a scoped subtree, read its local `CLAUDE.md`:
 
 ## Current boundary
 
-This repository is the canonical home for the initiative, but its neutral runtime has not yet been extracted. Castaway remains the implemented reference donor until the active roadmap slice reproduces its freshwater vertical here. Cybernetic Influence V3, Linguistic Core, the Dynamical Laboratory specification, and shared `llm_client` are sources or dependencies, not competing project authorities.
+This repository is the canonical home for the initiative. M1's neutral
+freshwater runtime is promoted: its registered deterministic rules and
+processes reproduce the bounded Castaway vertical, retain causal evidence, and
+replay from pinned inputs in a fresh process. The active roadmap frontier is
+the M2 policy-consumer authorization gate; do not implement or call a model
+without explicit model-execution authority and a spend cap. Castaway remains
+the implementation donor beyond the adopted M1 path. Cybernetic Influence V3,
+Linguistic Core, the Dynamical Laboratory specification, and shared
+`llm_client` are sources or dependencies, not competing project authorities.
 
 Make reversible local changes without repeated approval. Do not deploy, publish, spend on model calls, mutate donor repositories, or relax the deterministic-consequence boundary without explicit authorization. Never create a special handoff document; improve the normal root-to-wiki-to-authority route instead.
