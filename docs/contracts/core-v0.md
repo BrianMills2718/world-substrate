@@ -107,14 +107,15 @@ engine advances -> due processes use the same transition authority
 observer checks -> events, deltas, versions, and replay comparison
 ```
 
-The fill-through-pour subset of this contract is implemented and evidenced
+The fill-through-drink subset of this contract is implemented and evidenced
 in the retained [first-fill](../../evidence/m1/first-fill-v0.json) and
-[boiling](../../evidence/m1/boiling-v0.json), and
-[pour](../../evidence/m1/pour-v0.json) receipts. Apply, discovery, minimal
+[boiling](../../evidence/m1/boiling-v0.json),
+[pour](../../evidence/m1/pour-v0.json), and
+[drink](../../evidence/m1/drink-v0.json) receipts. Apply, discovery, minimal
 observation, registered clock/hydration/thermal/cooling/fuel processes, atomic
 rejection, causal events, semantic donor comparison, and replay exist for that
-path. The remaining freshwater operations and generality claims remain design
-obligations.
+path. Safe and hazardous consumption effects are executable; whole-vessel
+ownership transfer and generality claims remain design obligations.
 
 ## Engine operations
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from ..model import Entity, LiquidState, World
@@ -251,9 +251,10 @@ class ThermalProcess:
     boiling_evaporation_ml_per_tick: int = 25
     evaporation_heat_units_per_ml: int = 1000
     cooling_fraction_denominator: int = 4
+    cool_empty_vessels: bool = False
+    version: str = field(init=False)
 
     rule_id = "process.thermal.vessels"
-    version = "1"
     order = 20
     read_paths: tuple[str, ...] = (
         "entities.<vessel>.container",
@@ -268,6 +269,9 @@ class ThermalProcess:
         "physical_ledger",
     )
 
+    def __post_init__(self) -> None:
+        self.version = "2" if self.cool_empty_vessels else "1"
+
     def due(self, world: World) -> bool:
         return any(
             entity.container
@@ -281,6 +285,11 @@ class ThermalProcess:
                 )
                 or entity.liquid.heat_units
                 != entity.liquid.volume_ml * self.ambient_temperature_c
+                or (
+                    self.cool_empty_vessels
+                    and not entity.liquid.volume_ml
+                    and entity.thermal.temperature_c != self.ambient_temperature_c
+                )
             )
             for entity in world.entities.values()
         )
@@ -367,9 +376,7 @@ class ThermalProcess:
                     )
             elif vessel.liquid.volume_ml:
                 vessel.container.boiling_ticks = 0
-                target = (
-                    vessel.liquid.volume_ml * self.ambient_temperature_c
-                )
+                target = vessel.liquid.volume_ml * self.ambient_temperature_c
                 delta = vessel.liquid.heat_units - target
                 if delta:
                     step = (
@@ -382,6 +389,16 @@ class ThermalProcess:
                         world.physical_ledger.heat_lost += change
                     else:
                         world.physical_ledger.heat_added += -change
+            elif (
+                self.cool_empty_vessels
+                and vessel.thermal.temperature_c != self.ambient_temperature_c
+            ):
+                delta_c = vessel.thermal.temperature_c - self.ambient_temperature_c
+                vessel.thermal.temperature_c = round(
+                    vessel.thermal.temperature_c
+                    - delta_c / self.cooling_fraction_denominator,
+                    2,
+                )
             _sync_temperature(vessel)
 
     def _evaporate(self, world: World, liquid: LiquidState, amount: int) -> None:

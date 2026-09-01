@@ -2,9 +2,17 @@
 
 from .engine import Engine
 from .model import World
-from .rules import FillAction, HeatAction, PourAction, RuleRegistry, UnheatAction
+from .rules import (
+    DrinkAction,
+    FillAction,
+    HeatAction,
+    PourAction,
+    RuleRegistry,
+    UnheatAction,
+)
 
 __all__ = [
+    "DrinkAction",
     "Engine",
     "FillAction",
     "HeatAction",

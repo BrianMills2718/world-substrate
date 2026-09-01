@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..model import Entity, LiquidState, World
-from ..rules import Check, FillAction, PourAction, TypedAction
+from ..rules import Check, DrinkAction, FillAction, PourAction, TypedAction
 
 LIQUID_FIELDS = ("volume_ml", "salt_mg", "pathogens", "heat_units")
 
@@ -358,3 +358,173 @@ class PourRule:
                     entity.liquid.heat_units / entity.liquid.volume_ml, 2
                 )
             entity.last_cause_event_id = event_id
+
+
+class DrinkRule:
+    """Consume an exact liquid portion; hazards warn but remain possible."""
+
+    rule_id = "mechanism.liquid.drink"
+    version = "1"
+    action_kind = "drink"
+    read_paths: tuple[str, ...] = (
+        "entities.<actor>.actor",
+        "entities.<actor>.location",
+        "entities.<vessel>.ownership",
+        "entities.<vessel>.condition",
+        "entities.<vessel>.container",
+        "entities.<vessel>.liquid",
+    )
+    write_paths: tuple[str, ...] = (
+        "entities.<actor>.actor.health",
+        "entities.<actor>.actor.hydration",
+        "entities.<actor>.actor.alive",
+        "entities.<vessel>.liquid",
+        "entities.<vessel>.last_cause_event_id",
+        "physical_ledger.drunk",
+    )
+
+    safe_drinking_temperature_c = 45
+    safe_salt_mg_per_litre = 1_000
+    hydration_per_250ml = 25
+    pathogen_harm_per_250ml = 12
+    salt_harm_per_250ml = 4
+    salt_hydration_loss_per_250ml = 35
+    hot_harm_per_250ml = 10
+
+    def action_from_dict(self, value: dict[str, Any]) -> DrinkAction:
+        return DrinkAction.from_dict(value)
+
+    def discover(self, world: World, actor_id: str) -> list[TypedAction]:
+        actor = world.entities.get(actor_id)
+        if actor is None or actor.actor is None or actor.location is None:
+            return []
+        actions: list[TypedAction] = []
+        for vessel in sorted(world.entities.values(), key=lambda item: item.entity_id):
+            if (
+                vessel.container is None
+                or vessel.liquid is None
+                or not _accessible(world, actor, vessel)
+            ):
+                continue
+            for amount in sorted(
+                {
+                    min(vessel.liquid.volume_ml, 250),
+                    min(vessel.liquid.volume_ml, 1_000),
+                }
+            ):
+                if amount > 0:
+                    actions.append(
+                        DrinkAction(
+                            actor_id=actor_id,
+                            vessel_id=vessel.entity_id,
+                            volume_ml=amount,
+                            base_revision=world.revision,
+                            controller_id="unselected",
+                        )
+                    )
+        return actions
+
+    def _warnings(self, liquid: LiquidState) -> list[str]:
+        warnings: list[str] = []
+        if liquid.pathogens:
+            warnings.append("Contains pathogens")
+        if (
+            liquid.volume_ml
+            and liquid.salt_mg * 1_000
+            > self.safe_salt_mg_per_litre * liquid.volume_ml
+        ):
+            warnings.append("Salty: boiling will not remove salt")
+        if (
+            liquid.volume_ml
+            and liquid.heat_units
+            > self.safe_drinking_temperature_c * liquid.volume_ml
+        ):
+            warnings.append("Too hot to drink safely")
+        return warnings
+
+    def checks(self, world: World, action: TypedAction) -> list[Check]:
+        if not isinstance(action, DrinkAction):
+            raise TypeError("drink rule requires DrinkAction")
+        actor = world.entities.get(action.actor_id)
+        vessel = world.entities.get(action.vessel_id)
+        checks = [
+            Check("Actor exists", actor is not None and actor.actor is not None),
+            Check(
+                "Vessel exists",
+                vessel is not None and vessel.container is not None,
+            ),
+            Check(
+                "Positive bounded liquid volume",
+                type(action.volume_ml) is int and 1 <= action.volume_ml <= 10_000,
+                action.volume_ml,
+                "1..10000 ml",
+            ),
+        ]
+        if actor is None or vessel is None:
+            return checks
+        checks.extend(
+            [
+                Check("Actor is alive", bool(actor.actor and actor.actor.alive)),
+                Check("Vessel is local or carried", _accessible(world, actor, vessel)),
+                Check(
+                    "Vessel is intact",
+                    bool(vessel.condition and vessel.condition.value > 0),
+                ),
+                Check(
+                    "Vessel is removed from heat",
+                    bool(vessel.container and vessel.container.heat_source_id is None),
+                ),
+                Check(
+                    "Vessel contains requested volume",
+                    bool(
+                        vessel.liquid
+                        and vessel.liquid.volume_ml >= action.volume_ml
+                    ),
+                    vessel.liquid.volume_ml if vessel.liquid else None,
+                    action.volume_ml,
+                ),
+            ]
+        )
+        if vessel.liquid and vessel.liquid.volume_ml >= action.volume_ml:
+            preview = LiquidState(
+                **{
+                    field: getattr(vessel.liquid, field)
+                    * action.volume_ml
+                    // vessel.liquid.volume_ml
+                    for field in LIQUID_FIELDS
+                }
+            )
+            checks.extend(
+                Check(
+                    f"Warning: {warning}",
+                    True,
+                    warning,
+                    "The action remains possible and causes rule-defined harm",
+                )
+                for warning in self._warnings(preview)
+            )
+        return checks
+
+    def apply(self, world: World, action: TypedAction, event_id: str) -> None:
+        if not isinstance(action, DrinkAction):
+            raise TypeError("drink rule requires DrinkAction")
+        actor = world.entities[action.actor_id]
+        vessel = world.entities[action.vessel_id]
+        assert actor.actor and vessel.liquid and world.physical_ledger
+        portion = _split(vessel.liquid, action.volume_ml)
+        warnings = self._warnings(portion)
+        _mix(world.physical_ledger.drunk, portion)
+        portions = (action.volume_ml + 249) // 250
+        hydration = action.volume_ml * self.hydration_per_250ml // 250
+        harm = 0
+        if "Contains pathogens" in warnings:
+            harm += portions * self.pathogen_harm_per_250ml
+        if "Salty: boiling will not remove salt" in warnings:
+            harm += portions * self.salt_harm_per_250ml
+            hydration -= portions * self.salt_hydration_loss_per_250ml
+        if "Too hot to drink safely" in warnings:
+            harm += portions * self.hot_harm_per_250ml
+        actor.actor.hydration = min(100, max(0, actor.actor.hydration + hydration))
+        actor.actor.health = max(0, actor.actor.health - harm)
+        actor.actor.alive = actor.actor.health > 0
+        vessel.last_cause_event_id = event_id

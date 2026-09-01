@@ -1,6 +1,6 @@
 """Reusable registered mechanism families."""
 
-from .liquid import FillRule, PourRule
+from .liquid import DrinkRule, FillRule, PourRule
 from .thermal import (
     FireFuelProcess,
     HeatRule,
@@ -11,6 +11,7 @@ from .time import ClockAdvanceProcess, HydrationDecayProcess
 
 __all__ = [
     "ClockAdvanceProcess",
+    "DrinkRule",
     "FillRule",
     "FireFuelProcess",
     "HeatRule",

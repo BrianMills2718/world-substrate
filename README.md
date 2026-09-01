@@ -20,7 +20,7 @@ Start with:
 
 ## Current status
 
-The project authority and design are established. The neutral runtime now reaches the pinned cooled-and-poured checkpoint through registered fill, heat, unheat, and pour actions plus deterministic clock, hydration, thermal, evaporation, pathogen-removal, cooling, and fire-fuel processes. Its retained evidence compares semantic state and conservation fields rather than donor-specific hashes, and exact local replay passes. Drinking and whole-vessel transfer remain to complete M1.
+The project authority and design are established. The neutral runtime now reaches the pinned post-drink checkpoint through registered fill, heat, unheat, pour, and drink actions plus deterministic clock, hydration, thermal, evaporation, pathogen-removal, cooling, fuel, consumption, and harm rules. Its retained evidence compares semantic state and conservation fields rather than donor-specific hashes, and exact local replay passes. Whole-vessel ownership transfer remains to complete M1.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -32,4 +32,5 @@ python scripts/extract_castaway_fixture.py --check
 python scripts/run_first_fill_probe.py --check
 python scripts/run_boiling_probe.py --check
 python scripts/run_pour_probe.py --check
+python scripts/run_drink_probe.py --check
 ```

@@ -50,11 +50,11 @@ Read one route, then the relevant code or evidence. Do not load every donor repo
 ## What exists now?
 
 - The project goal, architecture, core contract, source dispositions, implementation roadmap, and pinned freshwater expected-behavior fixture are established here.
-- The neutral consumer path now reaches the pinned cooled-and-poured checkpoint through registered fill, heat, unheat, and pour rules plus deterministic clock, hydration, thermal, evaporation, pathogen-removal, cooling, and fuel processes. Discovery, minimal observation, causal events, atomic rejection, semantic donor comparison, and exact replay run here; see the [first-fill](../../evidence/m1/first-fill-v0.json), [boiling](../../evidence/m1/boiling-v0.json), and [pour](../../evidence/m1/pour-v0.json) evidence.
+- The neutral consumer path now reaches the pinned post-drink checkpoint through registered fill, heat, unheat, pour, and drink rules plus deterministic clock, hydration, thermal, evaporation, pathogen-removal, cooling, fuel, consumption, and hazard processes. Discovery, minimal observation, causal events, atomic rejection, semantic donor comparison, and exact replay run here; see the [first-fill](../../evidence/m1/first-fill-v0.json), [boiling](../../evidence/m1/boiling-v0.json), [pour](../../evidence/m1/pour-v0.json), and [drink](../../evidence/m1/drink-v0.json) evidence.
 - Castaway has a working deterministic survival/physical prototype and retained evidence in its donor repository.
 - Cybernetic Influence V3 has implemented authoring, canonical-world, typed transition, Concordia lifecycle, evidence, and analysis capabilities for socio-technical worlds.
 - Linguistic Core has a large reviewed vocabulary source, but not executable mechanics.
-- The rest of the neutral freshwater runtime—drinking and ownership transfer—has **not** yet been extracted into this repository.
+- The rest of the neutral freshwater runtime—whole-vessel ownership transfer and the complete scenario receipt—has **not** yet been extracted into this repository.
 
 The last point is the first implementation frontier. Documentation presence is not implementation.
 
@@ -112,8 +112,9 @@ See [Architecture](../architecture.md) for boundaries and the [core contract](..
 
 The current outcome-bearing artifacts are the locally runnable
 [first-fill](../../evidence/m1/first-fill-v0.json) and
-[boiling](../../evidence/m1/boiling-v0.json), and
-[pour](../../evidence/m1/pour-v0.json) traces and replays. They adopt only
+[boiling](../../evidence/m1/boiling-v0.json),
+[pour](../../evidence/m1/pour-v0.json), and
+[drink](../../evidence/m1/drink-v0.json) traces and replays. They adopt only
 those consumer paths; the Castaway donor remains implementation authority for
 the rest of the freshwater vertical.
 
