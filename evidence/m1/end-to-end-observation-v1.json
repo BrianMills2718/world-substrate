@@ -1,26 +1,26 @@
 {
   "schema_version": "1.0",
   "record_type": "end_to_end_observation",
-  "observation_id": "E2E-world-substrate-m1-5572523",
+  "observation_id": "E2E-world-substrate-m1-4c33038",
   "criterion_id": "M1-neutral-freshwater-vertical",
   "status": "pass",
-  "scope": "The complete local scripted Castaway freshwater journey, three discriminating negative action paths, retained causal trace, and exact replay at the observed World Substrate revision.",
-  "observed_at": "2026-09-01T01:12:22Z",
+  "scope": "The complete local scripted Castaway freshwater journey, strict typed action boundary, three discriminating negative paths, retained causal trace, and fresh-process replay from versioned durable inputs at the observed World Substrate revision.",
+  "observed_at": "2026-09-01T02:10:47Z",
   "producer": "Codex local execution",
-  "source_revision": "55725233f65af625edfc0a09067de3aa97d34efe",
+  "source_revision": "4c3303828b7c9b97e22a806caa404306f8616f7a",
   "execution_context": {
     "target": "local Python World Substrate runtime",
     "configuration_ref": "reference_worlds/castaway/freshwater-v0.json",
     "dependency_set_ref": "references/sources.json",
-    "route": "python scripts/run_freshwater_probe.py --check"
+    "route": "python scripts/check_project.py"
   },
   "test_selection": {
     "criterion_id": "M1-neutral-freshwater-vertical",
-    "changed_boundary": "One neutral submission, transition, process, evidence, and replay path now owns the complete freshwater scenario rather than donor-private execution.",
-    "failure_hypothesis": "The neutral runtime could appear green while diverging from a donor checkpoint, losing liquid or vessel identity, mutating state on rejection, conflating invalid and unsupported actions, or failing exact replay.",
-    "discriminating_probe": "Execute the 22-command fill-through-give journey against the pinned fixture, compare semantic checkpoint and ledger fields, then execute overfill, valid unsupported pressure, and malformed fill envelopes and replay all paths.",
-    "decision_if_pass": "Promote M1 and make M2 policy-consumer authorization the next planning boundary.",
-    "decision_if_fail": "Keep M1 active and repair the first divergent transition, evidence surface, or replay path before policy integration."
+    "changed_boundary": "M1 replay now reconstructs from a versioned serialized initial snapshot, explicit registry/content identities, and commands in a fresh process; untrusted registered parameters and every evidence gate fail closed.",
+    "failure_hypothesis": "The runtime could coerce malformed JSON types, depend on hidden in-memory initial state, accept a mismatched retained trace, or report PASS from a rejected probe or incomplete maturity receipt.",
+    "discriminating_probe": "Reject coercible string, float, boolean, list, and numeric action parameters; execute the 22-command journey; load only its committed snapshot, registry/content identity, and commands in a fresh process; compare full events and final hash; exercise all negative paths; and run the complete receipt and project gates.",
+    "decision_if_pass": "Reaffirm M1 promotion with durable replay and fail-closed evidence, leaving M2 at its existing human authorization boundary.",
+    "decision_if_fail": "Reopen M1 and repair the first strict-input, snapshot, identity, replay, evidence-generation, or receipt-validation failure before any policy integration."
   },
   "journey": {
     "starting_state": "Two colocated living actors, one clay pot, one metal cup, a finite pathogen-bearing freshwater source, a finite-fuel fire, explicit carrying state, and registered neutral rules/processes.",
@@ -28,16 +28,18 @@
     "steps": [
       "Verify the committed transfer trace still matches the executable positive probe.",
       "Compare final tick, actors, vessels, physical ledger, fuel, and vessel identity with the pinned donor checkpoint.",
-      "Replay all 22 positive commands and require identical material hash and events.",
+      "Reject registered envelopes whose string or integer parameters use coercible JSON types.",
+      "Start a fresh process, load the committed versioned initial snapshot, select the pinned registry/content identity, replay all 22 commands, and require identical material hash and events.",
       "Submit an overfill and require atomic precondition_failed with exact replay.",
       "Submit a valid unregistered pressure envelope and require atomic unsupported_action with exact replay.",
       "Submit a malformed registered fill envelope and require atomic invalid_action with exact replay.",
-      "Run the self-contained project gate, 24 tests, Ruff, and mypy at the same revision."
+      "Prove a rejected probe cannot be encoded as canonical PASS evidence and that incomplete or false-green maturity receipts fail validation.",
+      "Run the self-contained project gate, 32 tests, Ruff, and mypy at the same revision."
     ],
-    "correlation_id": "M1-5572523-freshwater",
+    "correlation_id": "M1-4c33038-durable-replay",
     "observation_window": {
-      "started_at": "2026-09-01T01:12:19Z",
-      "ended_at": "2026-09-01T01:12:22Z"
+      "started_at": "2026-09-01T02:10:30Z",
+      "ended_at": "2026-09-01T02:10:47Z"
     }
   },
   "required_surfaces": [
@@ -51,44 +53,44 @@
     {
       "surface": "cli",
       "status": "observed",
-      "evidence_ref": "scripts/run_freshwater_probe.py --check",
-      "inspected_at": "2026-09-01T01:12:22Z",
-      "observation": "The executable reported that both retained M1 evidence artifacts match the bounded probe."
+      "evidence_ref": "scripts/check_project.py",
+      "inspected_at": "2026-09-01T02:10:47Z",
+      "observation": "The self-contained project command passed all retained probes, fresh-process replay, complete receipt validation, and 32 runtime tests."
     },
     {
       "surface": "engine",
       "status": "observed",
       "evidence_ref": "evidence/m1/freshwater-v0.json",
-      "inspected_at": "2026-09-01T01:12:22Z",
-      "observation": "The positive semantic checkpoint and ledger matched, all three negative statuses were distinct and atomic, and every replay was exact."
+      "inspected_at": "2026-09-01T02:10:47Z",
+      "observation": "The positive semantic checkpoint and ledger matched; strict typed-parameter regressions and all three negative statuses passed atomically; every replay was exact."
     },
     {
       "surface": "persistence",
       "status": "observed",
-      "evidence_ref": "evidence/m1/transfer-v0.json#replay",
-      "inspected_at": "2026-09-01T01:12:22Z",
-      "observation": "The retained 22-command trace reproduced the same material hash and complete event sequence."
+      "evidence_ref": "evidence/m1/transfer-replay-v1.json",
+      "inspected_at": "2026-09-01T02:10:47Z",
+      "observation": "A fresh process loaded the versioned initial snapshot and pinned registry/content identity from the committed trace, replayed all 22 commands, and reproduced the retained material hash and complete event sequence."
     },
     {
       "surface": "source",
       "status": "observed",
       "evidence_ref": "tests/fixtures/castaway/freshwater-v0.json",
-      "inspected_at": "2026-09-01T01:12:22Z",
+      "inspected_at": "2026-09-01T02:10:47Z",
       "observation": "The comparison used the committed fixture derived from Castaway revision da5ccb46fa536505bbc0235a4157c648c8bb4bcb."
     },
     {
       "surface": "trace",
       "status": "observed",
       "evidence_ref": "evidence/m1/freshwater-v0.md",
-      "inspected_at": "2026-09-01T01:12:22Z",
-      "observation": "The compact human review exposes the final state, conservation/treatment results, identity result, replay result, and all negative outcomes."
+      "inspected_at": "2026-09-01T02:10:47Z",
+      "observation": "The compact human review exposes the final state, conservation/treatment results, identity result, replay result, all negative outcomes, and derives PASS from the accepted machine payload."
     }
   ],
   "unexpected_events": [],
   "outcome_kind": "system_behavior",
   "outcome": {
-    "observed_result": "The complete M1 scripted journey and all three discriminating negatives passed at revision 55725233f65af625edfc0a09067de3aa97d34efe.",
-    "state_change": "The clay pot ended at tick 15 owned by Friday with 728 ml of pathogen-free water; the ledger accounted for treatment, evaporation, drinking, heat, and exact replay, while rejected envelopes made no material change.",
+    "observed_result": "The complete M1 scripted journey, strict input boundary, fail-closed evidence gates, and fresh-process replay passed at revision 4c3303828b7c9b97e22a806caa404306f8616f7a.",
+    "state_change": "The clay pot ended at tick 15 owned by Friday with 728 ml of pathogen-free water; the ledger accounted for treatment, evaporation, drinking, and heat; a fresh process reproduced the final state and events; rejected envelopes made no material change.",
     "evidence_ref": "evidence/m1/freshwater-v0.json"
   },
   "limitations": [

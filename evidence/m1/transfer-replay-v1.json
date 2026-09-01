@@ -1,0 +1,37 @@
+{
+  "accepted": true,
+  "inputs": {
+    "command_count": 22,
+    "registry_identity": {
+      "content_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+      "engine_id": "world-substrate-core@1",
+      "registry_id": "reference-world/castaway/freshwater-transfer@1",
+      "rule_versions": {
+        "mechanism.liquid.drink": "1",
+        "mechanism.liquid.fill": "1",
+        "mechanism.liquid.pour": "1",
+        "mechanism.ownership.give": "1",
+        "mechanism.ownership.take": "1",
+        "mechanism.thermal.heat": "1",
+        "mechanism.thermal.unheat": "1",
+        "process.actor.hydration-decay": "1",
+        "process.heat-source.fuel": "1",
+        "process.thermal.vessels": "2",
+        "system.clock.advance": "1"
+      }
+    },
+    "snapshot_schema_version": "world-substrate-snapshot/v1"
+  },
+  "observation": {
+    "actual_event_count": 66,
+    "actual_material_hash": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+    "event_match": true,
+    "expected_event_count": 66,
+    "expected_material_hash": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288"
+  },
+  "record_type": "fresh_process_replay_receipt",
+  "schema_version": "world-substrate-replay-receipt/v1",
+  "source_revision": "4c3303828b7c9b97e22a806caa404306f8616f7a",
+  "source_trace": "evidence/m1/transfer-v0.json",
+  "source_trace_sha256": "41c6011224338799c51d2cca686b1f89779494e85c5c91329b7ec4458bf821a0"
+}

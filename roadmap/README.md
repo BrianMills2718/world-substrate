@@ -12,7 +12,7 @@ reviewed_through: 2026-08-31
 **Selected path:** durable solo; one writer, reversible local work, no external effects
 **Stage:** prototype
 **Consumer:** a fresh authorized implementation agent needs the outcome, invariants, evidence frontier, active slice, and next action without a handoff
-**Last outcome-bearing update:** M1 promoted with revision-bound end-to-end evidence, in the revision containing this page
+**Last outcome-bearing update:** M1 promotion reaffirmed after strict input, durable replay, and fail-closed evidence repairs, in the revision containing this page
 
 ## Outcome and success criteria
 
@@ -44,7 +44,7 @@ These criteria do not claim universal physics, unlimited affordances, real-world
 
 - This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
 - The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay. The retained initial snapshot and pinned registry/content identity reconstruct that replay in a fresh process. Overfill, valid-but-unsupported pressure, and malformed-fill envelopes are atomically distinguished and replayed, including strict rejection of coercible string, float, and boolean parameters.
-- The [M1 end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) passed the maturity-promotion gate against exact implementation revision `55725233f65af625edfc0a09067de3aa97d34efe`.
+- The [M1 end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) passed the maturity-promotion gate against exact implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a` after the fresh-process [replay receipt](../evidence/m1/transfer-replay-v1.json) reproduced the retained state and events.
 - Castaway `world-systems` remains implementation authority for physical mechanisms and product behavior beyond the adopted positive M1 path.
 - Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
 - Linguistic Core supplies reviewed vocabulary, not executable mechanics.
