@@ -20,7 +20,7 @@ Start with:
 
 ## Current status
 
-M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid/heat/carrying/ownership systems, replays all 22 commands exactly, and distinguishes precondition failure from unsupported and malformed actions. The revision-bound [end-to-end observation](evidence/m1/end-to-end-observation-v1.json) passed the maturity gate. M2 requires explicit model-call authority before implementation.
+M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid/heat/carrying/ownership systems, and distinguishes precondition failure from unsupported and malformed actions. Its versioned initial snapshot, pinned registry/content identity, and 22 commands also reproduce the final state and events in a [fresh process](evidence/m1/transfer-replay-v1.json). The revision-bound [end-to-end observation](evidence/m1/end-to-end-observation-v1.json) passed the maturity gate. M2 requires explicit model-call authority before implementation.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -33,6 +33,7 @@ python scripts/run_boiling_probe.py --check
 python scripts/run_pour_probe.py --check
 python scripts/run_drink_probe.py --check
 python scripts/run_transfer_probe.py --check
+python scripts/replay_transfer_evidence.py --check
 python scripts/run_freshwater_probe.py --check
 ```
 

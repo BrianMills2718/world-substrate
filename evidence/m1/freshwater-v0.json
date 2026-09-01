@@ -280,7 +280,7 @@
     "retained_trace_matches": true,
     "semantic_checkpoint_matched": true,
     "trace_ref": "evidence/m1/transfer-v0.json",
-    "trace_sha256": "010cbd8cf10fd8394a231e73300a3983e6de6a70b34242b41c7b5fa8742a6404",
+    "trace_sha256": "41c6011224338799c51d2cca686b1f89779494e85c5c91329b7ec4458bf821a0",
     "vessel_identity_preserved": true
   },
   "schema_version": "world-substrate-evidence/freshwater-v0"

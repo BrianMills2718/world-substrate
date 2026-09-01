@@ -14,6 +14,87 @@ from reference_worlds.castaway.probe import build_transfer_engine
 
 
 class ActionEnvelopeTests(unittest.TestCase):
+    def test_registered_action_parameters_require_exact_json_types(self) -> None:
+        valid_envelopes = {
+            "fill": {
+                "actor": "robinson",
+                "kind": "fill",
+                "vessel": "clay-pot",
+                "source": "unsafe-pool",
+                "volume_ml": 1000,
+                "base_revision": 0,
+                "controller": "verification_script",
+            },
+            "heat": {
+                "actor": "robinson",
+                "kind": "heat",
+                "vessel": "clay-pot",
+                "target": "campfire",
+                "base_revision": 0,
+                "controller": "verification_script",
+            },
+            "unheat": {
+                "actor": "robinson",
+                "kind": "unheat",
+                "vessel": "clay-pot",
+                "base_revision": 0,
+                "controller": "verification_script",
+            },
+            "pour": {
+                "actor": "robinson",
+                "kind": "pour",
+                "vessel": "clay-pot",
+                "destination": "drinking-cup",
+                "volume_ml": 250,
+                "base_revision": 0,
+                "controller": "verification_script",
+            },
+            "drink": {
+                "actor": "robinson",
+                "kind": "drink",
+                "vessel": "drinking-cup",
+                "volume_ml": 250,
+                "base_revision": 0,
+                "controller": "verification_script",
+            },
+            "take": {
+                "actor": "friday",
+                "kind": "take",
+                "vessel": "clay-pot",
+                "base_revision": 0,
+                "controller": "verification_script",
+            },
+            "give": {
+                "actor": "robinson",
+                "kind": "give",
+                "vessel": "clay-pot",
+                "target": "friday",
+                "base_revision": 0,
+                "controller": "verification_script",
+            },
+        }
+        malformed_parameters = (
+            ("fill", "vessel", 7),
+            ("fill", "source", True),
+            ("heat", "target", 3),
+            ("pour", "destination", ["drinking-cup"]),
+            ("give", "target", 9),
+            ("fill", "volume_ml", "1000"),
+            ("pour", "volume_ml", 250.0),
+            ("drink", "volume_ml", True),
+        )
+
+        for kind, field, malformed_value in malformed_parameters:
+            with self.subTest(kind=kind, field=field, value=malformed_value):
+                engine = build_transfer_engine(REPO)
+                before = engine.world.material_dict()
+                envelope = {**valid_envelopes[kind], field: malformed_value}
+                result = engine.submit(envelope)
+                self.assertEqual(result["status"], "invalid_action")
+                self.assertEqual(before, engine.world.material_dict())
+                self.assertEqual(engine.world.commands[-1]["op"], "invalid_action")
+                self.assertTrue(engine.replay()["ok"])
+
     def test_valid_unregistered_pressure_action_is_unsupported_and_replayable(
         self,
     ) -> None:

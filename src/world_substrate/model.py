@@ -8,6 +8,8 @@ from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+SNAPSHOT_SCHEMA_VERSION = "world-substrate-snapshot/v1"
+
 
 @dataclass
 class ActorState:
@@ -157,6 +159,84 @@ class Entity:
             result["last_cause_event_id"] = self.last_cause_event_id
         return result
 
+    @classmethod
+    def from_dict(cls, value: object) -> Entity:
+        if not isinstance(value, dict):
+            raise TypeError("snapshot entity must be an object")
+        entity_id = value.get("entity_id")
+        label = value.get("label")
+        category_ids = value.get("category_ids")
+        if not isinstance(entity_id, str) or not entity_id:
+            raise ValueError("snapshot entity_id must be a nonempty string")
+        if not isinstance(label, str) or not label:
+            raise ValueError("snapshot entity label must be a nonempty string")
+        if not isinstance(category_ids, list) or any(
+            not isinstance(item, str) or not item for item in category_ids
+        ):
+            raise ValueError("snapshot category_ids must be nonempty strings")
+
+        component_types: dict[str, type[Any]] = {
+            "actor": ActorState,
+            "carrying": CarryingState,
+            "portable": PortableState,
+            "location": LocationState,
+            "ownership": OwnershipState,
+            "condition": ConditionState,
+            "container": ContainerState,
+            "liquid": LiquidState,
+            "thermal": ThermalState,
+            "material": MaterialState,
+            "heat_source": HeatSourceState,
+        }
+        components: dict[str, Any] = {}
+        for name, component_type in component_types.items():
+            record = value.get(name)
+            if record is None:
+                components[name] = None
+                continue
+            if not isinstance(record, dict):
+                raise TypeError(f"snapshot {name} component must be an object")
+            try:
+                components[name] = component_type(**record)
+            except TypeError as error:
+                raise ValueError(f"invalid snapshot {name} component: {error}") from error
+
+        optional_identities: dict[str, str | None] = {}
+        for name in ("source_pack_id", "source_entity_id", "last_cause_event_id"):
+            item = value.get(name)
+            if item is not None and (not isinstance(item, str) or not item):
+                raise ValueError(f"snapshot {name} must be a nonempty string or null")
+            optional_identities[name] = item
+        allowed = {
+            "entity_id",
+            "label",
+            "category_ids",
+            *component_types,
+            *optional_identities,
+        }
+        unknown = sorted(set(value) - allowed)
+        if unknown:
+            raise ValueError(f"unknown snapshot entity fields: {unknown}")
+        return cls(
+            entity_id=entity_id,
+            label=label,
+            category_ids=tuple(category_ids),
+            actor=components["actor"],
+            carrying=components["carrying"],
+            portable=components["portable"],
+            location=components["location"],
+            ownership=components["ownership"],
+            condition=components["condition"],
+            container=components["container"],
+            liquid=components["liquid"],
+            thermal=components["thermal"],
+            material=components["material"],
+            heat_source=components["heat_source"],
+            source_pack_id=optional_identities["source_pack_id"],
+            source_entity_id=optional_identities["source_entity_id"],
+            last_cause_event_id=optional_identities["last_cause_event_id"],
+        )
+
 
 @dataclass
 class World:
@@ -192,6 +272,101 @@ class World:
             self.material_dict(), sort_keys=True, separators=(",", ":")
         ).encode()
         return hashlib.sha256(encoded).hexdigest()
+
+    def snapshot(self) -> dict[str, Any]:
+        """Return a versioned JSON-serializable canonical-state snapshot."""
+        return {
+            "schema_version": SNAPSHOT_SCHEMA_VERSION,
+            "world": deepcopy(self.material_dict()),
+        }
+
+    @classmethod
+    def from_snapshot(cls, snapshot: object) -> World:
+        """Load canonical state from a versioned snapshot without command history."""
+        if not isinstance(snapshot, dict):
+            raise TypeError("snapshot must be an object")
+        if set(snapshot) != {"schema_version", "world"}:
+            raise ValueError("snapshot must contain only schema_version and world")
+        if snapshot.get("schema_version") != SNAPSHOT_SCHEMA_VERSION:
+            raise ValueError("unsupported snapshot schema_version")
+        value = snapshot.get("world")
+        if not isinstance(value, dict):
+            raise TypeError("snapshot world must be an object")
+        required = {
+            "world_id",
+            "revision",
+            "tick",
+            "entities",
+            "engine_id",
+            "content_id",
+            "rule_versions",
+        }
+        optional = {"physical_ledger"}
+        missing = sorted(required - set(value))
+        unknown = sorted(set(value) - required - optional)
+        if missing:
+            raise ValueError(f"snapshot world is missing fields: {missing}")
+        if unknown:
+            raise ValueError(f"unknown snapshot world fields: {unknown}")
+        for field_name in ("world_id", "engine_id", "content_id"):
+            item = value[field_name]
+            if not isinstance(item, str) or not item:
+                raise ValueError(f"snapshot {field_name} must be a nonempty string")
+        for field_name in ("revision", "tick"):
+            if type(value[field_name]) is not int:
+                raise ValueError(f"snapshot {field_name} must be an integer")
+        entities_record = value["entities"]
+        if not isinstance(entities_record, dict):
+            raise TypeError("snapshot entities must be an object")
+        entities = {
+            entity_id: Entity.from_dict(record)
+            for entity_id, record in entities_record.items()
+        }
+        versions = value["rule_versions"]
+        if not isinstance(versions, dict) or any(
+            not isinstance(rule_id, str)
+            or not rule_id
+            or not isinstance(version, str)
+            or not version
+            for rule_id, version in versions.items()
+        ):
+            raise ValueError("snapshot rule_versions must map strings to strings")
+
+        ledger_record = value.get("physical_ledger")
+        ledger = None
+        if ledger_record is not None:
+            if not isinstance(ledger_record, dict):
+                raise ValueError("snapshot physical_ledger must be an object")
+            ledger_values = deepcopy(ledger_record)
+            for name in ("initial", "added", "drunk", "evaporated"):
+                item = ledger_values.get(name)
+                if not isinstance(item, dict):
+                    raise TypeError(
+                        f"snapshot physical_ledger.{name} must be an object"
+                    )
+                try:
+                    ledger_values[name] = LiquidState(**item)
+                except TypeError as error:
+                    raise ValueError(
+                        f"invalid snapshot physical_ledger.{name}: {error}"
+                    ) from error
+            try:
+                ledger = PhysicalLedger(**ledger_values)
+            except TypeError as error:
+                raise ValueError(f"invalid snapshot physical_ledger: {error}") from error
+
+        world = cls(
+            world_id=value["world_id"],
+            revision=value["revision"],
+            tick=value["tick"],
+            entities=entities,
+            engine_id=value["engine_id"],
+            content_id=value["content_id"],
+            rule_versions=dict(versions),
+            physical_ledger=ledger,
+        )
+        world.validate()
+        return world
 
     def clone(self) -> World:
         return deepcopy(self)

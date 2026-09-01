@@ -43,7 +43,7 @@ These criteria do not claim universal physics, unlimited affordances, real-world
 ## Current truth
 
 - This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
-- The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay. Overfill, valid-but-unsupported pressure, and malformed-fill envelopes are atomically distinguished and replayed.
+- The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay. The retained initial snapshot and pinned registry/content identity reconstruct that replay in a fresh process. Overfill, valid-but-unsupported pressure, and malformed-fill envelopes are atomically distinguished and replayed, including strict rejection of coercible string, float, and boolean parameters.
 - The [M1 end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) passed the maturity-promotion gate against exact implementation revision `55725233f65af625edfc0a09067de3aa97d34efe`.
 - Castaway `world-systems` remains implementation authority for physical mechanisms and product behavior beyond the adopted positive M1 path.
 - Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
@@ -74,8 +74,8 @@ observed trace
 | Capability | Canonical owner or seam | Dependency | Current evidence | State |
 | --- | --- | --- | --- | --- |
 | Project direction | this roadmap | Decision 001 | repository documents | established |
-| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | staged tests plus combined [M1 evidence](../evidence/m1/freshwater-v0.json) | M1 executable contract implemented; promotion gate pending |
-| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | staged evidence, complete [trace](../evidence/m1/transfer-v0.json), and [human review](../evidence/m1/freshwater-v0.md) | positive and negative journeys adopted; promotion gate pending |
+| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | staged tests plus combined [M1 evidence](../evidence/m1/freshwater-v0.json) | M1 executable contract implemented and promotion gate passed |
+| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | staged evidence, complete [trace](../evidence/m1/transfer-v0.json), [fresh-process replay](../evidence/m1/transfer-replay-v1.json), and [human review](../evidence/m1/freshwater-v0.md) | positive and negative journeys adopted; M1 promoted |
 | Policy selection | future policy adapter | shared `llm_client` | donor real run | not adopted here |
 | Authoring/causal closure | future compiler | CI V3 patterns | donor implementation/research | not adopted here |
 | Ontology bindings | content adapter | Linguistic Core | pinned Castaway subset | donor-only |
@@ -97,7 +97,7 @@ observed trace
 
 ### Completed slice: M1 neutral freshwater vertical
 
-**Visible result:** from this repository, one command creates the canonical freshwater starting state, executes the recorded action sequence, writes a human-readable and machine-readable causal trace, and verifies exact replay.
+**Visible result:** from this repository, one command creates the canonical freshwater starting state, executes the recorded action sequence, writes a human-readable and machine-readable causal trace, and verifies exact replay. A second command starts a fresh process and reconstructs the same state and events from the retained versioned snapshot, registry/content identity, and commands.
 
 **Donor inputs:**
 
@@ -187,7 +187,7 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 | Castaway behavior exists | donor tests and evidence at pinned revision | not yet adopted here | external evidence |
 | Freshwater behavior is characterized locally | [pinned fixture](../tests/fixtures/castaway/freshwater-v0.json) and extractor `--check` | expected donor behavior only | established |
 | Neutral positive freshwater path works | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence, executable probes, and focused tests | scripted path; no LLM-policy claim | established |
-| Full neutral freshwater core works | complete [M1 machine evidence](../evidence/m1/freshwater-v0.json), [human review](../evidence/m1/freshwater-v0.md), checks, replay, and validated [end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) | scripted chooser; no LLM-policy or generality claim | established |
+| Full neutral freshwater core works | complete [M1 machine evidence](../evidence/m1/freshwater-v0.json), [human review](../evidence/m1/freshwater-v0.md), [fresh-process replay](../evidence/m1/transfer-replay-v1.json), checks, and validated [end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) | scripted chooser; no LLM-policy or generality claim | established |
 | LLM policy works through neutral seam | M2 provider trace | no claim from scripted M1 | conditional |
 
 ## Risks and needs resolution

@@ -164,7 +164,19 @@ The observation contains authorized state, received information, recent actor-vi
 
 ### Snapshot and replay
 
-A snapshot retains complete canonical state and all pinned identities needed to resume. Replay starts from the recorded initial state and re-applies recorded accepted/rejected commands without policy calls. It compares final state, events, and hashes.
+`World.snapshot() -> SnapshotV1` emits a JSON-serializable object containing
+`schema_version: world-substrate-snapshot/v1` and the complete canonical
+material state. That state includes the engine ID, content ID, and rule-version
+map; commands and events are intentionally absent. `World.from_snapshot()`
+accepts only that version and reconstructs canonical state with empty history.
+
+`Engine.replay_commands(initial_snapshot, commands, registry) -> Engine`
+starts from the loaded snapshot and re-applies recorded accepted, rejected,
+invalid, and advance commands without policy calls. The supplied executable
+registry must match the snapshot's rule-version map. A durable replay bundle
+also names the registry configuration identity because rule versions alone do
+not encode constructor parameters. Evidence compares the reconstructed final
+material hash and complete event sequence with the retained outputs.
 
 ## Implementation traceability obligation
 

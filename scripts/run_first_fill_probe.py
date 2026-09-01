@@ -27,6 +27,9 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=OUTPUT)
     args = parser.parse_args()
     payload = run_first_fill_probe(REPO)
+    if payload.get("accepted") is not True:
+        print("first-fill executable probe rejected the evidence", file=sys.stderr)
+        return 1
     expected = encoded(payload)
     output = args.output.resolve()
     if args.check:

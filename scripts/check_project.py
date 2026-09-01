@@ -38,7 +38,9 @@ REQUIRED = (
     "scripts/run_pour_probe.py",
     "scripts/run_drink_probe.py",
     "scripts/run_transfer_probe.py",
+    "scripts/replay_transfer_evidence.py",
     "scripts/run_freshwater_probe.py",
+    "scripts/validate_e2e_receipt.py",
     "src/world_substrate/engine.py",
     "src/world_substrate/model.py",
     "src/world_substrate/rules.py",
@@ -51,6 +53,7 @@ REQUIRED = (
     "tests/test_drink.py",
     "tests/test_transfer.py",
     "tests/test_action_envelopes.py",
+    "tests/test_evidence_gates.py",
     "tests/fixtures/castaway/README.md",
     "tests/fixtures/castaway/freshwater-v0.json",
     "reference_worlds/castaway/freshwater-fill-v0.json",
@@ -60,6 +63,7 @@ REQUIRED = (
     "evidence/m1/pour-v0.json",
     "evidence/m1/drink-v0.json",
     "evidence/m1/transfer-v0.json",
+    "evidence/m1/transfer-replay-v1.json",
     "evidence/m1/freshwater-v0.json",
     "evidence/m1/freshwater-v0.md",
     "evidence/m1/end-to-end-observation-v1.json",
@@ -210,10 +214,21 @@ def main() -> int:
     except (OSError, json.JSONDecodeError) as exc:
         failures.append(f"invalid M1 maturity receipt: {exc}")
     else:
-        if maturity_receipt.get("record_type") != "end_to_end_observation":
-            failures.append("unexpected M1 maturity receipt type")
-        if maturity_receipt.get("status") != "pass":
-            failures.append("M1 maturity receipt must retain pass status")
+        receipt_check = subprocess.run(
+            [
+                sys.executable,
+                str(REPO / "scripts/validate_e2e_receipt.py"),
+                str(REPO / "evidence/m1/end-to-end-observation-v1.json"),
+                "--claim-kind",
+                "maturity_promotion",
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if receipt_check.returncode != 0:
+            detail = receipt_check.stderr.strip() or receipt_check.stdout.strip()
+            failures.append(f"M1 maturity receipt contract failed: {detail}")
         source_revision = maturity_receipt.get("source_revision")
         if not isinstance(source_revision, str) or not git_has_revision(
             REPO, source_revision
@@ -325,6 +340,20 @@ def main() -> int:
     if transfer_check.returncode != 0:
         detail = transfer_check.stderr.strip() or transfer_check.stdout.strip()
         failures.append(f"neutral transfer evidence check failed: {detail}")
+
+    replay_check = subprocess.run(
+        [
+            sys.executable,
+            str(REPO / "scripts/replay_transfer_evidence.py"),
+            "--check",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if replay_check.returncode != 0:
+        detail = replay_check.stderr.strip() or replay_check.stdout.strip()
+        failures.append(f"fresh-process transfer replay check failed: {detail}")
 
     freshwater_check = subprocess.run(
         [sys.executable, str(REPO / "scripts/run_freshwater_probe.py"), "--check"],

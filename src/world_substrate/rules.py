@@ -9,6 +9,20 @@ from typing import Any, Protocol
 from .model import World
 
 
+def _require_nonempty_string(value: dict[str, Any], field: str) -> str:
+    item = value[field]
+    if not isinstance(item, str) or not item:
+        raise TypeError(f"{field} must be a nonempty string")
+    return item
+
+
+def _require_integer(value: dict[str, Any], field: str) -> int:
+    item = value[field]
+    if type(item) is not int:
+        raise TypeError(f"{field} must be an integer")
+    return item
+
+
 @dataclass(frozen=True)
 class Check:
     label: str
@@ -46,12 +60,12 @@ class FillAction:
         if value.get("kind") != "fill":
             raise ValueError("record is not a fill action")
         return cls(
-            actor_id=str(value["actor"]),
-            vessel_id=str(value["vessel"]),
-            source_id=str(value["source"]),
-            volume_ml=int(value["volume_ml"]),
-            base_revision=int(value["base_revision"]),
-            controller_id=str(value["controller"]),
+            actor_id=_require_nonempty_string(value, "actor"),
+            vessel_id=_require_nonempty_string(value, "vessel"),
+            source_id=_require_nonempty_string(value, "source"),
+            volume_ml=_require_integer(value, "volume_ml"),
+            base_revision=_require_integer(value, "base_revision"),
+            controller_id=_require_nonempty_string(value, "controller"),
         )
 
 
@@ -79,11 +93,11 @@ class HeatAction:
         if value.get("kind") != "heat":
             raise ValueError("record is not a heat action")
         return cls(
-            actor_id=str(value["actor"]),
-            vessel_id=str(value["vessel"]),
-            target_id=str(value["target"]),
-            base_revision=int(value["base_revision"]),
-            controller_id=str(value["controller"]),
+            actor_id=_require_nonempty_string(value, "actor"),
+            vessel_id=_require_nonempty_string(value, "vessel"),
+            target_id=_require_nonempty_string(value, "target"),
+            base_revision=_require_integer(value, "base_revision"),
+            controller_id=_require_nonempty_string(value, "controller"),
         )
 
 
@@ -109,10 +123,10 @@ class UnheatAction:
         if value.get("kind") != "unheat":
             raise ValueError("record is not an unheat action")
         return cls(
-            actor_id=str(value["actor"]),
-            vessel_id=str(value["vessel"]),
-            base_revision=int(value["base_revision"]),
-            controller_id=str(value["controller"]),
+            actor_id=_require_nonempty_string(value, "actor"),
+            vessel_id=_require_nonempty_string(value, "vessel"),
+            base_revision=_require_integer(value, "base_revision"),
+            controller_id=_require_nonempty_string(value, "controller"),
         )
 
 
@@ -142,12 +156,12 @@ class PourAction:
         if value.get("kind") != "pour":
             raise ValueError("record is not a pour action")
         return cls(
-            actor_id=str(value["actor"]),
-            vessel_id=str(value["vessel"]),
-            destination_id=str(value["destination"]),
-            volume_ml=int(value["volume_ml"]),
-            base_revision=int(value["base_revision"]),
-            controller_id=str(value["controller"]),
+            actor_id=_require_nonempty_string(value, "actor"),
+            vessel_id=_require_nonempty_string(value, "vessel"),
+            destination_id=_require_nonempty_string(value, "destination"),
+            volume_ml=_require_integer(value, "volume_ml"),
+            base_revision=_require_integer(value, "base_revision"),
+            controller_id=_require_nonempty_string(value, "controller"),
         )
 
 
@@ -175,11 +189,11 @@ class DrinkAction:
         if value.get("kind") != "drink":
             raise ValueError("record is not a drink action")
         return cls(
-            actor_id=str(value["actor"]),
-            vessel_id=str(value["vessel"]),
-            volume_ml=int(value["volume_ml"]),
-            base_revision=int(value["base_revision"]),
-            controller_id=str(value["controller"]),
+            actor_id=_require_nonempty_string(value, "actor"),
+            vessel_id=_require_nonempty_string(value, "vessel"),
+            volume_ml=_require_integer(value, "volume_ml"),
+            base_revision=_require_integer(value, "base_revision"),
+            controller_id=_require_nonempty_string(value, "controller"),
         )
 
 
@@ -205,10 +219,10 @@ class TakeAction:
         if value.get("kind") != "take":
             raise ValueError("record is not a take action")
         return cls(
-            actor_id=str(value["actor"]),
-            vessel_id=str(value["vessel"]),
-            base_revision=int(value["base_revision"]),
-            controller_id=str(value["controller"]),
+            actor_id=_require_nonempty_string(value, "actor"),
+            vessel_id=_require_nonempty_string(value, "vessel"),
+            base_revision=_require_integer(value, "base_revision"),
+            controller_id=_require_nonempty_string(value, "controller"),
         )
 
 
@@ -236,11 +250,11 @@ class GiveAction:
         if value.get("kind") != "give":
             raise ValueError("record is not a give action")
         return cls(
-            actor_id=str(value["actor"]),
-            vessel_id=str(value["vessel"]),
-            target_actor_id=str(value["target"]),
-            base_revision=int(value["base_revision"]),
-            controller_id=str(value["controller"]),
+            actor_id=_require_nonempty_string(value, "actor"),
+            vessel_id=_require_nonempty_string(value, "vessel"),
+            target_actor_id=_require_nonempty_string(value, "target"),
+            base_revision=_require_integer(value, "base_revision"),
+            controller_id=_require_nonempty_string(value, "controller"),
         )
 
 
@@ -259,8 +273,8 @@ class UnsupportedAction:
     def from_dict(cls, value: dict[str, Any]) -> UnsupportedAction:
         return cls(
             record=deepcopy(value),
-            kind=str(value["kind"]),
-            base_revision=int(value["base_revision"]),
+            kind=_require_nonempty_string(value, "kind"),
+            base_revision=_require_integer(value, "base_revision"),
         )
 
 

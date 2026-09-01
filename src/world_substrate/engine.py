@@ -29,9 +29,11 @@ class Engine:
             raise ValueError("world rule versions do not match the executable registry")
         self.world = world
         self.registry = registry
-        self.initial_world = world.clone()
-        self.initial_world.commands = []
-        self.initial_world.events = []
+        self._initial_snapshot = world.snapshot()
+
+    def initial_snapshot(self) -> dict[str, Any]:
+        """Return the versioned initial state required for independent replay."""
+        return deepcopy(self._initial_snapshot)
 
     def observe(self, actor_id: str) -> dict[str, Any]:
         actor = self.world.entities.get(actor_id)
@@ -320,23 +322,47 @@ class Engine:
         self.world = candidate
         return event
 
+    @classmethod
+    def replay_commands(
+        cls,
+        *,
+        initial_snapshot: object,
+        commands: object,
+        registry: RuleRegistry,
+    ) -> Engine:
+        """Rebuild an engine using only a loaded snapshot, commands, and registry."""
+        if not isinstance(commands, list):
+            raise TypeError("replay commands must be an array")
+        replayed = cls(World.from_snapshot(initial_snapshot), registry)
+        for index, command in enumerate(commands, start=1):
+            if not isinstance(command, dict):
+                raise TypeError(f"replay command {index} must be an object")
+            op = command.get("op")
+            if op == "action":
+                result = replayed.submit(command.get("action"))
+            elif op == "invalid_action":
+                result = replayed.submit(command.get("record"))
+            elif op == "advance":
+                steps = command.get("steps")
+                if type(steps) is not int:
+                    raise TypeError(f"replay command {index} steps must be an integer")
+                result = replayed.advance(steps)
+            else:
+                raise ValueError(f"unknown recorded command op: {op}")
+            if result["status"] != command.get("status"):
+                raise ValueError(
+                    f"replay command {index} status differs: "
+                    f"expected {command.get('status')}, got {result['status']}"
+                )
+        return replayed
+
     def replay(self) -> dict[str, Any]:
         recorded = deepcopy(self.world.commands)
-        replayed = Engine(self.initial_world.clone(), self.registry)
-        for command in recorded:
-            if command["op"] == "action":
-                action_record = command["action"]
-                rule = self.registry.action(str(action_record["kind"]))
-                if rule is None:
-                    replayed.apply(UnsupportedAction.from_dict(action_record))
-                else:
-                    replayed.apply(rule.action_from_dict(action_record))
-            elif command["op"] == "invalid_action":
-                replayed.submit(command["record"])
-            elif command["op"] == "advance":
-                replayed.advance(int(command["steps"]))
-            else:
-                raise ValueError(f"unknown recorded command op: {command['op']}")
+        replayed = self.replay_commands(
+            initial_snapshot=self.initial_snapshot(),
+            commands=recorded,
+            registry=self.registry,
+        )
         expected = self.world.material_hash()
         actual = replayed.world.material_hash()
         event_match = self.world.events == replayed.world.events

@@ -38,10 +38,17 @@ def render_markdown(payload: dict[str, object]) -> bytes:
     assert isinstance(pot, dict) and isinstance(robinson, dict) and isinstance(friday, dict)
     pot_liquid = pot["liquid"]
     assert isinstance(pot_liquid, dict)
+    accepted = payload.get("accepted") is True
+    result = (
+        "PASS — the scripted neutral freshwater journey and all three "
+        "discriminating negative paths are accepted."
+        if accepted
+        else "FAIL — the executable freshwater probe rejected this evidence."
+    )
     lines = [
         "# M1 freshwater review",
         "",
-        "**Result:** PASS — the scripted neutral freshwater journey and all three discriminating negative paths are accepted.",
+        f"**Result:** {result}",
         "",
         "The detailed machine receipt is [freshwater-v0.json](freshwater-v0.json), and the complete command/event trace is [transfer-v0.json](transfer-v0.json).",
         "",
@@ -88,13 +95,23 @@ def render_markdown(payload: dict[str, object]) -> bytes:
     return "\n".join(lines).encode()
 
 
+def evidence_outputs(payload: dict[str, object]) -> tuple[bytes, bytes]:
+    """Encode only accepted evidence so a failing probe cannot become canonical."""
+    if payload.get("accepted") is not True:
+        raise ValueError("freshwater executable probe did not accept the evidence")
+    return encoded(payload), render_markdown(payload)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     payload = run_freshwater_probe(REPO)
-    expected_json = encoded(payload)
-    expected_markdown = render_markdown(payload)
+    try:
+        expected_json, expected_markdown = evidence_outputs(payload)
+    except ValueError as error:
+        print(str(error), file=sys.stderr)
+        return 1
     if args.check:
         drift = []
         if not JSON_OUTPUT.exists() or JSON_OUTPUT.read_bytes() != expected_json:

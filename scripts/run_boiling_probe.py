@@ -26,7 +26,11 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output", type=Path, default=OUTPUT)
     args = parser.parse_args()
-    expected = encoded(run_boiling_probe(REPO))
+    payload = run_boiling_probe(REPO)
+    if payload.get("accepted") is not True:
+        print("boiling executable probe rejected the evidence", file=sys.stderr)
+        return 1
+    expected = encoded(payload)
     output = args.output.resolve()
     if args.check:
         if not output.exists() or output.read_bytes() != expected:

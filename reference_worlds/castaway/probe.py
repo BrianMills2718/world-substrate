@@ -49,6 +49,7 @@ from world_substrate.rules import (
 )
 
 T = TypeVar("T")
+TRANSFER_REGISTRY_ID = "reference-world/castaway/freshwater-transfer@1"
 
 
 def _component(component_type: type[T], value: dict[str, Any] | None) -> T | None:
@@ -150,7 +151,7 @@ def build_pour_engine(root: Path | None = None) -> Engine:
     registry.register_process(HydrationDecayProcess())
     registry.register_process(ThermalProcess())
     registry.register_process(FireFuelProcess())
-    world = base.initial_world.clone()
+    world = World.from_snapshot(base.initial_snapshot())
     world.rule_versions = registry.versions()
     return Engine(world, registry)
 
@@ -167,13 +168,12 @@ def build_drink_engine(root: Path | None = None) -> Engine:
     registry.register_process(HydrationDecayProcess())
     registry.register_process(ThermalProcess(cool_empty_vessels=True))
     registry.register_process(FireFuelProcess())
-    world = base.initial_world.clone()
+    world = World.from_snapshot(base.initial_snapshot())
     world.rule_versions = registry.versions()
     return Engine(world, registry)
 
 
-def build_transfer_engine(root: Path | None = None) -> Engine:
-    base = build_freshwater_engine(root)
+def build_transfer_registry() -> RuleRegistry:
     registry = RuleRegistry()
     registry.register_action(DrinkRule())
     registry.register_action(FillRule())
@@ -186,7 +186,13 @@ def build_transfer_engine(root: Path | None = None) -> Engine:
     registry.register_process(HydrationDecayProcess())
     registry.register_process(ThermalProcess(cool_empty_vessels=True))
     registry.register_process(FireFuelProcess())
-    world = base.initial_world.clone()
+    return registry
+
+
+def build_transfer_engine(root: Path | None = None) -> Engine:
+    base = build_freshwater_engine(root)
+    registry = build_transfer_registry()
+    world = World.from_snapshot(base.initial_snapshot())
     for actor_id in ("friday", "robinson"):
         world.entities[actor_id].carrying = CarryingState(capacity_weight=24)
     for vessel_id in ("clay-pot", "cup-robinson"):
@@ -869,6 +875,13 @@ def run_transfer_probe(root: Path | None = None) -> dict[str, Any]:
             "action_statuses": statuses,
             "command_count": len(engine.world.commands),
             "fuel_at_checkpoint": fire.heat_source.fuel,
+            "initial_snapshot": engine.initial_snapshot(),
+            "registry_identity": {
+                "registry_id": TRANSFER_REGISTRY_ID,
+                "engine_id": engine.world.engine_id,
+                "content_id": engine.world.content_id,
+                "rule_versions": engine.registry.versions(),
+            },
             "commands": engine.world.commands,
             "events": engine.world.events,
             "final_material_hash": engine.world.material_hash(),

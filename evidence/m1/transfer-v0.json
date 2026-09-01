@@ -3285,7 +3285,253 @@
       }
     ],
     "final_material_hash": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
-    "fuel_at_checkpoint": 9
+    "fuel_at_checkpoint": 9,
+    "initial_snapshot": {
+      "schema_version": "world-substrate-snapshot/v1",
+      "world": {
+        "content_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+        "engine_id": "world-substrate-core@1",
+        "entities": {
+          "clay-pot": {
+            "category_ids": [
+              "vessel",
+              "container"
+            ],
+            "condition": {
+              "value": 100
+            },
+            "container": {
+              "boiling_ticks": 0,
+              "capacity_ml": 1500,
+              "definition_id": "clay_pot",
+              "empty_weight": 2,
+              "heat_source_id": null
+            },
+            "entity_id": "clay-pot",
+            "label": "Clay pot",
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "location": {
+              "location_id": "camp"
+            },
+            "material": {
+              "heat_limit_c": 240,
+              "heat_transfer_percent": 100,
+              "material_id": "fired_clay",
+              "open_top": true,
+              "overheat_damage_per_tick": 35
+            },
+            "ownership": {
+              "owner_ref": "place:camp"
+            },
+            "portable": {
+              "portable": true
+            },
+            "source_entity_id": "clay-pot",
+            "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+            "thermal": {
+              "temperature_c": 22
+            }
+          },
+          "cup-robinson": {
+            "category_ids": [
+              "vessel",
+              "container"
+            ],
+            "condition": {
+              "value": 100
+            },
+            "container": {
+              "boiling_ticks": 0,
+              "capacity_ml": 500,
+              "definition_id": "metal_cup",
+              "empty_weight": 1,
+              "heat_source_id": null
+            },
+            "entity_id": "cup-robinson",
+            "label": "Metal cup",
+            "liquid": {
+              "heat_units": 0,
+              "pathogens": 0,
+              "salt_mg": 0,
+              "volume_ml": 0
+            },
+            "location": {
+              "location_id": "camp"
+            },
+            "material": {
+              "heat_limit_c": 300,
+              "heat_transfer_percent": 100,
+              "material_id": "metal",
+              "open_top": true,
+              "overheat_damage_per_tick": 20
+            },
+            "ownership": {
+              "owner_ref": "actor:robinson"
+            },
+            "portable": {
+              "portable": true
+            },
+            "source_entity_id": "cup-robinson",
+            "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+            "thermal": {
+              "temperature_c": 22
+            }
+          },
+          "fire-camp": {
+            "category_ids": [
+              "heat_source",
+              "fire"
+            ],
+            "condition": {
+              "value": 100
+            },
+            "entity_id": "fire-camp",
+            "heat_source": {
+              "fuel": 24,
+              "heat_slots": 1,
+              "heat_units_per_tick": 20000
+            },
+            "label": "Camp fire",
+            "location": {
+              "location_id": "camp"
+            },
+            "source_entity_id": "fire-camp",
+            "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+          },
+          "friday": {
+            "actor": {
+              "alive": true,
+              "health": 100,
+              "hydration": 50
+            },
+            "carrying": {
+              "capacity_weight": 24,
+              "liquid_ml_per_weight": 250
+            },
+            "category_ids": [
+              "actor"
+            ],
+            "entity_id": "friday",
+            "label": "Friday",
+            "location": {
+              "location_id": "camp"
+            },
+            "source_entity_id": "friday",
+            "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+          },
+          "robinson": {
+            "actor": {
+              "alive": true,
+              "health": 100,
+              "hydration": 50
+            },
+            "carrying": {
+              "capacity_weight": 24,
+              "liquid_ml_per_weight": 250
+            },
+            "category_ids": [
+              "actor"
+            ],
+            "entity_id": "robinson",
+            "label": "Robinson",
+            "location": {
+              "location_id": "camp"
+            },
+            "source_entity_id": "robinson",
+            "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+          },
+          "unsafe-pool": {
+            "category_ids": [
+              "liquid_source"
+            ],
+            "entity_id": "unsafe-pool",
+            "label": "Unsafe freshwater pool",
+            "liquid": {
+              "heat_units": 132000,
+              "pathogens": 2400,
+              "salt_mg": 0,
+              "volume_ml": 6000
+            },
+            "location": {
+              "location_id": "camp"
+            },
+            "source_entity_id": "unsafe-pool",
+            "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+          }
+        },
+        "physical_ledger": {
+          "added": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "drunk": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "evaporated": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "heat_added": 0,
+          "heat_lost": 0,
+          "initial": {
+            "heat_units": 132000,
+            "pathogens": 2400,
+            "salt_mg": 0,
+            "volume_ml": 6000
+          },
+          "latent_heat_used": 0,
+          "overflow_ml": 0,
+          "pathogens_killed": 0,
+          "spilled_ml": 0
+        },
+        "revision": 0,
+        "rule_versions": {
+          "mechanism.liquid.drink": "1",
+          "mechanism.liquid.fill": "1",
+          "mechanism.liquid.pour": "1",
+          "mechanism.ownership.give": "1",
+          "mechanism.ownership.take": "1",
+          "mechanism.thermal.heat": "1",
+          "mechanism.thermal.unheat": "1",
+          "process.actor.hydration-decay": "1",
+          "process.heat-source.fuel": "1",
+          "process.thermal.vessels": "2",
+          "system.clock.advance": "1"
+        },
+        "tick": 0,
+        "world_id": "castaway-freshwater-v0"
+      }
+    },
+    "registry_identity": {
+      "content_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+      "engine_id": "world-substrate-core@1",
+      "registry_id": "reference-world/castaway/freshwater-transfer@1",
+      "rule_versions": {
+        "mechanism.liquid.drink": "1",
+        "mechanism.liquid.fill": "1",
+        "mechanism.liquid.pour": "1",
+        "mechanism.ownership.give": "1",
+        "mechanism.ownership.take": "1",
+        "mechanism.thermal.heat": "1",
+        "mechanism.thermal.unheat": "1",
+        "process.actor.hydration-decay": "1",
+        "process.heat-source.fuel": "1",
+        "process.thermal.vessels": "2",
+        "system.clock.advance": "1"
+      }
+    }
   },
   "identity": {
     "entity_id": "clay-pot",

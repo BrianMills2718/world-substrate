@@ -50,7 +50,7 @@ Read one route, then the relevant code or evidence. Do not load every donor repo
 ## What exists now?
 
 - The project goal, architecture, core contract, source dispositions, implementation roadmap, and pinned freshwater expected-behavior fixture are established here.
-- The neutral consumer path now reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes. Discovery, minimal observation, causal events, atomic rejection, semantic donor comparison, persistent cross-system vessel identity, and exact 22-command replay run here; see the [first-fill](../../evidence/m1/first-fill-v0.json), [boiling](../../evidence/m1/boiling-v0.json), [pour](../../evidence/m1/pour-v0.json), [drink](../../evidence/m1/drink-v0.json), and [transfer](../../evidence/m1/transfer-v0.json) evidence.
+- The neutral consumer path now reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes. Discovery, minimal observation, causal events, atomic rejection, semantic donor comparison, persistent cross-system vessel identity, and exact 22-command replay run here; the [fresh-process receipt](../../evidence/m1/transfer-replay-v1.json) reconstructs that replay from a versioned snapshot, pinned registry/content identity, and commands rather than hidden live engine state.
 - Castaway has a working deterministic survival/physical prototype and retained evidence in its donor repository.
 - Cybernetic Influence V3 has implemented authoring, canonical-world, typed transition, Concordia lifecycle, evidence, and analysis capabilities for socio-technical worlds.
 - Linguistic Core has a large reviewed vocabulary source, but not executable mechanics.
@@ -88,7 +88,8 @@ These choices are intentionally deferred until evidence makes them relevant:
 - what local-object, actor-count, prompt-size, or throughput target defines the first scale milestone;
 - whether Concordia adds value after the neutral deterministic vertical exists.
 
-None blocks the first extraction slice.
+These are later-stage decisions. M1 is complete; M2 remains blocked only by its
+explicit model-call authority and spend-cap decision.
 
 ## Architecture and workflow
 
@@ -117,11 +118,12 @@ The current outcome-bearing artifacts are the locally runnable
 [boiling](../../evidence/m1/boiling-v0.json),
 [pour](../../evidence/m1/pour-v0.json), and
 [drink](../../evidence/m1/drink-v0.json), and
-[transfer](../../evidence/m1/transfer-v0.json) traces and replays. The final
+[transfer](../../evidence/m1/transfer-v0.json) traces and the retained
+[fresh-process replay receipt](../../evidence/m1/transfer-replay-v1.json). The final
 positive trace and the combined [machine](../../evidence/m1/freshwater-v0.json)
 and [human](../../evidence/m1/freshwater-v0.md) receipts cover M1's executable
 journeys. The validated [end-to-end observation](../../evidence/m1/end-to-end-observation-v1.json)
-binds the promotion claim to exact revision `55725233f65af625edfc0a09067de3aa97d34efe`.
+binds the promotion claim to the exact implementation revision recorded in the receipt.
 
 ## Roadmap
 

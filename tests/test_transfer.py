@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import json
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -12,8 +15,11 @@ sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.probe import (
     build_transfer_engine,
+    build_transfer_registry,
     run_transfer_probe,
 )
+from world_substrate.engine import Engine
+from world_substrate.model import World
 from world_substrate.rules import (
     DrinkAction,
     FillAction,
@@ -94,6 +100,59 @@ def reach_drink_checkpoint(engine) -> None:
 
 
 class TransferCheckpointTests(unittest.TestCase):
+    def test_versioned_initial_snapshot_round_trips_through_json(self) -> None:
+        engine = build_transfer_engine(REPO)
+
+        snapshot = json.loads(json.dumps(engine.initial_snapshot()))
+        restored = World.from_snapshot(snapshot)
+
+        self.assertEqual(snapshot["schema_version"], "world-substrate-snapshot/v1")
+        self.assertEqual(restored.material_dict(), engine.world.material_dict())
+        self.assertEqual(restored.commands, [])
+        self.assertEqual(restored.events, [])
+
+    def test_loaded_snapshot_and_commands_replay_without_source_engine_state(
+        self,
+    ) -> None:
+        engine = build_transfer_engine(REPO)
+        initial_snapshot = json.loads(json.dumps(engine.initial_snapshot()))
+        reach_drink_checkpoint(engine)
+        commands = json.loads(json.dumps(engine.world.commands))
+
+        replayed = Engine.replay_commands(
+            initial_snapshot=initial_snapshot,
+            commands=commands,
+            registry=build_transfer_registry(),
+        )
+
+        self.assertEqual(replayed.world.material_hash(), engine.world.material_hash())
+        self.assertEqual(replayed.world.events, engine.world.events)
+
+    def test_committed_trace_replays_in_a_fresh_process(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "receipt.json"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(REPO / "scripts/replay_transfer_evidence.py"),
+                    "--output",
+                    str(output),
+                ],
+                cwd=REPO,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            receipt = json.loads(output.read_text())
+            self.assertTrue(receipt["accepted"])
+            self.assertTrue(receipt["observation"]["event_match"])
+            self.assertEqual(
+                receipt["observation"]["expected_material_hash"],
+                receipt["observation"]["actual_material_hash"],
+            )
+
     def test_take_and_give_preserve_vessel_identity_and_match_final_checkpoint(
         self,
     ) -> None:

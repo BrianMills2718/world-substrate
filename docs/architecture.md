@@ -115,7 +115,9 @@ A valid schema cannot prove that the author remembered every real-world dependen
 
 ## Determinism and replay
 
-For an exact engine/content version, initial state, seed if permitted, and recorded action sequence, the final state and causal journal must match exactly. Replaying policy decisions is unnecessary; replay consumes recorded typed actions.
+For an exact engine/content version, initial state, seed if permitted, and recorded action sequence, the final state and causal journal must match exactly. `World.snapshot()` emits the versioned `world-substrate-snapshot/v1` state record; `World.from_snapshot()` loads it without command or event history; and `Engine.replay_commands()` consumes that loaded snapshot, the recorded commands, and the selected executable registry. Replaying policy decisions is unnecessary.
+
+The retained M1 transfer trace carries the initial snapshot and explicit registry, engine, content, and rule-version identities. Its separate-process replay gate reconstructs the run from those inputs and compares the final material hash and full causal event sequence with the retained outputs.
 
 Rejected, invalid, and unsupported actions never partially mutate state. Their checks and reasons remain inspectable.
 
