@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Any, TypeVar
@@ -899,5 +900,134 @@ def run_transfer_probe(root: Path | None = None) -> dict[str, Any]:
             and actual_projection == expected_projection
             and actual_ledger == expected_ledger
             and replay["ok"]
+        ),
+    }
+
+
+def run_freshwater_probe(root: Path | None = None) -> dict[str, Any]:
+    """Run the complete positive journey and M1's discriminating negatives."""
+    root = root or repository_root()
+    positive = run_transfer_probe(root)
+    retained_path = root / "evidence/m1/transfer-v0.json"
+    expected_bytes = (
+        json.dumps(positive, indent=2, sort_keys=True) + "\n"
+    ).encode()
+    retained_matches = (
+        retained_path.exists() and retained_path.read_bytes() == expected_bytes
+    )
+
+    overfill_engine = build_transfer_engine(root)
+    overfill_before = overfill_engine.world.material_hash()
+    overfill_result = overfill_engine.apply(
+        FillAction(
+            actor_id="robinson",
+            vessel_id="clay-pot",
+            source_id="unsafe-pool",
+            volume_ml=2_000,
+            base_revision=overfill_engine.world.revision,
+            controller_id="verification_script",
+        )
+    )
+    overfill_after = overfill_engine.world.material_hash()
+    overfill_replay = overfill_engine.replay()
+
+    unsupported_engine = build_transfer_engine(root)
+    unsupported_before = unsupported_engine.world.material_hash()
+    unsupported_result = unsupported_engine.submit(
+        {
+            "actor": "robinson",
+            "kind": "apply_pressure",
+            "target": "clay-pot",
+            "pressure_kpa": 200,
+            "base_revision": unsupported_engine.world.revision,
+            "controller": "verification_script",
+        }
+    )
+    unsupported_after = unsupported_engine.world.material_hash()
+    unsupported_replay = unsupported_engine.replay()
+
+    invalid_engine = build_transfer_engine(root)
+    invalid_before = invalid_engine.world.material_hash()
+    malformed = {
+        "actor": "robinson",
+        "kind": "fill",
+        "source": "unsafe-pool",
+        "volume_ml": 1_000,
+        "base_revision": invalid_engine.world.revision,
+        "controller": "verification_script",
+    }
+    invalid_result = invalid_engine.submit(malformed)
+    invalid_after = invalid_engine.world.material_hash()
+    invalid_replay = invalid_engine.replay()
+
+    overfill_atomic = overfill_before == overfill_after
+    unsupported_atomic = unsupported_before == unsupported_after
+    invalid_atomic = invalid_before == invalid_after
+    negatives_accepted = bool(
+        overfill_result["status"] == "precondition_failed"
+        and overfill_atomic
+        and overfill_replay["ok"]
+        and unsupported_result["status"] == "unsupported_action"
+        and unsupported_atomic
+        and unsupported_replay["ok"]
+        and invalid_result["status"] == "invalid_action"
+        and invalid_atomic
+        and invalid_replay["ok"]
+    )
+
+    final_projection = positive["checkpoint_comparison"]["actual"]
+    ledger = positive["ledger_comparison"]["actual"]
+    return {
+        "schema_version": "world-substrate-evidence/freshwater-v0",
+        "criterion_id": "M1-neutral-freshwater-vertical",
+        "claim": "The complete scripted freshwater journey runs through neutral registered contracts, matches the pinned donor semantics, preserves conserved quantities and vessel identity, distinguishes precondition failure from unsupported and invalid actions, and replays every retained path exactly.",
+        "positive_journey": {
+            "trace_ref": "evidence/m1/transfer-v0.json",
+            "trace_sha256": hashlib.sha256(expected_bytes).hexdigest(),
+            "retained_trace_matches": retained_matches,
+            "accepted": positive["accepted"],
+            "command_count": positive["execution"]["command_count"],
+            "final_tick": final_projection["tick"],
+            "final_owner": positive["identity"]["final_owner"],
+            "vessel_identity_preserved": positive["identity"]["preserved"],
+            "semantic_checkpoint_matched": positive["checkpoint_comparison"][
+                "matched"
+            ],
+            "ledger_matched": positive["ledger_comparison"]["matched"],
+            "replay": positive["replay"],
+            "final_projection": final_projection,
+            "ledger": ledger,
+        },
+        "negative_journeys": {
+            "overfill": {
+                "expected_status": "precondition_failed",
+                "actual_status": overfill_result["status"],
+                "atomic": overfill_atomic,
+                "event": overfill_result["event"],
+                "replay": overfill_replay,
+            },
+            "unsupported_pressure": {
+                "expected_status": "unsupported_action",
+                "actual_status": unsupported_result["status"],
+                "atomic": unsupported_atomic,
+                "event": unsupported_result["event"],
+                "replay": unsupported_replay,
+            },
+            "malformed_fill": {
+                "expected_status": "invalid_action",
+                "actual_status": invalid_result["status"],
+                "atomic": invalid_atomic,
+                "event": invalid_result["event"],
+                "replay": invalid_replay,
+            },
+        },
+        "limitations": [
+            "The chooser is scripted; M1 makes no claim about LLM policy competence.",
+            "The donor comparison is semantic rather than raw-hash equality because the neutral schemas intentionally differ.",
+            "One physical reference vertical does not establish cross-domain generality, scale, or calibrated real-world physics.",
+            "No model call, deployment, or external side effect is part of this evidence.",
+        ],
+        "accepted": bool(
+            positive["accepted"] and retained_matches and negatives_accepted
         ),
     }

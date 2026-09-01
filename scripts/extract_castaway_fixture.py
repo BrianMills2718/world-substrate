@@ -16,33 +16,35 @@ MANIFEST = REPO / "references/sources.json"
 OUTPUT = REPO / "tests/fixtures/castaway/freshwater-v0.json"
 
 
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def git_blob(donor: Path, revision: str, path: Path) -> bytes:
+    relative = path.relative_to(donor).as_posix()
+    return subprocess.run(
+        ["git", "-C", str(donor), "show", f"{revision}:{relative}"],
+        check=True,
+        capture_output=True,
+    ).stdout
 
 
 def stable_payload() -> dict[str, object]:
     manifest = json.loads(MANIFEST.read_text())
     donor_record = manifest["sources"]["castaway_world_systems"]
     donor = (REPO / donor_record["local_path"]).resolve()
-    observed_revision = subprocess.run(
-        ["git", "-C", str(donor), "rev-parse", "HEAD"],
+    revision = donor_record["revision"]
+    subprocess.run(
+        ["git", "-C", str(donor), "cat-file", "-e", f"{revision}^{{commit}}"],
         check=True,
         capture_output=True,
-        text=True,
-    ).stdout.strip()
-    if observed_revision != donor_record["revision"]:
-        raise RuntimeError(
-            f"donor revision drift: expected {donor_record['revision']}, observed {observed_revision}"
-        )
+    )
 
     receipt_path = (REPO / donor_record["freshwater_receipt_path"]).resolve()
     run_path = (REPO / donor_record["freshwater_run_path"]).resolve()
-    if sha256(receipt_path) != donor_record["freshwater_receipt_sha256"]:
+    receipt_bytes = git_blob(donor, revision, receipt_path)
+    run_bytes = git_blob(donor, revision, run_path)
+    if hashlib.sha256(receipt_bytes).hexdigest() != donor_record["freshwater_receipt_sha256"]:
         raise RuntimeError("freshwater receipt hash drift")
 
-    receipt = json.loads(receipt_path.read_text())
-    with gzip.open(run_path, "rt") as stream:
-        run = json.load(stream)
+    receipt = json.loads(receipt_bytes)
+    run = json.loads(gzip.decompress(run_bytes))
 
     commands: list[dict[str, object]] = []
     keep = ("actor", "kind", "vessel", "source", "destination", "target", "volume_ml")

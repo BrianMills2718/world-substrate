@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -37,6 +38,7 @@ REQUIRED = (
     "scripts/run_pour_probe.py",
     "scripts/run_drink_probe.py",
     "scripts/run_transfer_probe.py",
+    "scripts/run_freshwater_probe.py",
     "src/world_substrate/engine.py",
     "src/world_substrate/model.py",
     "src/world_substrate/rules.py",
@@ -48,6 +50,7 @@ REQUIRED = (
     "tests/test_pour.py",
     "tests/test_drink.py",
     "tests/test_transfer.py",
+    "tests/test_action_envelopes.py",
     "tests/fixtures/castaway/README.md",
     "tests/fixtures/castaway/freshwater-v0.json",
     "reference_worlds/castaway/freshwater-fill-v0.json",
@@ -57,6 +60,8 @@ REQUIRED = (
     "evidence/m1/pour-v0.json",
     "evidence/m1/drink-v0.json",
     "evidence/m1/transfer-v0.json",
+    "evidence/m1/freshwater-v0.json",
+    "evidence/m1/freshwater-v0.md",
 )
 WIKI_SECTIONS = (
     "## What this project is",
@@ -121,6 +126,13 @@ def markdown_files() -> list[Path]:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--with-donors",
+        action="store_true",
+        help="also verify locally available donor repositories and regenerate the pinned fixture",
+    )
+    args = parser.parse_args()
     failures: list[str] = []
 
     for relative in REQUIRED:
@@ -191,6 +203,20 @@ def main() -> int:
         failures.append("unexpected source-manifest schema version")
 
     for source_id, record in manifest.get("sources", {}).items():
+        if not isinstance(record, dict):
+            failures.append(f"invalid source record {source_id}")
+            continue
+        missing_fields = [
+            field
+            for field in ("role", "local_path", "disposition")
+            if not isinstance(record.get(field), str) or not record[field]
+        ]
+        for field in missing_fields:
+            failures.append(f"source {source_id} lacks {field}")
+        if missing_fields:
+            continue
+        if not args.with_donors:
+            continue
         source_path = (REPO / record["local_path"]).resolve()
         if not source_path.exists():
             failures.append(f"missing source {source_id}: {source_path}")
@@ -217,15 +243,20 @@ def main() -> int:
             elif sha256(artifact_path) != subset_hash:
                 failures.append(f"pinned artifact hash drift {source_id}")
 
-    fixture_check = subprocess.run(
-        [sys.executable, str(REPO / "scripts/extract_castaway_fixture.py"), "--check"],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if fixture_check.returncode != 0:
-        detail = fixture_check.stderr.strip() or fixture_check.stdout.strip()
-        failures.append(f"derived Castaway fixture check failed: {detail}")
+    if args.with_donors:
+        fixture_check = subprocess.run(
+            [
+                sys.executable,
+                str(REPO / "scripts/extract_castaway_fixture.py"),
+                "--check",
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if fixture_check.returncode != 0:
+            detail = fixture_check.stderr.strip() or fixture_check.stdout.strip()
+            failures.append(f"derived Castaway fixture check failed: {detail}")
 
     first_fill_check = subprocess.run(
         [sys.executable, str(REPO / "scripts/run_first_fill_probe.py"), "--check"],
@@ -277,6 +308,16 @@ def main() -> int:
         detail = transfer_check.stderr.strip() or transfer_check.stdout.strip()
         failures.append(f"neutral transfer evidence check failed: {detail}")
 
+    freshwater_check = subprocess.run(
+        [sys.executable, str(REPO / "scripts/run_freshwater_probe.py"), "--check"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if freshwater_check.returncode != 0:
+        detail = freshwater_check.stderr.strip() or freshwater_check.stdout.strip()
+        failures.append(f"complete freshwater evidence check failed: {detail}")
+
     first_fill_tests = subprocess.run(
         [
             sys.executable,
@@ -306,7 +347,11 @@ def main() -> int:
     print("World Substrate project check passed.")
     print("Reading path: CLAUDE.md -> docs/wiki/README.md -> task authority")
     print("Planning path: README.md -> roadmap/README.md -> active slice")
-    print(f"Pinned sources checked: {len(manifest['sources'])}")
+    print(f"Pinned source records checked: {len(manifest['sources'])}")
+    if args.with_donors:
+        print("Locally available donor revisions and artifacts checked.")
+    else:
+        print("Donor checkout verification skipped (use --with-donors to enable).")
     return 0
 
 

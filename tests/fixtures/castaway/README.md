@@ -4,11 +4,15 @@
 
 It is scripted evidence with zero model calls. It proves donor behavior, not World Substrate implementation or LLM competence.
 
-Regenerate or verify it with:
+When the sibling donor repository is available, regenerate or verify it with:
 
 ```sh
 python scripts/extract_castaway_fixture.py
 python scripts/extract_castaway_fixture.py --check
 ```
 
-The extractor verifies donor revision and receipt hash before writing stable JSON.
+The extractor reads the files from the manifest's pinned Git revision and
+verifies the receipt hash before writing stable JSON. The donor's current
+checkout may advance without invalidating the pin. The repository's default
+`python scripts/check_project.py` remains self-contained; use
+`python scripts/check_project.py --with-donors` for the optional source audit.

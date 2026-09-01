@@ -20,7 +20,7 @@ Start with:
 
 ## Current status
 
-The project authority and design are established. The neutral runtime now reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Its retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid/heat/carrying/ownership systems, and replays all 22 commands exactly. Explicit unsupported/malformed action evidence and the compact review trace remain before M1 promotion.
+The project authority and design are established. The neutral runtime now reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Its retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid/heat/carrying/ownership systems, replays all 22 commands exactly, and distinguishes precondition failure from unsupported and malformed actions. M1 implementation evidence is complete; revision-bound promotion validation is the remaining gate.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -28,10 +28,16 @@ Related repositories remain unchanged and are classified in [source dispositions
 
 ```sh
 python scripts/check_project.py
-python scripts/extract_castaway_fixture.py --check
 python scripts/run_first_fill_probe.py --check
 python scripts/run_boiling_probe.py --check
 python scripts/run_pour_probe.py --check
 python scripts/run_drink_probe.py --check
 python scripts/run_transfer_probe.py --check
+python scripts/run_freshwater_probe.py --check
 ```
+
+The default project check is self-contained and uses committed fixtures. When
+the sibling donor repositories are available, also run
+`python scripts/check_project.py --with-donors`; the optional donor check reads
+the pinned Git revisions rather than requiring their current checkouts to stay
+at those commits.

@@ -1,0 +1,287 @@
+{
+  "accepted": true,
+  "claim": "The complete scripted freshwater journey runs through neutral registered contracts, matches the pinned donor semantics, preserves conserved quantities and vessel identity, distinguishes precondition failure from unsupported and invalid actions, and replays every retained path exactly.",
+  "criterion_id": "M1-neutral-freshwater-vertical",
+  "limitations": [
+    "The chooser is scripted; M1 makes no claim about LLM policy competence.",
+    "The donor comparison is semantic rather than raw-hash equality because the neutral schemas intentionally differ.",
+    "One physical reference vertical does not establish cross-domain generality, scale, or calibrated real-world physics.",
+    "No model call, deployment, or external side effect is part of this evidence."
+  ],
+  "negative_journeys": {
+    "malformed_fill": {
+      "actual_status": "invalid_action",
+      "atomic": true,
+      "event": {
+        "cause": "c00001",
+        "changes": [],
+        "checks": [
+          {
+            "actual": [
+              "invalid fill payload: 'vessel'"
+            ],
+            "label": "Valid action envelope",
+            "ok": false,
+            "required": "registered typed action or structurally valid unsupported action"
+          }
+        ],
+        "declared_read_paths": [],
+        "declared_write_paths": [],
+        "event_id": "e00001",
+        "hash_after": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "hash_before": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "rule_id": "system.action-envelope",
+        "rule_version": "1",
+        "status": "invalid_action",
+        "tick": 0,
+        "world_revision": 0
+      },
+      "expected_status": "invalid_action",
+      "replay": {
+        "actual": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "event_match": true,
+        "expected": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "ok": true,
+        "steps": 1
+      }
+    },
+    "overfill": {
+      "actual_status": "precondition_failed",
+      "atomic": true,
+      "event": {
+        "cause": "c00001",
+        "changes": [],
+        "checks": [
+          {
+            "actual": 0,
+            "label": "Base revision is current",
+            "ok": true,
+            "required": 0
+          },
+          {
+            "actual": null,
+            "label": "Actor exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Source exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 2000,
+            "label": "Positive bounded liquid volume",
+            "ok": true,
+            "required": "1..10000 ml"
+          },
+          {
+            "actual": null,
+            "label": "Actor is alive",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is local or carried",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 100,
+            "label": "Vessel is intact",
+            "ok": true,
+            "required": ">0"
+          },
+          {
+            "actual": null,
+            "label": "Local liquid source",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 6000,
+            "label": "Source has volume",
+            "ok": true,
+            "required": 2000
+          },
+          {
+            "actual": 1500,
+            "label": "Vessel has room",
+            "ok": false,
+            "required": 2000
+          }
+        ],
+        "declared_read_paths": [
+          "entities.<actor>.location",
+          "entities.<vessel>.ownership",
+          "entities.<vessel>.condition",
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<source>.location",
+          "entities.<source>.liquid"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "entities.<vessel>.last_cause_event_id",
+          "entities.<source>.liquid"
+        ],
+        "event_id": "e00001",
+        "hash_after": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "hash_before": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "rule_id": "mechanism.liquid.fill",
+        "rule_version": "1",
+        "status": "precondition_failed",
+        "tick": 0,
+        "world_revision": 0
+      },
+      "expected_status": "precondition_failed",
+      "replay": {
+        "actual": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "event_match": true,
+        "expected": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "ok": true,
+        "steps": 1
+      }
+    },
+    "unsupported_pressure": {
+      "actual_status": "unsupported_action",
+      "atomic": true,
+      "event": {
+        "cause": "c00001",
+        "changes": [],
+        "checks": [
+          {
+            "actual": 0,
+            "label": "Base revision is current",
+            "ok": true,
+            "required": 0
+          },
+          {
+            "actual": "apply_pressure",
+            "label": "Registered action rule",
+            "ok": false,
+            "required": null
+          }
+        ],
+        "declared_read_paths": [],
+        "declared_write_paths": [],
+        "event_id": "e00001",
+        "hash_after": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "hash_before": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "rule_id": "unsupported.apply_pressure",
+        "rule_version": "0",
+        "status": "unsupported_action",
+        "tick": 0,
+        "world_revision": 0
+      },
+      "expected_status": "unsupported_action",
+      "replay": {
+        "actual": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "event_match": true,
+        "expected": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "ok": true,
+        "steps": 1
+      }
+    }
+  },
+  "positive_journey": {
+    "accepted": true,
+    "command_count": 22,
+    "final_owner": "actor:friday",
+    "final_projection": {
+      "actors": {
+        "friday": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 35
+        },
+        "robinson": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 60
+        }
+      },
+      "tick": 15,
+      "vessels": {
+        "clay-pot": {
+          "boiling_ticks": 0,
+          "capacity_ml": 1500,
+          "condition": 100,
+          "definition": "clay_pot",
+          "empty_weight": 2,
+          "id": "clay-pot",
+          "label": "Clay pot",
+          "liquid": {
+            "heat_units": 20278,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 728
+          },
+          "on_fire": null,
+          "owner": "actor:friday",
+          "temperature_c": 27.85
+        },
+        "cup-robinson": {
+          "boiling_ticks": 0,
+          "capacity_ml": 500,
+          "condition": 100,
+          "definition": "metal_cup",
+          "empty_weight": 1,
+          "id": "cup-robinson",
+          "label": "Metal cup",
+          "liquid": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "on_fire": null,
+          "owner": "actor:robinson",
+          "temperature_c": 27.86
+        }
+      }
+    },
+    "final_tick": 15,
+    "ledger": {
+      "drunk": {
+        "heat_units": 8970,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 250
+      },
+      "evaporated": {
+        "heat_units": 2200,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 22
+      },
+      "heat_added": 78000,
+      "heat_lost": 68552,
+      "latent_heat_used": 22000,
+      "pathogens_killed": 400
+    },
+    "ledger_matched": true,
+    "replay": {
+      "actual": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+      "event_match": true,
+      "expected": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+      "ok": true,
+      "steps": 22
+    },
+    "retained_trace_matches": true,
+    "semantic_checkpoint_matched": true,
+    "trace_ref": "evidence/m1/transfer-v0.json",
+    "trace_sha256": "010cbd8cf10fd8394a231e73300a3983e6de6a70b34242b41c7b5fa8742a6404",
+    "vessel_identity_preserved": true
+  },
+  "schema_version": "world-substrate-evidence/freshwater-v0"
+}

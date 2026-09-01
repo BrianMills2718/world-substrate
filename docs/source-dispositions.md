@@ -23,7 +23,9 @@ The bounded fill-through-transfer consumer path is retained in
 [pour](../evidence/m1/pour-v0.json),
 [drink](../evidence/m1/drink-v0.json), and
 [transfer](../evidence/m1/transfer-v0.json) evidence. Those receipts adopt the
-positive M1 path, not Castaway's other physical rules or product-specific state.
+positive M1 path. The combined [M1 evidence](../evidence/m1/freshwater-v0.json)
+also retains the discriminating negatives. None of these receipts adopts
+Castaway's other physical rules or product-specific state.
 
 ## Current-source cautions
 

@@ -116,8 +116,10 @@ in the retained [first-fill](../../evidence/m1/first-fill-v0.json) and
 observation, registered clock/hydration/thermal/cooling/fuel processes, atomic
 rejection, causal events, semantic donor comparison, and replay exist for that
 path. Safe and hazardous consumption effects plus capacity-checked whole-vessel
-transfer are executable. Unsupported/malformed envelope evidence and generality
-claims remain open obligations.
+transfer are executable. Unsupported/malformed envelope counterexamples are
+retained in the combined
+[M1 evidence](../../evidence/m1/freshwater-v0.json). Cross-domain generality
+remains an open obligation.
 
 ## Engine operations
 

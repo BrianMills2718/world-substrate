@@ -43,7 +43,7 @@ These criteria do not claim universal physics, unlimited affordances, real-world
 ## Current truth
 
 - This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
-- The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay.
+- The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay. Overfill, valid-but-unsupported pressure, and malformed-fill envelopes are atomically distinguished and replayed.
 - Castaway `world-systems` remains implementation authority for physical mechanisms and product behavior beyond the adopted positive M1 path.
 - Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
 - Linguistic Core supplies reviewed vocabulary, not executable mechanics.
@@ -73,8 +73,8 @@ observed trace
 | Capability | Canonical owner or seam | Dependency | Current evidence | State |
 | --- | --- | --- | --- | --- |
 | Project direction | this roadmap | Decision 001 | repository documents | established |
-| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | first-fill through transfer tests/evidence | positive M1 path implemented; envelope negatives open |
-| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence plus donor tests/traces | positive path adopted; M1 promotion pending negatives |
+| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | staged tests plus combined [M1 evidence](../evidence/m1/freshwater-v0.json) | M1 executable contract implemented; promotion gate pending |
+| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | staged evidence, complete [trace](../evidence/m1/transfer-v0.json), and [human review](../evidence/m1/freshwater-v0.md) | positive and negative journeys adopted; promotion gate pending |
 | Policy selection | future policy adapter | shared `llm_client` | donor real run | not adopted here |
 | Authoring/causal closure | future compiler | CI V3 patterns | donor implementation/research | not adopted here |
 | Ontology bindings | content adapter | Linguistic Core | pinned Castaway subset | donor-only |
@@ -168,7 +168,7 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 | Castaway behavior exists | donor tests and evidence at pinned revision | not yet adopted here | external evidence |
 | Freshwater behavior is characterized locally | [pinned fixture](../tests/fixtures/castaway/freshwater-v0.json) and extractor `--check` | expected donor behavior only | established |
 | Neutral positive freshwater path works | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence, executable probes, and focused tests | scripted path; no LLM-policy claim | established |
-| Full neutral freshwater core works | complete M1 trace, negative checks, and replay | unsupported/malformed envelopes and compact review trace remain | open |
+| Full neutral freshwater core works | complete [M1 machine evidence](../evidence/m1/freshwater-v0.json), [human review](../evidence/m1/freshwater-v0.md), checks, and replay | revision-bound maturity receipt remains | verifying |
 | LLM policy works through neutral seam | M2 provider trace | no claim from scripted M1 | conditional |
 
 ## Risks and needs resolution
@@ -194,7 +194,7 @@ Refresh this roadmap after a committed outcome-bearing slice, a material user co
 
 ## Exact next action
 
-Add the valid-but-unsupported pressure and malformed action-envelope paths with
-exact replay, retain the overfill negative alongside the complete 22-command
-positive trace, and produce the compact human-readable M1 review artifact. Do
-not add policy calls or UI in that slice.
+Commit the complete M1 implementation and combined evidence, run the bounded
+journey at that exact revision, validate an `EndToEndObservationV1` maturity
+receipt, and only then promote M1 and expose M2's model-call authority as the
+next human boundary.

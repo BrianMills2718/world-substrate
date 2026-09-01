@@ -8,7 +8,7 @@ from copy import deepcopy
 from typing import Any
 
 from .model import World, differences
-from .rules import Check, ProcessRule, RuleRegistry, TypedAction
+from .rules import Check, ProcessRule, RuleRegistry, TypedAction, UnsupportedAction
 
 
 def _identifier(prefix: str, count: int) -> str:
@@ -87,6 +87,67 @@ class Engine:
             "blocked": blocked,
             "total": len(available) + len(blocked),
         }
+
+    def submit(self, value: object) -> dict[str, Any]:
+        """Validate an untrusted action envelope before entering typed rules."""
+        errors: list[str] = []
+        if not isinstance(value, dict):
+            errors.append("action envelope must be an object")
+            return self._reject_invalid(value, errors)
+        if any(not isinstance(key, str) for key in value):
+            errors.append("action envelope keys must be strings")
+        for field in ("actor", "kind", "controller"):
+            if not isinstance(value.get(field), str) or not value[field]:
+                errors.append(f"{field} must be a nonempty string")
+        if type(value.get("base_revision")) is not int:
+            errors.append("base_revision must be an integer")
+        if errors:
+            return self._reject_invalid(value, errors)
+
+        kind = str(value["kind"])
+        rule = self.registry.action(kind)
+        if rule is None:
+            return self.apply(UnsupportedAction.from_dict(value))
+        try:
+            action = rule.action_from_dict(value)
+        except (KeyError, TypeError, ValueError) as error:
+            return self._reject_invalid(value, [f"invalid {kind} payload: {error}"])
+        return self.apply(action)
+
+    def _reject_invalid(self, value: object, errors: list[str]) -> dict[str, Any]:
+        command_id = _identifier("c", len(self.world.commands) + 1)
+        event_id = _identifier("e", len(self.world.events) + 1)
+        before = self.world.material_dict()
+        checks = [
+            Check(
+                "Valid action envelope",
+                False,
+                errors,
+                "registered typed action or structurally valid unsupported action",
+            )
+        ]
+        event = self._event(
+            event_id=event_id,
+            rule_id="system.action-envelope",
+            rule_version="1",
+            cause=command_id,
+            status="invalid_action",
+            checks=checks,
+            before=before,
+            after=before,
+            read_paths=(),
+            write_paths=(),
+        )
+        self.world.commands.append(
+            {
+                "command_id": command_id,
+                "op": "invalid_action",
+                "record": deepcopy(value),
+                "status": "invalid_action",
+            }
+        )
+        self.world.events.append(event)
+        return {"status": "invalid_action", "event": event}
 
     def _event(
         self,
@@ -267,12 +328,15 @@ class Engine:
                 action_record = command["action"]
                 rule = self.registry.action(str(action_record["kind"]))
                 if rule is None:
-                    raise ValueError(
-                        f"recorded action rule is unavailable: {action_record['kind']}"
-                    )
-                replayed.apply(rule.action_from_dict(action_record))
-            else:
+                    replayed.apply(UnsupportedAction.from_dict(action_record))
+                else:
+                    replayed.apply(rule.action_from_dict(action_record))
+            elif command["op"] == "invalid_action":
+                replayed.submit(command["record"])
+            elif command["op"] == "advance":
                 replayed.advance(int(command["steps"]))
+            else:
+                raise ValueError(f"unknown recorded command op: {command['op']}")
         expected = self.world.material_hash()
         actual = replayed.world.material_hash()
         event_match = self.world.events == replayed.world.events

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import asdict, dataclass
 from typing import Any, Protocol
 
@@ -240,6 +241,26 @@ class GiveAction:
             target_actor_id=str(value["target"]),
             base_revision=int(value["base_revision"]),
             controller_id=str(value["controller"]),
+        )
+
+
+@dataclass(frozen=True)
+class UnsupportedAction:
+    """A structurally valid action envelope with no registered rule."""
+
+    record: dict[str, Any]
+    kind: str
+    base_revision: int
+
+    def as_dict(self) -> dict[str, object]:
+        return deepcopy(self.record)
+
+    @classmethod
+    def from_dict(cls, value: dict[str, Any]) -> UnsupportedAction:
+        return cls(
+            record=deepcopy(value),
+            kind=str(value["kind"]),
+            base_revision=int(value["base_revision"]),
         )
 
 
