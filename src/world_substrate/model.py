@@ -17,6 +17,17 @@ class ActorState:
 
 
 @dataclass
+class CarryingState:
+    capacity_weight: int
+    liquid_ml_per_weight: int = 250
+
+
+@dataclass
+class PortableState:
+    portable: bool = True
+
+
+@dataclass
 class LocationState:
     location_id: str
 
@@ -102,6 +113,8 @@ class Entity:
     label: str
     category_ids: tuple[str, ...]
     actor: ActorState | None = None
+    carrying: CarryingState | None = None
+    portable: PortableState | None = None
     location: LocationState | None = None
     ownership: OwnershipState | None = None
     condition: ConditionState | None = None
@@ -122,6 +135,8 @@ class Entity:
         }
         for name in (
             "actor",
+            "carrying",
+            "portable",
             "location",
             "ownership",
             "condition",
@@ -194,6 +209,11 @@ class World:
                     raise ValueError(f"hydration out of range: {entity_id}")
                 if entity.actor.alive != (entity.actor.health > 0):
                     raise ValueError(f"alive flag disagrees with health: {entity_id}")
+            if entity.carrying is not None:
+                if entity.carrying.capacity_weight < 0:
+                    raise ValueError(f"carrying capacity is negative: {entity_id}")
+                if entity.carrying.liquid_ml_per_weight <= 0:
+                    raise ValueError(f"liquid carrying divisor is invalid: {entity_id}")
             if entity.condition is not None and not 0 <= entity.condition.value <= 100:
                 raise ValueError(f"condition out of range: {entity_id}")
             if entity.liquid is not None:

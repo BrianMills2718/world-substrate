@@ -36,10 +36,10 @@ The maintained viewpoints are deliberately few:
 
 | Viewpoint | Concern | Model kind and maintained view | Current authority |
 | --- | --- | --- | --- |
-| `VP-BOUNDARY` | Who owns state, decisions, effects, and failure containment? | boundary/component table in this document | implemented through the post-drink prefix; whole-vessel transfer remains open |
-| `VP-TRANSITION` | How can an action or process change state, and how does it fail? | transition kernel and operation contracts in [core contract v0](contracts/core-v0.md) | fill, heat, unheat, pour, drink, clock, hydration, thermal, cooling, fuel, rejection, and replay implemented; take/give remain open |
-| `VP-ACTOR-INFORMATION` | What can an actor observe and select versus what an observer can inspect? | projection and information-flow descriptions here and in the core contract | minimal drink-prefix observation/discovery implemented; broader authorization and paging open |
-| `VP-EVIDENCE-REPLAY` | How is each consequence explained and reproduced? | event schema, trace step-down, and replay contract | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), and [drink](../evidence/m1/drink-v0.json) evidence established; full M1 evidence open |
+| `VP-BOUNDARY` | Who owns state, decisions, effects, and failure containment? | boundary/component table in this document | positive M1 path implemented through ownership transfer; explicit envelope negatives remain open |
+| `VP-TRANSITION` | How can an action or process change state, and how does it fail? | transition kernel and operation contracts in [core contract v0](contracts/core-v0.md) | fill, heat, unheat, pour, drink, take, give, processes, rejection, and replay implemented |
+| `VP-ACTOR-INFORMATION` | What can an actor observe and select versus what an observer can inspect? | projection and information-flow descriptions here and in the core contract | minimal full-path observation/discovery implemented; broader authorization and paging open |
+| `VP-EVIDENCE-REPLAY` | How is each consequence explained and reproduced? | event schema, trace step-down, and replay contract | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence established; M1 negative evidence open |
 | `VP-ADOPTION` | When has a donor capability actually become a project capability? | source disposition plus consumer-path evidence | [source dispositions](source-dispositions.md) and revision-bound evidence |
 
 A view need not be a diagram. Every maintained view must use the native stable

@@ -12,7 +12,7 @@ reviewed_through: 2026-08-31
 **Selected path:** durable solo; one writer, reversible local work, no external effects
 **Stage:** prototype
 **Consumer:** a fresh authorized implementation agent needs the outcome, invariants, evidence frontier, active slice, and next action without a handoff
-**Last outcome-bearing update:** M1 post-drink consumer path, in the revision containing this page
+**Last outcome-bearing update:** M1 positive freshwater path through ownership transfer, in the revision containing this page
 
 ## Outcome and success criteria
 
@@ -43,8 +43,8 @@ These criteria do not claim universal physics, unlimited affordances, real-world
 ## Current truth
 
 - This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
-- The neutral runtime path now reaches the pinned post-drink checkpoint through registered fill, heat, unheat, pour, and drink rules; clock, hydration, thermal, evaporation, pathogen-removal, cooling, fuel, consumption, and hazard processes; state-derived discovery; causal events; semantic donor comparison; and exact replay.
-- Castaway `world-systems` remains implementation authority for whole-vessel ownership transfer and freshwater mechanisms beyond the adopted drink prefix.
+- The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay.
+- Castaway `world-systems` remains implementation authority for physical mechanisms and product behavior beyond the adopted positive M1 path.
 - Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
 - Linguistic Core supplies reviewed vocabulary, not executable mechanics.
 - No public deployment, paid model execution, second reference world, or scale target is authorized or required now.
@@ -73,8 +73,8 @@ observed trace
 | Capability | Canonical owner or seam | Dependency | Current evidence | State |
 | --- | --- | --- | --- | --- |
 | Project direction | this roadmap | Decision 001 | repository documents | established |
-| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | first-fill, boiling, pour, and drink tests/evidence | partially implemented |
-| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), and [drink](../evidence/m1/drink-v0.json) evidence plus donor tests/traces | drink prefix adopted; transfer remains donor-only |
+| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | first-fill through transfer tests/evidence | positive M1 path implemented; envelope negatives open |
+| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence plus donor tests/traces | positive path adopted; M1 promotion pending negatives |
 | Policy selection | future policy adapter | shared `llm_client` | donor real run | not adopted here |
 | Authoring/causal closure | future compiler | CI V3 patterns | donor implementation/research | not adopted here |
 | Ontology bindings | content adapter | Linguistic Core | pinned Castaway subset | donor-only |
@@ -167,8 +167,8 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 | Project navigation is progressively disclosed | structural checker and Project Meta navigation validator | structure does not prove semantic truth | passed at this revision |
 | Castaway behavior exists | donor tests and evidence at pinned revision | not yet adopted here | external evidence |
 | Freshwater behavior is characterized locally | [pinned fixture](../tests/fixtures/castaway/freshwater-v0.json) and extractor `--check` | expected donor behavior only | established |
-| Neutral fill-through-drink path works | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), and [drink](../evidence/m1/drink-v0.json) evidence, executable probes, and focused tests | whole-vessel transfer remains donor-only | established |
-| Full neutral freshwater core works | complete M1 trace, checks, and replay | drink-prefix evidence covers only a bounded subset | open |
+| Neutral positive freshwater path works | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence, executable probes, and focused tests | scripted path; no LLM-policy claim | established |
+| Full neutral freshwater core works | complete M1 trace, negative checks, and replay | unsupported/malformed envelopes and compact review trace remain | open |
 | LLM policy works through neutral seam | M2 provider trace | no claim from scripted M1 | conditional |
 
 ## Risks and needs resolution
@@ -194,7 +194,7 @@ Refresh this roadmap after a committed outcome-bearing slice, a material user co
 
 ## Exact next action
 
-Implement registered take and give actions with explicit carrying state and
-capacity checks, then reach and compare the pinned tick-15 ownership-transfer
-checkpoint. Preserve the accepted earlier builders and do not add policy calls
-or UI in that slice.
+Add the valid-but-unsupported pressure and malformed action-envelope paths with
+exact replay, retain the overfill negative alongside the complete 22-command
+positive trace, and produce the compact human-readable M1 review artifact. Do
+not add policy calls or UI in that slice.

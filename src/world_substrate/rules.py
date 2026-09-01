@@ -182,6 +182,67 @@ class DrinkAction:
         )
 
 
+@dataclass(frozen=True)
+class TakeAction:
+    actor_id: str
+    vessel_id: str
+    base_revision: int
+    controller_id: str
+    kind: str = "take"
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "actor": self.actor_id,
+            "kind": self.kind,
+            "vessel": self.vessel_id,
+            "base_revision": self.base_revision,
+            "controller": self.controller_id,
+        }
+
+    @classmethod
+    def from_dict(cls, value: dict[str, Any]) -> TakeAction:
+        if value.get("kind") != "take":
+            raise ValueError("record is not a take action")
+        return cls(
+            actor_id=str(value["actor"]),
+            vessel_id=str(value["vessel"]),
+            base_revision=int(value["base_revision"]),
+            controller_id=str(value["controller"]),
+        )
+
+
+@dataclass(frozen=True)
+class GiveAction:
+    actor_id: str
+    vessel_id: str
+    target_actor_id: str
+    base_revision: int
+    controller_id: str
+    kind: str = "give"
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "actor": self.actor_id,
+            "kind": self.kind,
+            "vessel": self.vessel_id,
+            "target": self.target_actor_id,
+            "base_revision": self.base_revision,
+            "controller": self.controller_id,
+        }
+
+    @classmethod
+    def from_dict(cls, value: dict[str, Any]) -> GiveAction:
+        if value.get("kind") != "give":
+            raise ValueError("record is not a give action")
+        return cls(
+            actor_id=str(value["actor"]),
+            vessel_id=str(value["vessel"]),
+            target_actor_id=str(value["target"]),
+            base_revision=int(value["base_revision"]),
+            controller_id=str(value["controller"]),
+        )
+
+
 class TypedAction(Protocol):
     @property
     def kind(self) -> str: ...

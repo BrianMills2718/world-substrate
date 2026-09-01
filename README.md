@@ -20,7 +20,7 @@ Start with:
 
 ## Current status
 
-The project authority and design are established. The neutral runtime now reaches the pinned post-drink checkpoint through registered fill, heat, unheat, pour, and drink actions plus deterministic clock, hydration, thermal, evaporation, pathogen-removal, cooling, fuel, consumption, and harm rules. Its retained evidence compares semantic state and conservation fields rather than donor-specific hashes, and exact local replay passes. Whole-vessel ownership transfer remains to complete M1.
+The project authority and design are established. The neutral runtime now reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Its retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid/heat/carrying/ownership systems, and replays all 22 commands exactly. Explicit unsupported/malformed action evidence and the compact review trace remain before M1 promotion.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -33,4 +33,5 @@ python scripts/run_first_fill_probe.py --check
 python scripts/run_boiling_probe.py --check
 python scripts/run_pour_probe.py --check
 python scripts/run_drink_probe.py --check
+python scripts/run_transfer_probe.py --check
 ```
