@@ -1,0 +1,1354 @@
+{
+  "accepted": true,
+  "checkpoint_comparison": {
+    "actual": {
+      "actors": {
+        "friday": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 44
+        },
+        "robinson": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 44
+        }
+      },
+      "tick": 6,
+      "vessels": {
+        "clay-pot": {
+          "boiling_ticks": 2,
+          "capacity_ml": 1500,
+          "condition": 100,
+          "definition": "clay_pot",
+          "empty_weight": 2,
+          "id": "clay-pot",
+          "label": "Clay pot",
+          "liquid": {
+            "heat_units": 97800,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 978
+          },
+          "on_fire": "fire-camp",
+          "owner": "place:camp",
+          "temperature_c": 100.0
+        },
+        "cup-robinson": {
+          "boiling_ticks": 0,
+          "capacity_ml": 500,
+          "condition": 100,
+          "definition": "metal_cup",
+          "empty_weight": 1,
+          "id": "cup-robinson",
+          "label": "Metal cup",
+          "liquid": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "on_fire": null,
+          "owner": "actor:robinson",
+          "temperature_c": 22
+        }
+      }
+    },
+    "expected": {
+      "actors": {
+        "friday": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 44
+        },
+        "robinson": {
+          "health": 100,
+          "location": "camp",
+          "thirst": 44
+        }
+      },
+      "tick": 6,
+      "vessels": {
+        "clay-pot": {
+          "boiling_ticks": 2,
+          "capacity_ml": 1500,
+          "condition": 100,
+          "definition": "clay_pot",
+          "empty_weight": 2,
+          "id": "clay-pot",
+          "label": "Clay pot",
+          "liquid": {
+            "heat_units": 97800,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 978
+          },
+          "on_fire": "fire-camp",
+          "owner": "place:camp",
+          "temperature_c": 100.0
+        },
+        "cup-robinson": {
+          "boiling_ticks": 0,
+          "capacity_ml": 500,
+          "condition": 100,
+          "definition": "metal_cup",
+          "empty_weight": 1,
+          "id": "cup-robinson",
+          "label": "Metal cup",
+          "liquid": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          },
+          "on_fire": null,
+          "owner": "actor:robinson",
+          "temperature_c": 22
+        }
+      }
+    },
+    "matched": true
+  },
+  "claim": "The neutral substrate executed registered fill, heat, and unheat actions; applied deterministic fuel, heating, boiling, pathogen-removal, and evaporation processes; matched the pinned boiling checkpoint's semantic projection; and replayed exactly.",
+  "execution": {
+    "events": [
+      {
+        "cause": "c00001",
+        "changes": [
+          {
+            "after": "e00001",
+            "before": null,
+            "path": "entities.clay-pot.last_cause_event_id"
+          },
+          {
+            "after": 22000,
+            "before": 0,
+            "path": "entities.clay-pot.liquid.heat_units"
+          },
+          {
+            "after": 400,
+            "before": 0,
+            "path": "entities.clay-pot.liquid.pathogens"
+          },
+          {
+            "after": 1000,
+            "before": 0,
+            "path": "entities.clay-pot.liquid.volume_ml"
+          },
+          {
+            "after": 110000,
+            "before": 132000,
+            "path": "entities.unsafe-pool.liquid.heat_units"
+          },
+          {
+            "after": 2000,
+            "before": 2400,
+            "path": "entities.unsafe-pool.liquid.pathogens"
+          },
+          {
+            "after": 5000,
+            "before": 6000,
+            "path": "entities.unsafe-pool.liquid.volume_ml"
+          },
+          {
+            "after": 1,
+            "before": 0,
+            "path": "revision"
+          }
+        ],
+        "checks": [
+          {
+            "actual": 0,
+            "label": "Base revision is current",
+            "ok": true,
+            "required": 0
+          },
+          {
+            "actual": null,
+            "label": "Actor exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Source exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 1000,
+            "label": "Positive bounded liquid volume",
+            "ok": true,
+            "required": "1..10000 ml"
+          },
+          {
+            "actual": null,
+            "label": "Actor is alive",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is local or carried",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 100,
+            "label": "Vessel is intact",
+            "ok": true,
+            "required": ">0"
+          },
+          {
+            "actual": null,
+            "label": "Local liquid source",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 6000,
+            "label": "Source has volume",
+            "ok": true,
+            "required": 1000
+          },
+          {
+            "actual": 1500,
+            "label": "Vessel has room",
+            "ok": true,
+            "required": 1000
+          }
+        ],
+        "declared_read_paths": [
+          "entities.<actor>.location",
+          "entities.<vessel>.ownership",
+          "entities.<vessel>.condition",
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<source>.location",
+          "entities.<source>.liquid"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "entities.<vessel>.last_cause_event_id",
+          "entities.<source>.liquid"
+        ],
+        "event_id": "e00001",
+        "hash_after": "268a28a42cbbc4e4ebcbdd7a4546be8b3e63519ebd8c62b74a5b41a3489a4e47",
+        "hash_before": "c34236f6110ab199d9dee49723f12bcf68045569ea7b1a4143c504d705e47f5e",
+        "rule_id": "mechanism.liquid.fill",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 0,
+        "world_revision": 1
+      },
+      {
+        "cause": "c00002",
+        "changes": [
+          {
+            "after": 2,
+            "before": 1,
+            "path": "revision"
+          },
+          {
+            "after": 1,
+            "before": 0,
+            "path": "tick"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "tick"
+        ],
+        "declared_write_paths": [
+          "tick"
+        ],
+        "event_id": "e00002",
+        "hash_after": "41ba81c951c4a07bde64caa4029130ec0e7377879c91ffb1fa0e23d457f1987c",
+        "hash_before": "268a28a42cbbc4e4ebcbdd7a4546be8b3e63519ebd8c62b74a5b41a3489a4e47",
+        "rule_id": "system.clock.advance",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 1,
+        "world_revision": 2
+      },
+      {
+        "cause": "c00002",
+        "changes": [
+          {
+            "after": 49,
+            "before": 50,
+            "path": "entities.friday.actor.hydration"
+          },
+          {
+            "after": 49,
+            "before": 50,
+            "path": "entities.robinson.actor.hydration"
+          },
+          {
+            "after": 3,
+            "before": 2,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "declared_write_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "event_id": "e00003",
+        "hash_after": "dc7d9d4ff0d37b831f094b096860b3966fc7206267602e12617f79bb6b1c9376",
+        "hash_before": "41ba81c951c4a07bde64caa4029130ec0e7377879c91ffb1fa0e23d457f1987c",
+        "rule_id": "process.actor.hydration-decay",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 1,
+        "world_revision": 3
+      },
+      {
+        "cause": "c00002",
+        "changes": [
+          {
+            "after": 23,
+            "before": 24,
+            "path": "entities.fire-camp.heat_source.fuel"
+          },
+          {
+            "after": 4,
+            "before": 3,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "declared_write_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "event_id": "e00004",
+        "hash_after": "b8d834fae9ad3d9d64777d7ba7d322f74bf13b688db76bb100e80b3997941589",
+        "hash_before": "dc7d9d4ff0d37b831f094b096860b3966fc7206267602e12617f79bb6b1c9376",
+        "rule_id": "process.heat-source.fuel",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 1,
+        "world_revision": 4
+      },
+      {
+        "cause": "c00003",
+        "changes": [
+          {
+            "after": "fire-camp",
+            "before": null,
+            "path": "entities.clay-pot.container.heat_source_id"
+          },
+          {
+            "after": "e00005",
+            "before": "e00001",
+            "path": "entities.clay-pot.last_cause_event_id"
+          },
+          {
+            "after": 5,
+            "before": 4,
+            "path": "revision"
+          }
+        ],
+        "checks": [
+          {
+            "actual": 4,
+            "label": "Base revision is current",
+            "ok": true,
+            "required": 4
+          },
+          {
+            "actual": null,
+            "label": "Actor exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Heat source exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Actor is alive",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is local or carried",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is intact",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is removed from heat",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel has explicit material mechanics",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Local intact fueled heat source",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": 0,
+            "label": "Free heat slot",
+            "ok": true,
+            "required": 1
+          }
+        ],
+        "declared_read_paths": [
+          "entities.<actor>.location",
+          "entities.<vessel>.ownership",
+          "entities.<vessel>.condition",
+          "entities.<vessel>.container",
+          "entities.<vessel>.material",
+          "entities.<target>.location",
+          "entities.<target>.condition",
+          "entities.<target>.heat_source"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.ownership",
+          "entities.<vessel>.container.heat_source_id",
+          "entities.<vessel>.container.boiling_ticks",
+          "entities.<vessel>.last_cause_event_id"
+        ],
+        "event_id": "e00005",
+        "hash_after": "6e1290d1edfe36fffa3fe519f79af0188669f18c8ff10b82ed6a7be383ce2083",
+        "hash_before": "b8d834fae9ad3d9d64777d7ba7d322f74bf13b688db76bb100e80b3997941589",
+        "rule_id": "mechanism.thermal.heat",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 1,
+        "world_revision": 5
+      },
+      {
+        "cause": "c00004",
+        "changes": [
+          {
+            "after": 6,
+            "before": 5,
+            "path": "revision"
+          },
+          {
+            "after": 2,
+            "before": 1,
+            "path": "tick"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "tick"
+        ],
+        "declared_write_paths": [
+          "tick"
+        ],
+        "event_id": "e00006",
+        "hash_after": "9e01668919032be62768d3d29d3b067486a084927c3b9f2707db0017daf04b7d",
+        "hash_before": "6e1290d1edfe36fffa3fe519f79af0188669f18c8ff10b82ed6a7be383ce2083",
+        "rule_id": "system.clock.advance",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 2,
+        "world_revision": 6
+      },
+      {
+        "cause": "c00004",
+        "changes": [
+          {
+            "after": 48,
+            "before": 49,
+            "path": "entities.friday.actor.hydration"
+          },
+          {
+            "after": 48,
+            "before": 49,
+            "path": "entities.robinson.actor.hydration"
+          },
+          {
+            "after": 7,
+            "before": 6,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "declared_write_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "event_id": "e00007",
+        "hash_after": "c5e7b3a2c0930b67b66eb1eeb88a18c02e18c1197f40256ac5508b8e5580b292",
+        "hash_before": "9e01668919032be62768d3d29d3b067486a084927c3b9f2707db0017daf04b7d",
+        "rule_id": "process.actor.hydration-decay",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 2,
+        "world_revision": 7
+      },
+      {
+        "cause": "c00004",
+        "changes": [
+          {
+            "after": 42000,
+            "before": 22000,
+            "path": "entities.clay-pot.liquid.heat_units"
+          },
+          {
+            "after": 42.0,
+            "before": 22.0,
+            "path": "entities.clay-pot.thermal.temperature_c"
+          },
+          {
+            "after": 20000,
+            "before": 0,
+            "path": "physical_ledger.heat_added"
+          },
+          {
+            "after": 8,
+            "before": 7,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.material",
+          "entities.<source>.heat_source"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.container.boiling_ticks",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "physical_ledger"
+        ],
+        "event_id": "e00008",
+        "hash_after": "e5d3bfa41f36a076aaebc359870d55c43483df82c1a260d21613f3e1f2d7a520",
+        "hash_before": "c5e7b3a2c0930b67b66eb1eeb88a18c02e18c1197f40256ac5508b8e5580b292",
+        "rule_id": "process.thermal.vessels",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 2,
+        "world_revision": 8
+      },
+      {
+        "cause": "c00004",
+        "changes": [
+          {
+            "after": 22,
+            "before": 23,
+            "path": "entities.fire-camp.heat_source.fuel"
+          },
+          {
+            "after": 9,
+            "before": 8,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "declared_write_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "event_id": "e00009",
+        "hash_after": "cfbba25edb292f9d591dd8790ebe5f307bd624bc69763ac0adea8f24e09d47b5",
+        "hash_before": "e5d3bfa41f36a076aaebc359870d55c43483df82c1a260d21613f3e1f2d7a520",
+        "rule_id": "process.heat-source.fuel",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 2,
+        "world_revision": 9
+      },
+      {
+        "cause": "c00005",
+        "changes": [
+          {
+            "after": 10,
+            "before": 9,
+            "path": "revision"
+          },
+          {
+            "after": 3,
+            "before": 2,
+            "path": "tick"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "tick"
+        ],
+        "declared_write_paths": [
+          "tick"
+        ],
+        "event_id": "e00010",
+        "hash_after": "d0b03b858dfcba3ee97d085998a79998dca1611468333be1be5e833ce43939da",
+        "hash_before": "cfbba25edb292f9d591dd8790ebe5f307bd624bc69763ac0adea8f24e09d47b5",
+        "rule_id": "system.clock.advance",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 3,
+        "world_revision": 10
+      },
+      {
+        "cause": "c00005",
+        "changes": [
+          {
+            "after": 47,
+            "before": 48,
+            "path": "entities.friday.actor.hydration"
+          },
+          {
+            "after": 47,
+            "before": 48,
+            "path": "entities.robinson.actor.hydration"
+          },
+          {
+            "after": 11,
+            "before": 10,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "declared_write_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "event_id": "e00011",
+        "hash_after": "17b1d60ca59a66bfcc3fe846c0fcc82203a01412c4691d366d96aef5885c3c39",
+        "hash_before": "d0b03b858dfcba3ee97d085998a79998dca1611468333be1be5e833ce43939da",
+        "rule_id": "process.actor.hydration-decay",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 3,
+        "world_revision": 11
+      },
+      {
+        "cause": "c00005",
+        "changes": [
+          {
+            "after": 62000,
+            "before": 42000,
+            "path": "entities.clay-pot.liquid.heat_units"
+          },
+          {
+            "after": 62.0,
+            "before": 42.0,
+            "path": "entities.clay-pot.thermal.temperature_c"
+          },
+          {
+            "after": 40000,
+            "before": 20000,
+            "path": "physical_ledger.heat_added"
+          },
+          {
+            "after": 12,
+            "before": 11,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.material",
+          "entities.<source>.heat_source"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.container.boiling_ticks",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "physical_ledger"
+        ],
+        "event_id": "e00012",
+        "hash_after": "e93a63e8cce5e972fd9686cc842e61ddac523a433e250f10b6ff8ea2fcacdbdf",
+        "hash_before": "17b1d60ca59a66bfcc3fe846c0fcc82203a01412c4691d366d96aef5885c3c39",
+        "rule_id": "process.thermal.vessels",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 3,
+        "world_revision": 12
+      },
+      {
+        "cause": "c00005",
+        "changes": [
+          {
+            "after": 21,
+            "before": 22,
+            "path": "entities.fire-camp.heat_source.fuel"
+          },
+          {
+            "after": 13,
+            "before": 12,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "declared_write_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "event_id": "e00013",
+        "hash_after": "f82661607b17288357ea5629f596631c948f6389a12066fe023ccbd24eedacf3",
+        "hash_before": "e93a63e8cce5e972fd9686cc842e61ddac523a433e250f10b6ff8ea2fcacdbdf",
+        "rule_id": "process.heat-source.fuel",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 3,
+        "world_revision": 13
+      },
+      {
+        "cause": "c00006",
+        "changes": [
+          {
+            "after": 14,
+            "before": 13,
+            "path": "revision"
+          },
+          {
+            "after": 4,
+            "before": 3,
+            "path": "tick"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "tick"
+        ],
+        "declared_write_paths": [
+          "tick"
+        ],
+        "event_id": "e00014",
+        "hash_after": "0a932a333e7ea2e21841c476aaffc901a76f60b0c9229e981ab5518588cb338e",
+        "hash_before": "f82661607b17288357ea5629f596631c948f6389a12066fe023ccbd24eedacf3",
+        "rule_id": "system.clock.advance",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 4,
+        "world_revision": 14
+      },
+      {
+        "cause": "c00006",
+        "changes": [
+          {
+            "after": 46,
+            "before": 47,
+            "path": "entities.friday.actor.hydration"
+          },
+          {
+            "after": 46,
+            "before": 47,
+            "path": "entities.robinson.actor.hydration"
+          },
+          {
+            "after": 15,
+            "before": 14,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "declared_write_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "event_id": "e00015",
+        "hash_after": "1c6f3cf4fce061b7d926ff24d171684df1f1e8410422945706574380aab6dfd4",
+        "hash_before": "0a932a333e7ea2e21841c476aaffc901a76f60b0c9229e981ab5518588cb338e",
+        "rule_id": "process.actor.hydration-decay",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 4,
+        "world_revision": 15
+      },
+      {
+        "cause": "c00006",
+        "changes": [
+          {
+            "after": 82000,
+            "before": 62000,
+            "path": "entities.clay-pot.liquid.heat_units"
+          },
+          {
+            "after": 82.0,
+            "before": 62.0,
+            "path": "entities.clay-pot.thermal.temperature_c"
+          },
+          {
+            "after": 60000,
+            "before": 40000,
+            "path": "physical_ledger.heat_added"
+          },
+          {
+            "after": 16,
+            "before": 15,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.material",
+          "entities.<source>.heat_source"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.container.boiling_ticks",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "physical_ledger"
+        ],
+        "event_id": "e00016",
+        "hash_after": "1a5ed2eb973ea96b0b4ee373d9d6ab58d89c726099ad1f75be14052af9680272",
+        "hash_before": "1c6f3cf4fce061b7d926ff24d171684df1f1e8410422945706574380aab6dfd4",
+        "rule_id": "process.thermal.vessels",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 4,
+        "world_revision": 16
+      },
+      {
+        "cause": "c00006",
+        "changes": [
+          {
+            "after": 20,
+            "before": 21,
+            "path": "entities.fire-camp.heat_source.fuel"
+          },
+          {
+            "after": 17,
+            "before": 16,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "declared_write_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "event_id": "e00017",
+        "hash_after": "4504db9ff264bcccbe45572f7053f3929ffc154707551d5850e6fb5726bdb142",
+        "hash_before": "1a5ed2eb973ea96b0b4ee373d9d6ab58d89c726099ad1f75be14052af9680272",
+        "rule_id": "process.heat-source.fuel",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 4,
+        "world_revision": 17
+      },
+      {
+        "cause": "c00007",
+        "changes": [
+          {
+            "after": 18,
+            "before": 17,
+            "path": "revision"
+          },
+          {
+            "after": 5,
+            "before": 4,
+            "path": "tick"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "tick"
+        ],
+        "declared_write_paths": [
+          "tick"
+        ],
+        "event_id": "e00018",
+        "hash_after": "1c72178f9f45364f03f087b24b196be9d71151568467f2491cf5f033e061cf17",
+        "hash_before": "4504db9ff264bcccbe45572f7053f3929ffc154707551d5850e6fb5726bdb142",
+        "rule_id": "system.clock.advance",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 5,
+        "world_revision": 18
+      },
+      {
+        "cause": "c00007",
+        "changes": [
+          {
+            "after": 45,
+            "before": 46,
+            "path": "entities.friday.actor.hydration"
+          },
+          {
+            "after": 45,
+            "before": 46,
+            "path": "entities.robinson.actor.hydration"
+          },
+          {
+            "after": 19,
+            "before": 18,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "declared_write_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "event_id": "e00019",
+        "hash_after": "fdfe606dbdfd19e5f33e331254963f34d31a606deb200d4b1b35de8f2f3d6fb5",
+        "hash_before": "1c72178f9f45364f03f087b24b196be9d71151568467f2491cf5f033e061cf17",
+        "rule_id": "process.actor.hydration-decay",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 5,
+        "world_revision": 19
+      },
+      {
+        "cause": "c00007",
+        "changes": [
+          {
+            "after": 1,
+            "before": 0,
+            "path": "entities.clay-pot.container.boiling_ticks"
+          },
+          {
+            "after": 99800,
+            "before": 82000,
+            "path": "entities.clay-pot.liquid.heat_units"
+          },
+          {
+            "after": 998,
+            "before": 1000,
+            "path": "entities.clay-pot.liquid.volume_ml"
+          },
+          {
+            "after": 100.0,
+            "before": 82.0,
+            "path": "entities.clay-pot.thermal.temperature_c"
+          },
+          {
+            "after": 200,
+            "before": 0,
+            "path": "physical_ledger.evaporated.heat_units"
+          },
+          {
+            "after": 2,
+            "before": 0,
+            "path": "physical_ledger.evaporated.volume_ml"
+          },
+          {
+            "after": 78000,
+            "before": 60000,
+            "path": "physical_ledger.heat_added"
+          },
+          {
+            "after": 2000,
+            "before": 0,
+            "path": "physical_ledger.latent_heat_used"
+          },
+          {
+            "after": 20,
+            "before": 19,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.material",
+          "entities.<source>.heat_source"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.container.boiling_ticks",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "physical_ledger"
+        ],
+        "event_id": "e00020",
+        "hash_after": "893c18148280ce323354169282ca6173397ffdcd05e2068130908efe68686962",
+        "hash_before": "fdfe606dbdfd19e5f33e331254963f34d31a606deb200d4b1b35de8f2f3d6fb5",
+        "rule_id": "process.thermal.vessels",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 5,
+        "world_revision": 20
+      },
+      {
+        "cause": "c00007",
+        "changes": [
+          {
+            "after": 19,
+            "before": 20,
+            "path": "entities.fire-camp.heat_source.fuel"
+          },
+          {
+            "after": 21,
+            "before": 20,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "declared_write_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "event_id": "e00021",
+        "hash_after": "3f51a0a45277e0f0a559b31c44495d58c672481a5868f5f6d6e5c94401842ecb",
+        "hash_before": "893c18148280ce323354169282ca6173397ffdcd05e2068130908efe68686962",
+        "rule_id": "process.heat-source.fuel",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 5,
+        "world_revision": 21
+      },
+      {
+        "cause": "c00008",
+        "changes": [
+          {
+            "after": 22,
+            "before": 21,
+            "path": "revision"
+          },
+          {
+            "after": 6,
+            "before": 5,
+            "path": "tick"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "tick"
+        ],
+        "declared_write_paths": [
+          "tick"
+        ],
+        "event_id": "e00022",
+        "hash_after": "d7db1257ad6718d75bf4d096b2ab31fe8fa1c91eb426ea5fc6a9a149c0ffeb22",
+        "hash_before": "3f51a0a45277e0f0a559b31c44495d58c672481a5868f5f6d6e5c94401842ecb",
+        "rule_id": "system.clock.advance",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 6,
+        "world_revision": 22
+      },
+      {
+        "cause": "c00008",
+        "changes": [
+          {
+            "after": 44,
+            "before": 45,
+            "path": "entities.friday.actor.hydration"
+          },
+          {
+            "after": 44,
+            "before": 45,
+            "path": "entities.robinson.actor.hydration"
+          },
+          {
+            "after": 23,
+            "before": 22,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "declared_write_paths": [
+          "entities.<actor>.actor.hydration"
+        ],
+        "event_id": "e00023",
+        "hash_after": "267e7325d848875caba3bd9dd81022a1be4b747d2e9138f08be79cd4ad511402",
+        "hash_before": "d7db1257ad6718d75bf4d096b2ab31fe8fa1c91eb426ea5fc6a9a149c0ffeb22",
+        "rule_id": "process.actor.hydration-decay",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 6,
+        "world_revision": 23
+      },
+      {
+        "cause": "c00008",
+        "changes": [
+          {
+            "after": 2,
+            "before": 1,
+            "path": "entities.clay-pot.container.boiling_ticks"
+          },
+          {
+            "after": 97800,
+            "before": 99800,
+            "path": "entities.clay-pot.liquid.heat_units"
+          },
+          {
+            "after": 0,
+            "before": 400,
+            "path": "entities.clay-pot.liquid.pathogens"
+          },
+          {
+            "after": 978,
+            "before": 998,
+            "path": "entities.clay-pot.liquid.volume_ml"
+          },
+          {
+            "after": 2200,
+            "before": 200,
+            "path": "physical_ledger.evaporated.heat_units"
+          },
+          {
+            "after": 22,
+            "before": 2,
+            "path": "physical_ledger.evaporated.volume_ml"
+          },
+          {
+            "after": 22000,
+            "before": 2000,
+            "path": "physical_ledger.latent_heat_used"
+          },
+          {
+            "after": 400,
+            "before": 0,
+            "path": "physical_ledger.pathogens_killed"
+          },
+          {
+            "after": 24,
+            "before": 23,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<vessel>.container",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.material",
+          "entities.<source>.heat_source"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.container.boiling_ticks",
+          "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
+          "physical_ledger"
+        ],
+        "event_id": "e00024",
+        "hash_after": "5f5a54bb68341dc71cfa0221c40bffb1426942cf25b60d8e380b7e4c0eabba35",
+        "hash_before": "267e7325d848875caba3bd9dd81022a1be4b747d2e9138f08be79cd4ad511402",
+        "rule_id": "process.thermal.vessels",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 6,
+        "world_revision": 24
+      },
+      {
+        "cause": "c00008",
+        "changes": [
+          {
+            "after": 18,
+            "before": 19,
+            "path": "entities.fire-camp.heat_source.fuel"
+          },
+          {
+            "after": 25,
+            "before": 24,
+            "path": "revision"
+          }
+        ],
+        "checks": [],
+        "declared_read_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "declared_write_paths": [
+          "entities.<source>.heat_source.fuel"
+        ],
+        "event_id": "e00025",
+        "hash_after": "cedc6835f6fdc61ed5a15685fbb439da8048a6e2e4e46964ecf79b15d087732d",
+        "hash_before": "5f5a54bb68341dc71cfa0221c40bffb1426942cf25b60d8e380b7e4c0eabba35",
+        "rule_id": "process.heat-source.fuel",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 6,
+        "world_revision": 25
+      },
+      {
+        "cause": "c00009",
+        "changes": [
+          {
+            "after": null,
+            "before": "fire-camp",
+            "path": "entities.clay-pot.container.heat_source_id"
+          },
+          {
+            "after": "e00026",
+            "before": "e00005",
+            "path": "entities.clay-pot.last_cause_event_id"
+          },
+          {
+            "after": 26,
+            "before": 25,
+            "path": "revision"
+          }
+        ],
+        "checks": [
+          {
+            "actual": 25,
+            "label": "Base revision is current",
+            "ok": true,
+            "required": 25
+          },
+          {
+            "actual": null,
+            "label": "Actor exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel exists",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Actor is alive",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is local or carried",
+            "ok": true,
+            "required": null
+          },
+          {
+            "actual": null,
+            "label": "Vessel is on a local heat source",
+            "ok": true,
+            "required": null
+          }
+        ],
+        "declared_read_paths": [
+          "entities.<actor>.location",
+          "entities.<vessel>.ownership",
+          "entities.<vessel>.condition",
+          "entities.<vessel>.container.heat_source_id"
+        ],
+        "declared_write_paths": [
+          "entities.<vessel>.container.heat_source_id",
+          "entities.<vessel>.last_cause_event_id"
+        ],
+        "event_id": "e00026",
+        "hash_after": "672f95c7f67da4d1c5a376520af1ccf3d98e74bb9c568c15a32e4233f1f581b0",
+        "hash_before": "cedc6835f6fdc61ed5a15685fbb439da8048a6e2e4e46964ecf79b15d087732d",
+        "rule_id": "mechanism.thermal.unheat",
+        "rule_version": "1",
+        "status": "accepted",
+        "tick": 6,
+        "world_revision": 26
+      }
+    ],
+    "fill_status": "accepted",
+    "final_material_hash": "672f95c7f67da4d1c5a376520af1ccf3d98e74bb9c568c15a32e4233f1f581b0",
+    "fuel_at_checkpoint": 18,
+    "heat_status": "accepted",
+    "unheat_status": "accepted"
+  },
+  "ledger_comparison": {
+    "actual": {
+      "drunk": {
+        "heat_units": 0,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 0
+      },
+      "evaporated": {
+        "heat_units": 2200,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 22
+      },
+      "heat_added": 78000,
+      "heat_lost": 0,
+      "latent_heat_used": 22000,
+      "pathogens_killed": 400
+    },
+    "expected": {
+      "drunk": {
+        "heat_units": 0,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 0
+      },
+      "evaporated": {
+        "heat_units": 2200,
+        "pathogens": 0,
+        "salt_mg": 0,
+        "volume_ml": 22
+      },
+      "heat_added": 78000,
+      "heat_lost": 0,
+      "latent_heat_used": 22000,
+      "pathogens_killed": 400
+    },
+    "matched": true
+  },
+  "limitations": [
+    "This is the boiling prefix of M1, not the complete freshwater vertical.",
+    "The comparison omits donor event IDs and raw state hashes because the neutral event and state schemas intentionally differ.",
+    "The reference data contains only entities required by the M1 scenario.",
+    "This does not establish cooling, pour, drink, ownership transfer, LLM policy behavior, or cross-domain generality."
+  ],
+  "replay": {
+    "actual": "672f95c7f67da4d1c5a376520af1ccf3d98e74bb9c568c15a32e4233f1f581b0",
+    "event_match": true,
+    "expected": "672f95c7f67da4d1c5a376520af1ccf3d98e74bb9c568c15a32e4233f1f581b0",
+    "ok": true,
+    "steps": 9
+  },
+  "schema_version": "world-substrate-evidence/boiling-v0",
+  "source": {
+    "donor_checkpoint_hash": "5da7daf570e8f330372ab7bb8c2f57f5b60cdbdf769b4a26a2fa8bcc74d17f1a",
+    "donor_revision": "da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+    "fixture_id": "castaway-freshwater-v0"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "schema_version": "world-substrate-reference-world/v0",
+  "world_id": "castaway-freshwater-v0",
+  "content_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+  "source": {
+    "repository": "castaway-world",
+    "revision": "da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+    "fixture_id": "castaway-freshwater-v0"
+  },
+  "thermal_rules": {
+    "ambient_temperature_c": 22,
+    "boiling_temperature_c": 100,
+    "boiling_ticks_to_kill_pathogens": 2,
+    "boiling_evaporation_ml_per_tick": 25,
+    "evaporation_heat_units_per_ml": 1000
+  },
+  "entities": [
+    {
+      "entity_id": "robinson",
+      "label": "Robinson",
+      "category_ids": ["actor"],
+      "actor": {
+        "health": 100,
+        "hydration": 50,
+        "alive": true
+      },
+      "location": {"location_id": "camp"}
+    },
+    {
+      "entity_id": "friday",
+      "label": "Friday",
+      "category_ids": ["actor"],
+      "actor": {
+        "health": 100,
+        "hydration": 50,
+        "alive": true
+      },
+      "location": {"location_id": "camp"}
+    },
+    {
+      "entity_id": "clay-pot",
+      "label": "Clay pot",
+      "category_ids": ["vessel", "container"],
+      "location": {"location_id": "camp"},
+      "ownership": {"owner_ref": "place:camp"},
+      "condition": {"value": 100},
+      "container": {
+        "definition_id": "clay_pot",
+        "capacity_ml": 1500,
+        "empty_weight": 2,
+        "boiling_ticks": 0,
+        "heat_source_id": null
+      },
+      "liquid": {"volume_ml": 0, "salt_mg": 0, "pathogens": 0, "heat_units": 0},
+      "thermal": {"temperature_c": 22},
+      "material": {
+        "material_id": "fired_clay",
+        "heat_limit_c": 240,
+        "heat_transfer_percent": 100,
+        "overheat_damage_per_tick": 35,
+        "open_top": true
+      }
+    },
+    {
+      "entity_id": "cup-robinson",
+      "label": "Metal cup",
+      "category_ids": ["vessel", "container"],
+      "location": {"location_id": "camp"},
+      "ownership": {"owner_ref": "actor:robinson"},
+      "condition": {"value": 100},
+      "container": {
+        "definition_id": "metal_cup",
+        "capacity_ml": 500,
+        "empty_weight": 1,
+        "boiling_ticks": 0,
+        "heat_source_id": null
+      },
+      "liquid": {"volume_ml": 0, "salt_mg": 0, "pathogens": 0, "heat_units": 0},
+      "thermal": {"temperature_c": 22},
+      "material": {
+        "material_id": "metal",
+        "heat_limit_c": 300,
+        "heat_transfer_percent": 100,
+        "overheat_damage_per_tick": 20,
+        "open_top": true
+      }
+    },
+    {
+      "entity_id": "unsafe-pool",
+      "label": "Unsafe freshwater pool",
+      "category_ids": ["liquid_source"],
+      "location": {"location_id": "camp"},
+      "liquid": {"volume_ml": 6000, "salt_mg": 0, "pathogens": 2400, "heat_units": 132000}
+    },
+    {
+      "entity_id": "fire-camp",
+      "label": "Camp fire",
+      "category_ids": ["heat_source", "fire"],
+      "location": {"location_id": "camp"},
+      "condition": {"value": 100},
+      "heat_source": {
+        "fuel": 24,
+        "heat_units_per_tick": 20000,
+        "heat_slots": 1
+      }
+    }
+  ]
+}

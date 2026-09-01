@@ -12,11 +12,11 @@ reviewed_through: 2026-08-31
 **Selected path:** durable solo; one writer, reversible local work, no external effects
 **Stage:** prototype
 **Consumer:** a fresh authorized implementation agent needs the outcome, invariants, evidence frontier, active slice, and next action without a handoff
-**Last outcome-bearing update:** M1 first-fill consumer path, in the revision containing this page
+**Last outcome-bearing update:** M1 boiling-prefix consumer path, in the revision containing this page
 
 ## Outcome and success criteria
 
-For a world author or developer, change the recurring task of hand-coding isolated agent actions and narrating missing consequences into a reviewable workflow that defines typed world state, registers reusable deterministic actions/processes, generates current affordances, runs LLM or human choices, and retains exact causal evidence and replay.
+For a substrate developer during M1, and a data-oriented world author after M3, change the recurring task of hand-coding isolated agent actions and narrating missing consequences into a reviewable workflow that defines typed world state, registers reusable deterministic actions/processes, generates current affordances, runs LLM or human choices, and retains exact causal evidence and replay.
 
 The project succeeds at prototype stage when:
 
@@ -30,21 +30,21 @@ These criteria do not claim universal physics, unlimited affordances, real-world
 
 ## Canonical outcome probe
 
-**Starting state:** two actors, one persistent clay vessel, a finite pathogen-bearing fresh-water source, one finite-fuel fire, and registered ownership, container, liquid, heat, material, and process rules.
+**Starting state:** two actors, one persistent clay vessel, one separate metal cup, a finite pathogen-bearing fresh-water source, one finite-fuel fire, and registered ownership, container, liquid, heat, material, and process rules.
 
-**Operation:** an actor receives only its observation and generated affordances, then selects fill, heat, wait, cool, pour, drink, and give actions.
+**Operation:** the scripted M1 controller selects discovered fill, heat, unheat, pour, drink, take, and give actions for one actor while the runner advances canonical time; heating, boiling, evaporation, cooling, hydration decay, and fuel consumption run as registered processes. M2 replaces the scripted selector with a genuine policy consumer without changing consequence authority.
 
 **Inspectable result:** one trace shows finite water and fuel consumption; heat, pathogen, evaporation, and volume changes; the same vessel identity crossing systems and ownership; automatic processes; checks; before/after values; and an exact replay hash.
 
-**Negative cases:** overfilling fails atomically; an attempt to model sealed-vessel pressure returns `unsupported_action` because pressure mechanics are absent.
+**Negative cases:** overfilling fails atomically; a valid typed pressure action envelope returns `unsupported_action` because pressure mechanics are absent, while a malformed envelope returns `invalid_action`.
 
 **Evidence step-down:** human-readable trace -> causal events -> typed commands and state deltas -> pinned rule/content versions -> replay comparison.
 
 ## Current truth
 
 - This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
-- The first neutral runtime path now implements registered fill, clock, and hydration rules; state-derived discovery, causal events, atomic overfill rejection, donor-checkpoint comparison, and replay pass here.
-- Castaway `world-systems` remains implementation authority for the freshwater mechanisms beyond the adopted first-fill path.
+- The neutral runtime path now reaches the pinned boiling checkpoint through registered fill, heat, and unheat rules; clock, hydration, thermal, evaporation, pathogen-removal, and fire-fuel processes; state-derived discovery; causal events; semantic donor comparison; and exact replay.
+- Castaway `world-systems` remains implementation authority for cooling, pouring, drinking, ownership transfer, and other freshwater mechanisms beyond the adopted boiling prefix.
 - Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
 - Linguistic Core supplies reviewed vocabulary, not executable mechanics.
 - No public deployment, paid model execution, second reference world, or scale target is authorized or required now.
@@ -73,8 +73,8 @@ observed trace
 | Capability | Canonical owner or seam | Dependency | Current evidence | State |
 | --- | --- | --- | --- | --- |
 | Project direction | this roadmap | Decision 001 | repository documents | established |
-| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | first-fill tests and evidence | partially implemented |
-| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | [first-fill evidence](../evidence/m1/first-fill-v0.json) plus donor tests/traces | first-fill adopted; remainder donor-only |
+| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | first-fill and boiling tests/evidence | partially implemented |
+| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | [first-fill](../evidence/m1/first-fill-v0.json) and [boiling](../evidence/m1/boiling-v0.json) evidence plus donor tests/traces | boiling prefix adopted; remainder donor-only |
 | Policy selection | future policy adapter | shared `llm_client` | donor real run | not adopted here |
 | Authoring/causal closure | future compiler | CI V3 patterns | donor implementation/research | not adopted here |
 | Ontology bindings | content adapter | Linguistic Core | pinned Castaway subset | donor-only |
@@ -86,7 +86,7 @@ observed trace
 
 | Milestone | Planning state | Inspectable output | Promotion or replan trigger |
 | --- | --- | --- | --- |
-| M0: canonical project foundation | fully_specifiable_now | one repository with goal, wiki, architecture, contract, sources, roadmap, and checks | complete in the revision containing this page; checks pass |
+| M0: canonical project foundation (enabling) | fully_specifiable_now | one repository with goal, wiki, architecture, contract, sources, roadmap, and checks | complete; checks pass, but this is enabling rather than stakeholder-outcome evidence |
 | M1: neutral freshwater vertical | fully_specifiable_now | local CLI trace and exact replay through neutral contracts | promote after positive and negative cases match donor behavior |
 | M2: genuine policy consumer | conditional | one traced shared-`llm_client` actor choosing from the same affordances | begin after M1 freezes the observation/action seam and model-call authority is confirmed |
 | M3: authoring and causal-closure review | conditional | data-defined variation compiles with exact/descriptive/unsupported coverage | begin after M1 reveals the minimum stable rule/content contract |
@@ -167,8 +167,8 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 | Project navigation is progressively disclosed | structural checker and Project Meta navigation validator | structure does not prove semantic truth | passed at this revision |
 | Castaway behavior exists | donor tests and evidence at pinned revision | not yet adopted here | external evidence |
 | Freshwater behavior is characterized locally | [pinned fixture](../tests/fixtures/castaway/freshwater-v0.json) and extractor `--check` | expected donor behavior only | established |
-| Neutral first-fill path works | [retained evidence](../evidence/m1/first-fill-v0.json), executable probe, and focused tests | fill plus one clock/hydration tick only | established |
-| Full neutral freshwater core works | complete M1 trace, checks, and replay | first-fill evidence covers only a bounded subset | open |
+| Neutral fill-through-boiling path works | [first-fill](../evidence/m1/first-fill-v0.json) and [boiling](../evidence/m1/boiling-v0.json) evidence, executable probes, and focused tests | cooling and later actions remain donor-only | established |
+| Full neutral freshwater core works | complete M1 trace, checks, and replay | boiling-prefix evidence covers only a bounded subset | open |
 | LLM policy works through neutral seam | M2 provider trace | no claim from scripted M1 | conditional |
 
 ## Risks and needs resolution
@@ -194,7 +194,7 @@ Refresh this roadmap after a committed outcome-bearing slice, a material user co
 
 ## Exact next action
 
-Implement registered heat and unheat actions plus the heat, fuel, boiling,
-pathogen-removal, and evaporation processes needed to reach and compare the
-pinned boiling checkpoint. Do not add pour, drink, give, policy calls, or UI in
-that slice.
+Implement deterministic cooling plus the registered pour action needed to reach
+and compare the pinned cooled-and-poured checkpoint. Preserve proportional
+integer liquid transfer and heat-loss accounting. Do not add drink, take, give,
+policy calls, or UI in that slice.

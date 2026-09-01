@@ -4,7 +4,7 @@ This page prevents related projects from becoming competing authorities. Exact r
 
 | Source | What it contributes | Disposition | Adoption proof required | Authority limit |
 | --- | --- | --- | --- | --- |
-| Castaway `world-systems` | Deterministic engine behavior, physical rules, discovery, persistence, replay, browser evidence, reviewed linguistic subset | **Extract** the freshwater vertical first | Same trace and replay through World Substrate contracts, with donor behavior retained | The bounded first-fill consumer path is adopted here; donor remains authority for the rest of the freshwater vertical |
+| Castaway `world-systems` | Deterministic engine behavior, physical rules, discovery, persistence, replay, browser evidence, reviewed linguistic subset | **Extract** the freshwater vertical first | Same semantic trace and replay through World Substrate contracts, with donor behavior retained | The bounded fill-through-boiling consumer path is adopted here; donor remains authority for the rest of the freshwater vertical |
 | Castaway `main` | Earlier survival world, needs/weather/fire/spoilage/regrowth, genuine agent trace | **Retain as historical reference** | None until a later mechanism selects it | Not current substrate architecture |
 | Cybernetic Influence V3 | Conversational authoring, canonical-world component, semantic intents, transition contracts, patch validation, evidence projections, Concordia integration | **Reuse selectively** through named seams | A World Substrate consumer runs the reused seam without importing a second state/time authority | Its socio-technical product goal and LLM/coarse transition policy are not inherited |
 | Linguistic Core in `onto-canon6` | Predicates, roles, entity types, hierarchy, source-native semantic provenance | **Pinned dependency** for vocabulary | Reproducible extraction, semantic review, source hashes | Vocabulary never creates mechanics; uncommitted donor changes are excluded |
@@ -17,10 +17,10 @@ This page prevents related projects from becoming competing authorities. Exact r
 
 The related repositories have independent goals and active histories. Bulk copying would create stale duplicates and ambiguous authority. This project owns the shared substrate contract and migrates capabilities only when an active slice has a consumer and an adoption test.
 
-The narrow first-fill consumer path is retained in
-[M1 evidence](../evidence/m1/first-fill-v0.json). That receipt does not adopt
-Castaway heating, boiling, evaporation, pouring, drinking, giving, or the full
-scenario trace.
+The bounded fill-through-boiling consumer path is retained in
+[first-fill](../evidence/m1/first-fill-v0.json) and
+[boiling](../evidence/m1/boiling-v0.json) evidence. Those receipts do not adopt
+Castaway cooling, pouring, drinking, giving, or the full scenario trace.
 
 ## Current-source cautions
 

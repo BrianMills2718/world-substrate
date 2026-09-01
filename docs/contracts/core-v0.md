@@ -107,11 +107,13 @@ engine advances -> due processes use the same transition authority
 observer checks -> events, deltas, versions, and replay comparison
 ```
 
-The first-fill subset of this contract is implemented and evidenced in
-[the retained M1 receipt](../../evidence/m1/first-fill-v0.json). Apply,
-discovery, minimal observation, registered clock/hydration processes, atomic
-rejection, causal events, and replay exist for that path. The remaining
-freshwater operations and generality claims remain design obligations.
+The fill-through-boiling subset of this contract is implemented and evidenced
+in the retained [first-fill](../../evidence/m1/first-fill-v0.json) and
+[boiling](../../evidence/m1/boiling-v0.json) receipts. Apply, discovery, minimal
+observation, registered clock/hydration/thermal/fuel processes, atomic
+rejection, causal events, semantic donor comparison, and replay exist for that
+path. The remaining freshwater operations and generality claims remain design
+obligations.
 
 ## Engine operations
 
@@ -135,7 +137,10 @@ Result status is one of:
 - `invalid_action`; or
 - `unsupported_action`.
 
-An unsupported action has no registered executable rule. It never invokes an LLM consequence generator.
+`invalid_action` means the command envelope or typed parameters are malformed.
+`unsupported_action` means the envelope is valid but its action kind has no
+registered executable rule. A registered action whose current-state guard fails
+returns `precondition_failed`. None invokes an LLM consequence generator.
 
 ### Advance
 
@@ -164,21 +169,21 @@ without that consumer path is proposed design, not an adopted capability.
 
 Starting state:
 
-- one actor and one clay vessel;
+- two actors, one clay vessel, and one separate drinking cup;
 - one finite fresh-water source containing pathogens;
 - one fire with finite fuel and heat power;
 - rules for ownership, fill, heating attachment, heat distribution, boiling, evaporation, cooling, pouring, drinking, and giving.
 
 Recorded choices:
 
-1. acquire or possess the vessel;
-2. fill it from the finite source;
-3. attach it to the fueled fire;
-4. advance until boiling rules remove pathogens;
-5. detach and advance until safe-to-handle temperature;
-6. pour a measured amount;
-7. drink a measured amount;
-8. give the partly filled vessel to another actor.
+1. fill the local clay vessel from the finite source;
+2. attach it to the fueled fire;
+3. advance canonical time until boiling rules remove pathogens;
+4. detach it and advance canonical time while cooling runs automatically;
+5. pour a measured amount into the separate cup;
+6. advance, drink the cup's measured contents, and advance again;
+7. take the same partly filled clay vessel, advance, give it to the other actor,
+   and advance once more.
 
 Required observations:
 

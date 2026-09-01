@@ -57,6 +57,46 @@ class ThermalState:
 
 
 @dataclass
+class MaterialState:
+    material_id: str
+    heat_limit_c: int
+    heat_transfer_percent: int
+    overheat_damage_per_tick: int
+    open_top: bool = True
+
+
+@dataclass
+class HeatSourceState:
+    fuel: int
+    heat_units_per_tick: int
+    heat_slots: int
+
+
+@dataclass
+class PhysicalLedger:
+    initial: LiquidState = field(default_factory=LiquidState)
+    added: LiquidState = field(default_factory=LiquidState)
+    drunk: LiquidState = field(default_factory=LiquidState)
+    evaporated: LiquidState = field(default_factory=LiquidState)
+    pathogens_killed: int = 0
+    heat_added: int = 0
+    heat_lost: int = 0
+    latent_heat_used: int = 0
+    spilled_ml: int = 0
+    overflow_ml: int = 0
+
+    def semantic_deltas(self) -> dict[str, object]:
+        return {
+            "evaporated": self.evaporated.as_dict(),
+            "pathogens_killed": self.pathogens_killed,
+            "heat_added": self.heat_added,
+            "heat_lost": self.heat_lost,
+            "latent_heat_used": self.latent_heat_used,
+            "drunk": self.drunk.as_dict(),
+        }
+
+
+@dataclass
 class Entity:
     entity_id: str
     label: str
@@ -68,6 +108,8 @@ class Entity:
     container: ContainerState | None = None
     liquid: LiquidState | None = None
     thermal: ThermalState | None = None
+    material: MaterialState | None = None
+    heat_source: HeatSourceState | None = None
     source_pack_id: str | None = None
     source_entity_id: str | None = None
     last_cause_event_id: str | None = None
@@ -86,6 +128,8 @@ class Entity:
             "container",
             "liquid",
             "thermal",
+            "material",
+            "heat_source",
         ):
             value = getattr(self, name)
             if value is not None:
@@ -108,11 +152,12 @@ class World:
     engine_id: str
     content_id: str
     rule_versions: dict[str, str]
+    physical_ledger: PhysicalLedger | None = None
     commands: list[dict[str, Any]] = field(default_factory=list)
     events: list[dict[str, Any]] = field(default_factory=list)
 
     def material_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "world_id": self.world_id,
             "revision": self.revision,
             "tick": self.tick,
@@ -123,6 +168,9 @@ class World:
             "content_id": self.content_id,
             "rule_versions": dict(sorted(self.rule_versions.items())),
         }
+        if self.physical_ledger is not None:
+            result["physical_ledger"] = asdict(self.physical_ledger)
+        return result
 
     def material_hash(self) -> str:
         encoded = json.dumps(
@@ -167,6 +215,26 @@ class World:
                     raise ValueError(f"container lacks liquid state: {entity_id}")
                 if entity.liquid.volume_ml > entity.container.capacity_ml:
                     raise ValueError(f"container exceeds capacity: {entity_id}")
+            if entity.material is not None:
+                if not 0 <= entity.material.heat_transfer_percent <= 100:
+                    raise ValueError(f"invalid heat transfer percent: {entity_id}")
+                if entity.material.heat_limit_c <= 0:
+                    raise ValueError(f"invalid heat limit: {entity_id}")
+            if entity.heat_source is not None:
+                if entity.heat_source.fuel < 0:
+                    raise ValueError(f"heat source fuel is negative: {entity_id}")
+                if entity.heat_source.heat_units_per_tick <= 0:
+                    raise ValueError(f"heat source power must be positive: {entity_id}")
+                if entity.heat_source.heat_slots <= 0:
+                    raise ValueError(f"heat source slots must be positive: {entity_id}")
+        if self.physical_ledger is not None:
+            values = asdict(self.physical_ledger)
+            for key, value in values.items():
+                if isinstance(value, dict):
+                    if any(type(item) is not int or item < 0 for item in value.values()):
+                        raise ValueError(f"physical ledger {key} must be nonnegative")
+                elif type(value) is not int or value < 0:
+                    raise ValueError(f"physical ledger {key} must be nonnegative")
 
 
 def differences(before: Any, after: Any, path: str = "") -> list[dict[str, Any]]:

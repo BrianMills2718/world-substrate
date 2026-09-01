@@ -54,6 +54,67 @@ class FillAction:
         )
 
 
+@dataclass(frozen=True)
+class HeatAction:
+    actor_id: str
+    vessel_id: str
+    target_id: str
+    base_revision: int
+    controller_id: str
+    kind: str = "heat"
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "actor": self.actor_id,
+            "kind": self.kind,
+            "vessel": self.vessel_id,
+            "target": self.target_id,
+            "base_revision": self.base_revision,
+            "controller": self.controller_id,
+        }
+
+    @classmethod
+    def from_dict(cls, value: dict[str, Any]) -> HeatAction:
+        if value.get("kind") != "heat":
+            raise ValueError("record is not a heat action")
+        return cls(
+            actor_id=str(value["actor"]),
+            vessel_id=str(value["vessel"]),
+            target_id=str(value["target"]),
+            base_revision=int(value["base_revision"]),
+            controller_id=str(value["controller"]),
+        )
+
+
+@dataclass(frozen=True)
+class UnheatAction:
+    actor_id: str
+    vessel_id: str
+    base_revision: int
+    controller_id: str
+    kind: str = "unheat"
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "actor": self.actor_id,
+            "kind": self.kind,
+            "vessel": self.vessel_id,
+            "base_revision": self.base_revision,
+            "controller": self.controller_id,
+        }
+
+    @classmethod
+    def from_dict(cls, value: dict[str, Any]) -> UnheatAction:
+        if value.get("kind") != "unheat":
+            raise ValueError("record is not an unheat action")
+        return cls(
+            actor_id=str(value["actor"]),
+            vessel_id=str(value["vessel"]),
+            base_revision=int(value["base_revision"]),
+            controller_id=str(value["controller"]),
+        )
+
+
 class TypedAction(Protocol):
     @property
     def kind(self) -> str: ...

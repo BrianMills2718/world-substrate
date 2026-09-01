@@ -20,7 +20,7 @@ Start with:
 
 ## Current status
 
-The project authority and design are established. The first neutral runtime slice now discovers and executes a registered liquid-fill action, advances registered clock and hydration processes, retains causal events, rejects overfill atomically, and replays exactly. Its retained evidence matches the selected fields of the pinned Castaway post-fill checkpoint. The remaining freshwater mechanisms are not yet implemented here.
+The project authority and design are established. The neutral runtime now reaches the pinned boiling checkpoint through registered fill, heat, and unheat actions plus deterministic clock, hydration, thermal, evaporation, pathogen-removal, and fire-fuel processes. Its retained evidence compares semantic state and conservation fields rather than donor-specific hashes, and exact local replay passes. Cooling, pouring, drinking, and whole-vessel transfer remain to complete M1.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -30,4 +30,5 @@ Related repositories remain unchanged and are classified in [source dispositions
 python scripts/check_project.py
 python scripts/extract_castaway_fixture.py --check
 python scripts/run_first_fill_probe.py --check
+python scripts/run_boiling_probe.py --check
 ```
