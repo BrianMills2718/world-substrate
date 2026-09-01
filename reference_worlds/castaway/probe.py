@@ -13,6 +13,7 @@ from world_substrate.mechanisms import (
     FireFuelProcess,
     HeatRule,
     HydrationDecayProcess,
+    PourRule,
     ThermalProcess,
     UnheatRule,
 )
@@ -30,7 +31,13 @@ from world_substrate.model import (
     ThermalState,
     World,
 )
-from world_substrate.rules import FillAction, HeatAction, RuleRegistry, UnheatAction
+from world_substrate.rules import (
+    FillAction,
+    HeatAction,
+    PourAction,
+    RuleRegistry,
+    UnheatAction,
+)
 
 T = TypeVar("T")
 
@@ -120,6 +127,22 @@ def build_freshwater_engine(root: Path | None = None) -> Engine:
         rule_versions=registry.versions(),
         physical_ledger=PhysicalLedger(initial=initial),
     )
+    return Engine(world, registry)
+
+
+def build_pour_engine(root: Path | None = None) -> Engine:
+    base = build_freshwater_engine(root)
+    registry = RuleRegistry()
+    registry.register_action(FillRule())
+    registry.register_action(HeatRule())
+    registry.register_action(PourRule())
+    registry.register_action(UnheatRule())
+    registry.register_process(ClockAdvanceProcess())
+    registry.register_process(HydrationDecayProcess())
+    registry.register_process(ThermalProcess())
+    registry.register_process(FireFuelProcess())
+    world = base.initial_world.clone()
+    world.rule_versions = registry.versions()
     return Engine(world, registry)
 
 
@@ -354,6 +377,140 @@ def run_boiling_probe(root: Path | None = None) -> dict[str, Any]:
             and heat_result["status"] == "accepted"
             and unheat_result["status"] == "accepted"
             and fuel_at_checkpoint == 18
+            and actual_projection == expected_projection
+            and actual_ledger == expected_ledger
+            and replay["ok"]
+        ),
+    }
+
+
+def run_pour_probe(root: Path | None = None) -> dict[str, Any]:
+    root = root or repository_root()
+    fixture = json.loads(
+        (root / "tests/fixtures/castaway/freshwater-v0.json").read_text()
+    )
+    expected_checkpoint = fixture["expected"]["checkpoints"][3]
+    expected_projection = _without_donor_event_ids(
+        {
+            "tick": expected_checkpoint["tick"],
+            "actors": expected_checkpoint["actors"],
+            "vessels": expected_checkpoint["vessels"],
+        }
+    )
+    expected_ledger = {
+        "evaporated": expected_checkpoint["totals"]["evaporated"],
+        "pathogens_killed": expected_checkpoint["totals"]["pathogens_killed"],
+        "heat_added": expected_checkpoint["totals"]["heat_added"],
+        "heat_lost": expected_checkpoint["totals"]["heat_lost"],
+        "latent_heat_used": expected_checkpoint["totals"]["latent_heat_used"],
+        "drunk": expected_checkpoint["totals"]["drunk"],
+    }
+
+    engine = build_pour_engine(root)
+    fill_row = next(
+        row
+        for row in engine.discover("robinson", kind="fill")["available"]
+        if row["action"]["vessel"] == "clay-pot"
+        and row["action"]["source"] == "unsafe-pool"
+        and row["action"]["volume_ml"] == 1000
+    )
+    fill_result = engine.apply(
+        FillAction.from_dict(
+            {**fill_row["action"], "controller": "verification_script"}
+        )
+    )
+    engine.advance()
+    heat_row = next(
+        row
+        for row in engine.discover("robinson", kind="heat")["available"]
+        if row["action"]["vessel"] == "clay-pot"
+        and row["action"]["target"] == "fire-camp"
+    )
+    heat_result = engine.apply(
+        HeatAction.from_dict(
+            {**heat_row["action"], "controller": "verification_script"}
+        )
+    )
+    engine.advance(5)
+    unheat_row = next(
+        row
+        for row in engine.discover("robinson", kind="unheat")["available"]
+        if row["action"]["vessel"] == "clay-pot"
+    )
+    unheat_result = engine.apply(
+        UnheatAction.from_dict(
+            {**unheat_row["action"], "controller": "verification_script"}
+        )
+    )
+    engine.advance(5)
+    before_pour = _liquid_totals(engine)
+    pour_row = next(
+        row
+        for row in engine.discover("robinson", kind="pour")["available"]
+        if row["action"]["vessel"] == "clay-pot"
+        and row["action"]["destination"] == "cup-robinson"
+        and row["action"]["volume_ml"] == 250
+    )
+    pour_result = engine.apply(
+        PourAction.from_dict(
+            {**pour_row["action"], "controller": "verification_script"}
+        )
+    )
+    after_pour = _liquid_totals(engine)
+    engine.advance()
+
+    actual_projection = _without_donor_event_ids(_checkpoint_projection(engine))
+    assert engine.world.physical_ledger is not None
+    actual_ledger = engine.world.physical_ledger.semantic_deltas()
+    fire = engine.world.entities["fire-camp"]
+    assert fire.heat_source is not None
+    replay = engine.replay()
+
+    return {
+        "schema_version": "world-substrate-evidence/pour-v0",
+        "claim": "The neutral substrate cooled the treated liquid deterministically, poured exact proportional contents into a separate cup, matched the pinned tick-12 semantic checkpoint and conservation ledger, and replayed exactly.",
+        "limitations": [
+            "This is the cooled-and-poured prefix of M1, not the complete freshwater vertical.",
+            "The comparison omits donor event IDs and raw state hashes because the neutral event and state schemas intentionally differ.",
+            "This does not establish drink, take, give, LLM policy behavior, or cross-domain generality.",
+        ],
+        "source": {
+            "fixture_id": fixture["fixture_id"],
+            "donor_revision": fixture["source"]["revision"],
+            "donor_checkpoint_hash": expected_checkpoint["state_hash"],
+        },
+        "execution": {
+            "fill_status": fill_result["status"],
+            "heat_status": heat_result["status"],
+            "unheat_status": unheat_result["status"],
+            "pour_status": pour_result["status"],
+            "fuel_at_checkpoint": fire.heat_source.fuel,
+            "events": engine.world.events,
+            "final_material_hash": engine.world.material_hash(),
+        },
+        "pour_conservation": {
+            "before": before_pour,
+            "after": after_pour,
+            "matched": before_pour == after_pour,
+        },
+        "checkpoint_comparison": {
+            "matched": actual_projection == expected_projection,
+            "expected": expected_projection,
+            "actual": actual_projection,
+        },
+        "ledger_comparison": {
+            "matched": actual_ledger == expected_ledger,
+            "expected": expected_ledger,
+            "actual": actual_ledger,
+        },
+        "replay": replay,
+        "accepted": bool(
+            fill_result["status"] == "accepted"
+            and heat_result["status"] == "accepted"
+            and unheat_result["status"] == "accepted"
+            and pour_result["status"] == "accepted"
+            and fire.heat_source.fuel == 12
+            and before_pour == after_pour
             and actual_projection == expected_projection
             and actual_ledger == expected_ledger
             and replay["ok"]

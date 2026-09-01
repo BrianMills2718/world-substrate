@@ -115,6 +115,41 @@ class UnheatAction:
         )
 
 
+@dataclass(frozen=True)
+class PourAction:
+    actor_id: str
+    vessel_id: str
+    destination_id: str
+    volume_ml: int
+    base_revision: int
+    controller_id: str
+    kind: str = "pour"
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "actor": self.actor_id,
+            "kind": self.kind,
+            "vessel": self.vessel_id,
+            "destination": self.destination_id,
+            "volume_ml": self.volume_ml,
+            "base_revision": self.base_revision,
+            "controller": self.controller_id,
+        }
+
+    @classmethod
+    def from_dict(cls, value: dict[str, Any]) -> PourAction:
+        if value.get("kind") != "pour":
+            raise ValueError("record is not a pour action")
+        return cls(
+            actor_id=str(value["actor"]),
+            vessel_id=str(value["vessel"]),
+            destination_id=str(value["destination"]),
+            volume_ml=int(value["volume_ml"]),
+            base_revision=int(value["base_revision"]),
+            controller_id=str(value["controller"]),
+        )
+
+
 class TypedAction(Protocol):
     @property
     def kind(self) -> str: ...

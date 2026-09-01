@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..model import Entity, LiquidState, World
-from ..rules import Check, FillAction, TypedAction
+from ..rules import Check, FillAction, PourAction, TypedAction
 
 LIQUID_FIELDS = ("volume_ml", "salt_mg", "pathogens", "heat_units")
 
@@ -188,3 +188,173 @@ class FillRule:
                 vessel.liquid.heat_units / vessel.liquid.volume_ml, 2
             )
         vessel.last_cause_event_id = event_id
+
+
+class PourRule:
+    rule_id = "mechanism.liquid.pour"
+    version = "1"
+    action_kind = "pour"
+    read_paths: tuple[str, ...] = (
+        "entities.<actor>.location",
+        "entities.<vessel>.ownership",
+        "entities.<vessel>.condition",
+        "entities.<vessel>.container",
+        "entities.<vessel>.liquid",
+        "entities.<destination>.ownership",
+        "entities.<destination>.condition",
+        "entities.<destination>.container",
+        "entities.<destination>.liquid",
+    )
+    write_paths: tuple[str, ...] = (
+        "entities.<vessel>.liquid",
+        "entities.<vessel>.thermal",
+        "entities.<vessel>.last_cause_event_id",
+        "entities.<destination>.liquid",
+        "entities.<destination>.thermal",
+        "entities.<destination>.container.boiling_ticks",
+        "entities.<destination>.last_cause_event_id",
+    )
+
+    def action_from_dict(self, value: dict[str, Any]) -> PourAction:
+        return PourAction.from_dict(value)
+
+    def discover(self, world: World, actor_id: str) -> list[TypedAction]:
+        actor = world.entities.get(actor_id)
+        if actor is None or actor.actor is None or actor.location is None:
+            return []
+        vessels = sorted(
+            (
+                entity
+                for entity in world.entities.values()
+                if entity.container is not None
+                and entity.liquid is not None
+                and _accessible(world, actor, entity)
+            ),
+            key=lambda item: item.entity_id,
+        )
+        actions: list[TypedAction] = []
+        for vessel in vessels:
+            assert vessel.liquid is not None
+            for destination in vessels:
+                if destination.entity_id == vessel.entity_id:
+                    continue
+                assert destination.container and destination.liquid
+                maximum = min(
+                    vessel.liquid.volume_ml,
+                    destination.container.capacity_ml
+                    - destination.liquid.volume_ml,
+                )
+                for amount in sorted({min(maximum, 250), min(maximum, 1000)}):
+                    if amount > 0:
+                        actions.append(
+                            PourAction(
+                                actor_id=actor_id,
+                                vessel_id=vessel.entity_id,
+                                destination_id=destination.entity_id,
+                                volume_ml=amount,
+                                base_revision=world.revision,
+                                controller_id="unselected",
+                            )
+                        )
+        return actions
+
+    def checks(self, world: World, action: TypedAction) -> list[Check]:
+        if not isinstance(action, PourAction):
+            raise TypeError("pour rule requires PourAction")
+        actor = world.entities.get(action.actor_id)
+        vessel = world.entities.get(action.vessel_id)
+        destination = world.entities.get(action.destination_id)
+        checks = [
+            Check("Actor exists", actor is not None and actor.actor is not None),
+            Check(
+                "Source vessel exists",
+                vessel is not None and vessel.container is not None,
+            ),
+            Check(
+                "Destination vessel exists",
+                destination is not None and destination.container is not None,
+            ),
+            Check(
+                "Positive bounded liquid volume",
+                type(action.volume_ml) is int and 1 <= action.volume_ml <= 10_000,
+                action.volume_ml,
+                "1..10000 ml",
+            ),
+        ]
+        if actor is None or vessel is None or destination is None:
+            return checks
+        checks.extend(
+            [
+                Check("Actor is alive", bool(actor.actor and actor.actor.alive)),
+                Check("Source vessel is accessible", _accessible(world, actor, vessel)),
+                Check(
+                    "Destination vessel is accessible",
+                    _accessible(world, actor, destination),
+                ),
+                Check(
+                    "Different destination vessel",
+                    vessel.entity_id != destination.entity_id,
+                ),
+                Check(
+                    "Source vessel is intact",
+                    bool(vessel.condition and vessel.condition.value > 0),
+                ),
+                Check(
+                    "Destination vessel is intact",
+                    bool(destination.condition and destination.condition.value > 0),
+                ),
+                Check(
+                    "Source vessel is removed from heat",
+                    bool(vessel.container and vessel.container.heat_source_id is None),
+                ),
+                Check(
+                    "Destination vessel is removed from heat",
+                    bool(
+                        destination.container
+                        and destination.container.heat_source_id is None
+                    ),
+                ),
+                Check(
+                    "Source contains requested volume",
+                    bool(
+                        vessel.liquid
+                        and vessel.liquid.volume_ml >= action.volume_ml
+                    ),
+                    vessel.liquid.volume_ml if vessel.liquid else None,
+                    action.volume_ml,
+                ),
+                Check(
+                    "Destination has room",
+                    bool(
+                        destination.container
+                        and destination.liquid
+                        and destination.liquid.volume_ml + action.volume_ml
+                        <= destination.container.capacity_ml
+                    ),
+                    (
+                        destination.container.capacity_ml
+                        - destination.liquid.volume_ml
+                        if destination.container and destination.liquid
+                        else None
+                    ),
+                    action.volume_ml,
+                ),
+            ]
+        )
+        return checks
+
+    def apply(self, world: World, action: TypedAction, event_id: str) -> None:
+        if not isinstance(action, PourAction):
+            raise TypeError("pour rule requires PourAction")
+        vessel = world.entities[action.vessel_id]
+        destination = world.entities[action.destination_id]
+        assert vessel.liquid and destination.liquid and destination.container
+        portion = _split(vessel.liquid, action.volume_ml)
+        _mix(destination.liquid, portion)
+        destination.container.boiling_ticks = 0
+        for entity in (vessel, destination):
+            if entity.thermal is not None and entity.liquid and entity.liquid.volume_ml:
+                entity.thermal.temperature_c = round(
+                    entity.liquid.heat_units / entity.liquid.volume_ml, 2
+                )
+            entity.last_cause_event_id = event_id

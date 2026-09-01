@@ -250,6 +250,7 @@ class ThermalProcess:
     boiling_ticks_to_kill_pathogens: int = 2
     boiling_evaporation_ml_per_tick: int = 25
     evaporation_heat_units_per_ml: int = 1000
+    cooling_fraction_denominator: int = 4
 
     rule_id = "process.thermal.vessels"
     version = "1"
@@ -270,9 +271,17 @@ class ThermalProcess:
     def due(self, world: World) -> bool:
         return any(
             entity.container
-            and entity.container.heat_source_id
-            and entity.condition
-            and entity.condition.value > 0
+            and entity.liquid
+            and entity.thermal
+            and (
+                bool(
+                    entity.container.heat_source_id
+                    and entity.condition
+                    and entity.condition.value > 0
+                )
+                or entity.liquid.heat_units
+                != entity.liquid.volume_ml * self.ambient_temperature_c
+            )
             for entity in world.entities.values()
         )
 
@@ -304,52 +313,75 @@ class ThermalProcess:
             for index, entity_id in enumerate(attached):
                 allocations[entity_id] = share + (index < remainder)
 
-        for vessel_id in sorted(allocations):
-            vessel = world.entities[vessel_id]
-            assert vessel.container and vessel.liquid and vessel.material
-            gain = (
-                allocations[vessel_id]
-                * vessel.material.heat_transfer_percent
-                // 100
-            )
-            if vessel.liquid.volume_ml:
-                maximum = (
-                    vessel.liquid.volume_ml * self.boiling_temperature_c
+        for vessel in sorted(world.entities.values(), key=lambda item: item.entity_id):
+            if (
+                vessel.container is None
+                or vessel.liquid is None
+                or vessel.thermal is None
+                or vessel.material is None
+            ):
+                continue
+            if vessel.entity_id in allocations:
+                gain = (
+                    allocations[vessel.entity_id]
+                    * vessel.material.heat_transfer_percent
+                    // 100
                 )
-                warming = max(
-                    0, min(gain, maximum - vessel.liquid.heat_units)
-                )
-                vessel.liquid.heat_units += warming
-                world.physical_ledger.heat_added += warming
-                _sync_temperature(vessel)
-                if vessel.liquid.heat_units >= maximum:
-                    vessel.container.boiling_ticks += 1
-                    if (
-                        vessel.container.boiling_ticks
-                        >= self.boiling_ticks_to_kill_pathogens
-                        and vessel.liquid.pathogens
-                    ):
-                        world.physical_ledger.pathogens_killed += (
-                            vessel.liquid.pathogens
-                        )
-                        vessel.liquid.pathogens = 0
-                    if vessel.material.open_top:
-                        amount = min(
-                            self.boiling_evaporation_ml_per_tick,
-                            vessel.liquid.volume_ml,
-                            (gain - warming)
-                            // self.evaporation_heat_units_per_ml,
-                        )
-                        self._evaporate(world, vessel.liquid, amount)
+                if vessel.liquid.volume_ml:
+                    maximum = (
+                        vessel.liquid.volume_ml * self.boiling_temperature_c
+                    )
+                    warming = max(
+                        0, min(gain, maximum - vessel.liquid.heat_units)
+                    )
+                    vessel.liquid.heat_units += warming
+                    world.physical_ledger.heat_added += warming
+                    _sync_temperature(vessel)
+                    if vessel.liquid.heat_units >= maximum:
+                        vessel.container.boiling_ticks += 1
+                        if (
+                            vessel.container.boiling_ticks
+                            >= self.boiling_ticks_to_kill_pathogens
+                            and vessel.liquid.pathogens
+                        ):
+                            world.physical_ledger.pathogens_killed += (
+                                vessel.liquid.pathogens
+                            )
+                            vessel.liquid.pathogens = 0
+                        if vessel.material.open_top:
+                            amount = min(
+                                self.boiling_evaporation_ml_per_tick,
+                                vessel.liquid.volume_ml,
+                                (gain - warming)
+                                // self.evaporation_heat_units_per_ml,
+                            )
+                            self._evaporate(world, vessel.liquid, amount)
+                    else:
+                        vessel.container.boiling_ticks = 0
                 else:
-                    vessel.container.boiling_ticks = 0
-            elif vessel.thermal is not None:
-                heat_capacity = max(1, vessel.container.empty_weight * 250)
-                vessel.thermal.temperature_c = min(
-                    180,
-                    vessel.thermal.temperature_c
-                    + min(30, gain // heat_capacity),
+                    heat_capacity = max(1, vessel.container.empty_weight * 250)
+                    vessel.thermal.temperature_c = min(
+                        180,
+                        vessel.thermal.temperature_c
+                        + min(30, gain // heat_capacity),
+                    )
+            elif vessel.liquid.volume_ml:
+                vessel.container.boiling_ticks = 0
+                target = (
+                    vessel.liquid.volume_ml * self.ambient_temperature_c
                 )
+                delta = vessel.liquid.heat_units - target
+                if delta:
+                    step = (
+                        abs(delta) + self.cooling_fraction_denominator - 1
+                    ) // self.cooling_fraction_denominator
+                    before_heat = vessel.liquid.heat_units
+                    vessel.liquid.heat_units -= step if delta > 0 else -step
+                    change = before_heat - vessel.liquid.heat_units
+                    if change >= 0:
+                        world.physical_ledger.heat_lost += change
+                    else:
+                        world.physical_ledger.heat_added += -change
             _sync_temperature(vessel)
 
     def _evaporate(self, world: World, liquid: LiquidState, amount: int) -> None:

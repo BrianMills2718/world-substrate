@@ -34,6 +34,7 @@ REQUIRED = (
     "scripts/extract_castaway_fixture.py",
     "scripts/run_first_fill_probe.py",
     "scripts/run_boiling_probe.py",
+    "scripts/run_pour_probe.py",
     "src/world_substrate/engine.py",
     "src/world_substrate/model.py",
     "src/world_substrate/rules.py",
@@ -41,12 +42,14 @@ REQUIRED = (
     "tests/CLAUDE.md",
     "tests/test_first_fill.py",
     "tests/test_boiling.py",
+    "tests/test_pour.py",
     "tests/fixtures/castaway/README.md",
     "tests/fixtures/castaway/freshwater-v0.json",
     "reference_worlds/castaway/freshwater-fill-v0.json",
     "reference_worlds/castaway/freshwater-v0.json",
     "evidence/m1/first-fill-v0.json",
     "evidence/m1/boiling-v0.json",
+    "evidence/m1/pour-v0.json",
 )
 WIKI_SECTIONS = (
     "## What this project is",
@@ -236,6 +239,16 @@ def main() -> int:
     if boiling_check.returncode != 0:
         detail = boiling_check.stderr.strip() or boiling_check.stdout.strip()
         failures.append(f"neutral boiling evidence check failed: {detail}")
+
+    pour_check = subprocess.run(
+        [sys.executable, str(REPO / "scripts/run_pour_probe.py"), "--check"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if pour_check.returncode != 0:
+        detail = pour_check.stderr.strip() or pour_check.stdout.strip()
+        failures.append(f"neutral pour evidence check failed: {detail}")
 
     first_fill_tests = subprocess.run(
         [

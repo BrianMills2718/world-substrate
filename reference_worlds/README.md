@@ -4,16 +4,17 @@ Reference worlds prove that the shared substrate supports real end-to-end behavi
 
 ## Castaway
 
-**State:** boiling-prefix migration implemented; full vertical remains donor-only.
+**State:** cooled-and-poured prefix implemented; full vertical remains donor-only.
 
 **Donor:** `../castaway-world-systems` at the pinned revision in `references/sources.json`.
 
 **First vertical:** one persistent clay pot, supported by a separate drinking cup, participates in ownership, carrying, finite liquid transfer, shared finite heating, boiling, evaporation, cooling, damage, pouring, drinking, and transfer between actors.
 
-The registered fill-through-boiling consumer path now runs and replays through
+The registered fill-through-pour consumer path now runs and replays through
 the neutral core without Castaway-specific dispatch. Its retained
 [first-fill](../evidence/m1/first-fill-v0.json) and
-[boiling](../evidence/m1/boiling-v0.json) evidence match selected semantic donor
+[boiling](../evidence/m1/boiling-v0.json), and
+[pour](../evidence/m1/pour-v0.json) evidence match selected semantic donor
 checkpoint fields without requiring donor-specific event IDs or state hashes.
 The reference world as a whole becomes adopted only when the remaining vertical
 runs through the same neutral contracts.
