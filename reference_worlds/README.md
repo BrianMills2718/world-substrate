@@ -4,7 +4,7 @@ Reference worlds prove that the shared substrate supports real end-to-end behavi
 
 ## Castaway
 
-**State:** full M1 executable path and negative receipts implemented; promotion validation remains open.
+**State:** M1 promoted with positive, negative, replay, human-review, and revision-bound evidence.
 
 **Donor:** `../castaway-world-systems` at the pinned revision in `references/sources.json`.
 
@@ -20,8 +20,8 @@ the neutral core without Castaway-specific dispatch. Its retained
 checkpoint fields without requiring donor-specific event IDs or state hashes.
 The positive reference path and documented negatives are adopted. See the
 combined [machine](../evidence/m1/freshwater-v0.json) and
-[human](../evidence/m1/freshwater-v0.md) review artifacts. M1 promotion still
-requires the revision-bound end-to-end evidence gate.
+[human](../evidence/m1/freshwater-v0.md) review artifacts and the validated
+[end-to-end observation](../evidence/m1/end-to-end-observation-v1.json).
 
 ## Later reference worlds
 

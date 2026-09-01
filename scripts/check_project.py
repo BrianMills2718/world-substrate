@@ -62,6 +62,7 @@ REQUIRED = (
     "evidence/m1/transfer-v0.json",
     "evidence/m1/freshwater-v0.json",
     "evidence/m1/freshwater-v0.md",
+    "evidence/m1/end-to-end-observation-v1.json",
 )
 WIKI_SECTIONS = (
     "## What this project is",
@@ -201,6 +202,23 @@ def main() -> int:
 
     if manifest.get("schema_version") != "world-substrate-sources/v1":
         failures.append("unexpected source-manifest schema version")
+
+    try:
+        maturity_receipt = json.loads(
+            (REPO / "evidence/m1/end-to-end-observation-v1.json").read_text()
+        )
+    except (OSError, json.JSONDecodeError) as exc:
+        failures.append(f"invalid M1 maturity receipt: {exc}")
+    else:
+        if maturity_receipt.get("record_type") != "end_to_end_observation":
+            failures.append("unexpected M1 maturity receipt type")
+        if maturity_receipt.get("status") != "pass":
+            failures.append("M1 maturity receipt must retain pass status")
+        source_revision = maturity_receipt.get("source_revision")
+        if not isinstance(source_revision, str) or not git_has_revision(
+            REPO, source_revision
+        ):
+            failures.append("M1 maturity receipt source revision is unavailable")
 
     for source_id, record in manifest.get("sources", {}).items():
         if not isinstance(record, dict):

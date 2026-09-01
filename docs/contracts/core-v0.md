@@ -119,7 +119,9 @@ path. Safe and hazardous consumption effects plus capacity-checked whole-vessel
 transfer are executable. Unsupported/malformed envelope counterexamples are
 retained in the combined
 [M1 evidence](../../evidence/m1/freshwater-v0.json). Cross-domain generality
-remains an open obligation.
+remains an open obligation. The revision-bound
+[end-to-end observation](../../evidence/m1/end-to-end-observation-v1.json)
+validated the M1 maturity claim.
 
 ## Engine operations
 

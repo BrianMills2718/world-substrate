@@ -12,7 +12,7 @@ reviewed_through: 2026-08-31
 **Selected path:** durable solo; one writer, reversible local work, no external effects
 **Stage:** prototype
 **Consumer:** a fresh authorized implementation agent needs the outcome, invariants, evidence frontier, active slice, and next action without a handoff
-**Last outcome-bearing update:** M1 positive freshwater path through ownership transfer, in the revision containing this page
+**Last outcome-bearing update:** M1 promoted with revision-bound end-to-end evidence, in the revision containing this page
 
 ## Outcome and success criteria
 
@@ -44,6 +44,7 @@ These criteria do not claim universal physics, unlimited affordances, real-world
 
 - This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
 - The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay. Overfill, valid-but-unsupported pressure, and malformed-fill envelopes are atomically distinguished and replayed.
+- The [M1 end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) passed the maturity-promotion gate against exact implementation revision `55725233f65af625edfc0a09067de3aa97d34efe`.
 - Castaway `world-systems` remains implementation authority for physical mechanisms and product behavior beyond the adopted positive M1 path.
 - Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
 - Linguistic Core supplies reviewed vocabulary, not executable mechanics.
@@ -87,14 +88,14 @@ observed trace
 | Milestone | Planning state | Inspectable output | Promotion or replan trigger |
 | --- | --- | --- | --- |
 | M0: canonical project foundation (enabling) | fully_specifiable_now | one repository with goal, wiki, architecture, contract, sources, roadmap, and checks | complete; checks pass, but this is enabling rather than stakeholder-outcome evidence |
-| M1: neutral freshwater vertical | fully_specifiable_now | local CLI trace and exact replay through neutral contracts | promote after positive and negative cases match donor behavior |
-| M2: genuine policy consumer | conditional | one traced shared-`llm_client` actor choosing from the same affordances | begin after M1 freezes the observation/action seam and model-call authority is confirmed |
+| M1: neutral freshwater vertical | complete | local CLI trace and exact replay through neutral contracts | promoted; positive/negative journeys and revision-bound maturity receipt pass |
+| M2: genuine policy consumer | human_decision_required | one traced shared-`llm_client` actor choosing from the same affordances | begin only after model-call authority and a spend cap are explicitly confirmed |
 | M3: authoring and causal-closure review | conditional | data-defined variation compiles with exact/descriptive/unsupported coverage | begin after M1 reveals the minimum stable rule/content contract |
 | M4: second reference world | human_decision_required | materially different world reusing the core | select domain after M1/M3 show which mechanism family best tests generality |
 | M5: scale frontier | exploration_required | repeatable candidate/context/storage measurements at a selected target | activate when a real reference world exceeds current linear/simple designs |
 | M6: dynamical evaluation | deliberately_deferred | perturbation and trajectory analysis over retained worlds | activate when it can change a mechanism or representation decision |
 
-### Active slice: M1 neutral freshwater vertical
+### Completed slice: M1 neutral freshwater vertical
 
 **Visible result:** from this repository, one command creates the canonical freshwater starting state, executes the recorded action sequence, writes a human-readable and machine-readable causal trace, and verifies exact replay.
 
@@ -141,6 +142,24 @@ A scripted chooser is sufficient for M1 because the uncertainty is consequence c
 
 **Failure and reset boundary:** if the neutral seam requires named Castaway branches, duplicates state/time authority, or cannot reproduce the donor trace without weakening evidence, stop widening the abstraction and revise [the core contract](../docs/contracts/core-v0.md). The donor remains intact and authoritative.
 
+### Active slice: M2 genuine policy consumer authorization gate
+
+**State:** `human_decision_required`.
+
+**Visible result if authorized:** one bounded, traced call through the shared
+`llm_client` selects from the existing M1 observation/affordance seam; the
+neutral engine alone validates and determines effects. The retained receipt
+must expose route, model, usage/cost, selected action, authoritative transition,
+and replay without expanding consequence authority.
+
+**Authority required:** the user must explicitly authorize model execution and
+set or accept a spend cap. No call, adapter implementation, or credential use
+is authorized by M1 completion alone.
+
+**Failure boundary:** if the shared client cannot provide attributable route and
+usage evidence, or if the policy path requires model-authored state mutation,
+do not call a provider; replan the adapter boundary first.
+
 ## Later work
 
 M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a plugin system, economics, organizational simulation, continuous terrain, or Concordia integration before M1 evidence identifies a real seam.
@@ -168,7 +187,7 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 | Castaway behavior exists | donor tests and evidence at pinned revision | not yet adopted here | external evidence |
 | Freshwater behavior is characterized locally | [pinned fixture](../tests/fixtures/castaway/freshwater-v0.json) and extractor `--check` | expected donor behavior only | established |
 | Neutral positive freshwater path works | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence, executable probes, and focused tests | scripted path; no LLM-policy claim | established |
-| Full neutral freshwater core works | complete [M1 machine evidence](../evidence/m1/freshwater-v0.json), [human review](../evidence/m1/freshwater-v0.md), checks, and replay | revision-bound maturity receipt remains | verifying |
+| Full neutral freshwater core works | complete [M1 machine evidence](../evidence/m1/freshwater-v0.json), [human review](../evidence/m1/freshwater-v0.md), checks, replay, and validated [end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) | scripted chooser; no LLM-policy or generality claim | established |
 | LLM policy works through neutral seam | M2 provider trace | no claim from scripted M1 | conditional |
 
 ## Risks and needs resolution
@@ -186,7 +205,9 @@ M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a
 
 ## Human decisions
 
-None required for M0 or M1. Seeded randomness, the second reference world, paid model calls, deployment, and publication remain later human boundaries.
+None required for completed M0 or M1. M2 model execution and its spend cap are
+now the immediate human boundary. Seeded randomness, the second reference
+world, deployment, and publication remain later human boundaries.
 
 ## Refresh and reset triggers
 
@@ -194,7 +215,6 @@ Refresh this roadmap after a committed outcome-bearing slice, a material user co
 
 ## Exact next action
 
-Commit the complete M1 implementation and combined evidence, run the bounded
-journey at that exact revision, validate an `EndToEndObservationV1` maturity
-receipt, and only then promote M1 and expose M2's model-call authority as the
-next human boundary.
+Await explicit user authorization for one bounded M2 model-policy probe and a
+spend cap. Once authorized, bound the policy adapter against the frozen M1
+observation/action seam before making any provider call.

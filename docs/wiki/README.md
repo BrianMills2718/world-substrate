@@ -54,9 +54,11 @@ Read one route, then the relevant code or evidence. Do not load every donor repo
 - Castaway has a working deterministic survival/physical prototype and retained evidence in its donor repository.
 - Cybernetic Influence V3 has implemented authoring, canonical-world, typed transition, Concordia lifecycle, evidence, and analysis capabilities for socio-technical worlds.
 - Linguistic Core has a large reviewed vocabulary source, but not executable mechanics.
-- The positive neutral freshwater path, explicit overfill/unsupported/malformed negatives, and compact human review trace are implemented. A revision-bound maturity receipt remains before M1 promotion.
+- M1 is promoted: the positive neutral freshwater path, explicit overfill/unsupported/malformed negatives, compact human review trace, and revision-bound maturity receipt all pass.
 
-The last point is the first implementation frontier. Documentation presence is not implementation.
+The next frontier is M2's genuine policy consumer. It remains inactive until
+the user authorizes a bounded model call and spend cap; M1's scripted chooser
+does not establish policy competence.
 
 ## Sources and evidence
 
@@ -118,7 +120,8 @@ The current outcome-bearing artifacts are the locally runnable
 [transfer](../../evidence/m1/transfer-v0.json) traces and replays. The final
 positive trace and the combined [machine](../../evidence/m1/freshwater-v0.json)
 and [human](../../evidence/m1/freshwater-v0.md) receipts cover M1's executable
-journeys; promotion still requires the revision-bound end-to-end gate.
+journeys. The validated [end-to-end observation](../../evidence/m1/end-to-end-observation-v1.json)
+binds the promotion claim to exact revision `55725233f65af625edfc0a09067de3aa97d34efe`.
 
 ## Roadmap
 

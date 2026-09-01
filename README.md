@@ -20,7 +20,7 @@ Start with:
 
 ## Current status
 
-The project authority and design are established. The neutral runtime now reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Its retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid/heat/carrying/ownership systems, replays all 22 commands exactly, and distinguishes precondition failure from unsupported and malformed actions. M1 implementation evidence is complete; revision-bound promotion validation is the remaining gate.
+M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid/heat/carrying/ownership systems, replays all 22 commands exactly, and distinguishes precondition failure from unsupported and malformed actions. The revision-bound [end-to-end observation](evidence/m1/end-to-end-observation-v1.json) passed the maturity gate. M2 requires explicit model-call authority before implementation.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 

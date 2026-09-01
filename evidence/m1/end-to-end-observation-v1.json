@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "record_type": "end_to_end_observation",
+  "observation_id": "E2E-world-substrate-m1-5572523",
+  "criterion_id": "M1-neutral-freshwater-vertical",
+  "status": "pass",
+  "scope": "The complete local scripted Castaway freshwater journey, three discriminating negative action paths, retained causal trace, and exact replay at the observed World Substrate revision.",
+  "observed_at": "2026-09-01T01:12:22Z",
+  "producer": "Codex local execution",
+  "source_revision": "55725233f65af625edfc0a09067de3aa97d34efe",
+  "execution_context": {
+    "target": "local Python World Substrate runtime",
+    "configuration_ref": "reference_worlds/castaway/freshwater-v0.json",
+    "dependency_set_ref": "references/sources.json",
+    "route": "python scripts/run_freshwater_probe.py --check"
+  },
+  "test_selection": {
+    "criterion_id": "M1-neutral-freshwater-vertical",
+    "changed_boundary": "One neutral submission, transition, process, evidence, and replay path now owns the complete freshwater scenario rather than donor-private execution.",
+    "failure_hypothesis": "The neutral runtime could appear green while diverging from a donor checkpoint, losing liquid or vessel identity, mutating state on rejection, conflating invalid and unsupported actions, or failing exact replay.",
+    "discriminating_probe": "Execute the 22-command fill-through-give journey against the pinned fixture, compare semantic checkpoint and ledger fields, then execute overfill, valid unsupported pressure, and malformed fill envelopes and replay all paths.",
+    "decision_if_pass": "Promote M1 and make M2 policy-consumer authorization the next planning boundary.",
+    "decision_if_fail": "Keep M1 active and repair the first divergent transition, evidence surface, or replay path before policy integration."
+  },
+  "journey": {
+    "starting_state": "Two colocated living actors, one clay pot, one metal cup, a finite pathogen-bearing freshwater source, a finite-fuel fire, explicit carrying state, and registered neutral rules/processes.",
+    "input": "The scripted controller selects discovered fill, heat, unheat, pour, drink, take, and give actions while the runner advances fifteen deterministic ticks; separate engines receive the three negative envelopes.",
+    "steps": [
+      "Verify the committed transfer trace still matches the executable positive probe.",
+      "Compare final tick, actors, vessels, physical ledger, fuel, and vessel identity with the pinned donor checkpoint.",
+      "Replay all 22 positive commands and require identical material hash and events.",
+      "Submit an overfill and require atomic precondition_failed with exact replay.",
+      "Submit a valid unregistered pressure envelope and require atomic unsupported_action with exact replay.",
+      "Submit a malformed registered fill envelope and require atomic invalid_action with exact replay.",
+      "Run the self-contained project gate, 24 tests, Ruff, and mypy at the same revision."
+    ],
+    "correlation_id": "M1-5572523-freshwater",
+    "observation_window": {
+      "started_at": "2026-09-01T01:12:19Z",
+      "ended_at": "2026-09-01T01:12:22Z"
+    }
+  },
+  "required_surfaces": [
+    "cli",
+    "engine",
+    "persistence",
+    "source",
+    "trace"
+  ],
+  "surface_observations": [
+    {
+      "surface": "cli",
+      "status": "observed",
+      "evidence_ref": "scripts/run_freshwater_probe.py --check",
+      "inspected_at": "2026-09-01T01:12:22Z",
+      "observation": "The executable reported that both retained M1 evidence artifacts match the bounded probe."
+    },
+    {
+      "surface": "engine",
+      "status": "observed",
+      "evidence_ref": "evidence/m1/freshwater-v0.json",
+      "inspected_at": "2026-09-01T01:12:22Z",
+      "observation": "The positive semantic checkpoint and ledger matched, all three negative statuses were distinct and atomic, and every replay was exact."
+    },
+    {
+      "surface": "persistence",
+      "status": "observed",
+      "evidence_ref": "evidence/m1/transfer-v0.json#replay",
+      "inspected_at": "2026-09-01T01:12:22Z",
+      "observation": "The retained 22-command trace reproduced the same material hash and complete event sequence."
+    },
+    {
+      "surface": "source",
+      "status": "observed",
+      "evidence_ref": "tests/fixtures/castaway/freshwater-v0.json",
+      "inspected_at": "2026-09-01T01:12:22Z",
+      "observation": "The comparison used the committed fixture derived from Castaway revision da5ccb46fa536505bbc0235a4157c648c8bb4bcb."
+    },
+    {
+      "surface": "trace",
+      "status": "observed",
+      "evidence_ref": "evidence/m1/freshwater-v0.md",
+      "inspected_at": "2026-09-01T01:12:22Z",
+      "observation": "The compact human review exposes the final state, conservation/treatment results, identity result, replay result, and all negative outcomes."
+    }
+  ],
+  "unexpected_events": [],
+  "outcome_kind": "system_behavior",
+  "outcome": {
+    "observed_result": "The complete M1 scripted journey and all three discriminating negatives passed at revision 55725233f65af625edfc0a09067de3aa97d34efe.",
+    "state_change": "The clay pot ended at tick 15 owned by Friday with 728 ml of pathogen-free water; the ledger accounted for treatment, evaporation, drinking, heat, and exact replay, while rejected envelopes made no material change.",
+    "evidence_ref": "evidence/m1/freshwater-v0.json"
+  },
+  "limitations": [
+    "The controller is scripted and this receipt makes no LLM-policy competence claim.",
+    "The donor comparison is semantic rather than raw-hash equality because the state and event schemas intentionally differ.",
+    "One physical reference vertical does not establish cross-domain reuse, scale, deployment, or real-world physical calibration.",
+    "The maturity observation is local and causes no model call or external side effect."
+  ]
+}
