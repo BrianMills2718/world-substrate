@@ -1,6 +1,6 @@
 # World Substrate
 
-Build a general, inspectable world substrate in which LLM or human policies choose typed actions and executable rules alone determine persistent consequences. The project expands behavioral breadth through shared state, reusable rule families, ongoing processes, and content composition.
+Build a persistent, observable world substrate in which LLM or human policies express semantically grounded intents and installed mechanics alone determine canonical consequences. Expand behavioral breadth through shared state, Linguistic Core bindings, reusable mechanics, autonomous processes, installed institutions, and frozen world profiles.
 
 ## Start here
 
@@ -15,26 +15,27 @@ Before editing a scoped subtree, read its local `CLAUDE.md`:
 
 ## Invariants
 
-- One canonical world state owns material truth.
-- Policies choose; registered rules validate and apply consequences.
-- Ontology terms and content properties never imply unimplemented effects.
-- Actions are generated from current state and explicit rule schemas.
-- Ongoing processes use the same persistent objects and declared sources/sinks.
-- Unsupported mechanisms fail visibly without state mutation.
-- Actor observations remain distinct from observer truth and model explanations.
-- Every mutation has causal evidence; replay uses pinned inputs without model calls.
-- Seeded randomness, if later accepted, must remain rule-owned and exactly replayable.
+- One canonical persistent world owns material truth.
+- Policies and natural-language descriptions do not directly mutate that truth.
+- Linguistic Core identifies senses and participant roles; installed mechanics supply effects.
+- Every state-changing transition identifies a causal bearer and one local authority.
+- Mechanics, permissions, and institutions propose effects; one enclosing transition commits causally coupled writes.
+- Declared read and write scopes are enforced at state paths.
+- Composite and analytic descriptions do not duplicate their underlying effects.
+- Unsupported mechanics and interactions fail visibly without partial mutation.
+- Resident-agent cognition remains distinct from canonical world state and post-run analysis.
+- Every attempted transition produces sufficient causal trace for inspection.
+- Exact replay is an optional M1/debugging capability, not a universal requirement.
+- Accounting and conservation invariants are goal-relative to the selected world and mechanic.
 
 ## Current boundary
 
-This repository is the canonical home for the initiative. M1's neutral
-freshwater runtime is promoted: its registered deterministic rules and
-processes reproduce the bounded Castaway vertical, retain causal evidence, and
-replay from pinned inputs in a fresh process. The active roadmap frontier is
-the M2 policy-consumer authorization gate; do not implement or call a model
-without explicit model-execution authority and a spend cap. Castaway remains
-the implementation donor beyond the adopted M1 path. Cybernetic Influence V3,
-Linguistic Core, the Dynamical Laboratory specification, and shared
-`llm_client` are sources or dependencies, not competing project authorities.
+This repository is the canonical home for the initiative. M1's neutral freshwater runtime remains promoted: its registered deterministic rules and processes reproduce the bounded Castaway vertical, retain causal evidence, and replay from pinned inputs in a fresh process. Those are M1 implementation facts, not universal architecture requirements.
 
-Make reversible local changes without repeated approval. Do not deploy, publish, spend on model calls, mutate donor repositories, or relax the deterministic-consequence boundary without explicit authorization. Never create a special handoff document; improve the normal root-to-wiki-to-authority route instead.
+The active roadmap frontier is semantic/mechanical integration. Audit the promoted vertical, bind `give` through Linguistic Core, derive ordinary exchange without a second state-writing mechanic, and establish the proposed transition envelope. Do not implement open-ended mechanics authoring before semantic binding, local authority, persistent effects, observability, and singular commit are demonstrable.
+
+Mechanics agents may later author declarative packages or executable source offline, subject to review, interaction assays, installation, and a frozen world profile. Runtime invention or revision of laws is deferred. Do not call a model without explicit model-execution authority and a spend cap.
+
+Castaway remains the implementation donor beyond the adopted M1 path. Linguistic Core and the classified research repositories are sources or dependencies, not competing authorities or code-adoption instructions.
+
+Make reversible changes without repeated approval. Do not deploy, publish, spend on model calls, mutate donor repositories, or install runtime-generated mechanics without explicit authorization. Never create a special handoff document; improve the normal root-to-wiki-to-authority route instead.

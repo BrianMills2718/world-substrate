@@ -8,7 +8,7 @@ Reference worlds prove that the shared substrate supports real end-to-end behavi
 
 **Donor:** `../castaway-world/worktrees/world-systems` at the pinned revision in `references/sources.json`.
 
-**First vertical:** one persistent clay pot, supported by a separate drinking cup, participates in ownership, carrying, finite liquid transfer, shared finite heating, boiling, evaporation, cooling, damage, pouring, drinking, and transfer between actors.
+**First vertical:** one persistent clay pot, supported by a separate drinking cup, participates in bounded operational possession/control, carrying, finite liquid transfer, shared finite heating, boiling, evaporation, cooling, damage, pouring, drinking, and transfer between actors. The M1 `owner` field is not a general legal-ownership model.
 
 The registered fill-through-transfer consumer path now runs and replays through
 the neutral core without Castaway-specific dispatch. Its retained
@@ -25,6 +25,6 @@ combined [machine](../evidence/m1/freshwater-v0.json) and
 
 ## Later reference worlds
 
-An economic or socio-technical world will be selected after the first vertical. It must reuse the same canonical state, rule, process, affordance, observation, event, and replay seams while adding at least one genuinely new mechanism family.
+A materially different second world will be selected after the semantic/mechanical and mechanics-authoring verticals. It must reuse the canonical-state, semantic-binding, transition-envelope, mechanic-profile, observation, and trace seams while adding at least one genuinely new mechanism family. Exact replay is optional.
 
 No later reference world is active yet.
