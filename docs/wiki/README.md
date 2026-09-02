@@ -3,12 +3,14 @@ schema_version: project-wiki/v1
 type: ProjectWiki
 role: derived-navigation
 status: active
-reviewed_through: 2026-08-31
+reviewed_through: 2026-09-02
 authority_refs:
   - ../../README.md
   - ../../roadmap/README.md
   - ../architecture.md
   - ../decisions/001-project-scope.md
+  - ../decisions/002-observability-and-replay.md
+  - ../decisions/003-semantic-mechanical-boundary.md
 ---
 
 # World Substrate project wiki
@@ -17,9 +19,9 @@ This is the single orientation surface for the project. It explains the current 
 
 ## What this project is
 
-World Substrate is a general executable environment for persistent worlds. LLM or human policies choose among state-derived actions. Registered rules and ongoing processes alone validate and change canonical state.
+World Substrate is a persistent, observable simulation substrate. LLM or human policies express semantically grounded intents. Linguistic Core identifies senses and participant roles. Installed mechanics with explicit local authority determine and commit canonical consequences.
 
-The intended result is a wide **compositional** action space rather than an enumerated list of natural-language commands. A vessel with capacity, material, contents, temperature, ownership, and location can participate in many independent rule families because those systems read the same persistent object.
+The intended result is a wide compositional space rather than an enumerated list of natural-language commands or one bespoke mechanic per predicate. A persistent vessel can participate in liquid, heat, containment, material, carrying, and rights mechanics because those mechanics act on the same object under declared scopes.
 
 ## Start here
 
@@ -27,104 +29,90 @@ The intended result is a wide **compositional** action space rather than an enum
 | --- | --- |
 | Current direction or next work | [Roadmap](../../roadmap/README.md) |
 | Enduring system boundaries | [Architecture](../architecture.md) |
-| First implementation interface | [Core contract](../contracts/core-v0.md) |
+| Implemented M1 interface | [Core contract v0](../contracts/core-v0.md) |
+| Proposed semantic binding | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
+| Proposed mechanics-agent package | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
+| Proposed commit boundary | [Transition envelope v0](../contracts/transition-envelope-v0.md) |
+| Product evidence goals | [Decision 002](../decisions/002-observability-and-replay.md) |
+| Semantic and causal boundary | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) |
 | Why neighboring projects are not the authority | [Source dispositions](../source-dispositions.md) |
 | Consolidated research findings | [Research synthesis](../research/synthesis.md) |
-| Human-set and reversible decisions | [Project-scope decision](../decisions/001-project-scope.md) |
 | Reference-world expectations | [Reference worlds](../../reference_worlds/README.md) |
-
-Read one route, then the relevant code or evidence. Do not load every donor repository.
 
 ## Concepts and terminology
 
-- **Ontology:** identifiers, categories, properties, and relations used to describe what exists. It does not execute behavior.
-- **Content:** particular materials, objects, recipes, locations, actors, and initial states.
-- **Rule family:** an executable action or process over categories/properties, such as transfer between compatible containers.
-- **Affordance:** one rule instance currently available to one actor, derived from canonical state. It establishes neither general reachability beyond that state nor reliable competency across variation.
-- **Process:** a rule that continues when authoritative time advances, such as burning, cooling, growth, or debt accrual.
-- **Canonical state:** the only material world truth. Prompts, narratives, UI views, and analysis are projections.
-- **Observation:** an actor-authorized, intentionally lossy projection of canonical state; it is not a second state authority.
-- **Causal closure:** every consequence claimed as mechanically enforced has a registered guard, transition, process, or declared source/sink.
+- **Canonical state:** the only material world truth. Prompts, narratives, UI views, resident-agent private state, and analysis are not competing authorities.
+- **Semantic binding:** a Linguistic Core predicate sense, participant-role binding, causal classification, and—when causal—a binding to an installed mechanic.
+- **Causal bearer:** the represented agent, process, disposition, institution, or exogenous input whose existence changes what the world can do next.
+- **Mechanic:** an installed rule or process with declared applicability, local reads/writes, proposed effects, invariants, limits, and trace behavior.
+- **Mechanic profile:** the validated set of mechanics and bindings frozen for a simulation run.
+- **Primitive action:** an independently attempted action, such as one agent giving an object.
+- **Composite event:** a description of multiple events, such as two reciprocal gives classified as exchange. It normally performs no additional state change.
+- **Installed institution:** a represented causal bearer, such as escrow, whose enforced rules alter affordances or transitions.
+- **Affordance:** one installed mechanic currently available to one actor, derived from canonical state. It establishes neither broad reachability nor reliable competency.
+- **Observation:** an actor-authorized, intentionally lossy projection of canonical state.
+- **Declared enforcement coverage:** whether every consequence the mechanic author declared is bound to an enforceable guard, transition, or process.
+- **Causal-closure assay:** fallible dependency and interaction review that searches for consequential state the author failed to declare.
 - **Reference world:** a bounded end-to-end world that exercises shared substrate contracts without owning a private engine.
+
+## Four causal layers
+
+1. Substrate physics and autonomous processes.
+2. Installed institutions.
+3. Resident-agent cognition.
+4. Derived analytic interpretation.
+
+Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily stay inside the resident-agent runtime. Analysis can classify exchange, trust, cooperation, or collective competence without causing those patterns again. Either layer may become mechanically explicit only when a selected world represents a causal bearer and binds it to an installed mechanic.
 
 ## What exists now?
 
-- The project goal, architecture, core contract, source dispositions, implementation roadmap, and pinned freshwater expected-behavior fixture are established here.
-- The neutral consumer path now reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes. Discovery, minimal observation, causal events, atomic rejection, semantic donor comparison, persistent cross-system vessel identity, and exact 22-command replay run here; the [fresh-process receipt](../../evidence/m1/transfer-replay-v1.json) reconstructs that replay from a versioned snapshot, pinned registry/content identity, and commands rather than hidden live engine state.
-- Castaway has a working deterministic survival/physical prototype and retained evidence in its donor repository.
-- Cybernetic Influence V3 has implemented authoring, canonical-world, typed transition, Concordia lifecycle, evidence, and analysis capabilities for socio-technical worlds.
-- Linguistic Core has a large reviewed vocabulary source, but not executable mechanics.
-- M1 is promoted: the positive neutral freshwater path, explicit overfill/unsupported/malformed negatives, compact human review trace, and revision-bound maturity receipt all pass.
+- M1 is promoted through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes.
+- Discovery, observation, causal events, atomic rejection, semantic donor comparison, persistent cross-system vessel identity, and exact 22-command replay work in the implemented `core-v0` path.
+- Exact replay remains valid M1 evidence but is not a future product requirement.
+- The semantic/mechanical binding, mechanic profile, and transition envelope are proposed contracts, not implemented claims.
+- Linguistic Core is the selected semantic interface. Its coverage of persistent state, qualities, quantities, rights, and institutional relations still requires a donor audit.
+- Pre-run agent-assisted mechanics authoring is a central hypothesis. Runtime law revision remains deferred.
 
-The next frontier is M2's genuine policy consumer. It remains inactive until
-the user authorizes a bounded model call and spend cap; M1's scripted chooser
-does not establish policy competence.
+## Current frontier
 
-## Sources and evidence
+The active slice audits the promoted M1 world against the new boundaries and creates one thin give/exchange vertical:
 
-[Source dispositions](../source-dispositions.md) maps every material donor to an exact revision or file hash and states whether this project will reuse, adapt, depend on, or merely learn from it. The machine-readable record is [references/sources.json](../../references/sources.json).
+1. bind the existing `give` action to a Linguistic Core sense and roles;
+2. enforce local transition authority and expose the causal trace;
+3. treat ordinary exchange as a derived pattern of two independent gives;
+4. demonstrate that either participant may decline or renege; and
+5. prevent derived exchange from applying either transfer again.
 
-Donor repositories remain read-only during consolidation. A capability becomes part of World Substrate only after its consumer path runs here and its evidence is retained here.
-
-## Accepted authorities and decisions
-
-- [Roadmap](../../roadmap/README.md) owns project direction and active work.
-- [Architecture](../architecture.md) owns durable system boundaries.
-- [Core contract](../contracts/core-v0.md) owns the first runtime seam.
-- [Project-scope decision](../decisions/001-project-scope.md) records the user-approved goal and exclusions.
-- Code and tests, once present, own implemented behavior.
-- Revision-bound evidence owns observed claims.
-
-## Working context
-
-Castaway is the first reference world because it supplies a concrete composition test: the same vessel participates in ownership, carrying, liquid transfer, heating, damage, and ongoing processes. Cybernetic Influence V3 is the strongest source for authoring and causal-closure ideas, but its Concordia-first socio-technical product and permissive coarse/LLM transition authorities are not automatically inherited.
-
-## Needs resolution
-
-These choices are intentionally deferred until evidence makes them relevant:
-
-- whether seeded stochastic transition rules belong in the core;
-- which second reference world best proves cross-domain reuse;
-- what local-object, actor-count, prompt-size, or throughput target defines the first scale milestone;
-- whether Concordia adds value after the neutral deterministic vertical exists.
-
-These are later-stage decisions. M1 is complete; M2 remains blocked only by its
-explicit model-call authority and spend-cap decision.
+A policy-provider call is an enabling experiment rather than the main research milestone. It still requires explicit authority and a spend cap.
 
 ## Architecture and workflow
 
 ```text
-ontology + content
-       |
-       v
-registered action/process rules <--- authoring + causal-closure validation
-       |
-       v
-canonical persistent world -----> causal events + snapshots + replay
-       ^
-       |
-bounded actor observation + generated affordances
-       ^
-       |
-LLM, human, or scripted policy chooses only
+semantic intent or autonomous trigger
+        |
+        v
+Linguistic Core sense + role binding
+        |
+        v
+installed local mechanic -> proposed effects -> validation -> one commit/refusal
+        |                                              |
+        v                                              v
+bounded observation                         persistent state + causal trace
+                                                       |
+                                                       v
+                                            detachable analytic views
 ```
 
-See [Architecture](../architecture.md) for boundaries and the [core contract](../contracts/core-v0.md) for the first executable path.
+## Sources, evidence, and authority
 
-## Human-reviewable artifacts
+[Source dispositions](../source-dispositions.md) classifies material donors and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donors are design, implementation, or failure-analysis inputs; they are not code-adoption instructions.
 
-The current outcome-bearing artifacts are the locally runnable
-[first-fill](../../evidence/m1/first-fill-v0.json) and
-[boiling](../../evidence/m1/boiling-v0.json),
-[pour](../../evidence/m1/pour-v0.json), and
-[drink](../../evidence/m1/drink-v0.json), and
-[transfer](../../evidence/m1/transfer-v0.json) traces and the retained
-[fresh-process replay receipt](../../evidence/m1/transfer-replay-v1.json). The final
-positive trace and the combined [machine](../../evidence/m1/freshwater-v0.json)
-and [human](../../evidence/m1/freshwater-v0.md) receipts cover M1's executable
-journeys. The validated [end-to-end observation](../../evidence/m1/end-to-end-observation-v1.json)
-binds the promotion claim to the exact implementation revision recorded in the receipt.
+- [Roadmap](../../roadmap/README.md) owns project direction and active work.
+- [Architecture](../architecture.md) owns durable system boundaries.
+- Accepted decisions own human-set doctrine.
+- `core-v0` owns the implemented M1 seam.
+- Proposed contracts own target interfaces only.
+- Code and tests own implemented behavior.
+- Revision-bound evidence owns observed claims.
 
-## Roadmap
-
-Use [the canonical roadmap](../../roadmap/README.md) for current work, evidence, decisions, and promotion triggers.
+The current outcome-bearing artifacts remain the M1 traces, replay receipt, combined [machine](../../evidence/m1/freshwater-v0.json) and [human](../../evidence/m1/freshwater-v0.md) receipts, and validated [end-to-end observation](../../evidence/m1/end-to-end-observation-v1.json).
