@@ -29,7 +29,12 @@ Castaway's other physical rules or product-specific state.
 
 ## Current-source cautions
 
-- `castaway-world-systems` is a branch worktree of the original Castaway Git repository and has no configured remote.
+- The `world-systems` branch is a linked worktree of `castaway-world` at
+  `castaway-world/worktrees/world-systems`, not a separate repository. Both
+  `castaway-world` and this worktree's branch are now pushed to
+  `github.com/BrianMills2718/castaway-world` (private backup); the pinned
+  donor revisions cited above remain recoverable even if the local checkout
+  is lost.
 - The inspected `onto-canon6` and shared `llm_client` worktrees contain unrelated uncommitted changes. Only their committed revision or an exact content-hashed artifact may be used.
 - Cybernetic Influence V3's archived topological-world Slice 8 is historical evidence. Its current goal, roadmap, ADRs, plans, and `general_simulation` implementation are the relevant sources.
 - Local paths are conveniences. Revisions and hashes, not machine paths, identify source content.
