@@ -41,6 +41,7 @@ python scripts/run_drink_probe.py --check
 python scripts/run_transfer_probe.py --check
 python scripts/replay_transfer_evidence.py --check
 python scripts/run_freshwater_probe.py --check
+python scripts/run_give_exchange_probe.py --check
 ```
 
 The default project check is self-contained and uses committed fixtures. When the sibling donor repositories are available, also run `python scripts/check_project.py --with-donors`; the optional donor check reads pinned revisions rather than requiring their current checkouts to remain at those commits.

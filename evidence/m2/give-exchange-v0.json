@@ -1,0 +1,49 @@
+{
+  "accepted": true,
+  "binding": {
+    "binding_id": "binding.give.v0",
+    "causal_bearer": "giver",
+    "causal_class": "primitive_intentional_action",
+    "interpretation_limits": [
+      "Sense and roles are semantic description only; the installed mechanism.ownership.give mechanic alone validates arguments and computes every effect (carried over from the donor extraction's own review note).",
+      "This binding does not license an 'exchange' primitive: a reciprocal pair of independent give bindings may later be classified by world_substrate.exchange as a derived view. That classification performs no transfer and has no binding of its own."
+    ],
+    "mechanic_id": "mechanism.ownership.give",
+    "roles": {
+      "giver": "lc.role.donor",
+      "recipient": "lc.role.recipient",
+      "transferred_object": "lc.role.theme"
+    },
+    "sense_id": "lc:give_transfer",
+    "specialization": null
+  },
+  "classification_performed_no_transfer": true,
+  "derived_exchanges": [
+    {
+      "actor_a": "robinson",
+      "actor_b": "friday",
+      "binding": "derived; no binding_id of its own (semantic-mechanical-binding-v0.md)",
+      "classification": "exchange",
+      "event_id_a": "e00001",
+      "event_id_b": "e00002",
+      "vessel_a": "cup-robinson",
+      "vessel_b": "clay-pot"
+    }
+  ],
+  "event_count_after_classification": 2,
+  "event_count_after_two_gives": 2,
+  "final_ownership": {
+    "clay-pot": "actor:robinson",
+    "cup-robinson": "actor:friday"
+  },
+  "give_events": [
+    {
+      "event_id": "e00001",
+      "status": "accepted"
+    },
+    {
+      "event_id": "e00002",
+      "status": "accepted"
+    }
+  ]
+}

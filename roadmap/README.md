@@ -57,6 +57,7 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
 - This repository owns the project goal, decisions, architecture, contracts, source dispositions, and roadmap.
 - M1 is promoted at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
 - `core-v0` is an implemented M1 contract. The semantic binding, mechanic profile, and transition envelope v0 documents are proposed target contracts.
+- M2 has one implemented, tested slice: `give` is bound to the pinned Linguistic Core sense `lc:give_transfer` (`src/world_substrate/semantic.py`), and a derived, read-only exchange classification recognizes reciprocal `give` pairs without performing a second transfer (`src/world_substrate/exchange.py`). Verified by `tests/test_give_exchange.py` and `scripts/run_give_exchange_probe.py --check`. This does not close M2: the M1 audit items (owner-as-possession-vs-title, event-to-observability-field mapping, current-check classification) remain undone.
 - Linguistic Core is the semantic interface for senses and roles, not an executable mechanics source.
 - Consequences require a represented causal bearer and installed mechanic.
 - Composite and analytic descriptions ordinarily remain derived.
