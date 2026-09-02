@@ -2,6 +2,8 @@
 
 This page compiles revision-bound findings that materially shape World Substrate. It is research input, not a second roadmap or a statement that donor code has been adopted. Exact revisions are recorded in [the manifest](../../references/sources.json).
 
+The fuller reasoning is preserved in the [strategy-session ledger](world-substrate-strategy-session.md), [Agent Ecology 2 review](agent-ecology2-review.md), and [Cybernetic Influence lineage review](cybernetic-influence-lineage-review.md). [Discussion traceability](discussion-traceability.md) marks each material proposition as accepted, active, proposed, provisional, open, deferred, rejected, or implemented and points to its current authority.
+
 ## Dwarf Fortress lesson
 
 Dwarf Fortress did not obtain breadth from one small universal ontology. Its action space comes from a large semantic substrate, parameterized content, general systems, procedural instantiation, persistence, and accumulated interactions.

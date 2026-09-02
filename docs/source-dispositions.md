@@ -35,6 +35,17 @@ The other repositories are idea, theory, contract, or failure donors. Their sour
 - Collective Competence supplies the anti-double-counting rule: a measured outcome or macro-pattern must not be inserted back as another mechanism.
 - Data Contracts supports explicit composition and observability surfaces, not code adoption.
 
+## Preserved session research
+
+The detailed reasoning behind the current dispositions is preserved as non-authoritative research:
+
+- [World Substrate theory and strategy session](research/world-substrate-strategy-session.md);
+- [Agent Ecology 2 targeted review](research/agent-ecology2-review.md);
+- [Cybernetic Influence lineage review](research/cybernetic-influence-lineage-review.md); and
+- [discussion traceability](research/discussion-traceability.md).
+
+These records preserve alternatives, objections, and failure examples. Accepted decisions, the roadmap, contracts, code, and evidence retain their narrower authority.
+
 ## Current-source cautions
 
 - Donor revisions identify the inspected evidence; later donor changes do not silently change World Substrate doctrine.

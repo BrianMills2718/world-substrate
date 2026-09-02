@@ -37,6 +37,7 @@ The intended result is a wide compositional space rather than an enumerated list
 | Semantic and causal boundary | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) |
 | Why neighboring projects are not the authority | [Source dispositions](../source-dispositions.md) |
 | Consolidated research findings | [Research synthesis](../research/synthesis.md) |
+| Full discussion lineage and disposition | [Discussion traceability](../research/discussion-traceability.md) |
 | Reference-world expectations | [Reference worlds](../../reference_worlds/README.md) |
 
 ## Concepts and terminology
