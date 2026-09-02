@@ -57,7 +57,8 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
 - This repository owns the project goal, decisions, architecture, contracts, source dispositions, and roadmap.
 - M1 is promoted at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
 - `core-v0` is an implemented M1 contract. The semantic binding, mechanic profile, and transition envelope v0 documents are proposed target contracts.
-- M2 has one implemented, tested slice: `give` is bound to the pinned Linguistic Core sense `lc:give_transfer` (`src/world_substrate/semantic.py`), and a derived, read-only exchange classification recognizes reciprocal `give` pairs without performing a second transfer (`src/world_substrate/exchange.py`). Verified by `tests/test_give_exchange.py` and `scripts/run_give_exchange_probe.py --check`. This does not close M2: the M1 audit items (owner-as-possession-vs-title, event-to-observability-field mapping, current-check classification) remain undone.
+- M2 has one implemented, tested slice: `give` is bound to the pinned Linguistic Core sense `lc:give_transfer` (`src/world_substrate/semantic.py`), and a derived, read-only exchange classification recognizes reciprocal `give` pairs without performing a second transfer (`src/world_substrate/exchange.py`). Verified by `tests/test_give_exchange.py` and `scripts/run_give_exchange_probe.py --check`.
+- The M2 M1-audit is complete: [docs/audits/m2-give-path-audit.md](../docs/audits/m2-give-path-audit.md). Findings: `owner` is bounded possession/control only, never legal title; no transition effect is committed before its enclosing action succeeds (verified structurally in both `Engine.apply` and `Engine.advance`); events cover 5 of Decision 002's 8 observability fields directly, with 2 real gaps (no observation payload, no bound semantic sense/roles attached to an event) and 1 partial gap (mechanic yes, authority/bearer no) — closing these is a `core-v0` schema change, left for a future slice; only 2 of 10 `give`/`take` checks are substrate-universal (existence, revision-currency), the rest are this world's goal-relative content; 6 of 7 M1 action kinds (`fill`/`heat`/`unheat`/`pour`/`drink`/`take`) still have no semantic binding. This closes M2's audit scope; M2 itself is not fully closed by an audit alone.
 - Linguistic Core is the semantic interface for senses and roles, not an executable mechanics source.
 - Consequences require a represented causal bearer and installed mechanic.
 - Composite and analytic descriptions ordinarily remain derived.
@@ -129,13 +130,13 @@ The later ordering is conditional. M3–M5 may be reordered after M2 evidence an
 - a trace showing that one participant can decline or renege; and
 - no second transfer caused by the derived exchange classification.
 
-**M1 audit included in the slice:**
+**M1 audit included in the slice:** complete, [docs/audits/m2-give-path-audit.md](../docs/audits/m2-give-path-audit.md).
 
-- document whether current `owner` means bounded operational possession/control rather than universal legal title;
-- identify any transition effects committed before the enclosing action succeeds;
-- map current events to the proposed observability fields;
-- identify which current checks are goal-relative M1 invariants rather than universal substrate laws; and
-- record the gap between current action IDs and Linguistic Core sense/role bindings.
+- document whether current `owner` means bounded operational possession/control rather than universal legal title; — done: possession/control only.
+- identify any transition effects committed before the enclosing action succeeds; — done: none, structurally.
+- map current events to the proposed observability fields; — done: 5 of 8 covered, 2 gaps, 1 partial gap.
+- identify which current checks are goal-relative M1 invariants rather than universal substrate laws; and — done: 2 of 10 universal, rest goal-relative.
+- record the gap between current action IDs and Linguistic Core sense/role bindings. — done: 1 of 7 action kinds bound (`give`).
 
 **Failure boundary:** if the proposed semantic layer requires a new top-level ontology before donor coverage is inspected, stop and perform the coverage audit. If exchange requires a second state-writing transfer path, keep it derived and repair the classification. If local write scope or singular commit cannot be enforced without revising `core-v0`, propose a versioned transition contract rather than silently changing the implemented M1 contract.
 
@@ -195,4 +196,4 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Audit the current M1 `give` path against the proposed semantic-binding and transition-envelope contracts. Produce the smallest versioned binding and trace that preserves the implemented transfer while making ordinary exchange a detachable derived view. Do not make a model call.
+The M2 M1-audit is complete: [docs/audits/m2-give-path-audit.md](../docs/audits/m2-give-path-audit.md). Its two real gaps — no observation payload and no bound Linguistic Core sense/roles attached to a causal event — are a `core-v0` schema change per the M2 failure boundary, not a silent edit. Propose that versioned transition contract before implementing it. Do not make a model call.

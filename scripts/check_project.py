@@ -35,6 +35,7 @@ REQUIRED = (
     "docs/research/agent-ecology2-review.md",
     "docs/research/cybernetic-influence-lineage-review.md",
     "docs/research/discussion-traceability.md",
+    "docs/audits/m2-give-path-audit.md",
     "roadmap/CLAUDE.md",
     "roadmap/README.md",
     "reference_worlds/CLAUDE.md",
