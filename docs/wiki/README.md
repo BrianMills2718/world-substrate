@@ -103,9 +103,11 @@ bounded observation                         persistent state + causal trace
                                             detachable analytic views
 ```
 
-## Sources, evidence, and authority
+## Sources and evidence
 
 [Source dispositions](../source-dispositions.md) classifies material donors and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donors are design, implementation, or failure-analysis inputs; they are not code-adoption instructions.
+
+## Accepted authorities and decisions
 
 - [Roadmap](../../roadmap/README.md) owns project direction and active work.
 - [Architecture](../architecture.md) owns durable system boundaries.
@@ -115,4 +117,26 @@ bounded observation                         persistent state + causal trace
 - Code and tests own implemented behavior.
 - Revision-bound evidence owns observed claims.
 
+## Working context
+
+Castaway remains the adopted M1 implementation and evidence donor. Linguistic Core is now the semantic interface. Cybernetic Influence, Agent Ecology, Data Contracts, and Collective Competence contribute bounded design or failure findings without becoming competing project authorities.
+
+The immediate work reuses the existing M1 `give` path to test semantic binding, primitive versus derived causation, local authority, and observability before open-ended mechanics authoring.
+
+## Needs resolution
+
+- the donor coverage of state relations, qualities, quantities/units, rights, and institutions;
+- the smallest mechanics representation that avoids family-specific compiler branches;
+- the first bounded adjacent mechanic for an offline authoring experiment;
+- conflict, precedence, revocation, and entity-replacement semantics; and
+- the second reference world.
+
+## Human-reviewable artifacts
+
 The current outcome-bearing artifacts remain the M1 traces, replay receipt, combined [machine](../../evidence/m1/freshwater-v0.json) and [human](../../evidence/m1/freshwater-v0.md) receipts, and validated [end-to-end observation](../../evidence/m1/end-to-end-observation-v1.json).
+
+The new decisions and proposed contracts are reviewable design artifacts, not runtime evidence.
+
+## Roadmap
+
+Use [the canonical roadmap](../../roadmap/README.md) for the active vertical, claim boundaries, conditional milestones, and exact next action.
