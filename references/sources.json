@@ -5,15 +5,15 @@
   "sources": {
     "castaway_world_systems": {
       "role": "reference_world_donor",
-      "local_path": "../castaway-world-systems",
+      "local_path": "../castaway-world/worktrees/world-systems",
       "repository": "castaway-world",
       "branch": "world-systems",
       "revision": "da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
       "remote": null,
       "disposition": "extract",
-      "freshwater_receipt_path": "../castaway-world-systems/docs/evidence/physical-world/freshwater.json",
+      "freshwater_receipt_path": "../castaway-world/worktrees/world-systems/docs/evidence/physical-world/freshwater.json",
       "freshwater_receipt_sha256": "fd61692c2f90f5abbf8e067e1a0b8e2dc84453964ec27a7b3f0947b1e7fecace",
-      "freshwater_run_path": "../castaway-world-systems/docs/evidence/physical-world/freshwater-run.json.gz"
+      "freshwater_run_path": "../castaway-world/worktrees/world-systems/docs/evidence/physical-world/freshwater-run.json.gz"
     },
     "castaway_main": {
       "role": "historical_reference_world",
@@ -36,7 +36,7 @@
       "local_path": "../active/onto-canon6",
       "revision": "83acffe4eb5b8bbab6dd0f9f4ce92678145490ec",
       "remote": "git@github.com-personal:BrianMills2718/onto-canon6.git",
-      "artifact_path": "../castaway-world-systems/content/linguistic-core-subset.json",
+      "artifact_path": "../castaway-world/worktrees/world-systems/content/linguistic-core-subset.json",
       "content_subset_sha256": "c3a5559166d6bf1a11531fd763da52dafbefd44a6cde245ffa05bd6b85a81d9f",
       "worktree_caveat": "unrelated_uncommitted_changes_excluded",
       "disposition": "pinned_dependency"
@@ -49,7 +49,7 @@
     },
     "dwarf_fortress_report": {
       "role": "research_input",
-      "local_path": "../castaway-world-systems/docs/research/deep-research-report-dwarf-fortress.md",
+      "local_path": "../castaway-world/worktrees/world-systems/docs/research/deep-research-report-dwarf-fortress.md",
       "sha256": "f1cdd031b66f7cbff5877d34fafc0c3d9d327b250f8c09afd20e29c361361f04",
       "disposition": "research_only"
     },

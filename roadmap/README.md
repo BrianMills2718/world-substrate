@@ -101,7 +101,7 @@ observed trace
 
 **Donor inputs:**
 
-- `../castaway-world-systems/src/castaway/models.py`;
+- `../castaway-world/worktrees/world-systems/src/castaway/models.py`;
 - `engine.py`, `physical.py`, `discovery.py`, and `storage.py`;
 - relevant world/content definitions;
 - freshwater, saltwater, overfill, process, ownership, and replay checks;

@@ -699,7 +699,7 @@
     "branch": "world-systems",
     "content_hash": "fb06fe5f7ce9eaa2e060245dda001fb15a6ca8bf926d3c88887ed8f3a9afa5a3",
     "implementation_hash": "96d9838731be83a08b0a2f22cf0f182923127fe7ee3304d8f438ea0338af71b7",
-    "receipt_path": "../castaway-world-systems/docs/evidence/physical-world/freshwater.json",
+    "receipt_path": "../castaway-world/worktrees/world-systems/docs/evidence/physical-world/freshwater.json",
     "receipt_sha256": "fd61692c2f90f5abbf8e067e1a0b8e2dc84453964ec27a7b3f0947b1e7fecace",
     "repository": "castaway-world",
     "revision": "da5ccb46fa536505bbc0235a4157c648c8bb4bcb"

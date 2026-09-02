@@ -6,7 +6,7 @@ Reference worlds prove that the shared substrate supports real end-to-end behavi
 
 **State:** M1 promoted with positive, negative, replay, human-review, and revision-bound evidence.
 
-**Donor:** `../castaway-world-systems` at the pinned revision in `references/sources.json`.
+**Donor:** `../castaway-world/worktrees/world-systems` at the pinned revision in `references/sources.json`.
 
 **First vertical:** one persistent clay pot, supported by a separate drinking cup, participates in ownership, carrying, finite liquid transfer, shared finite heating, boiling, evaporation, cooling, damage, pouring, drinking, and transfer between actors.
 
