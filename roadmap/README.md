@@ -65,7 +65,15 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
 - Runtime invention or revision of world laws is deferred.
 - Donor repositories remain read-only idea, implementation, or failure-analysis sources unless a later consumer path explicitly adopts code.
 
-## Architecture and capability invariants
+## Applicable context
+
+- [Decision 001](../docs/decisions/001-project-scope.md) establishes the canonical project and executable-consequence boundary.
+- [Decision 002](../docs/decisions/002-observability-and-replay.md) makes observability required and exact replay optional outside M1.
+- [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) establishes Linguistic Core binding, causal bearers, derived composites, and offline mechanics authoring.
+- Castaway remains the adopted M1 implementation donor; other classified repositories remain idea, theory, contract, or failure-analysis donors.
+- The proposed contracts describe the target seam and do not claim implementation.
+
+## Constraints and authorities
 
 ```text
 observable attempt or trigger
@@ -87,7 +95,9 @@ observable attempt or trigger
 - Invariants and accounting are goal-relative to the selected representation.
 - Passing declared-contract checks does not prove the author named every consequential dependency.
 
-## Milestone horizon
+## Vertical slices and current work
+
+### Milestone horizon
 
 | Milestone | State | Inspectable output | Promotion or replan trigger |
 | --- | --- | --- | --- |
@@ -102,7 +112,7 @@ observable attempt or trigger
 
 The later ordering is conditional. M3–M5 may be reordered after M2 evidence and selection of the first bounded authoring scenario. The hard dependency is that semantic binding, persistent effects, observability, local authority, and singular commit work before open-ended mechanics authoring.
 
-## Active slice: M2 semantic/causal give vertical
+### Active slice: M2 semantic/causal give vertical
 
 **State:** `fully_specifiable_now`.
 
@@ -140,7 +150,18 @@ An agent-authored package must include semantic bindings, causal bearer, applica
 
 The compiler or installer can establish declared enforcement coverage. Causal closure remains a fallible assay because an author may omit a dependency entirely. Mechanics agents should inspect neighboring semantic state, search for unbound consequential relations, generate counterexamples, and label residual risk.
 
-## Evidence and claim boundaries
+## Decisions and assumptions
+
+| Choice | Disposition | Boundary |
+| --- | --- | --- |
+| Observability over universal replay | human-set in Decision 002 | product evidence |
+| Linguistic Core as semantic interface | human-set in Decision 003 | semantics, not effects |
+| Offline pre-run mechanics authoring | human-set direction | runtime law changes deferred |
+| Give/derived exchange as active vertical | reversible planning choice | replan from M2 evidence |
+| Later M3–M5 ordering | conditional | select from the first bounded authoring scenario |
+| Second reference-world domain | human decision later | no domain selected |
+
+## Evidence and review artifacts
 
 | Claim | Evidence | Limitation | Status |
 | --- | --- | --- | --- |
