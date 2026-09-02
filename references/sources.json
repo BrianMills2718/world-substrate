@@ -73,7 +73,8 @@
       "branch": "main",
       "revision": "8ac14730839e57121522d03ec7cc7a7899570b91",
       "remote": "git@github.com-personal:BrianMills2718/cybernetic_influence_v2.git",
-      "disposition": "research_only"
+      "disposition": "research_only",
+      "local_path": "../cybernetic_influence_v2"
     },
     "cybernetic_influence_original": {
       "role": "semantic_translation_idea_donor",
@@ -81,7 +82,8 @@
       "branch": "master",
       "revision": "42a4b3614eee9a741f88f4e349329b1a05cf0a20",
       "remote": "git@github.com-personal:BrianMills2718/cybernetic_influence.git",
-      "disposition": "research_only"
+      "disposition": "research_only",
+      "local_path": "../cybernetic_influence"
     },
     "agent_ecology": {
       "role": "ecology_lineage_idea_donor",
@@ -89,7 +91,8 @@
       "branch": "main",
       "revision": "c9049028dda009c60fe4e8e5ca001e1ebde68f6b",
       "remote": "git@github.com-personal:BrianMills2718/agent_ecology.git",
-      "disposition": "research_only"
+      "disposition": "research_only",
+      "local_path": "../agent_ecology"
     },
     "agent_ecology2": {
       "role": "institution_and_failure_analysis_donor",
@@ -97,7 +100,8 @@
       "branch": "main",
       "revision": "c285cae8cdd30a47269acc467eb9073467e99231",
       "remote": "git@github.com-personal:BrianMills2718/agent_ecology2.git",
-      "disposition": "research_only"
+      "disposition": "research_only",
+      "local_path": "../agent_ecology2"
     },
     "agent_ecology3": {
       "role": "ecology_lineage_failure_analysis_donor",
@@ -105,7 +109,8 @@
       "branch": "main",
       "revision": "5b61e2e6a1000bc0bd7799ce838bb6d0821667f3",
       "remote": "git@github.com-personal:BrianMills2718/agent_ecology3.git",
-      "disposition": "research_only"
+      "disposition": "research_only",
+      "local_path": "../agent_ecology3"
     },
     "data_contracts": {
       "role": "contract_design_donor",
@@ -113,7 +118,8 @@
       "branch": "master",
       "revision": "bfd59aa1402c831885ebeba94db47f2518865831",
       "remote": "git@github.com-personal:BrianMills2718/data-contracts.git",
-      "disposition": "research_only"
+      "disposition": "research_only",
+      "local_path": "../data-contracts"
     },
     "collective_competence": {
       "role": "causal_and_analytic_boundary_donor",
@@ -121,7 +127,8 @@
       "branch": "main",
       "revision": "247d35222d4184c7421cddbb46769d0ceaecd448",
       "remote": "git@github.com-personal:BrianMills2718/collective-competence.git",
-      "disposition": "research_only"
+      "disposition": "research_only",
+      "local_path": "../collective-competence"
     }
   }
 }
