@@ -3,218 +3,195 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-08-31
+reviewed_through: 2026-09-02
 ---
 
 # World Substrate living roadmap
 
-**Authority:** user-approved project direction in [Decision 001](../docs/decisions/001-project-scope.md)
-**Selected path:** durable solo; one writer, reversible local work, no external effects
-**Stage:** prototype
-**Consumer:** a fresh authorized implementation agent needs the outcome, invariants, evidence frontier, active slice, and next action without a handoff
-**Last outcome-bearing update:** M1 promotion reaffirmed after strict input, durable replay, and fail-closed evidence repairs, in the revision containing this page
+**Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
+**Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
+**Stage:** prototype  
+**Last outcome-bearing implementation:** promoted M1 freshwater vertical  
+**Current strategy frontier:** semantic/mechanical integration and the first mechanics-authoring experiment
 
 ## Outcome and success criteria
 
-For a substrate developer during M1, and a data-oriented world author after M3, change the recurring task of hand-coding isolated agent actions and narrating missing consequences into a reviewable workflow that defines typed world state, registers reusable deterministic actions/processes, generates current affordances, runs LLM or human choices, and retains exact causal evidence and replay.
+For a substrate developer and later a data-oriented world builder, change the recurring task of hand-coding isolated actions and narrating missing consequences into a reviewable workflow that:
 
-The project succeeds at prototype stage when:
+- defines persistent typed world state;
+- grounds intents in Linguistic Core senses and roles;
+- binds causal primitives and processes to installed local mechanics;
+- exposes state-derived affordances;
+- validates and commits causally coupled effects once;
+- makes attempts, refusals, assumptions, and consequences observable; and
+- lets mechanics agents expand a world before a run through reviewable, frozen profiles.
+
+The prototype succeeds when:
 
 1. one reference world runs end to end through neutral substrate contracts;
-2. the same world accepts LLM-selected actions without giving the model consequence authority;
-3. a second materially different world reuses the core and adds mechanisms through explicit registered rules;
-4. unsupported behavior and incomplete causal closure remain visible; and
-5. retained commands reproduce canonical state and events exactly.
+2. the same semantic action interface can be exercised by scripted, human, or LLM policies without giving policy prose consequence authority;
+3. ordinary composites and analytic patterns can be recognized without double-applying primitive effects;
+4. one agent-authored adjacent mechanic is installed offline, frozen, and exercised with interaction evidence;
+5. unsupported behavior and residual causal-closure risk remain visible; and
+6. a second materially different world reuses the semantic, transition, and mechanic-profile contracts.
 
-These criteria do not claim universal physics, unlimited affordances, real-world calibration, or predictive validity.
+Exact replay, universal physics, predictive validity, complete linguistic coverage, and defining all mechanics up front are not success criteria.
 
 ## Canonical outcome probe
 
-**Starting state:** two actors, one persistent clay vessel, one separate metal cup, a finite pathogen-bearing fresh-water source, one finite-fuel fire, and registered ownership, container, liquid, heat, material, and process rules.
+M1 remains the first implementation probe: two actors, persistent vessels, a finite pathogen-bearing freshwater source, a finite-fuel fire, and registered ownership, container, liquid, heat, material, and process rules.
 
-**Operation:** the scripted M1 controller selects discovered fill, heat, unheat, pour, drink, take, and give actions for one actor while the runner advances canonical time; heating, boiling, evaporation, cooling, hydration decay, and fuel consumption run as registered processes. M2 replaces the scripted selector with a genuine policy consumer without changing consequence authority.
+The promoted trace exercises fill, heat, unheat, pour, drink, take, and give; advances canonical time; exposes finite water and fuel use, heat and pathogen changes, cross-system vessel identity, automatic processes, atomic rejection, and an exact replay hash.
 
-**Inspectable result:** one trace shows finite water and fuel consumption; heat, pathogen, evaporation, and volume changes; the same vessel identity crossing systems and ownership; automatic processes; checks; before/after values; and an exact replay hash.
+That probe establishes the implemented `core-v0` seam. It does not establish:
 
-**Negative cases:** overfilling fails atomically; a valid typed pressure action envelope returns `unsupported_action` because pressure mechanics are absent, while a malformed envelope returns `invalid_action`.
-
-**Evidence step-down:** human-readable trace -> causal events -> typed commands and state deltas -> pinned rule/content versions -> replay comparison.
+- a general semantic compiler;
+- a complete rights model;
+- agent-authored mechanics;
+- cross-domain reuse;
+- global causal closure; or
+- a requirement that future worlds replay exactly.
 
 ## Current truth
 
-- This repository now owns the project goal, architecture, core contract, source dispositions, and roadmap.
-- The neutral runtime path now reaches the pinned final tick-15 checkpoint through registered fill, heat, unheat, pour, drink, take, and give rules; deterministic processes; state-derived discovery; capacity checks; causal events; semantic donor comparison; cross-system vessel identity; and exact 22-command replay. The retained initial snapshot and pinned registry/content identity reconstruct that replay in a fresh process. Overfill, valid-but-unsupported pressure, and malformed-fill envelopes are atomically distinguished and replayed, including strict rejection of coercible string, float, and boolean parameters.
-- The [M1 end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) passed the maturity-promotion gate against exact implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a` after the fresh-process [replay receipt](../evidence/m1/transfer-replay-v1.json) reproduced the retained state and events.
-- Castaway `world-systems` remains implementation authority for physical mechanisms and product behavior beyond the adopted positive M1 path.
-- Cybernetic Influence V3 has broader authoring and transition machinery, but its product and consequence-authority choices differ.
-- Linguistic Core supplies reviewed vocabulary, not executable mechanics.
-- No public deployment, paid model execution, second reference world, or scale target is authorized or required now.
+- This repository owns the project goal, decisions, architecture, contracts, source dispositions, and roadmap.
+- M1 is promoted at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
+- `core-v0` is an implemented M1 contract. The semantic binding, mechanic profile, and transition envelope v0 documents are proposed target contracts.
+- Linguistic Core is the semantic interface for senses and roles, not an executable mechanics source.
+- Consequences require a represented causal bearer and installed mechanic.
+- Composite and analytic descriptions ordinarily remain derived.
+- Observability is required. Exact replay and deterministic execution are not universal promotion gates.
+- Mechanics-agent authoring begins offline. An installer validates and freezes the selected profile before the run.
+- Runtime invention or revision of world laws is deferred.
+- Donor repositories remain read-only idea, implementation, or failure-analysis sources unless a later consumer path explicitly adopts code.
 
 ## Applicable context
 
-- **Approved:** [Decision 001](../docs/decisions/001-project-scope.md) selects one canonical repository and the deterministic-consequence boundary.
-- **Working evidence:** the pinned Castaway vertical and Cybernetic Influence V3 capability seams in [source dispositions](../docs/source-dispositions.md).
-- **Research input:** the Dwarf Fortress and Dynamical Laboratory syntheses inform design but do not authorize implementation claims.
-- **Historical:** Castaway main and Cybernetic Influence's archived topology plan remain provenance, not current direction.
+- [Decision 001](../docs/decisions/001-project-scope.md) establishes the canonical project and executable-consequence boundary.
+- [Decision 002](../docs/decisions/002-observability-and-replay.md) makes observability required and exact replay optional outside M1.
+- [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) establishes Linguistic Core binding, causal bearers, derived composites, and offline mechanics authoring.
+- Castaway remains the adopted M1 implementation donor; other classified repositories remain idea, theory, contract, or failure-analysis donors.
+- The proposed contracts describe the target seam and do not claim implementation.
 
 ## Constraints and authorities
 
-The user owns the outcome, deterministic-consequence boundary, public/external actions, spend, and later selection of a second reference world. This roadmap owns sequence and active local work. Architecture and contracts own their narrower boundaries. Donor repositories remain read-only.
-
-### Architecture and capability invariants
-
 ```text
-observed trace
-  <- typed action + automatic processes
-  <- canonical state + registered rules
-  <- content + ontology bindings
-  <- pinned donor definitions and implementation
+observable attempt or trigger
+  <- resident policy or autonomous bearer
+  -> Linguistic Core sense and role binding
+  -> installed local mechanic
+  -> proposed effects + checks
+  -> one canonical commit or refusal
+  -> persistent state + causal trace
+  -> detachable analysis
 ```
 
-| Capability | Canonical owner or seam | Dependency | Current evidence | State |
-| --- | --- | --- | --- | --- |
-| Project direction | this roadmap | Decision 001 | repository documents | established |
-| Canonical-state/rule contract | [core contract](../docs/contracts/core-v0.md) | Castaway behavior donor | staged tests plus combined [M1 evidence](../evidence/m1/freshwater-v0.json) | M1 executable contract implemented and promotion gate passed |
-| Physical reference vertical | shared core + Castaway reference data | Castaway `world-systems` | staged evidence, complete [trace](../evidence/m1/transfer-v0.json), [fresh-process replay](../evidence/m1/transfer-replay-v1.json), and [human review](../evidence/m1/freshwater-v0.md) | positive and negative journeys adopted; M1 promoted |
-| Policy selection | future policy adapter | shared `llm_client` | donor real run | not adopted here |
-| Authoring/causal closure | future compiler | CI V3 patterns | donor implementation/research | not adopted here |
-| Ontology bindings | content adapter | Linguistic Core | pinned Castaway subset | donor-only |
-| Experiment/evaluation | future evaluation package | Dynamical Laboratory methods | research specification | deferred |
+- One canonical persistent state owns material world truth.
+- Natural language and policy models cannot directly mutate it.
+- Local mechanics have independently enforced read/write scopes.
+- One enclosing transition owns each causally coupled commit.
+- Independent actions may commit independently.
+- Resident cognition and post-run analysis are not canonical world authorities.
+- Invariants and accounting are goal-relative to the selected representation.
+- Passing declared-contract checks does not prove the author named every consequential dependency.
 
 ## Vertical slices and current work
 
 ### Milestone horizon
 
-| Milestone | Planning state | Inspectable output | Promotion or replan trigger |
+| Milestone | State | Inspectable output | Promotion or replan trigger |
 | --- | --- | --- | --- |
-| M0: canonical project foundation (enabling) | fully_specifiable_now | one repository with goal, wiki, architecture, contract, sources, roadmap, and checks | complete; checks pass, but this is enabling rather than stakeholder-outcome evidence |
-| M1: neutral freshwater vertical | complete | local CLI trace and exact replay through neutral contracts | promoted; positive/negative journeys and revision-bound maturity receipt pass |
-| M2: genuine policy consumer | human_decision_required | one traced shared-`llm_client` actor choosing from the same affordances | begin only after model-call authority and a spend cap are explicitly confirmed |
-| M3: authoring and causal-closure review | conditional | data-defined variation compiles with exact/descriptive/unsupported coverage | begin after M1 reveals the minimum stable rule/content contract |
-| M4: second reference world | human_decision_required | materially different world reusing the core | select domain after M1/M3 show which mechanism family best tests generality |
-| M5: scale frontier | exploration_required | repeatable candidate/context/storage measurements at a selected target | activate when a real reference world exceeds current linear/simple designs |
-| M6: dynamical evaluation | deliberately_deferred | perturbation and trajectory analysis over retained worlds | activate when it can change a mechanism or representation decision |
+| M0: canonical foundation | complete | repository authorities, navigation, checks | established |
+| M1: freshwater vertical | complete | neutral CLI trace, refusals, persistence, and M1 replay | promoted |
+| M2: semantic/causal give vertical | active | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | binding, authority, refusal, reneging, and trace cases pass |
+| M3: offline mechanics-authoring vertical | conditional | one adjacent mechanic authored as a reviewable package and frozen into a profile | installer validates local scope, effects, tests, limits, and interactions |
+| M4: causal-coherence assay | conditional | declared-coverage report plus adversarial interaction findings | missing/overlapping dependencies become explicit risks, refusals, or repaired bindings |
+| M5: installed institution | conditional | escrow-like bearer couples effects through one transition envelope | deliberate downstream failures produce no provisional commit |
+| M6: non-agent process and second world | human_decision_required | autonomous process plus a materially different reference world | selected domain tests reuse rather than cosmetic variation |
+| M7: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
-### Completed slice: M1 neutral freshwater vertical
+The later ordering is conditional. M3–M5 may be reordered after M2 evidence and selection of the first bounded authoring scenario. The hard dependency is that semantic binding, persistent effects, observability, local authority, and singular commit work before open-ended mechanics authoring.
 
-**Visible result:** from this repository, one command creates the canonical freshwater starting state, executes the recorded action sequence, writes a human-readable and machine-readable causal trace, and verifies exact replay. A second command starts a fresh process and reconstructs the same state and events from the retained versioned snapshot, registry/content identity, and commands.
+### Active slice: M2 semantic/causal give vertical
 
-**Donor inputs:**
+**State:** `fully_specifiable_now`.
 
-- `../castaway-world-systems/src/castaway/models.py`;
-- `engine.py`, `physical.py`, `discovery.py`, and `storage.py`;
-- relevant world/content definitions;
-- freshwater, saltwater, overfill, process, ownership, and replay checks;
-- curated donor evidence for expected behavior.
+**Question:** Can one linguistic predicate be grounded in a primitive mechanic while a related higher-order predicate remains useful but non-causal?
 
-**Target boundaries:**
+**Visible result:**
 
-- `src/world_substrate/`: neutral state, rule registry, engine, discovery, event, and replay seams;
-- `src/world_substrate/mechanisms/`: reusable container, liquid, heat, material, ownership, and process rules;
-- `reference_worlds/castaway/`: Castaway content and the freshwater scenario;
-- `tests/`: contract, interaction, rejection, and replay evidence;
-- `artifacts/`: ignored generated runs, with only compact curated evidence retained later.
+- one reviewed Linguistic Core `give` sense and participant-role binding;
+- canonical giver, object, and recipient references;
+- an installed local transfer mechanic with explicit state-path scope;
+- observable attempt, applicability, refusal, commit, and resulting possession state;
+- two independently initiated gives recognizable as an exchange;
+- a trace showing that one participant can decline or renege; and
+- no second transfer caused by the derived exchange classification.
 
-**Implementation constraints:**
+**M1 audit included in the slice:**
 
-- no Castaway-specific object name in shared rule dispatch;
-- no model import in state, rules, processes, or replay;
-- ontology IDs remain provenance/bindings, not dispatch authority;
-- integer or otherwise exact extensive quantities for conservation;
-- one state/time authority and atomic commit;
-- unsupported pressure remains explicit;
-- maintained architecture views use implemented identifiers and interfaces once
-  those exist, identify their source revision and status, and never substitute
-  diagram coherence for trace or replay evidence;
-- donor repositories remain unmodified.
+- document whether current `owner` means bounded operational possession/control rather than universal legal title;
+- identify any transition effects committed before the enclosing action succeeds;
+- map current events to the proposed observability fields;
+- identify which current checks are goal-relative M1 invariants rather than universal substrate laws; and
+- record the gap between current action IDs and Linguistic Core sense/role bindings.
 
-**Focused checks and authentic observation:**
+**Failure boundary:** if the proposed semantic layer requires a new top-level ontology before donor coverage is inspected, stop and perform the coverage audit. If exchange requires a second state-writing transfer path, keep it derived and repair the classification. If local write scope or singular commit cannot be enforced without revising `core-v0`, propose a versioned transition contract rather than silently changing the implemented M1 contract.
 
-1. run the donor freshwater case and capture its expected final state/event ledger;
-2. run the equivalent World Substrate case;
-3. compare conserved quantities, process timing, vessel identity, final state, and replay;
-4. run saltwater retention, overfill rejection, and unsupported-pressure counterexamples;
-5. inspect the produced trace directly; and
-6. trace each exercised rule ID through its operation, positive or negative
-   check, retained observation, and donor mapping.
+## Enabling policy adapter
 
-A scripted chooser is sufficient for M1 because the uncertainty is consequence composition. It is explicitly labeled and does not establish the LLM-policy criterion.
+A genuine LLM policy consumer remains useful for checking the observation/action seam, but it is not the main research uncertainty. No provider call is authorized without an explicit model-execution decision and spend cap. A future adapter must select from or produce a valid semantic intent; it cannot author canonical effects.
 
-**Failure and reset boundary:** if the neutral seam requires named Castaway branches, duplicates state/time authority, or cannot reproduce the donor trace without weakening evidence, stop widening the abstraction and revise [the core contract](../docs/contracts/core-v0.md). The donor remains intact and authoritative.
+## Authoring and causal-closure hypothesis
 
-### Active slice: M2 genuine policy consumer authorization gate
+The central test is whether agent teams can add useful, coherent mechanics faster than interaction risk grows.
 
-**State:** `human_decision_required`.
+An agent-authored package must include semantic bindings, causal bearer, applicability, local authority, proposed effects, goal-relative invariants, dependencies, interaction cases, unsupported combinations, limits, and a trace contract. Passing isolated tests is insufficient.
 
-**Visible result if authorized:** one bounded, traced call through the shared
-`llm_client` selects from the existing M1 observation/affordance seam; the
-neutral engine alone validates and determines effects. The retained receipt
-must expose route, model, usage/cost, selected action, authoritative transition,
-and replay without expanding consequence authority.
-
-**Authority required:** the user must explicitly authorize model execution and
-set or accept a spend cap. No call, adapter implementation, or credential use
-is authorized by M1 completion alone.
-
-**Failure boundary:** if the shared client cannot provide attributable route and
-usage evidence, or if the policy path requires model-authored state mutation,
-do not call a provider; replan the adapter boundary first.
-
-## Later work
-
-M2 through M6 remain conditional. Do not prebuild generalized authoring, a UI, a plugin system, economics, organizational simulation, continuous terrain, or Concordia integration before M1 evidence identifies a real seam.
+The compiler or installer can establish declared enforcement coverage. Causal closure remains a fallible assay because an author may omit a dependency entirely. Mechanics agents should inspect neighboring semantic state, search for unbound consequential relations, generate counterexamples, and label residual risk.
 
 ## Decisions and assumptions
 
-| Choice | Disposition | Reason | Boundary |
-| --- | --- | --- | --- |
-| One new canonical repository | human_set | approved consolidation goal | project authority |
-| LLM/humans choose; rules determine effects | human_set | central project thesis | consequence authority |
-| Castaway is the first reference donor | human_set | approved source role | first vertical |
-| Repository name `world-substrate` | agent_decided_reversible | clear neutral identity | filesystem/project name |
-| Python-first extraction | agent_decided_reversible | donors and dependencies are Python; minimizes migration risk | M1 implementation |
-| No bulk source imports | agent_decided_reversible | prevents duplicate authority and premature coupling | source management |
-| Deterministic-only M1 | agent_decided_reversible | tests the accepted hard boundary first | transition rules |
-| Seeded stochastic rules | human_required_later | unnecessary for M1 | future core |
-| Second reference-world domain | human_required_later | evidence should inform the choice | M4 |
+| Choice | Disposition | Boundary |
+| --- | --- | --- |
+| Observability over universal replay | human-set in Decision 002 | product evidence |
+| Linguistic Core as semantic interface | human-set in Decision 003 | semantics, not effects |
+| Offline pre-run mechanics authoring | human-set direction | runtime law changes deferred |
+| Give/derived exchange as active vertical | reversible planning choice | replan from M2 evidence |
+| Later M3–M5 ordering | conditional | select from the first bounded authoring scenario |
+| Second reference-world domain | human decision later | no domain selected |
 
 ## Evidence and review artifacts
 
 | Claim | Evidence | Limitation | Status |
 | --- | --- | --- | --- |
-| Related sources are classified and revision-bound | [source manifest](../references/sources.json) | local paths are machine-specific | established |
-| Project navigation is progressively disclosed | structural checker and Project Meta navigation validator | structure does not prove semantic truth | passed at this revision |
-| Castaway behavior exists | donor tests and evidence at pinned revision | not yet adopted here | external evidence |
-| Freshwater behavior is characterized locally | [pinned fixture](../tests/fixtures/castaway/freshwater-v0.json) and extractor `--check` | expected donor behavior only | established |
-| Neutral positive freshwater path works | [first-fill](../evidence/m1/first-fill-v0.json), [boiling](../evidence/m1/boiling-v0.json), [pour](../evidence/m1/pour-v0.json), [drink](../evidence/m1/drink-v0.json), and [transfer](../evidence/m1/transfer-v0.json) evidence, executable probes, and focused tests | scripted path; no LLM-policy claim | established |
-| Full neutral freshwater core works | complete [M1 machine evidence](../evidence/m1/freshwater-v0.json), [human review](../evidence/m1/freshwater-v0.md), [fresh-process replay](../evidence/m1/transfer-replay-v1.json), checks, and validated [end-to-end observation](../evidence/m1/end-to-end-observation-v1.json) | scripted chooser; no LLM-policy or generality claim | established |
-| LLM policy works through neutral seam | M2 provider trace | no claim from scripted M1 | conditional |
+| M1 freshwater behavior works | retained machine/human receipts, probes, tests, and replay | deterministic scripted vertical only | established |
+| M1 exact replay works | fresh-process replay receipt | M1 property, not product requirement | established |
+| Semantic binding works | M2 binding and trace evidence | no claim before implementation | target |
+| Derived exchange avoids double application | M2 reciprocal/reneging cases | ordinary voluntary exchange only | target |
+| Offline mechanics authoring works | M3 frozen package and interaction evidence | one bounded extension cannot prove scalability | conditional |
+| Global causal closure is proven | none | not generally decidable from author declarations | rejected claim |
+| Second-world reuse works | M6 evidence | domain not selected | deferred |
 
 ## Risks and needs resolution
 
-- A premature generic component model could become an untyped property bag; M1 must keep explicit components and rule contracts.
-- Copying donor implementations without a consumer-path proof would create parallel authorities.
-- One physical vertical cannot prove cross-domain generality; that claim remains blocked until M4.
-- Typed causal-closure checks cannot prove the author remembered every consequential dependency.
-- Whether maintained architecture views should be generated from contracts and
-  code or maintained manually remains open until M1 reveals stable identifiers
-  and interfaces.
-- A UML, SysML, or KerML toolchain is deferred unless observed cross-view
-  inconsistency justifies its added authority and maintenance cost.
-- Documentation can outrun implementation; the exact next action remains an executable trace, not another planning layer.
+- Linguistic breadth can hide mechanical sparsity.
+- A new classification enum could accidentally replace rather than bind donor ontologies.
+- A generic component model can become an untyped property bag.
+- Broad LLM adjudication can bypass local causal authority.
+- Individually valid mechanics can disagree about units, timing, identity, capability revocation, or overlapping effects.
+- Declared dependencies can create false confidence when consequential state was never declared.
+- Coarse organizational or social surrogates can double-count detailed lower-level mechanisms.
+- Documentation can outrun implementation; proposed contracts must remain labeled.
 
 ## Human decisions
 
-None required for completed M0 or M1. M2 model execution and its spend cap are
-now the immediate human boundary. Seeded randomness, the second reference
-world, deployment, and publication remain later human boundaries.
+No decision is required to begin M2 documentation and local implementation. Model execution and spend, selection of the first agent-authored mechanic, selection of the second reference world, deployment, and publication remain explicit human boundaries.
 
 ## Refresh and reset triggers
 
-Refresh this roadmap after a committed outcome-bearing slice, a material user correction, a donor revision change selected for adoption, or evidence that invalidates the core contract. Replan rather than accumulate infrastructure after two consecutive non-vertical increments or when the user-visible outcome is no longer clear.
+Refresh this roadmap after an outcome-bearing slice, a material user correction, an accepted decision, a selected donor revision, or evidence that invalidates a contract. Replan after two consecutive non-vertical increments or when a later milestone no longer tests the central hypothesis.
 
 ## Exact next action
 
-Await explicit user authorization for one bounded M2 model-policy probe and a
-spend cap. Once authorized, bound the policy adapter against the frozen M1
-observation/action seam before making any provider call.
+Audit the current M1 `give` path against the proposed semantic-binding and transition-envelope contracts. Produce the smallest versioned binding and trace that preserves the implemented transfer while making ordinary exchange a detachable derived view. Do not make a model call.
