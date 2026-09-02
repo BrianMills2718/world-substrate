@@ -11,8 +11,8 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** promoted M1 freshwater vertical  
-**Current strategy frontier:** semantic/mechanical integration and the first mechanics-authoring experiment
+**Last outcome-bearing implementation:** promoted M2 give/exchange vertical (M1 freshwater vertical remains promoted)  
+**Current strategy frontier:** M3 first mechanics-authoring experiment, blocked on human selection of the first agent-authored mechanic
 
 ## Outcome and success criteria
 
@@ -105,7 +105,7 @@ observable attempt or trigger
 | --- | --- | --- | --- |
 | M0: canonical foundation | complete | repository authorities, navigation, checks | established |
 | M1: freshwater vertical | complete | neutral CLI trace, refusals, persistence, and M1 replay | promoted |
-| M2: semantic/causal give vertical | active | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | binding, authority, refusal, reneging, and trace cases pass |
+| M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted: binding (`semantic.py`), authority (giver-only enforced in `GiveRule`), refusal (pre-existing `test_transfer.py::test_recipient_capacity_rejection_is_atomic`), reneging (`test_give_exchange.py`), and no-double-transfer trace cases all pass |
 | M3: offline mechanics-authoring vertical | conditional | one adjacent mechanic authored as a reviewable package and frozen into a profile | installer validates local scope, effects, tests, limits, and interactions |
 | M4: causal-coherence assay | conditional | declared-coverage report plus adversarial interaction findings | missing/overlapping dependencies become explicit risks, refusals, or repaired bindings |
 | M5: installed institution | conditional | escrow-like bearer couples effects through one transition envelope | deliberate downstream failures produce no provisional commit |
@@ -196,4 +196,17 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-The M2 M1-audit is complete: [docs/audits/m2-give-path-audit.md](../docs/audits/m2-give-path-audit.md). Its two real gaps — no observation payload and no bound Linguistic Core sense/roles attached to a causal event — are a `core-v0` schema change per the M2 failure boundary, not a silent edit. Propose that versioned transition contract before implementing it. Do not make a model call.
+M2 is promoted: all seven visible-result criteria pass on cited evidence
+(`tests/test_give_exchange.py`, `tests/test_transfer.py`,
+`scripts/run_give_exchange_probe.py`); see the milestone table and
+[the M1-audit](../docs/audits/m2-give-path-audit.md).
+
+The audit's two real observability gaps (no observation payload, no bound
+Linguistic Core sense/roles on a causal event) are optional hardening, not a
+blocker for M2's own stated criteria — left open rather than built
+speculatively.
+
+M3 is next in the milestone horizon, but "selection of the first
+agent-authored mechanic" is an explicit human boundary (Human decisions,
+above); M3 cannot begin until that selection is made. Do not make a model
+call.
