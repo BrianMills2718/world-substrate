@@ -1,0 +1,572 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.tool-wear"
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "path": "components.tool.wear",
+            "value": 100
+          }
+        ],
+        "invariants": [
+          "tool wear never exceeds the tool's usable limit of 100"
+        ],
+        "limits": [
+          "The mechanic uses the shared limit of 100 rather than dynamically copying each tool's wear_limit field.",
+          "It does not mark tools as broken or prevent future use."
+        ],
+        "mechanic_id": "workshop.process.tool-wear-cap",
+        "order": 30,
+        "rationale": "Tool wear should never exceed the tool's usable limit, since over-worn tools would otherwise remain falsely operational. This cleanup caps accumulated wear at the world's standard tool limit after wear is applied.",
+        "reads": [
+          "entities.<x>.components.tool.wear",
+          "entities.<x>.components.tool.wear_limit"
+        ],
+        "selector": {
+          "has_component": "tool",
+          "where": [
+            {
+              "op": "gt",
+              "path": "components.tool.wear",
+              "value": 100
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.components.tool.wear"
+        ]
+      },
+      "grade": {
+        "assay_findings": 1,
+        "declaration_valid": true,
+        "fires": false,
+        "installs": true,
+        "mechanic_id": "workshop.process.tool-wear-cap",
+        "note": "",
+        "novel": true,
+        "rationale": "Tool wear should never exceed the tool's usable limit, since over-worn tools would otherwise remain falsely operational. This cleanup caps accumulated wear at the world's standard tool limit after wear is applied.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 2,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.fatigue"
+        ],
+        "effects": [
+          {
+            "op": "subtract",
+            "path": "components.worker.fatigue",
+            "value": 1
+          }
+        ],
+        "invariants": [
+          "worker fatigue never becomes negative"
+        ],
+        "limits": [
+          "Recovery is passive and does not distinguish resting workers from workers actively performing tasks."
+        ],
+        "mechanic_id": "workshop.process.fatigue-recovery",
+        "order": 30,
+        "rationale": "Workers gradually recover from fatigue over time, preventing fatigue from becoming a permanent one-way accumulation. This provides a basic rest-and-recovery cycle for the workshop.",
+        "reads": [
+          "entities.<x>.components.worker.fatigue"
+        ],
+        "selector": {
+          "has_component": "worker",
+          "where": [
+            {
+              "op": "gt",
+              "path": "components.worker.fatigue",
+              "value": 0
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.components.worker.fatigue"
+        ]
+      },
+      "grade": {
+        "assay_findings": 2,
+        "declaration_valid": true,
+        "fires": true,
+        "installs": true,
+        "mechanic_id": "workshop.process.fatigue-recovery",
+        "note": "",
+        "novel": true,
+        "rationale": "Workers gradually recover from fatigue over time, preventing fatigue from becoming a permanent one-way accumulation. This provides a basic rest-and-recovery cycle for the workshop.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 3,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.fatigue"
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "path": "components.worker.fatigue",
+            "value": 100
+          }
+        ],
+        "invariants": [
+          "worker fatigue never exceeds 100"
+        ],
+        "limits": [
+          "This caps fatigue but does not reduce it during rest or alter worker skill."
+        ],
+        "mechanic_id": "workshop.process.fatigue-cap",
+        "order": 30,
+        "rationale": "Worker fatigue should remain within the workshop\u2019s normalized 0\u2013100 range; otherwise repeated work can produce meaningless values and destabilize any fatigue-dependent behavior.",
+        "reads": [
+          "entities.<x>.components.worker.fatigue"
+        ],
+        "selector": {
+          "has_component": "worker",
+          "where": [
+            {
+              "op": "gt",
+              "path": "components.worker.fatigue",
+              "value": 100
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.components.worker.fatigue"
+        ]
+      },
+      "grade": {
+        "assay_findings": 2,
+        "declaration_valid": true,
+        "fires": false,
+        "installs": true,
+        "mechanic_id": "workshop.process.fatigue-cap",
+        "note": "",
+        "novel": true,
+        "rationale": "Worker fatigue should remain within the workshop\u2019s normalized 0\u2013100 range; otherwise repeated work can produce meaningless values and destabilize any fatigue-dependent behavior.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 4,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.tool-wear"
+        ],
+        "effects": [
+          {
+            "op": "subtract",
+            "path": "components.tool.wear",
+            "value": 3
+          }
+        ],
+        "invariants": [
+          "wear never becomes negative",
+          "only unowned tools receive passive maintenance"
+        ],
+        "limits": [
+          "Maintenance is automatic and uniform; it does not require a worker, location, or maintenance skill."
+        ],
+        "mechanic_id": "workshop.process.unheld-tool-maintenance",
+        "order": 30,
+        "rationale": "A tool left in the workshop can be serviced between tasks, gradually reducing its wear instead of remaining permanently degraded. This gives the workshop a sensible maintenance cycle without changing active tool use.",
+        "reads": [
+          "entities.<x>.components.tool",
+          "entities.<x>.ownership"
+        ],
+        "selector": {
+          "has_component": "tool",
+          "where": [
+            {
+              "op": "eq",
+              "path": "ownership.owner_ref",
+              "value": ""
+            },
+            {
+              "op": "gt",
+              "path": "components.tool.wear",
+              "value": 0
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.components.tool.wear"
+        ]
+      },
+      "grade": {
+        "assay_findings": 1,
+        "declaration_valid": true,
+        "fires": false,
+        "installs": true,
+        "mechanic_id": "workshop.process.unheld-tool-maintenance",
+        "note": "",
+        "novel": true,
+        "rationale": "A tool left in the workshop can be serviced between tasks, gradually reducing its wear instead of remaining permanently degraded. This gives the workshop a sensible maintenance cycle without changing active tool use.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 5,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.fatigue"
+        ],
+        "effects": [
+          {
+            "op": "subtract",
+            "path": "components.worker.skill",
+            "value": 1
+          }
+        ],
+        "invariants": [
+          "skill never becomes negative",
+          "only workers at severe fatigue are affected"
+        ],
+        "limits": [
+          "This models a persistent skill reduction rather than a temporary action-specific performance penalty.",
+          "It does not determine whether an attachment succeeds."
+        ],
+        "mechanic_id": "workshop.process.fatigue-skill-penalty",
+        "order": 30,
+        "rationale": "A severely fatigued worker should temporarily perform less effectively, preventing exhaustion from having no practical consequence beyond the fatigue number itself. This models reduced workshop capability without changing the worker's underlying skill permanently.",
+        "reads": [
+          "entities.<x>.components.worker.fatigue",
+          "entities.<x>.components.worker.skill"
+        ],
+        "selector": {
+          "has_component": "worker",
+          "where": [
+            {
+              "op": "gte",
+              "path": "components.worker.fatigue",
+              "value": 100
+            },
+            {
+              "op": "gt",
+              "path": "components.worker.skill",
+              "value": 0
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.components.worker.skill"
+        ]
+      },
+      "grade": {
+        "assay_findings": 2,
+        "declaration_valid": true,
+        "fires": true,
+        "installs": true,
+        "mechanic_id": "workshop.process.fatigue-skill-penalty",
+        "note": "",
+        "novel": true,
+        "rationale": "A severely fatigued worker should temporarily perform less effectively, preventing exhaustion from having no practical consequence beyond the fatigue number itself. This models reduced workshop capability without changing the worker's underlying skill permanently.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 6,
+      "declaration": {
+        "dependencies": [
+          "workshop.assembly.attach"
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "path": "ownership.owner_ref",
+            "value": ""
+          }
+        ],
+        "invariants": [
+          "A part attached to an assembly has no worker inventory owner.",
+          "Unattached parts are not affected."
+        ],
+        "limits": [
+          "This does not detach parts or alter assembly membership.",
+          "This assumes an empty owner_ref represents unowned or installed inventory."
+        ],
+        "mechanic_id": "workshop.process.release-attached-parts",
+        "order": 30,
+        "rationale": "Once a part is attached to an assembly, it should no longer remain owned by the worker who carried it. This prevents assembled parts from being treated as simultaneously installed and held inventory.",
+        "reads": [
+          "entities.<x>.components.part.attached_to",
+          "entities.<x>.ownership.owner_ref"
+        ],
+        "selector": {
+          "has_component": "part",
+          "where": [
+            {
+              "op": "ne",
+              "path": "components.part.attached_to",
+              "value": ""
+            },
+            {
+              "op": "ne",
+              "path": "ownership.owner_ref",
+              "value": ""
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.ownership.owner_ref"
+        ]
+      },
+      "grade": {
+        "assay_findings": 2,
+        "declaration_valid": true,
+        "fires": true,
+        "installs": true,
+        "mechanic_id": "workshop.process.release-attached-parts",
+        "note": "",
+        "novel": true,
+        "rationale": "Once a part is attached to an assembly, it should no longer remain owned by the worker who carried it. This prevents assembled parts from being treated as simultaneously installed and held inventory.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 7,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.tool-wear"
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "path": "ownership.owner_ref",
+            "value": ""
+          }
+        ],
+        "invariants": [
+          "A tool at or above its wear limit is not owned by a worker.",
+          "Tool wear is not reduced or reset by withdrawal."
+        ],
+        "limits": [
+          "This does not repair the tool or return it to a physical location.",
+          "This assumes an empty owner_ref represents an unowned tool."
+        ],
+        "mechanic_id": "workshop.process.worn-tool-withdrawal",
+        "order": 30,
+        "rationale": "A tool that has reached its wear limit should no longer remain in a worker's possession, preventing continued use of an unsafe or ineffective tool. This withdraws the worn tool from circulation without altering its recorded wear.",
+        "reads": [
+          "entities.<x>.components.tool.wear",
+          "entities.<x>.components.tool.wear_limit",
+          "entities.<x>.ownership.owner_ref"
+        ],
+        "selector": {
+          "has_component": "tool",
+          "where": [
+            {
+              "op": "gte",
+              "path": "components.tool.wear",
+              "value": 100
+            },
+            {
+              "op": "ne",
+              "path": "ownership.owner_ref",
+              "value": ""
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.ownership.owner_ref"
+        ]
+      },
+      "grade": {
+        "assay_findings": 2,
+        "declaration_valid": true,
+        "fires": true,
+        "installs": true,
+        "mechanic_id": "workshop.process.worn-tool-withdrawal",
+        "note": "",
+        "novel": true,
+        "rationale": "A tool that has reached its wear limit should no longer remain in a worker's possession, preventing continued use of an unsafe or ineffective tool. This withdraws the worn tool from circulation without altering its recorded wear.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 8,
+      "declaration": {
+        "dependencies": [
+          "workshop.assembly.attach",
+          "workshop.inventory.pick-up"
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "path": "portable",
+            "value": false
+          }
+        ],
+        "invariants": [
+          "Parts with a non-empty attached_to reference are not portable.",
+          "Attached parts cannot be picked up as loose inventory."
+        ],
+        "limits": [
+          "This mechanic does not restore portability when a part is detached.",
+          "It assumes an unattached part represents attached_to as an empty string."
+        ],
+        "mechanic_id": "workshop.process.attached-part-portability",
+        "order": 30,
+        "rationale": "A part that has been attached to an assembly should no longer be treated as a loose portable item. This prevents inventory actions from picking up components that are already secured in the workpiece.",
+        "reads": [
+          "entities.<x>.components.part.attached_to"
+        ],
+        "selector": {
+          "has_component": "part",
+          "where": [
+            {
+              "op": "ne",
+              "path": "components.part.attached_to",
+              "value": ""
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.portable"
+        ]
+      },
+      "grade": {
+        "assay_findings": null,
+        "declaration_valid": false,
+        "fires": false,
+        "installs": false,
+        "note": "declaration rejected: effect path must name a field: portable",
+        "novel": null,
+        "scope_clean": null
+      }
+    },
+    {
+      "attempt": 9,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.fatigue"
+        ],
+        "effects": [
+          {
+            "op": "add",
+            "path": "components.worker.skill",
+            "value": 1
+          }
+        ],
+        "invariants": [
+          "worker skill never exceeds 100"
+        ],
+        "limits": [
+          "Fatigue is only a proxy for practice; skill does not depend on the specific part, tool, or task performed."
+        ],
+        "mechanic_id": "workshop.process.worker-practice",
+        "order": 30,
+        "rationale": "A worker who is actively expending effort should gradually improve their craft skill. Using fatigue as the available proxy for recent work gives the workshop simple skill progression without inventing an untracked task history.",
+        "reads": [
+          "entities.<x>.components.worker.fatigue",
+          "entities.<x>.components.worker.skill"
+        ],
+        "selector": {
+          "has_component": "worker",
+          "where": [
+            {
+              "op": "gt",
+              "path": "components.worker.fatigue",
+              "value": 0
+            },
+            {
+              "op": "lt",
+              "path": "components.worker.skill",
+              "value": 100
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.components.worker.skill"
+        ]
+      },
+      "grade": {
+        "assay_findings": 2,
+        "declaration_valid": true,
+        "fires": true,
+        "installs": true,
+        "mechanic_id": "workshop.process.worker-practice",
+        "note": "",
+        "novel": true,
+        "rationale": "A worker who is actively expending effort should gradually improve their craft skill. Using fatigue as the available proxy for recent work gives the workshop simple skill progression without inventing an untracked task history.",
+        "scope_clean": true
+      }
+    },
+    {
+      "attempt": 10,
+      "declaration": {
+        "dependencies": [
+          "workshop.process.tool-wear"
+        ],
+        "effects": [
+          {
+            "op": "subtract",
+            "path": "components.tool.wear",
+            "value": 1
+          }
+        ],
+        "invariants": [
+          "wear never becomes negative",
+          "only unowned tools are maintained"
+        ],
+        "limits": [
+          "Maintenance does not repair tools while they are held by a worker.",
+          "Maintenance does not exceed the tool's wear_limit."
+        ],
+        "mechanic_id": "workshop.process.tool-wear-maintenance",
+        "order": 30,
+        "rationale": "A tool that is not currently owned by a worker can recover from minor accumulated wear while resting on the bench. This gives unused tools a sensible maintenance cycle without making active work free of wear.",
+        "reads": [
+          "entities.<x>.components.tool",
+          "entities.<x>.ownership"
+        ],
+        "selector": {
+          "has_component": "tool",
+          "where": [
+            {
+              "op": "gt",
+              "path": "components.tool.wear",
+              "value": 0
+            }
+          ]
+        },
+        "writes": [
+          "entities.<x>.components.tool.wear"
+        ]
+      },
+      "grade": {
+        "assay_findings": 1,
+        "declaration_valid": true,
+        "fires": true,
+        "installs": true,
+        "mechanic_id": "workshop.process.tool-wear-maintenance",
+        "note": "",
+        "novel": true,
+        "rationale": "A tool that is not currently owned by a worker can recover from minor accumulated wear while resting on the bench. This gives unused tools a sensible maintenance cycle without making active work free of wear.",
+        "scope_clean": true
+      }
+    }
+  ],
+  "attempts_run": 10,
+  "claim": "A model was asked for one mechanic the workshop world needs, without being told which one or what the installer and assays check. Each attempt was graded against criteria fixed before any attempt ran.",
+  "cost_usd": 0.014678,
+  "model": "openrouter/openai/gpt-5.6-luna",
+  "schema_version": "world-substrate-authoring-experiment/v0",
+  "summary": {
+    "declaration_valid": 9,
+    "distinct_mechanic_ids": 9,
+    "fired": 6,
+    "installed": 9,
+    "scope_violations": 0,
+    "usable": 6
+  },
+  "trace_id": "world-substrate-authoring-0e96920569"
+}

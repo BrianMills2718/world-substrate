@@ -11,7 +11,7 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** a second reference world; all six prototype success criteria are met  
+**Last outcome-bearing implementation:** M7 measured whether an agent can author a mechanic it was not handed  
 **Current strategy frontier:** none selected — the prototype's stated success criteria are all met
 
 ## Outcome and success criteria
@@ -111,7 +111,8 @@ observable attempt or trigger
 | M5: policy consumer | complete | an LLM selecting from `discover()` over 16 turns, compared against a no-foresight baseline on the same world | promoted: seam holds (no policy output is ever parsed into an action), the world corrected the model's wrong belief mechanically, and two observation-seam weaknesses surfaced that a scripted controller cannot expose — [the audit](../docs/audits/m5-policy-consumer.md) |
 | M5b: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | Revisit only when a world needs an institution. Atomic commit-or-refuse has existed and been tested since M1, so escrow largely re-exercises machinery rather than testing an open question |
 | M6: second reference world | complete | a workshop world — worker, bench, discrete parts, tool, assembly — sharing no content with Castaway | promoted: the transition kernel, events, replay, profile installer, all three assays and the policy seam transferred with no edits; four substrate/content couplings were found and fixed; zero Castaway mechanics were reusable — [the audit](../docs/audits/m6-second-world.md) |
-| M7: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
+| M7: authoring rate | complete | ten mechanics authored by a model that was told neither which mechanic to write nor what the checks look for, graded against criteria fixed beforehand | promoted: 9/10 installed, 0 scope violations, 5/10 added real behaviour, 2/10 were inert, and 2/10 violated an undeclared world convention that nothing can check — [the audit](../docs/audits/m7-authoring-rate.md) |
+| M8: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
 Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
 
@@ -141,6 +142,7 @@ the audit that found it.
 | Enforce declared read scopes at runtime | this roadmap's own invariant | open, and harder than writes — a read leaves no trace in state. Declarations are repaired and guarded by test; enforcement is not designed |
 | Surface process progress in the observation | M5 finding | open — `container.boiling_ticks` exists in state and is not observable, so a policy cannot tell that boiling is partway done. The M5 run oscillated heat/unheat for seven turns because of this |
 | Signal that an action destroys the value of existing contents | M5 finding | open — `fill` is presented identically whether or not it re-contaminates a treated vessel. The M5 policy did exactly that and then drank it |
+| Make `owner_ref` a typed reference instead of a bare string | M7 finding | open — the world encodes ownership as `actor:`/`place:`/`assembly:` prefixes, but the convention is declared nowhere, so `''` is a valid value to the type system, the scope guard, `World.validate()` and the installer alike. Two of nine authored mechanics set it to `''` and destroyed attachment provenance; nothing caught it |
 
 Five of eight Decision 002 observability fields are covered today. The three
 rows above are the gap, and closing the first two is one `core-v0` schema
@@ -211,24 +213,26 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-**All six prototype success criteria are met.** Nothing is in progress, and no
-milestone in the table is outstanding except M5b (installed institution,
-deliberately deprioritized) and M7 (scale and dynamical evaluation,
-deliberately deferred until a real world exposes the need).
+Nothing is in progress. M7 answered the half of the central hypothesis that had
+never been tested: a model asked for a mechanic the world needs, told neither
+which one nor what the checks look for, produced nine installable mechanics for
+$0.015 with zero scope violations. Risk did not outrun usefulness — but five of
+ten added real behaviour, two were inert, and two violated a convention the
+world never declared.
 
-That makes the next move a scope decision rather than an implementation one,
-and it belongs to Brian. The honest options:
+That reframes what is worth doing next. The bottleneck is not agents writing
+dangerous mechanics; it is a steady supply of plausible-looking ones that are
+redundant, inert, or quietly wrong, and review effort that scales with the
+number of proposals rather than their quality.
 
-1. **Stop here and write it up.** The prototype answered its questions. A
-   deliberate close is a legitimate outcome and cheaper than drift.
-2. **Harden what exists.** The Open obligations table above is real, unglamorous
-   work with no permission needed: three uncovered Decision 002 observability
-   fields, six unbound action kinds, the ledger's shape for lost quantities,
-   runtime read enforcement, and two seam findings from the M5 policy run.
-3. **Push on the actual research bet.** The authoring hypothesis is only half
-   tested: M3 and M4 measured the *risk* side (do bad mechanics get caught) with
-   mechanics the assay author wrote. The *rate* side — can an agent author a
-   useful mechanic it was not handed, faster than interaction risk grows — has
-   never been attempted, and is the thing this project exists to find out.
+The concrete follow-ons, in the order the evidence justifies:
 
-Model calls are authorized under a $2 cap and have cost $0.005 to date.
+1. Make `owner_ref` a typed reference. It is the one defect class M7 found that
+   nothing in the repository can currently catch, and it is cheap.
+2. Give the assays a triviality check. Nothing today distinguishes a mechanic
+   that fires and changes the world from one that installs cleanly and is
+   unreachable; two of nine were the latter and were graded only because the
+   experiment ran them.
+3. The rest of the Open obligations table.
+
+Model calls are authorized under a $2 cap and have cost $0.04 to date.
