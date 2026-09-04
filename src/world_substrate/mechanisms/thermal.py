@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..model import Entity, LiquidState, World
+from ..model import Entity, LiquidState, World, owner_ref
 from ..rules import Check, HeatAction, TypedAction, UnheatAction
 
 
@@ -13,8 +13,8 @@ def _accessible(actor: Entity, vessel: Entity) -> bool:
     if actor.location is None or vessel.ownership is None:
         return False
     return vessel.ownership.owner_ref in {
-        f"actor:{actor.entity_id}",
-        f"place:{actor.location.location_id}",
+        owner_ref("actor", actor.entity_id),
+        owner_ref("place", actor.location.location_id),
     }
 
 
@@ -158,7 +158,7 @@ class HeatRule:
         actor = world.entities[action.actor_id]
         vessel = world.entities[action.vessel_id]
         assert actor.location and vessel.container and vessel.ownership
-        vessel.ownership.owner_ref = f"place:{actor.location.location_id}"
+        vessel.ownership.owner_ref = owner_ref("place", actor.location.location_id)
         vessel.container.heat_source_id = action.target_id
         vessel.container.boiling_ticks = 0
         vessel.last_cause_event_id = event_id

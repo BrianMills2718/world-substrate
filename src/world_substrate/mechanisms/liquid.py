@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..model import Entity, LiquidState, World
+from ..model import Entity, LiquidState, World, owner_ref
 from ..rules import Check, DrinkAction, FillAction, PourAction, TypedAction
 
 LIQUID_FIELDS = ("volume_ml", "salt_mg", "pathogens", "heat_units")
@@ -14,8 +14,8 @@ def _accessible(world: World, actor: Entity, vessel: Entity) -> bool:
     if actor.location is None or vessel.ownership is None:
         return False
     return vessel.ownership.owner_ref in {
-        f"actor:{actor.entity_id}",
-        f"place:{actor.location.location_id}",
+        owner_ref("actor", actor.entity_id),
+        owner_ref("place", actor.location.location_id),
     }
 
 

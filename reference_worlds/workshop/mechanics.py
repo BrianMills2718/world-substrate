@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from world_substrate.model import World
+from world_substrate.model import World, owner_ref
 from world_substrate.rules import Check, TypedAction, _require_nonempty_string
 
 
@@ -21,7 +21,7 @@ def _held_by(world: World, actor_id: str) -> list[str]:
         entity.entity_id
         for entity in world.entities.values()
         if entity.ownership is not None
-        and entity.ownership.owner_ref == f"actor:{actor_id}"
+        and entity.ownership.owner_ref == owner_ref("actor", actor_id)
     )
 
 
@@ -126,7 +126,7 @@ class PickUpRule:
             and entity.ownership is not None
             and entity.location is not None
             and entity.location.location_id == actor.location.location_id
-            and entity.ownership.owner_ref != f"actor:{actor_id}"
+            and entity.ownership.owner_ref != owner_ref("actor", actor_id)
             and not (
                 entity.component("part") and entity.component("part").attached_to
             )
@@ -159,7 +159,7 @@ class PickUpRule:
                     "Item is not already held",
                     bool(
                         item.ownership
-                        and item.ownership.owner_ref != f"actor:{action.actor_id}"
+                        and item.ownership.owner_ref != owner_ref("actor", action.actor_id)
                     ),
                 ),
             ]
@@ -170,7 +170,7 @@ class PickUpRule:
         assert isinstance(action, PickUpAction)
         item = world.entities[action.item_id]
         assert item.ownership
-        item.ownership.owner_ref = f"actor:{action.actor_id}"
+        item.ownership.owner_ref = owner_ref("actor", action.actor_id)
         item.last_cause_event_id = event_id
 
 
@@ -267,7 +267,7 @@ class AttachRule:
             [
                 Check("Worker holds the part", bool(
                     part_entity.ownership
-                    and part_entity.ownership.owner_ref == f"actor:{action.actor_id}"
+                    and part_entity.ownership.owner_ref == owner_ref("actor", action.actor_id)
                 )),
                 Check("Part is not already attached", part.attached_to is None),
                 Check(
@@ -310,7 +310,7 @@ class AttachRule:
         part = part_entity.component("part")
         assert part is not None and part_entity.ownership is not None
         part.attached_to = action.assembly_id
-        part_entity.ownership.owner_ref = f"assembly:{action.assembly_id}"
+        part_entity.ownership.owner_ref = owner_ref("assembly", action.assembly_id)
         part_entity.last_cause_event_id = event_id
 
 

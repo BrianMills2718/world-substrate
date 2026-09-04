@@ -4,9 +4,43 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from typing import Any
+
+# --- Ownership references ---------------------------------------------------
+#
+# `owner_ref` encodes a kind and a target: "actor:robinson", "place:camp",
+# "assembly:frame-a". Until M7 that convention lived only in the eighteen
+# f-strings that built it, so every layer treated it as a bare string: the type
+# system, the engine's write-scope guard, World.validate() and the mechanic
+# installer all accepted "" as a valid owner. Two of nine mechanics authored by
+# a model in the M7 experiment set exactly that, destroying the attachment
+# provenance AttachRule establishes, and nothing caught it.
+#
+# The wire format is unchanged -- the same prefixed string, so every pinned
+# receipt still matches byte for byte. What changed is that the shape is now
+# enforced, and code asks for a reference instead of formatting one by hand.
+
+OWNER_REF_PATTERN = re.compile(r"^[a-z][a-z0-9_]*:[A-Za-z0-9._\-]+$")
+
+
+def owner_ref(kind: str, target: str) -> str:
+    """Build an ownership reference, refusing a malformed one at the source."""
+    reference = f"{kind}:{target}"
+    if not OWNER_REF_PATTERN.match(reference):
+        raise ValueError(f"invalid ownership reference: {reference!r}")
+    return reference
+
+
+def parse_owner_ref(reference: str) -> tuple[str, str]:
+    """Split an ownership reference into (kind, target)."""
+    if not OWNER_REF_PATTERN.match(reference):
+        raise ValueError(f"invalid ownership reference: {reference!r}")
+    kind, _, target = reference.partition(":")
+    return kind, target
+
 
 SNAPSHOT_SCHEMA_VERSION = "world-substrate-snapshot/v1"
 
@@ -464,6 +498,13 @@ class World:
                     raise ValueError(f"carrying capacity is negative: {entity_id}")
                 if entity.carrying.liquid_ml_per_weight <= 0:
                     raise ValueError(f"liquid carrying divisor is invalid: {entity_id}")
+            if entity.ownership is not None and not OWNER_REF_PATTERN.match(
+                entity.ownership.owner_ref
+            ):
+                raise ValueError(
+                    f"invalid ownership reference on {entity_id}: "
+                    f"{entity.ownership.owner_ref!r}"
+                )
             if entity.condition is not None and not 0 <= entity.condition.value <= 100:
                 raise ValueError(f"condition out of range: {entity_id}")
             if entity.liquid is not None:

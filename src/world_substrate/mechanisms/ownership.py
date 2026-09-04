@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..model import Entity, World
+from ..model import Entity, World, owner_ref
 from ..rules import Check, GiveAction, TakeAction, TypedAction
 
 
@@ -21,7 +21,7 @@ def _carried_weight(world: World, actor: Entity) -> int:
         _vessel_weight(entity, actor)
         for entity in world.entities.values()
         if entity.ownership is not None
-        and entity.ownership.owner_ref == f"actor:{actor.entity_id}"
+        and entity.ownership.owner_ref == owner_ref("actor", actor.entity_id)
         and entity.container is not None
         and entity.liquid is not None
         and entity.portable is not None
@@ -71,7 +71,7 @@ class TakeRule:
             if vessel.container is not None
             and vessel.portable is not None
             and vessel.ownership is not None
-            and vessel.ownership.owner_ref == f"place:{actor.location.location_id}"
+            and vessel.ownership.owner_ref == owner_ref("place", actor.location.location_id)
         ]
 
     def checks(self, world: World, action: TypedAction) -> list[Check]:
@@ -110,7 +110,7 @@ class TakeRule:
                         actor.location
                         and vessel.ownership
                         and vessel.ownership.owner_ref
-                        == f"place:{actor.location.location_id}"
+                        == owner_ref("place", actor.location.location_id)
                     ),
                 ),
             ]
@@ -135,7 +135,7 @@ class TakeRule:
             raise TypeError("take rule requires TakeAction")
         vessel = world.entities[action.vessel_id]
         assert vessel.ownership
-        vessel.ownership.owner_ref = f"actor:{action.actor_id}"
+        vessel.ownership.owner_ref = owner_ref("actor", action.actor_id)
         vessel.last_cause_event_id = event_id
 
 
@@ -173,7 +173,7 @@ class GiveRule:
             if entity.container is not None
             and entity.portable is not None
             and entity.ownership is not None
-            and entity.ownership.owner_ref == f"actor:{actor_id}"
+            and entity.ownership.owner_ref == owner_ref("actor", actor_id)
         ]
         recipients = [
             entity
@@ -235,7 +235,7 @@ class GiveRule:
                     "Vessel is carried by giver",
                     bool(
                         vessel.ownership
-                        and vessel.ownership.owner_ref == f"actor:{actor.entity_id}"
+                        and vessel.ownership.owner_ref == owner_ref("actor", actor.entity_id)
                     ),
                 ),
                 Check(
@@ -273,5 +273,5 @@ class GiveRule:
             raise TypeError("give rule requires GiveAction")
         vessel = world.entities[action.vessel_id]
         assert vessel.ownership
-        vessel.ownership.owner_ref = f"actor:{action.target_actor_id}"
+        vessel.ownership.owner_ref = owner_ref("actor", action.target_actor_id)
         vessel.last_cause_event_id = event_id
