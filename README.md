@@ -28,6 +28,8 @@ M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoi
 
 M3 is complete: one adjacent mechanic was authored offline as a reviewable package, installed with no findings, frozen into a profile, and run. It was run adversarially — the package omits a real consequential dependency — and the result is that installation alone surfaces nothing, two complementary interaction assays surface it, and one incoherence survives both. See [the M3 experiment](docs/audits/m3-overheat-authoring-experiment.md).
 
+M5 is the first time a policy other than a script drove this world: an LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief about the world turned out to be wrong. See [the M5 audit](docs/audits/m5-policy-consumer.md).
+
 M4 completes the pair. A second mechanic, authored without a planted omission, closes M3's uncaught incoherence and keeps volume conserved. The three assays behaved completely differently on it — the behavioural one found nothing at all, because every affordance was already refused — establishing that no single assay basis, and no pair, is sufficient. See [the M4 experiment](docs/audits/m4-spill-experiment.md).
 
 The earlier semantic/mechanical frontier remains: audit the promoted vertical against Linguistic Core and the causal-force boundary, bind the existing primitive `give` mechanic, derive ordinary exchange without double application, and establish the transition envelope needed before agent-authored mechanics. A genuine policy consumer remains an enabling experiment and still requires explicit model-call authority and a spend cap.
