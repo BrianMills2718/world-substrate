@@ -9,6 +9,7 @@ from typing import Any
 
 from .model import World, differences
 from .rules import Check, ProcessRule, RuleRegistry, TypedAction, UnsupportedAction
+from .semantic import SEMANTIC_BINDINGS
 
 ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
 # Entity references are found by asking the world, not by guessing at key
@@ -101,6 +102,29 @@ def _action_id(action: TypedAction) -> str:
 
 
 class Engine:
+    def _bearer_of(self, action: TypedAction) -> dict[str, Any]:
+        record = action.as_dict()
+        actor = record.get("actor")
+        return {
+            "kind": "actor",
+            "id": actor if isinstance(actor, str) else None,
+            "controller": record.get("controller"),
+        }
+
+    def _binding_of(self, action: TypedAction) -> dict[str, Any] | None:
+        binding = SEMANTIC_BINDINGS.get(action.kind)
+        return binding.as_dict() if binding is not None else None
+
+    def _observation_of(self, action: TypedAction) -> dict[str, Any] | None:
+        """What the actor could see when it chose, or None if it cannot see."""
+        actor = action.as_dict().get("actor")
+        if not isinstance(actor, str):
+            return None
+        entity = self.world.entities.get(actor)
+        if entity is None or entity.location is None:
+            return None
+        return self.observe(actor)
+
     def __init__(self, world: World, registry: RuleRegistry):
         world.validate()
         if world.rule_versions != registry.versions():
@@ -246,9 +270,22 @@ class Engine:
         after: dict[str, Any],
         read_paths: tuple[str, ...],
         write_paths: tuple[str, ...],
+        bearer: dict[str, Any] | None = None,
+        binding: dict[str, Any] | None = None,
+        observation: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
+        # Decision 002 requires eight things be inspectable per transition.
+        # bearer, binding and observation are the three that were computed
+        # elsewhere in this engine and never attached, so an inspector reading
+        # world.events could not tell who acted, what their attempt meant, or
+        # what they had been shown. Emitted explicitly as null rather than
+        # omitted, so "there was no observer" is distinguishable from "not
+        # recorded" -- a process has no observation and says so.
         return {
             "event_id": event_id,
+            "causal_bearer": bearer,
+            "semantic_binding": binding,
+            "observation": observation,
             "tick": after["tick"],
             "world_revision": after["revision"],
             "rule_id": rule_id,
@@ -268,6 +305,9 @@ class Engine:
         command_id = _identifier("c", len(self.world.commands) + 1)
         event_id = _identifier("e", len(self.world.events) + 1)
         before = self.world.material_dict()
+        # Captured before anything mutates: this is what the actor could see
+        # at the moment it chose, which is the field Decision 002 asks for.
+        observation = self._observation_of(action)
         revision_check = Check(
             "Base revision is current",
             action.base_revision == self.world.revision,
@@ -332,6 +372,9 @@ class Engine:
             after=after,
             read_paths=rule.read_paths,
             write_paths=rule.write_paths,
+            bearer=self._bearer_of(action),
+            binding=self._binding_of(action),
+            observation=observation,
         )
         candidate.commands.append(
             {
@@ -366,6 +409,9 @@ class Engine:
             after=before,
             read_paths=rule.read_paths if rule else (),
             write_paths=rule.write_paths if rule else (),
+            bearer=self._bearer_of(action),
+            binding=self._binding_of(action),
+            observation=self._observation_of(action),
         )
         self.world.commands.append(
             {
@@ -434,6 +480,9 @@ class Engine:
             after=after,
             read_paths=process.read_paths,
             write_paths=process.write_paths,
+            bearer={"kind": "process", "id": process.rule_id, "controller": None},
+            binding=None,
+            observation=None,
         )
         candidate.events.append(event)
         self.world = candidate

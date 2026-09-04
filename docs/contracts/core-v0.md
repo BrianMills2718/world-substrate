@@ -140,6 +140,27 @@ The engine instantiates registered rules against actor-authorized local state. R
 
 The engine checks the action kind, base revision, actor authority, references, and rule preconditions against canonical state. It commits all changes and events atomically or commits none.
 
+### Causal event fields
+
+Every event carries, in addition to the transition fields below:
+
+- `causal_bearer` — who or what caused this. `{kind: "actor", id, controller}`
+  for an attempt, `{kind: "process", id: <rule_id>, controller: null}` for a
+  process.
+- `semantic_binding` — the Linguistic Core sense and participant roles bound to
+  the attempt, or `null` when the action kind has no binding. Six of seven M1
+  action kinds are still unbound, so `null` is the common case and says so
+  rather than being omitted.
+- `observation` — the bounded, actor-authorised projection the bearer could see
+  at the moment it chose, captured before anything mutates. `null` for a
+  process, which has no observer, and for an attempt whose actor cannot
+  observe.
+
+These are the three of [Decision 002](../decisions/002-observability-and-replay.md)'s
+eight required fields that the engine computed and did not attach until this
+version. `null` is emitted explicitly so "there was no observer" is
+distinguishable from "not recorded".
+
 Result status is one of:
 
 - `accepted`;
