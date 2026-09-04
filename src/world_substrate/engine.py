@@ -222,10 +222,40 @@ class Engine:
             return self._reject_invalid(value, [f"invalid {kind} payload: {error}"])
         return self.apply(action)
 
+    def _claimed_bearer(self, value: object) -> dict[str, Any] | None:
+        """Who an untrusted envelope claims is acting, if it says at all.
+
+        Marked `claimed_actor` rather than `actor` because nothing here has
+        been validated -- the envelope is malformed by definition at this
+        point, and the named actor may not exist. Recording it anyway matters
+        because every untrusted policy submission arrives through this path,
+        so these are exactly the events an inspector needs attributed.
+        """
+        if not isinstance(value, dict):
+            return None
+        actor = value.get("actor")
+        controller = value.get("controller")
+        if not isinstance(actor, str) or not actor:
+            return None
+        return {
+            "kind": "claimed_actor",
+            "id": actor,
+            "controller": controller if isinstance(controller, str) else None,
+        }
+
+    def _observation_for_actor(self, actor_id: str | None) -> dict[str, Any] | None:
+        if not isinstance(actor_id, str):
+            return None
+        entity = self.world.entities.get(actor_id)
+        if entity is None or entity.location is None:
+            return None
+        return self.observe(actor_id)
+
     def _reject_invalid(self, value: object, errors: list[str]) -> dict[str, Any]:
         command_id = _identifier("c", len(self.world.commands) + 1)
         event_id = _identifier("e", len(self.world.events) + 1)
         before = self.world.material_dict()
+        bearer = self._claimed_bearer(value)
         checks = [
             Check(
                 "Valid action envelope",
@@ -245,6 +275,11 @@ class Engine:
             after=before,
             read_paths=(),
             write_paths=(),
+            bearer=bearer,
+            binding=None,
+            observation=self._observation_for_actor(
+                bearer["id"] if bearer else None
+            ),
         )
         self.world.commands.append(
             {
@@ -320,16 +355,28 @@ class Engine:
                 Check("Registered action rule", False, action.kind),
             ]
             return self._reject(
-                action, command_id, event_id, "unsupported_action", checks, before
+                action,
+                command_id,
+                event_id,
+                "unsupported_action",
+                checks,
+                before,
+                observation,
             )
         checks = [revision_check] + rule.checks(self.world, action)
         if not revision_check.ok:
             return self._reject(
-                action, command_id, event_id, "stale_revision", checks, before
+                action, command_id, event_id, "stale_revision", checks, before, observation
             )
         if not all(check.ok for check in checks):
             return self._reject(
-                action, command_id, event_id, "precondition_failed", checks, before
+                action,
+                command_id,
+                event_id,
+                "precondition_failed",
+                checks,
+                before,
+                observation,
             )
 
         candidate = self.world.clone()
@@ -360,6 +407,7 @@ class Engine:
                     )
                 ],
                 before,
+                observation,
             )
         event = self._event(
             event_id=event_id,
@@ -396,6 +444,7 @@ class Engine:
         status: str,
         checks: list[Check],
         before: dict[str, Any],
+        observation: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         rule = self.registry.action(action.kind)
         event = self._event(
@@ -411,7 +460,7 @@ class Engine:
             write_paths=rule.write_paths if rule else (),
             bearer=self._bearer_of(action),
             binding=self._binding_of(action),
-            observation=self._observation_of(action),
+            observation=observation,
         )
         self.world.commands.append(
             {
