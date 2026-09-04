@@ -1,0 +1,97 @@
+{
+  "schema_version": "world-substrate-reference-world/v0",
+  "world_id": "castaway-overheat-v0",
+  "content_id": "world-substrate-m3-overheat-authoring-experiment@1",
+  "source": {
+    "repository": "world-substrate",
+    "authored_for": "M3 offline mechanics-authoring experiment",
+    "derived_from": "reference_worlds/castaway/freshwater-v0.json",
+    "note": "Content extension only: every component here already exists in the M1 substrate. Adds one vessel whose material fails below boiling so an overheat mechanic has a reachable trigger. Not donor-derived; carries no Castaway provenance claim."
+  },
+  "thermal_rules": {
+    "ambient_temperature_c": 22,
+    "boiling_temperature_c": 100,
+    "boiling_ticks_to_kill_pathogens": 2,
+    "boiling_evaporation_ml_per_tick": 25,
+    "evaporation_heat_units_per_ml": 1000
+  },
+  "entities": [
+    {
+      "entity_id": "robinson",
+      "label": "Robinson",
+      "category_ids": ["actor"],
+      "actor": {"health": 100, "hydration": 50, "alive": true},
+      "location": {"location_id": "camp"}
+    },
+    {
+      "entity_id": "friday",
+      "label": "Friday",
+      "category_ids": ["actor"],
+      "actor": {"health": 100, "hydration": 50, "alive": true},
+      "location": {"location_id": "camp"}
+    },
+    {
+      "entity_id": "gourd-flask",
+      "label": "Pitch-sealed gourd flask",
+      "category_ids": ["vessel", "container"],
+      "location": {"location_id": "camp"},
+      "ownership": {"owner_ref": "actor:robinson"},
+      "condition": {"value": 100},
+      "container": {
+        "definition_id": "gourd_flask",
+        "capacity_ml": 800,
+        "empty_weight": 1,
+        "boiling_ticks": 0,
+        "heat_source_id": null
+      },
+      "liquid": {"volume_ml": 0, "salt_mg": 0, "pathogens": 0, "heat_units": 0},
+      "thermal": {"temperature_c": 22},
+      "material": {
+        "material_id": "pitch_sealed_gourd",
+        "heat_limit_c": 80,
+        "heat_transfer_percent": 100,
+        "overheat_damage_per_tick": 40,
+        "open_top": true
+      }
+    },
+    {
+      "entity_id": "clay-pot",
+      "label": "Clay pot",
+      "category_ids": ["vessel", "container"],
+      "location": {"location_id": "camp"},
+      "ownership": {"owner_ref": "place:camp"},
+      "condition": {"value": 100},
+      "container": {
+        "definition_id": "clay_pot",
+        "capacity_ml": 1500,
+        "empty_weight": 2,
+        "boiling_ticks": 0,
+        "heat_source_id": null
+      },
+      "liquid": {"volume_ml": 0, "salt_mg": 0, "pathogens": 0, "heat_units": 0},
+      "thermal": {"temperature_c": 22},
+      "material": {
+        "material_id": "fired_clay",
+        "heat_limit_c": 240,
+        "heat_transfer_percent": 100,
+        "overheat_damage_per_tick": 35,
+        "open_top": true
+      }
+    },
+    {
+      "entity_id": "unsafe-pool",
+      "label": "Unsafe freshwater pool",
+      "category_ids": ["liquid_source"],
+      "location": {"location_id": "camp"},
+      "liquid": {"volume_ml": 6000, "salt_mg": 0, "pathogens": 2400, "heat_units": 132000}
+    },
+    {
+      "entity_id": "fire-camp",
+      "label": "Camp fire",
+      "category_ids": ["heat_source", "fire"],
+      "location": {"location_id": "camp"},
+      "condition": {"value": 100},
+      "heat_source": {"fuel": 24, "heat_units_per_tick": 20000, "heat_slots": 1}
+    }
+  ]
+}

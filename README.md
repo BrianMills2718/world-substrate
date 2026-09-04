@@ -26,7 +26,9 @@ Start with:
 
 M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid, heat, carrying, and bounded ownership systems, and distinguishes precondition failure from unsupported and malformed actions. Its versioned initial snapshot, pinned registry/content identity, and 22 commands also reproduce the final state and events in a [fresh process](evidence/m1/transfer-replay-v1.json). The revision-bound [end-to-end observation](evidence/m1/end-to-end-observation-v1.json) passed the M1 maturity gate.
 
-The strategy frontier is now semantic/mechanical integration: audit the promoted vertical against Linguistic Core and the causal-force boundary, bind the existing primitive `give` mechanic, derive ordinary exchange without double application, and establish the transition envelope needed before agent-authored mechanics. A genuine policy consumer remains an enabling experiment and still requires explicit model-call authority and a spend cap.
+M3 is complete: one adjacent mechanic was authored offline as a reviewable package, installed with no findings, frozen into a profile, and run. It was run adversarially — the package omits a real consequential dependency — and the result is that installation alone surfaces nothing, two complementary interaction assays surface it, and one incoherence survives both. See [the M3 experiment](docs/audits/m3-overheat-authoring-experiment.md).
+
+The earlier semantic/mechanical frontier remains: audit the promoted vertical against Linguistic Core and the causal-force boundary, bind the existing primitive `give` mechanic, derive ordinary exchange without double application, and establish the transition envelope needed before agent-authored mechanics. A genuine policy consumer remains an enabling experiment and still requires explicit model-call authority and a spend cap.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -42,6 +44,7 @@ python scripts/run_transfer_probe.py --check
 python scripts/replay_transfer_evidence.py --check
 python scripts/run_freshwater_probe.py --check
 python scripts/run_give_exchange_probe.py --check
+python scripts/run_overheat_assay_probe.py --check
 ```
 
 The default project check is self-contained and uses committed fixtures. When the sibling donor repositories are available, also run `python scripts/check_project.py --with-donors`; the optional donor check reads pinned revisions rather than requiring their current checkouts to remain at those commits.
