@@ -11,7 +11,7 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** M7 measured whether an agent can author a mechanic it was not handed  
+**Last outcome-bearing implementation:** closed M7's uncatchable defect class — ownership references are now checked  
 **Current strategy frontier:** none selected — the prototype's stated success criteria are all met
 
 ## Outcome and success criteria
@@ -60,6 +60,7 @@ audits; findings live in the audit that produced them.
 - This repository owns the project goal, decisions, architecture, contracts, source dispositions, and roadmap.
 - M1 through M4 are complete and promoted. M1 is pinned at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
 - Contract status is mixed: `core-v0` is implemented; [mechanic profile](../docs/contracts/mechanic-profile-v0.md) and [transition envelope](../docs/contracts/transition-envelope-v0.md) are partially implemented; [semantic binding](../docs/contracts/semantic-mechanical-binding-v0.md) has one binding of seven. Each contract states its own status.
+- Ownership references are checked: `owner_ref` must be `<kind>:<target>`, enforced in `World.validate()` and refused at construction by `model.owner_ref()`. This closes the one defect class M7 found that nothing in the repository could catch.
 - Declared **write** scopes are enforced by the engine (`scope_violation`; negative controls in `tests/test_write_scope.py`). Declared **read** scopes are recorded on every event and are **not** enforced at runtime; the three rules that under-declared reads are repaired and `tests/test_overheat_assay.py` guards against regression.
 - Three interaction assays exist on three different bases — declarations, differential behaviour, conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient. Evidence: [M3](../docs/audits/m3-overheat-authoring-experiment.md), [M4](../docs/audits/m4-spill-experiment.md).
 - Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has; M4 records one that is live in the world today only because a second mechanic closed it.
@@ -142,7 +143,7 @@ the audit that found it.
 | Enforce declared read scopes at runtime | this roadmap's own invariant | open, and harder than writes — a read leaves no trace in state. Declarations are repaired and guarded by test; enforcement is not designed |
 | Surface process progress in the observation | M5 finding | open — `container.boiling_ticks` exists in state and is not observable, so a policy cannot tell that boiling is partway done. The M5 run oscillated heat/unheat for seven turns because of this |
 | Signal that an action destroys the value of existing contents | M5 finding | open — `fill` is presented identically whether or not it re-contaminates a treated vessel. The M5 policy did exactly that and then drank it |
-| Make `owner_ref` a typed reference instead of a bare string | M7 finding | open — the world encodes ownership as `actor:`/`place:`/`assembly:` prefixes, but the convention is declared nowhere, so `''` is a valid value to the type system, the scope guard, `World.validate()` and the installer alike. Two of nine authored mechanics set it to `''` and destroyed attachment provenance; nothing caught it |
+| ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** `owner_ref` is validated as `<kind>:<target>` in `World.validate()`, and the eighteen call sites that hand-built the convention now go through `model.owner_ref()`, which refuses a malformed reference at the source. `tests/test_owner_ref.py` replays the exact declaration from M7's evidence file and asserts it is now refused with the attachment provenance intact. The wire format is unchanged, so all ten probes remain byte-identical |
 
 Five of eight Decision 002 observability fields are covered today. The three
 rows above are the gap, and closing the first two is one `core-v0` schema
@@ -213,26 +214,24 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Nothing is in progress. M7 answered the half of the central hypothesis that had
-never been tested: a model asked for a mechanic the world needs, told neither
-which one nor what the checks look for, produced nine installable mechanics for
-$0.015 with zero scope violations. Risk did not outrun usefulness — but five of
-ten added real behaviour, two were inert, and two violated a convention the
-world never declared.
+Nothing is in progress. M7's one uncatchable defect class is closed: an
+ownership reference is now checked rather than conventional, and the regression
+test replays the actual mechanic a model authored rather than a reconstruction
+of it.
 
-That reframes what is worth doing next. The bottleneck is not agents writing
-dangerous mechanics; it is a steady supply of plausible-looking ones that are
-redundant, inert, or quietly wrong, and review effort that scales with the
-number of proposals rather than their quality.
+Two follow-ons remain from M7, both small and needing no permission:
 
-The concrete follow-ons, in the order the evidence justifies:
+1. Give the assays a triviality check. Nothing today distinguishes a mechanic
+   that fires and changes the world from one that installs cleanly, declares its
+   scope correctly, and guards a condition existing rules make unreachable. Two
+   of nine authored mechanics were the latter, and only running them revealed
+   it.
+2. The rest of the Open obligations table — the three uncovered Decision 002
+   observability fields are the largest single item and are one `core-v0` schema
+   change rather than six separate ones.
 
-1. Make `owner_ref` a typed reference. It is the one defect class M7 found that
-   nothing in the repository can currently catch, and it is cheap.
-2. Give the assays a triviality check. Nothing today distinguishes a mechanic
-   that fires and changes the world from one that installs cleanly and is
-   unreachable; two of nine were the latter and were graded only because the
-   experiment ran them.
-3. The rest of the Open obligations table.
+Beyond those, the prototype has answered both halves of its central hypothesis
+and all six success criteria. Continuing is a scope choice rather than a next
+step.
 
 Model calls are authorized under a $2 cap and have cost $0.04 to date.
