@@ -135,6 +135,11 @@
     "drink_status": "accepted",
     "events": [
       {
+        "causal_bearer": {
+          "controller": "verification_script",
+          "id": "robinson",
+          "kind": "actor"
+        },
         "cause": "c00001",
         "changes": [
           {
@@ -264,13 +269,183 @@
         "event_id": "e00001",
         "hash_after": "cb1b6f33a68821f4035e2cd52154877677750d0312ab062e82ae63ae8ac8caf2",
         "hash_before": "40ac7f74bd772d48a1cb34a92817e3bea6b176c3ba1a8ac526353239cff04cca",
+        "observation": {
+          "actor_id": "robinson",
+          "entities": {
+            "clay-pot": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 1500,
+                "definition_id": "clay_pot",
+                "empty_weight": 2,
+                "heat_source_id": null
+              },
+              "entity_id": "clay-pot",
+              "label": "Clay pot",
+              "liquid": {
+                "heat_units": 0,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 0
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 240,
+                "heat_transfer_percent": 100,
+                "material_id": "fired_clay",
+                "open_top": true,
+                "overheat_damage_per_tick": 35
+              },
+              "ownership": {
+                "owner_ref": "place:camp"
+              },
+              "source_entity_id": "clay-pot",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 22
+              }
+            },
+            "cup-robinson": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 500,
+                "definition_id": "metal_cup",
+                "empty_weight": 1,
+                "heat_source_id": null
+              },
+              "entity_id": "cup-robinson",
+              "label": "Metal cup",
+              "liquid": {
+                "heat_units": 0,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 0
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 300,
+                "heat_transfer_percent": 100,
+                "material_id": "metal",
+                "open_top": true,
+                "overheat_damage_per_tick": 20
+              },
+              "ownership": {
+                "owner_ref": "actor:robinson"
+              },
+              "source_entity_id": "cup-robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 22
+              }
+            },
+            "fire-camp": {
+              "category_ids": [
+                "heat_source",
+                "fire"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "entity_id": "fire-camp",
+              "heat_source": {
+                "fuel": 24,
+                "heat_slots": 1,
+                "heat_units_per_tick": 20000
+              },
+              "label": "Camp fire",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "fire-camp",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "friday": {
+              "actor": {
+                "alive": true,
+                "health": 100
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "friday",
+              "label": "Friday",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "friday",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "robinson": {
+              "actor": {
+                "alive": true,
+                "health": 100,
+                "hydration": 50
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "robinson",
+              "label": "Robinson",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "unsafe-pool": {
+              "category_ids": [
+                "liquid_source"
+              ],
+              "entity_id": "unsafe-pool",
+              "label": "Unsafe freshwater pool",
+              "liquid": {
+                "heat_units": 132000,
+                "pathogens": 2400,
+                "salt_mg": 0,
+                "volume_ml": 6000
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "unsafe-pool",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            }
+          },
+          "revision": 0,
+          "tick": 0,
+          "world_id": "castaway-freshwater-v0"
+        },
         "rule_id": "mechanism.liquid.fill",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 0,
         "world_revision": 1
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00002",
         "changes": [
           {
@@ -294,13 +469,20 @@
         "event_id": "e00002",
         "hash_after": "43e8d56f422bb082ce1c21d552fcac29451c298f0f67c067437d98a563f40fd1",
         "hash_before": "cb1b6f33a68821f4035e2cd52154877677750d0312ab062e82ae63ae8ac8caf2",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 1,
         "world_revision": 2
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00002",
         "changes": [
           {
@@ -329,13 +511,20 @@
         "event_id": "e00003",
         "hash_after": "d8c24ea31ebea18863fd3df9af25a4192726dcf896a3be363c652583117892ff",
         "hash_before": "43e8d56f422bb082ce1c21d552fcac29451c298f0f67c067437d98a563f40fd1",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 1,
         "world_revision": 3
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00002",
         "changes": [
           {
@@ -359,13 +548,20 @@
         "event_id": "e00004",
         "hash_after": "3286dbe641025fbcef07b5bab2645478e960d1533176759fd6e339b0e9fea7fd",
         "hash_before": "d8c24ea31ebea18863fd3df9af25a4192726dcf896a3be363c652583117892ff",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 1,
         "world_revision": 4
       },
       {
+        "causal_bearer": {
+          "controller": "verification_script",
+          "id": "robinson",
+          "kind": "actor"
+        },
         "cause": "c00003",
         "changes": [
           {
@@ -471,13 +667,184 @@
         "event_id": "e00005",
         "hash_after": "dcfcb0e16a40b7634f1c1d5a8a098930be66c593c7835a553208beb87d0bdc90",
         "hash_before": "3286dbe641025fbcef07b5bab2645478e960d1533176759fd6e339b0e9fea7fd",
+        "observation": {
+          "actor_id": "robinson",
+          "entities": {
+            "clay-pot": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 1500,
+                "definition_id": "clay_pot",
+                "empty_weight": 2,
+                "heat_source_id": null
+              },
+              "entity_id": "clay-pot",
+              "label": "Clay pot",
+              "last_cause_event_id": "e00001",
+              "liquid": {
+                "heat_units": 22000,
+                "pathogens": 400,
+                "salt_mg": 0,
+                "volume_ml": 1000
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 240,
+                "heat_transfer_percent": 100,
+                "material_id": "fired_clay",
+                "open_top": true,
+                "overheat_damage_per_tick": 35
+              },
+              "ownership": {
+                "owner_ref": "place:camp"
+              },
+              "source_entity_id": "clay-pot",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 22.0
+              }
+            },
+            "cup-robinson": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 500,
+                "definition_id": "metal_cup",
+                "empty_weight": 1,
+                "heat_source_id": null
+              },
+              "entity_id": "cup-robinson",
+              "label": "Metal cup",
+              "liquid": {
+                "heat_units": 0,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 0
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 300,
+                "heat_transfer_percent": 100,
+                "material_id": "metal",
+                "open_top": true,
+                "overheat_damage_per_tick": 20
+              },
+              "ownership": {
+                "owner_ref": "actor:robinson"
+              },
+              "source_entity_id": "cup-robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 22
+              }
+            },
+            "fire-camp": {
+              "category_ids": [
+                "heat_source",
+                "fire"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "entity_id": "fire-camp",
+              "heat_source": {
+                "fuel": 23,
+                "heat_slots": 1,
+                "heat_units_per_tick": 20000
+              },
+              "label": "Camp fire",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "fire-camp",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "friday": {
+              "actor": {
+                "alive": true,
+                "health": 100
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "friday",
+              "label": "Friday",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "friday",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "robinson": {
+              "actor": {
+                "alive": true,
+                "health": 100,
+                "hydration": 49
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "robinson",
+              "label": "Robinson",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "unsafe-pool": {
+              "category_ids": [
+                "liquid_source"
+              ],
+              "entity_id": "unsafe-pool",
+              "label": "Unsafe freshwater pool",
+              "liquid": {
+                "heat_units": 110000,
+                "pathogens": 2000,
+                "salt_mg": 0,
+                "volume_ml": 5000
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "unsafe-pool",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            }
+          },
+          "revision": 4,
+          "tick": 1,
+          "world_id": "castaway-freshwater-v0"
+        },
         "rule_id": "mechanism.thermal.heat",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 1,
         "world_revision": 5
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00004",
         "changes": [
           {
@@ -501,13 +868,20 @@
         "event_id": "e00006",
         "hash_after": "f6ee69648d2fa38a70990998de6849818fa331138b82c29ef87ba10087470646",
         "hash_before": "dcfcb0e16a40b7634f1c1d5a8a098930be66c593c7835a553208beb87d0bdc90",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 2,
         "world_revision": 6
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00004",
         "changes": [
           {
@@ -536,13 +910,20 @@
         "event_id": "e00007",
         "hash_after": "8cef24329fb5c1cd15542ef1cb310b485c2077b99e38df29efff352a5afffe32",
         "hash_before": "f6ee69648d2fa38a70990998de6849818fa331138b82c29ef87ba10087470646",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 2,
         "world_revision": 7
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00004",
         "changes": [
           {
@@ -584,13 +965,20 @@
         "event_id": "e00008",
         "hash_after": "b83bbfb5b288093a1520959a3e45588666be9679a56acca1276b42c571536b90",
         "hash_before": "8cef24329fb5c1cd15542ef1cb310b485c2077b99e38df29efff352a5afffe32",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 2,
         "world_revision": 8
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00004",
         "changes": [
           {
@@ -614,13 +1002,20 @@
         "event_id": "e00009",
         "hash_after": "70e03ed3a443a4166984f6b385a668b2067d421830deac4f1e28f6631981e7e1",
         "hash_before": "b83bbfb5b288093a1520959a3e45588666be9679a56acca1276b42c571536b90",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 2,
         "world_revision": 9
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00005",
         "changes": [
           {
@@ -644,13 +1039,20 @@
         "event_id": "e00010",
         "hash_after": "ec284c7edcd1cbbefb6db388d9ef531c9c4ea7268556c643ed65121f61b1307d",
         "hash_before": "70e03ed3a443a4166984f6b385a668b2067d421830deac4f1e28f6631981e7e1",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 3,
         "world_revision": 10
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00005",
         "changes": [
           {
@@ -679,13 +1081,20 @@
         "event_id": "e00011",
         "hash_after": "b280666acce819fad72eac6ca18bd659274c42ca96b69d4ddfe067dae73def0f",
         "hash_before": "ec284c7edcd1cbbefb6db388d9ef531c9c4ea7268556c643ed65121f61b1307d",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 3,
         "world_revision": 11
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00005",
         "changes": [
           {
@@ -727,13 +1136,20 @@
         "event_id": "e00012",
         "hash_after": "4df6faf5ecf3d1dee3fe651879d3828ee8463b0c659cc6aa33c21c6b37037811",
         "hash_before": "b280666acce819fad72eac6ca18bd659274c42ca96b69d4ddfe067dae73def0f",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 3,
         "world_revision": 12
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00005",
         "changes": [
           {
@@ -757,13 +1173,20 @@
         "event_id": "e00013",
         "hash_after": "1f99fa3f995bf063ec21c75c1b1466be74a7a196e49d4f9451026a1c42eacce8",
         "hash_before": "4df6faf5ecf3d1dee3fe651879d3828ee8463b0c659cc6aa33c21c6b37037811",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 3,
         "world_revision": 13
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00006",
         "changes": [
           {
@@ -787,13 +1210,20 @@
         "event_id": "e00014",
         "hash_after": "2540150dcf1ff06a45ca409b11893e6d6949d82635eac385aba2fab3913ab9ed",
         "hash_before": "1f99fa3f995bf063ec21c75c1b1466be74a7a196e49d4f9451026a1c42eacce8",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 4,
         "world_revision": 14
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00006",
         "changes": [
           {
@@ -822,13 +1252,20 @@
         "event_id": "e00015",
         "hash_after": "e341c6035059d8dd79b043c9ed20c8656ac7204898daf787b418d40063a843bf",
         "hash_before": "2540150dcf1ff06a45ca409b11893e6d6949d82635eac385aba2fab3913ab9ed",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 4,
         "world_revision": 15
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00006",
         "changes": [
           {
@@ -870,13 +1307,20 @@
         "event_id": "e00016",
         "hash_after": "a868f8fc54cb245917c8ea3953bfba440ae7923f34f45013428d42c567746a31",
         "hash_before": "e341c6035059d8dd79b043c9ed20c8656ac7204898daf787b418d40063a843bf",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 4,
         "world_revision": 16
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00006",
         "changes": [
           {
@@ -900,13 +1344,20 @@
         "event_id": "e00017",
         "hash_after": "9727813a750654c781115a100639ee1daa05c4fa206bdf693a448f69bf24017b",
         "hash_before": "a868f8fc54cb245917c8ea3953bfba440ae7923f34f45013428d42c567746a31",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 4,
         "world_revision": 17
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00007",
         "changes": [
           {
@@ -930,13 +1381,20 @@
         "event_id": "e00018",
         "hash_after": "41a4caaa9212dbd248ec95e2e3baacee4cc0ac08ab4b182f2c0a9e165082a1d0",
         "hash_before": "9727813a750654c781115a100639ee1daa05c4fa206bdf693a448f69bf24017b",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 5,
         "world_revision": 18
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00007",
         "changes": [
           {
@@ -965,13 +1423,20 @@
         "event_id": "e00019",
         "hash_after": "4cc0486296b57f385096f2a88d4b430780602b02cd716cd2a68f6eb1d0ddfca0",
         "hash_before": "41a4caaa9212dbd248ec95e2e3baacee4cc0ac08ab4b182f2c0a9e165082a1d0",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 5,
         "world_revision": 19
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00007",
         "changes": [
           {
@@ -1038,13 +1503,20 @@
         "event_id": "e00020",
         "hash_after": "c965ea86464e03c0662c8b64b17756ec774334b5a52d4e7a9c0b471ba4064f94",
         "hash_before": "4cc0486296b57f385096f2a88d4b430780602b02cd716cd2a68f6eb1d0ddfca0",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 5,
         "world_revision": 20
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00007",
         "changes": [
           {
@@ -1068,13 +1540,20 @@
         "event_id": "e00021",
         "hash_after": "73ed96fa93e6c79403a8f607ca9903f1e09afad1a50f5d0515170ea43d087c86",
         "hash_before": "c965ea86464e03c0662c8b64b17756ec774334b5a52d4e7a9c0b471ba4064f94",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 5,
         "world_revision": 21
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00008",
         "changes": [
           {
@@ -1098,13 +1577,20 @@
         "event_id": "e00022",
         "hash_after": "2c40341bdb6a111cdc4115bea7e2ce1674d3720a85c803bb12fde2aa8c261c8b",
         "hash_before": "73ed96fa93e6c79403a8f607ca9903f1e09afad1a50f5d0515170ea43d087c86",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 6,
         "world_revision": 22
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00008",
         "changes": [
           {
@@ -1133,13 +1619,20 @@
         "event_id": "e00023",
         "hash_after": "06d58d7996657314856e0547cd59441d0129080981ad344763c2da9fbcab60be",
         "hash_before": "2c40341bdb6a111cdc4115bea7e2ce1674d3720a85c803bb12fde2aa8c261c8b",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 6,
         "world_revision": 23
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00008",
         "changes": [
           {
@@ -1206,13 +1699,20 @@
         "event_id": "e00024",
         "hash_after": "c95b03b9f756117e43370333006502ea59907832f40c0a1bb3666cc507484907",
         "hash_before": "06d58d7996657314856e0547cd59441d0129080981ad344763c2da9fbcab60be",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 6,
         "world_revision": 24
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00008",
         "changes": [
           {
@@ -1236,13 +1736,20 @@
         "event_id": "e00025",
         "hash_after": "0f6207cf96eb0ed6939666c7cd836231ee2e21d3a02b83bdb62f42a70069d666",
         "hash_before": "c95b03b9f756117e43370333006502ea59907832f40c0a1bb3666cc507484907",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 6,
         "world_revision": 25
       },
       {
+        "causal_bearer": {
+          "controller": "verification_script",
+          "id": "robinson",
+          "kind": "actor"
+        },
         "cause": "c00009",
         "changes": [
           {
@@ -1312,13 +1819,184 @@
         "event_id": "e00026",
         "hash_after": "eeffa673500e46f8ab40b639ff038e2f04c0ee230f4f925190273127bac83961",
         "hash_before": "0f6207cf96eb0ed6939666c7cd836231ee2e21d3a02b83bdb62f42a70069d666",
+        "observation": {
+          "actor_id": "robinson",
+          "entities": {
+            "clay-pot": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 2,
+                "capacity_ml": 1500,
+                "definition_id": "clay_pot",
+                "empty_weight": 2,
+                "heat_source_id": "fire-camp"
+              },
+              "entity_id": "clay-pot",
+              "label": "Clay pot",
+              "last_cause_event_id": "e00005",
+              "liquid": {
+                "heat_units": 97800,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 978
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 240,
+                "heat_transfer_percent": 100,
+                "material_id": "fired_clay",
+                "open_top": true,
+                "overheat_damage_per_tick": 35
+              },
+              "ownership": {
+                "owner_ref": "place:camp"
+              },
+              "source_entity_id": "clay-pot",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 100.0
+              }
+            },
+            "cup-robinson": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 500,
+                "definition_id": "metal_cup",
+                "empty_weight": 1,
+                "heat_source_id": null
+              },
+              "entity_id": "cup-robinson",
+              "label": "Metal cup",
+              "liquid": {
+                "heat_units": 0,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 0
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 300,
+                "heat_transfer_percent": 100,
+                "material_id": "metal",
+                "open_top": true,
+                "overheat_damage_per_tick": 20
+              },
+              "ownership": {
+                "owner_ref": "actor:robinson"
+              },
+              "source_entity_id": "cup-robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 22
+              }
+            },
+            "fire-camp": {
+              "category_ids": [
+                "heat_source",
+                "fire"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "entity_id": "fire-camp",
+              "heat_source": {
+                "fuel": 18,
+                "heat_slots": 1,
+                "heat_units_per_tick": 20000
+              },
+              "label": "Camp fire",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "fire-camp",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "friday": {
+              "actor": {
+                "alive": true,
+                "health": 100
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "friday",
+              "label": "Friday",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "friday",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "robinson": {
+              "actor": {
+                "alive": true,
+                "health": 100,
+                "hydration": 44
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "robinson",
+              "label": "Robinson",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "unsafe-pool": {
+              "category_ids": [
+                "liquid_source"
+              ],
+              "entity_id": "unsafe-pool",
+              "label": "Unsafe freshwater pool",
+              "liquid": {
+                "heat_units": 110000,
+                "pathogens": 2000,
+                "salt_mg": 0,
+                "volume_ml": 5000
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "unsafe-pool",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            }
+          },
+          "revision": 25,
+          "tick": 6,
+          "world_id": "castaway-freshwater-v0"
+        },
         "rule_id": "mechanism.thermal.unheat",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 6,
         "world_revision": 26
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00010",
         "changes": [
           {
@@ -1342,13 +2020,20 @@
         "event_id": "e00027",
         "hash_after": "8c3d1d1c0a5f19d0dca848874dc915d87a5e118a8b3466e061b978add9b19cdc",
         "hash_before": "eeffa673500e46f8ab40b639ff038e2f04c0ee230f4f925190273127bac83961",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 7,
         "world_revision": 27
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00010",
         "changes": [
           {
@@ -1377,13 +2062,20 @@
         "event_id": "e00028",
         "hash_after": "7db9de767dbb32dd4b241fc98e5be15a8b24b4b1a45c42ce8ff73c80e1bb4a1d",
         "hash_before": "8c3d1d1c0a5f19d0dca848874dc915d87a5e118a8b3466e061b978add9b19cdc",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 7,
         "world_revision": 28
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00010",
         "changes": [
           {
@@ -1430,13 +2122,20 @@
         "event_id": "e00029",
         "hash_after": "24a4e196d5a8f68b68f3e5103ff844f2180651c3ce0d5e1f67852418964da9ea",
         "hash_before": "7db9de767dbb32dd4b241fc98e5be15a8b24b4b1a45c42ce8ff73c80e1bb4a1d",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 7,
         "world_revision": 29
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00010",
         "changes": [
           {
@@ -1460,13 +2159,20 @@
         "event_id": "e00030",
         "hash_after": "855ff0c838a1aab57218f26456827c142a9ad5163f189a43f0cee1b944a2492c",
         "hash_before": "24a4e196d5a8f68b68f3e5103ff844f2180651c3ce0d5e1f67852418964da9ea",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 7,
         "world_revision": 30
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00011",
         "changes": [
           {
@@ -1490,13 +2196,20 @@
         "event_id": "e00031",
         "hash_after": "87438d1488eb4d8f5ec5e70ef1cb59135fe0caaf5376030bdc8728caee88f0a8",
         "hash_before": "855ff0c838a1aab57218f26456827c142a9ad5163f189a43f0cee1b944a2492c",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 8,
         "world_revision": 31
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00011",
         "changes": [
           {
@@ -1525,13 +2238,20 @@
         "event_id": "e00032",
         "hash_after": "09379007a51b16e1b1d4201b0c27db7ae1053dca2375debb3363523da1d24ad5",
         "hash_before": "87438d1488eb4d8f5ec5e70ef1cb59135fe0caaf5376030bdc8728caee88f0a8",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 8,
         "world_revision": 32
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00011",
         "changes": [
           {
@@ -1573,13 +2293,20 @@
         "event_id": "e00033",
         "hash_after": "260a3976b715a633c66b51679fc7c25c006d33e1ca42a26f008ec1a857e71ed2",
         "hash_before": "09379007a51b16e1b1d4201b0c27db7ae1053dca2375debb3363523da1d24ad5",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 8,
         "world_revision": 33
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00011",
         "changes": [
           {
@@ -1603,13 +2330,20 @@
         "event_id": "e00034",
         "hash_after": "1e9803915a259dcdcafc3f4b07607f7984b08cae8e1292bec6d671f3334df738",
         "hash_before": "260a3976b715a633c66b51679fc7c25c006d33e1ca42a26f008ec1a857e71ed2",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 8,
         "world_revision": 34
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00012",
         "changes": [
           {
@@ -1633,13 +2367,20 @@
         "event_id": "e00035",
         "hash_after": "e6ab84549e287bf37625c9c2fadf6356209cb69ca1a127d312c0f714276961ba",
         "hash_before": "1e9803915a259dcdcafc3f4b07607f7984b08cae8e1292bec6d671f3334df738",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 9,
         "world_revision": 35
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00012",
         "changes": [
           {
@@ -1668,13 +2409,20 @@
         "event_id": "e00036",
         "hash_after": "99763168cf859d1b00a83a6b8dc09bb9d3251ffc8b68110811dd47c1376ae791",
         "hash_before": "e6ab84549e287bf37625c9c2fadf6356209cb69ca1a127d312c0f714276961ba",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 9,
         "world_revision": 36
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00012",
         "changes": [
           {
@@ -1716,13 +2464,20 @@
         "event_id": "e00037",
         "hash_after": "bba8e93ea9be4a08775e8acaf6a7b09bfbf3567f4d23ed9a81c84571c7c07c5c",
         "hash_before": "99763168cf859d1b00a83a6b8dc09bb9d3251ffc8b68110811dd47c1376ae791",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 9,
         "world_revision": 37
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00012",
         "changes": [
           {
@@ -1746,13 +2501,20 @@
         "event_id": "e00038",
         "hash_after": "5ba0697df660d28be19feb76a155619358474c71654122c79a6d09fc9c738557",
         "hash_before": "bba8e93ea9be4a08775e8acaf6a7b09bfbf3567f4d23ed9a81c84571c7c07c5c",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 9,
         "world_revision": 38
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00013",
         "changes": [
           {
@@ -1776,13 +2538,20 @@
         "event_id": "e00039",
         "hash_after": "f133079bcd5ddbe363395ed85eae1e13cfb27faa03373e63aadb69d4a1e5f1d4",
         "hash_before": "5ba0697df660d28be19feb76a155619358474c71654122c79a6d09fc9c738557",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 10,
         "world_revision": 39
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00013",
         "changes": [
           {
@@ -1811,13 +2580,20 @@
         "event_id": "e00040",
         "hash_after": "69643d4148ee3309c57a316bac434e3a5850810a4fa26e12433108918cc15fdf",
         "hash_before": "f133079bcd5ddbe363395ed85eae1e13cfb27faa03373e63aadb69d4a1e5f1d4",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 10,
         "world_revision": 40
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00013",
         "changes": [
           {
@@ -1859,13 +2635,20 @@
         "event_id": "e00041",
         "hash_after": "a166ffa4200b94ed3ccd6de1518172c20bb3d0aebfe4cd2d95a2b6e47751793e",
         "hash_before": "69643d4148ee3309c57a316bac434e3a5850810a4fa26e12433108918cc15fdf",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 10,
         "world_revision": 41
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00013",
         "changes": [
           {
@@ -1889,13 +2672,20 @@
         "event_id": "e00042",
         "hash_after": "0e8d526773ad43ab116886f6428a0bdebcd18d926c0189f03e1ee511d4f6d84c",
         "hash_before": "a166ffa4200b94ed3ccd6de1518172c20bb3d0aebfe4cd2d95a2b6e47751793e",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 10,
         "world_revision": 42
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00014",
         "changes": [
           {
@@ -1919,13 +2709,20 @@
         "event_id": "e00043",
         "hash_after": "6501b2b4039fab67380bcd04dcd2e13c6219620befe22e758445276e13347fe3",
         "hash_before": "0e8d526773ad43ab116886f6428a0bdebcd18d926c0189f03e1ee511d4f6d84c",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 11,
         "world_revision": 43
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00014",
         "changes": [
           {
@@ -1954,13 +2751,20 @@
         "event_id": "e00044",
         "hash_after": "6edc7cadbc7ddd88add68306aa1f13c3d69ee0112ebd9e3e8722ac2564ab7b0b",
         "hash_before": "6501b2b4039fab67380bcd04dcd2e13c6219620befe22e758445276e13347fe3",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 11,
         "world_revision": 44
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00014",
         "changes": [
           {
@@ -2002,13 +2806,20 @@
         "event_id": "e00045",
         "hash_after": "38be2a5a70cdada16b5c18cd14e9d7277baf21f8623e673227d0ec9333e1e4c4",
         "hash_before": "6edc7cadbc7ddd88add68306aa1f13c3d69ee0112ebd9e3e8722ac2564ab7b0b",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 11,
         "world_revision": 45
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00014",
         "changes": [
           {
@@ -2032,13 +2843,20 @@
         "event_id": "e00046",
         "hash_after": "214287aef59532d2007b8e05160796195e95a5e1185dd59fb3a6ad6ca496f2a2",
         "hash_before": "38be2a5a70cdada16b5c18cd14e9d7277baf21f8623e673227d0ec9333e1e4c4",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 11,
         "world_revision": 46
       },
       {
+        "causal_bearer": {
+          "controller": "verification_script",
+          "id": "robinson",
+          "kind": "actor"
+        },
         "cause": "c00015",
         "changes": [
           {
@@ -2197,13 +3015,184 @@
         "event_id": "e00047",
         "hash_after": "1be6fb37591ccf7a4b9b3252815c4bf8e74d28cefc2471b1d83bece30e24a654",
         "hash_before": "214287aef59532d2007b8e05160796195e95a5e1185dd59fb3a6ad6ca496f2a2",
+        "observation": {
+          "actor_id": "robinson",
+          "entities": {
+            "clay-pot": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 1500,
+                "definition_id": "clay_pot",
+                "empty_weight": 2,
+                "heat_source_id": null
+              },
+              "entity_id": "clay-pot",
+              "label": "Clay pot",
+              "last_cause_event_id": "e00026",
+              "liquid": {
+                "heat_units": 39617,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 978
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 240,
+                "heat_transfer_percent": 100,
+                "material_id": "fired_clay",
+                "open_top": true,
+                "overheat_damage_per_tick": 35
+              },
+              "ownership": {
+                "owner_ref": "place:camp"
+              },
+              "source_entity_id": "clay-pot",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 40.51
+              }
+            },
+            "cup-robinson": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 500,
+                "definition_id": "metal_cup",
+                "empty_weight": 1,
+                "heat_source_id": null
+              },
+              "entity_id": "cup-robinson",
+              "label": "Metal cup",
+              "liquid": {
+                "heat_units": 0,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 0
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 300,
+                "heat_transfer_percent": 100,
+                "material_id": "metal",
+                "open_top": true,
+                "overheat_damage_per_tick": 20
+              },
+              "ownership": {
+                "owner_ref": "actor:robinson"
+              },
+              "source_entity_id": "cup-robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 22
+              }
+            },
+            "fire-camp": {
+              "category_ids": [
+                "heat_source",
+                "fire"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "entity_id": "fire-camp",
+              "heat_source": {
+                "fuel": 13,
+                "heat_slots": 1,
+                "heat_units_per_tick": 20000
+              },
+              "label": "Camp fire",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "fire-camp",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "friday": {
+              "actor": {
+                "alive": true,
+                "health": 100
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "friday",
+              "label": "Friday",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "friday",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "robinson": {
+              "actor": {
+                "alive": true,
+                "health": 100,
+                "hydration": 39
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "robinson",
+              "label": "Robinson",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "unsafe-pool": {
+              "category_ids": [
+                "liquid_source"
+              ],
+              "entity_id": "unsafe-pool",
+              "label": "Unsafe freshwater pool",
+              "liquid": {
+                "heat_units": 110000,
+                "pathogens": 2000,
+                "salt_mg": 0,
+                "volume_ml": 5000
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "unsafe-pool",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            }
+          },
+          "revision": 46,
+          "tick": 11,
+          "world_id": "castaway-freshwater-v0"
+        },
         "rule_id": "mechanism.liquid.pour",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 11,
         "world_revision": 47
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00016",
         "changes": [
           {
@@ -2227,13 +3216,20 @@
         "event_id": "e00048",
         "hash_after": "1e9329c1a97fa0da1f5c55f40dd16f8cd6fd564a536fb4815386a11c3e7bec3c",
         "hash_before": "1be6fb37591ccf7a4b9b3252815c4bf8e74d28cefc2471b1d83bece30e24a654",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 12,
         "world_revision": 48
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00016",
         "changes": [
           {
@@ -2262,13 +3258,20 @@
         "event_id": "e00049",
         "hash_after": "f65df44120961658cf613d33d5c97328f35ed10e82d511349232ce98d8029bc7",
         "hash_before": "1e9329c1a97fa0da1f5c55f40dd16f8cd6fd564a536fb4815386a11c3e7bec3c",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 12,
         "world_revision": 49
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00016",
         "changes": [
           {
@@ -2320,13 +3323,20 @@
         "event_id": "e00050",
         "hash_after": "dfe18f5125415ca15def2a89d6d3d57782b35e5496a85b06e9e8c1633aecccf5",
         "hash_before": "f65df44120961658cf613d33d5c97328f35ed10e82d511349232ce98d8029bc7",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 12,
         "world_revision": 50
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00016",
         "changes": [
           {
@@ -2350,13 +3360,20 @@
         "event_id": "e00051",
         "hash_after": "29bf14e5e7fad2aaa2c158985259820551d48a9728b7a1b3369c70e08853b194",
         "hash_before": "dfe18f5125415ca15def2a89d6d3d57782b35e5496a85b06e9e8c1633aecccf5",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 12,
         "world_revision": 51
       },
       {
+        "causal_bearer": {
+          "controller": "verification_script",
+          "id": "robinson",
+          "kind": "actor"
+        },
         "cause": "c00017",
         "changes": [
           {
@@ -2470,13 +3487,185 @@
         "event_id": "e00052",
         "hash_after": "40ee77b43aa723bccca8a609b9a4b5ec37a3637253cd3318494688d68618a37e",
         "hash_before": "29bf14e5e7fad2aaa2c158985259820551d48a9728b7a1b3369c70e08853b194",
+        "observation": {
+          "actor_id": "robinson",
+          "entities": {
+            "clay-pot": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 1500,
+                "definition_id": "clay_pot",
+                "empty_weight": 2,
+                "heat_source_id": null
+              },
+              "entity_id": "clay-pot",
+              "label": "Clay pot",
+              "last_cause_event_id": "e00047",
+              "liquid": {
+                "heat_units": 26121,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 728
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 240,
+                "heat_transfer_percent": 100,
+                "material_id": "fired_clay",
+                "open_top": true,
+                "overheat_damage_per_tick": 35
+              },
+              "ownership": {
+                "owner_ref": "place:camp"
+              },
+              "source_entity_id": "clay-pot",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 35.88
+              }
+            },
+            "cup-robinson": {
+              "category_ids": [
+                "vessel",
+                "container"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "container": {
+                "boiling_ticks": 0,
+                "capacity_ml": 500,
+                "definition_id": "metal_cup",
+                "empty_weight": 1,
+                "heat_source_id": null
+              },
+              "entity_id": "cup-robinson",
+              "label": "Metal cup",
+              "last_cause_event_id": "e00047",
+              "liquid": {
+                "heat_units": 8970,
+                "pathogens": 0,
+                "salt_mg": 0,
+                "volume_ml": 250
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "material": {
+                "heat_limit_c": 300,
+                "heat_transfer_percent": 100,
+                "material_id": "metal",
+                "open_top": true,
+                "overheat_damage_per_tick": 20
+              },
+              "ownership": {
+                "owner_ref": "actor:robinson"
+              },
+              "source_entity_id": "cup-robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb",
+              "thermal": {
+                "temperature_c": 35.88
+              }
+            },
+            "fire-camp": {
+              "category_ids": [
+                "heat_source",
+                "fire"
+              ],
+              "condition": {
+                "value": 100
+              },
+              "entity_id": "fire-camp",
+              "heat_source": {
+                "fuel": 12,
+                "heat_slots": 1,
+                "heat_units_per_tick": 20000
+              },
+              "label": "Camp fire",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "fire-camp",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "friday": {
+              "actor": {
+                "alive": true,
+                "health": 100
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "friday",
+              "label": "Friday",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "friday",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "robinson": {
+              "actor": {
+                "alive": true,
+                "health": 100,
+                "hydration": 38
+              },
+              "category_ids": [
+                "actor"
+              ],
+              "entity_id": "robinson",
+              "label": "Robinson",
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "robinson",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            },
+            "unsafe-pool": {
+              "category_ids": [
+                "liquid_source"
+              ],
+              "entity_id": "unsafe-pool",
+              "label": "Unsafe freshwater pool",
+              "liquid": {
+                "heat_units": 110000,
+                "pathogens": 2000,
+                "salt_mg": 0,
+                "volume_ml": 5000
+              },
+              "location": {
+                "location_id": "camp"
+              },
+              "source_entity_id": "unsafe-pool",
+              "source_pack_id": "castaway-water-workshop-m1@da5ccb46fa536505bbc0235a4157c648c8bb4bcb"
+            }
+          },
+          "revision": 51,
+          "tick": 12,
+          "world_id": "castaway-freshwater-v0"
+        },
         "rule_id": "mechanism.liquid.drink",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 12,
         "world_revision": 52
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "system.clock.advance",
+          "kind": "process"
+        },
         "cause": "c00018",
         "changes": [
           {
@@ -2500,13 +3689,20 @@
         "event_id": "e00053",
         "hash_after": "adff5ce3e3029c22b9b8e9403919068d5621264bcebc720c2d1b868aa4a46ebd",
         "hash_before": "40ee77b43aa723bccca8a609b9a4b5ec37a3637253cd3318494688d68618a37e",
+        "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 13,
         "world_revision": 53
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.actor.hydration-decay",
+          "kind": "process"
+        },
         "cause": "c00018",
         "changes": [
           {
@@ -2535,13 +3731,20 @@
         "event_id": "e00054",
         "hash_after": "7666ba786e747abedec29708f202e5ec9b98abd538a9c843f542dedc1775a420",
         "hash_before": "adff5ce3e3029c22b9b8e9403919068d5621264bcebc720c2d1b868aa4a46ebd",
+        "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 13,
         "world_revision": 54
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.thermal.vessels",
+          "kind": "process"
+        },
         "cause": "c00018",
         "changes": [
           {
@@ -2588,13 +3791,20 @@
         "event_id": "e00055",
         "hash_after": "84a6e94627045e6bfe6c35ac15f6bf9d81cc527f3381bd594bdba333e87c0848",
         "hash_before": "7666ba786e747abedec29708f202e5ec9b98abd538a9c843f542dedc1775a420",
+        "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 13,
         "world_revision": 55
       },
       {
+        "causal_bearer": {
+          "controller": null,
+          "id": "process.heat-source.fuel",
+          "kind": "process"
+        },
         "cause": "c00018",
         "changes": [
           {
@@ -2618,8 +3828,10 @@
         "event_id": "e00056",
         "hash_after": "d4334b69fa4081ea09be9dd4870930aaf1f4b9f66076619070f788565d9b65f6",
         "hash_before": "84a6e94627045e6bfe6c35ac15f6bf9d81cc527f3381bd594bdba333e87c0848",
+        "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
+        "semantic_binding": null,
         "status": "accepted",
         "tick": 13,
         "world_revision": 56

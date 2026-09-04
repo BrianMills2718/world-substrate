@@ -135,9 +135,9 @@ the audit that found it.
 
 | Obligation | Required by | State |
 | --- | --- | --- |
-| Attach the causal bearer's observation to its event | [Decision 002](../docs/decisions/002-observability-and-replay.md), field 1 of 8 | open — `engine.observe()` exists but is never attached; a `core-v0` schema change |
-| Attach the bound Linguistic Core sense and roles to its event | Decision 002, field 3 of 8 | open — `SEMANTIC_BINDINGS` exists but is never attached; same schema change |
-| Name the authority/causal bearer on an event | Decision 002, field 4 of 8 | partial — `rule_id` gives the mechanic, nothing gives the bearer |
+| ~~Attach the causal bearer's observation to its event~~ | Decision 002, field 1 of 8 | **closed.** Captured before mutation and attached as `observation`; `null` for a process |
+| ~~Attach the bound Linguistic Core sense and roles to its event~~ | Decision 002, field 3 of 8 | **closed.** Attached as `semantic_binding`; `null` for the six unbound action kinds |
+| ~~Name the authority/causal bearer on an event~~ | Decision 002, field 4 of 8 | **closed.** Attached as `causal_bearer`, distinguishing an actor from a process |
 | Bind the remaining 6 of 7 M1 action kinds to Linguistic Core senses | [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) | open — only `give` is bound |
 | Decide the ledger's shape for lost quantities | M4 finding | open — `spilled_ml` is a bare integer while `evaporated` is a full liquid vector, so spilled salt and pathogens leave the world unaccounted; `overflow_ml` is written by nothing |
 | Enforce declared read scopes at runtime | this roadmap's own invariant | open, and harder than writes — a read leaves no trace in state. Declarations are repaired and guarded by test; enforcement is not designed |
@@ -145,9 +145,9 @@ the audit that found it.
 | Signal that an action destroys the value of existing contents | M5 finding | open — `fill` is presented identically whether or not it re-contaminates a treated vessel. The M5 policy did exactly that and then drank it |
 | ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** `owner_ref` is validated as `<kind>:<target>` in `World.validate()`, and the eighteen call sites that hand-built the convention now go through `model.owner_ref()`, which refuses a malformed reference at the source. `tests/test_owner_ref.py` replays the exact declaration from M7's evidence file and asserts it is now refused with the attachment provenance intact. The wire format is unchanged, so all ten probes remain byte-identical |
 
-Five of eight Decision 002 observability fields are covered today. The three
-rows above are the gap, and closing the first two is one `core-v0` schema
-change rather than six separate ones.
+**All eight Decision 002 observability fields are covered.** The three rows
+above were closed together as one `core-v0` schema change. This was the only
+requirement the project set for itself and did not meet.
 
 ## Authoring and causal-closure hypothesis
 

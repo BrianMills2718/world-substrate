@@ -75,6 +75,7 @@ REQUIRED = (
     "src/world_substrate/assay.py",
     "tests/CLAUDE.md",
     "tests/test_owner_ref.py",
+    "tests/test_observability_fields.py",
     "tests/test_first_fill.py",
     "tests/test_boiling.py",
     "tests/test_pour.py",
