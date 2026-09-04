@@ -75,32 +75,23 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 - Contract status is mixed rather than binary: `core-v0` is implemented; mechanic-profile and transition-envelope are **partially** implemented; semantic-mechanical-binding remains a target. Each contract states its own current status.
 - Exact replay remains valid M1 evidence but is not a future product requirement.
 - Linguistic Core is the selected semantic interface. Its coverage of persistent state, qualities, quantities, rights, and institutional relations still requires a donor audit, and 6 of 7 M1 action kinds still have no binding.
-- Never exercised: no policy of any kind — LLM, human, or interactive — has driven this world, and no second reference world exists.
+- An LLM policy has driven the world through the ordinary affordance seam (M5), and a second reference world — a workshop of discrete parts and tools sharing no content with Castaway — reuses the transition kernel, events, replay, installer, assays and policy seam (M6).
+- A model has authored mechanics it was not handed, with the checks withheld from it (M7): 9 of 10 installed, 0 write-scope violations, and the dominant failure mode was triviality rather than danger.
+- Ownership references are checked rather than conventional, closing the one defect class M7 found that nothing could catch.
 
 ## Current frontier
 
-M2 through M4 are complete. The mechanics-authoring question has been probed
-from both sides — a mechanic with a planted omission (M3) and one without (M4) —
-and the durable result is that installation never validates completeness, three
-assay bases each catch what the others miss, and a residual survives all of
-them.
+All six prototype success criteria are met, and both halves of the central
+hypothesis have been probed: whether bad mechanics get caught (M3, M4) and
+whether an agent can author useful ones unaided (M7).
 
-What the project has **not** done is the more telling list. Two of the six
-prototype success criteria are unmet, and neither is a mechanics question:
+What remains is incremental hardening rather than an open question. The
+roadmap's Open obligations table is the live list; the largest single item is
+the three uncovered Decision 002 observability fields, which are one `core-v0`
+schema change rather than six separate ones.
 
-- **No policy has ever driven this world.** Every run to date is a scripted
-  controller selecting from `discover()`. Criterion 2 requires the same
-  interface to be exercisable by scripted, human, or LLM policies; only the
-  first has happened. A provider call needs explicit authority and a spend cap.
-- **No second world exists.** Criterion 6 requires a materially different world
-  to reuse the semantic, transition, and mechanic-profile contracts. The M2
-  audit already measured the warning sign: only 2 of 10 `give`/`take` checks
-  are substrate-universal, the other 8 are Castaway content. Whether "substrate"
-  is real is currently untested.
-
-[The roadmap](../../roadmap/README.md) holds the exact next action. Escrow and
-other institution work sits behind both of the above; it exercises commit
-machinery that already exists and should not be mistaken for the frontier.
+[The roadmap](../../roadmap/README.md) holds the exact next action. Continuing
+is a scope choice, not an obligation.
 
 ## Architecture and workflow
 
