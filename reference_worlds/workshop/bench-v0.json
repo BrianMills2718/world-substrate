@@ -1,0 +1,39 @@
+{
+  "schema_version": "world-substrate-reference-world/v0",
+  "world_id": "workshop-bench-v0",
+  "content_id": "world-substrate-m6-workshop@1",
+  "source": {
+    "repository": "world-substrate",
+    "authored_for": "M6 second reference world",
+    "note": "Shares no content with Castaway. Discrete parts, no quantities, no temperature, no liquid, no material, no heat source. Built to test whether the substrate contracts transfer."
+  },
+  "entities": [
+    {"entity_id": "mira", "label": "Mira", "category_ids": ["worker"],
+     "location": {"location_id": "bench"},
+     "components": {"worker": {"fatigue": 0, "skill": 2}}},
+    {"entity_id": "frame-a", "label": "Chair frame", "category_ids": ["assembly"],
+     "location": {"location_id": "bench"},
+     "ownership": {"owner_ref": "place:bench"},
+     "components": {"assembly": {"required_kinds": ["leg", "leg", "seat"], "requires_tool": "wrench"}}},
+    {"entity_id": "wrench-1", "label": "Wrench", "category_ids": ["tool"],
+     "location": {"location_id": "bench"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:bench"},
+     "components": {"tool": {"tool_kind": "wrench", "wear": 0, "wear_limit": 100}}},
+    {"entity_id": "leg-1", "label": "Chair leg", "category_ids": ["part"],
+     "location": {"location_id": "bench"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:bench"},
+     "components": {"part": {"part_kind": "leg", "attached_to": null}}},
+    {"entity_id": "leg-2", "label": "Chair leg", "category_ids": ["part"],
+     "location": {"location_id": "bench"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:bench"},
+     "components": {"part": {"part_kind": "leg", "attached_to": null}}},
+    {"entity_id": "seat-1", "label": "Chair seat", "category_ids": ["part"],
+     "location": {"location_id": "bench"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:bench"},
+     "components": {"part": {"part_kind": "seat", "attached_to": null}}},
+    {"entity_id": "shelf-1", "label": "Shelf bracket", "category_ids": ["part"],
+     "location": {"location_id": "bench"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:bench"},
+     "components": {"part": {"part_kind": "bracket", "attached_to": null}}}
+  ]
+}

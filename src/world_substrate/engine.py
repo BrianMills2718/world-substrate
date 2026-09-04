@@ -11,28 +11,34 @@ from .model import World, differences
 from .rules import Check, ProcessRule, RuleRegistry, TypedAction, UnsupportedAction
 
 ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
-_ACTION_REFERENCE_KEYS = (
-    "actor",
-    "vessel",
-    "source",
-    "target",
-    "destination",
-    "recipient",
-)
+# Entity references are found by asking the world, not by guessing at key
+# names. The first version of this listed Castaway's action vocabulary
+# ("vessel", "source", "target", ...), which silently rejected legitimate
+# writes in any world whose actions name their participants differently -- the
+# workshop world's `item`, `part` and `assembly` keys bound to nothing, so a
+# correctly declared write looked out of scope (M6 finding).
 
 
 class ScopeViolation(RuntimeError):
     """A registered rule wrote outside its declared write scope."""
 
 
-def _action_entity_refs(record: dict[str, Any]) -> frozenset[str]:
-    """Entity identifiers the attempt itself names."""
-    refs = set()
-    for key in _ACTION_REFERENCE_KEYS:
-        value = record.get(key)
-        if isinstance(value, str) and value:
-            refs.add(value)
-    return frozenset(refs)
+def _action_entity_refs(
+    record: dict[str, Any], known_ids: frozenset[str]
+) -> frozenset[str]:
+    """Entity identifiers the attempt itself names.
+
+    Any string value in the envelope that is an entity in this world counts,
+    whatever the field is called. Non-entity values (`kind`, `controller`, a
+    volume) name nothing and bind nothing, so this stays as tight as a
+    hand-listed vocabulary while working for worlds that were not written
+    against one.
+    """
+    return frozenset(
+        value
+        for value in record.values()
+        if isinstance(value, str) and value in known_ids
+    )
 
 
 def _path_permitted(
@@ -109,7 +115,11 @@ class Engine:
 
     def observe(self, actor_id: str) -> dict[str, Any]:
         actor = self.world.entities.get(actor_id)
-        if actor is None or actor.actor is None or actor.location is None:
+        # An observer needs a place to observe from. It does not need to be a
+        # Castaway survivor: requiring ActorState here made health/hydration a
+        # precondition of being able to see anything, which is freshwater
+        # content sitting in the substrate's observation path (M6 finding).
+        if actor is None or actor.location is None:
             raise ValueError("unknown actor")
         local = {}
         for entity_id, entity in self.world.entities.items():
@@ -290,7 +300,7 @@ class Engine:
         violations = _scope_violations(
             differences(before, after),
             rule.write_paths,
-            _action_entity_refs(action.as_dict()),
+            _action_entity_refs(action.as_dict(), frozenset(self.world.entities)),
         )
         if violations:
             # The rule is defective, not the attempt. Discard the candidate so

@@ -125,6 +125,21 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, An
     """
     actor = engine.world.entities[actor_id]
     observation = page["observation"]
+    # Describe whatever the actor actually has. The first version of this read
+    # actor.health and actor.hydration directly, which put Castaway content in
+    # the shared policy module and crashed on any world whose actors are not
+    # survivors (M6 finding).
+    self_bits: list[str] = []
+    if actor.actor is not None:
+        self_bits.append(f"health {actor.actor.health}")
+        self_bits.append(f"hydration {actor.actor.hydration}")
+    for name in sorted(actor.components):
+        component = actor.components[name]
+        self_bits.extend(
+            f"{field} {value}"
+            for field, value in sorted(vars(component).items())
+            if isinstance(value, (int, str))
+        )
     visible = []
     for entity_id, record in sorted(observation["entities"].items()):
         if entity_id == actor_id:
@@ -148,13 +163,19 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, An
             bits.append(f"fuel {record['heat_source']['fuel']}")
         if record.get("ownership"):
             bits.append(f"held by {record['ownership']['owner_ref']}")
+        for name, fields in sorted((record.get("components") or {}).items()):
+            rendered = ", ".join(
+                f"{key} {value}"
+                for key, value in sorted(fields.items())
+                if value is not None and value != ""
+            )
+            if rendered:
+                bits.append(f"{name}: {rendered}")
         visible.append(f"{record['label']} ({entity_id}): " + ", ".join(bits))
     return {
         "tick": engine.world.tick,
         "actor_id": actor_id,
-        "actor_state": (
-            f"health {actor.actor.health}, hydration {actor.actor.hydration}"
-        ),
+        "actor_state": ", ".join(self_bits) or "nothing notable",
         "visible": "\n".join(visible),
         "actions": [
             {

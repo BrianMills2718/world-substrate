@@ -11,8 +11,8 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** an LLM policy drove the world end to end; success criterion 2 is met  
-**Current strategy frontier:** M6 second reference world — the last unmet success criterion
+**Last outcome-bearing implementation:** a second reference world; all six prototype success criteria are met  
+**Current strategy frontier:** none selected — the prototype's stated success criteria are all met
 
 ## Outcome and success criteria
 
@@ -63,7 +63,8 @@ audits; findings live in the audit that produced them.
 - Declared **write** scopes are enforced by the engine (`scope_violation`; negative controls in `tests/test_write_scope.py`). Declared **read** scopes are recorded on every event and are **not** enforced at runtime; the three rules that under-declared reads are repaired and `tests/test_overheat_assay.py` guards against regression.
 - Three interaction assays exist on three different bases — declarations, differential behaviour, conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient. Evidence: [M3](../docs/audits/m3-overheat-authoring-experiment.md), [M4](../docs/audits/m4-spill-experiment.md).
 - Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has; M4 records one that is live in the world today only because a second mechanic closed it.
-- A policy has driven this world (success criterion 2, met). An LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief about the world was wrong. Five of six criteria are met. **The one that remains is a second reference world (criterion 6)** — still the only test of whether the contracts generalise. See [the M5 audit](../docs/audits/m5-policy-consumer.md).
+- A policy has driven this world (criterion 2, met): an LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief was wrong. See [the M5 audit](../docs/audits/m5-policy-consumer.md).
+- A second, materially different world reuses the contracts (criterion 6, met). **All six prototype success criteria are now met.** The workshop world shares no content with Castaway and the split was clean in both directions: the transition kernel, causal events, exact replay, the profile installer, all three assays and the policy seam transferred with no edits at all, while *zero* Castaway mechanics were reusable — `take`/`give` compute carrying capacity from `liquid.volume_ml` and cannot move a bolt. Four couplings had to be broken: `Entity` was a closed component set, `observe()` required `ActorState`, write-scope binding used Castaway's action vocabulary, and `policy.present()` read health and hydration. Two of the four were written earlier in the same session in modules named for their general purpose. See [the M6 audit](../docs/audits/m6-second-world.md).
 - Doctrine, unchanged: Linguistic Core supplies senses and roles, not effects; consequences require a represented causal bearer and an installed mechanic; composites stay derived; observability is required while exact replay is not a universal gate; mechanics authoring is offline and runtime law revision is deferred; donor repositories stay read-only unless a consumer path explicitly adopts code.
 
 ## Applicable context
@@ -109,7 +110,7 @@ observable attempt or trigger
 | M4: causal-coherence assay | complete | three assays on three different bases, each with a stated blind spot, plus a negative control that only accounting catches | promoted: M3's residual closed by an honestly-authored mechanic; no single basis and no pair is sufficient — [the experiment](../docs/audits/m4-spill-experiment.md) |
 | M5: policy consumer | complete | an LLM selecting from `discover()` over 16 turns, compared against a no-foresight baseline on the same world | promoted: seam holds (no policy output is ever parsed into an action), the world corrected the model's wrong belief mechanically, and two observation-seam weaknesses surfaced that a scripted controller cannot expose — [the audit](../docs/audits/m5-policy-consumer.md) |
 | M5b: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | Revisit only when a world needs an institution. Atomic commit-or-refuse has existed and been tested since M1, so escrow largely re-exercises machinery rather than testing an open question |
-| M6: second reference world | **next**, blocked on domain selection | a materially different world reusing the semantic, transition, and mechanic-profile contracts | The only test of success criterion 6 and of whether "substrate" is real. The M2 audit measured the risk: 2 of 10 checks are substrate-universal, 8 are Castaway content. Promote on reuse that is structural rather than cosmetic; a painful port is a finding, not a failure |
+| M6: second reference world | complete | a workshop world — worker, bench, discrete parts, tool, assembly — sharing no content with Castaway | promoted: the transition kernel, events, replay, profile installer, all three assays and the policy seam transferred with no edits; four substrate/content couplings were found and fixed; zero Castaway mechanics were reusable — [the audit](../docs/audits/m6-second-world.md) |
 | M7: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
 Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
@@ -210,16 +211,24 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-**M6, a second reference world.** It is the last unmet success criterion and the
-only test of whether "substrate" means anything here. The M2 audit already
-measured the risk: 2 of 10 `give`/`take` checks are substrate-universal, the
-other 8 are Castaway content. A domain sharing little with Castaway — discrete
-objects, no liquids, no heat, no thermal processes — makes the reuse test
-structural rather than cosmetic. It needs no spend authorization, and a painful
-port is a finding rather than a failure.
+**All six prototype success criteria are met.** Nothing is in progress, and no
+milestone in the table is outstanding except M5b (installed institution,
+deliberately deprioritized) and M7 (scale and dynamical evaluation,
+deliberately deferred until a real world exposes the need).
 
-The Open obligations table above holds smaller work that needs no permission,
-including two new seam findings from the M5 policy run.
+That makes the next move a scope decision rather than an implementation one,
+and it belongs to Brian. The honest options:
 
-Model calls are authorized under a $2 cap and have cost $0.005 to date. Do not
-exceed the cap; check with `make cost-by-project` in `llm_client`.
+1. **Stop here and write it up.** The prototype answered its questions. A
+   deliberate close is a legitimate outcome and cheaper than drift.
+2. **Harden what exists.** The Open obligations table above is real, unglamorous
+   work with no permission needed: three uncovered Decision 002 observability
+   fields, six unbound action kinds, the ledger's shape for lost quantities,
+   runtime read enforcement, and two seam findings from the M5 policy run.
+3. **Push on the actual research bet.** The authoring hypothesis is only half
+   tested: M3 and M4 measured the *risk* side (do bad mechanics get caught) with
+   mechanics the assay author wrote. The *rate* side — can an agent author a
+   useful mechanic it was not handed, faster than interaction risk grows — has
+   never been attempted, and is the thing this project exists to find out.
+
+Model calls are authorized under a $2 cap and have cost $0.005 to date.
