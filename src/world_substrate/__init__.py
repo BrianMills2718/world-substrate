@@ -1,6 +1,6 @@
 """Neutral deterministic substrate for inspectable reference worlds."""
 
-from .engine import Engine
+from .engine import Engine, ScopeViolation
 from .model import World
 from .rules import (
     DrinkAction,
@@ -21,6 +21,7 @@ __all__ = [
     "HeatAction",
     "PourAction",
     "RuleRegistry",
+    "ScopeViolation",
     "TakeAction",
     "UnheatAction",
     "World",

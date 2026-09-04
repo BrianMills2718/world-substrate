@@ -11,7 +11,7 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** promoted M2 give/exchange vertical (M1 freshwater vertical remains promoted)  
+**Last outcome-bearing implementation:** enforced declared write scopes in the engine (M1 and M2 verticals remain promoted)  
 **Current strategy frontier:** M3 first mechanics-authoring experiment, blocked on human selection of the first agent-authored mechanic
 
 ## Outcome and success criteria
@@ -59,6 +59,17 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
 - `core-v0` is an implemented M1 contract. The semantic binding, mechanic profile, and transition envelope v0 documents are proposed target contracts.
 - M2 has one implemented, tested slice: `give` is bound to the pinned Linguistic Core sense `lc:give_transfer` (`src/world_substrate/semantic.py`), and a derived, read-only exchange classification recognizes reciprocal `give` pairs without performing a second transfer (`src/world_substrate/exchange.py`). Verified by `tests/test_give_exchange.py` and `scripts/run_give_exchange_probe.py --check`.
 - The M2 M1-audit is complete: [docs/audits/m2-give-path-audit.md](../docs/audits/m2-give-path-audit.md). Findings: `owner` is bounded possession/control only, never legal title; no transition effect is committed before its enclosing action succeeds (verified structurally in both `Engine.apply` and `Engine.advance`); events cover 5 of Decision 002's 8 observability fields directly, with 2 real gaps (no observation payload, no bound semantic sense/roles attached to an event) and 1 partial gap (mechanic yes, authority/bearer no) — closing these is a `core-v0` schema change, left for a future slice; only 2 of 10 `give`/`take` checks are substrate-universal (existence, revision-currency), the rest are this world's goal-relative content; 6 of 7 M1 action kinds (`fill`/`heat`/`unheat`/`pour`/`drink`/`take`) still have no semantic binding. This closes M2's audit scope; M2 itself is not fully closed by an audit alone.
+- Declared write scopes are now enforced, not merely recorded. `Engine.apply`
+  compares each committed change against the rule's `write_paths` and returns
+  the new `scope_violation` status without committing anything; a process that
+  writes outside its scope raises `ScopeViolation` and `advance` restores the
+  tick. Before this, the invariant stated in the root `CLAUDE.md`,
+  [architecture](../docs/architecture.md), and
+  [transition envelope v0](../docs/contracts/transition-envelope-v0.md) held
+  only by the good behaviour of reviewed rules. Every registered M1 rule and
+  process passes unchanged with the guard active; the negative controls are
+  `tests/test_write_scope.py`. This is the enforcement that "declared
+  enforcement coverage" depends on before M3 authoring.
 - Linguistic Core is the semantic interface for senses and roles, not an executable mechanics source.
 - Consequences require a represented causal bearer and installed mechanic.
 - Composite and analytic descriptions ordinarily remain derived.

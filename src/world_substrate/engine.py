@@ -10,6 +10,78 @@ from typing import Any
 from .model import World, differences
 from .rules import Check, ProcessRule, RuleRegistry, TypedAction, UnsupportedAction
 
+ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
+_ACTION_REFERENCE_KEYS = (
+    "actor",
+    "vessel",
+    "source",
+    "target",
+    "destination",
+    "recipient",
+)
+
+
+class ScopeViolation(RuntimeError):
+    """A registered rule wrote outside its declared write scope."""
+
+
+def _action_entity_refs(record: dict[str, Any]) -> frozenset[str]:
+    """Entity identifiers the attempt itself names."""
+    refs = set()
+    for key in _ACTION_REFERENCE_KEYS:
+        value = record.get(key)
+        if isinstance(value, str) and value:
+            refs.add(value)
+    return frozenset(refs)
+
+
+def _path_permitted(
+    changed_path: str,
+    declared_paths: tuple[str, ...],
+    bound_refs: frozenset[str] | None,
+) -> bool:
+    """Whether one changed leaf path falls under a declared write path.
+
+    A declared path is a prefix: declaring ``entities.<vessel>.liquid``
+    permits ``entities.<vessel>.liquid.volume_ml``. A ``<name>`` segment
+    matches exactly one path segment. When ``bound_refs`` is supplied -- an
+    action names its participants -- a placeholder may only bind to an entity
+    the attempt itself referenced, so a rule cannot reach a third party
+    through a correctly shaped path. Processes are universally quantified over
+    the entities they apply to and pass ``None``.
+    """
+
+    changed = changed_path.split(".")
+    for declared_path in declared_paths:
+        declared = declared_path.split(".")
+        if len(declared) > len(changed):
+            continue
+        for declared_segment, changed_segment in zip(declared, changed):
+            if declared_segment.startswith("<") and declared_segment.endswith(">"):
+                if bound_refs is not None and changed_segment not in bound_refs:
+                    break
+            elif declared_segment != changed_segment:
+                break
+        else:
+            return True
+    return False
+
+
+def _scope_violations(
+    changes: list[dict[str, Any]],
+    declared_paths: tuple[str, ...],
+    bound_refs: frozenset[str] | None,
+) -> list[str]:
+    """Changed paths the rule never declared, in deterministic order."""
+    return sorted(
+        {
+            change["path"]
+            for change in changes
+            if change["path"] not in ENGINE_OWNED_PATHS
+            and not _path_permitted(change["path"], declared_paths, bound_refs)
+        }
+    )
+
 
 def _identifier(prefix: str, count: int) -> str:
     return f"{prefix}{count:05d}"
@@ -215,6 +287,30 @@ class Engine:
         candidate.revision += 1
         candidate.validate()
         after = candidate.material_dict()
+        violations = _scope_violations(
+            differences(before, after),
+            rule.write_paths,
+            _action_entity_refs(action.as_dict()),
+        )
+        if violations:
+            # The rule is defective, not the attempt. Discard the candidate so
+            # nothing commits, and record which undeclared paths it reached.
+            return self._reject(
+                action,
+                command_id,
+                event_id,
+                "scope_violation",
+                checks
+                + [
+                    Check(
+                        "Committed writes stay in declared scope",
+                        False,
+                        violations,
+                        list(rule.write_paths),
+                    )
+                ],
+                before,
+            )
         event = self._event(
             event_id=event_id,
             rule_id=rule.rule_id,
@@ -305,6 +401,17 @@ class Engine:
         candidate.revision += 1
         candidate.validate()
         after = candidate.material_dict()
+        violations = _scope_violations(
+            differences(before, after), process.write_paths, None
+        )
+        if violations:
+            # A process is the world's own law: there is no attempt to refuse,
+            # so a defective one stops the tick loudly. Engine.advance restores
+            # the pre-tick state before this propagates.
+            raise ScopeViolation(
+                f"process {process.rule_id} wrote outside its declared scope: "
+                f"{violations} (declared {list(process.write_paths)})"
+            )
         event_id = _identifier("e", len(self.world.events) + 1)
         event = self._event(
             event_id=event_id,

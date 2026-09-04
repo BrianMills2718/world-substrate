@@ -145,13 +145,33 @@ Result status is one of:
 - `accepted`;
 - `precondition_failed`;
 - `stale_revision`;
-- `invalid_action`; or
-- `unsupported_action`.
+- `invalid_action`;
+- `unsupported_action`; or
+- `scope_violation`.
 
 `invalid_action` means the command envelope or typed parameters are malformed.
 `unsupported_action` means the envelope is valid but its action kind has no
 registered executable rule. A registered action whose current-state guard fails
 returns `precondition_failed`. None invokes an LLM consequence generator.
+
+`scope_violation` means the attempt was applicable and the rule ran, but the
+resulting changes reached state paths the rule never declared in its
+`write_paths`. The candidate world is discarded, so the rule's own entitled
+writes do not commit either. Its failing check names every undeclared path.
+This reports a defective *rule*, not a defective attempt: it is the enforcement
+of the declared read/write scope required by
+[the transition envelope](transition-envelope-v0.md), and the engine -- not the
+rule -- owns it.
+
+A declared write path is a prefix, and a `<name>` segment matches exactly one
+path segment. For an action, a placeholder may bind only to an entity the
+attempt itself references (`actor`, `vessel`, `source`, `target`,
+`destination`, `recipient`), so a correctly shaped path cannot reach a third
+party. Processes are universally quantified over the entities they apply to, so
+their placeholders match any entity. `revision` is engine-owned and exempt.
+
+A process has no attempt to refuse, so a process that writes outside its
+declared scope raises `ScopeViolation` and `advance` restores the whole tick.
 
 ### Advance
 
