@@ -127,6 +127,12 @@ useful finding — the behavioural assay's silence — was not anticipated.
 3. A mechanic that under-writes a path it declared is invisible to the scope
    guard by design. Conservation caught it here; that will not generalise to
    quantities the ledger does not model.
-4. The seven under-declared M1 read scopes from M3 remain unrepaired, and M4
-   shows directly what they cost: the same assay's reach flips depending on
-   them.
+4. **Resolved 2026-09-04.** The under-declared M1 read scopes are repaired.
+   The count cited here and in M3 was originally seven; four were false
+   positives in the assay's own text matching, and the real figure is three
+   (`take`, `give`, and `process.thermal.vessels`, all reading `condition`).
+   See the follow-up in [the M3 audit](m3-overheat-authoring-experiment.md).
+   M4's own finding stands: this audit's point was that the same assay's reach
+   flips depending on declaration completeness, and the repair demonstrates
+   that directly — the assay now reaches `take` and `give` for `condition` as
+   well as for `liquid`.

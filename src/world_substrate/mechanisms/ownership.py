@@ -39,6 +39,7 @@ class TakeRule:
         "entities.<actor>.location",
         "entities.<vessel>.ownership",
         "entities.<vessel>.portable",
+        "entities.<vessel>.condition",
         "entities.<vessel>.container",
         "entities.<vessel>.liquid",
     )
@@ -150,6 +151,7 @@ class GiveRule:
         "entities.<recipient>.location",
         "entities.<vessel>.ownership",
         "entities.<vessel>.portable",
+        "entities.<vessel>.condition",
         "entities.<vessel>.container",
         "entities.<vessel>.liquid",
     )

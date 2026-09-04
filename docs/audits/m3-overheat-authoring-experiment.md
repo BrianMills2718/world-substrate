@@ -98,19 +98,27 @@ is on the fire.
 ## Result 3 — a third assay explains the first one's blind spot
 
 `assay_undeclared_component_reads` audits the declarations the first assay
-depends on, and finds **seven** promoted M1 rules that read a component their
-declaration omits:
+depends on, and finds promoted M1 rules that read a component their declaration
+omits:
 
-- `mechanism.ownership.take` and `mechanism.ownership.give` — `condition`, `heat_source`
-- `mechanism.liquid.drink` and `mechanism.liquid.pour` — `heat_source`
-- `mechanism.thermal.heat` and `mechanism.thermal.unheat` — `thermal`
+- `mechanism.ownership.take` and `mechanism.ownership.give` — `condition`
 - `process.thermal.vessels` — `condition`
 
 This is a real, pre-existing defect in the promoted M1 code, not an artefact of
 the experiment. Write scopes are now enforced by the engine; **read scopes are
-not**, and these seven declarations show what that permits. It also sets a
-ceiling on the declaration-based assay: it can only be as complete as the
-declarations it reads.
+not**, and these declarations show what that permits. It also sets a ceiling on
+the declaration-based assay: it can only be as complete as the declarations it
+reads.
+
+> **Correction, 2026-09-04.** This section originally reported **seven** rules,
+> listing `drink`/`pour` for `heat_source` and `heat`/`unheat` for `thermal` as
+> well. Four of those seven were false positives in the assay's own
+> source-text matching, not real defects, and the figure was repeated in the
+> M4 audit and the roadmap before it was checked. The three genuine cases are
+> the ones above, and all three are the same read: `condition`. See the
+> follow-up section below. The M3 finding itself is unaffected — `take` and
+> `give` were genuine, and they are exactly the two the declaration assay
+> missed.
 
 ## Result 4 — one incoherence was caught by nothing
 
@@ -162,3 +170,43 @@ author did not choose.
    narrows it accordingly; the contract should say so.
 3. Vessel destruction needs a contents consequence. That is a second authored
    mechanic, and a natural M4 subject.
+
+
+## Follow-up, 2026-09-04: the count was wrong, and the defect is now repaired
+
+Two things happened after this audit was first written.
+
+**The count was wrong.** `assay_undeclared_component_reads` matched component
+names as plain substrings of a rule's source text, which produced three classes
+of false positive:
+
+- `.heat_source_id` contains `.heat_source`, but it is a field of the
+  `container` component — which `drink`, `pour`, `take`, and `give` all
+  declare. Four spurious `heat_source` hits.
+- A rule's own `rule_id` is a string in its source, so `mechanism.thermal.heat`
+  contains `.thermal` and `process.material.vessel-failure-spill` contains
+  `.material`. Three more spurious hits across M3 and M4.
+- Conversely it under-reported, because it scanned only the rule class and not
+  the module-level helpers (`_accessible`, `_vessel_weight`, `_carried_weight`)
+  through which several rules actually reach state.
+
+The assay now strips the rule's own identity literals, matches on word
+boundaries, and follows module-level helpers the class names. The accurate
+answer is **three** rules, all reading `condition`.
+
+**The defect is repaired.** `TakeRule`, `GiveRule`, and `ThermalProcess` now
+declare the `condition` read they always performed (`ThermalProcess` also
+declares the heat source's `condition`, which it gates on separately). No
+behaviour changed, so rule versions were deliberately **not** bumped: in this
+repository `version` tracks behavioural variants (`ThermalProcess` is version 2
+only when `cool_empty_vessels` is set), and a declaration corrected to match
+what the rule always did is not a new rule. The evidence receipts were
+regenerated because `declared_read_paths` appears on every event; the donor
+fixture carries no read paths, so donor parity is untouched and every probe
+still accepts its own evidence.
+
+The repair lifts the ceiling this audit identified, and the before/after is
+better evidence for it than the original single-run observation: the *same*
+declaration assay that could not see `take` and `give` in Result 2 now names
+both. `tests/test_overheat_assay.py` asserts the repaired state and guards
+against a future mechanic reintroducing an undeclared read.

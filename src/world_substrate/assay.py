@@ -158,24 +158,62 @@ def assay_undeclared_component_reads(rules: Iterable[Any]) -> list[Finding]:
     """Registered rules whose code reads a component their declaration omits.
 
     This audits the declarations `assay_declared_readers` depends on. It is a
-    source-text heuristic: it looks for `.<component>` in a rule's own source
-    and compares that against its `read_paths`. It can miss a read reached
-    through a helper in another module, and can flag a component named only in
-    a comment. Treat its output as a review list, not a verdict.
+    source-text heuristic: it looks for `.<component>` in the rule class's
+    source plus the source of any module-level helper the class names, and
+    compares that against its declared paths. It can still miss a read reached
+    through a helper in *another* module or through indirection it cannot see
+    by name, and can flag a component mentioned only in a comment. Treat its
+    output as a review list, not a verdict.
     """
     import inspect
+    import re
+    import sys as _sys
+
+    def _reachable_source(rule: Any) -> str:
+        """The rule class's source plus any module-level helper it names.
+
+        A rule that gates on `vessel.condition` inside a shared `_accessible`
+        helper reads that component just as surely as one that inlines the
+        check, so a scan of the class alone under-reports.
+        """
+        try:
+            text = inspect.getsource(type(rule))
+        except (OSError, TypeError):
+            return ""
+        # A rule_id like "process.material.vessel-failure-spill" contains
+        # ".material" and would otherwise read as a component access.
+        for literal in (getattr(rule, "rule_id", ""), getattr(rule, "action_kind", "")):
+            if literal:
+                text = text.replace(literal, "")
+        module = _sys.modules.get(type(rule).__module__)
+        if module is None:
+            return text
+        for name, value in vars(module).items():
+            if not name.startswith("_") or not inspect.isfunction(value):
+                continue
+            if getattr(value, "__module__", None) != module.__name__:
+                continue
+            if name not in text:
+                continue
+            try:
+                text += "\n" + inspect.getsource(value)
+            except (OSError, TypeError):
+                continue
+        return text
 
     findings: list[Finding] = []
     for rule in sorted(rules, key=lambda item: item.rule_id):
-        try:
-            source = inspect.getsource(type(rule))
-        except (OSError, TypeError):
+        source = _reachable_source(rule)
+        if not source:
             continue
         declared = " ".join(rule.read_paths) + " " + " ".join(rule.write_paths)
         missing = sorted(
             component
             for component in _COMPONENT_NAMES
-            if f".{component}" in source and component not in declared
+            # Word-bounded: `.heat_source_id` is a field of the container
+            # component, not an access to the heat_source component, and a
+            # rule that declares `container` has already declared that read.
+            if re.search(rf"\.{component}\b", source) and component not in declared
         )
         if missing:
             findings.append(

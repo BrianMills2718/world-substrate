@@ -128,8 +128,15 @@ class AuthoringExperimentTests(unittest.TestCase):
         }
         self.assertIn("mechanism.liquid.drink", named)
         self.assertIn("mechanism.thermal.heat", named)
-        # It cannot see take/give: those read condition without declaring it.
-        self.assertNotIn("mechanism.ownership.take", named)
+        # At the M3 revision this assay could NOT see take/give: both gated on
+        # vessel.condition without declaring the read, so there was nothing for
+        # a declaration-based check to match. Those three declarations
+        # (take, give, process.thermal.vessels) have since been repaired, and
+        # the same assay now reaches them. The before/after is the clearest
+        # evidence of the ceiling M3 identified: see
+        # docs/audits/m3-overheat-authoring-experiment.md.
+        self.assertIn("mechanism.ownership.take", named)
+        self.assertIn("mechanism.ownership.give", named)
 
     def test_affordance_assay_catches_take_which_the_declaration_assay_misses(
         self,
@@ -149,16 +156,22 @@ class AuthoringExperimentTests(unittest.TestCase):
         # difference between two diverged worlds.
         self.assertLessEqual(len(findings), 8)
 
-    def test_declaration_audit_explains_the_first_assay_s_blind_spot(self) -> None:
+    def test_every_registered_rule_declares_the_components_it_reads(self) -> None:
         registry = build_baseline_engine().registry
         rules = [registry.action(kind) for kind in registry.action_kinds()]
         rules += list(registry.processes())
 
         findings = assay_undeclared_component_reads(rules)
 
-        detail = " ".join(finding.detail for finding in findings)
-        self.assertIn("mechanism.ownership.take", detail)
-        self.assertIn("mechanism.ownership.give", detail)
+        # Regression guard on the repair. Every registered rule now declares
+        # the components it reads; if a future mechanic reintroduces an
+        # undeclared read, the declaration-based assay silently loses reach
+        # again, which is exactly the failure this audit exists to prevent.
+        self.assertEqual(
+            [finding.detail for finding in findings],
+            [],
+            "a registered rule reads a component it does not declare",
+        )
 
     def test_no_assay_catches_the_destroyed_vessel_still_holding_liquid(self) -> None:
         # The honest residual. A destroyed vessel retains its contents: no

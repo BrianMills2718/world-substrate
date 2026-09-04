@@ -569,8 +569,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -710,8 +712,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -851,8 +855,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -1017,8 +1023,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -1183,8 +1191,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -1405,8 +1415,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -1546,8 +1558,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -1687,8 +1701,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -1828,8 +1844,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -1969,8 +1987,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -2285,8 +2305,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
@@ -2551,8 +2573,10 @@
         "checks": [],
         "declared_read_paths": [
           "entities.<vessel>.container",
+          "entities.<vessel>.condition",
           "entities.<vessel>.liquid",
           "entities.<vessel>.material",
+          "entities.<source>.condition",
           "entities.<source>.heat_source"
         ],
         "declared_write_paths": [
