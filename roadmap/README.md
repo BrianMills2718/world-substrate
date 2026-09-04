@@ -11,8 +11,8 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** repaired the under-declared M1 read scopes and the audit assay's false positives (M1 and M2 verticals remain promoted)  
-**Current strategy frontier:** M5 installed institution
+**Last outcome-bearing implementation:** an LLM policy drove the world end to end; success criterion 2 is met  
+**Current strategy frontier:** M6 second reference world — the last unmet success criterion
 
 ## Outcome and success criteria
 
@@ -63,7 +63,7 @@ audits; findings live in the audit that produced them.
 - Declared **write** scopes are enforced by the engine (`scope_violation`; negative controls in `tests/test_write_scope.py`). Declared **read** scopes are recorded on every event and are **not** enforced at runtime; the three rules that under-declared reads are repaired and `tests/test_overheat_assay.py` guards against regression.
 - Three interaction assays exist on three different bases — declarations, differential behaviour, conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient. Evidence: [M3](../docs/audits/m3-overheat-authoring-experiment.md), [M4](../docs/audits/m4-spill-experiment.md).
 - Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has; M4 records one that is live in the world today only because a second mechanic closed it.
-- **Never exercised:** no policy of any kind has driven this world (success criterion 2), and no second reference world exists (criterion 6). Four of six criteria are met; these two are not, and neither is a mechanics question.
+- A policy has driven this world (success criterion 2, met). An LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief about the world was wrong. Five of six criteria are met. **The one that remains is a second reference world (criterion 6)** — still the only test of whether the contracts generalise. See [the M5 audit](../docs/audits/m5-policy-consumer.md).
 - Doctrine, unchanged: Linguistic Core supplies senses and roles, not effects; consequences require a represented causal bearer and an installed mechanic; composites stay derived; observability is required while exact replay is not a universal gate; mechanics authoring is offline and runtime law revision is deferred; donor repositories stay read-only unless a consumer path explicitly adopts code.
 
 ## Applicable context
@@ -107,7 +107,8 @@ observable attempt or trigger
 | M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted: binding (`semantic.py`), authority (giver-only enforced in `GiveRule`), refusal (pre-existing `test_transfer.py::test_recipient_capacity_rejection_is_atomic`), reneging (`test_give_exchange.py`), and no-double-transfer trace cases all pass |
 | M3: offline mechanics-authoring vertical | complete | `process.material.overheat-damage` authored as a package, installed with no findings, frozen as profile `d525940e065d8361`, and run | promoted: installation validated scope, effects, tests, limits; two interaction assays surfaced the package's omitted dependency and one residual survived both — [the experiment](../docs/audits/m3-overheat-authoring-experiment.md) |
 | M4: causal-coherence assay | complete | three assays on three different bases, each with a stated blind spot, plus a negative control that only accounting catches | promoted: M3's residual closed by an honestly-authored mechanic; no single basis and no pair is sufficient — [the experiment](../docs/audits/m4-spill-experiment.md) |
-| M5: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | Revisit only when a world needs an institution. Atomic commit-or-refuse already exists and is tested since M1, so escrow largely re-exercises machinery rather than testing an open question; it was next only because it was the next row in this table |
+| M5: policy consumer | complete | an LLM selecting from `discover()` over 16 turns, compared against a no-foresight baseline on the same world | promoted: seam holds (no policy output is ever parsed into an action), the world corrected the model's wrong belief mechanically, and two observation-seam weaknesses surfaced that a scripted controller cannot expose — [the audit](../docs/audits/m5-policy-consumer.md) |
+| M5b: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | Revisit only when a world needs an institution. Atomic commit-or-refuse has existed and been tested since M1, so escrow largely re-exercises machinery rather than testing an open question |
 | M6: second reference world | **next**, blocked on domain selection | a materially different world reusing the semantic, transition, and mechanic-profile contracts | The only test of success criterion 6 and of whether "substrate" is real. The M2 audit measured the risk: 2 of 10 checks are substrate-universal, 8 are Castaway content. Promote on reuse that is structural rather than cosmetic; a painful port is a finding, not a failure |
 | M7: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
@@ -137,6 +138,8 @@ the audit that found it.
 | Bind the remaining 6 of 7 M1 action kinds to Linguistic Core senses | [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) | open — only `give` is bound |
 | Decide the ledger's shape for lost quantities | M4 finding | open — `spilled_ml` is a bare integer while `evaporated` is a full liquid vector, so spilled salt and pathogens leave the world unaccounted; `overflow_ml` is written by nothing |
 | Enforce declared read scopes at runtime | this roadmap's own invariant | open, and harder than writes — a read leaves no trace in state. Declarations are repaired and guarded by test; enforcement is not designed |
+| Surface process progress in the observation | M5 finding | open — `container.boiling_ticks` exists in state and is not observable, so a policy cannot tell that boiling is partway done. The M5 run oscillated heat/unheat for seven turns because of this |
+| Signal that an action destroys the value of existing contents | M5 finding | open — `fill` is presented identically whether or not it re-contaminates a treated vessel. The M5 policy did exactly that and then drank it |
 
 Five of eight Decision 002 observability fields are covered today. The three
 rows above are the gap, and closing the first two is one `core-v0` schema
@@ -193,7 +196,7 @@ Boundaries only Brian can clear. Each names what changes if it is answered.
 
 | Decision | Why it is blocked | What it unblocks |
 | --- | --- | --- |
-| **Model execution and a spend cap** | Explicit authority boundary; no provider call is authorized | Success criterion 2. No policy of any kind has ever driven this world — every run to date is a scripted controller selecting from `discover()`. This is the difference between a substrate and a watchable demonstration, and it is one of the two unmet criteria |
+| ~~Model execution and a spend cap~~ | **Answered 2026-09-04: $2 cap granted** | Spent $0.005 of it. Criterion 2 met; see the M5 audit. Further runs stay under the same cap |
 | **Which second reference world** | No domain selected | Success criterion 6, and the only test of whether "substrate" is real. The M2 audit measured the warning sign: 2 of 10 `give`/`take` checks are substrate-universal, the other 8 are Castaway content. A domain sharing little with Castaway — discrete objects, no liquids, no heat — makes the reuse test real rather than cosmetic |
 | Deployment and publication | Explicit authority boundary | Nothing currently waiting on it |
 
@@ -207,21 +210,16 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Nothing is in progress. Every item the last four milestones generated is either
-done or listed under Open obligations above.
+**M6, a second reference world.** It is the last unmet success criterion and the
+only test of whether "substrate" means anything here. The M2 audit already
+measured the risk: 2 of 10 `give`/`take` checks are substrate-universal, the
+other 8 are Castaway content. A domain sharing little with Castaway — discrete
+objects, no liquids, no heat, no thermal processes — makes the reuse test
+structural rather than cosmetic. It needs no spend authorization, and a painful
+port is a finding rather than a failure.
 
-The next substantive move is **M6, a second reference world**, and it is blocked
-on one thing only: which domain. It is the only test of whether the contracts
-generalise, it needs no spend authorization, and the M2 audit predicts it will
-be uncomfortable — which is the argument for doing it now rather than after more
-mechanics accumulate on contracts that may not transfer.
+The Open obligations table above holds smaller work that needs no permission,
+including two new seam findings from the M5 policy run.
 
-The competing move is a real policy consumer, which is the more visible result
-and the other unmet criterion, but it needs an explicit model-execution decision
-and a spend cap.
-
-If neither decision is available, the Open obligations table holds real work
-that needs no permission — closing the two Decision 002 observability gaps is
-one `core-v0` schema change and would retire a standing contract debt.
-
-Do not make a model call.
+Model calls are authorized under a $2 cap and have cost $0.005 to date. Do not
+exceed the cap; check with `make cost-by-project` in `llm_client`.
