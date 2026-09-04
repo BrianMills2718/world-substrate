@@ -11,8 +11,8 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** M4 spill mechanic and assay-specificity result (M1 and M2 verticals remain promoted)  
-**Current strategy frontier:** repair the under-declared read scopes, then M5 installed institution
+**Last outcome-bearing implementation:** repaired the under-declared M1 read scopes and the audit assay's false positives (M1 and M2 verticals remain promoted)  
+**Current strategy frontier:** M5 installed institution
 
 ## Outcome and success criteria
 
@@ -82,12 +82,19 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
   its liquid — is caught by neither, passes `World.validate()`, and leaves
   every check in the repository green. See
   [the experiment](../docs/audits/m3-overheat-authoring-experiment.md).
-- Read scopes are declared but not enforced, and seven promoted M1 rules
-  already read a component their declaration omits (`take`/`give` read
-  `condition` and `heat_source`; `drink`/`pour` read `heat_source`;
-  `heat`/`unheat` read `thermal`; `process.thermal.vessels` reads
-  `condition`). This is a real pre-existing defect and it caps how complete any
-  declaration-based assay can be.
+- Read scopes are declared but not enforced at runtime. Three promoted M1
+  rules read a component their declaration omitted — `take`, `give`, and
+  `process.thermal.vessels`, all reading `condition` — and **those three
+  declarations are now repaired**. No behaviour changed, so rule versions were
+  deliberately not bumped; evidence receipts were regenerated because
+  `declared_read_paths` appears on every event, and the donor fixture carries
+  no read paths, so donor parity is untouched.
+  `tests/test_overheat_assay.py` guards against a new mechanic reintroducing an
+  undeclared read. This originally went into the M3 and M4 audits as *seven*
+  rules; four of those were false positives in the audit assay's own text
+  matching, corrected in [the M3 audit's follow-up](../docs/audits/m3-overheat-authoring-experiment.md).
+  Enforcing reads at runtime remains open and is harder than writes, because a
+  read leaves no trace in state.
 - M4 is complete. `process.material.vessel-failure-spill` was authored without
   a planted omission, closed M3's residual (a destroyed vessel now loses its
   contents), and keeps volume conserved against the ledger. It also gave
@@ -247,9 +254,11 @@ and that each basis has a stateable blind spot.
 
 The next actions, in the order their evidence justifies:
 
-1. Repair the seven under-declared M1 read scopes. M4 showed directly what they
-   cost: the same assay's reach flipped between M3 and M4 purely on whether the
-   declaration it consumed happened to be complete.
+1. ~~Repair the under-declared M1 read scopes.~~ **Done.** Three rules
+   repaired, the audit assay's own false positives fixed, and the ceiling M3
+   identified is demonstrably lifted: the same declaration assay that could not
+   see `take`/`give` now names both. Runtime *enforcement* of read scopes is
+   still open.
 2. Decide the ledger's shape for lost quantities. `evaporated` is a full liquid
    vector, `spilled_ml` is a bare integer, so spilled salt and pathogens leave
    the world unaccounted, and `overflow_ml` is still written by nothing.

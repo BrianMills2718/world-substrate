@@ -258,8 +258,10 @@ class ThermalProcess:
     order = 20
     read_paths: tuple[str, ...] = (
         "entities.<vessel>.container",
+        "entities.<vessel>.condition",
         "entities.<vessel>.liquid",
         "entities.<vessel>.material",
+        "entities.<source>.condition",
         "entities.<source>.heat_source",
     )
     write_paths: tuple[str, ...] = (

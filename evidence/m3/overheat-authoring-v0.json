@@ -38,7 +38,7 @@
     ]
   },
   "assay_declared_readers": {
-    "count": 5,
+    "count": 7,
     "findings": [
       {
         "code": "undeclared_consequential_reader",
@@ -57,6 +57,16 @@
       },
       {
         "code": "undeclared_consequential_reader",
+        "detail": "mechanism.ownership.give reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.ownership.take reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
         "detail": "mechanism.thermal.heat reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<target>.condition; entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
         "severity": "warn"
       },
@@ -70,52 +80,18 @@
       "mechanism.liquid.drink",
       "mechanism.liquid.fill",
       "mechanism.liquid.pour",
+      "mechanism.ownership.give",
+      "mechanism.ownership.take",
       "mechanism.thermal.heat",
       "mechanism.thermal.unheat"
     ]
   },
   "assay_undeclared_component_reads": {
-    "count": 7,
-    "findings": [
-      {
-        "code": "undeclared_component_read",
-        "detail": "mechanism.liquid.drink reads ['heat_source'] in its own source but declares neither read nor write access to them",
-        "severity": "warn"
-      },
-      {
-        "code": "undeclared_component_read",
-        "detail": "mechanism.liquid.pour reads ['heat_source'] in its own source but declares neither read nor write access to them",
-        "severity": "warn"
-      },
-      {
-        "code": "undeclared_component_read",
-        "detail": "mechanism.ownership.give reads ['condition', 'heat_source'] in its own source but declares neither read nor write access to them",
-        "severity": "warn"
-      },
-      {
-        "code": "undeclared_component_read",
-        "detail": "mechanism.ownership.take reads ['condition', 'heat_source'] in its own source but declares neither read nor write access to them",
-        "severity": "warn"
-      },
-      {
-        "code": "undeclared_component_read",
-        "detail": "mechanism.thermal.heat reads ['thermal'] in its own source but declares neither read nor write access to them",
-        "severity": "warn"
-      },
-      {
-        "code": "undeclared_component_read",
-        "detail": "mechanism.thermal.unheat reads ['thermal'] in its own source but declares neither read nor write access to them",
-        "severity": "warn"
-      },
-      {
-        "code": "undeclared_component_read",
-        "detail": "process.thermal.vessels reads ['condition'] in its own source but declares neither read nor write access to them",
-        "severity": "warn"
-      }
-    ]
+    "count": 0,
+    "findings": []
   },
   "claim": "One adjacent mechanic was authored offline as a reviewable package, installed through the mechanic-profile contract with no findings, frozen into a profile, and run. Installation alone did not surface its omitted dependency; two interaction assays did, from different directions; and one real incoherence was surfaced by neither.",
-  "frozen_profile_id": "d525940e065d8361",
+  "frozen_profile_id": "76240947f33a3184",
   "installation_findings": [],
   "installation_was_clean": true,
   "installed_mechanic_count": 12,

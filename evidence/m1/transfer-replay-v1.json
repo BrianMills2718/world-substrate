@@ -31,7 +31,7 @@
   },
   "record_type": "fresh_process_replay_receipt",
   "schema_version": "world-substrate-replay-receipt/v1",
-  "source_revision": "4c3303828b7c9b97e22a806caa404306f8616f7a",
+  "source_revision": "ebdf569e6b16a4878f573190a7c3c3e6ca7bb0ef",
   "source_trace": "evidence/m1/transfer-v0.json",
-  "source_trace_sha256": "41c6011224338799c51d2cca686b1f89779494e85c5c91329b7ec4458bf821a0"
+  "source_trace_sha256": "d00b8efeb928479a15d082abd241e05a55a1a2b3dd486696febc53404737ef65"
 }
