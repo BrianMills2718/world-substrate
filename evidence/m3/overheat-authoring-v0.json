@@ -1,0 +1,142 @@
+{
+  "accepted": true,
+  "assay_affordance_changes": {
+    "action_kinds": [
+      "drink",
+      "fill",
+      "heat",
+      "pour",
+      "take"
+    ],
+    "count": 5,
+    "findings": [
+      {
+        "code": "undeclared_affordance_change",
+        "detail": "drink on gourd-flask is newly blocked by ['Vessel is intact'] once process.material.overheat-damage is installed; the package declares no interaction with the mechanic that owns this action",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_affordance_change",
+        "detail": "fill on gourd-flask is newly blocked by ['Vessel is intact'] once process.material.overheat-damage is installed; the package declares no interaction with the mechanic that owns this action",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_affordance_change",
+        "detail": "heat on gourd-flask is newly blocked by ['Vessel is intact'] once process.material.overheat-damage is installed; the package declares no interaction with the mechanic that owns this action",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_affordance_change",
+        "detail": "pour on gourd-flask is newly blocked by ['Source vessel is intact'] once process.material.overheat-damage is installed; the package declares no interaction with the mechanic that owns this action",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_affordance_change",
+        "detail": "take on gourd-flask is newly blocked by ['Vessel is intact'] once process.material.overheat-damage is installed; the package declares no interaction with the mechanic that owns this action",
+        "severity": "warn"
+      }
+    ]
+  },
+  "assay_declared_readers": {
+    "count": 5,
+    "findings": [
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.liquid.drink reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.liquid.fill reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.liquid.pour reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<destination>.condition; entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.thermal.heat reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<target>.condition; entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.thermal.unheat reads state process.material.overheat-damage writes (entities.<vessel>.condition.value -> entities.<vessel>.condition), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      }
+    ],
+    "mechanics": [
+      "mechanism.liquid.drink",
+      "mechanism.liquid.fill",
+      "mechanism.liquid.pour",
+      "mechanism.thermal.heat",
+      "mechanism.thermal.unheat"
+    ]
+  },
+  "assay_undeclared_component_reads": {
+    "count": 7,
+    "findings": [
+      {
+        "code": "undeclared_component_read",
+        "detail": "mechanism.liquid.drink reads ['heat_source'] in its own source but declares neither read nor write access to them",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_component_read",
+        "detail": "mechanism.liquid.pour reads ['heat_source'] in its own source but declares neither read nor write access to them",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_component_read",
+        "detail": "mechanism.ownership.give reads ['condition', 'heat_source'] in its own source but declares neither read nor write access to them",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_component_read",
+        "detail": "mechanism.ownership.take reads ['condition', 'heat_source'] in its own source but declares neither read nor write access to them",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_component_read",
+        "detail": "mechanism.thermal.heat reads ['thermal'] in its own source but declares neither read nor write access to them",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_component_read",
+        "detail": "mechanism.thermal.unheat reads ['thermal'] in its own source but declares neither read nor write access to them",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_component_read",
+        "detail": "process.thermal.vessels reads ['condition'] in its own source but declares neither read nor write access to them",
+        "severity": "warn"
+      }
+    ]
+  },
+  "claim": "One adjacent mechanic was authored offline as a reviewable package, installed through the mechanic-profile contract with no findings, frozen into a profile, and run. Installation alone did not surface its omitted dependency; two interaction assays did, from different directions; and one real incoherence was surfaced by neither.",
+  "frozen_profile_id": "d525940e065d8361",
+  "installation_findings": [],
+  "installation_was_clean": true,
+  "installed_mechanic_count": 12,
+  "mechanic_changed_the_world": true,
+  "mechanic_id": "process.material.overheat-damage",
+  "residual_risk": {
+    "destroyed_vessel_still_holds_liquid": true,
+    "retained_ml": 459,
+    "uncaught_incoherence": "The destroyed vessel still holds its liquid. No mechanic spills it, no affordance reveals it, world.validate() passes, and conservation still balances -- so neither assay reports it. This is the omission class Decision 003 predicts cannot be recovered from an author's own declaration.",
+    "world_validate_passes": true
+  },
+  "schema_version": "world-substrate-m3-authoring/v0",
+  "ticks": 5,
+  "vessel_with_mechanic": {
+    "condition": 0,
+    "temperature_c": 80.5,
+    "volume_ml": 459
+  },
+  "vessel_without_mechanic": {
+    "condition": 100,
+    "temperature_c": 100.0,
+    "volume_ml": 439
+  }
+}

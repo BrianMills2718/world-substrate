@@ -11,8 +11,8 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** enforced declared write scopes in the engine (M1 and M2 verticals remain promoted)  
-**Current strategy frontier:** M3 first mechanics-authoring experiment, blocked on human selection of the first agent-authored mechanic
+**Last outcome-bearing implementation:** M3 offline mechanics-authoring experiment, run adversarially (M1 and M2 verticals remain promoted)  
+**Current strategy frontier:** M4 causal-coherence assay, informed by M3's residual
 
 ## Outcome and success criteria
 
@@ -70,6 +70,24 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
   process passes unchanged with the guard active; the negative controls are
   `tests/test_write_scope.py`. This is the enforcement that "declared
   enforcement coverage" depends on before M3 authoring.
+- M3 is complete and was run adversarially. One adjacent mechanic
+  (`process.material.overheat-damage`) was authored offline as a reviewable
+  package with a deliberately omitted consequential dependency, installed with
+  zero findings, frozen, and run. Three results hold and are reproducible via
+  `python scripts/run_overheat_assay_probe.py --check`: installation alone
+  surfaces nothing, because the missing part is missing from the thing being
+  checked; two complementary interaction assays surface it, naming six of the
+  seven affected action mechanics between them, and neither alone is
+  sufficient; and one real incoherence — a destroyed vessel that still holds
+  its liquid — is caught by neither, passes `World.validate()`, and leaves
+  every check in the repository green. See
+  [the experiment](../docs/audits/m3-overheat-authoring-experiment.md).
+- Read scopes are declared but not enforced, and seven promoted M1 rules
+  already read a component their declaration omits (`take`/`give` read
+  `condition` and `heat_source`; `drink`/`pour` read `heat_source`;
+  `heat`/`unheat` read `thermal`; `process.thermal.vessels` reads
+  `condition`). This is a real pre-existing defect and it caps how complete any
+  declaration-based assay can be.
 - Linguistic Core is the semantic interface for senses and roles, not an executable mechanics source.
 - Consequences require a represented causal bearer and installed mechanic.
 - Composite and analytic descriptions ordinarily remain derived.
@@ -117,7 +135,7 @@ observable attempt or trigger
 | M0: canonical foundation | complete | repository authorities, navigation, checks | established |
 | M1: freshwater vertical | complete | neutral CLI trace, refusals, persistence, and M1 replay | promoted |
 | M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted: binding (`semantic.py`), authority (giver-only enforced in `GiveRule`), refusal (pre-existing `test_transfer.py::test_recipient_capacity_rejection_is_atomic`), reneging (`test_give_exchange.py`), and no-double-transfer trace cases all pass |
-| M3: offline mechanics-authoring vertical | conditional | one adjacent mechanic authored as a reviewable package and frozen into a profile | installer validates local scope, effects, tests, limits, and interactions |
+| M3: offline mechanics-authoring vertical | complete | `process.material.overheat-damage` authored as a package, installed with no findings, frozen as profile `d525940e065d8361`, and run | promoted: installation validated scope, effects, tests, limits; two interaction assays surfaced the package's omitted dependency and one residual survived both — [the experiment](../docs/audits/m3-overheat-authoring-experiment.md) |
 | M4: causal-coherence assay | conditional | declared-coverage report plus adversarial interaction findings | missing/overlapping dependencies become explicit risks, refusals, or repaired bindings |
 | M5: installed institution | conditional | escrow-like bearer couples effects through one transition envelope | deliberate downstream failures produce no provisional commit |
 | M6: non-agent process and second world | human_decision_required | autonomous process plus a materially different reference world | selected domain tests reuse rather than cosmetic variation |
@@ -207,17 +225,24 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-M2 is promoted: all seven visible-result criteria pass on cited evidence
-(`tests/test_give_exchange.py`, `tests/test_transfer.py`,
-`scripts/run_give_exchange_probe.py`); see the milestone table and
-[the M1-audit](../docs/audits/m2-give-path-audit.md).
+M3 is complete: an adjacent mechanic was authored offline, installed, frozen,
+and run, and the experiment's result is recorded in
+[the M3 audit](../docs/audits/m3-overheat-authoring-experiment.md).
 
-The audit's two real observability gaps (no observation payload, no bound
-Linguistic Core sense/roles on a causal event) are optional hardening, not a
-blocker for M2's own stated criteria — left open rather than built
-speculatively.
+Three follow-ons are now specific rather than speculative, in the order their
+evidence justifies:
 
-M3 is next in the milestone horizon, but "selection of the first
-agent-authored mechanic" is an explicit human boundary (Human decisions,
-above); M3 cannot begin until that selection is made. Do not make a model
-call.
+1. Repair the seven under-declared M1 read scopes. They are a real defect and
+   they bound the declaration-based assay's reach. Enforcing reads is a
+   separate and harder question — a read leaves no trace in state — but the
+   declarations can be made honest today.
+2. Give vessel destruction a contents consequence. This is the incoherence no
+   assay caught, and it is a second authored mechanic: the natural M4 subject,
+   which also tests whether the assays catch an omission their author did not
+   choose in advance.
+3. Correct `mechanic-profile-v0.md` installer step 3. Read literally it
+   rejects the promoted M1 mechanics; the implementation already narrows the
+   overlapping-write rule to mechanics that can commit on the same occasion,
+   and the contract should say so.
+
+Do not make a model call.
