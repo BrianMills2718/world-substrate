@@ -95,8 +95,42 @@ class ObservabilityFieldTests(unittest.TestCase):
             self.assertIsNone(event["observation"], event["rule_id"])
             self.assertEqual(event["causal_bearer"]["id"], event["rule_id"])
 
+    def test_a_malformed_envelope_still_names_who_claimed_to_act(self) -> None:
+        # Every untrusted policy submission arrives through submit(), so these
+        # are exactly the events an inspector needs attributed. The bearer is
+        # marked claimed_actor because nothing in a malformed envelope has been
+        # validated.
+        result = self.engine.submit(
+            {
+                "actor": "robinson",
+                "kind": "fill",
+                "controller": "policy:llm",
+                "base_revision": self.engine.world.revision,
+                "vessel": "clay-pot",
+                "source": "unsafe-pool",
+                "volume_ml": "500",  # string, not int
+            }
+        )
+
+        self.assertEqual(result["status"], "invalid_action")
+        self.assertEqual(
+            result["event"]["causal_bearer"],
+            {"kind": "claimed_actor", "id": "robinson", "controller": "policy:llm"},
+        )
+        self.assertIsNotNone(result["event"]["observation"])
+
+    def test_an_envelope_naming_nobody_records_no_bearer_rather_than_guessing(
+        self,
+    ) -> None:
+        result = self.engine.submit({"kind": "fill"})
+
+        self.assertEqual(result["status"], "invalid_action")
+        self.assertIsNone(result["event"]["causal_bearer"])
+        self.assertIsNone(result["event"]["observation"])
+
     def test_every_decision_002_field_is_present_on_every_event(self) -> None:
         self._fill()
+        self.engine.submit({"actor": "robinson", "kind": "fill"})
         self.engine.advance(2)
 
         required = {
