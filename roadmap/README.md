@@ -54,70 +54,17 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
 
 ## Current truth
 
+State, not history. Milestone narratives live in the milestone table and their
+audits; findings live in the audit that produced them.
+
 - This repository owns the project goal, decisions, architecture, contracts, source dispositions, and roadmap.
-- M1 is promoted at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
-- `core-v0` is an implemented M1 contract. The semantic binding, mechanic profile, and transition envelope v0 documents are proposed target contracts.
-- M2 has one implemented, tested slice: `give` is bound to the pinned Linguistic Core sense `lc:give_transfer` (`src/world_substrate/semantic.py`), and a derived, read-only exchange classification recognizes reciprocal `give` pairs without performing a second transfer (`src/world_substrate/exchange.py`). Verified by `tests/test_give_exchange.py` and `scripts/run_give_exchange_probe.py --check`.
-- The M2 M1-audit is complete: [docs/audits/m2-give-path-audit.md](../docs/audits/m2-give-path-audit.md). Findings: `owner` is bounded possession/control only, never legal title; no transition effect is committed before its enclosing action succeeds (verified structurally in both `Engine.apply` and `Engine.advance`); events cover 5 of Decision 002's 8 observability fields directly, with 2 real gaps (no observation payload, no bound semantic sense/roles attached to an event) and 1 partial gap (mechanic yes, authority/bearer no) — closing these is a `core-v0` schema change, left for a future slice; only 2 of 10 `give`/`take` checks are substrate-universal (existence, revision-currency), the rest are this world's goal-relative content; 6 of 7 M1 action kinds (`fill`/`heat`/`unheat`/`pour`/`drink`/`take`) still have no semantic binding. This closes M2's audit scope; M2 itself is not fully closed by an audit alone.
-- Declared write scopes are now enforced, not merely recorded. `Engine.apply`
-  compares each committed change against the rule's `write_paths` and returns
-  the new `scope_violation` status without committing anything; a process that
-  writes outside its scope raises `ScopeViolation` and `advance` restores the
-  tick. Before this, the invariant stated in the root `CLAUDE.md`,
-  [architecture](../docs/architecture.md), and
-  [transition envelope v0](../docs/contracts/transition-envelope-v0.md) held
-  only by the good behaviour of reviewed rules. Every registered M1 rule and
-  process passes unchanged with the guard active; the negative controls are
-  `tests/test_write_scope.py`. This is the enforcement that "declared
-  enforcement coverage" depends on before M3 authoring.
-- M3 is complete and was run adversarially. One adjacent mechanic
-  (`process.material.overheat-damage`) was authored offline as a reviewable
-  package with a deliberately omitted consequential dependency, installed with
-  zero findings, frozen, and run. Three results hold and are reproducible via
-  `python scripts/run_overheat_assay_probe.py --check`: installation alone
-  surfaces nothing, because the missing part is missing from the thing being
-  checked; two complementary interaction assays surface it, naming six of the
-  seven affected action mechanics between them, and neither alone is
-  sufficient; and one real incoherence — a destroyed vessel that still holds
-  its liquid — is caught by neither, passes `World.validate()`, and leaves
-  every check in the repository green. See
-  [the experiment](../docs/audits/m3-overheat-authoring-experiment.md).
-- Read scopes are declared but not enforced at runtime. Three promoted M1
-  rules read a component their declaration omitted — `take`, `give`, and
-  `process.thermal.vessels`, all reading `condition` — and **those three
-  declarations are now repaired**. No behaviour changed, so rule versions were
-  deliberately not bumped; evidence receipts were regenerated because
-  `declared_read_paths` appears on every event, and the donor fixture carries
-  no read paths, so donor parity is untouched.
-  `tests/test_overheat_assay.py` guards against a new mechanic reintroducing an
-  undeclared read. This originally went into the M3 and M4 audits as *seven*
-  rules; four of those were false positives in the audit assay's own text
-  matching, corrected in [the M3 audit's follow-up](../docs/audits/m3-overheat-authoring-experiment.md).
-  Enforcing reads at runtime remains open and is harder than writes, because a
-  read leaves no trace in state.
-- M4 is complete. `process.material.vessel-failure-spill` was authored without
-  a planted omission, closed M3's residual (a destroyed vessel now loses its
-  contents), and keeps volume conserved against the ledger. It also gave
-  `physical_ledger.spilled_ml` its first writer; that field and `overflow_ml`
-  had been declared and written by nothing.
-- The three assays behaved completely differently on it, and this is the
-  substantive M4 result: the declaration assay named five readers (including
-  `take`/`give`, which it could *not* see in M3, because they declare their
-  liquid read but not their condition read); the behavioural assay found
-  **nothing at all**, because every affordance on the vessel was already
-  blocked by the overheat mechanic — a behavioural assay is blind behind an
-  existing refusal; and only the conservation assay caught a control variant
-  that destroys 459ml without recording it, which stays inside its declared
-  write scope, commits cleanly, and passes `World.validate()`. No single basis
-  and no pair of bases is sufficient. See
-  [the M4 experiment](../docs/audits/m4-spill-experiment.md).
-- Linguistic Core is the semantic interface for senses and roles, not an executable mechanics source.
-- Consequences require a represented causal bearer and installed mechanic.
-- Composite and analytic descriptions ordinarily remain derived.
-- Observability is required. Exact replay and deterministic execution are not universal promotion gates.
-- Mechanics-agent authoring begins offline. An installer validates and freezes the selected profile before the run.
-- Runtime invention or revision of world laws is deferred.
-- Donor repositories remain read-only idea, implementation, or failure-analysis sources unless a later consumer path explicitly adopts code.
+- M1 through M4 are complete and promoted. M1 is pinned at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
+- Contract status is mixed: `core-v0` is implemented; [mechanic profile](../docs/contracts/mechanic-profile-v0.md) and [transition envelope](../docs/contracts/transition-envelope-v0.md) are partially implemented; [semantic binding](../docs/contracts/semantic-mechanical-binding-v0.md) has one binding of seven. Each contract states its own status.
+- Declared **write** scopes are enforced by the engine (`scope_violation`; negative controls in `tests/test_write_scope.py`). Declared **read** scopes are recorded on every event and are **not** enforced at runtime; the three rules that under-declared reads are repaired and `tests/test_overheat_assay.py` guards against regression.
+- Three interaction assays exist on three different bases — declarations, differential behaviour, conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient. Evidence: [M3](../docs/audits/m3-overheat-authoring-experiment.md), [M4](../docs/audits/m4-spill-experiment.md).
+- Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has; M4 records one that is live in the world today only because a second mechanic closed it.
+- **Never exercised:** no policy of any kind has driven this world (success criterion 2), and no second reference world exists (criterion 6). Four of six criteria are met; these two are not, and neither is a mechanics question.
+- Doctrine, unchanged: Linguistic Core supplies senses and roles, not effects; consequences require a represented causal bearer and an installed mechanic; composites stay derived; observability is required while exact replay is not a universal gate; mechanics authoring is offline and runtime law revision is deferred; donor repositories stay read-only unless a consumer path explicitly adopts code.
 
 ## Applicable context
 
@@ -160,41 +107,40 @@ observable attempt or trigger
 | M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted: binding (`semantic.py`), authority (giver-only enforced in `GiveRule`), refusal (pre-existing `test_transfer.py::test_recipient_capacity_rejection_is_atomic`), reneging (`test_give_exchange.py`), and no-double-transfer trace cases all pass |
 | M3: offline mechanics-authoring vertical | complete | `process.material.overheat-damage` authored as a package, installed with no findings, frozen as profile `d525940e065d8361`, and run | promoted: installation validated scope, effects, tests, limits; two interaction assays surfaced the package's omitted dependency and one residual survived both — [the experiment](../docs/audits/m3-overheat-authoring-experiment.md) |
 | M4: causal-coherence assay | complete | three assays on three different bases, each with a stated blind spot, plus a negative control that only accounting catches | promoted: M3's residual closed by an honestly-authored mechanic; no single basis and no pair is sufficient — [the experiment](../docs/audits/m4-spill-experiment.md) |
-| M5: installed institution | conditional | escrow-like bearer couples effects through one transition envelope | deliberate downstream failures produce no provisional commit |
-| M6: non-agent process and second world | human_decision_required | autonomous process plus a materially different reference world | selected domain tests reuse rather than cosmetic variation |
+| M5: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | Revisit only when a world needs an institution. Atomic commit-or-refuse already exists and is tested since M1, so escrow largely re-exercises machinery rather than testing an open question; it was next only because it was the next row in this table |
+| M6: second reference world | **next**, blocked on domain selection | a materially different world reusing the semantic, transition, and mechanic-profile contracts | The only test of success criterion 6 and of whether "substrate" is real. The M2 audit measured the risk: 2 of 10 checks are substrate-universal, 8 are Castaway content. Promote on reuse that is structural rather than cosmetic; a painful port is a finding, not a failure |
 | M7: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
-The later ordering is conditional. M3–M5 may be reordered after M2 evidence and selection of the first bounded authoring scenario. The hard dependency is that semantic binding, persistent effects, observability, local authority, and singular commit work before open-ended mechanics authoring.
+Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
 
-### Active slice: M2 semantic/causal give vertical
+### Active slice: none until a domain or a spend cap is chosen
 
-**State:** `fully_specifiable_now`.
+M2's give/exchange slice is complete and promoted; its detail lives in the
+milestone table and [its audit](../docs/audits/m2-give-path-audit.md).
 
-**Question:** Can one linguistic predicate be grounded in a primitive mechanic while a related higher-order predicate remains useful but non-causal?
+Both candidate next slices are gated on a human decision (see Human decisions
+below), so no slice is specified here. Specifying one before the domain or the
+spend cap is chosen would be planning ahead of the decision that determines its
+shape.
 
-**Visible result:**
+## Open obligations
 
-- one reviewed Linguistic Core `give` sense and participant-role binding;
-- canonical giver, object, and recipient references;
-- an installed local transfer mechanic with explicit state-path scope;
-- observable attempt, applicability, refusal, commit, and resulting possession state;
-- two independently initiated gives recognizable as an exchange;
-- a trace showing that one participant can decline or renege; and
-- no second transfer caused by the derived exchange classification.
+Work an accepted decision or contract already requires, which no milestone
+currently owns. Listed here so it is schedulable rather than resident only in
+the audit that found it.
 
-**M1 audit included in the slice:** complete, [docs/audits/m2-give-path-audit.md](../docs/audits/m2-give-path-audit.md).
+| Obligation | Required by | State |
+| --- | --- | --- |
+| Attach the causal bearer's observation to its event | [Decision 002](../docs/decisions/002-observability-and-replay.md), field 1 of 8 | open — `engine.observe()` exists but is never attached; a `core-v0` schema change |
+| Attach the bound Linguistic Core sense and roles to its event | Decision 002, field 3 of 8 | open — `SEMANTIC_BINDINGS` exists but is never attached; same schema change |
+| Name the authority/causal bearer on an event | Decision 002, field 4 of 8 | partial — `rule_id` gives the mechanic, nothing gives the bearer |
+| Bind the remaining 6 of 7 M1 action kinds to Linguistic Core senses | [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) | open — only `give` is bound |
+| Decide the ledger's shape for lost quantities | M4 finding | open — `spilled_ml` is a bare integer while `evaporated` is a full liquid vector, so spilled salt and pathogens leave the world unaccounted; `overflow_ml` is written by nothing |
+| Enforce declared read scopes at runtime | this roadmap's own invariant | open, and harder than writes — a read leaves no trace in state. Declarations are repaired and guarded by test; enforcement is not designed |
 
-- document whether current `owner` means bounded operational possession/control rather than universal legal title; — done: possession/control only.
-- identify any transition effects committed before the enclosing action succeeds; — done: none, structurally.
-- map current events to the proposed observability fields; — done: 5 of 8 covered, 2 gaps, 1 partial gap.
-- identify which current checks are goal-relative M1 invariants rather than universal substrate laws; and — done: 2 of 10 universal, rest goal-relative.
-- record the gap between current action IDs and Linguistic Core sense/role bindings. — done: 1 of 7 action kinds bound (`give`).
-
-**Failure boundary:** if the proposed semantic layer requires a new top-level ontology before donor coverage is inspected, stop and perform the coverage audit. If exchange requires a second state-writing transfer path, keep it derived and repair the classification. If local write scope or singular commit cannot be enforced without revising `core-v0`, propose a versioned transition contract rather than silently changing the implemented M1 contract.
-
-## Enabling policy adapter
-
-A genuine LLM policy consumer remains useful for checking the observation/action seam, but it is not the main research uncertainty. No provider call is authorized without an explicit model-execution decision and spend cap. A future adapter must select from or produce a valid semantic intent; it cannot author canonical effects.
+Five of eight Decision 002 observability fields are covered today. The three
+rows above are the gap, and closing the first two is one `core-v0` schema
+change rather than six separate ones.
 
 ## Authoring and causal-closure hypothesis
 
@@ -221,11 +167,14 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | --- | --- | --- | --- |
 | M1 freshwater behavior works | retained machine/human receipts, probes, tests, and replay | deterministic scripted vertical only | established |
 | M1 exact replay works | fresh-process replay receipt | M1 property, not product requirement | established |
-| Semantic binding works | M2 binding and trace evidence | no claim before implementation | target |
-| Derived exchange avoids double application | M2 reciprocal/reneging cases | ordinary voluntary exchange only | target |
-| Offline mechanics authoring works | M3 frozen package and interaction evidence | one bounded extension cannot prove scalability | conditional |
+| Semantic binding works | `semantic.py` binding plus `tests/test_give_exchange.py` | one sense of seven action kinds; no binding is attached to an event | established, narrowly |
+| Derived exchange avoids double application | M2 reciprocal/reneging cases | ordinary voluntary exchange only, and the classifier matches any reciprocal pair regardless of interval or object | established, with a known over-match |
+| Declared write scopes are enforced | `tests/test_write_scope.py` negative controls | writes only; reads are recorded and unenforced | established |
+| Offline mechanics authoring works | M3 and M4 frozen packages, three assays, negative control | two mechanics, one world, and the same person authored both the mechanics and the assays judging them | established for the risk half; the *rate* half is untested |
+| Interaction assays surface omitted dependencies | M3 and M4 findings | each basis has a stated blind spot; no basis and no pair is sufficient, and a residual survives all three | established, with the residual demonstrated |
+| A policy can drive this world | none | never attempted; every run is a scripted controller | unmet success criterion 2 |
 | Global causal closure is proven | none | not generally decidable from author declarations | rejected claim |
-| Second-world reuse works | M6 evidence | domain not selected | deferred |
+| Second-world reuse works | none | domain not selected; M2 audit measured 2 of 10 checks as substrate-universal | unmet success criterion 6 |
 
 ## Risks and needs resolution
 
@@ -240,7 +189,17 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 
 ## Human decisions
 
-No decision is required to begin M2 documentation and local implementation. Model execution and spend, selection of the first agent-authored mechanic, selection of the second reference world, deployment, and publication remain explicit human boundaries.
+Boundaries only Brian can clear. Each names what changes if it is answered.
+
+| Decision | Why it is blocked | What it unblocks |
+| --- | --- | --- |
+| **Model execution and a spend cap** | Explicit authority boundary; no provider call is authorized | Success criterion 2. No policy of any kind has ever driven this world — every run to date is a scripted controller selecting from `discover()`. This is the difference between a substrate and a watchable demonstration, and it is one of the two unmet criteria |
+| **Which second reference world** | No domain selected | Success criterion 6, and the only test of whether "substrate" is real. The M2 audit measured the warning sign: 2 of 10 `give`/`take` checks are substrate-universal, the other 8 are Castaway content. A domain sharing little with Castaway — discrete objects, no liquids, no heat — makes the reuse test real rather than cosmetic |
+| Deployment and publication | Explicit authority boundary | Nothing currently waiting on it |
+
+Selection of the first agent-authored mechanic is no longer a boundary: M3 and
+M4 exercised two, and the remaining authoring questions are answerable without
+a new selection.
 
 ## Refresh and reset triggers
 
@@ -248,23 +207,21 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-M3 and M4 are both complete. Together they establish that installation never
-validates completeness, that three assay bases each catch what the others miss,
-and that each basis has a stateable blind spot.
+Nothing is in progress. Every item the last four milestones generated is either
+done or listed under Open obligations above.
 
-The next actions, in the order their evidence justifies:
+The next substantive move is **M6, a second reference world**, and it is blocked
+on one thing only: which domain. It is the only test of whether the contracts
+generalise, it needs no spend authorization, and the M2 audit predicts it will
+be uncomfortable — which is the argument for doing it now rather than after more
+mechanics accumulate on contracts that may not transfer.
 
-1. ~~Repair the under-declared M1 read scopes.~~ **Done.** Three rules
-   repaired, the audit assay's own false positives fixed, and the ceiling M3
-   identified is demonstrably lifted: the same declaration assay that could not
-   see `take`/`give` now names both. Runtime *enforcement* of read scopes is
-   still open.
-2. Decide the ledger's shape for lost quantities. `evaporated` is a full liquid
-   vector, `spilled_ml` is a bare integer, so spilled salt and pathogens leave
-   the world unaccounted, and `overflow_ml` is still written by nothing.
-3. Correct `mechanic-profile-v0.md` installer step 3, which read literally
-   rejects the promoted M1 mechanics.
-4. M5's installed institution is the next vertical: an escrow-like bearer that
-   couples effects through one transition envelope.
+The competing move is a real policy consumer, which is the more visible result
+and the other unmet criterion, but it needs an explicit model-execution decision
+and a spend cap.
+
+If neither decision is available, the Open obligations table holds real work
+that needs no permission — closing the two Decision 002 observability gaps is
+one `core-v0` schema change and would retire a standing contract debt.
 
 Do not make a model call.

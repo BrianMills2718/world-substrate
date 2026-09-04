@@ -155,7 +155,14 @@ observation or trigger
   -> causal trace
 ```
 
-Read and write declarations are enforced at state paths independently of implementation language. State outside a mechanic's contract may coexist on an entity but remains outside that mechanic's authority.
+Write declarations are enforced at state paths, independently of implementation
+language: the engine compares every committed change against the mechanic's
+declared `write_paths` and refuses the transition otherwise (`scope_violation`
+for an action, `ScopeViolation` for a process). Read declarations are recorded
+on every causal event but are **not** enforced at runtime — a read leaves no
+trace in state, so enforcing it needs a different mechanism than comparing
+before and after. State outside a mechanic's contract may coexist on an entity
+but remains outside that mechanic's authority.
 
 This is not universal ACID. Independent gives may commit independently, allowing reneging. An installed escrow release may instead couple two asset transfers and its own state update in one commit.
 

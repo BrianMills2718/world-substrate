@@ -1,6 +1,6 @@
 # Mechanic profile contract v0
 
-**Status:** proposed  
+**Status:** partially implemented — `src/world_substrate/profile.py` implements the package, the installer checks below, and profile freezing; `src/world_substrate/assay.py` implements step 5's interaction assays. The `semantic_bindings`, `emits`, `effects`, and `trace_contract` fields are declared and reviewed but not machine-validated.  
 **Purpose:** define the reviewable unit that an offline mechanics agent may author and an installer may freeze for a simulation run
 
 ## Mechanic package
@@ -35,7 +35,13 @@ An installer must:
 
 1. resolve semantic and mechanic identities;
 2. validate all declared state paths and operations;
-3. reject overlapping writes without declared ordering, arbitration, or composition;
+3. reject overlapping writes **between mechanics that can commit on the same
+   occasion** without declared ordering, arbitration, or composition. Two
+   independent actions writing one path is ordinary and is already serialised
+   by the transition envelope; the rule bites for processes, which share one
+   `advance()` and are ordered only by `order`. Read without that qualifier
+   this step rejects the promoted M1 mechanics, since `fill` and `drink` both
+   write `entities.<vessel>.liquid`;
 4. check dependency references and declared enforcement coverage;
 5. run the mechanic's tests plus selected interaction assays;
 6. record limitations and unsupported interactions in the installed profile; and

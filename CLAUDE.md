@@ -20,7 +20,7 @@ Before editing a scoped subtree, read its local `CLAUDE.md`:
 - Linguistic Core identifies senses and participant roles; installed mechanics supply effects.
 - Every state-changing transition identifies a causal bearer and one local authority.
 - Mechanics, permissions, and institutions propose effects; one enclosing transition commits causally coupled writes.
-- Declared read and write scopes are enforced at state paths.
+- Declared write scopes are enforced at state paths; declared read scopes are recorded, not enforced.
 - Composite and analytic descriptions do not duplicate their underlying effects.
 - Unsupported mechanics and interactions fail visibly without partial mutation.
 - Resident-agent cognition remains distinct from canonical world state and post-run analysis.
@@ -32,9 +32,7 @@ Before editing a scoped subtree, read its local `CLAUDE.md`:
 
 This repository is the canonical home for the initiative. M1's neutral freshwater runtime remains promoted: its registered deterministic rules and processes reproduce the bounded Castaway vertical, retain causal evidence, and replay from pinned inputs in a fresh process. Those are M1 implementation facts, not universal architecture requirements.
 
-The active roadmap frontier is semantic/mechanical integration. Audit the promoted vertical, bind `give` through Linguistic Core, derive ordinary exchange without a second state-writing mechanic, and establish the proposed transition envelope. Do not implement open-ended mechanics authoring before semantic binding, local authority, persistent effects, observability, and singular commit are demonstrable.
-
-Mechanics agents may later author declarative packages or executable source offline, subject to review, interaction assays, installation, and a frozen world profile. Runtime invention or revision of laws is deferred. Do not call a model without explicit model-execution authority and a spend cap.
+M2 through M4 are complete: `give` is semantically bound, exchange is derived without a second transfer, write scopes are enforced, and two adjacent mechanics have been authored offline, installed, frozen, and assayed. Two of the six success criteria remain unmet and define what is worth doing next: no policy — LLM or human — has ever driven this world, and no second reference world tests whether the contracts generalise. Read the roadmap for the frontier and exact next action rather than inferring direction here. Runtime law revision is deferred; do not call a model without explicit model-execution authority and a spend cap.
 
 Castaway remains the implementation donor beyond the adopted M1 path. Linguistic Core and the classified research repositories are sources or dependencies, not competing authorities or code-adoption instructions.
 

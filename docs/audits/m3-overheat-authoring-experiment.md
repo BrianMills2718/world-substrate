@@ -110,16 +110,6 @@ not**, and these declarations show what that permits. It also sets a ceiling on
 the declaration-based assay: it can only be as complete as the declarations it
 reads.
 
-> **Correction, 2026-09-04.** This section originally reported **seven** rules,
-> listing `drink`/`pour` for `heat_source` and `heat`/`unheat` for `thermal` as
-> well. Four of those seven were false positives in the assay's own
-> source-text matching, not real defects, and the figure was repeated in the
-> M4 audit and the roadmap before it was checked. The three genuine cases are
-> the ones above, and all three are the same read: `condition`. See the
-> follow-up section below. The M3 finding itself is unaffected — `take` and
-> `give` were genuine, and they are exactly the two the declaration assay
-> missed.
-
 ## Result 4 — one incoherence was caught by nothing
 
 **The destroyed gourd still holds 459ml of water.**
@@ -172,41 +162,36 @@ author did not choose.
    mechanic, and a natural M4 subject.
 
 
-## Follow-up, 2026-09-04: the count was wrong, and the defect is now repaired
+## Corrections and follow-up, 2026-09-04
 
-Two things happened after this audit was first written.
+Two things about Result 3 were wrong when this audit was first written, and both
+are now fixed in the text above.
 
-**The count was wrong.** `assay_undeclared_component_reads` matched component
-names as plain substrings of a rule's source text, which produced three classes
-of false positive:
+**The count was seven; the truth is three.** Four of the original seven were
+false positives in `assay_undeclared_component_reads`' own substring matching,
+and the wrong figure was repeated into the M4 audit, the roadmap, and two commit
+messages before anyone checked a single flagged line. The three bugs:
 
 - `.heat_source_id` contains `.heat_source`, but it is a field of the
-  `container` component — which `drink`, `pour`, `take`, and `give` all
-  declare. Four spurious `heat_source` hits.
-- A rule's own `rule_id` is a string in its source, so `mechanism.thermal.heat`
-  contains `.thermal` and `process.material.vessel-failure-spill` contains
-  `.material`. Three more spurious hits across M3 and M4.
-- Conversely it under-reported, because it scanned only the rule class and not
-  the module-level helpers (`_accessible`, `_vessel_weight`, `_carried_weight`)
-  through which several rules actually reach state.
+  `container` component, which `drink`, `pour`, `take`, and `give` all declare.
+- A rule's own `rule_id` is a string in its source, so
+  `"mechanism.thermal.heat"` contains `.thermal`.
+- Conversely it *under*-reported, scanning only the rule class and not the
+  module-level helpers (`_accessible`, `_vessel_weight`, `_carried_weight`)
+  several rules reach state through.
 
-The assay now strips the rule's own identity literals, matches on word
-boundaries, and follows module-level helpers the class names. The accurate
-answer is **three** rules, all reading `condition`.
+The assay now strips the rule's identity literals, matches on word boundaries,
+and follows module-level helpers. The lesson is recorded ecosystem-wide: an
+instrument you just built is an untested claim, not a result.
 
 **The defect is repaired.** `TakeRule`, `GiveRule`, and `ThermalProcess` now
-declare the `condition` read they always performed (`ThermalProcess` also
-declares the heat source's `condition`, which it gates on separately). No
-behaviour changed, so rule versions were deliberately **not** bumped: in this
-repository `version` tracks behavioural variants (`ThermalProcess` is version 2
-only when `cool_empty_vessels` is set), and a declaration corrected to match
-what the rule always did is not a new rule. The evidence receipts were
-regenerated because `declared_read_paths` appears on every event; the donor
-fixture carries no read paths, so donor parity is untouched and every probe
-still accepts its own evidence.
+declare the `condition` read they always performed. No behaviour changed, so
+rule versions were deliberately not bumped — in this repository `version` tracks
+behavioural variants. Evidence receipts were regenerated because
+`declared_read_paths` appears on every event; the donor fixture carries no read
+paths, so donor parity is untouched.
 
-The repair lifts the ceiling this audit identified, and the before/after is
-better evidence for it than the original single-run observation: the *same*
-declaration assay that could not see `take` and `give` in Result 2 now names
-both. `tests/test_overheat_assay.py` asserts the repaired state and guards
-against a future mechanic reintroducing an undeclared read.
+The repair gives Result 2's ceiling better evidence than the original single
+run: **the same declaration assay that could not see `take` and `give` now names
+both.** `tests/test_overheat_assay.py` asserts the repaired state and guards
+against a new mechanic reintroducing an undeclared read.
