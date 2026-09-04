@@ -1,0 +1,84 @@
+{
+  "accepted": true,
+  "assay_affordance_changes": {
+    "count": 0,
+    "findings": [],
+    "note": "Zero findings, and this was not designed in. The spill removes 459ml from the world, but every affordance on the vessel was already blocked by 'Vessel is intact' from the overheat mechanic, so nothing an actor may attempt changes. A behavioural assay goes quiet exactly when a consequence lands on state everyone has already been refused."
+  },
+  "assay_conservation_negative_control": {
+    "caught_by_conservation_assay": true,
+    "finding": [
+      {
+        "code": "volume_not_conserved",
+        "detail": "in-world 5500 + spilled 0 + evaporated 41 + drunk 0 = 5541, but the world started with 6000",
+        "severity": "reject"
+      }
+    ],
+    "stayed_in_declared_write_scope": true,
+    "variant": "spill mechanic that empties the vessel without recording it",
+    "world_validate_passes": true
+  },
+  "assay_declared_readers": {
+    "count": 5,
+    "findings": [
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.liquid.drink reads state process.material.vessel-failure-spill writes (entities.<vessel>.liquid -> entities.<vessel>.liquid), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.liquid.fill reads state process.material.vessel-failure-spill writes (entities.<vessel>.liquid -> entities.<source>.liquid; entities.<vessel>.liquid -> entities.<vessel>.liquid), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.liquid.pour reads state process.material.vessel-failure-spill writes (entities.<vessel>.liquid -> entities.<destination>.liquid; entities.<vessel>.liquid -> entities.<vessel>.liquid), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.ownership.give reads state process.material.vessel-failure-spill writes (entities.<vessel>.liquid -> entities.<vessel>.liquid), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      },
+      {
+        "code": "undeclared_consequential_reader",
+        "detail": "mechanism.ownership.take reads state process.material.vessel-failure-spill writes (entities.<vessel>.liquid -> entities.<vessel>.liquid), and the package names it in neither dependencies nor unsupported_interactions",
+        "severity": "warn"
+      }
+    ],
+    "mechanics": [
+      "mechanism.liquid.drink",
+      "mechanism.liquid.fill",
+      "mechanism.liquid.pour",
+      "mechanism.ownership.give",
+      "mechanism.ownership.take"
+    ]
+  },
+  "claim": "A second mechanic, authored without a planted omission, closes M3's uncaught incoherence and keeps volume conserved. The three assays behave differently on it: the declaration assay names five consequential readers, the behavioural assay is silent because every affordance was already refused, and only the conservation assay catches a variant that destroys a modelled quantity without recording it.",
+  "conservation": {
+    "balances": true,
+    "drunk_ml": 0,
+    "evaporated_ml": 41,
+    "in_world_ml": 5500,
+    "initial_volume_ml": 6000,
+    "spilled_ml": 459
+  },
+  "frozen_profile_id": "7b49326b80e3258b",
+  "installation_was_clean": true,
+  "installed_mechanic_count": 13,
+  "m3_residual_closed": {
+    "closed": true,
+    "vessel_with_spill_mechanic": {
+      "condition": 0,
+      "volume_ml": 0
+    },
+    "vessel_without_spill_mechanic": {
+      "condition": 0,
+      "volume_ml": 459
+    }
+  },
+  "mechanic_id": "process.material.vessel-failure-spill",
+  "schema_version": "world-substrate-m4-spill/v0",
+  "ticks": 5
+}

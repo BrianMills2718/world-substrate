@@ -11,8 +11,8 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** M3 offline mechanics-authoring experiment, run adversarially (M1 and M2 verticals remain promoted)  
-**Current strategy frontier:** M4 causal-coherence assay, informed by M3's residual
+**Last outcome-bearing implementation:** M4 spill mechanic and assay-specificity result (M1 and M2 verticals remain promoted)  
+**Current strategy frontier:** repair the under-declared read scopes, then M5 installed institution
 
 ## Outcome and success criteria
 
@@ -88,6 +88,22 @@ That probe establishes the implemented `core-v0` seam. It does not establish:
   `heat`/`unheat` read `thermal`; `process.thermal.vessels` reads
   `condition`). This is a real pre-existing defect and it caps how complete any
   declaration-based assay can be.
+- M4 is complete. `process.material.vessel-failure-spill` was authored without
+  a planted omission, closed M3's residual (a destroyed vessel now loses its
+  contents), and keeps volume conserved against the ledger. It also gave
+  `physical_ledger.spilled_ml` its first writer; that field and `overflow_ml`
+  had been declared and written by nothing.
+- The three assays behaved completely differently on it, and this is the
+  substantive M4 result: the declaration assay named five readers (including
+  `take`/`give`, which it could *not* see in M3, because they declare their
+  liquid read but not their condition read); the behavioural assay found
+  **nothing at all**, because every affordance on the vessel was already
+  blocked by the overheat mechanic — a behavioural assay is blind behind an
+  existing refusal; and only the conservation assay caught a control variant
+  that destroys 459ml without recording it, which stays inside its declared
+  write scope, commits cleanly, and passes `World.validate()`. No single basis
+  and no pair of bases is sufficient. See
+  [the M4 experiment](../docs/audits/m4-spill-experiment.md).
 - Linguistic Core is the semantic interface for senses and roles, not an executable mechanics source.
 - Consequences require a represented causal bearer and installed mechanic.
 - Composite and analytic descriptions ordinarily remain derived.
@@ -136,7 +152,7 @@ observable attempt or trigger
 | M1: freshwater vertical | complete | neutral CLI trace, refusals, persistence, and M1 replay | promoted |
 | M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted: binding (`semantic.py`), authority (giver-only enforced in `GiveRule`), refusal (pre-existing `test_transfer.py::test_recipient_capacity_rejection_is_atomic`), reneging (`test_give_exchange.py`), and no-double-transfer trace cases all pass |
 | M3: offline mechanics-authoring vertical | complete | `process.material.overheat-damage` authored as a package, installed with no findings, frozen as profile `d525940e065d8361`, and run | promoted: installation validated scope, effects, tests, limits; two interaction assays surfaced the package's omitted dependency and one residual survived both — [the experiment](../docs/audits/m3-overheat-authoring-experiment.md) |
-| M4: causal-coherence assay | conditional | declared-coverage report plus adversarial interaction findings | missing/overlapping dependencies become explicit risks, refusals, or repaired bindings |
+| M4: causal-coherence assay | complete | three assays on three different bases, each with a stated blind spot, plus a negative control that only accounting catches | promoted: M3's residual closed by an honestly-authored mechanic; no single basis and no pair is sufficient — [the experiment](../docs/audits/m4-spill-experiment.md) |
 | M5: installed institution | conditional | escrow-like bearer couples effects through one transition envelope | deliberate downstream failures produce no provisional commit |
 | M6: non-agent process and second world | human_decision_required | autonomous process plus a materially different reference world | selected domain tests reuse rather than cosmetic variation |
 | M7: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
@@ -225,24 +241,21 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-M3 is complete: an adjacent mechanic was authored offline, installed, frozen,
-and run, and the experiment's result is recorded in
-[the M3 audit](../docs/audits/m3-overheat-authoring-experiment.md).
+M3 and M4 are both complete. Together they establish that installation never
+validates completeness, that three assay bases each catch what the others miss,
+and that each basis has a stateable blind spot.
 
-Three follow-ons are now specific rather than speculative, in the order their
-evidence justifies:
+The next actions, in the order their evidence justifies:
 
-1. Repair the seven under-declared M1 read scopes. They are a real defect and
-   they bound the declaration-based assay's reach. Enforcing reads is a
-   separate and harder question — a read leaves no trace in state — but the
-   declarations can be made honest today.
-2. Give vessel destruction a contents consequence. This is the incoherence no
-   assay caught, and it is a second authored mechanic: the natural M4 subject,
-   which also tests whether the assays catch an omission their author did not
-   choose in advance.
-3. Correct `mechanic-profile-v0.md` installer step 3. Read literally it
-   rejects the promoted M1 mechanics; the implementation already narrows the
-   overlapping-write rule to mechanics that can commit on the same occasion,
-   and the contract should say so.
+1. Repair the seven under-declared M1 read scopes. M4 showed directly what they
+   cost: the same assay's reach flipped between M3 and M4 purely on whether the
+   declaration it consumed happened to be complete.
+2. Decide the ledger's shape for lost quantities. `evaporated` is a full liquid
+   vector, `spilled_ml` is a bare integer, so spilled salt and pathogens leave
+   the world unaccounted, and `overflow_ml` is still written by nothing.
+3. Correct `mechanic-profile-v0.md` installer step 3, which read literally
+   rejects the promoted M1 mechanics.
+4. M5's installed institution is the next vertical: an escrow-like bearer that
+   couples effects through one transition envelope.
 
 Do not make a model call.

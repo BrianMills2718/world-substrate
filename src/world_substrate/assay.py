@@ -187,3 +187,44 @@ def assay_undeclared_component_reads(rules: Iterable[Any]) -> list[Finding]:
                 )
             )
     return findings
+
+
+def assay_conservation(
+    engine: Engine, initial_volume_ml: int
+) -> list[Finding]:
+    """Whether modelled liquid volume still balances against the ledger.
+
+    The project treats accounting as goal-relative rather than universal, so
+    this is the freshwater world's identity, not a substrate law:
+
+        in-world volume + spilled + evaporated + drunk == initial volume
+
+    Worth running as its own assay because it is based on neither declarations
+    nor affordances. A mechanic that destroys a modelled quantity may change
+    no actor's action set at all -- and then the behavioural assay is silent
+    while the world quietly stops adding up.
+    """
+    ledger = engine.world.physical_ledger
+    if ledger is None:
+        return [
+            Finding("warn", "no_ledger", "world has no physical ledger to balance against")
+        ]
+    in_world = sum(
+        entity.liquid.volume_ml
+        for entity in engine.world.entities.values()
+        if entity.liquid is not None
+    )
+    accounted = (
+        in_world + ledger.spilled_ml + ledger.evaporated.volume_ml + ledger.drunk.volume_ml
+    )
+    if accounted == initial_volume_ml:
+        return []
+    return [
+        Finding(
+            "reject",
+            "volume_not_conserved",
+            f"in-world {in_world} + spilled {ledger.spilled_ml} + evaporated "
+            f"{ledger.evaporated.volume_ml} + drunk {ledger.drunk.volume_ml} = "
+            f"{accounted}, but the world started with {initial_volume_ml}",
+        )
+    ]
