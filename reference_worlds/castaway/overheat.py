@@ -26,7 +26,9 @@ from world_substrate.mechanisms import (
 )
 from world_substrate.mechanisms.damage import (
     OVERHEAT_DAMAGE_PACKAGE,
+    VESSEL_FAILURE_SPILL_PACKAGE,
     OverheatDamageProcess,
+    VesselFailureSpillProcess,
 )
 from world_substrate.model import (
     CarryingState,
@@ -111,7 +113,17 @@ def build_overheat_engine(root: Path | None = None) -> Engine:
     return Engine(_world(registry, root), registry)
 
 
-def installed_profile(with_overheat: bool) -> tuple[MechanicProfile, list]:
+def build_spill_engine(root: Path | None = None) -> Engine:
+    """The same world with overheat damage and the M4 spill mechanic."""
+    registry = _base_registry()
+    registry.register_process(OverheatDamageProcess())
+    registry.register_process(VesselFailureSpillProcess())
+    return Engine(_world(registry, root), registry)
+
+
+def installed_profile(
+    with_overheat: bool, with_spill: bool = False
+) -> tuple[MechanicProfile, list]:
     """Install the M1 mechanics, then the authored mechanic through validation."""
     registry = _base_registry()
     profile = MechanicProfile()
@@ -126,6 +138,11 @@ def installed_profile(with_overheat: bool) -> tuple[MechanicProfile, list]:
             raise AssertionError(f"retrofit rejected for {rule.rule_id}: {rejects}")
     if not with_overheat:
         return profile, []
-    candidate = OverheatDamageProcess()
-    install_findings = profile.install(OVERHEAT_DAMAGE_PACKAGE, candidate)
+    install_findings = profile.install(
+        OVERHEAT_DAMAGE_PACKAGE, OverheatDamageProcess()
+    )
+    if with_spill:
+        install_findings = install_findings + profile.install(
+            VESSEL_FAILURE_SPILL_PACKAGE, VesselFailureSpillProcess()
+        )
     return profile, install_findings

@@ -111,3 +111,126 @@ OVERHEAT_DAMAGE_PACKAGE = MechanicPackage(
         "its temperature, its heat limit, and the condition before and after."
     ),
 )
+
+
+class VesselFailureSpillProcess:
+    """A vessel that has failed cannot hold its contents.
+
+    Authored as the M4 follow-on to the incoherence M3 left open: a destroyed
+    vessel that still holds liquid. Written without a planted omission -- the
+    package below declares the causal story the author actually reasoned to,
+    and the interaction assays are left to find consequential readers the
+    author did not think of. That is the division of labour the assays exist
+    for; see docs/audits/m4-spill-experiment.md for what they found.
+    """
+
+    rule_id = "process.material.vessel-failure-spill"
+    version = "1"
+    order = 26
+    read_paths: tuple[str, ...] = (
+        "entities.<vessel>.condition.value",
+        "entities.<vessel>.container",
+        "entities.<vessel>.liquid",
+    )
+    write_paths: tuple[str, ...] = (
+        "entities.<vessel>.liquid",
+        "physical_ledger.spilled_ml",
+        "physical_ledger.heat_lost",
+    )
+
+    def _failed_and_holding(self, entity) -> bool:
+        return (
+            entity.condition is not None
+            and entity.condition.value == 0
+            and entity.container is not None
+            and entity.liquid is not None
+            and entity.liquid.volume_ml > 0
+        )
+
+    def due(self, world: World) -> bool:
+        return any(
+            self._failed_and_holding(entity) for entity in world.entities.values()
+        )
+
+    def apply(self, world: World) -> None:
+        if world.physical_ledger is None:
+            raise ValueError("vessel failure spill requires a physical ledger")
+        for entity in sorted(world.entities.values(), key=lambda item: item.entity_id):
+            if not self._failed_and_holding(entity):
+                continue
+            assert entity.liquid is not None
+            world.physical_ledger.spilled_ml += entity.liquid.volume_ml
+            world.physical_ledger.heat_lost += entity.liquid.heat_units
+            entity.liquid.volume_ml = 0
+            entity.liquid.salt_mg = 0
+            entity.liquid.pathogens = 0
+            entity.liquid.heat_units = 0
+
+
+VESSEL_FAILURE_SPILL_PACKAGE = MechanicPackage(
+    mechanic_id="process.material.vessel-failure-spill",
+    version="1",
+    causal_bearer="autonomous process (a failed container cannot retain contents)",
+    representation="deterministic",
+    reads=VesselFailureSpillProcess.read_paths,
+    writes=VesselFailureSpillProcess.write_paths,
+    commit_occasion="tick",
+    order=VesselFailureSpillProcess.order,
+    requires=(
+        "entities.<vessel>.container",
+        "entities.<vessel>.condition",
+        "entities.<vessel>.liquid",
+        "physical_ledger",
+    ),
+    optional_modifiers=(),
+    forbids=(),
+    emits=("causal event per tick in which any failed vessel loses its contents",),
+    effects=(
+        (
+            "for every vessel at condition 0 still holding liquid: add its "
+            "volume to physical_ledger.spilled_ml and its heat to "
+            "physical_ledger.heat_lost, then zero every liquid field"
+        ),
+    ),
+    invariants=(
+        "a vessel at condition 0 never holds liquid after this process runs",
+        (
+            "volume is conserved against the ledger: initial + added equals "
+            "in-world + drunk + evaporated + spilled"
+        ),
+        "an intact vessel is never emptied by this mechanic",
+    ),
+    dependencies=(
+        "process.material.overheat-damage",
+        "process.thermal.vessels",
+    ),
+    unsupported_interactions=(),
+    limits=(
+        (
+            "The ledger records spilled volume and heat but has no field for "
+            "spilled salt or pathogens, so those quantities leave the world "
+            "unaccounted. physical_ledger.evaporated is a full LiquidState "
+            "while spilled_ml is a bare integer; this asymmetry is in the "
+            "existing ledger, not introduced here."
+        ),
+        (
+            "Contents are destroyed rather than transferred anywhere. There "
+            "is no ground, puddle, or location that receives them."
+        ),
+        "Failure is instantaneous and total; there is no slow leak.",
+        (
+            "physical_ledger.overflow_ml remains unwritten by any mechanic; "
+            "this mechanic does not model overfilling."
+        ),
+    ),
+    tests=(
+        "tests/test_spill.py::test_failed_vessel_loses_its_contents",
+        "tests/test_spill.py::test_intact_vessel_keeps_its_contents",
+        "tests/test_spill.py::test_volume_is_conserved_against_the_ledger",
+    ),
+    semantic_bindings=(),
+    trace_contract=(
+        "Each tick in which a spill occurs emits an event naming the vessel, "
+        "the volume and heat lost, and the ledger totals before and after."
+    ),
+)

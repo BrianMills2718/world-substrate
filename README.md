@@ -28,6 +28,8 @@ M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoi
 
 M3 is complete: one adjacent mechanic was authored offline as a reviewable package, installed with no findings, frozen into a profile, and run. It was run adversarially — the package omits a real consequential dependency — and the result is that installation alone surfaces nothing, two complementary interaction assays surface it, and one incoherence survives both. See [the M3 experiment](docs/audits/m3-overheat-authoring-experiment.md).
 
+M4 completes the pair. A second mechanic, authored without a planted omission, closes M3's uncaught incoherence and keeps volume conserved. The three assays behaved completely differently on it — the behavioural one found nothing at all, because every affordance was already refused — establishing that no single assay basis, and no pair, is sufficient. See [the M4 experiment](docs/audits/m4-spill-experiment.md).
+
 The earlier semantic/mechanical frontier remains: audit the promoted vertical against Linguistic Core and the causal-force boundary, bind the existing primitive `give` mechanic, derive ordinary exchange without double application, and establish the transition envelope needed before agent-authored mechanics. A genuine policy consumer remains an enabling experiment and still requires explicit model-call authority and a spend cap.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
@@ -45,6 +47,7 @@ python scripts/replay_transfer_evidence.py --check
 python scripts/run_freshwater_probe.py --check
 python scripts/run_give_exchange_probe.py --check
 python scripts/run_overheat_assay_probe.py --check
+python scripts/run_spill_assay_probe.py --check
 ```
 
 The default project check is self-contained and uses committed fixtures. When the sibling donor repositories are available, also run `python scripts/check_project.py --with-donors`; the optional donor check reads pinned revisions rather than requiring their current checkouts to remain at those commits.
