@@ -109,6 +109,51 @@ class PhysicalLedger:
         }
 
 
+# --- Open typed components -------------------------------------------------
+#
+# The eleven component fields above were extracted from Castaway and are the
+# freshwater world's content, not substrate law. A materially different world
+# needs its own components, and before M6 there was no way to add one: Entity
+# rejected unknown fields and silently dropped ad-hoc attributes.
+#
+# This registry keeps components typed while opening the set. A world pack
+# registers its dataclasses at import time and refers to them by name. Nothing
+# about the original eleven changes, and an entity with no registered
+# components serialises byte-identically to before, so pinned M1 evidence and
+# donor parity are untouched.
+
+COMPONENT_TYPES: dict[str, type] = {}
+
+
+def register_component(name: str, component_type: type) -> None:
+    """Register a typed component a world pack may attach to its entities."""
+    if not name or not name.replace("_", "").isalnum():
+        raise ValueError(f"component name must be alphanumeric: {name!r}")
+    existing = COMPONENT_TYPES.get(name)
+    if existing is not None and existing is not component_type:
+        raise ValueError(f"component {name!r} is already registered to {existing}")
+    if name in _BUILTIN_COMPONENT_NAMES:
+        raise ValueError(f"{name!r} is a built-in component field")
+    COMPONENT_TYPES[name] = component_type
+
+
+_BUILTIN_COMPONENT_NAMES = frozenset(
+    {
+        "actor",
+        "carrying",
+        "portable",
+        "location",
+        "ownership",
+        "condition",
+        "container",
+        "liquid",
+        "thermal",
+        "material",
+        "heat_source",
+    }
+)
+
+
 @dataclass
 class Entity:
     entity_id: str
@@ -128,6 +173,11 @@ class Entity:
     source_pack_id: str | None = None
     source_entity_id: str | None = None
     last_cause_event_id: str | None = None
+    components: dict[str, Any] = field(default_factory=dict)
+
+    def component(self, name: str) -> Any:
+        """Return a registered component, or None."""
+        return self.components.get(name)
 
     def as_dict(self) -> dict[str, Any]:
         result: dict[str, Any] = {
@@ -157,6 +207,13 @@ class Entity:
             result["source_entity_id"] = self.source_entity_id
         if self.last_cause_event_id is not None:
             result["last_cause_event_id"] = self.last_cause_event_id
+        # Omitted entirely when empty, so a world that registers no components
+        # serialises exactly as it did before this existed.
+        if self.components:
+            result["components"] = {
+                name: asdict(self.components[name])
+                for name in sorted(self.components)
+            }
         return result
 
     @classmethod
@@ -207,10 +264,27 @@ class Entity:
             if item is not None and (not isinstance(item, str) or not item):
                 raise ValueError(f"snapshot {name} must be a nonempty string or null")
             optional_identities[name] = item
+        registered: dict[str, Any] = {}
+        record = value.get("components")
+        if record is not None:
+            if not isinstance(record, dict):
+                raise TypeError("snapshot components must be an object")
+            for name, fields in sorted(record.items()):
+                component_type = COMPONENT_TYPES.get(name)
+                if component_type is None:
+                    raise ValueError(f"unregistered component: {name!r}")
+                if not isinstance(fields, dict):
+                    raise TypeError(f"snapshot component {name} must be an object")
+                try:
+                    registered[name] = component_type(**fields)
+                except TypeError as error:
+                    raise ValueError(f"invalid snapshot component {name}: {error}") from error
+
         allowed = {
             "entity_id",
             "label",
             "category_ids",
+            "components",
             *component_types,
             *optional_identities,
         }
@@ -235,6 +309,7 @@ class Entity:
             source_pack_id=optional_identities["source_pack_id"],
             source_entity_id=optional_identities["source_entity_id"],
             last_cause_event_id=optional_identities["last_cause_event_id"],
+            components=registered,
         )
 
 
