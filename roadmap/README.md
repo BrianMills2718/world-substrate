@@ -234,4 +234,8 @@ Beyond those, the prototype has answered both halves of its central hypothesis
 and all six success criteria. Continuing is a scope choice rather than a next
 step.
 
-Model calls are authorized under a $2 cap and have cost $0.04 to date.
+Model calls are authorized under a $2 cap and have cost **$0.065** to date
+(`get_cost(task=...)`: $0.00675 for the M5 policy run, $0.05837 for M7
+authoring including its pilots and one killed run). Read that figure from the
+observability DB rather than adding up per-run numbers -- a previous version of
+this line said $0.04 because it counted only the final M7 trace.
