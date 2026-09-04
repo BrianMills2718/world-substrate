@@ -67,24 +67,40 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 
 ## What exists now?
 
-- M1 is promoted through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes.
-- Discovery, observation, causal events, atomic rejection, semantic donor comparison, persistent cross-system vessel identity, and exact 22-command replay work in the implemented `core-v0` path.
+- M1 is promoted through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes. Discovery, observation, causal events, atomic rejection, semantic donor comparison, persistent cross-system vessel identity, and exact 22-command replay all work in the implemented `core-v0` path.
+- `give` is bound to a pinned Linguistic Core sense, and exchange is a derived read-only classification that performs no second transfer (M2).
+- Declared **write** scopes are enforced by the engine. Declared **read** scopes are recorded on every event and are not enforced at runtime.
+- Two adjacent mechanics have been authored offline, installed through the mechanic-profile contract, frozen into a profile, and exercised (M3, M4): overheat damage and vessel-failure spill.
+- Three interaction assays exist on three different bases — declarations, differential behaviour, and conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient.
+- Contract status is mixed rather than binary: `core-v0` is implemented; mechanic-profile and transition-envelope are **partially** implemented; semantic-mechanical-binding remains a target. Each contract states its own current status.
 - Exact replay remains valid M1 evidence but is not a future product requirement.
-- The semantic/mechanical binding, mechanic profile, and transition envelope are proposed contracts, not implemented claims.
-- Linguistic Core is the selected semantic interface. Its coverage of persistent state, qualities, quantities, rights, and institutional relations still requires a donor audit.
-- Pre-run agent-assisted mechanics authoring is a central hypothesis. Runtime law revision remains deferred.
+- Linguistic Core is the selected semantic interface. Its coverage of persistent state, qualities, quantities, rights, and institutional relations still requires a donor audit, and 6 of 7 M1 action kinds still have no binding.
+- Never exercised: no policy of any kind — LLM, human, or interactive — has driven this world, and no second reference world exists.
 
 ## Current frontier
 
-The active slice audits the promoted M1 world against the new boundaries and creates one thin give/exchange vertical:
+M2 through M4 are complete. The mechanics-authoring question has been probed
+from both sides — a mechanic with a planted omission (M3) and one without (M4) —
+and the durable result is that installation never validates completeness, three
+assay bases each catch what the others miss, and a residual survives all of
+them.
 
-1. bind the existing `give` action to a Linguistic Core sense and roles;
-2. enforce local transition authority and expose the causal trace;
-3. treat ordinary exchange as a derived pattern of two independent gives;
-4. demonstrate that either participant may decline or renege; and
-5. prevent derived exchange from applying either transfer again.
+What the project has **not** done is the more telling list. Two of the six
+prototype success criteria are unmet, and neither is a mechanics question:
 
-A policy-provider call is an enabling experiment rather than the main research milestone. It still requires explicit authority and a spend cap.
+- **No policy has ever driven this world.** Every run to date is a scripted
+  controller selecting from `discover()`. Criterion 2 requires the same
+  interface to be exercisable by scripted, human, or LLM policies; only the
+  first has happened. A provider call needs explicit authority and a spend cap.
+- **No second world exists.** Criterion 6 requires a materially different world
+  to reuse the semantic, transition, and mechanic-profile contracts. The M2
+  audit already measured the warning sign: only 2 of 10 `give`/`take` checks
+  are substrate-universal, the other 8 are Castaway content. Whether "substrate"
+  is real is currently untested.
+
+[The roadmap](../../roadmap/README.md) holds the exact next action. Escrow and
+other institution work sits behind both of the above; it exercises commit
+machinery that already exists and should not be mistaken for the frontier.
 
 ## Architecture and workflow
 
