@@ -23,7 +23,7 @@ import re
 from collections.abc import Iterable
 from typing import Any
 
-from .engine import Engine, _ENVELOPE_METADATA
+from .engine import _ENVELOPE_METADATA, Engine
 from .model import BUILTIN_COMPONENT_TYPES, COMPONENT_TYPES
 from .profile import Finding, MechanicPackage, paths_overlap
 
@@ -208,7 +208,6 @@ def assay_undeclared_component_reads(rules: Iterable[Any]) -> list[Finding]:
     output as a review list, not a verdict.
     """
     import inspect
-    import re
     import sys as _sys
 
     def _reachable_source(rule: Any) -> str:
