@@ -109,6 +109,53 @@ class ScriptedSeat(Seat):
         return (dict(row["action"]) if row else None, self.policy.name)
 
 
+def _kitchen_context(engine, actor: str) -> dict:
+    """What a cook knows that the generic observation does not spell out.
+
+    The order entities are already visible with their `wants`, and the cook's
+    own state already carries `order_id`, so a careful reader could join them.
+    Saying it plainly costs nothing and removes an inference that has nothing
+    to do with what is being tested.
+
+    Deliberately no advice about the other cook. Naming that they exist and
+    what they hold is situation; telling a cook to share or to race would make
+    whatever follows an instruction rather than an observation.
+    """
+    cook = engine.world.entities[actor].components["cook"]
+    order = engine.world.entities[cook.order_id].components["order"]
+    outstanding = [w for w in order.wants if w not in cook.plated]
+    others = []
+    for other in engine.world.entities.values():
+        their = other.component("cook")
+        if their is None or other.entity_id == actor:
+            continue
+        holding = sorted(
+            e.entity_id for e in engine.world.entities.values()
+            if e.ownership is not None
+            and e.ownership.owner_ref == f"actor:{other.entity_id}"
+        )
+        others.append(
+            f"{other.label} ({other.entity_id}) is also cooking here, holding "
+            f"{', '.join(holding) if holding else 'nothing'}, and has plated "
+            f"{', '.join(their.plated) if their.plated else 'nothing'} so far."
+        )
+    return {
+        "goal": (
+            f"{cook.order_id} still needs {', '.join(outstanding)}"
+            if outstanding
+            else f"{cook.order_id} is complete"
+        ),
+        "other": "\n".join(others),
+    }
+
+
+WORLD_PROMPTS = {
+    "castaway": "prompts/castaway_policy.yaml",
+    "kitchen": "prompts/kitchen_policy.yaml",
+}
+WORLD_CONTEXT = {"kitchen": _kitchen_context}
+
+
 class LlmSeat(Seat):
     """An LLM picks from ids the engine minted, exactly as M5 did.
 
@@ -118,13 +165,16 @@ class LlmSeat(Seat):
     does not widen what either may cause.
     """
 
-    def __init__(self, actor: str, policy, recent) -> None:
+    def __init__(self, actor: str, policy, recent, extra=None) -> None:
         super().__init__(actor, policy)
         self._recent = recent
+        self._extra = extra
 
     def choose(self, engine, page):
         context = present(engine, self.actor, page)
         context["recent"] = self._recent(engine, self.actor)
+        if self._extra is not None:
+            context.update(self._extra(engine, self.actor))
         action_id, reasoning = self.policy.select(page, context)
         choice = resolve_choice(page, action_id, reasoning)
         if choice.kind != "action" or choice.action is None:
@@ -347,8 +397,9 @@ th{{text-align:left;padding:.4rem .6rem;font-size:.8rem;text-transform:uppercase
 <h1>Two agents, one world, no way to talk to each other</h1>
 <p class=sub>Both choose from their own affordance page at the same revision, then commit in
 order. Struck-through means the plan was still true when the page was rendered and false by
-the time it could act, because the other one moved first &mdash; {s['lost_what_it_wanted']} of
-{s['turns']} turns. Neither agent can see the other's intent; the only channel between them
+the time it could act. {s['plan_actually_taken_by_the_other']} of {s['turns']} turns had the
+plan genuinely taken by the other cook; {s['retried_because_stale']} were merely stale, where
+the plan was still on offer and the policy chose differently on a second look. Neither agent can see the other's intent; the only channel between them
 is the world.</p>
 <table><tr><th></th>{"".join(f"<th>{html.escape(a)}</th>" for a in actors)}</tr>{''.join(rows)}</table>
 <p class=legend>{'Model: ' + html.escape(str(payload.get('model'))) + '. ' if payload.get('model') else ''}
@@ -368,6 +419,13 @@ def main() -> int:
     )
     parser.add_argument("--max-budget", type=float, default=2.0)
     parser.add_argument("--html", type=Path)
+    parser.add_argument(
+        "--prompt",
+        help=(
+            "override the world's prompt, to separate a prompt's effect from "
+            "everything else that changed alongside it"
+        ),
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -385,10 +443,11 @@ def main() -> int:
                     model=args.model,
                     trace_id=f"{trace_id}-{actor}",
                     max_budget=args.max_budget,
-                    template=str(REPO / "prompts/castaway_policy.yaml"),
+                    template=str(REPO / (args.prompt or WORLD_PROMPTS[args.world])),
                     name=f"llm:{actor}",
                 ),
                 lambda engine, actor, _seen=seen: _recent_for(engine, actor, _seen),
+                WORLD_CONTEXT.get(args.world),
             )
             for actor in WORLDS[args.world][1]
         }
