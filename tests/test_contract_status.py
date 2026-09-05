@@ -93,7 +93,7 @@ class FactsAreComputedFromBehaviourNotDeclarations(unittest.TestCase):
         import world_substrate.engine as engine_module
 
         saved = engine_module.Engine.replay
-        engine_module.Engine.replay = lambda self: {"ok": False}
+        engine_module.Engine.replay = lambda self: {"ok": False, "steps": 0}
         try:
             live = check_project._live_facts(REPO)
         finally:
@@ -104,30 +104,65 @@ class FactsAreComputedFromBehaviourNotDeclarations(unittest.TestCase):
             "an actual replay",
         )
 
-    def test_assays_are_counted_by_invoking_them(self):
-        import world_substrate.assay as assay_module
+    def test_replay_requires_the_action_to_have_committed(self):
+        """`replay()` returns ok on an empty command list.
 
-        def explode(*args, **kwargs):
-            raise RuntimeError("assay is broken")
+        A positional pick that started failing its preconditions would leave
+        this fact green having replayed nothing at all.
+        """
+        import world_substrate.engine as engine_module
 
-        saved = assay_module.assay_conservation
-        assay_module.assay_conservation = explode
-        try:
-            with self.assertRaises(RuntimeError):
-                check_project._live_facts(REPO)
-        finally:
-            assay_module.assay_conservation = saved
-
-    def test_an_assay_returning_the_wrong_shape_lowers_the_count(self):
-        import world_substrate.assay as assay_module
-
-        saved = assay_module.assay_conservation
-        assay_module.assay_conservation = lambda *a, **k: None
+        saved = engine_module.Engine.submit
+        engine_module.Engine.submit = lambda self, value: {
+            "status": "precondition_failed",
+            "event": {"status": "precondition_failed", "semantic_binding": None},
+        }
         try:
             live = check_project._live_facts(REPO)
         finally:
-            assay_module.assay_conservation = saved
-        self.assertEqual(live["interaction_assays_runnable"], 2)
+            engine_module.Engine.submit = saved
+        self.assertFalse(live["exact_replay_works"])
+
+    def test_a_stub_assay_makes_the_fact_go_red(self):
+        """The vacuity this fact was rewritten to rule out.
+
+        The first version invoked three assays and counted the ones returning
+        a list, but handed the declaration assay an empty `installed` map and
+        the behavioural assay two identical engines, so both returned `[]`
+        whatever their internals did. A stub scored three out of three.
+        """
+        from world_substrate import assay as assay_module
+
+        saved = assay_module.assay_declared_readers
+        assay_module.assay_declared_readers = lambda package, installed: []
+        try:
+            live = check_project._live_facts(REPO)
+        finally:
+            assay_module.assay_declared_readers = saved
+        self.assertFalse(live["declared_reader_assay_detects_an_overlap"])
+
+    def test_the_overlap_it_is_given_is_a_real_one(self):
+        # The assay must be exercised on a case where a finding is required,
+        # not on an empty input where none is possible.
+        from reference_worlds.castaway.probe import build_transfer_engine
+        from world_substrate.assay import assay_declared_readers
+        from world_substrate.profile import retrofit_package
+
+        engine = build_transfer_engine(REPO)
+        writer = retrofit_package(engine.registry.action("fill"), "check")
+        reader = retrofit_package(engine.registry.action("drink"), "check")
+        self.assertTrue(assay_declared_readers(writer, {reader.mechanic_id: reader}))
+        # ...and the empty case the old check used finds nothing, by design.
+        self.assertEqual(assay_declared_readers(writer, {}), [])
+
+    def test_the_fact_does_not_come_from_the_polluted_registry(self):
+        """`rules[0]` was the write-scope probe, not a real mechanic.
+
+        `check_probe` sorts ahead of every real action kind, so the package
+        the assays were run against was a throwaway with no reads at all.
+        """
+        live = check_project._live_facts(REPO)
+        self.assertTrue(live["declared_reader_assay_detects_an_overlap"])
 
     def test_a_removed_binding_moves_the_count(self):
         from world_substrate import semantic
@@ -174,9 +209,11 @@ class DriftIsReported(unittest.TestCase):
         self.assertTrue(any("exact_replay_works" in f for f in failures))
         self.assertTrue(any("core-v0" in f for f in failures))
 
-    def test_a_missing_assay_is_reported(self):
-        failures = self.drift("interaction_assays_runnable", 2)
-        self.assertTrue(any("interaction_assays_runnable" in f for f in failures))
+    def test_a_broken_declaration_assay_is_reported(self):
+        failures = self.drift("declared_reader_assay_detects_an_overlap", False)
+        self.assertTrue(
+            any("declared_reader_assay_detects_an_overlap" in f for f in failures)
+        )
         self.assertTrue(any("mechanic-profile-v0" in f for f in failures))
 
     def test_read_scope_enforcement_would_be_reported_if_it_shipped(self):

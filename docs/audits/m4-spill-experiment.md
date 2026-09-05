@@ -32,8 +32,10 @@ and spill resolve in the same tick.
 
 Like the M3 mechanic it revives dead state. `physical_ledger.spilled_ml` and
 `physical_ledger.overflow_ml` were declared in the ledger, present as zero in
-every committed fixture, and **written by nothing**. `spilled_ml` now has its
-first writer; `overflow_ml` still has none, and the package says so.
+every committed fixture, and **written by nothing**. `spilled_ml` gained its
+first writer here; `overflow_ml` gained none, and the package said so. Both
+were settled on 2026-09-04 -- `spilled_ml` became the full `spilled` vector,
+and `overflow_ml` was removed rather than populated.
 
 It installed with zero findings and froze as profile `7b49326b80e3258b`.
 

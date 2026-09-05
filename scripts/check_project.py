@@ -286,49 +286,53 @@ def _live_facts(root: Path) -> dict[str, object]:
 
     # A separate, unmutated engine: the probe above registered a rule and
     # committed an action, and replay must be measured on a clean trace.
+    # Select the action by kind and require it to commit -- `replay()` returns
+    # ok on an empty command list, so a positional pick that started failing
+    # its preconditions would leave this fact green having replayed nothing.
     replay_engine = build_transfer_engine(root)
     replay_page = replay_engine.discover("robinson")
-    replay_engine.submit(
-        {**replay_page["available"][0]["action"], "controller": "check"}
+    replay_row = next(
+        row for row in replay_page["available"] if row["action"]["kind"] == "fill"
     )
+    committed = replay_engine.submit({**replay_row["action"], "controller": "check"})
     replay_engine.advance(1)
-    replays = replay_engine.replay()["ok"]
-
-    # The three bases the M4 audit names -- declarations, differential
-    # behaviour, conserved-quantity accounting -- each invoked rather than
-    # counted by name, because a module can export three functions none of
-    # which still runs. `assay_undeclared_component_reads` is deliberately not
-    # in this count: it audits the first assay's inputs rather than being a
-    # fourth basis, and an earlier version of this check silently substituted
-    # it for the behavioural assay and still reported three.
-    from world_substrate.assay import (
-        assay_affordance_changes,
-        assay_conservation,
-        assay_declared_readers,
+    replay_result = replay_engine.replay()
+    replays = (
+        committed["status"] == "accepted"
+        and replay_result["ok"]
+        and replay_result["steps"] > 0
     )
+
+    # The declaration assay, exercised on a case where it must find something.
+    #
+    # This block used to invoke three assays and count the ones returning a
+    # list. Two of the three could not have returned anything else: the
+    # declaration assay was handed an empty `installed` map, so its loop body
+    # never ran, and the behavioural assay was handed two identical engines, so
+    # `before == after` by construction. A stub returning `[]` scored the same
+    # three out of three, which is exactly the vacuity the fact was written to
+    # rule out.
+    #
+    # So the fact is now one assay against a planted overlap, with a non-empty
+    # result required. The behavioural and accounting assays are not pinned
+    # here: proving those work needs a real differential scenario, which
+    # tests/test_spill.py and tests/test_overheat_assay.py already build. A
+    # project check is the wrong place to rebuild them, and a fact that can
+    # only be established vacuously is worse than no fact.
+    from world_substrate.assay import assay_declared_readers
     from world_substrate.profile import retrofit_package
 
-    rules = [engine.registry.action(k) for k in engine.registry.action_kinds()]
-    rules += list(engine.registry.processes())
-    package = retrofit_package(rules[0], "check")
-    runnable = 0
-    for call in (
-        lambda: assay_declared_readers(package, {}),
-        lambda: assay_affordance_changes(
-            build_transfer_engine(root),
-            build_transfer_engine(root),
-            ["robinson"],
-            1,
-            package,
-        ),
-        lambda: assay_conservation(build_transfer_engine(root), 6000),
-    ):
-        if isinstance(call(), list):
-            runnable += 1
+    # A real mechanic, named rather than taken positionally: the write-scope
+    # probe registered above sorts first in `action_kinds()`, so `rules[0]`
+    # was the throwaway.
+    writer = retrofit_package(engine.registry.action("fill"), "check")
+    reader = retrofit_package(engine.registry.action("drink"), "check")
+    overlap = assay_declared_readers(writer, {reader.mechanic_id: reader})
+    detects_overlap = bool(overlap)
 
     return {
         "exact_replay_works": replays,
-        "interaction_assays_runnable": runnable,
+        "declared_reader_assay_detects_an_overlap": detects_overlap,
         "semantic_bindings_bound": len(kinds & set(SEMANTIC_BINDINGS)),
         "semantic_bindings_total": len(kinds),
         "semantic_binding_on_events": bound_on_event,

@@ -330,9 +330,21 @@ class ToolWearProcess:
             tool is not None
             and entity.ownership is not None
             # Read the reference through the parser rather than matching its
-            # prefix by hand. `startswith("actor:")` is the same convention-in-
-            # a-string shape M7 found in `owner_ref` itself, and it silently
-            # treats any future kind beginning "actor" as a holder.
+            # prefix by hand: the same convention-in-a-string shape M7 found in
+            # `owner_ref` itself.
+            #
+            # The earlier version of this comment claimed `startswith("actor:")`
+            # would match a future kind beginning "actor". It would not -- the
+            # colon is inside the prefix, so `actor_helper:mira` never matched.
+            # The reason to change it is that the reference's structure now has
+            # one reader, not that the old check was wrong.
+            #
+            # This does swap a silent `False` for a raised `ValueError` on a
+            # malformed reference. Unreachable in a committed world:
+            # `_apply_process` calls `candidate.validate()` before every commit
+            # and `World.validate` rejects any reference that is neither
+            # `UNOWNED` nor `OWNER_REF_PATTERN`-shaped -- and failing loudly is
+            # the behaviour this repository asks for anyway.
             and parse_owner_ref(entity.ownership.owner_ref)[0] == "actor"
             and tool.wear < tool.wear_limit
         )
