@@ -27,6 +27,7 @@ from .engine import _ENVELOPE_METADATA, Engine
 from .model import BUILTIN_COMPONENT_TYPES, COMPONENT_TYPES
 from .profile import Finding, MechanicPackage, paths_overlap
 
+
 def _component_names() -> tuple[str, ...]:
     """Every component name a world could actually be using, right now.
 
