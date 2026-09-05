@@ -229,3 +229,50 @@ class TheWorldCannotDeadlock(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EveryOfferedActionIsDistinguishable(unittest.TestCase):
+    """A policy cannot choose between options it cannot tell apart.
+
+    `describe_action` listed Castaway's participant vocabulary and rendered
+    nothing else, so all five of a cook's opening moves read as the bare word
+    "take": five distinct action ids, one description. Whatever a model did
+    with that was going to look like indecision.
+    """
+
+    def test_distinct_actions_get_distinct_descriptions(self):
+        from world_substrate.policy import describe_action
+
+        for world_build, actor in (
+            (build_engine, "ama"),
+            (_castaway(), "robinson"),
+        ):
+            engine = world_build()
+            page = engine.discover(actor)
+            with self.subTest(actor=actor):
+                self.assertTrue(page["available"])
+                described = {describe_action(r["action"]) for r in page["available"]}
+                ids = {r["action_id"] for r in page["available"]}
+                self.assertEqual(
+                    len(described),
+                    len(ids),
+                    f"{len(ids)} actions collapsed into {len(described)} descriptions",
+                )
+
+    def test_a_description_names_what_the_action_acts_on(self):
+        from world_substrate.policy import describe_action
+
+        engine = build_engine()
+        takes = [
+            r for r in engine.discover("ama")["available"]
+            if r["action"]["kind"] == "take"
+        ]
+        self.assertTrue(takes)
+        for row in takes:
+            self.assertIn(row["action"]["item"], describe_action(row["action"]))
+
+
+def _castaway():
+    from reference_worlds.castaway.probe import build_transfer_engine
+
+    return build_transfer_engine

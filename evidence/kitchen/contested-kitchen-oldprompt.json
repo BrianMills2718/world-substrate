@@ -1,0 +1,1001 @@
+{
+  "actors": [
+    "ama",
+    "bo"
+  ],
+  "claim": "Two policies decide from the same revision and commit in order; whoever is refused for a stale revision re-observes and chooses again. What remains is what the retry cannot fix: an intent the other actor made impossible between rendering and acting.",
+  "cost_usd": 0.01161,
+  "model": "openrouter/openai/gpt-5.6-luna",
+  "schema_version": "world-substrate-contested-run/v2",
+  "summary": {
+    "plan_actually_taken_by_the_other": 1,
+    "refusal_kinds": [],
+    "refused_after_retry": 0,
+    "retried_because_stale": 14,
+    "turns": 14
+  },
+  "transcript": [
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 0,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the carrot needed for the stew so it can be prepared with an onion.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 0,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 1,
+            "controller": "unselected",
+            "item": "onion-1",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": false,
+          "refused_because": [],
+          "retried": true,
+          "said": "Take the carrot to begin preparing the stew order, which requires carrot and onion.",
+          "said_on_retry": "Take an onion so it can pair with the carrot for the stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 0,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "take"
+          }
+        }
+      },
+      "committed_first": "ama",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "potato",
+            "onion"
+          ]
+        }
+      },
+      "revision_when_decided": 0,
+      "turn": 1
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 3,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Take the available onion to combine with the carrot and fulfill the stew order.",
+          "said_on_retry": "Take the available onion to combine with the carrot for the stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 2,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 2,
+            "controller": "unselected",
+            "item": "knife",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the knife so the held onion can be prepared for the pending orders.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 2,
+            "controller": "unselected",
+            "item": "knife",
+            "kind": "take"
+          }
+        }
+      },
+      "committed_first": "bo",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "potato",
+            "onion"
+          ]
+        }
+      },
+      "revision_when_decided": 2,
+      "turn": 2
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 4,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Put down the carrot so it is available for preparing the stew while keeping the onion in hand for the next step.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 4,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "put_down"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 5,
+            "controller": "unselected",
+            "item": "onion-1",
+            "kind": "chop"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Chop the onion so it can be used to prepare the requested orders.",
+          "said_on_retry": "Chop the onion now to prepare an ingredient needed for both orders.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 4,
+            "controller": "unselected",
+            "item": "onion-1",
+            "kind": "chop"
+          }
+        }
+      },
+      "committed_first": "ama",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "potato",
+            "onion"
+          ]
+        }
+      },
+      "revision_when_decided": 4,
+      "turn": 3
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 7,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Put down the raw onion so it can be prepared for the stew while the carrot remains available.",
+          "said_on_retry": "Put down the onion so it is available for cooking and free your hands to collect the needed potato next.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 6,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "put_down"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 6,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the carrot so it can be prepared for the stew order alongside the already chopped onion.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 6,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "take"
+          }
+        }
+      },
+      "committed_first": "bo",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "potato",
+            "onion"
+          ]
+        }
+      },
+      "revision_when_decided": 6,
+      "turn": 4
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 8,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the potato to help complete the hash order while Bo handles the prepared onion and carrot.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 8,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 9,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "chop"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Chop the carrot so it is prepared for the stew requiring onion and carrot.",
+          "said_on_retry": "Chop the carrot so both ingredients needed for the stew are prepared for cooking.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 8,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "chop"
+          }
+        }
+      },
+      "committed_first": "ama",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "potato",
+            "onion"
+          ]
+        }
+      },
+      "revision_when_decided": 8,
+      "turn": 5
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 11,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Put the potato down so it is available for preparation while Bo is already holding the chopped stew ingredients.",
+          "said_on_retry": "Put down the potato so it is available for preparing the hash while Bo already holds the onion and carrot for the stew.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 10,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "put_down"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 10,
+            "burner": "burner-1",
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "cook"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Cook the chopped carrot for the stew order while the burner is available.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 10,
+            "burner": "burner-1",
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "cook"
+          }
+        }
+      },
+      "committed_first": "bo",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "potato",
+            "onion"
+          ]
+        }
+      },
+      "revision_when_decided": 10,
+      "turn": 6
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 13,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the potato to help prepare the hash order while Bo already holds the onion and carrot for the stew.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 13,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 14,
+            "burner": "burner-1",
+            "controller": "unselected",
+            "item": "onion-1",
+            "kind": "cook"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Cook the chopped onion so it can help complete the stew order with the already cooked carrot.",
+          "said_on_retry": "Cook the chopped onion so it can be combined with the cooked carrot to fulfill the stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 13,
+            "burner": "burner-1",
+            "controller": "unselected",
+            "item": "onion-1",
+            "kind": "cook"
+          }
+        }
+      },
+      "committed_first": "ama",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "potato",
+            "onion"
+          ]
+        }
+      },
+      "revision_when_decided": 13,
+      "turn": 7
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 17,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Putting down the raw potato makes it available for cooking, helping fulfill the potato-and-onion order while Bo already has cooked onion and carrot.",
+          "said_on_retry": "Put down the potato so it is available for the hash order and free your hands for the onion.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 16,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "put_down"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 16,
+            "controller": "unselected",
+            "item": "onion-1",
+            "kind": "plate",
+            "order": "order-hash"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Plate the cooked onion into the hash order, satisfying one of its requested ingredients while preserving the carrot and onion for the stew.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 16,
+            "controller": "unselected",
+            "item": "onion-1",
+            "kind": "plate",
+            "order": "order-hash"
+          }
+        }
+      },
+      "committed_first": "bo",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [
+            "onion"
+          ],
+          "still_wants": [
+            "potato"
+          ]
+        }
+      },
+      "revision_when_decided": 16,
+      "turn": 8
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 18,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the raw onion needed to complete the stew with the already cooked carrot.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 18,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 19,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Put down the cooked carrot to free a hand while preserving it for the stew order.",
+          "said_on_retry": "Take the potato so it can be prepared for the hash order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 18,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "put_down"
+          }
+        }
+      },
+      "committed_first": "ama",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [
+            "onion"
+          ],
+          "still_wants": [
+            "potato"
+          ]
+        }
+      },
+      "revision_when_decided": 18,
+      "turn": 9
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 21,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Put down the onion so it is available for preparing the stew order.",
+          "said_on_retry": "Put down the onion so it is available for cooking and can help complete the stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 20,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "put_down"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 20,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "chop"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Chop the raw potato to advance preparation for the outstanding potato-and-onion order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 20,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "chop"
+          }
+        }
+      },
+      "committed_first": "bo",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [
+            "onion"
+          ],
+          "still_wants": [
+            "potato"
+          ]
+        }
+      },
+      "revision_when_decided": 20,
+      "turn": 10
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 22,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the available raw onion so it can be used to complete the stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 22,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 23,
+            "burner": "burner-1",
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "cook"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Cook the chopped potato so it can be used to fill the hash order.",
+          "said_on_retry": "Cook the chopped potato so it can be used to complete the hash order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 22,
+            "burner": "burner-1",
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "cook"
+          }
+        }
+      },
+      "committed_first": "ama",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": false,
+          "plated": [
+            "onion"
+          ],
+          "still_wants": [
+            "potato"
+          ]
+        }
+      },
+      "revision_when_decided": 22,
+      "turn": 11
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 26,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Put down the raw onion so it is available for preparing the stew.",
+          "said_on_retry": "Put down the onion so it is available for preparing the unfilled stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 25,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "put_down"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 25,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "plate",
+            "order": "order-hash"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Plate the cooked potato to advance the hash order, which requires potato and onion.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 25,
+            "controller": "unselected",
+            "item": "potato-1",
+            "kind": "plate",
+            "order": "order-hash"
+          }
+        }
+      },
+      "committed_first": "bo",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": true,
+          "plated": [
+            "onion",
+            "potato"
+          ],
+          "still_wants": []
+        }
+      },
+      "revision_when_decided": 25,
+      "turn": 12
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 27,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Take the available raw onion needed to complete the stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 27,
+            "controller": "unselected",
+            "item": "onion-2",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 28,
+            "controller": "unselected",
+            "item": "knife",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Put down the cooked carrot so it can be used with the onion to fulfill the stew order.",
+          "said_on_retry": "Put down the knife to free a hand while keeping the prepared carrot, onion, and potato available for fulfilling the orders.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 27,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "put_down"
+          }
+        }
+      },
+      "committed_first": "ama",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": true,
+          "plated": [
+            "onion",
+            "potato"
+          ],
+          "still_wants": []
+        }
+      },
+      "revision_when_decided": 27,
+      "turn": 13
+    },
+    {
+      "actors": {
+        "ama": {
+          "did": {
+            "actor": "ama",
+            "base_revision": 30,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "take"
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "Take the knife so the raw onion can be prepared for the stew order.",
+          "said_on_retry": "Take the cooked carrot so the required onion-and-carrot stew ingredients are both available for completion.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "ama",
+            "base_revision": 29,
+            "controller": "unselected",
+            "item": "knife",
+            "kind": "take"
+          }
+        },
+        "bo": {
+          "did": {
+            "actor": "bo",
+            "base_revision": 29,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "put_down"
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "Put down the cooked carrot, which is one of the two ingredients still needed for the unfilled stew order.",
+          "status": "accepted",
+          "wanted": {
+            "actor": "bo",
+            "base_revision": 29,
+            "controller": "unselected",
+            "item": "carrot-1",
+            "kind": "put_down"
+          }
+        }
+      },
+      "committed_first": "bo",
+      "progress": {
+        "ama": {
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "onion",
+            "carrot"
+          ]
+        },
+        "bo": {
+          "filled": true,
+          "plated": [
+            "onion",
+            "potato"
+          ],
+          "still_wants": []
+        }
+      },
+      "revision_when_decided": 29,
+      "turn": 14
+    }
+  ],
+  "turns_run": 14,
+  "world": "kitchen"
+}

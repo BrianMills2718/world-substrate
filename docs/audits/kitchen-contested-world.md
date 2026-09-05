@@ -72,13 +72,73 @@ the contention mostly dissolves into courteous churn, because `put_down` lets
 either of them defuse a conflict and they keep doing so. That is a real result
 about these agents in this world, and it is the next thing to fix.
 
+## The churn was not the agents. They were choosing blind.
+
+`policy.describe_action` listed Castaway's participant vocabulary -- vessel,
+source, destination, target, volume_ml -- and rendered nothing else. Every
+kitchen action names `item`, `burner` or `order` instead, so all five of a
+cook's opening moves rendered as the bare word **"take"**: five distinct action
+ids, one description. The policy could not tell the knife from a potato.
+
+Everything written above about courteous churn was a description of agents
+picking at random between identical labels.
+
+This is the third place that hardcoded vocabulary was found. `assay._subject`
+and `assay._component_names` were the first two, repaired earlier the same day
+without sweeping for the rest. A test now asserts that distinct action ids get
+distinct descriptions, in both worlds.
+
+## Which change did what
+
+Three runs, 14 turns each, same world and model, changing one thing at a time.
+
+| run | orders filled | stale retries | accepted actions | cost |
+| --- | --- | --- | --- | --- |
+| indistinguishable actions, Castaway prompt | 0 of 2 | 14 | 28 / 28 | $0.0202 |
+| **distinguishable actions**, Castaway prompt | **1 of 2** | 14 | 28 / 28 | $0.0116 |
+| distinguishable actions, **kitchen prompt** | 1 of 2 | **4** | 17 / 28 | $0.0085 |
+
+Cleanly separated, and they do different jobs. **Making the actions
+distinguishable is what let an order be finished at all** -- the prompt did not
+cause that. **The situational prompt is what stopped the thrashing** -- stale
+retries fall from 14 to 4, and accepted actions fall from 28 of 28 to 17,
+because the blocked cook now deliberately waits instead of taking and putting
+down. Cost falls with each fix because less of the run is wasted.
+
+The prompt tells each cook the situation -- another cook is here, it cannot be
+talked to, ingredients are scarce and unreplaceable, and this is your order. It
+does not say whether to cooperate or compete, so what follows is the agents'.
+
+## What the good run looks like
+
+- **t1** Both immediately take the ingredient only *they* need -- Ama the single
+  carrot, Bo the single potato -- explicitly leaving the two shared onions
+  alone. *"Take the unique carrot needed for my stew, leaving both onions
+  available."*
+- **t2** Both want the knife. Bo gets it.
+- **t3-t9** Ama waits seven turns holding what it needs: *"Bo currently holds
+  the only knife, so putting either ingredient down would risk losing it."*
+  Bo runs the whole pipeline twice and **fills its order at t9**.
+- **t10** Bo, finished, puts the knife down unprompted: *"My order is complete,
+  so putting down the knife avoids blocking the other cook."*
+- **t11-t14** Ama takes the knife immediately and starts working. The run ends
+  before it can finish.
+
+Nothing instructed any of that. Two agents that cannot communicate partitioned
+the scarce ingredients on the first turn, one waited rather than thrashing
+while blocked, and the winner handed over the bottleneck when it no longer
+needed it.
+
+Fourteen turns is not enough for the second cook to finish, which is the next
+thing to change.
+
 ## Limits
 
-- One run per configuration, one model driving both seats, 14 turns.
-- Both cooks share a prompt written for Castaway survival, not for service.
-  Neither is told the other exists, that the ingredients are scarce, or that
-  the orders compete. A prompt naming any of that would likely change the
-  churn, and none was tried.
+- One run per configuration, one model driving both seats, 14 turns. The
+  three-way comparison changes one thing at a time but is n=1 per cell.
+- The kitchen prompt names the situation but no strategy. A prompt that told
+  either cook to cooperate would make the t10 handover an instruction rather
+  than an observation, and that was the point of not writing one.
 - The deadlock that `put_down` fixes was found by running the world, not by
   designing it: with take and no release, whoever grabbed the knife and the
   ingredients first froze both cooks permanently. Its absence is now a test.

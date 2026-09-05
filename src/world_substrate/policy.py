@@ -22,7 +22,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from .engine import Engine
+from .engine import _ENVELOPE_METADATA, Engine
 
 WAIT = "wait"
 
@@ -107,14 +107,28 @@ def apply_choice(
 
 
 def describe_action(action: dict[str, Any]) -> str:
-    """A short natural description of a discovered action, for presentation only."""
+    """A short natural description of a discovered action, for presentation only.
+
+    This listed Castaway's participant vocabulary -- vessel, source,
+    destination, target, volume_ml -- and rendered nothing else. In the kitchen
+    every action names `item`, `burner` or `order`, so all five of a cook's
+    opening moves rendered as the bare word "take": five distinct action ids,
+    one description. The policy was choosing between the knife and a potato
+    with no way to tell them apart, and the "churn" that produced was read as
+    the agents being indecisive.
+
+    It renders whatever the envelope names now, minus the engine's own
+    metadata. Same fix as `assay._subject` and `assay._component_names`, which
+    is the third place this hardcoded vocabulary was found; the first two were
+    repaired without sweeping for the rest.
+    """
     kind = action.get("kind", "?")
     parts = [
-        f"{key} {action[key]}"
-        for key in ("vessel", "source", "destination", "target", "volume_ml")
-        if key in action
+        f"{key} {value}"
+        for key, value in action.items()
+        if key not in _ENVELOPE_METADATA and key != "actor"
     ]
-    return f"{kind}: " + ", ".join(str(part) for part in parts) if parts else str(kind)
+    return f"{kind}: " + ", ".join(parts) if parts else str(kind)
 
 
 def _annotations(row: dict[str, Any]) -> str:
