@@ -1,0 +1,54 @@
+{
+  "schema_version": "world-substrate-reference-world/v0",
+  "world_id": "kitchen-service-v0",
+  "content_id": "world-substrate-kitchen@1",
+  "source": {
+    "repository": "world-substrate",
+    "authored_for": "a world built to be contested",
+    "note": "Two cooks with different orders share one knife and two burners. Exactly four ingredients for two dishes needing two each, so a spoiled ingredient loses a dish. Every stage is one action, so nobody waits several turns for a process."
+  },
+  "entities": [
+    {"entity_id": "ama", "label": "Ama", "category_ids": ["cook"],
+     "location": {"location_id": "kitchen"},
+     "components": {"cook": {"order_id": "order-stew", "plated": []}}},
+    {"entity_id": "bo", "label": "Bo", "category_ids": ["cook"],
+     "location": {"location_id": "kitchen"},
+     "components": {"cook": {"order_id": "order-hash", "plated": []}}},
+
+    {"entity_id": "order-stew", "label": "Stew", "category_ids": ["order"],
+     "location": {"location_id": "kitchen"},
+     "components": {"order": {"wants": ["onion", "carrot"], "filled": false}}},
+    {"entity_id": "order-hash", "label": "Hash", "category_ids": ["order"],
+     "location": {"location_id": "kitchen"},
+     "components": {"order": {"wants": ["potato", "onion"], "filled": false}}},
+
+    {"entity_id": "knife", "label": "The knife", "category_ids": ["tool"],
+     "location": {"location_id": "kitchen"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:kitchen"},
+     "components": {"kitchen_tool": {"tool_kind": "knife"}}},
+
+    {"entity_id": "burner-1", "label": "Left burner", "category_ids": ["burner"],
+     "location": {"location_id": "kitchen"},
+     "components": {"burner": {"occupied_by": ""}}},
+    {"entity_id": "burner-2", "label": "Right burner", "category_ids": ["burner"],
+     "location": {"location_id": "kitchen"},
+     "components": {"burner": {"occupied_by": ""}}},
+
+    {"entity_id": "onion-1", "label": "Onion", "category_ids": ["ingredient"],
+     "location": {"location_id": "kitchen"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:kitchen"},
+     "components": {"ingredient": {"kind": "onion", "stage": "raw", "spoiled": false}}},
+    {"entity_id": "onion-2", "label": "Onion", "category_ids": ["ingredient"],
+     "location": {"location_id": "kitchen"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:kitchen"},
+     "components": {"ingredient": {"kind": "onion", "stage": "raw", "spoiled": false}}},
+    {"entity_id": "carrot-1", "label": "Carrot", "category_ids": ["ingredient"],
+     "location": {"location_id": "kitchen"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:kitchen"},
+     "components": {"ingredient": {"kind": "carrot", "stage": "raw", "spoiled": false}}},
+    {"entity_id": "potato-1", "label": "Potato", "category_ids": ["ingredient"],
+     "location": {"location_id": "kitchen"}, "portable": {"portable": true},
+     "ownership": {"owner_ref": "place:kitchen"},
+     "components": {"ingredient": {"kind": "potato", "stage": "raw", "spoiled": false}}}
+  ]
+}

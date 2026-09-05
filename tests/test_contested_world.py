@@ -35,7 +35,7 @@ from reference_worlds.castaway.probe import build_transfer_engine
 class TheWorldSupportsTwoLivePolicies(unittest.TestCase):
     def test_both_actors_get_a_usable_affordance_page(self):
         engine = build_transfer_engine(REPO)
-        for actor in contested.ACTORS:
+        for actor in contested.WORLDS["castaway"][1]:
             with self.subTest(actor=actor):
                 page = engine.discover(actor)
                 self.assertTrue(page["available"], f"{actor} was offered nothing")
@@ -56,35 +56,40 @@ class OptimisticConcurrencyIsRealAndSoIsTheRetry(unittest.TestCase):
 
     def test_the_retry_removes_the_starvation(self):
         # This is the number that separates a protocol artifact from a finding.
-        payload = contested.contested_run(turns=8)
+        payload = contested.contested_run(turns=8, world="castaway")
         self.assertEqual(payload["summary"]["refused_after_retry"], 0)
         self.assertEqual(payload["summary"]["refusal_kinds"], [])
 
-    def test_what_the_retry_cannot_remove(self):
-        """An intent the other actor made impossible between page and commit.
+    def test_a_stale_retry_is_not_the_same_as_losing_the_thing(self):
+        """Two numbers, and only the second one is about the world.
 
-        No warning could have prevented this: at render time there was nothing
-        yet to warn about.
+        Whoever commits second is stale every single turn by construction, so
+        the retry count saturates and says nothing. What matters is whether the
+        plan was still on offer after the other actor moved. In the kitchen's
+        first LLM run those read 14 of 14 and 1 of 14; reporting the first as
+        contention would have been reporting the loop again.
         """
-        payload = contested.contested_run(turns=8)
-        self.assertGreater(payload["summary"]["lost_what_it_wanted"], 0)
+        payload = contested.contested_run(turns=8, world="castaway")
+        summary = payload["summary"]
+        self.assertGreater(summary["retried_because_stale"], 0)
+        self.assertLessEqual(
+            summary["plan_actually_taken_by_the_other"],
+            summary["retried_because_stale"],
+        )
 
-        displaced = [
-            (t["turn"], actor, t["actors"][actor])
-            for t in payload["transcript"]
-            for actor in contested.ACTORS
-            if t["actors"][actor].get("lost_what_it_wanted")
-        ]
-        self.assertTrue(displaced)
-        _, _, record = displaced[0]
-        # It got something, just not the thing it had decided on.
-        self.assertEqual(record["status"], "accepted")
-        self.assertNotEqual(record["wanted"], record["did"])
-        self.assertTrue(record["retried"])
+    def test_the_contested_world_contends_more_than_the_first_one(self):
+        """The kitchen was built against a measured shortfall; this is the
+        measurement it was built to move, same scripted policy in both."""
+        kitchen = contested.contested_run(turns=12, world="kitchen")["summary"]
+        castaway = contested.contested_run(turns=12, world="castaway")["summary"]
+        self.assertGreater(
+            kitchen["plan_actually_taken_by_the_other"],
+            castaway["plan_actually_taken_by_the_other"],
+        )
 
     def test_the_run_is_deterministic(self):
-        first = contested.contested_run(turns=6)["summary"]
-        second = contested.contested_run(turns=6)["summary"]
+        first = contested.contested_run(turns=6, world="kitchen")["summary"]
+        second = contested.contested_run(turns=6, world="kitchen")["summary"]
         self.assertEqual(first, second)
 
 
