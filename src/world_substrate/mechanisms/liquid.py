@@ -126,8 +126,10 @@ class FillRule:
         if not source.liquid.pathogens:
             return []
         return [
-            f"re-contaminates the {vessel.liquid.volume_ml}ml of treated water "
-            f"already in {action.vessel_id}"
+            (
+                f"re-contaminates the {vessel.liquid.volume_ml}ml of treated "
+                f"water already in {action.vessel_id}"
+            )
         ]
 
     def checks(self, world: World, action: TypedAction) -> list[Check]:
