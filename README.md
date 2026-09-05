@@ -30,6 +30,8 @@ M3 is complete: one adjacent mechanic was authored offline as a reviewable packa
 
 M7 tested the half of the central hypothesis that had never been tried: whether an agent can author a mechanic it was not handed. A model shown the workshop world — told neither which mechanic to write nor what the checks look for — produced nine installable mechanics for $0.015 with zero write-scope violations. Five added real behaviour, two were inert no-ops, and two violated an ownership convention the world never declared and therefore nothing can check. Risk did not outrun usefulness; triviality, not danger, is the bottleneck. See [the M7 audit](docs/audits/m7-authoring-rate.md).
 
+M7b asked whether that triviality was the model's or the language's, since a language confined to one entity can only express a clamp or a decay — and, for the same reason, can barely express a scope violation. The language now expresses one relation between two entities, and the experiment was re-run unchanged otherwise. Four of eight valid declarations used the relation and two produced cross-entity behaviour nothing here could previously express, but the same two inert clamps came back: the ceiling was real and was not the main driver. Zero scope violations again, this time against machinery a relational write can genuinely load. And the empty-`owner_ref` defect recurred at the same rate from the same model — and was refused by the substrate instead of committing. See [the M7b audit](docs/audits/m7b-relational-authoring.md).
+
 All six prototype success criteria are met as of M6. A [second reference world](docs/audits/m6-second-world.md) — a workshop of discrete parts and tools, sharing no content with Castaway — reuses the transition kernel, causal events, exact replay, the mechanic-profile installer, all three interaction assays and the policy seam with no edits, while reusing none of the Castaway mechanics. Four substrate/content couplings were found and fixed in the process.
 
 M5 is the first time a policy other than a script drove this world: an LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief about the world turned out to be wrong. See [the M5 audit](docs/audits/m5-policy-consumer.md).
@@ -54,6 +56,11 @@ python scripts/run_freshwater_probe.py --check
 python scripts/run_give_exchange_probe.py --check
 python scripts/run_overheat_assay_probe.py --check
 python scripts/run_spill_assay_probe.py --check
+python scripts/run_authoring_experiment.py --check --output evidence/m7/authoring-attempts-relational-v1.json
 ```
+
+The last of those re-grades the M7b declarations without calling a model. The
+retained M5 and M7 traces are live observation receipts rather than
+deterministic probes, and are deliberately not gated.
 
 The default project check is self-contained and uses committed fixtures. When the sibling donor repositories are available, also run `python scripts/check_project.py --with-donors`; the optional donor check reads pinned revisions rather than requiring their current checkouts to remain at those commits.

@@ -131,6 +131,7 @@ def _grade(value: dict) -> dict[str, object]:
         "scope_clean": None,
         "novel": None,
         "relational": False,
+        "refused_by_invariant": None,
         "assay_findings": None,
         "note": "",
     }
@@ -182,10 +183,73 @@ def _grade(value: dict) -> dict[str, object]:
         grade["scope_clean"] = False
         grade["note"] = f"wrote outside declared scope: {str(error)[:120]}"
         return grade
+    except ValueError as error:
+        # A canonical-state invariant refused the write. That is the substrate
+        # doing its job, not the harness failing, and it must not be recorded
+        # as a grading error -- two attempts in the relational run set
+        # `owner_ref` to "", the exact defect M7 found and nothing could then
+        # catch, and grading them as harness faults would have hidden the one
+        # result that shows the fix works.
+        grade["scope_clean"] = True
+        grade["refused_by_invariant"] = str(error)[:160]
+        grade["note"] = f"refused by a world invariant: {str(error)[:120]}"
+        return grade
     grade["fires"] = any(
         event["rule_id"] == declared.mechanic_id for event in engine.world.events
     )
     return grade
+
+
+def _regrade(args) -> int:
+    """Replay grading over stored declarations. No model call, no spend."""
+    source = args.regrade or args.output
+    payload = json.loads(Path(source).read_text())
+    stored = [a["grade"] for a in payload["attempts"]]
+    regraded = []
+    for attempt in payload["attempts"]:
+        value = attempt["declaration"]
+        regraded.append(_grade(value if isinstance(value, dict) else {}))
+    if args.check:
+        differing = [
+            attempt["attempt"]
+            for attempt, before, after in zip(payload["attempts"], stored, regraded)
+            if {k: v for k, v in before.items() if k != "note"}
+            != {k: v for k, v in after.items() if k != "note"}
+        ]
+        if differing:
+            print(f"regraded verdicts differ from the stored ones: {differing}")
+            return 1
+        print(f"stored grades reproduce from the declarations: {source}")
+        return 0
+    for attempt, grade in zip(payload["attempts"], regraded):
+        attempt["grade"] = grade
+    payload["summary"] = _summarise(payload["attempts"])
+    text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    if args.write:
+        Path(source).write_text(text)
+        print(f"rewrote {source}")
+    print(json.dumps(payload["summary"], indent=2))
+    return 0
+
+
+def _summarise(attempts: list[dict]) -> dict[str, object]:
+    return {
+        "declaration_valid": sum(a["grade"]["declaration_valid"] for a in attempts),
+        "installed": sum(a["grade"]["installs"] for a in attempts),
+        "fired": sum(bool(a["grade"]["fires"]) for a in attempts),
+        "scope_violations": sum(a["grade"]["scope_clean"] is False for a in attempts),
+        "refused_by_invariant": sum(
+            a["grade"].get("refused_by_invariant") is not None for a in attempts
+        ),
+        "relational": sum(bool(a["grade"].get("relational")) for a in attempts),
+        "usable": sum(
+            bool(a["grade"]["installs"] and a["grade"]["fires"] and a["grade"]["scope_clean"])
+            for a in attempts
+        ),
+        "distinct_mechanic_ids": len(
+            {a["grade"].get("mechanic_id") for a in attempts} - {None}
+        ),
+    }
 
 
 def main() -> int:
@@ -195,7 +259,25 @@ def main() -> int:
     parser.add_argument("--max-budget", type=float, default=1.00)
     parser.add_argument("--output", type=Path, default=OUTPUT)
     parser.add_argument("--write", action="store_true")
+    parser.add_argument(
+        "--regrade",
+        type=Path,
+        help=(
+            "Re-grade the declarations stored in an existing evidence file "
+            "instead of calling a model. Grading is deterministic, so this "
+            "replays the experiment's verdicts for free -- the property every "
+            "other probe in this repository already has."
+        ),
+    )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Re-grade and require the stored grades to match.",
+    )
     args = parser.parse_args()
+
+    if args.regrade or args.check:
+        return _regrade(args)
 
     from llm_client import call_llm_json_schema, get_cost, render_prompt
 
@@ -257,11 +339,8 @@ def main() -> int:
             f"relational={grade.get('relational')} assay={grade['assay_findings']}"
         )
 
-    usable = [
-        a
-        for a in attempts
-        if a["grade"]["installs"] and a["grade"]["fires"] and a["grade"]["scope_clean"]
-    ]
+    # `usable` is computed by _summarise, which both the live and regrade
+    # paths share so the two can never disagree about what a run scored.
     payload = {
         "schema_version": "world-substrate-authoring-experiment/v0",
         "claim": (
@@ -273,24 +352,14 @@ def main() -> int:
         "trace_id": trace_id,
         "attempts_run": len(attempts),
         "cost_usd": round(get_cost(trace_id=trace_id), 6),
-        "summary": {
-            "declaration_valid": sum(a["grade"]["declaration_valid"] for a in attempts),
-            "installed": sum(a["grade"]["installs"] for a in attempts),
-            "fired": sum(bool(a["grade"]["fires"]) for a in attempts),
-            "scope_violations": sum(a["grade"]["scope_clean"] is False for a in attempts),
-            "usable": len(usable),
-            "relational": sum(bool(a["grade"].get("relational")) for a in attempts),
-            "distinct_mechanic_ids": len(
-                {a["grade"].get("mechanic_id") for a in attempts} - {None}
-            ),
-        },
+        "summary": _summarise(attempts),
         "attempts": attempts,
     }
     text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
     if args.write:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(text)
-        print(f"wrote {args.output.relative_to(REPO)}")
+        print(f"wrote {args.output}")
     print(json.dumps(payload["summary"], indent=2))
     print(f"cost: ${payload['cost_usd']:.5f}")
     return 0
