@@ -22,7 +22,25 @@ Start with:
 4. [Core contract v0](docs/contracts/core-v0.md) — the implemented M1 seam.
 5. [Proposed semantic/mechanical contracts](docs/contracts/semantic-mechanical-binding-v0.md) — the next architecture seam.
 
-## Current status
+## Where this stands
+
+**The substrate works. The project's goal is a sophisticated world-modelling
+system with one instantiation good enough to show off, and that has not been
+started.**
+
+Everything below records phase one: the contracts were specified, built, and
+tested, and they hold. What phase one deliberately did not do is build a world
+anyone would want to look at. Both reference worlds are tiny on purpose —
+Castaway is six entities, the workshop seven — because their job was to prove
+the machinery transfers between them, which it does. There is no interface, no
+deployment, and nothing outside this repository uses it.
+
+If you are picking this up cold, read
+[the roadmap's end goal](roadmap/README.md#outcome-and-success-criteria) first.
+It states the goal, the three questions still open, and what to do before
+proposing any work.
+
+## What phase one established
 
 M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid, heat, carrying, and bounded ownership systems, and distinguishes precondition failure from unsupported and malformed actions. Its versioned initial snapshot, pinned registry/content identity, and 22 commands also reproduce the final state and events in a [fresh process](evidence/m1/transfer-replay-v1.json). The revision-bound [end-to-end observation](evidence/m1/end-to-end-observation-v1.json) passed the M1 maturity gate.
 
