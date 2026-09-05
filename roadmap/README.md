@@ -10,11 +10,58 @@ reviewed_through: 2026-09-04
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype  
+**Stage:** prototype complete; the project is not  
 **Last outcome-bearing implementation:** cleared the Open obligations — six of seven closed outright, `unheat`'s binding handed to the upstream ontology, and read-scope enforcement designed and costed rather than implemented  
-**Current strategy frontier:** none selected — the prototype's stated success criteria are all met
+**Current strategy frontier:** the gap between a substrate that works and a world worth showing anyone
 
 ## Outcome and success criteria
+
+### The end goal
+
+**A sophisticated world-modelling system, with one instantiation good enough to
+show off as the flagship.** Stated by Brian on 2026-09-04, in those terms.
+
+This had never been written down. Everything below it — the seven-bullet
+workflow, the six numbered criteria — is the *prototype phase*, and that phase
+is finished. Read the two as a sequence, not as alternatives: the prototype
+asked "do these contracts hold?", and the answer is yes. The project asks "is
+there a world here anyone would want to look at?", and that has not been
+attempted.
+
+A fresh agent should take three things from this section:
+
+1. **"All six success criteria met" does not mean the project is done.** It
+   means phase one is done. The repository said otherwise until 2026-09-04 and
+   a reader would reasonably have concluded the work was over.
+2. **Nothing here has ever been shown to anyone.** There is no demo, no UI, no
+   deployment, and no consumer: no repository outside this one imports
+   `world_substrate`. Every run to date is a probe, a test, or a retained
+   evidence file.
+3. **The two reference worlds are deliberately small.** Castaway is six
+   entities and seven action kinds; the workshop is seven entities and two.
+   They were built to test whether the contracts transfer, and they do. Neither
+   was built to be interesting, and neither is.
+
+### What "sophisticated" and "show off" still need to mean
+
+These are the open questions, and they are Brian's to answer rather than a
+fresh agent's to assume. Do not start building a flagship against a guess.
+
+- **Which world.** A third world built to be watched, or one of the two
+  existing ones grown until it is worth watching? They share no content, so
+  this is a real fork rather than a naming choice.
+- **What a viewer sees.** The substrate has no surface. `policy.present()`
+  renders a text block for a language model, and the probes print JSON. Showing
+  this to a person needs something that does not exist yet, and the project has
+  standing instructions not to deploy or publish without explicit authority.
+- **What makes it impressive.** Candidates the existing evidence points at, in
+  no order: many interacting mechanics rather than four; agents whose beliefs
+  visibly diverge from the world and get corrected by it, which M5 produced by
+  accident and is the most striking thing in the repository; mechanics authored
+  live rather than offline, which is currently deferred by decision; or scale.
+  These pull in different directions and at most one should be chosen first.
+
+### The prototype phase, and its criteria (complete)
 
 For a substrate developer and later a data-oriented world builder, change the recurring task of hand-coding isolated actions and narrating missing consequences into a reviewable workflow that:
 
@@ -120,133 +167,43 @@ observable attempt or trigger
 
 Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
 
-### Active slice: clear the Open obligations — complete
+### Active slice: none — the next one needs a decision that has not been made
 
-This section is the goal authority for the current run. The repository forbids
-a second roadmap or a handoff document, so the goal lives here rather than in a
-parallel file, and the Open obligations table below is its backlog of record.
+The Open obligations slice is complete; what it did is recorded in the
+obligations table below and in the audits, and the goal document that drove it
+is retired rather than kept as a second roadmap.
 
-**Mission.** Clear the obligations an accepted decision or contract already
-requires, so the substrate's own stated invariants hold and the two seam
-weaknesses M5 found in the observation are fixed. Both halves of the central
-hypothesis are already answered; this is the work the project committed to and
-has not done, not new scope.
+No slice is specified here, and specifying one would be guessing. The end goal
+above names three open questions — which world, what a viewer sees, what makes
+it impressive — and each leads somewhere different. Picking one before Brian
+does would mean building a flagship against an assumption.
 
-**Outcome.** All five increments ran. Six obligations closed, one
-(`unheat`'s sense) is closed as far as this repository can take it and belongs
-to the upstream ontology, and one (read-scope enforcement) is designed and
-costed rather than implemented, which is what it asked for. Two of the
-acceptance checks needed honest restatement rather than quiet weakening: C4 is
-six of seven action kinds with the seventh named, and C5's salt path is real
-but unexercised because the freshwater world models no salt, so the
-demonstration uses pathogens, which it does move. The canonical example holds:
-at tick 4 a `discover("robinson")` page reports
-`clay-pot: boiling to kill pathogens 1/2`, and once treated every `fill` on
-that pot is marked as re-contaminating the 978ml it already holds while fills
-on the empty cup stay silent.
+**What a fresh agent should do first, before proposing any slice.** In this
+order, and none of it needs permission:
 
-**Execution profile:** continuous-light
+1. **Run the thing.** `python scripts/run_llm_policy.py --thirsty --turns 8`
+   costs nothing and prints a real trace. Then read
+   [the M5 audit](../docs/audits/m5-policy-consumer.md), which is the closest
+   this project has to a story worth telling: a model boiled its water, then
+   refilled the pot from the contaminated pool, drank it believing it was
+   treated, and lost 40 health to a mechanic that did not care what it
+   believed.
+2. **Look at how small the worlds are.** `reference_worlds/castaway/freshwater-v0.json`
+   and `reference_worlds/workshop/bench-v0.json` are the entire content of both
+   worlds. Six and seven entities. This is the gap between the substrate and
+   the goal, and it is visible in two files.
+3. **Read the two audits that bound what is known**:
+   [M6](../docs/audits/m6-second-world.md) established that the machinery
+   transfers and *no* mechanic does — every world's content is written from
+   nothing — and [M7b](../docs/audits/m7b-relational-authoring.md) measured how
+   much a model can write for you, which is some, and less than hoped.
+4. **Then ask Brian the three questions**, with a recommendation rather than a
+   menu.
 
-One writer, reversible branches, no deployment, publication, or destructive
-state. Model spend is not required by any increment and stays inside the
-standing $2 cap if used.
-
-**Stage and investment boundary:** prototype hardening. Expect one to two
-sessions. Verification is the cheapest focused check that can invalidate the
-changed behaviour, not a broad audit.
-
-**Canonical example.** In the freshwater world, with a pot part-way through
-boiling and holding treated water, one `discover("robinson")` page shows both:
-the pot's boiling progress toward the two consecutive ticks treatment needs,
-and a `fill` affordance explicitly marked as destroying the treatment it
-already has. A policy reading that page can tell boiling is partway done and
-that refilling would undo it. Those are exactly the two things the M5 policy
-could not see, and it oscillated heat/unheat for seven turns and then drank
-re-contaminated water.
-
-**Forbidden substitutes.** None of these satisfies the example:
-
-- a field added to canonical state but absent from `observe()` / `discover()`;
-- a test asserting a constant rather than driving the engine to the state;
-- a hand-edited evidence file, or regenerating a pinned probe's evidence
-  without first showing field by field that the diff is the intended schema
-  change and nothing else;
-- a design document standing in for any increment that is implementable;
-- documentation of an obligation as closed without the behaviour changing.
-
-**Repository / working scope:** `/home/brian/code/world-substrate`, in a
-claimed worktree under `worktrees/`. Root and subtree `CLAUDE.md` apply.
-
-#### Boundaries
-
-- In scope: the open rows of the Open obligations table.
-- Out of scope: new milestones, a third reference world, deployment,
-  publication, runtime law revision, and donor-repository changes.
-- Writes allowed: this repository only.
-- Read-only: donor repositories, and the donor fixtures under
-  `tests/fixtures/`.
-- Pinned evidence under `evidence/` may be **rebound** to a new revision when a
-  deliberate schema change moves it, and may never be regenerated to make a
-  failure go away. As written first, this said evidence could not be rewritten
-  at all, which is not the rule the project actually follows — it rebound its
-  receipts for the Decision 002 observability fields and again for envelope
-  attribution. The distinction that matters is evidence, not intent: before
-  regenerating, diff fresh against pinned field by field and show every changed
-  leaf belongs to the schema being changed. This was done twice here, for the
-  semantic bindings and for the ledger's shape, and both diffs are recorded in
-  their commit messages.
-- Requiring authorization: any model call beyond the standing cap, and any
-  push to a repository other than this one.
-
-#### Increments
-
-Each changes a named field or behaviour rather than describing one.
-
-1. **Observation seam** — surface process progress, and mark an affordance that
-   destroys the value of a vessel's current contents. Both M5 findings; both
-   change `observe()` / `discover()` output.
-2. **Unowned** — give the world a way to say a thing is held by nobody, so the
-   intent behind M7b's `worn-tool-drop` is expressible rather than only
-   refused.
-3. **Semantic bindings** — bind the remaining six of seven M1 action kinds, so
-   `semantic_binding` is non-null on every accepted action event.
-4. **The two decisions** — the ledger's shape for lost quantities, and whether
-   `World.clone()` deep-copies the event log. Both are reversible technical
-   calls; make them, implement them, and record the rejected alternative.
-5. **Read-scope enforcement design** — the one obligation that is genuinely not
-   designed. The deliverable is a named mechanism with its cost and its blind
-   spot, not an implementation.
-
-#### Acceptance checks
-
-| ID | Criterion | Evidence to report |
-| --- | --- | --- |
-| C1 | Boiling progress is observable | a test drives a pot to mid-boil and asserts the progress appears in `discover()` |
-| C2 | A treatment-destroying `fill` is marked as such | a test drives a treated vessel and asserts the affordance carries the flag |
-| C3 | Unowned is expressible | M7b's `worn-tool-drop` declaration, read from its evidence file, installs, fires, and leaves the tool held by nobody |
-| C4 | Every accepted action event is semantically bound | a test asserts no accepted action event has a null `semantic_binding` |
-| C5 | Lost quantities are accounted | spilled salt and pathogens balance, and `overflow_ml` is either written or gone |
-| C6 | The clone decision is implemented | a measured before/after on the same trace length, reported as numbers |
-| C7 | Read-scope enforcement is designed | a document naming the mechanism, its runtime cost, and what it still cannot see |
-| C8 | Nothing regressed | full suite passes, all ten pinned probes byte-identical, `check_project.py` passes, ruff at its pre-existing baseline of 3 |
-
-#### Stops
-
-- **No progress:** two consecutive increments that change no target field or
-  behaviour trigger strategic revalidation rather than a third.
-- **Finite loop:** at most three attempts on the same reproduced blocker. If
-  they produce no new evidence and no safe next action, record the blocker,
-  its owner, and the exact resume event, and move to the next increment.
-- **Revalidation:** after three increments, roughly four hours, or twice the
-  stage estimate, compare outcome progress against enabling and process work
-  and report whether to retain, replace, or clear this goal. Strategic
-  misalignment is returned as such, never relabelled a technical blocker.
-
-#### Non-gating next actions
-
-These do not gate completion: any decision Brian may take on the project's
-future beyond these obligations, publication or deployment of anything here,
-and further authoring experiments.
+**What not to do.** Do not start hardening, refactoring, or adding contracts.
+The prototype is over-verified relative to what it does: 175 tests and ten
+pinned evidence probes for two worlds nobody has watched. More of that moves
+nothing toward the goal.
 
 ## Open obligations
 
@@ -295,7 +252,7 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Offline pre-run mechanics authoring | human-set direction | runtime law changes deferred |
 | Give/derived exchange as active vertical | reversible planning choice | replan from M2 evidence |
 | Later M3–M5 ordering | conditional | select from the first bounded authoring scenario |
-| Second reference-world domain | human decision later | no domain selected |
+| ~~Second reference-world domain~~ | answered: the workshop world (M6) | superseded by the flagship-world decision above |
 
 ## Evidence and review artifacts
 
@@ -331,11 +288,18 @@ Boundaries only Brian can clear. Each names what changes if it is answered.
 | --- | --- | --- |
 | ~~Model execution and a spend cap~~ | **Answered 2026-09-04: $2 cap granted** | Spent $0.005 of it. Criterion 2 met; see the M5 audit. Further runs stay under the same cap |
 | ~~Which second reference world~~ | **Answered: the workshop world, built and promoted in M6** | Criterion 6 met. The reuse test was real rather than cosmetic — zero Castaway mechanics transferred and four substrate/content couplings had to be broken |
-| Deployment and publication | Explicit authority boundary | Nothing currently waiting on it |
+| **Which world becomes the flagship** | No world has been chosen to be worth watching, and the two that exist share no content, so this is a fork rather than a naming choice | The only thing that unblocks any flagship work at all. Everything else waits on it |
+| **What a viewer actually sees** | The substrate has no surface: `policy.present()` renders text for a model and the probes print JSON | Whether the next work is a world or an interface. Also crosses the deployment boundary below |
+| **What "sophisticated" means here** | Named candidates pull in different directions: many interacting mechanics, agent belief visibly diverging from the world, live mechanic authoring (currently deferred by decision), or scale | Which of those the flagship is built around. At most one should be first |
+| Deployment and publication | Explicit authority boundary | Showing the flagship to anyone. Not yet blocking, because there is nothing to show |
 
 Selection of the first agent-authored mechanic is no longer a boundary: M3 and
 M4 exercised two, and the remaining authoring questions are answerable without
 a new selection.
+
+The three flagship decisions are stated as questions rather than options on
+purpose. A fresh agent should bring a recommendation to them, not a menu, and
+should have run the world first — see the Active slice section.
 
 ## Refresh and reset triggers
 
@@ -343,36 +307,18 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Nothing is in progress. The prototype's six success criteria remain met, and
-the central hypothesis has now been tested against a language that can express
-more than a clamp. The answer to "does usefulness outrun risk" is unchanged in
-direction and better grounded: usefulness rose (two cross-entity mechanics that
-were previously inexpressible), risk did not (zero scope violations, against
-machinery that a relational write can genuinely load), and the dominant cost is
-still a steady supply of plausible-looking proposals that are redundant or
-inert.
+Nothing is in progress and the working tree is clean.
 
-The open obligations table is the remaining work. The largest are enforcing
-declared read scopes, the ledger's shape for lost quantities, and giving the
-world a vocabulary for unowned.
+The next action is a decision, not an implementation: which of the three
+questions under the end goal gets answered first. Until one is, any code
+written here is a guess at a flagship nobody specified.
 
-Two follow-ons remain from M7, both small and needing no permission:
-
-1. Give the assays a triviality check. Nothing today distinguishes a mechanic
-   that fires and changes the world from one that installs cleanly, declares its
-   scope correctly, and guards a condition existing rules make unreachable. Two
-   of nine authored mechanics were the latter, and only running them revealed
-   it.
-2. The rest of the Open obligations table — the three uncovered Decision 002
-   observability fields are the largest single item and are one `core-v0` schema
-   change rather than six separate ones.
-
-Beyond those, the prototype has answered both halves of its central hypothesis
-and all six success criteria. Continuing is a scope choice rather than a next
-step.
+The cheapest thing that would inform that decision is the first step above —
+run the world, read the M5 audit, look at how small the two content files are.
+Half an hour, no spend, and it turns the goal from an adjective into a
+comparison.
 
 Model calls are authorized under a $2 cap and have cost **$0.085** to date
 (`get_cost(task=...)`: $0.00675 for the M5 policy run, $0.07816 for authoring
-across M7 and M7b, including pilots and one killed run). Read that figure from the
-observability DB rather than adding up per-run numbers -- a previous version of
-this line said $0.04 because it counted only the final M7 trace.
+across M7 and M7b, including pilots and one killed run). Read that figure from
+the observability DB rather than adding up per-run numbers.

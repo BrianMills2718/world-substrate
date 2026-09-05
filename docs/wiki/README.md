@@ -66,6 +66,15 @@ The intended result is a wide compositional space rather than an enumerated list
 
 Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily stay inside the resident-agent runtime. Analysis can classify exchange, trust, cooperation, or collective competence without causing those patterns again. Either layer may become mechanically explicit only when a selected world represents a causal bearer and binds it to an installed mechanic.
 
+## Where this actually stands
+
+The substrate works and the project has not started the part that matters.
+Every contract the prototype set out to test holds; no world built on it has
+been shown to anyone, and the goal is one worth showing. See
+[the roadmap's end goal](../../roadmap/README.md#outcome-and-success-criteria)
+for what that means and the three questions still open. The inventory below is
+what exists, not what is left.
+
 ## What exists now?
 
 - M1 is promoted through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes. Discovery, observation, causal events, atomic rejection, semantic donor comparison, persistent cross-system vessel identity, and exact 22-command replay all work in the implemented `core-v0` path.
