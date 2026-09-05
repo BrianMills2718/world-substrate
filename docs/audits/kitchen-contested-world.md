@@ -132,6 +132,44 @@ needed it.
 Fourteen turns is not enough for the second cook to finish, which is the next
 thing to change.
 
+## A complete service
+
+Thirty turns, both cooks driven by the same model, $0.0179. Evidence:
+`evidence/kitchen/full-service-v0.json`, rendered at
+`evidence/renders/kitchen-full-service.html`.
+
+**Both orders filled.** Bo at turn 9, Ama at turn 17. 29 of 60 opportunities
+taken, 9 stale retries, 1 plan genuinely taken by the other cook.
+
+The fourteen-turn run had stopped one cook short of finishing; the shape only
+appears when it runs long enough to complete.
+
+- **t1** Each takes the ingredient only they need, leaving the two shared
+  onions.
+- **t2** Both want the knife. Bo gets it.
+- **t3-t9** Ama holds its ingredients and waits, seven turns, reasoning each
+  time that putting either down risks losing it. Bo runs the pipeline twice and
+  fills its order.
+- **t10** Bo puts the knife down, and names why: *"Put down the knife so Ama can
+  use it to chop the remaining ingredients."* Not "I am finished" -- an act
+  aimed at the other cook.
+- **t11-t17** Ama takes the knife and works. Bo repeatedly declines to
+  interfere: *"My order is already complete, so I should not take ingredients
+  needed by the other cook."* Ama fills the stew at t17.
+- **t18-t19** Ama, finished, puts the knife down *"so it is available for the
+  other cook"*. The courtesy is reciprocated without either having seen the
+  other's reasoning.
+
+Two agents with no channel between them partitioned a scarce resource, took
+turns on the bottleneck, handed it over on completion, stayed out of each
+other's way, and both finished. Nothing in the prompt mentions cooperating,
+sharing, or waiting; it states the situation and nothing else.
+
+**The weakness this exposes:** after t17 both orders are filled and the world
+has no notion of being finished, so thirteen turns of aimless taking and
+putting down follow. A world built to be watched needs a terminal state, and
+this one does not have one.
+
 ## Limits
 
 - One run per configuration, one model driving both seats, 14 turns. The
