@@ -3,6 +3,10 @@
 **Status:** partially implemented — `src/world_substrate/profile.py` implements the package, the installer checks below, and profile freezing; `src/world_substrate/assay.py` implements step 5's interaction assays. The `semantic_bindings`, `emits`, `effects`, and `trace_contract` fields are declared and reviewed but not machine-validated.  
 **Purpose:** define the reviewable unit that an offline mechanics agent may author and an installer may freeze for a simulation run
 
+<!-- status-facts
+interaction_assays_runnable: 3
+-->
+
 ## Mechanic package
 
 Each mechanic declares:

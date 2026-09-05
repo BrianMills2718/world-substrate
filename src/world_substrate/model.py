@@ -39,10 +39,6 @@ OWNER_REF_PATTERN = re.compile(r"^[a-z][a-z0-9_]*:[A-Za-z0-9._\-]+$")
 UNOWNED = "unowned"
 
 
-def is_owned(reference: str) -> bool:
-    """Whether an ownership reference names an owner at all."""
-    return reference != UNOWNED
-
 
 def owner_ref(kind: str, target: str) -> str:
     """Build an ownership reference, refusing a malformed one at the source."""

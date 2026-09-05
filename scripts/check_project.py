@@ -284,7 +284,51 @@ def _live_facts(root: Path) -> dict[str, object]:
         }
     )
 
+    # A separate, unmutated engine: the probe above registered a rule and
+    # committed an action, and replay must be measured on a clean trace.
+    replay_engine = build_transfer_engine(root)
+    replay_page = replay_engine.discover("robinson")
+    replay_engine.submit(
+        {**replay_page["available"][0]["action"], "controller": "check"}
+    )
+    replay_engine.advance(1)
+    replays = replay_engine.replay()["ok"]
+
+    # The three bases the M4 audit names -- declarations, differential
+    # behaviour, conserved-quantity accounting -- each invoked rather than
+    # counted by name, because a module can export three functions none of
+    # which still runs. `assay_undeclared_component_reads` is deliberately not
+    # in this count: it audits the first assay's inputs rather than being a
+    # fourth basis, and an earlier version of this check silently substituted
+    # it for the behavioural assay and still reported three.
+    from world_substrate.assay import (
+        assay_affordance_changes,
+        assay_conservation,
+        assay_declared_readers,
+    )
+    from world_substrate.profile import retrofit_package
+
+    rules = [engine.registry.action(k) for k in engine.registry.action_kinds()]
+    rules += list(engine.registry.processes())
+    package = retrofit_package(rules[0], "check")
+    runnable = 0
+    for call in (
+        lambda: assay_declared_readers(package, {}),
+        lambda: assay_affordance_changes(
+            build_transfer_engine(root),
+            build_transfer_engine(root),
+            ["robinson"],
+            1,
+            package,
+        ),
+        lambda: assay_conservation(build_transfer_engine(root), 6000),
+    ):
+        if isinstance(call(), list):
+            runnable += 1
+
     return {
+        "exact_replay_works": replays,
+        "interaction_assays_runnable": runnable,
         "semantic_bindings_bound": len(kinds & set(SEMANTIC_BINDINGS)),
         "semantic_bindings_total": len(kinds),
         "semantic_binding_on_events": bound_on_event,

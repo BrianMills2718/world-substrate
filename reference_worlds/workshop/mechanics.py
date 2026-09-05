@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from world_substrate.model import World, owner_ref
+from world_substrate.model import World, owner_ref, parse_owner_ref
 from world_substrate.rules import Check, TypedAction, _require_nonempty_string
 
 
@@ -329,7 +329,11 @@ class ToolWearProcess:
         return (
             tool is not None
             and entity.ownership is not None
-            and entity.ownership.owner_ref.startswith("actor:")
+            # Read the reference through the parser rather than matching its
+            # prefix by hand. `startswith("actor:")` is the same convention-in-
+            # a-string shape M7 found in `owner_ref` itself, and it silently
+            # treats any future kind beginning "actor" as a holder.
+            and parse_owner_ref(entity.ownership.owner_ref)[0] == "actor"
             and tool.wear < tool.wear_limit
         )
 

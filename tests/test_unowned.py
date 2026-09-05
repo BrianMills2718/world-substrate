@@ -26,7 +26,7 @@ from world_substrate.authoring import (
     DeclarationError,
     DeclaredMechanic,
 )
-from world_substrate.model import UNOWNED, is_owned, owner_ref, parse_owner_ref
+from world_substrate.model import UNOWNED, owner_ref, parse_owner_ref
 
 EVIDENCE = REPO / "evidence/m7/authoring-attempts-relational-v1.json"
 
@@ -44,8 +44,7 @@ def authored(mechanic_id: str) -> dict:
 class UnownedIsAValidReference(unittest.TestCase):
     def test_it_parses_as_naming_no_owner(self):
         self.assertEqual(parse_owner_ref(UNOWNED), (UNOWNED, ""))
-        self.assertFalse(is_owned(UNOWNED))
-        self.assertTrue(is_owned(owner_ref("actor", "mira")))
+        self.assertEqual(parse_owner_ref(owner_ref("actor", "mira")), ("actor", "mira"))
 
     def test_the_empty_string_is_still_refused(self):
         engine = build_engine()
@@ -133,11 +132,13 @@ class TheAuthoredDropMechanicNowWorks(unittest.TestCase):
 
         # Not worn out yet, so the mechanic must not fire.
         engine.advance(1)
-        self.assertTrue(is_owned(wrench().ownership.owner_ref))
+        self.assertNotEqual(wrench().ownership.owner_ref, UNOWNED)
 
         wrench().components["tool"].wear = 100
         engine.advance(1)
-        self.assertFalse(is_owned(wrench().ownership.owner_ref))
+        self.assertEqual(
+            parse_owner_ref(wrench().ownership.owner_ref)[0], UNOWNED
+        )
         self.assertEqual(wrench().ownership.owner_ref, UNOWNED)
         # It fired as an ordinary causal event, not a silent mutation.
         self.assertTrue(
