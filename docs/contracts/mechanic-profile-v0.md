@@ -4,7 +4,7 @@
 **Purpose:** define the reviewable unit that an offline mechanics agent may author and an installer may freeze for a simulation run
 
 <!-- status-facts
-interaction_assays_runnable: 3
+declared_reader_assay_detects_an_overlap: true
 -->
 
 ## Mechanic package
