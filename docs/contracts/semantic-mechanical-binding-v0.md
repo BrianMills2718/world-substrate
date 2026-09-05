@@ -1,6 +1,6 @@
 # Semantic–mechanical binding contract v0
 
-**Status:** target contract, one binding implemented. `give` is bound to the pinned sense `lc:give_transfer` in `src/world_substrate/semantic.py`; the other 6 of 7 M1 action kinds have no binding, and no binding is attached to a causal event yet (a `core-v0` schema change, and one of Decision 002's two open observability gaps).  
+**Status:** target contract, six of seven M1 action kinds bound. `give`, `drink`, `heat`, `fill`, `take` and `pour` are bound in `src/world_substrate/semantic.py`, each citing a predicate and roles from the pinned Linguistic Core extraction. `unheat` is unbound and stays that way here: the extraction has no sense for removing a vessel from a heat source, and inventing one would break this contract's own rule that senses are cited rather than minted. The bound sense and roles **are** attached to every accepted action event as `semantic_binding`, and `null` on the unbound kind.  
 **Purpose:** bind agent- or process-level meaning to an installed causal interface without allowing language to mutate the world
 
 ## Boundary

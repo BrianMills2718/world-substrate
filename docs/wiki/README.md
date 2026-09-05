@@ -33,6 +33,7 @@ The intended result is a wide compositional space rather than an enumerated list
 | Proposed semantic binding | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Proposed mechanics-agent package | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
 | Proposed commit boundary | [Transition envelope v0](../contracts/transition-envelope-v0.md) |
+| Proposed read-scope enforcement | [Read-scope enforcement v0](../contracts/read-scope-enforcement-v0.md) |
 | Product evidence goals | [Decision 002](../decisions/002-observability-and-replay.md) |
 | Semantic and causal boundary | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) |
 | Why neighboring projects are not the authority | [Source dispositions](../source-dispositions.md) |

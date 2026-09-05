@@ -26,6 +26,7 @@ REQUIRED = (
     "docs/contracts/semantic-mechanical-binding-v0.md",
     "docs/contracts/mechanic-profile-v0.md",
     "docs/contracts/transition-envelope-v0.md",
+    "docs/contracts/read-scope-enforcement-v0.md",
     "docs/decisions/001-project-scope.md",
     "docs/decisions/002-observability-and-replay.md",
     "docs/decisions/003-semantic-mechanical-boundary.md",
