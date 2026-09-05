@@ -11,7 +11,7 @@ reviewed_through: 2026-09-04
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** M7b — the declaration language can express one relation between two entities, and re-running the authoring experiment measured how much of M7's triviality was the language's fault (some, and less than predicted)  
+**Last outcome-bearing implementation:** cleared the Open obligations — six of seven closed outright, `unheat`'s binding handed to the upstream ontology, and read-scope enforcement designed and costed rather than implemented  
 **Current strategy frontier:** none selected — the prototype's stated success criteria are all met
 
 ## Outcome and success criteria
@@ -120,15 +120,133 @@ observable attempt or trigger
 
 Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
 
-### Active slice: none until a domain or a spend cap is chosen
+### Active slice: clear the Open obligations — complete
 
-M2's give/exchange slice is complete and promoted; its detail lives in the
-milestone table and [its audit](../docs/audits/m2-give-path-audit.md).
+This section is the goal authority for the current run. The repository forbids
+a second roadmap or a handoff document, so the goal lives here rather than in a
+parallel file, and the Open obligations table below is its backlog of record.
 
-Both candidate next slices are gated on a human decision (see Human decisions
-below), so no slice is specified here. Specifying one before the domain or the
-spend cap is chosen would be planning ahead of the decision that determines its
-shape.
+**Mission.** Clear the obligations an accepted decision or contract already
+requires, so the substrate's own stated invariants hold and the two seam
+weaknesses M5 found in the observation are fixed. Both halves of the central
+hypothesis are already answered; this is the work the project committed to and
+has not done, not new scope.
+
+**Outcome.** All five increments ran. Six obligations closed, one
+(`unheat`'s sense) is closed as far as this repository can take it and belongs
+to the upstream ontology, and one (read-scope enforcement) is designed and
+costed rather than implemented, which is what it asked for. Two of the
+acceptance checks needed honest restatement rather than quiet weakening: C4 is
+six of seven action kinds with the seventh named, and C5's salt path is real
+but unexercised because the freshwater world models no salt, so the
+demonstration uses pathogens, which it does move. The canonical example holds:
+at tick 4 a `discover("robinson")` page reports
+`clay-pot: boiling to kill pathogens 1/2`, and once treated every `fill` on
+that pot is marked as re-contaminating the 978ml it already holds while fills
+on the empty cup stay silent.
+
+**Execution profile:** continuous-light
+
+One writer, reversible branches, no deployment, publication, or destructive
+state. Model spend is not required by any increment and stays inside the
+standing $2 cap if used.
+
+**Stage and investment boundary:** prototype hardening. Expect one to two
+sessions. Verification is the cheapest focused check that can invalidate the
+changed behaviour, not a broad audit.
+
+**Canonical example.** In the freshwater world, with a pot part-way through
+boiling and holding treated water, one `discover("robinson")` page shows both:
+the pot's boiling progress toward the two consecutive ticks treatment needs,
+and a `fill` affordance explicitly marked as destroying the treatment it
+already has. A policy reading that page can tell boiling is partway done and
+that refilling would undo it. Those are exactly the two things the M5 policy
+could not see, and it oscillated heat/unheat for seven turns and then drank
+re-contaminated water.
+
+**Forbidden substitutes.** None of these satisfies the example:
+
+- a field added to canonical state but absent from `observe()` / `discover()`;
+- a test asserting a constant rather than driving the engine to the state;
+- a hand-edited evidence file, or regenerating a pinned probe's evidence
+  without first showing field by field that the diff is the intended schema
+  change and nothing else;
+- a design document standing in for any increment that is implementable;
+- documentation of an obligation as closed without the behaviour changing.
+
+**Repository / working scope:** `/home/brian/code/world-substrate`, in a
+claimed worktree under `worktrees/`. Root and subtree `CLAUDE.md` apply.
+
+#### Boundaries
+
+- In scope: the open rows of the Open obligations table.
+- Out of scope: new milestones, a third reference world, deployment,
+  publication, runtime law revision, and donor-repository changes.
+- Writes allowed: this repository only.
+- Read-only: donor repositories, and the donor fixtures under
+  `tests/fixtures/`.
+- Pinned evidence under `evidence/` may be **rebound** to a new revision when a
+  deliberate schema change moves it, and may never be regenerated to make a
+  failure go away. As written first, this said evidence could not be rewritten
+  at all, which is not the rule the project actually follows — it rebound its
+  receipts for the Decision 002 observability fields and again for envelope
+  attribution. The distinction that matters is evidence, not intent: before
+  regenerating, diff fresh against pinned field by field and show every changed
+  leaf belongs to the schema being changed. This was done twice here, for the
+  semantic bindings and for the ledger's shape, and both diffs are recorded in
+  their commit messages.
+- Requiring authorization: any model call beyond the standing cap, and any
+  push to a repository other than this one.
+
+#### Increments
+
+Each changes a named field or behaviour rather than describing one.
+
+1. **Observation seam** — surface process progress, and mark an affordance that
+   destroys the value of a vessel's current contents. Both M5 findings; both
+   change `observe()` / `discover()` output.
+2. **Unowned** — give the world a way to say a thing is held by nobody, so the
+   intent behind M7b's `worn-tool-drop` is expressible rather than only
+   refused.
+3. **Semantic bindings** — bind the remaining six of seven M1 action kinds, so
+   `semantic_binding` is non-null on every accepted action event.
+4. **The two decisions** — the ledger's shape for lost quantities, and whether
+   `World.clone()` deep-copies the event log. Both are reversible technical
+   calls; make them, implement them, and record the rejected alternative.
+5. **Read-scope enforcement design** — the one obligation that is genuinely not
+   designed. The deliverable is a named mechanism with its cost and its blind
+   spot, not an implementation.
+
+#### Acceptance checks
+
+| ID | Criterion | Evidence to report |
+| --- | --- | --- |
+| C1 | Boiling progress is observable | a test drives a pot to mid-boil and asserts the progress appears in `discover()` |
+| C2 | A treatment-destroying `fill` is marked as such | a test drives a treated vessel and asserts the affordance carries the flag |
+| C3 | Unowned is expressible | M7b's `worn-tool-drop` declaration, read from its evidence file, installs, fires, and leaves the tool held by nobody |
+| C4 | Every accepted action event is semantically bound | a test asserts no accepted action event has a null `semantic_binding` |
+| C5 | Lost quantities are accounted | spilled salt and pathogens balance, and `overflow_ml` is either written or gone |
+| C6 | The clone decision is implemented | a measured before/after on the same trace length, reported as numbers |
+| C7 | Read-scope enforcement is designed | a document naming the mechanism, its runtime cost, and what it still cannot see |
+| C8 | Nothing regressed | full suite passes, all ten pinned probes byte-identical, `check_project.py` passes, ruff at its pre-existing baseline of 3 |
+
+#### Stops
+
+- **No progress:** two consecutive increments that change no target field or
+  behaviour trigger strategic revalidation rather than a third.
+- **Finite loop:** at most three attempts on the same reproduced blocker. If
+  they produce no new evidence and no safe next action, record the blocker,
+  its owner, and the exact resume event, and move to the next increment.
+- **Revalidation:** after three increments, roughly four hours, or twice the
+  stage estimate, compare outcome progress against enabling and process work
+  and report whether to retain, replace, or clear this goal. Strategic
+  misalignment is returned as such, never relabelled a technical blocker.
+
+#### Non-gating next actions
+
+These do not gate completion: any decision Brian may take on the project's
+future beyond these obligations, publication or deployment of anything here,
+and further authoring experiments.
 
 ## Open obligations
 
@@ -141,17 +259,17 @@ the audit that found it.
 | ~~Attach the causal bearer's observation to its event~~ | Decision 002, field 1 of 8 | **closed.** Captured before mutation and attached as `observation`; `null` for a process |
 | ~~Attach the bound Linguistic Core sense and roles to its event~~ | Decision 002, field 3 of 8 | **closed.** Attached as `semantic_binding`; `null` for the six unbound action kinds |
 | ~~Name the authority/causal bearer on an event~~ | Decision 002, field 4 of 8 | **closed.** Attached as `causal_bearer`, distinguishing an actor from a process |
-| Bind the remaining 6 of 7 M1 action kinds to Linguistic Core senses | [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) | open — only `give` is bound |
-| Decide the ledger's shape for lost quantities | M4 finding | open — `spilled_ml` is a bare integer while `evaporated` is a full liquid vector, so spilled salt and pathogens leave the world unaccounted; `overflow_ml` is written by nothing |
-| Decide whether `World.clone()` should deep-copy the event log | review of `3b89847` | open — events now carry ~5KB observations and `apply()` deepcopies the whole world per action, so a 40-action trace runs 307ms against 109ms before the change (best-of-3, warmed). Invisible at M1 trace lengths, superlinear on the longer policy runs M5 and M7 introduced. Shallow-copying the list would fix it but trades deepcopy isolation for a never-mutate-an-event convention that nothing currently enforces |
-| Enforce declared read scopes at runtime | this roadmap's own invariant | open, and harder than writes — a read leaves no trace in state. Declarations are repaired and guarded by test; enforcement is not designed |
-| Surface process progress in the observation | M5 finding | open — `container.boiling_ticks` exists in state and is not observable, so a policy cannot tell that boiling is partway done. The M5 run oscillated heat/unheat for seven turns because of this |
-| Signal that an action destroys the value of existing contents | M5 finding | open — `fill` is presented identically whether or not it re-contaminates a treated vessel. The M5 policy did exactly that and then drank it |
+| Bind the remaining M1 action kinds to Linguistic Core senses | [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) | **six of seven closed.** `drink`, `heat`, `fill`, `take` and `pour` join `give`, every predicate and role id read from the same pinned extraction. `unheat` stays open and not in this repository: none of the extraction's eighteen predicates is the removal of a vessel from a heat source, and the nearest is the application of heat, which is not that sense reversed. Binding it to a predicate that does not mean it, or minting one, would put an invented sense in a module whose whole contract is that it cites a pinned source. Owned by the upstream ontology |
+| ~~Decide the ledger's shape for lost quantities~~ | M4 finding | **closed.** `spilled` is a full `LiquidState` like `evaporated`, so a failed vessel's salt and pathogens are recorded rather than zeroed and forgotten. `overflow_ml` is removed rather than populated: nothing wrote or read it, and a ledger field no mechanic maintains is a false guarantee. `assay_conservation` checks volume always and any other quantity the caller states an initial total for — deriving those from `physical_ledger.initial` was rejected because no mechanic maintains it and it is all zeros in every world here, so every new check would have passed for the wrong reason |
+| ~~Decide whether `World.clone()` should deep-copy the event log~~ | review of `3b89847` | **closed: it shares them.** Measured here at 34/173/732ms for 10/20/40 actions, now 207ms at forty. The objection was that this trades isolation for an unenforced convention, so the convention is not what it rests on: the only operations on `world.events` anywhere are appends and reads, and `tests/test_event_log_sharing.py` fingerprints every event as it appears and re-checks the whole log after every transition in both worlds, including refusals and malformed envelopes, and proves it can go red |
+| Enforce declared read scopes at runtime | this roadmap's own invariant | **designed, not implemented** — [the contract](../docs/contracts/read-scope-enforcement-v0.md). A recording proxy at the rule boundary, measured at 10.9x on `checks()` (8.5us to 92us per call), so it belongs in a verification pass and not the run loop. Four blind spots are stated; the weakest point is that `as_dict()` reads a whole component at once, so bulk projections either hide reads or force rules to declare reads they do not conceptually perform |
+| ~~Surface process progress in the observation~~ | M5 finding | **closed, and the obligation misstated the defect.** `boiling_ticks` was always in `observe()`; what was missing is the threshold, since the count means nothing without knowing two consecutive ticks are needed, and `present()` never rendered it. A process that accumulates toward a threshold now declares `progress` and the affordance page carries current-against-required |
+| ~~Signal that an action destroys the value of existing contents~~ | M5 finding | **closed.** An action rule may declare `consequences`, and `discover()` carries them per affordance. Filling a treated vessel is marked as re-contaminating what it already holds; filling an empty or already-untreated one is silent |
 | ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** `owner_ref` is validated as `<kind>:<target>` in `World.validate()`, and the eighteen call sites that hand-built the convention now go through `model.owner_ref()`, which refuses a malformed reference at the source. `tests/test_owner_ref.py` replays the exact declaration from M7's evidence file and asserts it is now refused with the attachment provenance intact. The wire format is unchanged, so all ten probes remain byte-identical |
 
 | ~~Refuse authored writes a field's type forbids~~ | generalisation of the M7 finding | **closed.** `owner_ref` was one instance of a wider class: `set` put any JSON scalar into any field and `World.validate()` covered only a hand-picked subset, so `worker.fatigue := "tired"` and `location.location_id := ""` both committed — the second silently removing four of seven entities from every observation while `validate()` and snapshot round-trip both passed. Effect and selector paths are now resolved against the owning dataclass at declaration time and the literal value type-checked there; `World.validate()` refuses an emptied `location_id`, `definition_id`, `heat_source_id` or `material_id`. `tests/test_authored_write_types.py` replays all seven observed corruptions. All ten probes remain byte-identical |
 
-| Give the world a way to say "unowned" | M7b finding | open — `owner_ref` is now a checked reference, so emptying it is refused. That is right, and it leaves an author who wants to drop a worn-out tool with no way to express the intent: two of ten M7b proposals meant "this is no longer held" and could only say it by blanking the reference. The refusal made a missing capability visible; it did not supply one |
+| ~~Give the world a way to say "unowned"~~ | M7b finding | **closed.** A reserved `unowned` literal, which costs nothing at the consumers because every one of them compares against a reference it built itself. `tests/test_unowned.py` reads the `worn-tool-drop` declaration a model actually wrote out of M7b evidence, shows it is still refused as written, and shows that changing the one value the model could not express makes it install, fire, and leave the tool held by nobody |
 
 **All eight Decision 002 observability fields are covered, on every event class.**
 The three rows above were closed together as one `core-v0` schema change. This

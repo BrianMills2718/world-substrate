@@ -27,6 +27,11 @@ messages:
       effect on holder.components.worker.fatigue tire whoever holds the tool.
       Use `related: null` for a mechanic that acts on one entity alone.
 
+      Ownership references are `<kind>:<target>` — `actor:mira`, `place:bench`,
+      `assembly:frame-a`. To say a thing is held by nobody, set
+      `ownership.owner_ref` to the exact string `unowned`. An empty string is
+      not a valid reference and will be refused.
+
       You must declare every state path you read and every state path you
       write, including paths on a related entity. Declare them as
       entities.<x>.<path>, where <x> stands for any entity. Paths are

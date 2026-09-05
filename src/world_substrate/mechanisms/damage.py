@@ -134,7 +134,7 @@ class VesselFailureSpillProcess:
     )
     write_paths: tuple[str, ...] = (
         "entities.<vessel>.liquid",
-        "physical_ledger.spilled_ml",
+        "physical_ledger.spilled",
         "physical_ledger.heat_lost",
     )
 
@@ -159,7 +159,11 @@ class VesselFailureSpillProcess:
             if not self._failed_and_holding(entity):
                 continue
             assert entity.liquid is not None
-            world.physical_ledger.spilled_ml += entity.liquid.volume_ml
+            spilled = world.physical_ledger.spilled
+            spilled.volume_ml += entity.liquid.volume_ml
+            spilled.salt_mg += entity.liquid.salt_mg
+            spilled.pathogens += entity.liquid.pathogens
+            spilled.heat_units += entity.liquid.heat_units
             world.physical_ledger.heat_lost += entity.liquid.heat_units
             entity.liquid.volume_ml = 0
             entity.liquid.salt_mg = 0
@@ -187,16 +191,17 @@ VESSEL_FAILURE_SPILL_PACKAGE = MechanicPackage(
     emits=("causal event per tick in which any failed vessel loses its contents",),
     effects=(
         (
-            "for every vessel at condition 0 still holding liquid: add its "
-            "volume to physical_ledger.spilled_ml and its heat to "
+            "for every vessel at condition 0 still holding liquid: add each "
+            "of its liquid fields to physical_ledger.spilled and its heat to "
             "physical_ledger.heat_lost, then zero every liquid field"
         ),
     ),
     invariants=(
         "a vessel at condition 0 never holds liquid after this process runs",
         (
-            "volume is conserved against the ledger: initial + added equals "
-            "in-world + drunk + evaporated + spilled"
+            "every modelled liquid quantity is conserved against the "
+            "ledger, not only volume: initial + added equals in-world + "
+            "drunk + evaporated + spilled"
         ),
         "an intact vessel is never emptied by this mechanic",
     ),
@@ -207,21 +212,11 @@ VESSEL_FAILURE_SPILL_PACKAGE = MechanicPackage(
     unsupported_interactions=(),
     limits=(
         (
-            "The ledger records spilled volume and heat but has no field for "
-            "spilled salt or pathogens, so those quantities leave the world "
-            "unaccounted. physical_ledger.evaporated is a full LiquidState "
-            "while spilled_ml is a bare integer; this asymmetry is in the "
-            "existing ledger, not introduced here."
-        ),
-        (
             "Contents are destroyed rather than transferred anywhere. There "
             "is no ground, puddle, or location that receives them."
         ),
         "Failure is instantaneous and total; there is no slow leak.",
-        (
-            "physical_ledger.overflow_ml remains unwritten by any mechanic; "
-            "this mechanic does not model overfilling."
-        ),
+        "This mechanic does not model overfilling.",
     ),
     tests=(
         "tests/test_spill.py::test_failed_vessel_loses_its_contents",

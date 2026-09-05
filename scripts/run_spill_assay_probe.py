@@ -140,7 +140,7 @@ def run_spill_assay_probe() -> dict[str, object]:
         "conservation": {
             "initial_volume_ml": INITIAL_VOLUME_ML,
             "in_world_ml": in_world,
-            "spilled_ml": ledger.spilled_ml,
+            "spilled": ledger.spilled.as_dict(),
             "evaporated_ml": ledger.evaporated.volume_ml,
             "drunk_ml": ledger.drunk.volume_ml,
             "balances": conservation == [],

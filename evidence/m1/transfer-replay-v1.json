@@ -24,14 +24,14 @@
   },
   "observation": {
     "actual_event_count": 66,
-    "actual_material_hash": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+    "actual_material_hash": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7",
     "event_match": true,
     "expected_event_count": 66,
-    "expected_material_hash": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288"
+    "expected_material_hash": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7"
   },
   "record_type": "fresh_process_replay_receipt",
   "schema_version": "world-substrate-replay-receipt/v1",
-  "source_revision": "9627fe88b1f3322dd896fd06674167ddaefda1e8",
+  "source_revision": "55a9af76c27fa57943e1402307e2face77bd41c2",
   "source_trace": "evidence/m1/transfer-v0.json",
-  "source_trace_sha256": "aad4abcea2e2ac574a565834b62e2ee2290abb7066e3166f01daf7c24be15678"
+  "source_trace_sha256": "edeffa1e50ffaba196fe5d019c70d10174545d76a349c98f390bb14f9a5a22c5"
 }

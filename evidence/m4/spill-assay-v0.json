@@ -9,8 +9,8 @@
     "caught_by_conservation_assay": true,
     "finding": [
       {
-        "code": "volume_not_conserved",
-        "detail": "in-world 5500 + spilled 0 + evaporated 41 + drunk 0 = 5541, but the world started with 6000",
+        "code": "quantity_not_conserved",
+        "detail": "volume_ml: in-world 5500 + spilled 0 + evaporated 41 + drunk 0 = 5541, but the world started with 6000",
         "severity": "reject"
       }
     ],
@@ -62,9 +62,14 @@
     "evaporated_ml": 41,
     "in_world_ml": 5500,
     "initial_volume_ml": 6000,
-    "spilled_ml": 459
+    "spilled": {
+      "heat_units": 45900,
+      "pathogens": 0,
+      "salt_mg": 0,
+      "volume_ml": 459
+    }
   },
-  "frozen_profile_id": "8287420fef545750",
+  "frozen_profile_id": "bbeb2854ed02a3fc",
   "installation_was_clean": true,
   "installed_mechanic_count": 13,
   "m3_residual_closed": {

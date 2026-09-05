@@ -274,6 +274,33 @@ class ThermalProcess:
     def __post_init__(self) -> None:
         self.version = "2" if self.cool_empty_vessels else "1"
 
+    def progress(self, world: World) -> list[dict[str, Any]]:
+        """Vessels partway through boiling, and how far they still have to go.
+
+        Treatment lands only after `boiling_ticks_to_kill_pathogens`
+        consecutive ticks at temperature. The count was always in the
+        observation; the threshold was nowhere, so a policy could not tell a
+        pot one tick from safe from one that had just started.
+        """
+        rows = []
+        for entity in sorted(world.entities.values(), key=lambda e: e.entity_id):
+            container = entity.container
+            if container is None or container.heat_source_id is None:
+                continue
+            if entity.liquid is None or entity.liquid.volume_ml <= 0:
+                continue
+            if not entity.liquid.pathogens:
+                continue
+            rows.append(
+                {
+                    "entity_id": entity.entity_id,
+                    "label": "boiling to kill pathogens",
+                    "current": container.boiling_ticks,
+                    "required": self.boiling_ticks_to_kill_pathogens,
+                }
+            )
+        return rows
+
     def due(self, world: World) -> bool:
         return any(
             entity.container
