@@ -36,7 +36,7 @@ M5 is the first time a policy other than a script drove this world: an LLM chose
 
 M4 completes the pair. A second mechanic, authored without a planted omission, closes M3's uncaught incoherence and keeps volume conserved. The three assays behaved completely differently on it — the behavioural one found nothing at all, because every affordance was already refused — establishing that no single assay basis, and no pair, is sufficient. See [the M4 experiment](docs/audits/m4-spill-experiment.md).
 
-The earlier semantic/mechanical frontier remains: audit the promoted vertical against Linguistic Core and the causal-force boundary, bind the existing primitive `give` mechanic, derive ordinary exchange without double application, and establish the transition envelope needed before agent-authored mechanics. A genuine policy consumer remains an enabling experiment and still requires explicit model-call authority and a spend cap.
+What remains of the semantic/mechanical frontier is narrower than it was: `give` is bound and exchange derives without double application (M2), and a policy consumer has run under a granted $2 cap (M5). Still open are binding the remaining six of seven M1 action kinds to Linguistic Core senses, the transition envelope, and the rest of the Open obligations in the roadmap.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 

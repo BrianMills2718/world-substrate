@@ -3,7 +3,7 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-09-02
+reviewed_through: 2026-09-04
 ---
 
 # World Substrate living roadmap
@@ -11,7 +11,7 @@ reviewed_through: 2026-09-02
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** closed M7's uncatchable defect class — ownership references are now checked  
+**Last outcome-bearing implementation:** closed the *class* M7's finding belonged to — an authored declaration can no longer write a value a field's type forbids, nor empty an identifier the substrate resolves  
 **Current strategy frontier:** none selected — the prototype's stated success criteria are all met
 
 ## Outcome and success criteria
@@ -146,6 +146,8 @@ the audit that found it.
 | Signal that an action destroys the value of existing contents | M5 finding | open — `fill` is presented identically whether or not it re-contaminates a treated vessel. The M5 policy did exactly that and then drank it |
 | ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** `owner_ref` is validated as `<kind>:<target>` in `World.validate()`, and the eighteen call sites that hand-built the convention now go through `model.owner_ref()`, which refuses a malformed reference at the source. `tests/test_owner_ref.py` replays the exact declaration from M7's evidence file and asserts it is now refused with the attachment provenance intact. The wire format is unchanged, so all ten probes remain byte-identical |
 
+| ~~Refuse authored writes a field's type forbids~~ | generalisation of the M7 finding | **closed.** `owner_ref` was one instance of a wider class: `set` put any JSON scalar into any field and `World.validate()` covered only a hand-picked subset, so `worker.fatigue := "tired"` and `location.location_id := ""` both committed — the second silently removing four of seven entities from every observation while `validate()` and snapshot round-trip both passed. Effect and selector paths are now resolved against the owning dataclass at declaration time and the literal value type-checked there; `World.validate()` refuses an emptied `location_id`, `definition_id`, `heat_source_id` or `material_id`. `tests/test_authored_write_types.py` replays all seven observed corruptions. All ten probes remain byte-identical |
+
 **All eight Decision 002 observability fields are covered, on every event class.**
 The three rows above were closed together as one `core-v0` schema change. This
 was the only requirement the project set for itself and did not meet. A
@@ -183,9 +185,9 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Declared write scopes are enforced | `tests/test_write_scope.py` negative controls | writes only; reads are recorded and unenforced | established |
 | Offline mechanics authoring works | M3 and M4 frozen packages, three assays, negative control | two mechanics, one world, and the same person authored both the mechanics and the assays judging them | established for the risk half; the *rate* half is untested |
 | Interaction assays surface omitted dependencies | M3 and M4 findings | each basis has a stated blind spot; no basis and no pair is sufficient, and a residual survives all three | established, with the residual demonstrated |
-| A policy can drive this world | none | never attempted; every run is a scripted controller | unmet success criterion 2 |
+| A policy can drive this world | [M5 audit](../docs/audits/m5-policy-consumer.md); `evidence/m5/llm-policy-v0.json` | one model, one prompt, one world, 16 turns; the refusal path was never exercised by the model | **met** (criterion 2) |
 | Global causal closure is proven | none | not generally decidable from author declarations | rejected claim |
-| Second-world reuse works | none | domain not selected; M2 audit measured 2 of 10 checks as substrate-universal | unmet success criterion 6 |
+| Second-world reuse works | [M6 audit](../docs/audits/m6-second-world.md); `tests/test_workshop_world.py` | one second world, chosen by the substrate's own author to be maximally different; zero Castaway mechanics transferred | **met** (criterion 6) |
 
 ## Risks and needs resolution
 
@@ -205,7 +207,7 @@ Boundaries only Brian can clear. Each names what changes if it is answered.
 | Decision | Why it is blocked | What it unblocks |
 | --- | --- | --- |
 | ~~Model execution and a spend cap~~ | **Answered 2026-09-04: $2 cap granted** | Spent $0.005 of it. Criterion 2 met; see the M5 audit. Further runs stay under the same cap |
-| **Which second reference world** | No domain selected | Success criterion 6, and the only test of whether "substrate" is real. The M2 audit measured the warning sign: 2 of 10 `give`/`take` checks are substrate-universal, the other 8 are Castaway content. A domain sharing little with Castaway — discrete objects, no liquids, no heat — makes the reuse test real rather than cosmetic |
+| ~~Which second reference world~~ | **Answered: the workshop world, built and promoted in M6** | Criterion 6 met. The reuse test was real rather than cosmetic — zero Castaway mechanics transferred and four substrate/content couplings had to be broken |
 | Deployment and publication | Explicit authority boundary | Nothing currently waiting on it |
 
 Selection of the first agent-authored mechanic is no longer a boundary: M3 and
@@ -218,10 +220,11 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Nothing is in progress. M7's one uncatchable defect class is closed: an
-ownership reference is now checked rather than conventional, and the regression
-test replays the actual mechanic a model authored rather than a reconstruction
-of it.
+Nothing is in progress. M7's uncatchable defect class is closed, and so is the
+wider class it belonged to: an authored declaration can no longer write a value
+a field's type forbids, name a path that resolves to nothing, or empty an
+identifier the substrate resolves against. Seven corruptions observed against
+the live workshop world are replayed as regression tests.
 
 Two follow-ons remain from M7, both small and needing no permission:
 

@@ -171,21 +171,26 @@ def register_component(name: str, component_type: type) -> None:
     COMPONENT_TYPES[name] = component_type
 
 
-_BUILTIN_COMPONENT_NAMES = frozenset(
-    {
-        "actor",
-        "carrying",
-        "portable",
-        "location",
-        "ownership",
-        "condition",
-        "container",
-        "liquid",
-        "thermal",
-        "material",
-        "heat_source",
-    }
-)
+# The eleven Castaway-derived components, by name. Kept as one mapping rather
+# than a name set plus a parallel dict inside `Entity.from_dict`, because the
+# authoring path needs to resolve a declared path to the dataclass that owns
+# the field -- and a second copy of this list is exactly how a checker ends up
+# blind to a component nobody remembered to add to it.
+BUILTIN_COMPONENT_TYPES: dict[str, type] = {
+    "actor": ActorState,
+    "carrying": CarryingState,
+    "portable": PortableState,
+    "location": LocationState,
+    "ownership": OwnershipState,
+    "condition": ConditionState,
+    "container": ContainerState,
+    "liquid": LiquidState,
+    "thermal": ThermalState,
+    "material": MaterialState,
+    "heat_source": HeatSourceState,
+}
+
+_BUILTIN_COMPONENT_NAMES = frozenset(BUILTIN_COMPONENT_TYPES)
 
 
 @dataclass
@@ -266,19 +271,7 @@ class Entity:
         ):
             raise ValueError("snapshot category_ids must be nonempty strings")
 
-        component_types: dict[str, type[Any]] = {
-            "actor": ActorState,
-            "carrying": CarryingState,
-            "portable": PortableState,
-            "location": LocationState,
-            "ownership": OwnershipState,
-            "condition": ConditionState,
-            "container": ContainerState,
-            "liquid": LiquidState,
-            "thermal": ThermalState,
-            "material": MaterialState,
-            "heat_source": HeatSourceState,
-        }
+        component_types: dict[str, type[Any]] = dict(BUILTIN_COMPONENT_TYPES)
         components: dict[str, Any] = {}
         for name, component_type in component_types.items():
             record = value.get(name)
@@ -505,6 +498,29 @@ class World:
                     f"invalid ownership reference on {entity_id}: "
                     f"{entity.ownership.owner_ref!r}"
                 )
+            # An identifier the substrate resolves against must actually name
+            # something. `owner_ref` got this check when M7 found a mechanic
+            # blanking it; the other identifier fields did not, and they fail
+            # far more quietly. An emptied `location_id` keeps validating,
+            # keeps round-tripping through a snapshot, and removes the entity
+            # from every observation -- nothing shares a location with it any
+            # more, so no policy can see or act on it and nothing reports why.
+            for holder, field_name in (
+                (entity.location, "location_id"),
+                (entity.container, "definition_id"),
+                (entity.container, "heat_source_id"),
+                (entity.material, "material_id"),
+            ):
+                if holder is None:
+                    continue
+                value = getattr(holder, field_name)
+                if value is None:
+                    continue
+                if not isinstance(value, str) or not value:
+                    raise ValueError(
+                        f"{field_name} on {entity_id} must be a nonempty "
+                        f"string: {value!r}"
+                    )
             if entity.condition is not None and not 0 <= entity.condition.value <= 100:
                 raise ValueError(f"condition out of range: {entity_id}")
             if entity.liquid is not None:
