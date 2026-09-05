@@ -120,15 +120,109 @@ observable attempt or trigger
 
 Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
 
-### Active slice: none until a domain or a spend cap is chosen
+### Active slice: clear the Open obligations
 
-M2's give/exchange slice is complete and promoted; its detail lives in the
-milestone table and [its audit](../docs/audits/m2-give-path-audit.md).
+This section is the goal authority for the current run. The repository forbids
+a second roadmap or a handoff document, so the goal lives here rather than in a
+parallel file, and the Open obligations table below is its backlog of record.
 
-Both candidate next slices are gated on a human decision (see Human decisions
-below), so no slice is specified here. Specifying one before the domain or the
-spend cap is chosen would be planning ahead of the decision that determines its
-shape.
+**Mission.** Clear the obligations an accepted decision or contract already
+requires, so the substrate's own stated invariants hold and the two seam
+weaknesses M5 found in the observation are fixed. Both halves of the central
+hypothesis are already answered; this is the work the project committed to and
+has not done, not new scope.
+
+**Execution profile:** continuous-light
+
+One writer, reversible branches, no deployment, publication, or destructive
+state. Model spend is not required by any increment and stays inside the
+standing $2 cap if used.
+
+**Stage and investment boundary:** prototype hardening. Expect one to two
+sessions. Verification is the cheapest focused check that can invalidate the
+changed behaviour, not a broad audit.
+
+**Canonical example.** In the freshwater world, with a pot part-way through
+boiling and holding treated water, one `discover("robinson")` page shows both:
+the pot's boiling progress toward the two consecutive ticks treatment needs,
+and a `fill` affordance explicitly marked as destroying the treatment it
+already has. A policy reading that page can tell boiling is partway done and
+that refilling would undo it. Those are exactly the two things the M5 policy
+could not see, and it oscillated heat/unheat for seven turns and then drank
+re-contaminated water.
+
+**Forbidden substitutes.** None of these satisfies the example:
+
+- a field added to canonical state but absent from `observe()` / `discover()`;
+- a test asserting a constant rather than driving the engine to the state;
+- a hand-edited evidence file, or regenerating a pinned probe's evidence so a
+  change passes;
+- a design document standing in for any increment that is implementable;
+- documentation of an obligation as closed without the behaviour changing.
+
+**Repository / working scope:** `/home/brian/code/world-substrate`, in a
+claimed worktree under `worktrees/`. Root and subtree `CLAUDE.md` apply.
+
+#### Boundaries
+
+- In scope: the open rows of the Open obligations table.
+- Out of scope: new milestones, a third reference world, deployment,
+  publication, runtime law revision, and donor-repository changes.
+- Writes allowed: this repository only.
+- Read-only: donor repositories; pinned evidence under `evidence/`, which may
+  be added to but not rewritten to accommodate a change.
+- Requiring authorization: any model call beyond the standing cap, and any
+  push to a repository other than this one.
+
+#### Increments
+
+Each changes a named field or behaviour rather than describing one.
+
+1. **Observation seam** — surface process progress, and mark an affordance that
+   destroys the value of a vessel's current contents. Both M5 findings; both
+   change `observe()` / `discover()` output.
+2. **Unowned** — give the world a way to say a thing is held by nobody, so the
+   intent behind M7b's `worn-tool-drop` is expressible rather than only
+   refused.
+3. **Semantic bindings** — bind the remaining six of seven M1 action kinds, so
+   `semantic_binding` is non-null on every accepted action event.
+4. **The two decisions** — the ledger's shape for lost quantities, and whether
+   `World.clone()` deep-copies the event log. Both are reversible technical
+   calls; make them, implement them, and record the rejected alternative.
+5. **Read-scope enforcement design** — the one obligation that is genuinely not
+   designed. The deliverable is a named mechanism with its cost and its blind
+   spot, not an implementation.
+
+#### Acceptance checks
+
+| ID | Criterion | Evidence to report |
+| --- | --- | --- |
+| C1 | Boiling progress is observable | a test drives a pot to mid-boil and asserts the progress appears in `discover()` |
+| C2 | A treatment-destroying `fill` is marked as such | a test drives a treated vessel and asserts the affordance carries the flag |
+| C3 | Unowned is expressible | M7b's `worn-tool-drop` declaration, read from its evidence file, installs, fires, and leaves the tool held by nobody |
+| C4 | Every accepted action event is semantically bound | a test asserts no accepted action event has a null `semantic_binding` |
+| C5 | Lost quantities are accounted | spilled salt and pathogens balance, and `overflow_ml` is either written or gone |
+| C6 | The clone decision is implemented | a measured before/after on the same trace length, reported as numbers |
+| C7 | Read-scope enforcement is designed | a document naming the mechanism, its runtime cost, and what it still cannot see |
+| C8 | Nothing regressed | full suite passes, all ten pinned probes byte-identical, `check_project.py` passes, ruff at its pre-existing baseline of 3 |
+
+#### Stops
+
+- **No progress:** two consecutive increments that change no target field or
+  behaviour trigger strategic revalidation rather than a third.
+- **Finite loop:** at most three attempts on the same reproduced blocker. If
+  they produce no new evidence and no safe next action, record the blocker,
+  its owner, and the exact resume event, and move to the next increment.
+- **Revalidation:** after three increments, roughly four hours, or twice the
+  stage estimate, compare outcome progress against enabling and process work
+  and report whether to retain, replace, or clear this goal. Strategic
+  misalignment is returned as such, never relabelled a technical blocker.
+
+#### Non-gating next actions
+
+These do not gate completion: any decision Brian may take on the project's
+future beyond these obligations, publication or deployment of anything here,
+and further authoring experiments.
 
 ## Open obligations
 

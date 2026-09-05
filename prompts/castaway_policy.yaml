@@ -32,6 +32,11 @@ messages:
       What you can see:
       {{ visible }}
 
+      {% if progress %}
+      In progress:
+      {{ progress }}
+      {% endif %}
+
       {% if recent %}
       What just happened:
       {% for line in recent %}

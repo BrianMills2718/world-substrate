@@ -104,6 +104,32 @@ class FillRule:
                         )
         return actions
 
+    def consequences(self, world: World, action: TypedAction) -> list[str]:
+        """What filling this vessel would throw away.
+
+        Filling a treated vessel from a pathogen-bearing source re-contaminates
+        everything already in it. The mixing rule is correct and the affordance
+        said nothing: `fill` looked identical whether the vessel was empty or
+        held water the actor had just spent fuel and several turns boiling. The
+        M5 policy filled its own treated pot and drank it, losing 40 health.
+        """
+        if not isinstance(action, FillAction):
+            return []
+        vessel = world.entities.get(action.vessel_id)
+        source = world.entities.get(action.source_id)
+        if vessel is None or source is None:
+            return []
+        if vessel.liquid is None or source.liquid is None:
+            return []
+        if vessel.liquid.volume_ml <= 0 or vessel.liquid.pathogens:
+            return []
+        if not source.liquid.pathogens:
+            return []
+        return [
+            f"re-contaminates the {vessel.liquid.volume_ml}ml of treated water "
+            f"already in {action.vessel_id}"
+        ]
+
     def checks(self, world: World, action: TypedAction) -> list[Check]:
         if not isinstance(action, FillAction):
             raise TypeError("fill rule requires FillAction")

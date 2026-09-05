@@ -177,11 +177,24 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, An
         "actor_id": actor_id,
         "actor_state": ", ".join(self_bits) or "nothing notable",
         "visible": "\n".join(visible),
+        # Progress and consequences are the two things the M5 policy could not
+        # see: it pulled the pot off the fire early for seven turns, and it
+        # refilled its own treated pot and drank it. Both now come from the
+        # engine's affordance page rather than being re-derived here.
+        "progress": "\n".join(
+            f"{row['entity_id']}: {row['label']} {row['current']}/{row['required']}"
+            for row in page.get("progress", [])
+        ),
         "actions": [
             {
                 "number": index,
                 "action_id": row["action_id"],
-                "description": describe_action(row["action"]),
+                "description": describe_action(row["action"])
+                + (
+                    "  [destroys: " + "; ".join(row["consequences"]) + "]"
+                    if row.get("consequences")
+                    else ""
+                ),
             }
             for index, row in enumerate(page["available"], start=1)
         ],

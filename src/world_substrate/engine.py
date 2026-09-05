@@ -170,6 +170,35 @@ class Engine:
             "entities": local,
         }
 
+    def _consequences(self, rule: Any, action: TypedAction) -> list[str]:
+        reporter = getattr(rule, "consequences", None)
+        if reporter is None:
+            return []
+        return list(reporter(self.world, action))
+
+    def _progress(self) -> list[dict[str, Any]]:
+        """In-flight process progress, for policies that must not act early.
+
+        A policy could always read `container.boiling_ticks` -- it is in the
+        observation like every other field. What it could not read was the
+        threshold: `boiling_ticks: 1` means nothing without knowing two
+        consecutive ticks are needed, so the M5 run pulled the pot off the fire
+        early and oscillated heat/unheat for seven turns. A process that
+        accumulates toward a threshold declares it here and the affordance page
+        carries current-against-required.
+
+        Declared, not inferred: the substrate cannot know which of a world's
+        fields are counters toward something.
+        """
+        rows: list[dict[str, Any]] = []
+        for process in self.registry.processes():
+            reporter = getattr(process, "progress", None)
+            if reporter is None:
+                continue
+            for row in reporter(self.world):
+                rows.append({"rule_id": process.rule_id, **row})
+        return sorted(rows, key=lambda row: (row["entity_id"], row["rule_id"]))
+
     def discover(self, actor_id: str, kind: str | None = None) -> dict[str, Any]:
         actions: list[TypedAction] = []
         for action_kind in self.registry.action_kinds():
@@ -187,6 +216,13 @@ class Engine:
                 "action_id": _action_id(action),
                 "action": action.as_dict(),
                 "checks": [check.as_dict() for check in checks],
+                # What taking this action would destroy. A check says whether
+                # an action is permitted; nothing said whether a permitted
+                # action throws away something the actor already has. `fill`
+                # was presented identically whether or not it re-contaminated a
+                # treated vessel, and the M5 policy filled its own boiled pot
+                # and then drank it (M5 finding).
+                "consequences": self._consequences(rule, action),
             }
             if all(check.ok for check in checks):
                 available.append(row)
@@ -199,6 +235,7 @@ class Engine:
             "observation": self.observe(actor_id),
             "available": available,
             "blocked": blocked,
+            "progress": self._progress(),
             "total": len(available) + len(blocked),
         }
 
