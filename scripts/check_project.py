@@ -160,6 +160,168 @@ def markdown_files() -> list[Path]:
     ]
 
 
+# --- Contract status against the code it describes ---------------------------
+#
+# `REQUIRED` above asserts that a contract file exists and is linked. Nothing
+# asserted that what it *says about itself* is still true, which is why
+# semantic-mechanical-binding-v0.md spent several commits claiming one binding
+# of seven while six were implemented, and claiming no binding reached an event
+# after they all did. A prose rule in docs/CLAUDE.md said to keep proposed
+# contracts distinct from implemented behaviour, and nothing made it fire.
+#
+# A contract opts in by declaring the facts it depends on:
+#
+#     <!-- status-facts
+#     semantic_bindings_bound: 6
+#     semantic_binding_on_events: true
+#     -->
+#
+# Every declared fact is recomputed here by *running the engine*, never by
+# reading the constant the contract is describing -- a check that reads
+# SEMANTIC_BINDINGS to confirm a claim about SEMANTIC_BINDINGS could not fail.
+#
+# This is a floor, not a guarantee. A contract that declares nothing is
+# unchecked, and a status line can still be wrong about anything it did not
+# reduce to a named fact.
+
+STATUS_FACT_BLOCK = re.compile(
+    r"<!--\s*status-facts\s*\n(.*?)-->", re.DOTALL
+)
+
+
+def _parse_status_facts(text: str) -> dict[str, object]:
+    match = STATUS_FACT_BLOCK.search(text)
+    if match is None:
+        return {}
+    facts: dict[str, object] = {}
+    for line in match.group(1).splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        key, _, raw = line.partition(":")
+        raw = raw.strip()
+        if raw in ("true", "false"):
+            facts[key.strip()] = raw == "true"
+        elif raw.startswith("[") and raw.endswith("]"):
+            inner = raw[1:-1].strip()
+            facts[key.strip()] = sorted(
+                item.strip().strip("\"'") for item in inner.split(",") if item.strip()
+            )
+        else:
+            facts[key.strip()] = int(raw)
+    return facts
+
+
+def _live_facts(root: Path) -> dict[str, object]:
+    """Recompute each checkable fact by exercising the engine."""
+    sys.path.insert(0, str(root))
+    sys.path.insert(0, str(root / "src"))
+    from reference_worlds.castaway.probe import build_transfer_engine
+    from world_substrate.rules import Check
+    from world_substrate.semantic import SEMANTIC_BINDINGS
+
+    engine = build_transfer_engine(root)
+    kinds = set(engine.registry.action_kinds())
+
+    # Apply a real action and read its committed event, rather than trusting
+    # that attaching the binding was wired up.
+    page = engine.discover("robinson")
+    row = next(r for r in page["available"] if r["action"]["kind"] == "fill")
+    event = engine.submit({**row["action"], "controller": "check"})["event"]
+    bound_on_event = event["status"] == "accepted" and event["semantic_binding"] is not None
+
+    # Submit a rule that reaches an entity it never declared, and confirm the
+    # engine refuses it. A claim that write scopes are enforced should fail
+    # here if the guard is removed.
+    class _Probe:
+        rule_id = "check.write-scope-probe"
+        version = "1"
+        action_kind = "check_probe"
+        read_paths = ()
+        write_paths = ("entities.<x>.container.boiling_ticks",)
+
+        def discover(self, world, actor_id):
+            return []
+
+        def action_from_dict(self, value):
+            return _ProbeAction(value["actor"], value["base_revision"], value["controller"])
+
+        def checks(self, world, action):
+            return [Check("actor exists", action.actor_id in world.entities)]
+
+        def apply(self, world, action, event_id):
+            world.entities["clay-pot"].liquid.salt_mg += 1
+
+    # A plain class rather than a dataclass: `from __future__ import
+    # annotations` makes a nested dataclass resolve its annotations through
+    # `sys.modules[cls.__module__]`, which is absent when this file is imported
+    # by spec rather than run as __main__ -- so the probe blew up in the tests
+    # that check it while working fine on the command line.
+    class _ProbeAction:
+        kind = "check_probe"
+
+        def __init__(self, actor_id, base_revision, controller_id):
+            self.actor_id = actor_id
+            self.base_revision = base_revision
+            self.controller_id = controller_id
+
+        def as_dict(self):
+            return {
+                "actor": self.actor_id,
+                "kind": self.kind,
+                "base_revision": self.base_revision,
+                "controller": self.controller_id,
+            }
+
+    engine.registry.register_action(_Probe())
+    engine.world.rule_versions = engine.registry.versions()
+    refused = engine.submit(
+        {
+            "actor": "robinson",
+            "kind": "check_probe",
+            "base_revision": engine.world.revision,
+            "controller": "check",
+        }
+    )
+
+    return {
+        "semantic_bindings_bound": len(kinds & set(SEMANTIC_BINDINGS)),
+        "semantic_bindings_total": len(kinds),
+        "semantic_binding_on_events": bound_on_event,
+        "unbound_action_kinds": sorted(kinds - set(SEMANTIC_BINDINGS)),
+        "write_scopes_enforced": refused["status"] == "scope_violation",
+        "read_scopes_enforced": False,
+    }
+
+
+def check_contract_status(root: Path) -> list[str]:
+    """Every fact a contract declares about itself must still hold."""
+    failures: list[str] = []
+    live = _live_facts(root)
+    declared_anywhere = 0
+    for name in REQUIRED:
+        if not name.startswith("docs/contracts/"):
+            continue
+        path = root / name
+        if not path.exists():
+            continue
+        for key, expected in _parse_status_facts(path.read_text()).items():
+            declared_anywhere += 1
+            if key not in live:
+                failures.append(f"{name}: unknown status fact {key!r}")
+                continue
+            if live[key] != expected:
+                failures.append(
+                    f"{name}: status claims {key}={expected!r}, "
+                    f"the code says {live[key]!r}"
+                )
+    if declared_anywhere == 0:
+        failures.append(
+            "no contract declares any status facts; the status check is inert"
+        )
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -173,6 +335,8 @@ def main() -> int:
     for relative in REQUIRED:
         if not (REPO / relative).exists():
             failures.append(f"missing required project surface: {relative}")
+
+    failures.extend(check_contract_status(REPO))
 
     agents = REPO / "AGENTS.md"
     if not agents.is_symlink() or agents.readlink() != Path("CLAUDE.md"):

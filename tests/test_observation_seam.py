@@ -145,5 +145,42 @@ class ValueDestroyingActionsAreMarked(unittest.TestCase):
             self.assertEqual(row["consequences"], [])
 
 
+class TheCapabilitiesAreDeclaredNotDuckTyped(unittest.TestCase):
+    """`progress` and `consequences` were reached through `getattr` and named
+    in no protocol, so a world author reading ActionRule or ProcessRule could
+    not discover that either existed."""
+
+    def test_the_rules_that_have_them_satisfy_the_protocols(self):
+        from world_substrate.mechanisms.liquid import FillRule
+        from world_substrate.mechanisms.thermal import ThermalProcess
+        from world_substrate.rules import DeclaresConsequences, ReportsProgress
+
+        self.assertIsInstance(FillRule(), DeclaresConsequences)
+        self.assertIsInstance(ThermalProcess(), ReportsProgress)
+
+    def test_rules_without_them_do_not(self):
+        from world_substrate.mechanisms.thermal import HeatRule, ThermalProcess
+        from world_substrate.rules import DeclaresConsequences
+
+        # Heating declares no destroyed value, and the thermal process is not
+        # an action rule at all.
+        self.assertNotIsInstance(HeatRule(), DeclaresConsequences)
+        self.assertNotIsInstance(ThermalProcess(), DeclaresConsequences)
+
+    def test_the_workshop_declares_neither_and_still_runs(self):
+        from world_substrate.rules import DeclaresConsequences, ReportsProgress
+
+        engine = build_workshop()
+        for kind in engine.registry.action_kinds():
+            self.assertNotIsInstance(engine.registry.action(kind), DeclaresConsequences)
+        for process in engine.registry.processes():
+            self.assertNotIsInstance(process, ReportsProgress)
+        page = engine.discover("mira")
+        self.assertEqual(page["progress"], [])
+        self.assertTrue(page["available"])
+        for row in page["available"]:
+            self.assertEqual(row["consequences"], [])
+
+
 if __name__ == "__main__":
     unittest.main()

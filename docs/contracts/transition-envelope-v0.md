@@ -3,6 +3,11 @@
 **Status:** partially implemented. Singular commit, atomic refusal, and causal trace are implemented in `Engine.apply`/`Engine.advance`. Independently enforced **write** scope is implemented (`scope_violation`). Independently enforced **read** scope is not: reads are recorded on every event and unchecked. Institutional coupling of several bearers' effects into one transition is unimplemented and untested.  
 **Purpose:** give one enclosing action or process sole authority to commit a causally coupled state transition
 
+<!-- status-facts
+write_scopes_enforced: true
+read_scopes_enforced: false
+-->
+
 ## Pipeline
 
 ```text

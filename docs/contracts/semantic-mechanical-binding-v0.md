@@ -3,6 +3,13 @@
 **Status:** target contract, six of seven M1 action kinds bound. `give`, `drink`, `heat`, `fill`, `take` and `pour` are bound in `src/world_substrate/semantic.py`, each citing a predicate and roles from the pinned Linguistic Core extraction. `unheat` is unbound and stays that way here: the extraction has no sense for removing a vessel from a heat source, and inventing one would break this contract's own rule that senses are cited rather than minted. The bound sense and roles **are** attached to every accepted action event as `semantic_binding`, and `null` on the unbound kind.  
 **Purpose:** bind agent- or process-level meaning to an installed causal interface without allowing language to mutate the world
 
+<!-- status-facts
+semantic_bindings_bound: 6
+semantic_bindings_total: 7
+unbound_action_kinds: [unheat]
+semantic_binding_on_events: true
+-->
+
 ## Boundary
 
 A semantic binding explains what an attempt or occurrence means. A mechanic determines whether and how it changes persistent state.
