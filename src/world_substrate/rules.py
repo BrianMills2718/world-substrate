@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import asdict, dataclass
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 from .model import World
 
@@ -314,6 +314,48 @@ class ProcessRule(Protocol):
     def due(self, world: World) -> bool: ...
 
     def apply(self, world: World) -> None: ...
+
+
+# --- Optional capabilities a rule may declare --------------------------------
+#
+# `progress` and `consequences` were reached through `getattr` and appeared in
+# no protocol, so a world author reading `ActionRule` or `ProcessRule` had no
+# way to discover that either existed. They cannot be ordinary protocol members
+# -- a protocol member is required, and most rules correctly have neither -- so
+# they are separate opt-in protocols. The engine tests for them structurally,
+# which is the same check `getattr` was doing, said out loud and typed.
+
+
+@runtime_checkable
+class DeclaresConsequences(Protocol):
+    """An action rule that can say what taking it would destroy.
+
+    A `Check` says whether an action is permitted. This says what a permitted
+    action throws away that the actor already has, so an affordance list can
+    distinguish `fill` on an empty vessel from `fill` on one holding water the
+    actor spent fuel and several turns treating (M5 finding).
+
+    Return an empty list when this particular attempt destroys nothing.
+    """
+
+    def consequences(self, world: World, action: TypedAction) -> list[str]: ...
+
+
+@runtime_checkable
+class ReportsProgress(Protocol):
+    """A process that accumulates toward a threshold and can report how far.
+
+    The count is usually already in the observation; the threshold is not, and
+    a count without its threshold is unreadable -- `boiling_ticks: 1` says
+    nothing unless two is known to be the target (M5 finding).
+
+    Return one row per entity currently in flight, each with `entity_id`,
+    `label`, `current` and `required`. Return an empty list when nothing is in
+    flight; the substrate cannot infer which of a world's fields are counters,
+    which is why this is declared rather than derived.
+    """
+
+    def progress(self, world: World) -> list[dict[str, Any]]: ...
 
 
 class RuleRegistry:

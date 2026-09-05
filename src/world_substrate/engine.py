@@ -8,7 +8,15 @@ from copy import deepcopy
 from typing import Any
 
 from .model import World, differences
-from .rules import Check, ProcessRule, RuleRegistry, TypedAction, UnsupportedAction
+from .rules import (
+    Check,
+    DeclaresConsequences,
+    ProcessRule,
+    ReportsProgress,
+    RuleRegistry,
+    TypedAction,
+    UnsupportedAction,
+)
 from .semantic import SEMANTIC_BINDINGS
 
 ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
@@ -171,10 +179,9 @@ class Engine:
         }
 
     def _consequences(self, rule: Any, action: TypedAction) -> list[str]:
-        reporter = getattr(rule, "consequences", None)
-        if reporter is None:
+        if not isinstance(rule, DeclaresConsequences):
             return []
-        return list(reporter(self.world, action))
+        return list(rule.consequences(self.world, action))
 
     def _progress(self) -> list[dict[str, Any]]:
         """In-flight process progress, for policies that must not act early.
@@ -192,10 +199,9 @@ class Engine:
         """
         rows: list[dict[str, Any]] = []
         for process in self.registry.processes():
-            reporter = getattr(process, "progress", None)
-            if reporter is None:
+            if not isinstance(process, ReportsProgress):
                 continue
-            for row in reporter(self.world):
+            for row in process.progress(self.world):
                 rows.append({"rule_id": process.rule_id, **row})
         return sorted(rows, key=lambda row: (row["entity_id"], row["rule_id"]))
 
