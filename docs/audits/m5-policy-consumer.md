@@ -194,6 +194,57 @@ Rendered side by side, belief against replayed world state, by
 build those; the engine is deterministic, so replaying the recorded actions
 recovers exact state at every turn.
 
+## Two agents in one world (2026-09-04)
+
+The three-run series has an uncomfortable implication: shown everything the
+world knew, the policy played perfectly. A demonstration built on an agent
+getting things wrong would therefore have to withhold information deliberately,
+which is manufacturing the phenomenon rather than finding it.
+
+A second agent cannot be handled that way. An affordance page is computed at a
+revision; each row was true when rendered and may be false by the time the
+actor commits, because the other one moved. At render time there is nothing to
+warn about yet.
+
+The substrate has carried `base_revision`, `stale_revision` refusal and atomic
+commit since M1 and no two live policies had ever exercised any of it. Both
+Castaway actors were seated with the same model, deciding independently from
+their own pages, with no channel between them but the world. Ten turns,
+**$0.00598**. Evidence:
+[`evidence/m5/contested-llm-v0.json`](../../evidence/m5/contested-llm-v0.json),
+rendered at
+[`evidence/renders/two-agents-one-world.html`](../../evidence/renders/two-agents-one-world.html).
+
+**Turn 1.** Both independently decide to fill the pot. Robinson commits first.
+Friday's plan — *"Fill the clay pot with a substantial amount of unsafe water so
+it can be heated"* — is now impossible, so it looks again and **heats the pot
+Robinson just filled**: *"Heat the untreated water to kill pathogens."* Being
+beaten to an action produced the complementary next one. Nothing coordinated
+that.
+
+**Turn 6.** Both decide to unheat the finished pot. Robinson wins again.
+Friday's intent was correct and simply gone; it re-decides to wait for the water
+to cool. **Turn 8**, having lost twice, Friday *takes* the pot.
+
+Both end at 100 health. Two agents with no way to talk divided the work through
+commit ordering alone.
+
+| | |
+| --- | --- |
+| turns | 10 |
+| accepted actions | 5 of 20 opportunities |
+| plans invalidated by the other actor | 2 |
+| refused after retry | 1 (nothing left to do) |
+| turns where both waited | 6 |
+
+**The honest limit is that last row.** Six of ten turns are both agents
+correctly waiting for water to boil or cool, which is not worth watching. The
+interesting events are real, legible and unscripted, and there are two of them.
+This world has one pot, one cup and one fire; it cannot sustain contention
+because there is almost nothing to contend over. That is a specific,
+actionable requirement for any world built to show this off, rather than a
+verdict against the idea.
+
 ## Limits
 
 - **The refusal path was never exercised by the model.** The response schema
