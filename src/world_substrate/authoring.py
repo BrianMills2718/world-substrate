@@ -17,9 +17,10 @@ narrow enough to interpret deterministically.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from dataclasses import fields as dataclass_fields
 from typing import Any
 
-from .model import World
+from .model import BUILTIN_COMPONENT_TYPES, COMPONENT_TYPES, World
 from .profile import MechanicPackage
 
 OPS = {
@@ -68,7 +69,16 @@ def _assign(entity: Any, path: str, op: str, value: Any) -> None:
     for part in parts[:-1]:
         holder = getattr(holder, part, None)
     if holder is None:
-        return
+        # The path is valid -- checked at declaration time -- so this entity
+        # simply does not carry that component. Silently returning here is how
+        # a mechanic used to install cleanly, report itself due, fire, and
+        # change nothing, which is indistinguishable from a mechanic that
+        # works. Engine.advance restores the pre-tick state before this
+        # propagates, so nothing commits.
+        raise DeclarationError(
+            f"effect path {path} names a component this entity does not carry: "
+            f"{getattr(entity, 'entity_id', '?')}"
+        )
     field = parts[-1]
     current = getattr(holder, field, None)
     if op == "set":
@@ -77,6 +87,112 @@ def _assign(entity: Any, path: str, op: str, value: Any) -> None:
     if not isinstance(current, int) or not isinstance(value, int):
         raise DeclarationError(f"{op} needs integers at {path}")
     setattr(holder, field, current + value if op == "add" else current - value)
+
+
+# --- Declared paths are checked against the world's actual types -------------
+#
+# M7 found a model-authored mechanic writing "" into `ownership.owner_ref`,
+# which nothing could catch. That was fixed by validating `owner_ref`. It was
+# one instance of a wider class: `set` wrote any JSON scalar into any field,
+# and `World.validate()` only covers a hand-picked subset of them, so
+# `worker.fatigue := "tired"` and `location.location_id := ""` both committed
+# -- the second silently removing four entities from every observation, since
+# nothing shares a location with them any more.
+#
+# The declaration's values are literals, so the whole check belongs here at
+# declaration time rather than at apply time: nothing reaches canonical state
+# to be rolled back, the runtime cost is zero, and a typo'd path is refused
+# before it can install cleanly and quietly do nothing.
+
+# Annotations are strings under `from __future__ import annotations`. Only
+# fields the declaration language can actually express are settable; a target
+# of any other type is refused rather than silently unchecked.
+_SETTABLE_TYPES: dict[str, tuple[type, ...]] = {
+    "int": (int,),
+    "str": (str,),
+    "bool": (bool,),
+    "float": (float, int),
+    "int | float": (int, float),
+    "str | None": (str,),
+    "int | None": (int,),
+}
+_NUMERIC_ANNOTATIONS = frozenset({"int", "float", "int | float", "int | None"})
+
+
+def _field_annotation(path: str) -> str:
+    """The declared type of the field a path names, or raise.
+
+    Accepts `components.<component>.<field>` and `<builtin>.<field>`. Anything
+    that does not resolve to a real field of a real component is a defect in
+    the declaration, not a condition to skip at runtime.
+    """
+    segments = path.split(".")
+    if segments[0] == "components":
+        if len(segments) != 3:
+            raise DeclarationError(
+                f"component path must be components.<component>.<field>: {path}"
+            )
+        name = segments[1]
+        owner = COMPONENT_TYPES.get(name)
+        if owner is None:
+            raise DeclarationError(
+                f"unknown component {name!r} in {path} "
+                f"(registered: {sorted(COMPONENT_TYPES) or 'none'})"
+            )
+        field_name = segments[2]
+    else:
+        if len(segments) != 2:
+            raise DeclarationError(
+                f"path must be <component>.<field> or components.<component>.<field>: {path}"
+            )
+        name, field_name = segments
+        owner = BUILTIN_COMPONENT_TYPES.get(name)
+        if owner is None:
+            raise DeclarationError(
+                f"unknown component {name!r} in {path} "
+                f"(built-in: {sorted(BUILTIN_COMPONENT_TYPES)})"
+            )
+    annotations = {
+        item.name: str(item.type).strip() for item in dataclass_fields(owner)
+    }
+    if field_name not in annotations:
+        raise DeclarationError(
+            f"{name} has no field {field_name!r} (has: {sorted(annotations)})"
+        )
+    return annotations[field_name]
+
+
+def _check_value(path: str, annotation: str, value: Any, what: str) -> None:
+    allowed = _SETTABLE_TYPES.get(annotation)
+    if allowed is None:
+        raise DeclarationError(
+            f"{what} {path} has type {annotation!r}, which this declaration "
+            "language cannot express"
+        )
+    # Exact types: `True` is an `int` to `isinstance`, and writing a bool into
+    # an int field is exactly the corruption this is here to stop.
+    if type(value) not in allowed:
+        raise DeclarationError(
+            f"{what} {path} is {annotation}, but the declaration supplies "
+            f"{value!r} ({type(value).__name__})"
+        )
+
+
+def _check_effect(effect: dict[str, Any]) -> None:
+    path = effect["path"]
+    annotation = _field_annotation(path)
+    value = effect.get("value")
+    if effect["op"] == "set":
+        _check_value(path, annotation, value, "effect target")
+        return
+    if annotation not in _NUMERIC_ANNOTATIONS:
+        raise DeclarationError(
+            f"{effect['op']} needs a numeric target, but {path} is {annotation}"
+        )
+    if type(value) is not int:
+        raise DeclarationError(
+            f"{effect['op']} on {path} needs an integer, got {value!r}"
+        )
 
 
 @dataclass(frozen=True)
@@ -126,16 +242,22 @@ class DeclaredMechanic:
             # A component path must reach a field: components.<name>.<field>.
             # Writing a whole component is not expressible in this language,
             # and must be refused when declared rather than crash when applied.
-            segments = path.split(".")
-            if segments[0] == "components" and len(segments) < 3:
-                raise DeclarationError(
-                    f"effect path must name a field, not a component: {path}"
-                )
-            if segments[0] != "components" and len(segments) < 2:
-                raise DeclarationError(f"effect path must name a field: {path}")
+            _check_effect(effect)
         for clause in selector.get("where", []) or []:
             if clause.get("op") not in OPS:
                 raise DeclarationError(f"unknown comparison: {clause.get('op')!r}")
+            clause_path = clause.get("path")
+            if not isinstance(clause_path, str) or not clause_path:
+                raise DeclarationError("each selector condition needs a path")
+            # A mistyped selector path is the quietest failure in this
+            # language: it resolves to None, never matches, and the mechanic
+            # installs cleanly and does nothing for the rest of the run.
+            _check_value(
+                clause_path,
+                _field_annotation(clause_path),
+                clause.get("value"),
+                "selector condition",
+            )
         return cls(
             mechanic_id=str(value["mechanic_id"]),
             version=str(value.get("version", "1")),
