@@ -18,7 +18,7 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.probe import build_transfer_engine
-from world_substrate.rules import FillAction
+from world_substrate.rules import FillAction, HeatAction
 
 
 class ObservabilityFieldTests(unittest.TestCase):
@@ -75,12 +75,51 @@ class ObservabilityFieldTests(unittest.TestCase):
         self.assertEqual(binding["roles"]["giver"], "lc.role.donor")
 
     def test_an_unbound_action_says_null_rather_than_omitting_the_field(self) -> None:
-        # Six of seven M1 action kinds have no binding. An explicit null is the
-        # difference between "no binding exists" and "we did not record one".
-        event = self._fill()["event"]
+        # `unheat` is the one M1 action kind with no binding, and it has none
+        # because the pinned Linguistic Core subset has no sense for removing a
+        # vessel from a heat source -- not because nothing was recorded. An
+        # explicit null is the difference between those two, so the field must
+        # still be present.
+        from world_substrate.rules import UnheatAction
+        from world_substrate.semantic import SEMANTIC_BINDINGS, UNBOUND_ACTION_KINDS
 
+        self.assertIn("unheat", UNBOUND_ACTION_KINDS)
+        self.assertNotIn("unheat", SEMANTIC_BINDINGS)
+
+        self._fill()
+        self.engine.apply(
+            HeatAction(
+                "robinson", "clay-pot", "fire-camp",
+                self.engine.world.revision, "test",
+            )
+        )
+        event = self.engine.apply(
+            UnheatAction(
+                "robinson", "clay-pot", self.engine.world.revision, "test"
+            )
+        )["event"]
+
+        self.assertEqual(event["status"], "accepted")
         self.assertIn("semantic_binding", event)
         self.assertIsNone(event["semantic_binding"])
+
+    def test_every_other_action_kind_is_bound(self) -> None:
+        """C4, honestly scoped: six of seven, and the seventh is named."""
+        from world_substrate.semantic import SEMANTIC_BINDINGS, UNBOUND_ACTION_KINDS
+
+        kinds = set(self.engine.registry.action_kinds())
+        self.assertEqual(kinds - set(SEMANTIC_BINDINGS), UNBOUND_ACTION_KINDS)
+        for kind in sorted(kinds & set(SEMANTIC_BINDINGS)):
+            with self.subTest(kind=kind):
+                binding = SEMANTIC_BINDINGS[kind]
+                # Every binding names a rule that is actually registered.
+                self.assertEqual(
+                    binding.mechanic_id, self.engine.registry.action(kind).rule_id
+                )
+                self.assertTrue(binding.sense_id.startswith("lc:"))
+                self.assertTrue(
+                    all(role.startswith("lc.role.") for role in binding.roles.values())
+                )
 
     def test_a_process_names_itself_as_bearer_and_has_no_observation(self) -> None:
         self.engine.advance(1)

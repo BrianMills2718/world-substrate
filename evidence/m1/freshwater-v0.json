@@ -506,7 +506,24 @@
         },
         "rule_id": "mechanism.liquid.fill",
         "rule_version": "1",
-        "semantic_binding": null,
+        "semantic_binding": {
+          "binding_id": "binding.fill.v0",
+          "causal_bearer": "actor",
+          "causal_class": "primitive_intentional_action",
+          "interpretation_limits": [
+            "Sense and roles are semantic description only; the installed mechanic alone validates arguments and computes every effect (the pinned extraction states this as the binding's own authority note).",
+            "Shares lc:collect_acquire with `take` and is distinguished only by its specialization. The subset has no predicate for filling a container specifically, so this is the nearest recorded sense rather than an exact one.",
+            "The sense carries no notion of what is acquired alongside the volume; salt and pathogens travel with it because the mechanic says so."
+          ],
+          "mechanic_id": "mechanism.liquid.fill",
+          "roles": {
+            "acquired_liquid": "lc.role.individuals",
+            "actor": "lc.role.agent",
+            "source": "lc.role.source"
+          },
+          "sense_id": "lc:collect_acquire",
+          "specialization": "acquisition into a carried container"
+        },
         "status": "precondition_failed",
         "tick": 0,
         "world_revision": 0
@@ -832,7 +849,7 @@
     "retained_trace_matches": true,
     "semantic_checkpoint_matched": true,
     "trace_ref": "evidence/m1/transfer-v0.json",
-    "trace_sha256": "aad4abcea2e2ac574a565834b62e2ee2290abb7066e3166f01daf7c24be15678",
+    "trace_sha256": "ea408b7a977d08e9083372c8f961f7f9eb8d9e6d3ffc867113c7bdadd1ad2608",
     "vessel_identity_preserved": true
   },
   "schema_version": "world-substrate-evidence/freshwater-v0"

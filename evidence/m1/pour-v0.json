@@ -413,7 +413,24 @@
         },
         "rule_id": "mechanism.liquid.fill",
         "rule_version": "1",
-        "semantic_binding": null,
+        "semantic_binding": {
+          "binding_id": "binding.fill.v0",
+          "causal_bearer": "actor",
+          "causal_class": "primitive_intentional_action",
+          "interpretation_limits": [
+            "Sense and roles are semantic description only; the installed mechanic alone validates arguments and computes every effect (the pinned extraction states this as the binding's own authority note).",
+            "Shares lc:collect_acquire with `take` and is distinguished only by its specialization. The subset has no predicate for filling a container specifically, so this is the nearest recorded sense rather than an exact one.",
+            "The sense carries no notion of what is acquired alongside the volume; salt and pathogens travel with it because the mechanic says so."
+          ],
+          "mechanic_id": "mechanism.liquid.fill",
+          "roles": {
+            "acquired_liquid": "lc.role.individuals",
+            "actor": "lc.role.agent",
+            "source": "lc.role.source"
+          },
+          "sense_id": "lc:collect_acquire",
+          "specialization": "acquisition into a carried container"
+        },
         "status": "accepted",
         "tick": 0,
         "world_revision": 1
@@ -812,7 +829,23 @@
         },
         "rule_id": "mechanism.thermal.heat",
         "rule_version": "1",
-        "semantic_binding": null,
+        "semantic_binding": {
+          "binding_id": "binding.heat.v0",
+          "causal_bearer": "actor",
+          "causal_class": "primitive_intentional_action",
+          "interpretation_limits": [
+            "Sense and roles are semantic description only; the installed mechanic alone validates arguments and computes every effect (the pinned extraction states this as the binding's own authority note).",
+            "The predicate is 'apply heat to water'; placing a vessel on a heat source is the application, not the boiling. Whether the contents ever reach temperature, and whether that treats them, is owned by process.thermal.vessels.",
+            "The pinned subset types lc.role.food as a LiquidMixture, so this binding does not extend to heating a vessel that holds no liquid."
+          ],
+          "mechanic_id": "mechanism.thermal.heat",
+          "roles": {
+            "actor": "lc.role.cook",
+            "vessel": "lc.role.food"
+          },
+          "sense_id": "lc:boil_apply_heat_water",
+          "specialization": null
+        },
         "status": "accepted",
         "tick": 1,
         "world_revision": 5
@@ -3160,7 +3193,24 @@
         },
         "rule_id": "mechanism.liquid.pour",
         "rule_version": "1",
-        "semantic_binding": null,
+        "semantic_binding": {
+          "binding_id": "binding.pour.v0",
+          "causal_bearer": "actor",
+          "causal_class": "primitive_intentional_action",
+          "interpretation_limits": [
+            "Sense and roles are semantic description only; the installed mechanic alone validates arguments and computes every effect (the pinned extraction states this as the binding's own authority note).",
+            "lc:move_change_location is a general relocation sense and its self_mover role expects the agent to be what moves. Here the agent moves a liquid, so the binding is a specialization rather than a direct reading of the predicate.",
+            "Mixing is not implied by relocation. What happens when two liquids meet is computed by mechanism.liquid.pour."
+          ],
+          "mechanic_id": "mechanism.liquid.pour",
+          "roles": {
+            "actor": "lc.role.self_mover",
+            "destination": "lc.role.goal",
+            "moved_liquid": "lc.role.theme"
+          },
+          "sense_id": "lc:move_change_location",
+          "specialization": "relocation of a liquid between containers"
+        },
         "status": "accepted",
         "tick": 11,
         "world_revision": 47
