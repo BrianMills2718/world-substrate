@@ -40,6 +40,8 @@ The intended result is a wide compositional space rather than an enumerated list
 | Consolidated research findings | [Research synthesis](../research/synthesis.md) |
 | Full discussion lineage and disposition | [Discussion traceability](../research/discussion-traceability.md) |
 | Reference-world expectations | [Reference worlds](../../reference_worlds/README.md) |
+| The contested two-agent world | [Kitchen audit](../audits/kitchen-contested-world.md) |
+| Rendered runs a person can read | `evidence/renders/` |
 
 ## Concepts and terminology
 
@@ -68,12 +70,14 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 
 ## Where this actually stands
 
-The substrate works and the project has not started the part that matters.
-Every contract the prototype set out to test holds; no world built on it has
-been shown to anyone, and the goal is one worth showing. See
-[the roadmap's end goal](../../roadmap/README.md#outcome-and-success-criteria)
-for what that means and the three questions still open. The inventory below is
-what exists, not what is left.
+The substrate works, and the part that matters has started.
+Every contract the prototype set out to test holds. A third world — the kitchen
+— now runs a complete two-agent service, which is the first thing here a person
+could be shown, though not yet without narration. See
+[the roadmap's active slice](../../roadmap/README.md#vertical-slices-and-current-work)
+for where it stands and the next two increments, and
+[the kitchen audit](../audits/kitchen-contested-world.md) for what the run does.
+The inventory below is what exists, not what is left.
 
 ## What exists now?
 

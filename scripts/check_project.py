@@ -43,6 +43,8 @@ REQUIRED = (
     "docs/audits/m2-give-path-audit.md",
     "docs/audits/m3-overheat-authoring-experiment.md",
     "docs/audits/m4-spill-experiment.md",
+    "docs/audits/m7b-relational-authoring.md",
+    "docs/audits/kitchen-contested-world.md",
     "docs/audits/m5-policy-consumer.md",
     "docs/audits/m6-second-world.md",
     "docs/audits/m7-authoring-rate.md",
