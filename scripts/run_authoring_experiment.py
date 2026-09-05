@@ -130,6 +130,7 @@ def _grade(value: dict) -> dict[str, object]:
         "fires": False,
         "scope_clean": None,
         "novel": None,
+        "relational": False,
         "assay_findings": None,
         "note": "",
     }
@@ -141,6 +142,10 @@ def _grade(value: dict) -> dict[str, object]:
     grade["declaration_valid"] = True
     grade["mechanic_id"] = declared.mechanic_id
     grade["rationale"] = declared.rationale
+    # The one dimension that changed between this run and the first: whether
+    # the proposal reaches a second entity at all. Everything else is graded
+    # exactly as before so the two runs stay comparable.
+    grade["relational"] = bool(declared.selector.get("related"))
 
     registry = build_registry()
     existing = {rule.rule_id for rule in registry.processes()}
@@ -248,7 +253,8 @@ def main() -> int:
             f"  attempt {index:>2}: "
             f"{grade.get('mechanic_id', '(invalid)')} | "
             f"installs={grade['installs']} fires={grade['fires']} "
-            f"scope_clean={grade['scope_clean']} assay={grade['assay_findings']}"
+            f"scope_clean={grade['scope_clean']} "
+            f"relational={grade.get('relational')} assay={grade['assay_findings']}"
         )
 
     usable = [
@@ -273,6 +279,7 @@ def main() -> int:
             "fired": sum(bool(a["grade"]["fires"]) for a in attempts),
             "scope_violations": sum(a["grade"]["scope_clean"] is False for a in attempts),
             "usable": len(usable),
+            "relational": sum(bool(a["grade"].get("relational")) for a in attempts),
             "distinct_mechanic_ids": len(
                 {a["grade"].get("mechanic_id") for a in attempts} - {None}
             ),
