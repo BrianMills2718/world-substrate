@@ -89,6 +89,46 @@ class FactsAreComputedFromBehaviourNotDeclarations(unittest.TestCase):
             "the fact survived the write-scope guard being disabled",
         )
 
+    def test_replay_is_read_off_an_actual_replay(self):
+        import world_substrate.engine as engine_module
+
+        saved = engine_module.Engine.replay
+        engine_module.Engine.replay = lambda self: {"ok": False}
+        try:
+            live = check_project._live_facts(REPO)
+        finally:
+            engine_module.Engine.replay = saved
+        self.assertFalse(
+            live["exact_replay_works"],
+            "the fact survived replay reporting failure, so it is not reading "
+            "an actual replay",
+        )
+
+    def test_assays_are_counted_by_invoking_them(self):
+        import world_substrate.assay as assay_module
+
+        def explode(*args, **kwargs):
+            raise RuntimeError("assay is broken")
+
+        saved = assay_module.assay_conservation
+        assay_module.assay_conservation = explode
+        try:
+            with self.assertRaises(RuntimeError):
+                check_project._live_facts(REPO)
+        finally:
+            assay_module.assay_conservation = saved
+
+    def test_an_assay_returning_the_wrong_shape_lowers_the_count(self):
+        import world_substrate.assay as assay_module
+
+        saved = assay_module.assay_conservation
+        assay_module.assay_conservation = lambda *a, **k: None
+        try:
+            live = check_project._live_facts(REPO)
+        finally:
+            assay_module.assay_conservation = saved
+        self.assertEqual(live["interaction_assays_runnable"], 2)
+
     def test_a_removed_binding_moves_the_count(self):
         from world_substrate import semantic
 
@@ -128,6 +168,16 @@ class DriftIsReported(unittest.TestCase):
     def test_a_wrong_list_is_reported(self):
         failures = self.drift("unbound_action_kinds", ["fill", "unheat"])
         self.assertTrue(any("unbound_action_kinds" in f for f in failures))
+
+    def test_a_broken_replay_is_reported(self):
+        failures = self.drift("exact_replay_works", False)
+        self.assertTrue(any("exact_replay_works" in f for f in failures))
+        self.assertTrue(any("core-v0" in f for f in failures))
+
+    def test_a_missing_assay_is_reported(self):
+        failures = self.drift("interaction_assays_runnable", 2)
+        self.assertTrue(any("interaction_assays_runnable" in f for f in failures))
+        self.assertTrue(any("mechanic-profile-v0" in f for f in failures))
 
     def test_read_scope_enforcement_would_be_reported_if_it_shipped(self):
         # transition-envelope-v0.md says reads are unenforced. If that ever

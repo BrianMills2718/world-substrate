@@ -1,6 +1,10 @@
 # Core contract v0
 
 **Status:** implemented M1 contract  
+<!-- status-facts
+exact_replay_works: true
+-->
+
 **Scope note:** deterministic time and exact replay below describe the promoted M1 seam. Under [Decision 002](../decisions/002-observability-and-replay.md), they are not universal requirements for later contract versions. This document is preserved rather than silently rewritten.
 
 This contract defines the minimum neutral seam needed to reproduce the Castaway freshwater vertical without embedding Castaway-specific names in the engine.

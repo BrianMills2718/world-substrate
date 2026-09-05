@@ -109,9 +109,10 @@ stayed green.
   - M4 control: only accounting caught a destroyed quantity.
 - Each basis has a stateable blind spot: declarations inherit their inputs'
   omissions; behaviour is blind behind an existing refusal; accounting only
-  covers quantities the ledger models — here, spilled salt and pathogens leave
-  the world unaccounted, because `spilled_ml` is a bare integer while
-  `evaporated` is a full liquid vector.
+  covers quantities the ledger models — at the time of this experiment spilled
+  salt and pathogens left the world unaccounted, because `spilled_ml` was a
+  bare integer while `evaporated` was a full liquid vector. That asymmetry was
+  closed on 2026-09-04; the blind spot it illustrates is not.
 
 The honest limit remains: two mechanics, one world, one author. What M4 adds
 over M3 is that the second mechanic was not built to be caught, and the most
@@ -119,11 +120,14 @@ useful finding — the behavioural assay's silence — was not anticipated.
 
 ## Consequent findings for the roadmap
 
-1. `physical_ledger` is asymmetric: `evaporated` tracks the full liquid vector,
-   `spilled_ml` tracks volume only. Spilled salt and pathogens vanish
-   unaccounted. Either make spill a `LiquidState` or record the limitation in
-   the contract.
-2. `physical_ledger.overflow_ml` is still written by nothing.
+1. **Resolved 2026-09-04.** `physical_ledger` was asymmetric: `evaporated`
+   tracked the full liquid vector, `spilled_ml` tracked volume only, and
+   spilled salt and pathogens vanished unaccounted. `spilled` is now a
+   `LiquidState`, and `assay_conservation` balances any quantity the caller
+   states an initial total for rather than volume alone.
+2. **Resolved 2026-09-04.** `physical_ledger.overflow_ml` was written by
+   nothing and is removed rather than populated: a ledger field no mechanic
+   maintains is a false accounting guarantee.
 3. A mechanic that under-writes a path it declared is invisible to the scope
    guard by design. Conservation caught it here; that will not generalise to
    quantities the ledger does not model.

@@ -64,13 +64,27 @@ class ProcessProgressIsVisible(unittest.TestCase):
         self.assertEqual((row["current"], row["required"]), (1, 2))
 
     def test_progress_ends_when_the_water_is_treated(self):
+        # An empty list here must mean "nothing in flight", not "nobody is
+        # reporting". Mutation-testing this file showed the three empty-list
+        # assertions all passed with `progress()` deleted, so each one now
+        # states that the reporter is present as well.
+        from world_substrate.rules import ReportsProgress
+
         engine = boiling_pot()
         engine.advance(5)
         self.assertEqual(engine.world.entities["clay-pot"].liquid.pathogens, 0)
+        self.assertTrue(
+            any(isinstance(p, ReportsProgress) for p in engine.registry.processes())
+        )
         self.assertEqual(engine.discover("robinson")["progress"], [])
 
     def test_nothing_in_flight_reports_nothing(self):
+        from world_substrate.rules import ReportsProgress
+
         engine = build_freshwater_engine()
+        self.assertTrue(
+            any(isinstance(p, ReportsProgress) for p in engine.registry.processes())
+        )
         self.assertEqual(engine.discover("robinson")["progress"], [])
 
     def test_a_policy_actually_reads_it(self):
@@ -82,8 +96,17 @@ class ProcessProgressIsVisible(unittest.TestCase):
 
     def test_a_world_whose_processes_declare_none_is_unaffected(self):
         # The substrate cannot know which of a world's fields count toward
-        # something, so progress is declared. The workshop declares none.
-        self.assertEqual(build_workshop().discover("mira")["progress"], [])
+        # something, so progress is declared. The workshop declares none --
+        # asserted directly, so this stays distinguishable from a freshwater
+        # world whose reporter has gone missing.
+        from world_substrate.rules import ReportsProgress
+
+        engine = build_workshop()
+        self.assertTrue(engine.registry.processes())
+        self.assertFalse(
+            any(isinstance(p, ReportsProgress) for p in engine.registry.processes())
+        )
+        self.assertEqual(engine.discover("mira")["progress"], [])
 
 
 class ValueDestroyingActionsAreMarked(unittest.TestCase):
