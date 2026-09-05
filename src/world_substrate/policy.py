@@ -117,6 +117,34 @@ def describe_action(action: dict[str, Any]) -> str:
     return f"{kind}: " + ", ".join(str(part) for part in parts) if parts else str(kind)
 
 
+def _annotations(row: dict[str, Any]) -> str:
+    """Everything the engine already knows about an offered action.
+
+    Two channels, and only one of them was ever rendered.
+
+    `consequences` says what a permitted action would destroy. `checks` are the
+    rule's own findings, and a check that passes can still carry a warning --
+    `DrinkRule` attaches "Warning: Too hot to drink safely" with
+    `ok=True`, because the action remains possible and simply causes
+    rule-defined harm.
+
+    That warning existed on the affordance in the original M5 run and was
+    dropped here. The policy drank 80C water it had correctly boiled and lost
+    40 health to `hot_harm_per_250ml`, having never been shown the sentence the
+    engine had already written for it. The re-run lost 20 the same way. Adding
+    a second warning channel while this one stayed unrendered would have left
+    the same gap open, so both are rendered now.
+    """
+    parts: list[str] = []
+    for check in row.get("checks", []):
+        label = str(check.get("label", ""))
+        if check.get("ok") and label.lower().startswith("warning"):
+            parts.append(label)
+    if row.get("consequences"):
+        parts.append("destroys: " + "; ".join(row["consequences"]))
+    return "  [" + "; ".join(parts) + "]" if parts else ""
+
+
 def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, Any]:
     """A compact, lossy view of the observation for a policy to read.
 
@@ -190,11 +218,7 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, An
                 "number": index,
                 "action_id": row["action_id"],
                 "description": describe_action(row["action"])
-                + (
-                    "  [destroys: " + "; ".join(row["consequences"]) + "]"
-                    if row.get("consequences")
-                    else ""
-                ),
+                + _annotations(row),
             }
             for index, row in enumerate(page["available"], start=1)
         ],

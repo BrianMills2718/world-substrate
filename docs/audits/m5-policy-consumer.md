@@ -71,6 +71,27 @@ computed 40 points of harm.
 That is the entire architectural thesis, demonstrated by an actual model making
 an actual mistake rather than argued in a document.
 
+**Correction, 2026-09-04: the harm was not the re-contamination.** Replaying the
+recorded actions deterministically shows the pot held **zero pathogens** at t14
+-- the fills at t10 and t12 did re-contaminate it, and continued boiling cleaned
+it again before the drink. The water was 80.5C against
+`DrinkRule.safe_drinking_temperature_c = 45`, and the damage was
+`hot_harm_per_250ml = 10` across four portions: exactly the 40 observed.
+Pathogen harm would have been 12 a portion, or 48. The model was scalded, not
+poisoned.
+
+The thesis stands unchanged -- a stated belief did not move the world -- but the
+belief that was wrong was about temperature, not treatment. This audit asserted
+the wrong mechanism until a replay of already-committed evidence checked it.
+
+**And the engine had already written the warning.** `DrinkRule` attaches
+`Warning: Too hot to drink safely` to that affordance with `ok=True`, because
+the action stays possible and simply causes rule-defined harm. It was on the
+`discover()` page at t14. `policy.present()` rendered `describe_action` alone and
+dropped every check, so the model was never shown a sentence the world had
+already composed for it. Both runs lost health to that omission. It is rendered
+now.
+
 ## Two real weaknesses this exposed
 
 **The observation does not communicate progress.** Turns 3–9 are a
@@ -121,7 +142,9 @@ at t11. Reproduced deterministically: two ticks after pouring, the cup is at
 `hot_harm_per_250ml = 10` over two portions -- exactly the 20 observed -- and
 the water carried zero pathogens. It was scalded, not poisoned.
 
-That is the same shape as the boiling gap: the policy reasons about a threshold
+That is the same shape as the boiling gap -- and, per the correction above, the
+same *threshold* that took 40 points in the original run. Both failures were
+temperature. The policy reasons about a limit
 the world enforces and the observation does not expose, guesses how long to
 wait, and is wrong. `ThermalProcess.progress` reports vessels *accumulating*
 toward treatment -- it selects on `heat_source_id is not None` and
@@ -134,6 +157,42 @@ moved 60 to 80. It is that **this failure is structural rather than anecdotal**:
 it regenerates at every threshold the world checks and the observation omits, so
 it is a property of the seam design, not a memorable one-off. Anything built on
 the assumption that a fixed seam stops producing it should expect otherwise.
+
+## Three runs, one variable: what the policy was shown
+
+Rendering the engine's own warnings turned the re-run into the third point of a
+controlled series. Same world, same model, same 16 turns; the only thing that
+changed between them is how much of what the world already knew reached the
+policy.
+
+| run | what the affordance list showed | final health | turns where belief contradicted state |
+| --- | --- | --- | --- |
+| [v0](../../evidence/m5/llm-policy-v0.json) | action names only | 60 | 5 |
+| [v1](../../evidence/m5/llm-policy-postfix-v1.json) | + process progress, + value destroyed | 80 | 2 |
+| [v2](../../evidence/m5/llm-policy-warned-v2.json) | + the rule's own warnings | **100** | 2 |
+
+The no-foresight baseline is 4 in all three.
+
+In v2 the policy drinks at 41C, 36C, 32C and 30C -- every one under the 45C
+limit -- because it was finally told which offers were too hot. It takes no
+damage at all. Nothing about the world, the mechanics or the model changed
+across the three runs.
+
+That is a stronger result than the original single trace. The interesting claim
+is not "an agent made a mistake"; it is that **the entire difference between a
+policy losing 96 health and losing none was how much of the world's own
+knowledge the observation surfaced.** The mechanics were correct throughout and
+never moved.
+
+Cost: $0.0045 for v1, $0.0043 for v2.
+
+Rendered side by side, belief against replayed world state, by
+`scripts/render_belief_vs_truth.py`:
+[v0](../../evidence/renders/belief-vs-truth-v0.html),
+[v1](../../evidence/renders/belief-vs-truth-v1.html),
+[v2](../../evidence/renders/belief-vs-truth-v2.html). No model is called to
+build those; the engine is deterministic, so replaying the recorded actions
+recovers exact state at every turn.
 
 ## Limits
 
