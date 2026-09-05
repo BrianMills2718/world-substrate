@@ -35,10 +35,20 @@ Castaway is six entities, the workshop seven — because their job was to prove
 the machinery transfers between them, which it does. There is no interface, no
 deployment, and nothing outside this repository uses it.
 
-If you are picking this up cold, read
-[the roadmap's end goal](roadmap/README.md#outcome-and-success-criteria) first.
-It states the goal, the three questions still open, and what to do before
-proposing any work.
+**The flagship work has started.** A third world — a kitchen where two cooks
+with different orders share one knife, two burners, and exactly enough
+ingredients that waste loses a dish — runs a complete service: both orders
+filled, with the knife handed over twice by agents that cannot talk to each
+other. See [the kitchen audit](docs/audits/kitchen-contested-world.md).
+
+If you are picking this up cold:
+
+1. **Watch a run** — open `evidence/renders/kitchen-full-service.html`. Each
+   agent's stated reasoning beside what the world actually was.
+2. **Run one** — `python scripts/run_contested_world.py --world kitchen --turns 12`
+   uses scripted policies and costs nothing.
+3. **Read [the roadmap's active slice](roadmap/README.md#vertical-slices-and-current-work)**
+   for the next two increments and the exact commands.
 
 ## What phase one established
 
@@ -75,6 +85,17 @@ python scripts/run_give_exchange_probe.py --check
 python scripts/run_overheat_assay_probe.py --check
 python scripts/run_spill_assay_probe.py --check
 python scripts/run_authoring_experiment.py --check --output evidence/m7/authoring-attempts-relational-v1.json
+```
+
+Two things here are run rather than checked, because they show behaviour rather
+than pin it:
+
+```sh
+# a contested run with scripted policies, no model calls
+python scripts/run_contested_world.py --world kitchen --turns 12
+
+# re-render a retained policy trace as belief beside replayed world state
+python scripts/render_belief_vs_truth.py evidence/m5/llm-policy-v0.json
 ```
 
 The last of those re-grades the M7b declarations without calling a model. The

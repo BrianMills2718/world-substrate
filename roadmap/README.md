@@ -173,43 +173,53 @@ observable attempt or trigger
 
 Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
 
-### Active slice: none — the next one needs a decision that has not been made
+### Active slice: make the kitchen worth showing someone
 
-The Open obligations slice is complete; what it did is recorded in the
-obligations table below and in the audits, and the goal document that drove it
-is retired rather than kept as a second roadmap.
+The three questions under the end goal are **answered**, so this section no
+longer says to go and ask them:
 
-No slice is specified here, and specifying one would be guessing. The end goal
-above names three open questions — which world, what a viewer sees, what makes
-it impressive — and each leads somewhere different. Picking one before Brian
-does would mean building a flagship against an assumption.
+- **Which world.** A third one, the kitchen, built against a measurement rather
+  than a taste: the two-agent Castaway run idled six turns in ten because that
+  world has nothing to contend over.
+- **What makes it impressive.** Two agents that cannot talk to each other,
+  contending over one knife, dividing a scarce set of ingredients and taking
+  turns. Not an agent making a mistake — the mistake-based demo died when the
+  policy shown everything scored a perfect 100.
+- **What a viewer sees.** A rendered run: each agent's stated reasoning beside
+  what the world actually was. `evidence/renders/` holds four of them.
 
-**What a fresh agent should do first, before proposing any slice.** In this
-order, and none of it needs permission:
+**Where it stands.** A complete 30-turn service runs: both orders filled, Bo at
+turn 9 and Ama at turn 17, with the knife handed over twice and named both
+times. That is the first artifact in this project a person could be shown. It
+is not yet one they could be shown *without narration*.
 
-1. **Run the thing.** `python scripts/run_llm_policy.py --thirsty --turns 8`
-   costs nothing and prints a real trace. Then read
-   [the M5 audit](../docs/audits/m5-policy-consumer.md), which is the closest
-   this project has to a story worth telling: a model boiled its water, then
-   refilled the pot from the contaminated pool, drank it believing it was
-   treated, and lost 40 health to a mechanic that did not care what it
-   believed.
-2. **Look at how small the worlds are.** `reference_worlds/castaway/freshwater-v0.json`
-   and `reference_worlds/workshop/bench-v0.json` are the entire content of both
-   worlds. Six and seven entities. This is the gap between the substrate and
-   the goal, and it is visible in two files.
-3. **Read the two audits that bound what is known**:
-   [M6](../docs/audits/m6-second-world.md) established that the machinery
-   transfers and *no* mechanic does — every world's content is written from
-   nothing — and [M7b](../docs/audits/m7b-relational-authoring.md) measured how
-   much a model can write for you, which is some, and less than hoped.
-4. **Then ask Brian the three questions**, with a recommendation rather than a
-   menu.
+**The next two increments, in order.** Neither needs permission and both are
+small.
 
-**What not to do.** Do not start hardening, refactoring, or adding contracts.
-The prototype is over-verified relative to what it does: 175 tests and ten
-pinned evidence probes for two worlds nobody has watched. More of that moves
-nothing toward the goal.
+1. **Give the world a terminal state.** After the last plating at t17, thirteen
+   turns of aimless taking and putting down follow, because nothing in the
+   kitchen knows service is over. A run that ends when both orders are filled
+   is the difference between a trace and a story. Start at
+   `reference_worlds/kitchen/mechanics.py`; the orders already carry `filled`.
+2. **Repeat the service two or three times.** The turn-taking and the knife
+   handover are n=1. About $0.02 a run under the standing cap:
+   `python scripts/run_contested_world.py --world kitchen --model openrouter/openai/gpt-5.6-luna --turns 30 --output <path>`.
+   If the handover is robust it is the demonstration; if it was one good
+   sample, that is the more important thing to know.
+
+**What a fresh agent should do first.** Both cost nothing:
+
+1. **Watch a run.** Open `evidence/renders/kitchen-full-service.html` — the
+   complete service, both columns. Then
+   `evidence/renders/belief-vs-truth-v0.html` and `-v2.html`, which are the same
+   Castaway world before and after the observation seam was repaired, 60 health
+   against 100.
+2. **Run one.** `python scripts/run_contested_world.py --world kitchen --turns 12`
+   uses scripted policies, costs nothing, and prints the contested loop.
+
+**What not to do.** Do not add contracts, hardening or further verification.
+There are 194 tests and ten pinned probes for three worlds, which is already
+more assurance than the thing has audience.
 
 ## Open obligations
 
@@ -317,16 +327,12 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 Nothing is in progress and the working tree is clean.
 
-The next action is a decision, not an implementation: which of the three
-questions under the end goal gets answered first. Until one is, any code
-written here is a guess at a flagship nobody specified.
+Give the kitchen a terminal state so a service ends when both orders are
+filled, then repeat the 30-turn service two or three times to find out whether
+the knife handover is robust or was one good sample. The Active slice section
+above has the detail and the exact commands.
 
-The cheapest thing that would inform that decision is the first step above —
-run the world, read the M5 audit, look at how small the two content files are.
-Half an hour, no spend, and it turns the goal from an adjective into a
-comparison.
-
-Model calls are authorized under a $2 cap and have cost **$0.085** to date
-(`get_cost(task=...)`: $0.00675 for the M5 policy run, $0.07816 for authoring
-across M7 and M7b, including pilots and one killed run). Read that figure from
-the observability DB rather than adding up per-run numbers.
+Model calls are authorized under a $2 cap and have cost **$0.123** to date.
+Read that figure from the observability DB with `get_cost(task=...)` across the
+`world-substrate-*` tasks rather than adding up per-run numbers; a previous
+version of this line went stale by counting them by hand.
