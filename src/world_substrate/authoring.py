@@ -20,7 +20,12 @@ from dataclasses import dataclass
 from dataclasses import fields as dataclass_fields
 from typing import Any
 
-from .model import BUILTIN_COMPONENT_TYPES, COMPONENT_TYPES, World
+from .model import (
+    BUILTIN_COMPONENT_TYPES,
+    COMPONENT_TYPES,
+    OWNER_REF_PATTERN,
+    World,
+)
 from .profile import MechanicPackage
 
 OPS = {
@@ -119,13 +124,22 @@ _SETTABLE_TYPES: dict[str, tuple[type, ...]] = {
 _NUMERIC_ANNOTATIONS = frozenset({"int", "float", "int | float", "int | None"})
 
 
-def _field_annotation(path: str) -> str:
+def _strip_relation(path: str, relation: str | None) -> str:
+    """Remove a leading `<relation>.` binding, if the path carries one."""
+    if relation and path.startswith(f"{relation}."):
+        return path[len(relation) + 1 :]
+    return path
+
+
+def _field_annotation(path: str, relation: str | None = None) -> str:
     """The declared type of the field a path names, or raise.
 
-    Accepts `components.<component>.<field>` and `<builtin>.<field>`. Anything
-    that does not resolve to a real field of a real component is a defect in
-    the declaration, not a condition to skip at runtime.
+    Accepts `components.<component>.<field>`, `<builtin>.<field>`, and either
+    of those behind a bound relation name. Anything that does not resolve to a
+    real field of a real component is a defect in the declaration, not a
+    condition to skip at runtime.
     """
+    path = _strip_relation(path, relation)
     segments = path.split(".")
     if segments[0] == "components":
         if len(segments) != 3:
@@ -178,9 +192,9 @@ def _check_value(path: str, annotation: str, value: Any, what: str) -> None:
         )
 
 
-def _check_effect(effect: dict[str, Any]) -> None:
+def _check_effect(effect: dict[str, Any], relation: str | None = None) -> None:
     path = effect["path"]
-    annotation = _field_annotation(path)
+    annotation = _field_annotation(path, relation)
     value = effect.get("value")
     if effect["op"] == "set":
         _check_value(path, annotation, value, "effect target")
@@ -193,6 +207,90 @@ def _check_effect(effect: dict[str, Any]) -> None:
         raise DeclarationError(
             f"{effect['op']} on {path} needs an integer, got {value!r}"
         )
+
+
+# --- One relation between two entities --------------------------------------
+#
+# Until now a mechanic could only select an entity by its own components and
+# write fields on that same entity. Nothing could say "the worker holding this
+# tool", so no authored mechanic could express a relation -- and the space of
+# expressible mechanics was exactly "clamp or decay a number on one entity".
+# M7 read that ceiling as a property of the model: four of nine proposals were
+# bounds or slow decay, and two of those were inert. A language that cannot
+# express anything else cannot distinguish a model with nothing to say from a
+# model with no way to say it.
+#
+# The addition is deliberately one relation, not a join language: a selected
+# entity names another through one of its own fields, the related entity is
+# bound to a name, and conditions and effects may reach it through that name.
+# That is enough for "a held tool tires its holder" and "attaching a part
+# marks its assembly", and it makes a real write-scope violation possible for
+# the first time -- a mechanic can now reach an entity it was not selected on.
+
+
+def _related_entity(world: World, entity: Any, via: str) -> Any:
+    """The entity named by a field on `entity`, or None.
+
+    Accepts both reference shapes this substrate uses: an ownership reference
+    (`actor:mira`), whose target names the entity, and a bare entity id
+    (`components.part.attached_to`).
+    """
+    value = _resolve(entity, via)
+    if not isinstance(value, str) or not value:
+        return None
+    target = value.partition(":")[2] if OWNER_REF_PATTERN.match(value) else value
+    return world.entities.get(target)
+
+
+def _check_relation(selector: dict[str, Any]) -> str | None:
+    """Validate `selector.related` and return the name it binds, if any."""
+    related = selector.get("related")
+    if related is None:
+        return None
+    if not isinstance(related, dict):
+        raise DeclarationError("selector.related must be an object")
+    unknown = sorted(set(related) - {"via", "as", "has_component", "where"})
+    if unknown:
+        raise DeclarationError(f"unknown keys in selector.related: {unknown}")
+    name = related.get("as")
+    if not isinstance(name, str) or not name.isidentifier():
+        raise DeclarationError(
+            f"selector.related.as must be an identifier: {name!r}"
+        )
+    if name == "components" or name in BUILTIN_COMPONENT_TYPES:
+        raise DeclarationError(
+            f"selector.related.as {name!r} collides with a component name"
+        )
+    via = related.get("via")
+    if not isinstance(via, str) or not via:
+        raise DeclarationError("selector.related.via must name a path")
+    # The field the relation travels through must itself be a real string
+    # field on the selected entity -- otherwise the relation silently resolves
+    # to nothing and the mechanic is inert, which is the failure this whole
+    # language is being tightened against.
+    annotation = _field_annotation(via)
+    if annotation not in ("str", "str | None"):
+        raise DeclarationError(
+            f"selector.related.via must name a string field; {via} is {annotation}"
+        )
+    component = related.get("has_component")
+    if component is not None and component not in COMPONENT_TYPES:
+        raise DeclarationError(
+            f"unknown component in selector.related: {component!r}"
+        )
+    for clause in related.get("where", []) or []:
+        if clause.get("op") not in OPS:
+            raise DeclarationError(f"unknown comparison: {clause.get('op')!r}")
+        clause_path = clause.get("path")
+        if not isinstance(clause_path, str) or not clause_path:
+            raise DeclarationError("each related condition needs a path")
+        _check_value(
+            clause_path,
+            _field_annotation(clause_path),
+            clause.get("value"),
+            "related condition",
+        )
+    return name
 
 
 @dataclass(frozen=True)
@@ -228,6 +326,7 @@ class DeclaredMechanic:
         selector = value["selector"]
         if not isinstance(selector, dict) or "has_component" not in selector:
             raise DeclarationError("selector must name has_component")
+        relation = _check_relation(selector)
         effects = value["effects"]
         if not isinstance(effects, list) or not effects:
             raise DeclarationError("effects must be a nonempty list")
@@ -242,7 +341,7 @@ class DeclaredMechanic:
             # A component path must reach a field: components.<name>.<field>.
             # Writing a whole component is not expressible in this language,
             # and must be refused when declared rather than crash when applied.
-            _check_effect(effect)
+            _check_effect(effect, relation)
         for clause in selector.get("where", []) or []:
             if clause.get("op") not in OPS:
                 raise DeclarationError(f"unknown comparison: {clause.get('op')!r}")
@@ -254,7 +353,7 @@ class DeclaredMechanic:
             # installs cleanly and does nothing for the rest of the run.
             _check_value(
                 clause_path,
-                _field_annotation(clause_path),
+                _field_annotation(clause_path, relation),
                 clause.get("value"),
                 "selector condition",
             )
@@ -303,12 +402,11 @@ class CompiledMechanic:
         self.order = declared.order
         self.read_paths = declared.reads
         self.write_paths = declared.writes
+        self._related = declared.selector.get("related") or None
+        self._relation = self._related.get("as") if self._related else None
 
-    def _matches(self, entity: Any) -> bool:
-        selector = self._declared.selector
-        if entity.components.get(selector["has_component"]) is None:
-            return False
-        for clause in selector.get("where", []) or []:
+    def _holds(self, clauses: Any, entity: Any) -> bool:
+        for clause in clauses or []:
             actual = _resolve(entity, clause["path"])
             if actual is None:
                 return False
@@ -319,16 +417,77 @@ class CompiledMechanic:
                 return False
         return True
 
+    def _bind(self, world: World, entity: Any) -> Any:
+        """The related entity for this selection, or None if there is none.
+
+        None means "this entity does not participate in the relation", which
+        is an ordinary non-match, not an error -- an unheld tool has no holder.
+        """
+        if self._related is None:
+            return None
+        other = _related_entity(world, entity, self._related["via"])
+        if other is None:
+            return None
+        component = self._related.get("has_component")
+        if component is not None and other.components.get(component) is None:
+            return None
+        if not self._holds(self._related.get("where"), other):
+            return None
+        return other
+
+    def _target(self, entity: Any, related: Any, path: str) -> tuple[Any, str]:
+        """Which entity a path addresses, and the path relative to it."""
+        if self._relation and path.startswith(f"{self._relation}."):
+            return related, path[len(self._relation) + 1 :]
+        return entity, path
+
+    def _matches(self, world: World, entity: Any) -> tuple[bool, Any]:
+        selector = self._declared.selector
+        if entity.components.get(selector["has_component"]) is None:
+            return False, None
+        related = self._bind(world, entity)
+        if self._related is not None and related is None:
+            return False, None
+        for clause in selector.get("where", []) or []:
+            holder, path = self._target(entity, related, clause["path"])
+            actual = _resolve(holder, path)
+            if actual is None:
+                return False, None
+            try:
+                if not OPS[clause["op"]](actual, clause["value"]):
+                    return False, None
+            except TypeError:
+                return False, None
+        return True, related
+
     def due(self, world: World) -> bool:
-        return any(self._matches(entity) for entity in world.entities.values())
+        return any(
+            self._matches(world, entity)[0] for entity in world.entities.values()
+        )
 
     def apply(self, world: World) -> None:
         for entity in sorted(world.entities.values(), key=lambda item: item.entity_id):
-            if not self._matches(entity):
+            matched, related = self._matches(world, entity)
+            if not matched:
                 continue
             for effect in self._declared.effects:
-                _assign(entity, effect["path"], effect["op"], effect.get("value"))
+                holder, path = self._target(entity, related, effect["path"])
+                _assign(holder, path, effect["op"], effect.get("value"))
 
+
+_CONDITION_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["path", "op", "value"],
+    "properties": {
+        "path": {
+            "type": "string",
+            "description": "Entity-relative dotted path, e.g. components.tool.wear.",
+        },
+        "op": {"type": "string", "enum": sorted(OPS)},
+        "value": {"type": ["integer", "string", "boolean"]},
+    },
+}
 
 MECHANIC_SCHEMA: dict[str, Any] = {
     "type": "object",
@@ -361,7 +520,7 @@ MECHANIC_SCHEMA: dict[str, Any] = {
         "selector": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["has_component", "where"],
+            "required": ["has_component", "where", "related"],
             "properties": {
                 "has_component": {
                     "type": "string",
@@ -370,14 +529,43 @@ MECHANIC_SCHEMA: dict[str, Any] = {
                 "where": {
                     "type": "array",
                     "description": "Further conditions, all of which must hold.",
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": False,
-                        "required": ["path", "op", "value"],
-                        "properties": {
-                            "path": {"type": "string", "description": "Entity-relative dotted path, e.g. components.tool.wear."},
-                            "op": {"type": "string", "enum": sorted(OPS)},
-                            "value": {"type": ["integer", "string", "boolean"]},
+                    "items": _CONDITION_SCHEMA,
+                },
+                "related": {
+                    "type": ["object", "null"],
+                    "additionalProperties": False,
+                    "required": ["via", "as", "has_component", "where"],
+                    "description": (
+                        "Optional. Bind a second entity that the selected one "
+                        "names through one of its own string fields, so the "
+                        "mechanic can read and change that entity too. Null "
+                        "for a mechanic that acts on one entity alone."
+                    ),
+                    "properties": {
+                        "via": {
+                            "type": "string",
+                            "description": (
+                                "String field on the selected entity naming the "
+                                "other one: an ownership reference like "
+                                "ownership.owner_ref, or a plain entity id like "
+                                "components.part.attached_to."
+                            ),
+                        },
+                        "as": {
+                            "type": "string",
+                            "description": (
+                                "Name to bind it to. Prefix paths with it to "
+                                "reach that entity, e.g. holder.components.worker.fatigue."
+                            ),
+                        },
+                        "has_component": {
+                            "type": "string",
+                            "description": "The related entity must carry this component.",
+                        },
+                        "where": {
+                            "type": "array",
+                            "description": "Conditions on the related entity.",
+                            "items": _CONDITION_SCHEMA,
                         },
                     },
                 },
@@ -391,7 +579,14 @@ MECHANIC_SCHEMA: dict[str, Any] = {
                 "additionalProperties": False,
                 "required": ["path", "op", "value"],
                 "properties": {
-                    "path": {"type": "string", "description": "Entity-relative dotted path to change."},
+                    "path": {
+                        "type": "string",
+                        "description": (
+                            "Entity-relative dotted path to change. Prefix with "
+                            "the related entity's bound name to change that "
+                            "entity instead."
+                        ),
+                    },
                     "op": {"type": "string", "enum": sorted(EFFECT_OPS)},
                     "value": {"type": ["integer", "string", "boolean"]},
                 },

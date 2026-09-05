@@ -11,7 +11,7 @@ reviewed_through: 2026-09-04
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype  
-**Last outcome-bearing implementation:** closed the *class* M7's finding belonged to — an authored declaration can no longer write a value a field's type forbids, nor empty an identifier the substrate resolves  
+**Last outcome-bearing implementation:** M7b — the declaration language can express one relation between two entities, and re-running the authoring experiment measured how much of M7's triviality was the language's fault (some, and less than predicted)  
 **Current strategy frontier:** none selected — the prototype's stated success criteria are all met
 
 ## Outcome and success criteria
@@ -66,6 +66,8 @@ audits; findings live in the audit that produced them.
 - Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has; M4 records one that is live in the world today only because a second mechanic closed it.
 - A policy has driven this world (criterion 2, met): an LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief was wrong. See [the M5 audit](../docs/audits/m5-policy-consumer.md).
 - A second, materially different world reuses the contracts (criterion 6, met). **All six prototype success criteria are now met.** The workshop world shares no content with Castaway and the split was clean in both directions: the transition kernel, causal events, exact replay, the profile installer, all three assays and the policy seam transferred with no edits at all, while *zero* Castaway mechanics were reusable — `take`/`give` compute carrying capacity from `liquid.volume_ml` and cannot move a bolt. Four couplings had to be broken: `Entity` was a closed component set, `observe()` required `ActorState`, write-scope binding used Castaway's action vocabulary, and `policy.present()` read health and hydration. Two of the four were written earlier in the same session in modules named for their general purpose. See [the M6 audit](../docs/audits/m6-second-world.md).
+- The declaration language expresses one relation: a selected entity binds a second one it names through its own string field, and conditions and effects reach it by that name. This is the first time an authored mechanic can put a cause on one entity and its effect on another, and the first time an authored write-scope violation is possible rather than self-contradictory. See [the M7b audit](../docs/audits/m7b-relational-authoring.md).
+- The write-scope guard no longer trusts the submitter, and the interaction assays are no longer bound to Castaway's vocabulary. Both were found by probing the workshop rather than reading the code — the same way M6 found its four couplings, in the same modules M6 certified as having transferred unchanged. `assay_undeclared_component_reads` could not produce a finding in the workshop world at all; `_subject` collapsed every workshop action to `?`; and `controller`, a free-form string the submitter chooses, bound a participant and widened a rule's write scope to any entity it named.
 - Doctrine, unchanged: Linguistic Core supplies senses and roles, not effects; consequences require a represented causal bearer and an installed mechanic; composites stay derived; observability is required while exact replay is not a universal gate; mechanics authoring is offline and runtime law revision is deferred; donor repositories stay read-only unless a consumer path explicitly adopts code.
 
 ## Applicable context
@@ -113,6 +115,7 @@ observable attempt or trigger
 | M5b: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | Revisit only when a world needs an institution. Atomic commit-or-refuse has existed and been tested since M1, so escrow largely re-exercises machinery rather than testing an open question |
 | M6: second reference world | complete | a workshop world — worker, bench, discrete parts, tool, assembly — sharing no content with Castaway | promoted: the transition kernel, events, replay, profile installer, all three assays and the policy seam transferred with no edits; four substrate/content couplings were found and fixed; zero Castaway mechanics were reusable — [the audit](../docs/audits/m6-second-world.md) |
 | M7: authoring rate | complete | ten mechanics authored by a model that was told neither which mechanic to write nor what the checks look for, graded against criteria fixed beforehand | promoted: 9/10 installed, 0 scope violations, 5/10 added real behaviour, 2/10 were inert, and 2/10 violated an undeclared world convention that nothing can check — [the audit](../docs/audits/m7-authoring-rate.md) |
+| M7b: relational authoring | complete | ten mechanics authored against a language that can express one relation, graded on criteria fixed beforehand and identical to M7's | promoted: 4/8 valid declarations used a relation and two produced cross-entity behaviour nothing in this project could previously express; the two inert clamps recurred anyway, so the language ceiling was real and not the main driver; zero scope violations, this time against machinery a relational write can actually load — [the audit](../docs/audits/m7b-relational-authoring.md) |
 | M8: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
 Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
@@ -147,6 +150,8 @@ the audit that found it.
 | ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** `owner_ref` is validated as `<kind>:<target>` in `World.validate()`, and the eighteen call sites that hand-built the convention now go through `model.owner_ref()`, which refuses a malformed reference at the source. `tests/test_owner_ref.py` replays the exact declaration from M7's evidence file and asserts it is now refused with the attachment provenance intact. The wire format is unchanged, so all ten probes remain byte-identical |
 
 | ~~Refuse authored writes a field's type forbids~~ | generalisation of the M7 finding | **closed.** `owner_ref` was one instance of a wider class: `set` put any JSON scalar into any field and `World.validate()` covered only a hand-picked subset, so `worker.fatigue := "tired"` and `location.location_id := ""` both committed — the second silently removing four of seven entities from every observation while `validate()` and snapshot round-trip both passed. Effect and selector paths are now resolved against the owning dataclass at declaration time and the literal value type-checked there; `World.validate()` refuses an emptied `location_id`, `definition_id`, `heat_source_id` or `material_id`. `tests/test_authored_write_types.py` replays all seven observed corruptions. All ten probes remain byte-identical |
+
+| Give the world a way to say "unowned" | M7b finding | open — `owner_ref` is now a checked reference, so emptying it is refused. That is right, and it leaves an author who wants to drop a worn-out tool with no way to express the intent: two of ten M7b proposals meant "this is no longer held" and could only say it by blanking the reference. The refusal made a missing capability visible; it did not supply one |
 
 **All eight Decision 002 observability fields are covered, on every event class.**
 The three rows above were closed together as one `core-v0` schema change. This
@@ -220,11 +225,18 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Nothing is in progress. M7's uncatchable defect class is closed, and so is the
-wider class it belonged to: an authored declaration can no longer write a value
-a field's type forbids, name a path that resolves to nothing, or empty an
-identifier the substrate resolves against. Seven corruptions observed against
-the live workshop world are replayed as regression tests.
+Nothing is in progress. The prototype's six success criteria remain met, and
+the central hypothesis has now been tested against a language that can express
+more than a clamp. The answer to "does usefulness outrun risk" is unchanged in
+direction and better grounded: usefulness rose (two cross-entity mechanics that
+were previously inexpressible), risk did not (zero scope violations, against
+machinery that a relational write can genuinely load), and the dominant cost is
+still a steady supply of plausible-looking proposals that are redundant or
+inert.
+
+The open obligations table is the remaining work. The largest are enforcing
+declared read scopes, the ledger's shape for lost quantities, and giving the
+world a vocabulary for unowned.
 
 Two follow-ons remain from M7, both small and needing no permission:
 
@@ -241,8 +253,8 @@ Beyond those, the prototype has answered both halves of its central hypothesis
 and all six success criteria. Continuing is a scope choice rather than a next
 step.
 
-Model calls are authorized under a $2 cap and have cost **$0.065** to date
-(`get_cost(task=...)`: $0.00675 for the M5 policy run, $0.05837 for M7
-authoring including its pilots and one killed run). Read that figure from the
+Model calls are authorized under a $2 cap and have cost **$0.085** to date
+(`get_cost(task=...)`: $0.00675 for the M5 policy run, $0.07816 for authoring
+across M7 and M7b, including pilots and one killed run). Read that figure from the
 observability DB rather than adding up per-run numbers -- a previous version of
 this line said $0.04 because it counted only the final M7 trace.

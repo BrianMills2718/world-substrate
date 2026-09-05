@@ -17,10 +17,21 @@ messages:
       component and by conditions on their fields, and changes declared fields
       on them.
 
+      A mechanic may also reach one *related* entity. If the selected entity
+      names another one through a string field of its own -- an ownership
+      reference like ownership.owner_ref, or a plain entity id like
+      components.part.attached_to -- bind it with `related`, giving it a name.
+      Conditions and effects can then reach that entity by prefixing paths
+      with the name. For example, selecting tools and binding
+      `{via: ownership.owner_ref, as: holder, has_component: worker}` lets an
+      effect on holder.components.worker.fatigue tire whoever holds the tool.
+      Use `related: null` for a mechanic that acts on one entity alone.
+
       You must declare every state path you read and every state path you
-      write. Declare them as entities.<x>.<path>, where <x> stands for any
-      entity. Paths are entity-relative and dotted, like
-      components.tool.wear or components.worker.fatigue.
+      write, including paths on a related entity. Declare them as
+      entities.<x>.<path>, where <x> stands for any entity. Paths are
+      entity-relative and dotted, like components.tool.wear or
+      components.worker.fatigue.
 
       Judge for yourself what the world is missing. Prefer something that
       makes the world behave more sensibly over something merely novel.
