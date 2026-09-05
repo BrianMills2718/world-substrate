@@ -21,6 +21,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
+
+from scripts._display import display_path
+
 sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.overheat import (
@@ -160,11 +163,11 @@ def main() -> int:
         if not output.exists() or output.read_bytes() != expected:
             print(f"overheat authoring evidence drift: {output}", file=sys.stderr)
             return 1
-        print(f"overheat authoring evidence matches executable probe: {output.relative_to(REPO)}")
+        print(f"overheat authoring evidence matches executable probe: {display_path(output, REPO)}")
         return 0
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_bytes(expected)
-    print(f"wrote {output.relative_to(REPO)}")
+    print(f"wrote {display_path(output, REPO)}")
     return 0
 
 

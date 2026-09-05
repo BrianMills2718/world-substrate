@@ -1,0 +1,712 @@
+{
+  "baseline": {
+    "accepted_actions": 16,
+    "final": {
+      "alive": true,
+      "health": 4,
+      "hydration": 99,
+      "tick": 16
+    },
+    "policy": "thirsty-baseline",
+    "policy_answers_refused": 0,
+    "refusals": [],
+    "schema_version": "world-substrate-policy-run/v0",
+    "stopped_because": "completed turns",
+    "trace_id": "world-substrate-policy-0e14996bcf-baseline",
+    "transcript": [
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 0,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "7798a2a4f873",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 100,
+        "hydration": 49,
+        "offered": 8,
+        "tick": 1,
+        "turn": 1
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 4,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "ceb2f4ac8c26",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 88,
+        "hydration": 73,
+        "offered": 10,
+        "tick": 2,
+        "turn": 2
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 8,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "4b1ee3d3287e",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 88,
+        "hydration": 72,
+        "offered": 8,
+        "tick": 3,
+        "turn": 3
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 12,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "46fdb0bce781",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 76,
+        "hydration": 96,
+        "offered": 10,
+        "tick": 4,
+        "turn": 4
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 16,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "d508ee9529b6",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 76,
+        "hydration": 95,
+        "offered": 8,
+        "tick": 5,
+        "turn": 5
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 20,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "4ee67ccfb8a9",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 64,
+        "hydration": 99,
+        "offered": 10,
+        "tick": 6,
+        "turn": 6
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 24,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "d9575b29ac19",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 64,
+        "hydration": 98,
+        "offered": 8,
+        "tick": 7,
+        "turn": 7
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 28,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "dec57ef53f90",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 52,
+        "hydration": 99,
+        "offered": 10,
+        "tick": 8,
+        "turn": 8
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 32,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "0787ef3b9569",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 52,
+        "hydration": 98,
+        "offered": 8,
+        "tick": 9,
+        "turn": 9
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 36,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "07314a59d431",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 40,
+        "hydration": 99,
+        "offered": 10,
+        "tick": 10,
+        "turn": 10
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 40,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "93c15ab22868",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 40,
+        "hydration": 98,
+        "offered": 8,
+        "tick": 11,
+        "turn": 11
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 44,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "dc2f94534b78",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 28,
+        "hydration": 99,
+        "offered": 10,
+        "tick": 12,
+        "turn": 12
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 48,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "fa9f36bb17ed",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 28,
+        "hydration": 98,
+        "offered": 8,
+        "tick": 13,
+        "turn": 13
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 52,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "65513ba8a16a",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 16,
+        "hydration": 99,
+        "offered": 10,
+        "tick": 14,
+        "turn": 14
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 56,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "a8b2a6a4e33b",
+          "kind": "action",
+          "reasoning": "nothing to drink: fill something",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 16,
+        "hydration": 98,
+        "offered": 8,
+        "tick": 15,
+        "turn": 15
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 60,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "df6bcdb6ffe1",
+          "kind": "action",
+          "reasoning": "thirsty: drink whatever is to hand",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 4,
+        "hydration": 99,
+        "offered": 10,
+        "tick": 16,
+        "turn": 16
+      }
+    ],
+    "turns_run": 16
+  },
+  "claim": "The same semantic action interface was driven by two different policies over the same world and rules. Neither policy computed any consequence: each returned only an action_id, which the engine matched against actions it had itself offered. The difference in outcome is produced by installed mechanics.",
+  "llm": {
+    "accepted_actions": 9,
+    "cost_usd": 0.004464,
+    "final": {
+      "alive": true,
+      "health": 80,
+      "hydration": 96,
+      "tick": 16
+    },
+    "model": "openrouter/openai/gpt-5.6-luna",
+    "model_calls": 16,
+    "policy": "llm",
+    "policy_answers_refused": 0,
+    "refusals": [],
+    "schema_version": "world-substrate-policy-run/v0",
+    "stopped_because": "completed turns",
+    "trace_id": "world-substrate-policy-0e14996bcf",
+    "transcript": [
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 0,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 1000
+          },
+          "action_id": "e37b2f354401",
+          "kind": "action",
+          "reasoning": "Fill the clay pot with 1000 ml of untreated water so it can be heated and made safe for drinking.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 100,
+        "hydration": 49,
+        "offered": 8,
+        "tick": 1,
+        "turn": 1
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 4,
+            "controller": "unselected",
+            "kind": "heat",
+            "target": "fire-camp",
+            "vessel": "clay-pot"
+          },
+          "action_id": "816b3a8b9d7f",
+          "kind": "action",
+          "reasoning": "Heat the untreated water in the clay pot to make it safe to drink before hydration becomes critical.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 100,
+        "hydration": 48,
+        "offered": 12,
+        "tick": 2,
+        "turn": 2
+      },
+      {
+        "choice": {
+          "action": null,
+          "action_id": null,
+          "kind": "wait",
+          "reasoning": "Let the clay pot continue boiling so its water becomes safe to drink.",
+          "refusal_reason": ""
+        },
+        "engine_status": "no_action",
+        "health": 100,
+        "hydration": 47,
+        "offered": 6,
+        "tick": 3,
+        "turn": 3
+      },
+      {
+        "choice": {
+          "action": null,
+          "action_id": null,
+          "kind": "wait",
+          "reasoning": "Let the clay pot continue boiling so the untreated water becomes safe to drink.",
+          "refusal_reason": ""
+        },
+        "engine_status": "no_action",
+        "health": 100,
+        "hydration": 46,
+        "offered": 6,
+        "tick": 4,
+        "turn": 4
+      },
+      {
+        "choice": {
+          "action": null,
+          "action_id": null,
+          "kind": "wait",
+          "reasoning": "Let the clay pot continue boiling on the fire so the untreated water becomes safe to drink.",
+          "refusal_reason": ""
+        },
+        "engine_status": "no_action",
+        "health": 100,
+        "hydration": 45,
+        "offered": 6,
+        "tick": 5,
+        "turn": 5
+      },
+      {
+        "choice": {
+          "action": null,
+          "action_id": null,
+          "kind": "wait",
+          "reasoning": "Let the clay pot finish boiling so its water becomes safe to drink.",
+          "refusal_reason": ""
+        },
+        "engine_status": "no_action",
+        "health": 100,
+        "hydration": 44,
+        "offered": 6,
+        "tick": 6,
+        "turn": 6
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 25,
+            "controller": "unselected",
+            "kind": "unheat",
+            "vessel": "clay-pot"
+          },
+          "action_id": "43a915ce8b8d",
+          "kind": "action",
+          "reasoning": "Unheat the pot so the already-treated water can cool and become safe to drink or carry.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 100,
+        "hydration": 43,
+        "offered": 6,
+        "tick": 7,
+        "turn": 7
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 30,
+            "controller": "unselected",
+            "destination": "cup-robinson",
+            "kind": "pour",
+            "vessel": "clay-pot",
+            "volume_ml": 500
+          },
+          "action_id": "dab382239459",
+          "kind": "action",
+          "reasoning": "Pour 500 ml of treated water into the cool metal cup so it can be safely consumed next tick.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 100,
+        "hydration": 42,
+        "offered": 12,
+        "tick": 8,
+        "turn": 8
+      },
+      {
+        "choice": {
+          "action": null,
+          "action_id": null,
+          "kind": "wait",
+          "reasoning": "Both treated water vessels are currently too hot to drink safely, so waiting allows them to cool without risking illness.",
+          "refusal_reason": ""
+        },
+        "engine_status": "no_action",
+        "health": 100,
+        "hydration": 41,
+        "offered": 12,
+        "tick": 9,
+        "turn": 9
+      },
+      {
+        "choice": {
+          "action": null,
+          "action_id": null,
+          "kind": "wait",
+          "reasoning": "The treated water is currently too hot to drink safely, so waiting allows it to cool without contaminating it.",
+          "refusal_reason": ""
+        },
+        "engine_status": "no_action",
+        "health": 100,
+        "hydration": 40,
+        "offered": 12,
+        "tick": 10,
+        "turn": 10
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 43,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "cup-robinson",
+            "volume_ml": 500
+          },
+          "action_id": "1d92e978f3f6",
+          "kind": "action",
+          "reasoning": "Drink the full 500 ml of treated water from the cup to restore hydration safely.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 80,
+        "hydration": 89,
+        "offered": 12,
+        "tick": 11,
+        "turn": 11
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 48,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "action_id": "3a8bc5b1ef5b",
+          "kind": "action",
+          "reasoning": "Drink 250 ml of the already treated water to maintain hydration safely without wasting the remaining supply.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 80,
+        "hydration": 99,
+        "offered": 12,
+        "tick": 12,
+        "turn": 12
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 53,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 228
+          },
+          "action_id": "4f9e15d971d5",
+          "kind": "action",
+          "reasoning": "Drink the available treated water to maintain hydration safely.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 80,
+        "hydration": 99,
+        "offered": 10,
+        "tick": 13,
+        "turn": 13
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 58,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 1000
+          },
+          "action_id": "54a661db3afc",
+          "kind": "action",
+          "reasoning": "Fill the clay pot with a substantial amount of unsafe water so it can be heated and purified next.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 80,
+        "hydration": 98,
+        "offered": 8,
+        "tick": 14,
+        "turn": 14
+      },
+      {
+        "choice": {
+          "action": {
+            "actor": "robinson",
+            "base_revision": 63,
+            "controller": "unselected",
+            "kind": "heat",
+            "target": "fire-camp",
+            "vessel": "clay-pot"
+          },
+          "action_id": "46e3f4089da1",
+          "kind": "action",
+          "reasoning": "Heat the untreated water in the clay pot to make it safe to drink while preserving hydration.",
+          "refusal_reason": ""
+        },
+        "engine_status": "accepted",
+        "health": 80,
+        "hydration": 97,
+        "offered": 12,
+        "tick": 15,
+        "turn": 15
+      },
+      {
+        "choice": {
+          "action": null,
+          "action_id": null,
+          "kind": "wait",
+          "reasoning": "Let the clay pot continue boiling so the unsafe water can be sterilized before drinking.",
+          "refusal_reason": ""
+        },
+        "engine_status": "no_action",
+        "health": 80,
+        "hydration": 96,
+        "offered": 6,
+        "tick": 16,
+        "turn": 16
+      }
+    ],
+    "turns_run": 16
+  },
+  "max_budget_usd": 2.0,
+  "outcome_differs": true,
+  "schema_version": "world-substrate-policy-comparison/v0",
+  "soft_cap_usd": 0.5,
+  "turns": 16
+}

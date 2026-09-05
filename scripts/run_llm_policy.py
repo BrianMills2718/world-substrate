@@ -22,6 +22,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
+
+from scripts._display import display_path
+
 sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.probe import build_transfer_engine
@@ -187,7 +190,7 @@ def main() -> int:
     if args.write:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(text)
-        print(f"wrote {args.output.relative_to(REPO)}")
+        print(f"wrote {display_path(args.output, REPO)}")
     else:
         print(text)
     return 0

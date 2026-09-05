@@ -10,6 +10,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
+
+from scripts._display import display_path
+
 sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.probe import run_freshwater_probe
@@ -115,12 +118,12 @@ def main() -> int:
     if args.check:
         drift = []
         if not JSON_OUTPUT.exists() or JSON_OUTPUT.read_bytes() != expected_json:
-            drift.append(JSON_OUTPUT.relative_to(REPO))
+            drift.append(display_path(JSON_OUTPUT, REPO))
         if (
             not MARKDOWN_OUTPUT.exists()
             or MARKDOWN_OUTPUT.read_bytes() != expected_markdown
         ):
-            drift.append(MARKDOWN_OUTPUT.relative_to(REPO))
+            drift.append(display_path(MARKDOWN_OUTPUT, REPO))
         if drift:
             print("freshwater evidence drift: " + ", ".join(map(str, drift)), file=sys.stderr)
             return 1
@@ -129,8 +132,8 @@ def main() -> int:
     JSON_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUTPUT.write_bytes(expected_json)
     MARKDOWN_OUTPUT.write_bytes(expected_markdown)
-    print(f"wrote {JSON_OUTPUT.relative_to(REPO)}")
-    print(f"wrote {MARKDOWN_OUTPUT.relative_to(REPO)}")
+    print(f"wrote {display_path(JSON_OUTPUT, REPO)}")
+    print(f"wrote {display_path(MARKDOWN_OUTPUT, REPO)}")
     return 0
 
 
