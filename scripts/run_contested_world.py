@@ -33,10 +33,19 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.probe import build_transfer_engine
+from reference_worlds.kitchen.probe import build_engine as build_kitchen
 from scripts._display import display_path
 from world_substrate.policy import LlmPolicy, present, resolve_choice
 
-ACTORS = ("robinson", "friday")
+# A world is a builder plus the actors that contend in it. Castaway was the
+# world this runner was written against and is kept because its numbers are on
+# record; the kitchen was built afterwards against what that run showed --
+# several contested resources and different goals, so the agents are not simply
+# racing for the same next action.
+WORLDS = {
+    "castaway": (build_transfer_engine, ("robinson", "friday")),
+    "kitchen": (build_kitchen, ("ama", "bo")),
+}
 
 
 class Greedy:
@@ -56,6 +65,31 @@ class Greedy:
             return max(drinks, key=lambda r: r["action"].get("volume_ml", 0))
         return page["available"][0] if page["available"] else None
 
+
+
+
+def _progress_of(engine, actors) -> dict:
+    """Whatever this world uses to say how each actor is doing.
+
+    Castaway measures survival; the kitchen measures whether the dish is done.
+    Neither is substrate law, which is why it is read per world rather than
+    assumed.
+    """
+    out = {}
+    for actor in actors:
+        entity = engine.world.entities[actor]
+        if entity.actor is not None:
+            out[actor] = {"health": entity.actor.health}
+            continue
+        cook = entity.component("cook")
+        if cook is not None:
+            order = engine.world.entities[cook.order_id].components["order"]
+            out[actor] = {
+                "plated": list(cook.plated),
+                "still_wants": [w for w in order.wants if w not in cook.plated],
+                "filled": order.filled,
+            }
+    return out
 
 
 class Seat:
@@ -117,7 +151,7 @@ def _recent_for(engine, actor: str, seen: dict) -> list[str]:
     return lines[-5:]
 
 
-def contested_run(turns: int, seats: dict | None = None) -> dict:
+def contested_run(turns: int, seats: dict | None = None, world: str = "castaway") -> dict:
     """Both actors decide from one revision; the loser re-decides and retries.
 
     The first version of this loop let both decide and both submit, and the
@@ -133,21 +167,29 @@ def contested_run(turns: int, seats: dict | None = None) -> dict:
     nothing the affordance list could have said at render time would have
     warned about it.
     """
-    engine = build_transfer_engine(REPO)
+    build, actors = WORLDS[world]
+    engine = build(REPO)
     if seats is None:
         shared = Greedy()
-        seats = {actor: ScriptedSeat(actor, shared) for actor in ACTORS}
+        seats = {actor: ScriptedSeat(actor, shared) for actor in actors}
     transcript = []
 
     for turn in range(1, turns + 1):
         revision = engine.world.revision
         intents, reasons = {}, {}
-        for actor in ACTORS:
+        for actor in actors:
             page = engine.discover(actor)
             intents[actor], reasons[actor] = seats[actor].choose(engine, page)
 
+        # Alternate who commits first. A fixed order hands the same actor
+        # every tie: in the first kitchen run Ama retried 0 turns out of 14 and
+        # Bo retried 14, Ama filled her order and Bo plated nothing. That is
+        # the loop choosing a winner, not the world. Alternating keeps it
+        # deterministic while making "who loses a race" a property of the
+        # world rather than of iteration order.
+        order = actors if turn % 2 else tuple(reversed(actors))
         results = {}
-        for actor in ACTORS:
+        for actor in order:
             wanted = intents[actor]
             if wanted is None:
                 results[actor] = {"status": "no_action", "wanted": None, "did": None,
@@ -167,6 +209,20 @@ def contested_run(turns: int, seats: dict | None = None) -> dict:
                 # there now, which is what any real agent would do.
                 record["retried"] = True
                 page = engine.discover(actor)
+                # Was the original plan actually taken away, or merely stale?
+                # `lost_what_it_wanted` cannot tell these apart and saturates:
+                # whoever commits second is stale every turn by construction,
+                # so it read 14 of 14 while the real rate was 1 of 14. This is
+                # the number that means something.
+                def _same(a: dict, b: dict) -> bool:
+                    return all(
+                        a.get(k) == b.get(k)
+                        for k in ("kind", "item", "burner", "order", "vessel")
+                    )
+
+                record["plan_still_available"] = any(
+                    _same(row["action"], wanted) for row in page["available"]
+                )
                 again, said_again = seats[actor].choose(engine, page)
                 record["said_on_retry"] = said_again
                 if again is None:
@@ -194,27 +250,34 @@ def contested_run(turns: int, seats: dict | None = None) -> dict:
                 "turn": turn,
                 "revision_when_decided": revision,
                 "actors": results,
-                "health": {
-                    actor: engine.world.entities[actor].actor.health
-                    for actor in ACTORS
-                },
+                "committed_first": order[0],
+                "progress": _progress_of(engine, actors),
             }
         )
 
+    contended = [
+        (t["turn"], actor)
+        for t in transcript
+        for actor in actors
+        if t["actors"][actor].get("retried")
+        and t["actors"][actor].get("plan_still_available") is False
+    ]
     displaced = [
         (t["turn"], actor)
         for t in transcript
-        for actor in ACTORS
+        for actor in actors
         if t["actors"][actor].get("lost_what_it_wanted")
     ]
     still_refused = [
         (t["turn"], actor, t["actors"][actor]["status"])
         for t in transcript
-        for actor in ACTORS
+        for actor in actors
         if t["actors"][actor]["status"] not in ("accepted", "no_action")
     ]
     return {
-        "schema_version": "world-substrate-contested-run/v1",
+        "schema_version": "world-substrate-contested-run/v2",
+        "world": world,
+        "actors": list(actors),
         "claim": (
             "Two policies decide from the same revision and commit in order; "
             "whoever is refused for a stale revision re-observes and chooses "
@@ -224,7 +287,8 @@ def contested_run(turns: int, seats: dict | None = None) -> dict:
         "turns_run": len(transcript),
         "summary": {
             "turns": len(transcript),
-            "lost_what_it_wanted": len(displaced),
+            "retried_because_stale": len(displaced),
+            "plan_actually_taken_by_the_other": len(contended),
             "refused_after_retry": len(still_refused),
             "refusal_kinds": sorted({r[2] for r in still_refused}),
         },
@@ -234,11 +298,12 @@ def contested_run(turns: int, seats: dict | None = None) -> dict:
 
 
 def as_html(payload: dict) -> str:
-    """The contested run, as two columns of intent beside one world."""
+    """The contested run, as one column of intent per actor beside one world."""
+    actors = payload["actors"]
     rows = []
     for t in payload["transcript"]:
         cells = []
-        for actor in ACTORS:
+        for actor in actors:
             a = t["actors"][actor]
             wanted = (a.get("wanted") or {}).get("kind")
             did = (a.get("did") or {}).get("kind")
@@ -285,7 +350,7 @@ order. Struck-through means the plan was still true when the page was rendered a
 the time it could act, because the other one moved first &mdash; {s['lost_what_it_wanted']} of
 {s['turns']} turns. Neither agent can see the other's intent; the only channel between them
 is the world.</p>
-<table><tr><th></th><th>robinson</th><th>friday</th></tr>{''.join(rows)}</table>
+<table><tr><th></th>{"".join(f"<th>{html.escape(a)}</th>" for a in actors)}</tr>{''.join(rows)}</table>
 <p class=legend>{'Model: ' + html.escape(str(payload.get('model'))) + '. ' if payload.get('model') else ''}
 {'Cost $' + format(cost, '.5f') + '. ' if cost is not None else ''}
 Every action is one the engine offered; a policy returns an id and never an effect.
@@ -296,6 +361,7 @@ Refusals after retry: {s['refused_after_retry']}.</p>
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--turns", type=int, default=12)
+    parser.add_argument("--world", default="kitchen", choices=sorted(WORLDS))
     parser.add_argument(
         "--model",
         help="seat both actors with this model instead of the scripted rule",
@@ -324,16 +390,16 @@ def main() -> int:
                 ),
                 lambda engine, actor, _seen=seen: _recent_for(engine, actor, _seen),
             )
-            for actor in ACTORS
+            for actor in WORLDS[args.world][1]
         }
 
-    payload = contested_run(args.turns, seats)
+    payload = contested_run(args.turns, seats, args.world)
     if args.model:
         from llm_client import get_cost
 
         payload["model"] = args.model
         payload["cost_usd"] = round(
-            sum(get_cost(trace_id=f"{trace_id}-{a}") for a in ACTORS), 6
+            sum(get_cost(trace_id=f"{trace_id}-{a}") for a in WORLDS[args.world][1]), 6
         )
     # Persist first. This run costs money and a display bug had already
     # destroyed one of them at turn six; the artifact must not depend on the
@@ -349,7 +415,7 @@ def main() -> int:
 
     for t in payload["transcript"]:
         print(f"t{t['turn']:>2} @rev{t['revision_when_decided']}")
-        for actor in ACTORS:
+        for actor in payload["actors"]:
             a = t["actors"][actor]
             wanted = (a.get("wanted") or {}).get("kind", "-")
             did = (a.get("did") or {}).get("kind", "-")
