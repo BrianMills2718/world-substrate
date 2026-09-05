@@ -438,8 +438,8 @@
           "entities.<source>.liquid"
         ],
         "event_id": "e00001",
-        "hash_after": "b042ac1ab2b734c0700c9fc4fbf91682dbbe61c46b7e61633d9504e0b2673eca",
-        "hash_before": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "hash_after": "0509bc91906afbac0b8baccf40638e39dedf6cd827f7f1a116822ecec371887b",
+        "hash_before": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -669,8 +669,8 @@
           "tick"
         ],
         "event_id": "e00002",
-        "hash_after": "e35123b9d7573233f044db3eba73c1d46988e2cc49392d6d1f20597c5d3b96a2",
-        "hash_before": "b042ac1ab2b734c0700c9fc4fbf91682dbbe61c46b7e61633d9504e0b2673eca",
+        "hash_after": "508f7ca1b033f9846175a3c6db210e3c9f9ed649d18b2187dfa50120ad3df664",
+        "hash_before": "0509bc91906afbac0b8baccf40638e39dedf6cd827f7f1a116822ecec371887b",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -711,8 +711,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00003",
-        "hash_after": "b4275d26f498cba57aca06f1614041e09e6343f930fb077048d8b9dc53e7c932",
-        "hash_before": "e35123b9d7573233f044db3eba73c1d46988e2cc49392d6d1f20597c5d3b96a2",
+        "hash_after": "497bbe2446244d9c2bb49d9cfcf6f71cad3b6543a9a412bb9a7b8c41c89b7528",
+        "hash_before": "508f7ca1b033f9846175a3c6db210e3c9f9ed649d18b2187dfa50120ad3df664",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -748,8 +748,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00004",
-        "hash_after": "f2c933dda5fd9bbbb4ff4eb19d53baaa9fd9e9e503804975f312fac158e458c3",
-        "hash_before": "b4275d26f498cba57aca06f1614041e09e6343f930fb077048d8b9dc53e7c932",
+        "hash_after": "ee92aeabab6c09d7daa2e8e7f6c18e7959042cd4dd18664fd55b3d95b2011bcd",
+        "hash_before": "497bbe2446244d9c2bb49d9cfcf6f71cad3b6543a9a412bb9a7b8c41c89b7528",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -867,8 +867,8 @@
           "entities.<vessel>.last_cause_event_id"
         ],
         "event_id": "e00005",
-        "hash_after": "63dfe518f6e2074a53c71c982ce0898b5fdfa5a5581594a894014782a7f22749",
-        "hash_before": "f2c933dda5fd9bbbb4ff4eb19d53baaa9fd9e9e503804975f312fac158e458c3",
+        "hash_after": "71f12e37135431726f479712cd98b202a9d5bf27d53d4ca4c6a042d03776d03b",
+        "hash_before": "ee92aeabab6c09d7daa2e8e7f6c18e7959042cd4dd18664fd55b3d95b2011bcd",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -1098,8 +1098,8 @@
           "tick"
         ],
         "event_id": "e00006",
-        "hash_after": "a95b4bbf8f511ba499f9c016e4e847325890926735dd062cb423dbdc8faccdaa",
-        "hash_before": "63dfe518f6e2074a53c71c982ce0898b5fdfa5a5581594a894014782a7f22749",
+        "hash_after": "34135c31750d804d6c00dfd2ffecb56da833411e87f6952989b66a4e2ecd8c55",
+        "hash_before": "71f12e37135431726f479712cd98b202a9d5bf27d53d4ca4c6a042d03776d03b",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -1140,8 +1140,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00007",
-        "hash_after": "a4ffc42192f77c810c0afd49d14b7c3b2db90b7aedd9a4b1db87796faa20e19d",
-        "hash_before": "a95b4bbf8f511ba499f9c016e4e847325890926735dd062cb423dbdc8faccdaa",
+        "hash_after": "e8faa6946b701dac391066eddbbd93abbc264a178ab23f77ad19e176fa81352c",
+        "hash_before": "34135c31750d804d6c00dfd2ffecb56da833411e87f6952989b66a4e2ecd8c55",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -1195,8 +1195,8 @@
           "physical_ledger"
         ],
         "event_id": "e00008",
-        "hash_after": "e3b394c127c34023445ba1683cfb6252993a9afdd48c621411b25ee0fce4cc0c",
-        "hash_before": "a4ffc42192f77c810c0afd49d14b7c3b2db90b7aedd9a4b1db87796faa20e19d",
+        "hash_after": "c735fb0846e25a5bc21fc88a9411eab7d0dc4e39492c7d23576ef8cae3794ddc",
+        "hash_before": "e8faa6946b701dac391066eddbbd93abbc264a178ab23f77ad19e176fa81352c",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -1232,8 +1232,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00009",
-        "hash_after": "0782dc0989008ae3e171b2550fd4950c01cff94ec916761d5fa349acf9691350",
-        "hash_before": "e3b394c127c34023445ba1683cfb6252993a9afdd48c621411b25ee0fce4cc0c",
+        "hash_after": "a3174aec13f0c3a598fe6b83f933a1b50e28a462f8f8a1caf768b17d3ce7b0c4",
+        "hash_before": "c735fb0846e25a5bc21fc88a9411eab7d0dc4e39492c7d23576ef8cae3794ddc",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -1269,8 +1269,8 @@
           "tick"
         ],
         "event_id": "e00010",
-        "hash_after": "1e8376f76268311e4cc4e15d295291002b610282156ac1af1b12e22c45b9289f",
-        "hash_before": "0782dc0989008ae3e171b2550fd4950c01cff94ec916761d5fa349acf9691350",
+        "hash_after": "d8b8a250a1462b5ff043cf63e85883ef5cb13e7c3612268cf34b22f94f9b7774",
+        "hash_before": "a3174aec13f0c3a598fe6b83f933a1b50e28a462f8f8a1caf768b17d3ce7b0c4",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -1311,8 +1311,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00011",
-        "hash_after": "8a8dfceb682cd11b59bfcc9f4bb6f5ff42550a20bea4619907294203bf273349",
-        "hash_before": "1e8376f76268311e4cc4e15d295291002b610282156ac1af1b12e22c45b9289f",
+        "hash_after": "50d8917f46c9b3971b90012a8385dd47c247155b7cbe9ff3c389aeaef28e086b",
+        "hash_before": "d8b8a250a1462b5ff043cf63e85883ef5cb13e7c3612268cf34b22f94f9b7774",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -1366,8 +1366,8 @@
           "physical_ledger"
         ],
         "event_id": "e00012",
-        "hash_after": "f878505f7584adecb44b2f9abd2e178f0254d47c6a90e781e4acfcd836a7f770",
-        "hash_before": "8a8dfceb682cd11b59bfcc9f4bb6f5ff42550a20bea4619907294203bf273349",
+        "hash_after": "b37cb2e57a5a36c478879c8d5e6d192b58c495cf0e147ef7110e08acf1f2181a",
+        "hash_before": "50d8917f46c9b3971b90012a8385dd47c247155b7cbe9ff3c389aeaef28e086b",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -1403,8 +1403,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00013",
-        "hash_after": "8d77b0e91ddd4a39c9deccb23be43c46bbb19e99526ee8ffb566611fca123429",
-        "hash_before": "f878505f7584adecb44b2f9abd2e178f0254d47c6a90e781e4acfcd836a7f770",
+        "hash_after": "0a7aa62eb41efdc3f138365520a4b01b484302cac8163cf7d8b03d3b014561dd",
+        "hash_before": "b37cb2e57a5a36c478879c8d5e6d192b58c495cf0e147ef7110e08acf1f2181a",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -1440,8 +1440,8 @@
           "tick"
         ],
         "event_id": "e00014",
-        "hash_after": "36f54e95a797c7fb46b91ff771018d1b648c81cfdfa7fbec4dbf60a97cce23a9",
-        "hash_before": "8d77b0e91ddd4a39c9deccb23be43c46bbb19e99526ee8ffb566611fca123429",
+        "hash_after": "63da245a063f5aba90397258d1f16d2c48101dca0d227f88b07c7126d786594b",
+        "hash_before": "0a7aa62eb41efdc3f138365520a4b01b484302cac8163cf7d8b03d3b014561dd",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -1482,8 +1482,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00015",
-        "hash_after": "c8bc95f357488a4b51e71d3abeb056f4780d76af8b599b3a352c10f0045c49b6",
-        "hash_before": "36f54e95a797c7fb46b91ff771018d1b648c81cfdfa7fbec4dbf60a97cce23a9",
+        "hash_after": "1d51a3f101887668d83e6ed05d38d9eebb9c12287a1249b9b90e818515643f2b",
+        "hash_before": "63da245a063f5aba90397258d1f16d2c48101dca0d227f88b07c7126d786594b",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -1537,8 +1537,8 @@
           "physical_ledger"
         ],
         "event_id": "e00016",
-        "hash_after": "787db814e5bc4a95bd305d035c1843fc4a038f127bf5d4e58fcfbc614820f934",
-        "hash_before": "c8bc95f357488a4b51e71d3abeb056f4780d76af8b599b3a352c10f0045c49b6",
+        "hash_after": "e2573380c57d0bc460e1d093f9b14e6b5d33a97adfeb704f1bcad58074cb7cb3",
+        "hash_before": "1d51a3f101887668d83e6ed05d38d9eebb9c12287a1249b9b90e818515643f2b",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -1574,8 +1574,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00017",
-        "hash_after": "621d383feffcff2ee0f5846fb54ec5e5203fb62b1a4f0cb506694c8d2a666711",
-        "hash_before": "787db814e5bc4a95bd305d035c1843fc4a038f127bf5d4e58fcfbc614820f934",
+        "hash_after": "2995ff2452efa90fd20807d53cb36381abefaa3c35882f6811a81aa9cdb27c67",
+        "hash_before": "e2573380c57d0bc460e1d093f9b14e6b5d33a97adfeb704f1bcad58074cb7cb3",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -1611,8 +1611,8 @@
           "tick"
         ],
         "event_id": "e00018",
-        "hash_after": "02e995f94fe98e53736c03655170b17f0a94726334d19325f88c484b61098219",
-        "hash_before": "621d383feffcff2ee0f5846fb54ec5e5203fb62b1a4f0cb506694c8d2a666711",
+        "hash_after": "4a301e2d17c4d0600153366f7d95f6689eaedd78175ca54790b6ec3da52775b4",
+        "hash_before": "2995ff2452efa90fd20807d53cb36381abefaa3c35882f6811a81aa9cdb27c67",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -1653,8 +1653,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00019",
-        "hash_after": "d1116e158dab1b0a799c1d276d9382e0b8d3e7e6b6108ab140243b3734b7d139",
-        "hash_before": "02e995f94fe98e53736c03655170b17f0a94726334d19325f88c484b61098219",
+        "hash_after": "7ab34acf4ae5ea23ce164e21a9d2f372547d6c98fd1a3765e06645f6f3ef6694",
+        "hash_before": "4a301e2d17c4d0600153366f7d95f6689eaedd78175ca54790b6ec3da52775b4",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -1733,8 +1733,8 @@
           "physical_ledger"
         ],
         "event_id": "e00020",
-        "hash_after": "076daf31b691390ad411a60caf34fbad3aeed346b704911dc3c3ed76b1f18a60",
-        "hash_before": "d1116e158dab1b0a799c1d276d9382e0b8d3e7e6b6108ab140243b3734b7d139",
+        "hash_after": "3885aed4d17808ec0ff39d0064d2ec10c357f84f674255083c98a4ff464c2a17",
+        "hash_before": "7ab34acf4ae5ea23ce164e21a9d2f372547d6c98fd1a3765e06645f6f3ef6694",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -1770,8 +1770,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00021",
-        "hash_after": "ff1767cbd488409f3b91ba65d863d3f25f7ec8f96abea17db487fa47f9c4dee6",
-        "hash_before": "076daf31b691390ad411a60caf34fbad3aeed346b704911dc3c3ed76b1f18a60",
+        "hash_after": "e8dd8bd5ee671c281a546fdc7b5d2a012cbb737ac4c62d71403518faa4cc1f4e",
+        "hash_before": "3885aed4d17808ec0ff39d0064d2ec10c357f84f674255083c98a4ff464c2a17",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -1807,8 +1807,8 @@
           "tick"
         ],
         "event_id": "e00022",
-        "hash_after": "b30700fc42ddbd104e83d37b4ce310a668ca262d774e95d318ced96413693e6b",
-        "hash_before": "ff1767cbd488409f3b91ba65d863d3f25f7ec8f96abea17db487fa47f9c4dee6",
+        "hash_after": "d1300c6702ccc26ed3668b08c1f951c82cbeee4b40fa7789f23c0a5d52111ebe",
+        "hash_before": "e8dd8bd5ee671c281a546fdc7b5d2a012cbb737ac4c62d71403518faa4cc1f4e",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -1849,8 +1849,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00023",
-        "hash_after": "e6f4832fc38efc4b60686b808ae5c61ef29e38ff46062022221ccd91d5bf440d",
-        "hash_before": "b30700fc42ddbd104e83d37b4ce310a668ca262d774e95d318ced96413693e6b",
+        "hash_after": "2ade82b196d0ecacffb21e8b0f9b3552af6205eca371767a0f3ccb35b45d834a",
+        "hash_before": "d1300c6702ccc26ed3668b08c1f951c82cbeee4b40fa7789f23c0a5d52111ebe",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -1929,8 +1929,8 @@
           "physical_ledger"
         ],
         "event_id": "e00024",
-        "hash_after": "90396fa860be01c76059647991a959d7706585bd3906585667a706ff1230f313",
-        "hash_before": "e6f4832fc38efc4b60686b808ae5c61ef29e38ff46062022221ccd91d5bf440d",
+        "hash_after": "d42a4b687c7a195decde09713c56786eb485045d2feaccae6fe06d6c57aa2983",
+        "hash_before": "2ade82b196d0ecacffb21e8b0f9b3552af6205eca371767a0f3ccb35b45d834a",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -1966,8 +1966,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00025",
-        "hash_after": "a158042baf896d24b96fbe081ebead4b2064c2b6732287d0158d84e29ad5eaa5",
-        "hash_before": "90396fa860be01c76059647991a959d7706585bd3906585667a706ff1230f313",
+        "hash_after": "980d16557f9b720600856842a9c7357c5d8dd431b9bca57eb2dfe552c4c9c694",
+        "hash_before": "d42a4b687c7a195decde09713c56786eb485045d2feaccae6fe06d6c57aa2983",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -2049,8 +2049,8 @@
           "entities.<vessel>.last_cause_event_id"
         ],
         "event_id": "e00026",
-        "hash_after": "2a7d925caa6298f7f4da719aeb060984d4af772e05a8e592020065d9fa609d24",
-        "hash_before": "a158042baf896d24b96fbe081ebead4b2064c2b6732287d0158d84e29ad5eaa5",
+        "hash_after": "9adf3aec40e9e70676c2c1f449c5746939bb36f9b9f17eb5b55f4247ae955940",
+        "hash_before": "980d16557f9b720600856842a9c7357c5d8dd431b9bca57eb2dfe552c4c9c694",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -2264,8 +2264,8 @@
           "tick"
         ],
         "event_id": "e00027",
-        "hash_after": "954458c3e471cb4aeb23041433a2d676cc76bd11028284643deabdfbcf2ac659",
-        "hash_before": "2a7d925caa6298f7f4da719aeb060984d4af772e05a8e592020065d9fa609d24",
+        "hash_after": "54adca3a7c88835f86629cfdc008923d3bda1ba3735925907b654bf3001e3331",
+        "hash_before": "9adf3aec40e9e70676c2c1f449c5746939bb36f9b9f17eb5b55f4247ae955940",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -2306,8 +2306,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00028",
-        "hash_after": "621190f2a111b7ea6ac2ee1857b6f950f7129e2f1664e0ad5033d12016245f05",
-        "hash_before": "954458c3e471cb4aeb23041433a2d676cc76bd11028284643deabdfbcf2ac659",
+        "hash_after": "217be9a65fe846619d0150173b5d6c9201e02b06addff946a3152ec9d4256ff5",
+        "hash_before": "54adca3a7c88835f86629cfdc008923d3bda1ba3735925907b654bf3001e3331",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -2366,8 +2366,8 @@
           "physical_ledger"
         ],
         "event_id": "e00029",
-        "hash_after": "eeec25a2d446eeee4366a2adb7ed64dc5eba244e7da84ab8108d4e2679390345",
-        "hash_before": "621190f2a111b7ea6ac2ee1857b6f950f7129e2f1664e0ad5033d12016245f05",
+        "hash_after": "70cb8d9d2b1b155eeea96ef956df48ee66825bd3852f9783bcbc53ad7dfd4563",
+        "hash_before": "217be9a65fe846619d0150173b5d6c9201e02b06addff946a3152ec9d4256ff5",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -2403,8 +2403,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00030",
-        "hash_after": "16c4413dd8bd0fd0d1cf2460c4a9194edce7342e752f50b896a59a759696239a",
-        "hash_before": "eeec25a2d446eeee4366a2adb7ed64dc5eba244e7da84ab8108d4e2679390345",
+        "hash_after": "6444da6e995a57aad220d3fe2afeeb9dfac85732e4d68c74d1a923ba771730bf",
+        "hash_before": "70cb8d9d2b1b155eeea96ef956df48ee66825bd3852f9783bcbc53ad7dfd4563",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -2440,8 +2440,8 @@
           "tick"
         ],
         "event_id": "e00031",
-        "hash_after": "09f0128532ec4830a5be3b17b4a6af841bb728f9559a0732f098798f1308dab3",
-        "hash_before": "16c4413dd8bd0fd0d1cf2460c4a9194edce7342e752f50b896a59a759696239a",
+        "hash_after": "039f50eb6b2b3c41877e8ab0394990cf252832622ad705024151f7c803906e6b",
+        "hash_before": "6444da6e995a57aad220d3fe2afeeb9dfac85732e4d68c74d1a923ba771730bf",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -2482,8 +2482,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00032",
-        "hash_after": "0329857d5e6f869685521788bc788b5e3f1651a11f004e197e4d2c7e9d1d979f",
-        "hash_before": "09f0128532ec4830a5be3b17b4a6af841bb728f9559a0732f098798f1308dab3",
+        "hash_after": "392cd59985472c2e21498c99b17a95d87495f192cd8c07f60318b3c742733393",
+        "hash_before": "039f50eb6b2b3c41877e8ab0394990cf252832622ad705024151f7c803906e6b",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -2537,8 +2537,8 @@
           "physical_ledger"
         ],
         "event_id": "e00033",
-        "hash_after": "36a1ff0ada4ca946612f0734b79301f89636cf30668d6bd01424ffeba8291efc",
-        "hash_before": "0329857d5e6f869685521788bc788b5e3f1651a11f004e197e4d2c7e9d1d979f",
+        "hash_after": "2cce604b09e7118dce1722a9a78392c7e605222c889038b388b5b3e101f6441b",
+        "hash_before": "392cd59985472c2e21498c99b17a95d87495f192cd8c07f60318b3c742733393",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -2574,8 +2574,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00034",
-        "hash_after": "0b9c0f3bac95a3e39af462f7a4335fb677e36bb94c347969b7d71dcb7d5445c2",
-        "hash_before": "36a1ff0ada4ca946612f0734b79301f89636cf30668d6bd01424ffeba8291efc",
+        "hash_after": "5256862fa3e81a583f8d70ffd38f2502f730fbf54c1aa5853df36d61bc0b1199",
+        "hash_before": "2cce604b09e7118dce1722a9a78392c7e605222c889038b388b5b3e101f6441b",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -2611,8 +2611,8 @@
           "tick"
         ],
         "event_id": "e00035",
-        "hash_after": "aadf190ed7af6773452a0074ee5bdb925e505ab5d7f7321a021ccd4adf4640ff",
-        "hash_before": "0b9c0f3bac95a3e39af462f7a4335fb677e36bb94c347969b7d71dcb7d5445c2",
+        "hash_after": "e95efbd0413f36673537f4dff90bd28df43288f38541d49ed69f884295e27466",
+        "hash_before": "5256862fa3e81a583f8d70ffd38f2502f730fbf54c1aa5853df36d61bc0b1199",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -2653,8 +2653,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00036",
-        "hash_after": "f1d8b9b978b1b9d6ec9236cb969ac5b80fd558b5447468db69ec5f66c8cd157c",
-        "hash_before": "aadf190ed7af6773452a0074ee5bdb925e505ab5d7f7321a021ccd4adf4640ff",
+        "hash_after": "345d2b3d33d58d8b248ce72f75c689f87b594f0e1f262834aee6e36ad83ccdfa",
+        "hash_before": "e95efbd0413f36673537f4dff90bd28df43288f38541d49ed69f884295e27466",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -2708,8 +2708,8 @@
           "physical_ledger"
         ],
         "event_id": "e00037",
-        "hash_after": "a7c169f88cf4196c3a2f6ad8a31ae7fbaa163ce3f68ba752f4f2dcd874bb425a",
-        "hash_before": "f1d8b9b978b1b9d6ec9236cb969ac5b80fd558b5447468db69ec5f66c8cd157c",
+        "hash_after": "82a93194e8510f535b188dec73df0cc0152c8cbb11e6dadde5e310e0c779f209",
+        "hash_before": "345d2b3d33d58d8b248ce72f75c689f87b594f0e1f262834aee6e36ad83ccdfa",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -2745,8 +2745,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00038",
-        "hash_after": "11fd2023a5d589e4b48675c62542ea09bbc4435bc651b2e83630c90ae5332c76",
-        "hash_before": "a7c169f88cf4196c3a2f6ad8a31ae7fbaa163ce3f68ba752f4f2dcd874bb425a",
+        "hash_after": "bf3f93b2c60d96aec70d28fd9fbd44806318fb36a483746311350138c688dc85",
+        "hash_before": "82a93194e8510f535b188dec73df0cc0152c8cbb11e6dadde5e310e0c779f209",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -2782,8 +2782,8 @@
           "tick"
         ],
         "event_id": "e00039",
-        "hash_after": "cea0616adae8f911576e259acfc9e8a5e2bfde1773af372c7c890a109de3669b",
-        "hash_before": "11fd2023a5d589e4b48675c62542ea09bbc4435bc651b2e83630c90ae5332c76",
+        "hash_after": "fcf36e7e2a4fbb16dbae92a2d232943bc1238ded4764eef6b4339996229016f2",
+        "hash_before": "bf3f93b2c60d96aec70d28fd9fbd44806318fb36a483746311350138c688dc85",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -2824,8 +2824,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00040",
-        "hash_after": "99d837f461e1726af5685760ea0588ad232a489222f9fecbed9a0b09007442f5",
-        "hash_before": "cea0616adae8f911576e259acfc9e8a5e2bfde1773af372c7c890a109de3669b",
+        "hash_after": "7789c304b188c4e2b31ac2b26566853e6108ddfd113b84cf69bd8ed1ee5fc178",
+        "hash_before": "fcf36e7e2a4fbb16dbae92a2d232943bc1238ded4764eef6b4339996229016f2",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -2879,8 +2879,8 @@
           "physical_ledger"
         ],
         "event_id": "e00041",
-        "hash_after": "557bacfae404d8fcfa51d7d54aff372fe4f0e25c71ee3c59e40b922cbdb5188f",
-        "hash_before": "99d837f461e1726af5685760ea0588ad232a489222f9fecbed9a0b09007442f5",
+        "hash_after": "cdcb486928bc8c7b20c545a609f967b9b2756537953f7d84726390acb055bfde",
+        "hash_before": "7789c304b188c4e2b31ac2b26566853e6108ddfd113b84cf69bd8ed1ee5fc178",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -2916,8 +2916,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00042",
-        "hash_after": "3a907e6b0e05e8680033df2f1863fe4702283d9279e048e865133aad8dbb19fb",
-        "hash_before": "557bacfae404d8fcfa51d7d54aff372fe4f0e25c71ee3c59e40b922cbdb5188f",
+        "hash_after": "8015a4e60510090fe20a319a31469b124cf6414637cff8da4a7bc46e7110c13e",
+        "hash_before": "cdcb486928bc8c7b20c545a609f967b9b2756537953f7d84726390acb055bfde",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -2953,8 +2953,8 @@
           "tick"
         ],
         "event_id": "e00043",
-        "hash_after": "40678b0e5c220ce9e7b21c08ca047a4f35fac7442d9f12bf97b6a5163d468b63",
-        "hash_before": "3a907e6b0e05e8680033df2f1863fe4702283d9279e048e865133aad8dbb19fb",
+        "hash_after": "ddd97e2ac72dde6b6eb235f292b37b682dcd60bdbe1c2eed7e638b2595cac984",
+        "hash_before": "8015a4e60510090fe20a319a31469b124cf6414637cff8da4a7bc46e7110c13e",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -2995,8 +2995,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00044",
-        "hash_after": "76f1ded4a5e63bccbfb023816c2bc76b022639949ed32c37941c145cbfe88c67",
-        "hash_before": "40678b0e5c220ce9e7b21c08ca047a4f35fac7442d9f12bf97b6a5163d468b63",
+        "hash_after": "f6922618652b85856fb78649cdad018d9376d210c9b8396a5f90265034895132",
+        "hash_before": "ddd97e2ac72dde6b6eb235f292b37b682dcd60bdbe1c2eed7e638b2595cac984",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -3050,8 +3050,8 @@
           "physical_ledger"
         ],
         "event_id": "e00045",
-        "hash_after": "cfa4d3dec845816eb063a1702e77843c0b4b8a62be7d2f92581db91abc1794c7",
-        "hash_before": "76f1ded4a5e63bccbfb023816c2bc76b022639949ed32c37941c145cbfe88c67",
+        "hash_after": "bd252c080211ac6485464c0262c36e4d0ea79be424a93682c38fa9a9d738b169",
+        "hash_before": "f6922618652b85856fb78649cdad018d9376d210c9b8396a5f90265034895132",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -3087,8 +3087,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00046",
-        "hash_after": "5937cf42e9591e401adc0a8776c856a79a87d5319968847aadeb43a7fa61f8f5",
-        "hash_before": "cfa4d3dec845816eb063a1702e77843c0b4b8a62be7d2f92581db91abc1794c7",
+        "hash_after": "08f99c4eb04eeb0680039fa688aa993420b0988a2253ea0f72472912ed29cabe",
+        "hash_before": "bd252c080211ac6485464c0262c36e4d0ea79be424a93682c38fa9a9d738b169",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -3259,8 +3259,8 @@
           "entities.<destination>.last_cause_event_id"
         ],
         "event_id": "e00047",
-        "hash_after": "4f0c55336d5e3e31bfc37aad1db27002a9fd272c1ce94185300ce5539b6bd1e1",
-        "hash_before": "5937cf42e9591e401adc0a8776c856a79a87d5319968847aadeb43a7fa61f8f5",
+        "hash_after": "07b71175d30438cac372ac6110f0b2887f016723a368405111227945ab17dca7",
+        "hash_before": "08f99c4eb04eeb0680039fa688aa993420b0988a2253ea0f72472912ed29cabe",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -3491,8 +3491,8 @@
           "tick"
         ],
         "event_id": "e00048",
-        "hash_after": "ff9b38d2ba54b82696f9cd11774ae287808228b41879e0eae042b7f9785250be",
-        "hash_before": "4f0c55336d5e3e31bfc37aad1db27002a9fd272c1ce94185300ce5539b6bd1e1",
+        "hash_after": "327f8651cb8331cf6f0fc3d28a55daef1fde8f5c9aa75b494b78cb229ce5783e",
+        "hash_before": "07b71175d30438cac372ac6110f0b2887f016723a368405111227945ab17dca7",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -3533,8 +3533,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00049",
-        "hash_after": "c3cb82c1f9166f58185d696f1fdcdfe1ce3470260a041ec13e97a52734252bcb",
-        "hash_before": "ff9b38d2ba54b82696f9cd11774ae287808228b41879e0eae042b7f9785250be",
+        "hash_after": "952b9ca768638016fae942d3c1136b51e7465bb6ac3279caacc2c03a85707736",
+        "hash_before": "327f8651cb8331cf6f0fc3d28a55daef1fde8f5c9aa75b494b78cb229ce5783e",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -3598,8 +3598,8 @@
           "physical_ledger"
         ],
         "event_id": "e00050",
-        "hash_after": "1ed513d66d1d07cae9c831b4c620e2f9b59d8267a8aa9bce645371aabb0a4712",
-        "hash_before": "c3cb82c1f9166f58185d696f1fdcdfe1ce3470260a041ec13e97a52734252bcb",
+        "hash_after": "86a7de22433e801bee79ef35aa9a072168cb75b9253a43169cd1cca81a2209a0",
+        "hash_before": "952b9ca768638016fae942d3c1136b51e7465bb6ac3279caacc2c03a85707736",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -3635,8 +3635,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00051",
-        "hash_after": "037f195f876951a26a65a6c11f0d316092626b5e2a8d088923974ed5dc75cb45",
-        "hash_before": "1ed513d66d1d07cae9c831b4c620e2f9b59d8267a8aa9bce645371aabb0a4712",
+        "hash_after": "47a28f4744455aaa79c87f3c77a3ff86e5739cc26bc8ab54702205ce4f42d061",
+        "hash_before": "86a7de22433e801bee79ef35aa9a072168cb75b9253a43169cd1cca81a2209a0",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -3762,8 +3762,8 @@
           "physical_ledger.drunk"
         ],
         "event_id": "e00052",
-        "hash_after": "955846acd807f3ecd1862f8d7e053c5657466f297e570a2ddd5bea6e437adaf6",
-        "hash_before": "037f195f876951a26a65a6c11f0d316092626b5e2a8d088923974ed5dc75cb45",
+        "hash_after": "efd8671bc6b2c69c8e4807de66536ffa4253f0b83294d6e48ab9e1a8981f9bc0",
+        "hash_before": "47a28f4744455aaa79c87f3c77a3ff86e5739cc26bc8ab54702205ce4f42d061",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -3994,8 +3994,8 @@
           "tick"
         ],
         "event_id": "e00053",
-        "hash_after": "e0a5c0f228f39b291ac290feebf5be90affac2f284b6047ffc183474f5ed41fa",
-        "hash_before": "955846acd807f3ecd1862f8d7e053c5657466f297e570a2ddd5bea6e437adaf6",
+        "hash_after": "9c708f555db23d15ab1219046b2e5da58635aa116634b15f14e7c46f5d635b75",
+        "hash_before": "efd8671bc6b2c69c8e4807de66536ffa4253f0b83294d6e48ab9e1a8981f9bc0",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -4036,8 +4036,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00054",
-        "hash_after": "06b1e0b859cc88e4f000177b6b48f58d3dd7281efb904ffa93b27176df68744d",
-        "hash_before": "e0a5c0f228f39b291ac290feebf5be90affac2f284b6047ffc183474f5ed41fa",
+        "hash_after": "fefc64a0888950953319778014f244ef1a7d7d1aef665933fb84435be6c61113",
+        "hash_before": "9c708f555db23d15ab1219046b2e5da58635aa116634b15f14e7c46f5d635b75",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -4096,8 +4096,8 @@
           "physical_ledger"
         ],
         "event_id": "e00055",
-        "hash_after": "a13e0c48db130b88da26580f0d35a424c67ff7eefdfe1e663e78e9f23b1861dd",
-        "hash_before": "06b1e0b859cc88e4f000177b6b48f58d3dd7281efb904ffa93b27176df68744d",
+        "hash_after": "01e62cb66ef397882f5aa54e3c22ab65c7b5694087c5cca1e1772a36598ba484",
+        "hash_before": "fefc64a0888950953319778014f244ef1a7d7d1aef665933fb84435be6c61113",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -4133,8 +4133,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00056",
-        "hash_after": "e76756a62b28d17d0ac068f4ec4df10b17547233e66693835ae22c006d9e2b9a",
-        "hash_before": "a13e0c48db130b88da26580f0d35a424c67ff7eefdfe1e663e78e9f23b1861dd",
+        "hash_after": "9b2683d16c757c6cd161de7736e6ea62c4ae5eaeb9b049a8395dfb4ce16c9722",
+        "hash_before": "01e62cb66ef397882f5aa54e3c22ab65c7b5694087c5cca1e1772a36598ba484",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -4244,8 +4244,8 @@
           "entities.<vessel>.last_cause_event_id"
         ],
         "event_id": "e00057",
-        "hash_after": "51fdea214f43bc640f512eda2ba84067c8a64984a7a0158e0bccb790209c4093",
-        "hash_before": "e76756a62b28d17d0ac068f4ec4df10b17547233e66693835ae22c006d9e2b9a",
+        "hash_after": "bcb301580d39fdf2d609e295967c3642a6948057d4624c8a001edd3716273de2",
+        "hash_before": "9b2683d16c757c6cd161de7736e6ea62c4ae5eaeb9b049a8395dfb4ce16c9722",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -4476,8 +4476,8 @@
           "tick"
         ],
         "event_id": "e00058",
-        "hash_after": "8d1f476aa08f833f0f88e0d3033c42ccd2533e91bc0f9c78bbe45dee42735e4e",
-        "hash_before": "51fdea214f43bc640f512eda2ba84067c8a64984a7a0158e0bccb790209c4093",
+        "hash_after": "98e9bc264ee6a8f1bbe37d014b93f30e15133240040612600a4813e2f663e5f7",
+        "hash_before": "bcb301580d39fdf2d609e295967c3642a6948057d4624c8a001edd3716273de2",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -4518,8 +4518,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00059",
-        "hash_after": "75a6ece550ad9129da5de4620c35fcf970bd6525f97ce94d276d0f8c5726a037",
-        "hash_before": "8d1f476aa08f833f0f88e0d3033c42ccd2533e91bc0f9c78bbe45dee42735e4e",
+        "hash_after": "091c2a842ba4e68b29bbefe6974c4a96e80f00dee487373fb74505515d861a7a",
+        "hash_before": "98e9bc264ee6a8f1bbe37d014b93f30e15133240040612600a4813e2f663e5f7",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -4578,8 +4578,8 @@
           "physical_ledger"
         ],
         "event_id": "e00060",
-        "hash_after": "c6c19c3f9ac8e5814b8b581c4ca9a3fe3610b9ccdcce5719408af7610ac4e4bd",
-        "hash_before": "75a6ece550ad9129da5de4620c35fcf970bd6525f97ce94d276d0f8c5726a037",
+        "hash_after": "8fc23ddf84be4bc13c5fadc39fa9216b5979c7a57da3d5067ed1fa42b9841041",
+        "hash_before": "091c2a842ba4e68b29bbefe6974c4a96e80f00dee487373fb74505515d861a7a",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -4615,8 +4615,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00061",
-        "hash_after": "58a2d9bea2e32e1e68f97f0a1651cae5b51695fb5fc36fd8534070bca66663bf",
-        "hash_before": "c6c19c3f9ac8e5814b8b581c4ca9a3fe3610b9ccdcce5719408af7610ac4e4bd",
+        "hash_after": "3ef13853931ef454c547aa9b2f9f0a1499c8490f553f42b9cfbb7cdcf3606eb7",
+        "hash_before": "8fc23ddf84be4bc13c5fadc39fa9216b5979c7a57da3d5067ed1fa42b9841041",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -4740,8 +4740,8 @@
           "entities.<vessel>.last_cause_event_id"
         ],
         "event_id": "e00062",
-        "hash_after": "d5edc171bf135711a9e0ad8870599e5daba204fca97d3d1c0ba2cc32a8ef3685",
-        "hash_before": "58a2d9bea2e32e1e68f97f0a1651cae5b51695fb5fc36fd8534070bca66663bf",
+        "hash_after": "7b144c58f76d9d3a192a8e4ff09902e71a98ebf5186d23a85f50b2c63f9f84c7",
+        "hash_before": "3ef13853931ef454c547aa9b2f9f0a1499c8490f553f42b9cfbb7cdcf3606eb7",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -4972,8 +4972,8 @@
           "tick"
         ],
         "event_id": "e00063",
-        "hash_after": "f25daae16194cfcaeedf5477acf91a77a6b36a087197b43f66f365611d366331",
-        "hash_before": "d5edc171bf135711a9e0ad8870599e5daba204fca97d3d1c0ba2cc32a8ef3685",
+        "hash_after": "b4223fad9786ebd90dfd5a69b112aedb80c9514af83a3cc4f5b630479183c31c",
+        "hash_before": "7b144c58f76d9d3a192a8e4ff09902e71a98ebf5186d23a85f50b2c63f9f84c7",
         "observation": null,
         "rule_id": "system.clock.advance",
         "rule_version": "1",
@@ -5014,8 +5014,8 @@
           "entities.<actor>.actor.hydration"
         ],
         "event_id": "e00064",
-        "hash_after": "d5bc37c8f1acbb7668d0d1f9293a37911563971da0320cc6803c7ca054dbafc5",
-        "hash_before": "f25daae16194cfcaeedf5477acf91a77a6b36a087197b43f66f365611d366331",
+        "hash_after": "e6382086270b7194d7c63c1c889c2affd03fd58ed7a96ef3979d90b273676ad6",
+        "hash_before": "b4223fad9786ebd90dfd5a69b112aedb80c9514af83a3cc4f5b630479183c31c",
         "observation": null,
         "rule_id": "process.actor.hydration-decay",
         "rule_version": "1",
@@ -5074,8 +5074,8 @@
           "physical_ledger"
         ],
         "event_id": "e00065",
-        "hash_after": "c8a3b455d0a12f1330b9204a33b894a1164d679a69cb46318d8d1f6dd4c2c4a0",
-        "hash_before": "d5bc37c8f1acbb7668d0d1f9293a37911563971da0320cc6803c7ca054dbafc5",
+        "hash_after": "10058bbe5b787789f6c78dcc3e8752e6075a5ab5c79d2e787955515ff8887959",
+        "hash_before": "e6382086270b7194d7c63c1c889c2affd03fd58ed7a96ef3979d90b273676ad6",
         "observation": null,
         "rule_id": "process.thermal.vessels",
         "rule_version": "2",
@@ -5111,8 +5111,8 @@
           "entities.<source>.heat_source.fuel"
         ],
         "event_id": "e00066",
-        "hash_after": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
-        "hash_before": "c8a3b455d0a12f1330b9204a33b894a1164d679a69cb46318d8d1f6dd4c2c4a0",
+        "hash_after": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7",
+        "hash_before": "10058bbe5b787789f6c78dcc3e8752e6075a5ab5c79d2e787955515ff8887959",
         "observation": null,
         "rule_id": "process.heat-source.fuel",
         "rule_version": "1",
@@ -5122,7 +5122,7 @@
         "world_revision": 66
       }
     ],
-    "final_material_hash": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+    "final_material_hash": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7",
     "fuel_at_checkpoint": 9,
     "initial_snapshot": {
       "schema_version": "world-substrate-snapshot/v1",
@@ -5330,9 +5330,13 @@
             "volume_ml": 6000
           },
           "latent_heat_used": 0,
-          "overflow_ml": 0,
           "pathogens_killed": 0,
-          "spilled_ml": 0
+          "spilled": {
+            "heat_units": 0,
+            "pathogens": 0,
+            "salt_mg": 0,
+            "volume_ml": 0
+          }
         },
         "revision": 0,
         "rule_versions": {
@@ -5424,9 +5428,9 @@
     "Unsupported and malformed action-envelope counterexamples are retained separately before M1 promotion."
   ],
   "replay": {
-    "actual": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+    "actual": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7",
     "event_match": true,
-    "expected": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+    "expected": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7",
     "ok": true,
     "steps": 22
   },

@@ -72,7 +72,7 @@ def test_failed_vessel_loses_its_contents() -> None:
     assert vessel.condition.value == 0
     assert vessel.liquid.volume_ml == 0
     assert vessel.liquid.heat_units == 0
-    assert engine.world.physical_ledger.spilled_ml == 459
+    assert engine.world.physical_ledger.spilled.volume_ml == 459
 
 
 def test_intact_vessel_keeps_its_contents() -> None:
@@ -83,7 +83,7 @@ def test_intact_vessel_keeps_its_contents() -> None:
     # Still at condition 100 after one tick: nothing is emptied.
     assert vessel.condition.value == 100
     assert vessel.liquid.volume_ml == 500
-    assert engine.world.physical_ledger.spilled_ml == 0
+    assert engine.world.physical_ledger.spilled.volume_ml == 0
 
 
 def test_volume_is_conserved_against_the_ledger() -> None:
@@ -166,9 +166,77 @@ class SpillExperimentTests(unittest.TestCase):
 
         findings = assay_conservation(engine, INITIAL_VOLUME_ML)
 
-        self.assertEqual(len(findings), 1)
-        self.assertEqual(findings[0].code, "volume_not_conserved")
-        self.assertEqual(findings[0].severity, "reject")
+        self.assertTrue(findings)
+        self.assertEqual({finding.code for finding in findings}, {"quantity_not_conserved"})
+        self.assertTrue(all(finding.severity == "reject" for finding in findings))
+        self.assertTrue(
+            any("volume_ml" in finding.detail for finding in findings),
+            [finding.detail for finding in findings],
+        )
+
+    def test_the_assay_now_catches_a_quantity_other_than_volume(self) -> None:
+        """The M4 gap: only volume was recorded for a spill, so only volume
+        could ever be balanced. Pathogens are the quantity this world actually
+        moves, and they now balance -- and stop balancing when destroyed."""
+        base = build_spill_engine()
+        initial_pathogens = sum(
+            entity.liquid.pathogens
+            for entity in base.world.entities.values()
+            if entity.liquid is not None
+        )
+        self.assertGreater(initial_pathogens, 0)
+
+        engine = build_spill_engine()
+        _stage(engine)
+        engine.advance(5)
+        self.assertEqual(
+            assay_conservation(
+                engine, INITIAL_VOLUME_ML, initial_pathogens=initial_pathogens
+            ),
+            [],
+        )
+
+        # Destroy pathogens without recording them anywhere.
+        holding = next(
+            entity
+            for entity in engine.world.entities.values()
+            if entity.liquid is not None and entity.liquid.pathogens > 0
+        )
+        holding.liquid.pathogens -= 100
+
+        findings = assay_conservation(
+            engine, INITIAL_VOLUME_ML, initial_pathogens=initial_pathogens
+        )
+        self.assertTrue(findings)
+        self.assertTrue(any("pathogens" in f.detail for f in findings))
+        # Volume is untouched: this is the new check firing on its own.
+        self.assertFalse(any("volume_ml" in f.detail for f in findings))
+
+    def test_a_spill_now_records_what_it_destroys(self) -> None:
+        """Before `spilled` was a full vector this could not be asserted: a
+        failed vessel's pathogens were zeroed and written nowhere."""
+        engine = build_spill_engine()
+        # Fill and break a vessel while its water is still untreated, so the
+        # spill carries pathogens rather than volume alone.
+        vessel = next(
+            entity
+            for entity in engine.world.entities.values()
+            if entity.container is not None and entity.condition is not None
+        )
+        vessel.liquid.volume_ml = 400
+        vessel.liquid.pathogens = 160
+        vessel.liquid.salt_mg = 0
+        vessel.liquid.heat_units = 0
+        vessel.condition.value = 0
+        engine.world.rule_versions = engine.registry.versions()
+
+        before = engine.world.physical_ledger.spilled.as_dict()
+        engine.advance(1)
+        after = engine.world.physical_ledger.spilled.as_dict()
+
+        self.assertEqual(after["volume_ml"] - before["volume_ml"], 400)
+        self.assertEqual(after["pathogens"] - before["pathogens"], 160)
+        self.assertEqual(engine.world.entities[vessel.entity_id].liquid.pathogens, 0)
 
 
 if __name__ == "__main__":

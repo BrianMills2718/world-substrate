@@ -267,41 +267,78 @@ def assay_undeclared_component_reads(rules: Iterable[Any]) -> list[Finding]:
 
 
 def assay_conservation(
-    engine: Engine, initial_volume_ml: int
+    engine: Engine,
+    initial_volume_ml: int,
+    *,
+    initial_pathogens: int | None = None,
+    initial_salt_mg: int | None = None,
 ) -> list[Finding]:
-    """Whether modelled liquid volume still balances against the ledger.
+    """Whether the modelled liquid quantities still balance against the ledger.
 
     The project treats accounting as goal-relative rather than universal, so
     this is the freshwater world's identity, not a substrate law:
 
-        in-world volume + spilled + evaporated + drunk == initial volume
+        in-world + spilled + evaporated + drunk (+ killed) == initial
 
     Worth running as its own assay because it is based on neither declarations
     nor affordances. A mechanic that destroys a modelled quantity may change
     no actor's action set at all -- and then the behavioural assay is silent
     while the world quietly stops adding up.
+
+    Volume is always checked. The other quantities are checked only when the
+    caller states their initial total, because `physical_ledger.initial` is not
+    maintained by any mechanic -- it is all zeros in every world here, which is
+    why volume arrives as a parameter. Deriving an expected total from it would
+    make every check pass for the wrong reason.
+
+    Until `spilled` became a full liquid vector this could only ever balance
+    volume: a spill recorded its millilitres and dropped its salt and pathogens
+    on the floor, so the one assay meant to catch a destroyed quantity was
+    blind to three of the four.
     """
     ledger = engine.world.physical_ledger
     if ledger is None:
         return [
             Finding("warn", "no_ledger", "world has no physical ledger to balance against")
         ]
-    in_world = sum(
-        entity.liquid.volume_ml
-        for entity in engine.world.entities.values()
-        if entity.liquid is not None
-    )
-    accounted = (
-        in_world + ledger.spilled_ml + ledger.evaporated.volume_ml + ledger.drunk.volume_ml
-    )
-    if accounted == initial_volume_ml:
-        return []
-    return [
-        Finding(
-            "reject",
-            "volume_not_conserved",
-            f"in-world {in_world} + spilled {ledger.spilled_ml} + evaporated "
-            f"{ledger.evaporated.volume_ml} + drunk {ledger.drunk.volume_ml} = "
-            f"{accounted}, but the world started with {initial_volume_ml}",
+
+    def in_world(field_name: str) -> int:
+        return sum(
+            getattr(entity.liquid, field_name)
+            for entity in engine.world.entities.values()
+            if entity.liquid is not None
         )
-    ]
+
+    checks: list[tuple[str, int, int]] = [("volume_ml", initial_volume_ml, 0)]
+    if initial_salt_mg is not None:
+        checks.append(("salt_mg", initial_salt_mg, 0))
+    if initial_pathogens is not None:
+        # Boiling destroys pathogens on purpose and records it, so that is a
+        # sink in this balance rather than a leak.
+        checks.append(("pathogens", initial_pathogens, ledger.pathogens_killed))
+
+    findings: list[Finding] = []
+    for field_name, initial, sink in checks:
+        present = in_world(field_name)
+        accounted = (
+            present
+            + getattr(ledger.spilled, field_name)
+            + getattr(ledger.evaporated, field_name)
+            + getattr(ledger.drunk, field_name)
+            + sink
+        )
+        if accounted == initial:
+            continue
+        findings.append(
+            Finding(
+                "reject",
+                "quantity_not_conserved",
+                f"{field_name}: in-world {present} + spilled "
+                f"{getattr(ledger.spilled, field_name)} + evaporated "
+                f"{getattr(ledger.evaporated, field_name)} + drunk "
+                f"{getattr(ledger.drunk, field_name)}"
+                + (f" + accounted sink {sink}" if sink else "")
+                + f" = {accounted}, but the world started with {initial}",
+            )
+        )
+    return findings

@@ -33,8 +33,8 @@
         "declared_read_paths": [],
         "declared_write_paths": [],
         "event_id": "e00001",
-        "hash_after": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
-        "hash_before": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "hash_after": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
+        "hash_before": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -222,9 +222,9 @@
       },
       "expected_status": "invalid_action",
       "replay": {
-        "actual": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "actual": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "event_match": true,
-        "expected": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "expected": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "ok": true,
         "steps": 1
       }
@@ -324,8 +324,8 @@
           "entities.<source>.liquid"
         ],
         "event_id": "e00001",
-        "hash_after": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
-        "hash_before": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "hash_after": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
+        "hash_before": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -530,9 +530,9 @@
       },
       "expected_status": "precondition_failed",
       "replay": {
-        "actual": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "actual": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "event_match": true,
-        "expected": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "expected": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "ok": true,
         "steps": 1
       }
@@ -565,8 +565,8 @@
         "declared_read_paths": [],
         "declared_write_paths": [],
         "event_id": "e00001",
-        "hash_after": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
-        "hash_before": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "hash_after": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
+        "hash_before": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "observation": {
           "actor_id": "robinson",
           "entities": {
@@ -754,9 +754,9 @@
       },
       "expected_status": "unsupported_action",
       "replay": {
-        "actual": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "actual": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "event_match": true,
-        "expected": "9aa70f0b69d3550145c2caabc3328cf2e1497557d8a5870c3ceeecc62cdbf9a2",
+        "expected": "36dacf51037b8317ee93883b76cbb3a9f80787c011fcc1622c288bdbcc625562",
         "ok": true,
         "steps": 1
       }
@@ -840,16 +840,16 @@
     },
     "ledger_matched": true,
     "replay": {
-      "actual": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+      "actual": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7",
       "event_match": true,
-      "expected": "4927437f038bbfba7ff43702f0508ce3aa811cedd399340a777b4ca816e17288",
+      "expected": "837ddfa2f5520689949f7804a4ea4137a1fb4d3afea7e9819bc99f7d5e8701a7",
       "ok": true,
       "steps": 22
     },
     "retained_trace_matches": true,
     "semantic_checkpoint_matched": true,
     "trace_ref": "evidence/m1/transfer-v0.json",
-    "trace_sha256": "ea408b7a977d08e9083372c8f961f7f9eb8d9e6d3ffc867113c7bdadd1ad2608",
+    "trace_sha256": "edeffa1e50ffaba196fe5d019c70d10174545d76a349c98f390bb14f9a5a22c5",
     "vessel_identity_preserved": true
   },
   "schema_version": "world-substrate-evidence/freshwater-v0"

@@ -149,12 +149,18 @@ class PhysicalLedger:
     added: LiquidState = field(default_factory=LiquidState)
     drunk: LiquidState = field(default_factory=LiquidState)
     evaporated: LiquidState = field(default_factory=LiquidState)
+    # `spilled` is a full liquid vector like `evaporated`, not a bare volume.
+    # It was `spilled_ml: int`, so a failed vessel's salt and pathogens left
+    # the world unrecorded while its volume was accounted for -- and
+    # assay_conservation, which exists to catch a mechanic destroying a
+    # modelled quantity, could only balance the one quantity that was written
+    # (M4 finding). The asymmetry was declared as a known limit for two
+    # milestones rather than fixed.
+    spilled: LiquidState = field(default_factory=LiquidState)
     pathogens_killed: int = 0
     heat_added: int = 0
     heat_lost: int = 0
     latent_heat_used: int = 0
-    spilled_ml: int = 0
-    overflow_ml: int = 0
 
     def semantic_deltas(self) -> dict[str, object]:
         return {
@@ -464,7 +470,7 @@ class World:
             if not isinstance(ledger_record, dict):
                 raise ValueError("snapshot physical_ledger must be an object")
             ledger_values = deepcopy(ledger_record)
-            for name in ("initial", "added", "drunk", "evaporated"):
+            for name in ("initial", "added", "drunk", "evaporated", "spilled"):
                 item = ledger_values.get(name)
                 if not isinstance(item, dict):
                     raise TypeError(
@@ -495,7 +501,28 @@ class World:
         return world
 
     def clone(self) -> World:
-        return deepcopy(self)
+        """A deep copy, sharing the committed event log rather than copying it.
+
+        `Engine.apply` clones the whole world per action to get commit-or-
+        refuse atomicity, and once events carried the actor's observation --
+        roughly 5KB each -- that made a trace quadratic in its own length: 34ms
+        for ten actions, 173ms for twenty, 732ms for forty. Invisible at M1
+        trace lengths and painful on the longer policy runs M5 and M7
+        introduced.
+
+        Events are append-only. `Engine._event` builds one and nothing in this
+        repository ever writes to a committed event afterwards -- the only
+        operations on `world.events` are appends and reads. So the deep copy
+        was buying isolation from a mutation that does not happen, and sharing
+        them is safe rather than a convention someone must remember.
+
+        `tests/test_event_log_sharing.py` is the mechanism that keeps it true:
+        it fingerprints every event when it first appears and re-checks the
+        whole log after each subsequent transition, so a future rule that
+        mutates a committed event fails there instead of silently corrupting
+        the history of every world that shares it.
+        """
+        return deepcopy(self, {id(event): event for event in self.events})
 
     def validate(self) -> None:
         if self.revision < 0 or self.tick < 0:
