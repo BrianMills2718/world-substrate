@@ -24,21 +24,27 @@ class ScopeViolation(RuntimeError):
     """A registered rule wrote outside its declared write scope."""
 
 
+# The engine's own envelope metadata. `kind` names the action and `controller`
+# names whoever submitted it; neither is a world participant, and both are
+# free-form strings the submitter chooses. Counting them as participants let an
+# untrusted envelope widen a rule's write scope to any entity it cared to name:
+# the same defective rule was refused with `controller="script"` and accepted
+# with `controller="wrench-1"`. Excluding the engine's four reserved fields is
+# not the hand-listed Castaway vocabulary M6 removed -- every other key is
+# world-specific participant naming and still counts, whatever it is called.
+_ENVELOPE_METADATA: frozenset[str] = frozenset({"kind", "controller", "base_revision"})
+
+
 def _action_entity_refs(
     record: dict[str, Any], known_ids: frozenset[str]
 ) -> frozenset[str]:
-    """Entity identifiers the attempt itself names.
-
-    Any string value in the envelope that is an entity in this world counts,
-    whatever the field is called. Non-entity values (`kind`, `controller`, a
-    volume) name nothing and bind nothing, so this stays as tight as a
-    hand-listed vocabulary while working for worlds that were not written
-    against one.
-    """
+    """Entity identifiers the attempt itself names as participants."""
     return frozenset(
         value
-        for value in record.values()
-        if isinstance(value, str) and value in known_ids
+        for key, value in record.items()
+        if key not in _ENVELOPE_METADATA
+        and isinstance(value, str)
+        and value in known_ids
     )
 
 

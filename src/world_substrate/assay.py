@@ -19,25 +19,27 @@ Nothing here writes canonical state.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable
 from typing import Any
 
-from .engine import Engine
+from .engine import Engine, _ENVELOPE_METADATA
+from .model import BUILTIN_COMPONENT_TYPES, COMPONENT_TYPES
 from .profile import Finding, MechanicPackage, paths_overlap
 
-_COMPONENT_NAMES = (
-    "actor",
-    "carrying",
-    "portable",
-    "location",
-    "ownership",
-    "condition",
-    "container",
-    "liquid",
-    "thermal",
-    "material",
-    "heat_source",
-)
+def _component_names() -> tuple[str, ...]:
+    """Every component name a world could actually be using, right now.
+
+    This was a hardcoded tuple of the eleven Castaway components. M6 recorded
+    that the assays "transferred with no edits at all", which was true only in
+    the sense that they did not crash: the workshop world's components --
+    worker, part, tool, assembly -- have *zero* overlap with that tuple, so
+    `assay_undeclared_component_reads` could not produce a finding there at
+    all, and reported a clean result by construction. Read from the registries
+    instead, so a world pack's own components are in scope the moment it
+    registers them.
+    """
+    return tuple(sorted(set(BUILTIN_COMPONENT_TYPES) | set(COMPONENT_TYPES)))
 
 
 def assay_declared_readers(
@@ -80,10 +82,25 @@ def assay_declared_readers(
     return findings
 
 
-def _subject(action: dict[str, Any]) -> str:
-    for key in ("vessel", "target", "source", "destination"):
-        value = action.get(key)
-        if isinstance(value, str) and value:
+def _subject(action: dict[str, Any], known_ids: frozenset[str]) -> str:
+    """The entity an attempt acts on: its first non-actor participant.
+
+    This used to scan a hardcoded key list -- vessel, target, source,
+    destination -- which is the same Castaway vocabulary the engine's
+    write-scope binding carried until M6 removed it there. Every workshop
+    action names its participants differently (`item`, `part`, `assembly`), so
+    all of them collapsed to "?" and the behavioural assay lost the ability to
+    say *which* entity an affordance changed on.
+
+    Asking the world which values name entities is both general and stable:
+    `as_dict()` emits fields in a fixed order, so the first non-actor entity is
+    deterministic, and it is the same field the old list would have picked for
+    every Castaway action.
+    """
+    for key, value in action.items():
+        if key == "actor" or key in _ENVELOPE_METADATA:
+            continue
+        if isinstance(value, str) and value in known_ids:
             return value
     return "?"
 
@@ -98,12 +115,15 @@ def _blocking_reasons(engine: Engine, actor_ids: Iterable[str]) -> dict[tuple[st
     starts or stops blocking a kind of action on an entity.
     """
     reasons: dict[tuple[str, str], set[str]] = {}
+    known_ids = frozenset(engine.world.entities)
     for actor_id in sorted(actor_ids):
         page = engine.discover(actor_id)
         for row in page["available"]:
-            reasons.setdefault((row["action"]["kind"], _subject(row["action"])), set())
+            reasons.setdefault(
+                (row["action"]["kind"], _subject(row["action"], known_ids)), set()
+            )
         for row in page["blocked"]:
-            key = (row["action"]["kind"], _subject(row["action"]))
+            key = (row["action"]["kind"], _subject(row["action"], known_ids))
             reasons.setdefault(key, set()).update(
                 item.strip() for item in row.get("reason", "").split(";") if item.strip()
             )
@@ -152,6 +172,28 @@ def assay_affordance_changes(
             )
         )
     return findings
+
+
+def _reads_component(source: str, component: str) -> bool:
+    """Whether rule source reaches a component, by either access form.
+
+    The eleven built-in components are attributes (`entity.liquid`). A world
+    pack's own components are dict entries (`entity.components["tool"]`,
+    `.components.get("tool")`, `entity.component("tool")`), so a scan for
+    `.tool` finds nothing however complete the name vocabulary is. Widening
+    the vocabulary without this change left the assay exactly as blind to
+    registered components as it was with the names hardcoded.
+    """
+    name = re.escape(component)
+    patterns = (
+        # Word-bounded: `.heat_source_id` is a field of the container
+        # component, not an access to the heat_source component.
+        rf"\.{name}\b",
+        rf"""components\s*\[\s*["']{name}["']""",
+        rf"""components\s*\.\s*get\s*\(\s*["']{name}["']""",
+        rf"""\bcomponent\s*\(\s*["']{name}["']""",
+    )
+    return any(re.search(pattern, source) for pattern in patterns)
 
 
 def assay_undeclared_component_reads(rules: Iterable[Any]) -> list[Finding]:
@@ -209,11 +251,8 @@ def assay_undeclared_component_reads(rules: Iterable[Any]) -> list[Finding]:
         declared = " ".join(rule.read_paths) + " " + " ".join(rule.write_paths)
         missing = sorted(
             component
-            for component in _COMPONENT_NAMES
-            # Word-bounded: `.heat_source_id` is a field of the container
-            # component, not an access to the heat_source component, and a
-            # rule that declares `container` has already declared that read.
-            if re.search(rf"\.{component}\b", source) and component not in declared
+            for component in _component_names()
+            if _reads_component(source, component) and component not in declared
         )
         if missing:
             findings.append(
