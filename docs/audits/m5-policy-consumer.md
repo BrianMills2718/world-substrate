@@ -91,6 +91,50 @@ contents.
 Both are seam findings, not mechanic findings, and neither is visible from a
 scripted controller — which is the argument for having done this at all.
 
+## Re-run after the seam was repaired (2026-09-04)
+
+Both weaknesses above were fixed in the observation seam: a process that
+accumulates toward a threshold now declares its progress, and an action that
+destroys the value of a vessel's contents is marked in the affordance list. The
+obvious question is whether the model still walks into the trap, so the same
+comparison was re-run against the repaired seam. Same model, same world, same
+16 turns. Cost: **$0.0045**. Evidence:
+[`evidence/m5/llm-policy-postfix-v1.json`](../../evidence/m5/llm-policy-postfix-v1.json).
+
+| | original | after the fixes |
+| --- | --- | --- |
+| final health | 60 | **80** |
+| baseline final health | 4 | 4 |
+| heat / unheat churn | 4 heats, 4 unheats | 2 heats, 1 unheat |
+| refilled its own treated vessel | twice | **never** |
+
+Both fixes did exactly what they were built to do. The oscillation is gone: at
+t3-t6 the policy issues four consecutive `wait`s -- "let the clay pot continue
+boiling" -- instead of pulling the pot off the fire and putting it back. It
+never re-contaminated its own water.
+
+**And it still lost 20 health, to the same underlying failure one step
+downstream.** At t9 and t10 it reasoned that "the treated water is currently
+too hot to drink safely, so waiting allows it to cool", waited twice, and drank
+at t11. Reproduced deterministically: two ticks after pouring, the cup is at
+**66C** against `DrinkRule.safe_drinking_temperature_c = 45`. The damage was
+`hot_harm_per_250ml = 10` over two portions -- exactly the 20 observed -- and
+the water carried zero pathogens. It was scalded, not poisoned.
+
+That is the same shape as the boiling gap: the policy reasons about a threshold
+the world enforces and the observation does not expose, guesses how long to
+wait, and is wrong. `ThermalProcess.progress` reports vessels *accumulating*
+toward treatment -- it selects on `heat_source_id is not None` and
+`pathogens > 0` -- and says nothing about a vessel *descending* toward a safe
+drinking temperature. One instance of the class was closed and the next
+instance appeared immediately.
+
+The useful conclusion is not that the fixes failed. They worked, and the score
+moved 60 to 80. It is that **this failure is structural rather than anecdotal**:
+it regenerates at every threshold the world checks and the observation omits, so
+it is a property of the seam design, not a memorable one-off. Anything built on
+the assumption that a fixed seam stops producing it should expect otherwise.
+
 ## Limits
 
 - **The refusal path was never exercised by the model.** The response schema

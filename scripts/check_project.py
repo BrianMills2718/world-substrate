@@ -12,6 +12,10 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
+
+from scripts._display import display_path
+
 LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 SKIP = {".git", ".venv", ".company-planning", "work", "runs"}
@@ -391,7 +395,7 @@ def main() -> int:
         failures.append("root AGENTS.md must be a symlink to CLAUDE.md")
 
     nested_agents = [
-        path.relative_to(REPO)
+        display_path(path, REPO)
         for path in REPO.rglob("AGENTS.md")
         if path != agents and not SKIP.intersection(path.relative_to(REPO).parts)
     ]
@@ -438,7 +442,7 @@ def main() -> int:
                 continue
             resolved = (path.parent / target.split("#", 1)[0]).resolve()
             if not resolved.exists():
-                failures.append(f"broken link: {path.relative_to(REPO)} -> {raw}")
+                failures.append(f"broken link: {display_path(path, REPO)} -> {raw}")
 
     try:
         manifest = json.loads((REPO / "references/sources.json").read_text())

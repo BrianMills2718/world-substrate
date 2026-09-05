@@ -13,6 +13,9 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
+
+from scripts._display import display_path
+
 sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.probe import (
@@ -43,7 +46,7 @@ def _current_revision() -> str:
 
 
 def _trace_at_revision(trace_path: Path, source_revision: str) -> bytes:
-    relative = trace_path.resolve().relative_to(REPO)
+    relative = display_path(trace_path, REPO)
     completed = subprocess.run(
         ["git", "show", f"{source_revision}:{relative}"],
         cwd=REPO,
@@ -90,7 +93,7 @@ def replay_trace(
         "schema_version": "world-substrate-replay-receipt/v1",
         "record_type": "fresh_process_replay_receipt",
         "source_revision": source_revision or _current_revision(),
-        "source_trace": str(trace_path.resolve().relative_to(REPO)),
+        "source_trace": display_path(trace_path, REPO),
         "source_trace_sha256": hashlib.sha256(trace_bytes).hexdigest(),
         "inputs": {
             "snapshot_schema_version": snapshot.get("schema_version"),
@@ -112,13 +115,6 @@ def replay_trace(
 
 def encoded(payload: dict[str, object]) -> bytes:
     return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode()
-
-
-def display_path(path: Path) -> str:
-    try:
-        return str(path.relative_to(REPO))
-    except ValueError:
-        return str(path)
 
 
 def main() -> int:
@@ -168,11 +164,11 @@ def main() -> int:
         if not output.exists() or output.read_bytes() != expected:
             print(f"fresh-process replay receipt drift: {output}", file=sys.stderr)
             return 1
-        print(f"fresh-process replay receipt passes: {display_path(output)}")
+        print(f"fresh-process replay receipt passes: {display_path(output, REPO)}")
         return 0
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_bytes(expected)
-    print(f"wrote {display_path(output)}")
+    print(f"wrote {display_path(output, REPO)}")
     return 0
 
 

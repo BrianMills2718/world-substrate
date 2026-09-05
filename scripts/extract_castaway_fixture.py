@@ -12,6 +12,10 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
+
+from scripts._display import display_path
+
 MANIFEST = REPO / "references/sources.json"
 OUTPUT = REPO / "tests/fixtures/castaway/freshwater-v0.json"
 
@@ -117,12 +121,12 @@ def main() -> int:
         if not OUTPUT.exists() or OUTPUT.read_bytes() != expected:
             print(f"fixture drift: {OUTPUT}", file=sys.stderr)
             return 1
-        print(f"fixture matches pinned donor: {OUTPUT.relative_to(REPO)}")
+        print(f"fixture matches pinned donor: {display_path(OUTPUT, REPO)}")
         return 0
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_bytes(expected)
-    print(f"wrote {OUTPUT.relative_to(REPO)}")
+    print(f"wrote {display_path(OUTPUT, REPO)}")
     return 0
 
 
