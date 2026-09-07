@@ -68,7 +68,24 @@
       "item_anchor": [
         77,
         52
-      ]
+      ],
+      "item_layout": {
+        "slots": [
+          [
+            0.28,
+            0.64
+          ],
+          [
+            0.72,
+            0.64
+          ],
+          [
+            0.5,
+            0.38
+          ]
+        ],
+        "overflow": "grid"
+      }
     },
     "parts-rack": {
       "presentation_only": true,

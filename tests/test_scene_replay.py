@@ -109,6 +109,35 @@ class GenericSceneReplay(unittest.TestCase):
         with self.assertRaises(ValueError):
             scene.build_frames(trace, profile)
 
+
+    def test_station_item_layout_uses_relative_slots_and_grid_overflow(self):
+        profile = lab_profile()
+        profile["entities"].update({
+            "sample-2": {"asset": "sample", "home": [52, 50], "label": "sample 2"},
+            "sample-3": {"asset": "sample", "home": [54, 50], "label": "sample 3"},
+        })
+        profile["stations"]["scanner"]["item_layout"] = {
+            "slots": [[0.25, 0.5]],
+            "overflow": "grid",
+        }
+        state = {
+            "sample-1": {"state": "analyzed", "placed_at": "scanner"},
+            "sample-2": {"state": "analyzed", "placed_at": "scanner"},
+            "sample-3": {"state": "analyzed", "placed_at": "scanner"},
+        }
+        positions = scene._station_layout_positions(profile, state)
+        self.assertEqual(positions["sample-1"], [46.0, 17.5])
+        self.assertEqual(len({tuple(point) for point in positions.values()}), 3)
+
+    def test_station_item_layout_rejects_out_of_range_slots(self):
+        profile = lab_profile()
+        profile["stations"]["scanner"]["item_layout"] = {"slots": [[1.2, 0.5]]}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "profile.json"
+            path.write_text(json.dumps(profile))
+            with self.assertRaisesRegex(ValueError, "relative 0..1 coordinates"):
+                scene.load_scene_profile(path)
+
     def test_image_assets_are_embedded_for_single_file_replays(self):
         profile = lab_profile()
         with tempfile.TemporaryDirectory() as tmp:

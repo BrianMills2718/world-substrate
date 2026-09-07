@@ -69,6 +69,12 @@ class WorkshopGreenfieldSceneProof(unittest.TestCase):
         self.assertEqual(frames[-1]["items"]["leg-1"]["placed_at"], "frame-a")
         self.assertEqual(frames[-1]["items"]["leg-2"]["placed_at"], "frame-a")
         self.assertEqual(frames[-1]["items"]["seat-1"]["placed_at"], "frame-a")
+        positions = frames[-1]["placed_positions"]
+        self.assertEqual(set(positions), {"leg-1", "leg-2", "seat-1"})
+        self.assertEqual(len({tuple(point) for point in positions.values()}), 3)
+        self.assertEqual(positions["leg-1"], [72.12, 60.2])
+        self.assertEqual(positions["leg-2"], [84.88, 60.2])
+        self.assertEqual(positions["seat-1"], [78.5, 45.9])
         source = (REPO / "scripts/render_scene_replay.py").read_text().lower()
         for token in ("workshop", "mira", "frame-a", "wrench-1"):
             self.assertNotIn(token, source)

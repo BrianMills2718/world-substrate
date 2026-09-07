@@ -61,10 +61,27 @@ has one `item_anchor`, so multiple attached parts share the same display slot.
 That makes the completed chair less legible than the action/relationship trace
 it represents. No Workshop-specific renderer branch was added to hide this.
 
-A future presentation increment may add a generic declarative station layout
-(e.g. slots/fan/grid) if that can serve multiple worlds. The finding does not
-invalidate the bootstrap proof: entity relationships, action projection, asset
-binding and replay generation all transferred without renderer changes.
+That finding was intentionally retained through the greenfield merge rather than
+hidden with Workshop-specific rendering.
+
+## Follow-up closure
+
+The next increment closed it generically. `scene-profile/v0` now lets a station
+declare relative `item_layout.slots` with deterministic `grid` or `anchor`
+overflow. `frame-a` uses three relative slots, so the final Workshop frame
+places `leg-1`, `leg-2`, and `seat-1` at three distinct positions while their
+canonical relationship remains `attached_to = frame-a`. The renderer contains
+no Workshop ids.
+
+Kitchen and Castaway, which do not opt into `item_layout`, still regenerate
+byte-for-byte identically. The extra Workshop slot declaration raises the
+current review payload from the original greenfield 1,620 bytes to 1,699 bytes
+against a 2,668-byte profile core: **63.7% current manual-review fraction**.
+The original 62.6% figure remains the greenfield baseline before the finding was
+closed.
+
+The remaining major automation cost is therefore illustrative scene geometry,
+not multi-item placement.
 
 ## Boundary preserved
 
