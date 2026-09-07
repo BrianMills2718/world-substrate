@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; graphical flagship replay ready for human review
-**Last outcome-bearing result:** the replicated service now has a graphical top-down replay at `evidence/renders/kitchen-spatial-replay-v1.html`. The cooks visibly move among prep, burner and plating stations while the shared knife, ingredients, order plates and short reasoning bubbles change across the retained 17-turn trace. The kitchen geometry is explicitly illustrative; actions, preparation state, ownership, progress, handoff and terminal completion come from retained evidence. The denser `kitchen-flagship-v1.html` timeline remains available for trace inspection.
+**Stage:** prototype complete; generic world-to-replay scene profile v0 proven on two real worlds
+**Last outcome-bearing result:** `scripts/render_scene_replay.py` plus `world-substrate-scene-profile/v0` now renders two real reference worlds without world-specific branches. Kitchen contributes declarative geometry/assets/action projection and retains its flagship replay. Castaway contributes a separate profile with `fill`/`drink`, pool/camp/fire geometry, different actors/assets and actor-health progress; an 8-turn scripted trace renders through the same engine. A synthetic lab profile still covers a custom `scan` action and image-asset embedding.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** human review of the first flagship artifact; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** reduce manual scene-profile authoring by deriving safe defaults/skeletons from world entities, categories, semantic/action metadata and an asset catalog; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -166,41 +166,43 @@ observable attempt or trigger
 | M7b: relational authoring | complete | authored mechanics using one cross-entity relation | promoted |
 | M8: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
-### Active slice: make the kitchen worth showing someone
+### Active slice: generate replay scenes from declarations, not bespoke code
 
-The flagship choices are answered:
+The generic graphical layer has now crossed the real-world portability gate.
+Kitchen and Castaway both render through `scripts/render_scene_replay.py`; their
+world-specific work lives in `scene-profile-v0.json` declarations. Kitchen maps
+`take/chop/cook/plate/put_down` into a prep/burner/order scene. Castaway maps
+`fill/drink` into a pool/camp scene and carries initial cup ownership from the
+reference-world model. No Castaway branch was added to the renderer.
 
-- **Which world:** the kitchen.
-- **What makes it impressive:** two agents that cannot talk, contending over a
-  bottleneck and zero-slack ingredients while coordinating through the world.
-- **What a viewer sees:** a rendered run with each agent's stated reasoning
-  beside world truth and causal outcomes.
+The renderer also supports profile-relative image assets embedded into the
+single-file replay, declarative state appearance, station activation, actor and
+item attachment, and trace-derived milestone labels. Scene geometry remains
+presentation-only unless coordinates are part of canonical world state.
 
-**Where it stands.** The service is terminal, the behavior replicated 3/3,
-and the primary viewer is now a graphical replay rather than a trace dashboard.
-`kitchen-spatial-replay-v1.html` uses an illustrative top-down kitchen so a
-person can watch the cooks move between prep, cooking and plating stations while
-the knife and ingredients visibly move with the retained actions. Order progress
-comes directly from the trace; item preparation and ownership are reconstructed
-from committed actions. The t10 release and t11 takeover happen in the scene, and
-t17 ends with both order plates complete.
+**What remains manual.** A human/agent still authors the profile: station
+geometry, asset bindings, which action field names a visual target, and how an
+action changes presentation state. That is now data rather than code, but it is
+not yet inferred from world categories, semantic bindings or relationship
+metadata.
 
-The replay was generated from replication run 1 and visually checked in a real
-headless Chrome render at desktop size, including cooking at t4 and the t10
-handoff. Focused tests assert the 17 frames, preparation progression, knife
-release/takeover, terminal orders and the read-only evidence boundary.
+**Next increment: bootstrap the profile.** Add a reviewable profile-authoring
+step that can inspect a reference-world model plus an asset catalog and emit a
+scene-profile skeleton: actors/entities, labels/categories, initial ownership,
+known workstations/containers, and candidate action projections. Ambiguous
+geometry or action visualization must remain explicit TODOs rather than being
+silently invented. Generated profiles must still pass the same loader and be
+editable before replay generation.
 
-**The engineering slice is complete.** The next step is human review of
-`evidence/renders/kitchen-spatial-replay-v1.html`. Showing or publishing it is
-not an implicit continuation of development: deployment/publication remains an
-explicit authority boundary.
+**What a fresh agent should do first.** All cost nothing:
 
-**What a fresh agent should do first.** Both cost nothing:
+1. Compare `reference_worlds/kitchen/scene-profile-v0.json` and `reference_worlds/castaway/scene-profile-v0.json`.
+2. Open both generated replays and verify the same renderer supports materially different scenes/actions.
+3. Read `docs/contracts/scene-profile-v0.md` before changing the profile wire shape.
 
-1. **Open the graphical replay** — `evidence/renders/kitchen-spatial-replay-v1.html`. It autoplays the service; the key sequence is contention at t2, Bo's release at t10, Ama's takeover at t11, and service completion at t17.
-2. **Read the audit** — `docs/audits/kitchen-contested-world.md` for the 3/3 replication evidence and execution caveat.
-
-**What not to do.** Do not add another substrate feature, repeat the same model configuration again, deploy, or publish simply because the artifact now exists. The next move crosses a human product/publication boundary.
+**What not to do.** Do not let profile synthesis invent causal facts, promote
+illustrative coordinates into world truth, or add arbitrary executable hooks to
+profiles. Publication/deployment remains separately controlled.
 
 ## Open obligations
 
@@ -264,7 +266,8 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
-| Graphical flagship replay shows a retained terminal service as a world | `scripts/render_kitchen_spatial_replay.py`, spatial replay tests, `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
+| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, kitchen + Castaway scene profiles, lab tests | v0 is 2D and contested-run/v3-oriented; profile authoring is still explicit | **established on two real worlds** |
+| Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
 | Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
 ## Risks and needs resolution
@@ -285,10 +288,10 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 
 | Decision | State | What it means now |
 | --- | --- | --- |
-| Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; the next viewer increment needs no model spend |
+| Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered: `kitchen-spatial-replay-v1.html`, a top-down kitchen replay with cooks, items, stations, orders and reasoning bubbles** | geometry is illustrative; deployment/publication remains separately controlled |
+| What a viewer actually sees | **answered for kitchen; generic scene profile v0 separates trace truth from visual geometry/assets and now renders Castaway too** | profile bootstrapping is the remaining automation gap; deployment/publication remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -298,16 +301,16 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Human-review `evidence/renders/kitchen-spatial-replay-v1.html`. The engineering
-goal for this slice is met: a retained replicated service is visible as a
-graphical world replay, while the renderer remains read-only and reproducible
-from v3 evidence. Use `kitchen-flagship-v1.html` only when the denser trace
-timeline is useful.
+Build a **scene-profile bootstrapper** that reads a reference-world model and an
+asset catalog and emits a reviewable `world-substrate-scene-profile/v0`
+skeleton. It may safely infer entity ids, labels/categories, actor identity,
+initial ownership attachments and obvious station candidates. It must leave
+illustrative geometry and ambiguous action-to-motion mappings explicit rather
+than fabricating them. Use kitchen and Castaway as acceptance fixtures: the
+bootstrapper should materially reduce their hand-authored profile content while
+the existing generic renderer remains unchanged.
 
-If the artifact is accepted, the next choice is whether to authorize showing or
-publishing it, or to request a specific presentation refinement first. Do not
-deploy or publish without that explicit authority. No additional model call is
-needed for either review or presentation refinement.
+No model call, deployment or publication is required for this gate.
 
 The historical pre-replication roadmap recorded **$0.123** of model spend. The
 current single-copy observability DB no longer contains that older task history;
