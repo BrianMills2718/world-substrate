@@ -40,13 +40,13 @@ Start with:
 
 Phase one specified, built, and tested the substrate contracts. The two small reference worlds — Castaway and the workshop — exist to prove those contracts work and transfer. Phase two is about making one world worth showing rather than adding more assurance to the substrate for its own sake.
 
-The flagship candidate is a third world: a kitchen where two cooks with different orders share one knife, two burners, and exactly enough ingredients that waste loses a dish. A retained full-service run filled both orders and showed unprompted turn-taking and two knife handovers between agents that cannot talk to each other. The kitchen now also has a terminal condition derived from its existing filled orders, so a service ends when the represented work is done instead of trailing into meaningless post-completion turns. See [the kitchen audit](docs/audits/kitchen-contested-world.md) for the run that exposed the gap, and the [roadmap](roadmap/README.md#vertical-slices-and-current-work) for current work.
+The flagship world is a kitchen where two cooks with different orders share one knife, two burners, and exactly enough ingredients that waste loses a dish. Three fresh terminal-state services reproduced the same unprompted handoff: Bo finishes at t9, releases the knife explicitly for Ama at t10, Ama takes it at t11, and both orders are complete at t17. `evidence/renders/kitchen-flagship-v1.html` turns one of those retained traces into a self-explanatory timeline showing reasoning beside order progress, holdings, knife ownership and causal actions. See [the kitchen audit](docs/audits/kitchen-contested-world.md) for the evidence and caveats, and the [roadmap](roadmap/README.md#vertical-slices-and-current-work) for the remaining human boundary.
 
 If you are picking this up cold:
 
-1. **Watch a run** — open `evidence/renders/kitchen-full-service.html`. Each agent's stated reasoning sits beside what the world actually was.
+1. **Watch the flagship** — open `evidence/renders/kitchen-flagship-v1.html`. Read each cook on the outside and the shared world state in the center; t10/t11 is the knife handoff.
 2. **Run one** — `python scripts/run_contested_world.py --world kitchen --turns 12` uses scripted policies and costs nothing.
-3. **Read the roadmap's active slice** for the next experiment and exact command before changing direction.
+3. **Read the roadmap's active slice** before changing direction. The next unresolved step is a human review/publication choice, not another substrate feature.
 
 There is still no deployment, and no repository outside this one imports `world_substrate`.
 
