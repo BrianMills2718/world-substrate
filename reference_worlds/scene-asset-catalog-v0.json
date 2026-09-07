@@ -305,6 +305,55 @@
         },
         "label_template": "drink {volume_ml} ml from {vessel}"
       }
+    },
+    "take": {
+      "complete": true,
+      "projection": {
+        "ownership": "take",
+        "clear_item_station": true,
+        "actor_target": {
+          "entity_field": "$item_field"
+        },
+        "label_template": "take {item}"
+      }
+    },
+    "put_down": {
+      "complete": true,
+      "projection": {
+        "ownership": "release",
+        "actor_target": {
+          "entity_field": "$item_field"
+        },
+        "label_template": "put down {item}"
+      }
+    },
+    "chop": {
+      "complete": true,
+      "projection": {
+        "set_state": "chopped",
+        "actor_target": {
+          "entity_field": "$item_field"
+        },
+        "label_template": "chop {item}"
+      }
+    },
+    "cook": {
+      "complete": true,
+      "projection": {
+        "set_state": "cooked",
+        "activate_station_from": "$station_field",
+        "label_template": "cook {item} on {burner}"
+      }
+    },
+    "plate": {
+      "complete": true,
+      "projection": {
+        "set_state": "plated",
+        "item_target": {
+          "action_field": "$station_field"
+        },
+        "label_template": "plate {item} on {order}"
+      }
     }
   }
 }
