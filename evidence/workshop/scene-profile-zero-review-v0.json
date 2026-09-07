@@ -1,7 +1,7 @@
 {
   "schema_version": "world-substrate-scene-profile/v0",
   "world": "workshop",
-  "world_model": "bench-v0.json",
+  "world_model": "../../reference_worlds/workshop/bench-v0.json",
   "assets": {
     "worker": {
       "kind": "emoji",
@@ -35,7 +35,6 @@
   "actors": {
     "mira": {
       "asset": "worker",
-      "accent": "#4f78b8",
       "home": [
         50.0,
         78.0
@@ -46,7 +45,6 @@
     "frame-a": {
       "label": "Chair frame",
       "role": "goal",
-      "fill": "#8c6c4e",
       "rect": [
         68.0,
         25.0,
@@ -65,26 +63,6 @@
         "slots": [],
         "overflow": "grid"
       }
-    },
-    "parts-rack": {
-      "presentation_only": true,
-      "label": "Parts & tools",
-      "role": "source",
-      "fill": "#9b7b52",
-      "rect": [
-        5.0,
-        25.0,
-        28.0,
-        45.0
-      ],
-      "actor_anchor": [
-        36.0,
-        47.5
-      ],
-      "item_anchor": [
-        19.0,
-        47.5
-      ]
     }
   },
   "entities": {
@@ -93,8 +71,8 @@
       "label": "Wrench",
       "portable": true,
       "home": [
-        12.0,
-        40.0
+        42.5,
+        54.67
       ]
     },
     "leg-1": {
@@ -102,8 +80,8 @@
       "label": "Chair leg",
       "portable": true,
       "home": [
-        19.0,
-        40.0
+        50.0,
+        54.67
       ]
     },
     "leg-2": {
@@ -111,8 +89,8 @@
       "label": "Chair leg",
       "portable": true,
       "home": [
-        26.0,
-        40.0
+        57.5,
+        54.67
       ]
     },
     "seat-1": {
@@ -120,8 +98,8 @@
       "label": "Chair seat",
       "portable": true,
       "home": [
-        12.0,
-        55.0
+        42.5,
+        61.33
       ]
     },
     "shelf-1": {
@@ -129,8 +107,8 @@
       "label": "Shelf bracket",
       "portable": true,
       "home": [
-        19.0,
-        55.0
+        50.0,
+        61.33
       ]
     }
   },
@@ -172,30 +150,6 @@
       "saturation": 0.9
     }
   },
-  "scene_id": "workshop-bench-greenfield-v0",
-  "title": "Workshop replay: assembling a chair",
-  "subtitle": "A greenfield graphical replay generated from the Workshop world model, a retained engine trace, the shared asset catalog, and this small presentation review overlay.",
-  "note": "Mira picks up the wrench, then picks up and attaches two legs and a seat to the chair frame. Geometry is illustrative; actions and relationships come from the retained trace/world model.",
-  "autoplay_seconds": 2.0,
-  "scene": {
-    "aspect_ratio": "16 / 9",
-    "background": "#d7c6a5",
-    "grid_color": "#b39b7355",
-    "grid_size_px": 64,
-    "shell_background": "#171b1d",
-    "decor": [
-      {
-        "kind": "rect",
-        "x": 0,
-        "y": 0,
-        "w": 100,
-        "h": 17,
-        "fill": "#c8a978",
-        "border_bottom": "#765938"
-      }
-    ]
-  },
-  "moment_rules": [],
   "bootstrap": {
     "schema_version": "world-substrate-scene-profile-bootstrap/v0",
     "inferred_initial_owners": {},
@@ -228,10 +182,7 @@
         "stations.frame-a.actor_anchor",
         "stations.frame-a.item_anchor",
         "stations.frame-a.item_layout",
-        "stations.frame-a.rect",
-        "stations.parts-rack.actor_anchor",
-        "stations.parts-rack.item_anchor",
-        "stations.parts-rack.rect"
+        "stations.frame-a.rect"
       ]
     },
     "todos": []

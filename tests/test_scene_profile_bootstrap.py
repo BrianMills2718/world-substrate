@@ -62,6 +62,34 @@ class BootstrapOnlyInfersReviewableFacts(unittest.TestCase):
         self.assertEqual(p["bootstrap"]["inferred_action_fields"]["drink"], {"item_field": "vessel", "station_field": None})
 
 
+
+    def test_action_names_do_not_create_projection_without_explicit_binding(self):
+        f = FIXTURES["kitchen"]
+        trace = load(f["trace"])
+        # Rename a real action to a lexical lookalike that the catalog never declared.
+        trace["transcript"][0]["actors"]["ama"]["did"]["kind"] = "pick_up_like"
+        catalog = json.loads(json.dumps(CATALOG))
+        p = bootstrap.bootstrap_profile(
+            load(f["model"]), trace, catalog, world_model_ref=f["model_ref"], auto_layout=True
+        )
+        todos = {todo["target"] for todo in p["bootstrap"]["todos"] if todo["kind"] == "action_projection"}
+        self.assertIn("action_visuals.pick_up_like", todos)
+        self.assertNotIn("pick_up_like", p["bootstrap"]["declared_action_bindings"])
+
+    def test_catalog_binding_with_missing_placeholder_stays_unresolved(self):
+        f = FIXTURES["castaway"]
+        catalog = json.loads(json.dumps(CATALOG))
+        catalog.setdefault("action_visual_bindings", {})["drink"] = {
+            "complete": True,
+            "projection": {"item_target": {"action_field": "$station_field"}},
+        }
+        p = bootstrap.bootstrap_profile(
+            load(f["model"]), load(f["trace"]), catalog, world_model_ref=f["model_ref"], auto_layout=True
+        )
+        self.assertIn("drink", p["bootstrap"]["binding_resolution_errors"])
+        self.assertNotIn("drink", p["bootstrap"]["declared_action_bindings"])
+        self.assertTrue(any(todo["target"] == "action_visuals.drink" for todo in p["bootstrap"]["todos"]))
+
     def test_auto_layout_proposes_geometry_but_not_action_semantics(self):
         f = FIXTURES["kitchen"]
         p = bootstrap.bootstrap_profile(

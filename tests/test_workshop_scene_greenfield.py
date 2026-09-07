@@ -21,6 +21,8 @@ CATALOG = REPO / "reference_worlds/scene-asset-catalog-v0.json"
 REVIEW = REPO / "reference_worlds/workshop/scene-review-v0.json"
 PROFILE = REPO / "reference_worlds/workshop/scene-profile-v0.json"
 REPLAY = REPO / "evidence/renders/workshop-spatial-replay-v0.html"
+ZERO_PROFILE = REPO / "evidence/workshop/scene-profile-zero-review-v0.json"
+ZERO_REPLAY = REPO / "evidence/renders/workshop-zero-review-v0.html"
 
 
 def load(path: Path):
@@ -54,7 +56,13 @@ class WorkshopGreenfieldSceneProof(unittest.TestCase):
             draft["bootstrap"]["inferred_action_fields"]["attach"],
             {"item_field": "part", "station_field": "assembly"},
         )
+        self.assertEqual(draft["bootstrap"]["declared_action_bindings"], ["attach", "pick_up"])
+        self.assertEqual(draft["action_visuals"]["pick_up"]["ownership"], "take")
+        self.assertEqual(draft["action_visuals"]["pick_up"]["actor_target"], {"entity_field": "item"})
+        self.assertEqual(draft["action_visuals"]["attach"]["ownership"], "release")
+        self.assertEqual(draft["action_visuals"]["attach"]["set_state"], "attached")
         self.assertFalse(bootstrap.is_complete(draft))
+        self.assertTrue(all(todo["kind"] == "geometry" for todo in draft["bootstrap"]["todos"]))
         self.assertNotIn("home", draft["actors"]["mira"])
         self.assertNotIn("rect", draft["stations"]["frame-a"])
 
@@ -77,19 +85,35 @@ class WorkshopGreenfieldSceneProof(unittest.TestCase):
         positions = frames[-1]["placed_positions"]
         self.assertEqual(set(positions), {"leg-1", "leg-2", "seat-1"})
         self.assertEqual(len({tuple(point) for point in positions.values()}), 3)
-        self.assertEqual(positions["leg-1"], [75.56, 55.72])
-        self.assertEqual(positions["leg-2"], [87.44, 55.72])
-        self.assertEqual(positions["seat-1"], [81.5, 43.24])
+        self.assertEqual(positions["leg-1"], [77.0, 41.0])
+        self.assertEqual(positions["leg-2"], [86.0, 41.0])
+        self.assertEqual(positions["seat-1"], [77.0, 57.0])
         source = (REPO / "scripts/render_scene_replay.py").read_text().lower()
         for token in ("workshop", "mira", "frame-a", "wrench-1"):
             self.assertNotIn(token, source)
         self.assertIn("Workshop replay: assembling a chair", REPLAY.read_text())
 
+
+    def test_zero_review_workshop_profile_is_complete_and_retained(self):
+        generated = bootstrap.bootstrap_profile(
+            load(MODEL), load(TRACE), load(CATALOG),
+            world_model_ref="../../reference_worlds/workshop/bench-v0.json",
+            auto_layout=True,
+        )
+        self.assertTrue(bootstrap.is_complete(generated))
+        self.assertEqual(generated, load(ZERO_PROFILE))
+        self.assertEqual(generated["bootstrap"]["declared_action_bindings"], ["attach", "pick_up"])
+        self.assertEqual(generated["stations"]["frame-a"]["item_layout"], {"slots": [], "overflow": "grid"})
+        self.assertIn("stations.frame-a.item_layout", generated["bootstrap"]["auto_layout"]["proposed_geometry"])
+        loaded, world_entities = renderer.load_scene_profile(ZERO_PROFILE)
+        html = renderer.render_html(load(TRACE), loaded, world_entities, ZERO_PROFILE.parent)
+        self.assertEqual(html, ZERO_REPLAY.read_text())
+
     def test_greenfield_review_fraction_is_below_prior_full_profile_threshold(self):
         core = {k: v for k, v in load(PROFILE).items() if k != "bootstrap"}
         full_size = len(json.dumps(core, separators=(",", ":")))
         review_size = len(json.dumps(load(REVIEW), separators=(",", ":")))
-        self.assertLess(review_size / full_size, 0.70)
+        self.assertLess(review_size / full_size, 0.35)
 
 
 if __name__ == "__main__":

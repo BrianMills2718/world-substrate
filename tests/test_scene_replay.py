@@ -102,6 +102,13 @@ class GenericSceneReplay(unittest.TestCase):
             with self.subTest(word=word):
                 self.assertNotIn(word, source)
 
+
+    def test_actor_can_target_visual_entity_position_from_declared_field(self):
+        profile = lab_profile()
+        profile["action_visuals"]["take"]["actor_target"] = {"entity_field": "item"}
+        frames = scene.build_frames(lab_trace(), profile)
+        self.assertEqual(frames[0]["actor_positions"]["rhea"], [50, 50])
+
     def test_profile_world_must_match_trace_world(self):
         profile = lab_profile()
         trace = lab_trace()
