@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; zero-review declaration-driven replay proven on Workshop
-**Last outcome-bearing result:** explicit shared `action_visual_bindings` now supply Workshop `pick_up`/`attach` presentation semantics using resolved `$item_field`/`$station_field` placeholders; lookalike names and unresolved placeholders remain TODOs. Combined with auto-layout, Workshop now has a retained **zero-review** profile/replay generated from world model + real-engine trace + shared catalog only. Auto-layout also proposes a grid when multiple explicitly projected items converge on one station. The optional polished Workshop review overlay fell from 50.9% to **34.3%** of the compiled profile core.
+**Stage:** prototype complete; zero-review replay generation proven on Workshop and Castaway
+**Last outcome-bearing result:** Castaway cleared the second zero-review portability gate. Explicit shared `fill`/`drink` presentation bindings resolve the inferred vessel/source fields; model-defined Robinson→cup ownership, source/workstation roles, vessel state, and deterministic geometry all survive generation with no Castaway review overlay and zero TODOs. The retained `castaway-zero-review-v0.html` is legible at turns 1 and 8, while the existing polished Castaway replay remains byte-for-byte unchanged. Zero-review is now proven across two materially different real action families.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** prove zero-review replay portability on a second real world (prefer Castaway `fill`/`drink`) using explicit shared presentation bindings; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** prove zero-review generation on the five-action Kitchen flagship while preserving the polished handoff replay byte-for-byte; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -168,38 +168,33 @@ observable attempt or trigger
 
 ### Active slice: generate replay scenes from declarations, not bespoke code
 
-Workshop now demonstrates the complete default generation path. The shared
-presentation catalog explicitly declares `pick_up` and `attach` projection; the
-bootstrapper resolves their item/station placeholders from trace-grounded ids,
-auto-layout proposes missing geometry, and stations that receive multiple items
-receive deterministic grid layout when no review specifies one.
+Zero-review generation now transfers across two real domains. Workshop proves
+`pick_up`/`attach`, ownership transfer, assembly placement and multi-item station
+layout. Castaway proves `fill`/`drink`, a liquid source, vessel state, two actors,
+and model-defined initial ownership. Both use explicit shared presentation
+bindings rather than lexical inference, and both have zero bootstrap TODOs.
 
-No Workshop review overlay is required for a complete profile. The retained
-`workshop-zero-review-v0.html` is intentionally plain but functional and legible.
-The polished Workshop overlay remains optional and is 908 compact bytes against a
-2,645-byte profile core (**34.3%**), down from 50.9% before action bindings and
-62.6% at the initial greenfield proof.
+Castaway's retained zero-review artifact is intentionally plain but legible. The
+existing polished Castaway replay remains byte-for-byte unchanged, preserving
+the distinction between **automatic functional generation** and optional product
+presentation.
 
-Negative controls matter: renaming an action to a lexical lookalike does not
-produce a binding, and a declared binding whose placeholder cannot be resolved
-stays an action-projection TODO. A future action cannot leak its target backward
-into an entity's starting scene; initial placement follows first relevant use.
-
-**Next increment: second-world zero-review portability.** Add explicit shared
-presentation bindings for Castaway's `fill` and `drink`, then generate a retained
-Castaway zero-review profile/replay with no per-world review overlay. Do not
-change Castaway mechanics or infer presentation effects from action names. The
-existing polished Castaway profile/replay must remain byte-for-byte unchanged.
+**Next increment: Kitchen zero-review breadth.** Add explicit shared presentation
+bindings for `take`, `put_down`, `chop`, `cook`, and `plate`. Generate a complete
+Kitchen zero-review profile/replay from its existing retained run + world model +
+shared catalog + auto-layout, with no review overlay. The default may be plain;
+it does not replace `kitchen-spatial-replay-v1.html`, whose polished handoff
+presentation must stay byte-for-byte unchanged.
 
 **What a fresh agent should do first.** All cost nothing:
 
-1. Compare Workshop zero-review and polished replay/profile pairs.
-2. Inspect Castaway `fill`/`drink` action fields and existing review projection.
-3. Put only explicit reusable presentation semantics into the shared catalog; unresolved cases remain TODOs.
+1. Compare Workshop and Castaway zero-review profiles to see which semantics came from model/catalog/trace.
+2. Inspect Kitchen's five action field signatures and existing presentation projection.
+3. Add only explicit reusable catalog bindings; unresolved action families remain TODOs.
 
-**What not to do.** Do not make catalog presentation bindings mechanical law,
-mutate traces/world state, or infer effects lexically. Deployment/publication
-remains separately controlled.
+**What not to do.** Do not infer action effects from names, mutate Kitchen
+mechanics/trace to suit visualization, or downgrade the polished flagship to the
+auto-generated default. Deployment/publication remains separately controlled.
 
 ## Open obligations
 
@@ -264,7 +259,7 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
 | Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, Kitchen + Castaway + Workshop profiles, lab tests | v0 is 2D and v3-envelope-oriented | **established on three real worlds; multi-item station layout closed generically** |
-| Scene-profile bootstrapper reduces review-only authoring | bootstrapper + shared presentation catalog + Workshop greenfield/auto-layout/action-binding audits | zero-review default is plain; optional polish remains | **Workshop zero-review functional; polished review 62.6% baseline / 34.3% current** |
+| Scene-profile bootstrapper reduces review-only authoring | bootstrapper + shared presentation catalog + Workshop/Castaway zero-review audits | zero-review defaults are plain; optional polish remains | **zero-review functional on two real worlds; Workshop polish 34.3%** |
 | Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
 | Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
@@ -289,7 +284,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered for kitchen; generic scene profile v0 can now generate a zero-review Workshop replay plus polished variants** | second-world zero-review portability is next; deployment/publication remains separately controlled |
+| What a viewer actually sees | **answered for kitchen; generic scene profile v0 now generates zero-review Workshop and Castaway replays plus polished variants** | five-action Kitchen zero-review is the breadth gate; deployment/publication remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -299,13 +294,12 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Prove **zero-review replay generation on Castaway**. Add explicit shared
-presentation bindings for its retained `fill` and `drink` actions, resolve them
-against the bootstrapper's already-inferred vessel/source fields, and generate a
-complete Castaway profile/replay from the world model + retained trace + shared
-catalog + auto-layout with no review overlay. Unknown or unresolved action
-projection must remain TODOs. Keep the existing polished Castaway replay
-byte-for-byte unchanged.
+Generate a **zero-review Kitchen replay**. Add explicit shared presentation
+bindings for `take`, `put_down`, `chop`, `cook`, and `plate`, resolve them only
+through trace-grounded fields, and run bootstrap + auto-layout with no Kitchen
+review overlay. Retain the generated profile/replay separately from the polished
+flagship. `evidence/renders/kitchen-spatial-replay-v1.html` must regenerate
+byte-for-byte unchanged. Unknown/unresolved projections remain TODOs.
 
 No model call, deployment or publication is required for this gate.
 

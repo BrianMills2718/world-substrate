@@ -433,6 +433,7 @@ def bootstrap_profile(
             station_visuals[order_id]["progress_actor"] = actor
 
     action_visuals: dict[str, Any] = {}
+    inferred_action_visuals: dict[str, Any] = {}
     inferred_action_fields: dict[str, Any] = {}
     declared_action_bindings: list[str] = []
     binding_resolution_errors: dict[str, list[str]] = {}
@@ -454,6 +455,7 @@ def bootstrap_profile(
         if station_field:
             row["actor_target"] = {"action_field": station_field}
         row["label_template"] = _default_label_template(kind, item_field, station_field)
+        inferred_action_visuals[kind] = deepcopy(row)
         binding = catalog_action_bindings.get(kind)
         if isinstance(binding, dict) and isinstance(binding.get("projection"), dict):
             resolved, missing_placeholders = _resolve_action_binding(
@@ -487,7 +489,17 @@ def bootstrap_profile(
     reviewed_actions = review.pop("reviewed_actions", [])
     if not isinstance(reviewed_actions, list):
         raise ValueError("reviewed_actions must be a list")
+    reviewed_action_rows = deepcopy(review.get("action_visuals") or {})
     profile = _merge(base, review)
+    # A reviewed action projection is authoritative over any catalog default.
+    # Start from the neutral trace-inferred field/label shape, then apply the
+    # review row; do not leave catalog-only ownership/target/state underneath.
+    for kind in reviewed_actions:
+        if kind in inferred_action_visuals and isinstance(reviewed_action_rows.get(kind), dict):
+            profile["action_visuals"][kind] = _merge(
+                inferred_action_visuals[kind], reviewed_action_rows[kind]
+            )
+    applied_declared_bindings = [kind for kind in declared_action_bindings if kind not in reviewed_actions]
     proposed_geometry = _apply_auto_layout(profile, trace, inferred_owners) if auto_layout else []
 
     todos: list[dict[str, str]] = []
@@ -500,7 +512,7 @@ def bootstrap_profile(
     for entity_id in profile.get("entities", {}):
         if not isinstance(profile["entities"][entity_id].get("home"), list):
             todos.append({"kind": "geometry", "target": f"entities.{entity_id}.home", "reason": "entity home position is illustrative"})
-    declared_set = set(declared_action_bindings)
+    declared_set = set(applied_declared_bindings)
     for kind in signatures:
         if kind not in reviewed_actions and kind not in declared_set:
             reason = "motion/state projection needs an explicit review or catalog binding"
@@ -512,7 +524,7 @@ def bootstrap_profile(
         "schema_version": "world-substrate-scene-profile-bootstrap/v0",
         "inferred_initial_owners": inferred_owners,
         "inferred_action_fields": inferred_action_fields,
-        "declared_action_bindings": sorted(declared_action_bindings),
+        "declared_action_bindings": sorted(applied_declared_bindings),
         "binding_resolution_errors": binding_resolution_errors,
         "reviewed_actions": sorted(set(str(x) for x in reviewed_actions)),
         "auto_layout": {

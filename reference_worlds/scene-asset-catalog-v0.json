@@ -287,6 +287,24 @@
           "action_field": "$station_field"
         }
       }
+    },
+    "fill": {
+      "complete": true,
+      "projection": {
+        "set_state": "filled",
+        "activate_station_from": "$station_field",
+        "label_template": "fill {vessel} from {source}"
+      }
+    },
+    "drink": {
+      "complete": true,
+      "projection": {
+        "set_state": "used",
+        "actor_target": {
+          "entity_field": "$item_field"
+        },
+        "label_template": "drink {volume_ml} ml from {vessel}"
+      }
     }
   }
 }
