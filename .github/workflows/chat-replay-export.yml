@@ -1,0 +1,18 @@
+name: chat-replay-export
+on:
+  pull_request:
+    paths:
+      - .github/workflows/chat-replay-export.yml
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kitchen-replays
+          path: |
+            evidence/renders/kitchen-zero-review-v0.html
+            evidence/renders/kitchen-spatial-replay-v1.html
+          if-no-files-found: error
+          retention-days: 1
