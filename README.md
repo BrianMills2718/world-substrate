@@ -24,31 +24,19 @@ Start with:
 
 ## Where this stands
 
-**The substrate works. The project's goal is a sophisticated world-modelling
-system with one instantiation good enough to show off, and that has not been
-started.**
+**The substrate works, the prototype phase is complete, and flagship work is underway.**
 
-Everything below records phase one: the contracts were specified, built, and
-tested, and they hold. What phase one deliberately did not do is build a world
-anyone would want to look at. Both reference worlds are tiny on purpose —
-Castaway is six entities, the workshop seven — because their job was to prove
-the machinery transfers between them, which it does. There is no interface, no
-deployment, and nothing outside this repository uses it.
+Phase one specified, built, and tested the substrate contracts. The two small reference worlds — Castaway and the workshop — exist to prove those contracts work and transfer. Phase two is about making one world worth showing rather than adding more assurance to the substrate for its own sake.
 
-**The flagship work has started.** A third world — a kitchen where two cooks
-with different orders share one knife, two burners, and exactly enough
-ingredients that waste loses a dish — runs a complete service: both orders
-filled, with the knife handed over twice by agents that cannot talk to each
-other. See [the kitchen audit](docs/audits/kitchen-contested-world.md).
+The flagship candidate is a third world: a kitchen where two cooks with different orders share one knife, two burners, and exactly enough ingredients that waste loses a dish. A retained full-service run filled both orders and showed unprompted turn-taking and two knife handovers between agents that cannot talk to each other. The kitchen now also has a terminal condition derived from its existing filled orders, so a service ends when the represented work is done instead of trailing into meaningless post-completion turns. See [the kitchen audit](docs/audits/kitchen-contested-world.md) for the run that exposed the gap, and the [roadmap](roadmap/README.md#vertical-slices-and-current-work) for current work.
 
 If you are picking this up cold:
 
-1. **Watch a run** — open `evidence/renders/kitchen-full-service.html`. Each
-   agent's stated reasoning beside what the world actually was.
-2. **Run one** — `python scripts/run_contested_world.py --world kitchen --turns 12`
-   uses scripted policies and costs nothing.
-3. **Read [the roadmap's active slice](roadmap/README.md#vertical-slices-and-current-work)**
-   for the next two increments and the exact commands.
+1. **Watch a run** — open `evidence/renders/kitchen-full-service.html`. Each agent's stated reasoning sits beside what the world actually was.
+2. **Run one** — `python scripts/run_contested_world.py --world kitchen --turns 12` uses scripted policies and costs nothing.
+3. **Read the roadmap's active slice** for the next experiment and exact command before changing direction.
+
+There is still no deployment, and no repository outside this one imports `world_substrate`.
 
 ## What phase one established
 
@@ -66,7 +54,7 @@ M5 is the first time a policy other than a script drove this world: an LLM chose
 
 M4 completes the pair. A second mechanic, authored without a planted omission, closes M3's uncaught incoherence and keeps volume conserved. The three assays behaved completely differently on it — the behavioural one found nothing at all, because every affordance was already refused — establishing that no single assay basis, and no pair, is sufficient. See [the M4 experiment](docs/audits/m4-spill-experiment.md).
 
-What remains of the semantic/mechanical frontier is narrower than it was: `give` is bound and exchange derives without double application (M2), and a policy consumer has run under a granted $2 cap (M5). Still open are binding the remaining six of seven M1 action kinds to Linguistic Core senses, the transition envelope, and the rest of the Open obligations in the roadmap.
+What remains of the semantic/mechanical frontier is narrower than it was: `give` is bound and exchange derives without double application (M2), and a policy consumer has run under a granted $2 cap (M5). Still open are the upstream-owned `unheat` semantic binding, optional read-scope verification, and the other explicitly listed obligations in the roadmap.
 
 Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
 
@@ -87,8 +75,7 @@ python scripts/run_spill_assay_probe.py --check
 python scripts/run_authoring_experiment.py --check --output evidence/m7/authoring-attempts-relational-v1.json
 ```
 
-Two things here are run rather than checked, because they show behaviour rather
-than pin it:
+Two things here are run rather than checked, because they show behaviour rather than pin it:
 
 ```sh
 # a contested run with scripted policies, no model calls
@@ -98,8 +85,6 @@ python scripts/run_contested_world.py --world kitchen --turns 12
 python scripts/render_belief_vs_truth.py evidence/m5/llm-policy-v0.json
 ```
 
-The last of those re-grades the M7b declarations without calling a model. The
-retained M5 and M7 traces are live observation receipts rather than
-deterministic probes, and are deliberately not gated.
+The authoring command re-grades the retained M7b declarations without calling a model. The retained M5 and M7 traces are live observation receipts rather than deterministic probes, and are deliberately not gated.
 
 The default project check is self-contained and uses committed fixtures. When the sibling donor repositories are available, also run `python scripts/check_project.py --with-donors`; the optional donor check reads pinned revisions rather than requiring their current checkouts to remain at those commits.
