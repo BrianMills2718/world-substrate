@@ -36,6 +36,14 @@ def load(path: Path):
     return json.loads(path.read_text())
 
 
+def catalog_without_kitchen_action_bindings():
+    catalog = json.loads(json.dumps(CATALOG))
+    bindings = catalog.get("action_visual_bindings") or {}
+    for kind in ("take", "put_down", "chop", "cook", "plate"):
+        bindings.pop(kind, None)
+    return catalog
+
+
 class BootstrapOnlyInfersReviewableFacts(unittest.TestCase):
     def profile(self, world: str):
         f = FIXTURES[world]
@@ -93,7 +101,7 @@ class BootstrapOnlyInfersReviewableFacts(unittest.TestCase):
     def test_auto_layout_proposes_geometry_but_not_action_semantics(self):
         f = FIXTURES["kitchen"]
         p = bootstrap.bootstrap_profile(
-            load(f["model"]), load(f["trace"]), CATALOG,
+            load(f["model"]), load(f["trace"]), catalog_without_kitchen_action_bindings(),
             world_model_ref=f["model_ref"], auto_layout=True,
         )
         self.assertIsInstance(p["actors"]["ama"].get("home"), list)
@@ -128,7 +136,11 @@ class BootstrapOnlyInfersReviewableFacts(unittest.TestCase):
         self.assertNotIn("actors.ama.home", p["bootstrap"]["auto_layout"]["proposed_geometry"])
 
     def test_unreviewed_bootstrap_does_not_invent_geometry_or_motion(self):
-        p = self.profile("kitchen")
+        f = FIXTURES["kitchen"]
+        p = bootstrap.bootstrap_profile(
+            load(f["model"]), load(f["trace"]), catalog_without_kitchen_action_bindings(),
+            world_model_ref=f["model_ref"],
+        )
         self.assertNotIn("home", p["actors"]["ama"])
         self.assertNotIn("rect", p["stations"]["burner-1"])
         self.assertNotIn("home", p["entities"]["knife"])

@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; zero-review replay generation proven on Workshop and Castaway
-**Last outcome-bearing result:** Castaway cleared the second zero-review portability gate. Explicit shared `fill`/`drink` presentation bindings resolve the inferred vessel/source fields; model-defined Robinson→cup ownership, source/workstation roles, vessel state, and deterministic geometry all survive generation with no Castaway review overlay and zero TODOs. The retained `castaway-zero-review-v0.html` is legible at turns 1 and 8, while the existing polished Castaway replay remains byte-for-byte unchanged. Zero-review is now proven across two materially different real action families.
+**Stage:** prototype complete; zero-review replay generation proven across Workshop, Castaway, and Kitchen
+**Last outcome-bearing result:** Kitchen cleared the five-action zero-review breadth gate. Explicit `take`/`put_down`/`chop`/`cook`/`plate` presentation bindings resolve only trace-grounded fields; auto-layout supplies two actor homes, two burner/workstation scenes, two goal/order scenes, loose item homes and deterministic plated-item grids. The retained zero-review replay shows Bo's t10 release reasoning, Ama holding the knife at t11, and both orders complete at t17, with zero bootstrap TODOs. The polished flagship remains byte-for-byte unchanged. Functional zero-review generation is now established across all three real replay worlds in the repository.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** prove zero-review generation on the five-action Kitchen flagship while preserving the polished handoff replay byte-for-byte; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** human/product review of the automatic zero-review Kitchen default versus the polished flagship; no further replay-framework generalization without a new real-world failure or explicit product requirement; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -168,33 +168,38 @@ observable attempt or trigger
 
 ### Active slice: generate replay scenes from declarations, not bespoke code
 
-Zero-review generation now transfers across two real domains. Workshop proves
-`pick_up`/`attach`, ownership transfer, assembly placement and multi-item station
-layout. Castaway proves `fill`/`drink`, a liquid source, vessel state, two actors,
-and model-defined initial ownership. Both use explicit shared presentation
-bindings rather than lexical inference, and both have zero bootstrap TODOs.
+**Complete for the current real replay worlds.** Workshop, Castaway, and Kitchen
+all retain functional profiles/replays generated from world model + retained
+trace + explicit shared presentation catalog + deterministic auto-layout with no
+per-world review overlay.
 
-Castaway's retained zero-review artifact is intentionally plain but legible. The
-existing polished Castaway replay remains byte-for-byte unchanged, preserving
-the distinction between **automatic functional generation** and optional product
-presentation.
+The three proofs exercise materially different structure:
 
-**Next increment: Kitchen zero-review breadth.** Add explicit shared presentation
-bindings for `take`, `put_down`, `chop`, `cook`, and `plate`. Generate a complete
-Kitchen zero-review profile/replay from its existing retained run + world model +
-shared catalog + auto-layout, with no review overlay. The default may be plain;
-it does not replace `kitchen-spatial-replay-v1.html`, whose polished handoff
-presentation must stay byte-for-byte unchanged.
+- Workshop: `pick_up`/`attach`, assembly relation, multi-item station placement;
+- Castaway: `fill`/`drink`, source activation, vessel state, initial actor ownership;
+- Kitchen: five action kinds, two actors, two goal stations, two workstations,
+  staged ingredients, shared knife ownership, and the replicated t10→t11 handoff.
+
+Kitchen's default is intentionally plain, but at t10 Bo's recorded reasoning says
+he releases the knife so Ama can use it; t11 shows Ama holding it; t17 shows both
+orders complete. `kitchen-spatial-replay-v1.html` remains the polished flagship
+and regenerates byte-for-byte unchanged.
+
+**Engineering conclusion.** The requested architecture now exists: represented
+world + retained behavior + explicit reusable assets/presentation semantics can
+produce a graphical replay without a bespoke renderer or per-world review file.
+Optional scene reviews remain valuable for product quality, not correctness or
+basic generation.
 
 **What a fresh agent should do first.** All cost nothing:
 
-1. Compare Workshop and Castaway zero-review profiles to see which semantics came from model/catalog/trace.
-2. Inspect Kitchen's five action field signatures and existing presentation projection.
-3. Add only explicit reusable catalog bindings; unresolved action families remain TODOs.
+1. Compare `kitchen-zero-review-v0.html` with `kitchen-spatial-replay-v1.html`.
+2. Read the Workshop, Castaway, and Kitchen zero-review audits before changing the scene contract.
+3. Only reopen generic replay architecture when a new real world or explicit product requirement exposes a concrete gap.
 
-**What not to do.** Do not infer action effects from names, mutate Kitchen
-mechanics/trace to suit visualization, or downgrade the polished flagship to the
-auto-generated default. Deployment/publication remains separately controlled.
+**What not to do.** Do not add more generic projection/layout primitives merely
+for completeness. Do not collapse polished presentation into inferred world
+truth. Deployment/publication remains separately controlled.
 
 ## Open obligations
 
@@ -259,7 +264,7 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
 | Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, Kitchen + Castaway + Workshop profiles, lab tests | v0 is 2D and v3-envelope-oriented | **established on three real worlds; multi-item station layout closed generically** |
-| Scene-profile bootstrapper reduces review-only authoring | bootstrapper + shared presentation catalog + Workshop/Castaway zero-review audits | zero-review defaults are plain; optional polish remains | **zero-review functional on two real worlds; Workshop polish 34.3%** |
+| Scene-profile bootstrapper reduces review-only authoring | bootstrapper + shared presentation catalog + Workshop/Castaway/Kitchen zero-review audits | zero-review defaults are plain; optional polish remains | **zero-review functional on all three real replay worlds; Workshop polish 34.3%** |
 | Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
 | Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
@@ -284,7 +289,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered for kitchen; generic scene profile v0 now generates zero-review Workshop and Castaway replays plus polished variants** | five-action Kitchen zero-review is the breadth gate; deployment/publication remains separately controlled |
+| What a viewer actually sees | **answered: zero-review defaults exist for Workshop/Castaway/Kitchen; polished Kitchen remains the flagship** | productization/publication is now a human boundary, not a renderer gap |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -294,14 +299,16 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Generate a **zero-review Kitchen replay**. Add explicit shared presentation
-bindings for `take`, `put_down`, `chop`, `cook`, and `plate`, resolve them only
-through trace-grounded fields, and run bootstrap + auto-layout with no Kitchen
-review overlay. Retain the generated profile/replay separately from the polished
-flagship. `evidence/renders/kitchen-spatial-replay-v1.html` must regenerate
-byte-for-byte unchanged. Unknown/unresolved projections remain TODOs.
+**Human-review the automatically generated Kitchen default beside the polished
+flagship.** Compare `evidence/renders/kitchen-zero-review-v0.html` with
+`evidence/renders/kitchen-spatial-replay-v1.html` and decide whether the
+zero-review generation path is accepted as the authoring baseline and whether a
+specific product surface/refinement should be authorized next. Do not add more
+generic replay machinery without a new real-world failure or an explicit
+presentation requirement.
 
-No model call, deployment or publication is required for this gate.
+Publishing or deploying either artifact still requires explicit authority. No
+additional model call is needed for this review.
 
 The historical pre-replication roadmap recorded **$0.123** of model spend. The
 current single-copy observability DB no longer contains that older task history;
