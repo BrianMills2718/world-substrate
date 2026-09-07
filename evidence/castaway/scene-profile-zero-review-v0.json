@@ -1,0 +1,185 @@
+{
+  "schema_version": "world-substrate-scene-profile/v0",
+  "world": "castaway",
+  "world_model": "../../reference_worlds/castaway/freshwater-v0.json",
+  "assets": {
+    "robinson": {
+      "kind": "emoji",
+      "value": "\ud83e\uddd4"
+    },
+    "friday": {
+      "kind": "emoji",
+      "value": "\ud83e\uddd1"
+    },
+    "pot": {
+      "kind": "emoji",
+      "value": "\ud83c\udffa"
+    },
+    "cup": {
+      "kind": "emoji",
+      "value": "\ud83e\udd64"
+    },
+    "water": {
+      "kind": "emoji",
+      "value": "\ud83d\udca7"
+    },
+    "fire": {
+      "kind": "emoji",
+      "value": "\ud83d\udd25"
+    }
+  },
+  "actors": {
+    "robinson": {
+      "asset": "robinson",
+      "home": [
+        20.0,
+        78.0
+      ]
+    },
+    "friday": {
+      "asset": "friday",
+      "home": [
+        80.0,
+        78.0
+      ]
+    }
+  },
+  "stations": {
+    "unsafe-pool": {
+      "label": "Unsafe freshwater pool",
+      "role": "source",
+      "active_asset": "water",
+      "rect": [
+        5.0,
+        25.0,
+        28.0,
+        45.0
+      ],
+      "actor_anchor": [
+        36.0,
+        47.5
+      ],
+      "item_anchor": [
+        19.0,
+        47.5
+      ]
+    },
+    "fire-camp": {
+      "label": "Camp fire",
+      "role": "workstation",
+      "active_asset": "fire",
+      "rect": [
+        36.0,
+        20.0,
+        28.0,
+        22.0
+      ],
+      "actor_anchor": [
+        50.0,
+        46.0
+      ],
+      "item_anchor": [
+        50.0,
+        31.0
+      ]
+    }
+  },
+  "entities": {
+    "clay-pot": {
+      "asset": "pot",
+      "label": "Clay pot",
+      "portable": true,
+      "initial_state": "empty",
+      "home": [
+        19.0,
+        47.5
+      ]
+    },
+    "cup-robinson": {
+      "asset": "cup",
+      "label": "Metal cup",
+      "portable": true,
+      "initial_state": "empty",
+      "home": [
+        20.0,
+        78.0
+      ]
+    }
+  },
+  "action_visuals": {
+    "drink": {
+      "item_field": "vessel",
+      "label_template": "drink {volume_ml} ml from {vessel}",
+      "set_state": "used",
+      "actor_target": {
+        "entity_field": "vessel"
+      }
+    },
+    "fill": {
+      "item_field": "vessel",
+      "actor_target": {
+        "action_field": "source"
+      },
+      "label_template": "fill {vessel} from {source}",
+      "set_state": "filled",
+      "activate_station_from": "source"
+    }
+  },
+  "progress_assets": {},
+  "state_styles": {
+    "empty": {
+      "scale": 1.0,
+      "brightness": 1.0,
+      "saturation": 1.0
+    },
+    "filled": {
+      "scale": 1.08,
+      "brightness": 1.0,
+      "saturation": 1.15
+    },
+    "used": {
+      "scale": 1.0,
+      "brightness": 0.9,
+      "saturation": 0.85
+    }
+  },
+  "bootstrap": {
+    "schema_version": "world-substrate-scene-profile-bootstrap/v0",
+    "inferred_initial_owners": {
+      "cup-robinson": "robinson"
+    },
+    "inferred_action_fields": {
+      "drink": {
+        "item_field": "vessel",
+        "station_field": null
+      },
+      "fill": {
+        "item_field": "vessel",
+        "station_field": "source"
+      }
+    },
+    "declared_action_bindings": [
+      "drink",
+      "fill"
+    ],
+    "binding_resolution_errors": {},
+    "reviewed_actions": [],
+    "auto_layout": {
+      "enabled": true,
+      "algorithm": "role-grid-v0",
+      "proposed_geometry": [
+        "actors.friday.home",
+        "actors.robinson.home",
+        "entities.clay-pot.home",
+        "entities.cup-robinson.home",
+        "stations.fire-camp.actor_anchor",
+        "stations.fire-camp.item_anchor",
+        "stations.fire-camp.rect",
+        "stations.unsafe-pool.actor_anchor",
+        "stations.unsafe-pool.item_anchor",
+        "stations.unsafe-pool.rect"
+      ]
+    },
+    "todos": []
+  }
+}

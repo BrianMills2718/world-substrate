@@ -105,6 +105,17 @@ class BootstrapOnlyInfersReviewableFacts(unittest.TestCase):
         self.assertTrue(p["bootstrap"]["auto_layout"]["enabled"])
         self.assertIn("actors.ama.home", p["bootstrap"]["auto_layout"]["proposed_geometry"])
 
+
+    def test_reviewed_action_projection_supersedes_catalog_default(self):
+        f = FIXTURES["castaway"]
+        p = bootstrap.bootstrap_profile(
+            load(f["model"]), load(f["trace"]), CATALOG,
+            world_model_ref=f["model_ref"], review=load(f["review"]),
+        )
+        self.assertEqual(p["action_visuals"]["drink"]["actor_target"], {"station": "pot-area"})
+        self.assertNotIn("entity_field", p["action_visuals"]["drink"]["actor_target"])
+        self.assertEqual(p["bootstrap"]["declared_action_bindings"], [])
+
     def test_review_geometry_overrides_auto_layout(self):
         f = FIXTURES["kitchen"]
         p = bootstrap.bootstrap_profile(
