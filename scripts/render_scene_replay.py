@@ -83,6 +83,24 @@ def load_scene_profile(path: Path) -> tuple[dict[str, Any], dict[str, dict[str, 
             }
         if "item_anchor" in station:
             station["item_anchor"] = _point(station["item_anchor"], f"station {station_id}.item_anchor")
+        layout = station.get("item_layout")
+        if layout is not None:
+            if not isinstance(layout, dict):
+                raise ValueError(f"station {station_id}.item_layout must be an object")
+            slots = layout.get("slots", [])
+            if not isinstance(slots, list):
+                raise ValueError(f"station {station_id}.item_layout.slots must be a list")
+            checked_slots = []
+            for index, slot in enumerate(slots):
+                point = _point(slot, f"station {station_id}.item_layout.slots[{index}]")
+                if any(value < 0 or value > 1 for value in point):
+                    raise ValueError(f"station {station_id}.item_layout slots use relative 0..1 coordinates")
+                checked_slots.append(point)
+            layout["slots"] = checked_slots
+            overflow = layout.get("overflow", "grid")
+            if overflow not in {"grid", "anchor"}:
+                raise ValueError(f"station {station_id}.item_layout.overflow must be grid or anchor")
+            layout["overflow"] = overflow
 
     for actor_id, actor in profile["actors"].items():
         if not isinstance(actor, dict):
@@ -219,6 +237,43 @@ def _moment_ids(
     return moments
 
 
+
+def _station_layout_positions(profile: dict[str, Any], item_state: dict[str, dict[str, Any]]) -> dict[str, list[float]]:
+    """Resolve presentation-only multi-item station placement for one frame."""
+    positions: dict[str, list[float]] = {}
+    entity_order = list(profile["entities"])
+    for station_id, station in profile["stations"].items():
+        layout = station.get("item_layout")
+        if not isinstance(layout, dict):
+            continue
+        placed = [
+            entity_id for entity_id in entity_order
+            if (item_state.get(entity_id) or {}).get("placed_at") == station_id
+        ]
+        if not placed:
+            continue
+        x, y, width, height = station["rect"]
+        slots = layout.get("slots") or []
+        overflow = layout.get("overflow", "grid")
+        extra_count = max(0, len(placed) - len(slots))
+        grid_columns = max(1, min(3, int(extra_count ** 0.5 + 0.999))) if extra_count else 1
+        grid_rows = max(1, (extra_count + grid_columns - 1) // grid_columns)
+        for index, entity_id in enumerate(placed):
+            if index < len(slots):
+                rel_x, rel_y = slots[index]
+                positions[entity_id] = [x + width * rel_x, y + height * rel_y]
+                continue
+            if overflow == "anchor":
+                positions[entity_id] = _station_anchor(profile, station_id, None, item=True)
+                continue
+            grid_index = index - len(slots)
+            column = grid_index % grid_columns
+            row = grid_index // grid_columns
+            rel_x = (column + 1) / (grid_columns + 1)
+            rel_y = (row + 1) / (grid_rows + 1)
+            positions[entity_id] = [x + width * rel_x, y + height * rel_y]
+    return positions
+
 def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities: dict[str, dict[str, Any]] | None = None) -> list[dict[str, Any]]:
     if trace.get("world") != profile.get("world"):
         raise ValueError("trace and scene profile name different worlds")
@@ -288,7 +343,7 @@ def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities:
                 "retried": bool(record.get("retried")),
                 "did": record.get("did"),
             }
-        frames.append({
+        frame = {
             "turn": raw.get("turn"),
             "actors": actor_rows,
             "actor_positions": actor_positions,
@@ -298,7 +353,11 @@ def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities:
             "items": deepcopy(item_state),
             "active_stations": sorted(set(active_stations)),
             "moments": _moment_ids(profile, raw, accepted, previous_release_by),
-        })
+        }
+        placed_positions = _station_layout_positions(profile, item_state)
+        if placed_positions:
+            frame["placed_positions"] = placed_positions
+        frames.append(frame)
     return frames
 
 
@@ -389,6 +448,17 @@ def render_html(trace: dict[str, Any], profile: dict[str, Any], world_entities: 
     grid_color = html.escape(str(scene.get("grid_color") or "#0000"), quote=True)
     grid_size = int(scene.get("grid_size_px") or 64)
     autoplay_ms = max(250, int(float(profile.get("autoplay_seconds") or 2.0) * 1000))
+    has_item_layout = any(isinstance(station.get("item_layout"), dict) for station in profile["stations"].values())
+    if has_item_layout:
+        position_js = (
+            "function stationPoint(id,entityId,f){if(entityId&&f?.placed_positions?.[entityId])return f.placed_positions[entityId];const s=PROFILE.stations[id];if(!s)return null;if(s.item_anchor)return s.item_anchor;const r=s.rect;return[r[0]+r[2]/2,r[1]+r[3]/2]}\n"
+            "function itemPos(id,f){const state=f.items[id]||{},preferStation=(PROFILE.station_precedence_states||[]).includes(state.state);if(preferStation&&state.placed_at){const p=stationPoint(state.placed_at,id,f);if(p)return p}for(const a of Object.keys(PROFILE.actors)){const held=f.holdings[a]||[];const n=held.indexOf(id);if(n>=0){const base=f.actor_positions[a],av=PROFILE.actors[a],j=held.indexOf(id);return[base[0]+av.carry_offset[0]+av.carry_spacing[0]*j,base[1]+av.carry_offset[1]+av.carry_spacing[1]*j]}}if(state.placed_at){const p=stationPoint(state.placed_at,id,f);if(p)return p}return PROFILE.entities[id].home}\n"
+        )
+    else:
+        position_js = (
+            "function stationPoint(id){const s=PROFILE.stations[id];if(!s)return null;if(s.item_anchor)return s.item_anchor;const r=s.rect;return[r[0]+r[2]/2,r[1]+r[3]/2]}\n"
+            "function itemPos(id,f){const state=f.items[id]||{},preferStation=(PROFILE.station_precedence_states||[]).includes(state.state);if(preferStation&&state.placed_at){const p=stationPoint(state.placed_at);if(p)return p}for(const a of Object.keys(PROFILE.actors)){const held=f.holdings[a]||[];const n=held.indexOf(id);if(n>=0){const base=f.actor_positions[a],av=PROFILE.actors[a],j=held.indexOf(id);return[base[0]+av.carry_offset[0]+av.carry_spacing[0]*j,base[1]+av.carry_offset[1]+av.carry_spacing[1]*j]}}if(state.placed_at){const p=stationPoint(state.placed_at);if(p)return p}return PROFILE.entities[id].home}\n"
+        )
 
     return f"""<!doctype html>
 <html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
@@ -408,9 +478,7 @@ def render_html(trace: dict[str, Any], profile: dict[str, Any], world_entities: 
 <div class='controls'><button id='restart'>↺ Replay</button><button id='prev'>←</button><button id='toggle'>Pause</button><button id='next'>→</button><div class='bar'><i id='progressbar'></i></div></div><div class='note'>{note}</div></div>
 <script>const FRAMES={payload};const PROFILE={profile_json};const ASSETS=PROFILE.resolved_assets;let idx=0,timer=null,playing=true;
 function setXY(el,p){{el.style.left=p[0]+'%';el.style.top=p[1]+'%'}}
-function stationPoint(id){{const s=PROFILE.stations[id];if(!s)return null;if(s.item_anchor)return s.item_anchor;const r=s.rect;return[r[0]+r[2]/2,r[1]+r[3]/2]}}
-function itemPos(id,f){{const state=f.items[id]||{{}},preferStation=(PROFILE.station_precedence_states||[]).includes(state.state);if(preferStation&&state.placed_at){{const p=stationPoint(state.placed_at);if(p)return p}}for(const a of Object.keys(PROFILE.actors)){{const held=f.holdings[a]||[];const n=held.indexOf(id);if(n>=0){{const base=f.actor_positions[a],av=PROFILE.actors[a],j=held.indexOf(id);return[base[0]+av.carry_offset[0]+av.carry_spacing[0]*j,base[1]+av.carry_offset[1]+av.carry_spacing[1]*j]}}}}if(state.placed_at){{const p=stationPoint(state.placed_at);if(p)return p}}return PROFILE.entities[id].home}}
-function styleEntity(el,state){{const s=PROFILE.state_styles?.[state]||{{}};el.style.transform='scale('+(s.scale??1)+') rotate('+(s.rotate_deg??0)+'deg)';el.style.filter='drop-shadow(0 4px 2px #0004) brightness('+(s.brightness??1)+') saturate('+(s.saturation??1)+')'}}
+{position_js}function styleEntity(el,state){{const s=PROFILE.state_styles?.[state]||{{}};el.style.transform='scale('+(s.scale??1)+') rotate('+(s.rotate_deg??0)+'deg)';el.style.filter='drop-shadow(0 4px 2px #0004) brightness('+(s.brightness??1)+') saturate('+(s.saturation??1)+')'}}
 function progressIcon(kind){{const key=PROFILE.progress_assets?.[kind];return key?ASSETS[key]:(kind||'')}}
 function render(i){{idx=Math.max(0,Math.min(FRAMES.length-1,i));const f=FRAMES[idx];document.getElementById('turn').textContent='Turn '+f.turn+' / '+FRAMES.length;document.getElementById('progressbar').style.width=((idx+1)/FRAMES.length*100)+'%';
  for(const a of Object.keys(PROFILE.actors)){{const el=document.querySelector('[data-actor="'+a+'"]');setXY(el,f.actor_positions[a]);const th=document.querySelector('[data-thought="'+a+'"]');const rec=f.actors[a]||{{}};th.innerHTML='<strong>'+a+' · '+(rec.action||'wait')+'</strong>'+(rec.reasoning||'');const n=Object.keys(PROFILE.actors).indexOf(a);th.style.left=(n%2===0?'2%':'72%');th.style.top=(18+Math.floor(n/2)*18)+'%'}}
