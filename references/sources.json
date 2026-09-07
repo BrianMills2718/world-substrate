@@ -39,7 +39,11 @@
       "artifact_path": "../castaway-world/worktrees/world-systems/content/linguistic-core-subset.json",
       "content_subset_sha256": "c3a5559166d6bf1a11531fd763da52dafbefd44a6cde245ffa05bd6b85a81d9f",
       "worktree_caveat": "unrelated_uncommitted_changes_excluded",
-      "disposition": "pinned_dependency"
+      "disposition": "pinned_dependency",
+      "extraction_note": "This entry's local_path/revision/remote are historical: they record where the pinned artifact was extracted FROM (onto-canon6@83acffe4, 2026-08-23), before onto-canon6's Plan #205 (2026-09-04) split ontology_packs/linguistic_core out into its own repository. onto-canon6 no longer holds this pack; it now consumes it as a pinned external dependency (see onto-canon6 pyproject.toml). The current canonical upstream for this vocabulary is the standalone linguistic-core repo, not onto-canon6.",
+      "current_canonical_remote": "git@github.com-personal:BrianMills2718/linguistic-core.git",
+      "current_canonical_repo": "BrianMills2718/linguistic-core",
+      "resplit_reextraction_done": false
     },
     "dynamical_laboratory_spec": {
       "role": "research_input",
