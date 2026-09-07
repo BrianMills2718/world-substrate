@@ -34,6 +34,7 @@ sys.path.insert(0, str(REPO / "src"))
 
 from reference_worlds.castaway.probe import build_transfer_engine
 from reference_worlds.kitchen.probe import build_engine as build_kitchen
+from reference_worlds.kitchen.terminal import service_complete
 from scripts._display import display_path
 from world_substrate.policy import LlmPolicy, present, resolve_choice
 
@@ -46,6 +47,11 @@ WORLDS = {
     "castaway": (build_transfer_engine, ("robinson", "friday")),
     "kitchen": (build_kitchen, ("ama", "bo")),
 }
+
+# Termination belongs to the world, not to a fixed turn count in the harness.
+# Castaway remains an open-ended probe. The kitchen service has a natural end:
+# all represented orders have been filled.
+WORLD_TERMINALS = {"kitchen": service_complete}
 
 
 class Greedy:
@@ -64,7 +70,6 @@ class Greedy:
         if drinks:
             return max(drinks, key=lambda r: r["action"].get("volume_ml", 0))
         return page["available"][0] if page["available"] else None
-
 
 
 
@@ -231,8 +236,13 @@ def contested_run(turns: int, seats: dict | None = None, world: str = "castaway"
     falsified by another agent rather than by an omission in the page, and
     nothing the affordance list could have said at render time would have
     warned about it.
+
+    `turns` is a ceiling, not a required trace length. A world may declare a
+    terminal predicate; when it becomes true the run ends before another pair
+    of policies is asked to act.
     """
     build, actors = WORLDS[world]
+    terminal = WORLD_TERMINALS.get(world)
     engine = build(REPO)
     if seats is None:
         shared = Greedy()
@@ -240,6 +250,8 @@ def contested_run(turns: int, seats: dict | None = None, world: str = "castaway"
     transcript = []
 
     for turn in range(1, turns + 1):
+        if terminal is not None and terminal(engine.world):
+            break
         revision = engine.world.revision
         intents, reasons = {}, {}
         for actor in actors:
@@ -320,6 +332,7 @@ def contested_run(turns: int, seats: dict | None = None, world: str = "castaway"
             }
         )
 
+    terminal_reached = bool(terminal is not None and terminal(engine.world))
     contended = [
         (t["turn"], actor)
         for t in transcript
@@ -340,18 +353,20 @@ def contested_run(turns: int, seats: dict | None = None, world: str = "castaway"
         if t["actors"][actor]["status"] not in ("accepted", "no_action")
     ]
     return {
-        "schema_version": "world-substrate-contested-run/v2",
+        "schema_version": "world-substrate-contested-run/v3",
         "world": world,
         "actors": list(actors),
         "claim": (
             "Two policies decide from the same revision and commit in order; "
             "whoever is refused for a stale revision re-observes and chooses "
             "again. What remains is what the retry cannot fix: an intent the "
-            "other actor made impossible between rendering and acting."
+            "other actor made impossible between rendering and acting. A "
+            "world-specific terminal predicate may end the run before its turn cap."
         ),
         "turns_run": len(transcript),
         "summary": {
             "turns": len(transcript),
+            "terminal_reached": terminal_reached,
             "retried_because_stale": len(displaced),
             "plan_actually_taken_by_the_other": len(contended),
             "refused_after_retry": len(still_refused),
@@ -396,6 +411,7 @@ def as_html(payload: dict) -> str:
         )
     s = payload["summary"]
     cost = payload.get("cost_usd")
+    terminal_note = " Service complete." if s.get("terminal_reached") else ""
     return f"""<!doctype html><meta charset=utf-8><title>Two agents, one world</title>
 <style>
 body{{font:15px/1.5 -apple-system,Segoe UI,sans-serif;margin:2rem auto;max-width:1050px;color:#1a1a1a}}
@@ -420,7 +436,7 @@ is the world.</p>
 <p class=legend>{'Model: ' + html.escape(str(payload.get('model'))) + '. ' if payload.get('model') else ''}
 {'Cost $' + format(cost, '.5f') + '. ' if cost is not None else ''}
 Every action is one the engine offered; a policy returns an id and never an effect.
-Refusals after retry: {s['refused_after_retry']}.</p>
+Refusals after retry: {s['refused_after_retry']}.{terminal_note}</p>
 """
 
 
