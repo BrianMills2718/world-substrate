@@ -48,11 +48,15 @@ def _load_json(path: Path, label: str) -> dict[str, Any]:
 
 def _entity_binding(entity: dict[str, Any], catalog: dict[str, Any]) -> dict[str, Any]:
     entity_id = str(entity.get("entity_id") or "")
+    result: dict[str, Any] = {}
+    category_bindings = catalog.get("category_entity_bindings") or {}
+    for category in entity.get("category_ids") or []:
+        row = category_bindings.get(category)
+        if isinstance(row, dict):
+            result = _merge(result, row)
     direct = catalog.get("entity_bindings", {}).get(entity_id)
     if isinstance(direct, dict):
-        result = deepcopy(direct)
-    else:
-        result = {}
+        result = _merge(result, direct)
     for rule in catalog.get("component_value_bindings") or []:
         if not isinstance(rule, dict) or not isinstance(rule.get("path"), str):
             continue

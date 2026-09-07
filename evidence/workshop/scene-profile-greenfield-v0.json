@@ -1,0 +1,300 @@
+{
+  "schema_version": "world-substrate-contested-run/v3",
+  "world": "workshop",
+  "actors": [
+    "mira"
+  ],
+  "model": "scripted-workshop-fixture",
+  "cost_usd": 0.0,
+  "claim": "Deterministic single-actor Workshop trace using the v3 replay envelope. Every recorded action is an accepted commit through the shared engine; no concurrency claim is made.",
+  "summary": {
+    "turns": 7,
+    "terminal_reached": true,
+    "chair_complete": true,
+    "model_spend_usd": 0.0
+  },
+  "transcript": [
+    {
+      "turn": 1,
+      "revision_when_decided": 0,
+      "committed_first": "mira",
+      "actors": {
+        "mira": {
+          "wanted": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "wrench-1",
+            "base_revision": 0,
+            "controller": "scene-fixture"
+          },
+          "did": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "wrench-1",
+            "base_revision": 0,
+            "controller": "scene-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Pick up the wrench needed to assemble the chair."
+        }
+      },
+      "progress": {
+        "mira": {
+          "attached": [],
+          "held": [
+            "wrench-1"
+          ],
+          "complete": false
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "revision_when_decided": 1,
+      "committed_first": "mira",
+      "actors": {
+        "mira": {
+          "wanted": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "leg-1",
+            "base_revision": 1,
+            "controller": "scene-fixture"
+          },
+          "did": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "leg-1",
+            "base_revision": 1,
+            "controller": "scene-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Pick up the first chair leg."
+        }
+      },
+      "progress": {
+        "mira": {
+          "attached": [],
+          "held": [
+            "leg-1",
+            "wrench-1"
+          ],
+          "complete": false
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "revision_when_decided": 2,
+      "committed_first": "mira",
+      "actors": {
+        "mira": {
+          "wanted": {
+            "actor": "mira",
+            "kind": "attach",
+            "part": "leg-1",
+            "assembly": "frame-a",
+            "base_revision": 2,
+            "controller": "scene-fixture"
+          },
+          "did": {
+            "actor": "mira",
+            "kind": "attach",
+            "part": "leg-1",
+            "assembly": "frame-a",
+            "base_revision": 2,
+            "controller": "scene-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Attach the first leg to the chair frame."
+        }
+      },
+      "progress": {
+        "mira": {
+          "attached": [
+            "leg-1"
+          ],
+          "held": [
+            "wrench-1"
+          ],
+          "complete": false
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "revision_when_decided": 3,
+      "committed_first": "mira",
+      "actors": {
+        "mira": {
+          "wanted": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "leg-2",
+            "base_revision": 3,
+            "controller": "scene-fixture"
+          },
+          "did": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "leg-2",
+            "base_revision": 3,
+            "controller": "scene-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Pick up the second chair leg."
+        }
+      },
+      "progress": {
+        "mira": {
+          "attached": [
+            "leg-1"
+          ],
+          "held": [
+            "leg-2",
+            "wrench-1"
+          ],
+          "complete": false
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "revision_when_decided": 4,
+      "committed_first": "mira",
+      "actors": {
+        "mira": {
+          "wanted": {
+            "actor": "mira",
+            "kind": "attach",
+            "part": "leg-2",
+            "assembly": "frame-a",
+            "base_revision": 4,
+            "controller": "scene-fixture"
+          },
+          "did": {
+            "actor": "mira",
+            "kind": "attach",
+            "part": "leg-2",
+            "assembly": "frame-a",
+            "base_revision": 4,
+            "controller": "scene-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Attach the second leg to the chair frame."
+        }
+      },
+      "progress": {
+        "mira": {
+          "attached": [
+            "leg-1",
+            "leg-2"
+          ],
+          "held": [
+            "wrench-1"
+          ],
+          "complete": false
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "revision_when_decided": 5,
+      "committed_first": "mira",
+      "actors": {
+        "mira": {
+          "wanted": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "seat-1",
+            "base_revision": 5,
+            "controller": "scene-fixture"
+          },
+          "did": {
+            "actor": "mira",
+            "kind": "pick_up",
+            "item": "seat-1",
+            "base_revision": 5,
+            "controller": "scene-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Pick up the chair seat."
+        }
+      },
+      "progress": {
+        "mira": {
+          "attached": [
+            "leg-1",
+            "leg-2"
+          ],
+          "held": [
+            "seat-1",
+            "wrench-1"
+          ],
+          "complete": false
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "revision_when_decided": 6,
+      "committed_first": "mira",
+      "actors": {
+        "mira": {
+          "wanted": {
+            "actor": "mira",
+            "kind": "attach",
+            "part": "seat-1",
+            "assembly": "frame-a",
+            "base_revision": 6,
+            "controller": "scene-fixture"
+          },
+          "did": {
+            "actor": "mira",
+            "kind": "attach",
+            "part": "seat-1",
+            "assembly": "frame-a",
+            "base_revision": 6,
+            "controller": "scene-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Attach the seat to complete the chair."
+        }
+      },
+      "progress": {
+        "mira": {
+          "attached": [
+            "leg-1",
+            "leg-2",
+            "seat-1"
+          ],
+          "held": [
+            "wrench-1"
+          ],
+          "complete": true
+        }
+      }
+    }
+  ]
+}
