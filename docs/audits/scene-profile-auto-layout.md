@@ -64,7 +64,8 @@ reviewed rather than inferred merely from action names.
 
 ## Remaining manual work
 
-Workshop's remaining review payload is mainly human-facing title/theme copy and
-`action_visuals`. The latter is the next architectural automation question: can
-explicit semantic/action declarations safely supply common ownership/target
-projection without treating lexical action names as authority?
+At this point Workshop's remaining review payload was mainly human-facing
+title/theme copy and `action_visuals`. The subsequent [action-presentation
+binding audit](scene-action-presentation-bindings.md) removed the latter from
+per-world review: the polished Workshop review fraction is now **34.3%**, and a
+zero-review default replay is also retained.

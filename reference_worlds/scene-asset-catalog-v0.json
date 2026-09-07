@@ -266,5 +266,27 @@
       "asset": "part",
       "portable": true
     }
+  },
+  "action_visual_bindings": {
+    "pick_up": {
+      "complete": true,
+      "projection": {
+        "ownership": "take",
+        "clear_item_station": true,
+        "actor_target": {
+          "entity_field": "$item_field"
+        }
+      }
+    },
+    "attach": {
+      "complete": true,
+      "projection": {
+        "ownership": "release",
+        "set_state": "attached",
+        "item_target": {
+          "action_field": "$station_field"
+        }
+      }
+    }
   }
 }

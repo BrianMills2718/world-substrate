@@ -180,6 +180,29 @@ def _target_station(spec: object, action: dict[str, Any]) -> str | None:
     return None
 
 
+
+def _actor_target_point(
+    profile: dict[str, Any],
+    spec: object,
+    action: dict[str, Any],
+    actor: str,
+    item_state: dict[str, dict[str, Any]],
+) -> list[float] | None:
+    station = _target_station(spec, action)
+    if station:
+        return _station_anchor(profile, station, actor)
+    if not isinstance(spec, dict):
+        return None
+    entity_field = spec.get("entity_field")
+    entity_id = action.get(entity_field) if isinstance(entity_field, str) else None
+    if not isinstance(entity_id, str) or entity_id not in profile.get("entities", {}):
+        return None
+    state = item_state.get(entity_id) or {}
+    placed_at = state.get("placed_at")
+    if isinstance(placed_at, str) and placed_at in profile.get("stations", {}):
+        return _station_anchor(profile, placed_at, actor)
+    return list(profile["entities"][entity_id]["home"])
+
 def _accepted_actions(raw: dict[str, Any], actors: list[str]) -> list[tuple[str, dict[str, Any], dict[str, Any]]]:
     first = raw.get("committed_first")
     order = [first, *[a for a in actors if a != first]] if first in actors else actors
@@ -306,9 +329,11 @@ def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities:
             visual = profile["action_visuals"].get(action.get("kind"))
             if not isinstance(visual, dict):
                 continue
-            target_station = _target_station(visual.get("actor_target"), action)
-            if target_station:
-                actor_positions[actor] = _station_anchor(profile, target_station, actor)
+            target_point = _actor_target_point(
+                profile, visual.get("actor_target"), action, actor, item_state
+            )
+            if target_point:
+                actor_positions[actor] = target_point
             item_field = visual.get("item_field", "item")
             item = action.get(item_field) if isinstance(item_field, str) else None
             if isinstance(item, str) and item in item_state:

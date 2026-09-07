@@ -107,6 +107,29 @@ def _default_label_template(kind: str, item_field: str | None, station_field: st
     return words
 
 
+
+def _resolve_action_binding(
+    value: object, *, item_field: str | None, station_field: str | None
+) -> tuple[object, set[str]]:
+    """Resolve explicit catalog placeholders; report any missing inferred field."""
+    missing: set[str] = set()
+    fields = {"$item_field": item_field, "$station_field": station_field}
+
+    def resolve(current: object) -> object:
+        if isinstance(current, str) and current in fields:
+            replacement = fields[current]
+            if replacement is None:
+                missing.add(current)
+                return current
+            return replacement
+        if isinstance(current, dict):
+            return {key: resolve(child) for key, child in current.items()}
+        if isinstance(current, list):
+            return [resolve(child) for child in current]
+        return deepcopy(current)
+
+    return resolve(value), missing
+
 def _initial_owner(entity: dict[str, Any]) -> str | None:
     owner_ref = _lookup(entity, "ownership.owner_ref")
     if isinstance(owner_ref, str) and owner_ref.startswith("actor:"):
@@ -180,6 +203,7 @@ def _action_item_station_hints(
 ) -> dict[str, str]:
     """Return first presentation station implied by reviewed action projection."""
     hints: dict[str, str] = {}
+    seen_items: set[str] = set()
     for turn in trace.get("transcript") or []:
         for record in (turn.get("actors") or {}).values():
             action = record.get("did") if isinstance(record, dict) else None
@@ -190,8 +214,12 @@ def _action_item_station_hints(
                 continue
             item_field = visual.get("item_field")
             item = action.get(item_field) if isinstance(item_field, str) else None
-            if not isinstance(item, str) or item in hints:
+            if not isinstance(item, str) or item in seen_items:
                 continue
+            # Initial scene placement follows only the first represented use of
+            # an entity. A later action target must not leak future placement
+            # backward into the opening frame.
+            seen_items.add(item)
             target = visual.get("actor_target")
             station = target.get("station") if isinstance(target, dict) else None
             if not isinstance(station, str):
@@ -202,6 +230,35 @@ def _action_item_station_hints(
                 hints[item] = station
     return hints
 
+
+
+def _station_item_target_counts(trace: dict[str, Any], profile: dict[str, Any]) -> dict[str, list[str]]:
+    """Collect distinct entities explicitly projected into each station."""
+    result: dict[str, list[str]] = {}
+    seen: dict[str, set[str]] = {}
+    for turn in trace.get("transcript") or []:
+        for record in (turn.get("actors") or {}).values():
+            action = record.get("did") if isinstance(record, dict) else None
+            if not isinstance(action, dict):
+                continue
+            visual = profile.get("action_visuals", {}).get(action.get("kind"))
+            if not isinstance(visual, dict):
+                continue
+            item_field = visual.get("item_field")
+            item = action.get(item_field) if isinstance(item_field, str) else None
+            target = visual.get("item_target")
+            station = target.get("station") if isinstance(target, dict) else None
+            if not isinstance(station, str):
+                action_field = target.get("action_field") if isinstance(target, dict) else None
+                value = action.get(action_field) if isinstance(action_field, str) else None
+                station = value if isinstance(value, str) else None
+            if not isinstance(item, str) or station not in profile.get("stations", {}):
+                continue
+            bucket = seen.setdefault(station, set())
+            if item not in bucket:
+                bucket.add(item)
+                result.setdefault(station, []).append(item)
+    return result
 
 def _apply_auto_layout(
     profile: dict[str, Any], trace: dict[str, Any], inferred_owners: dict[str, str]
@@ -242,6 +299,12 @@ def _apply_auto_layout(
             x, y, width, height = station["rect"]
             station["item_anchor"] = [round(x + width / 2, 2), round(y + height / 2, 2)]
             proposed.append(f"stations.{station_id}.item_anchor")
+
+    for station_id, items in _station_item_target_counts(trace, profile).items():
+        station = stations[station_id]
+        if len(items) > 1 and not isinstance(station.get("item_layout"), dict):
+            station["item_layout"] = {"slots": [], "overflow": "grid"}
+            proposed.append(f"stations.{station_id}.item_layout")
 
     entities = profile.get("entities") or {}
     item_hints = _action_item_station_hints(trace, profile)
@@ -371,6 +434,9 @@ def bootstrap_profile(
 
     action_visuals: dict[str, Any] = {}
     inferred_action_fields: dict[str, Any] = {}
+    declared_action_bindings: list[str] = []
+    binding_resolution_errors: dict[str, list[str]] = {}
+    catalog_action_bindings = catalog.get("action_visual_bindings") or {}
     for kind, fields in signatures.items():
         entity_fields = [
             field for field, values in fields.items()
@@ -388,6 +454,17 @@ def bootstrap_profile(
         if station_field:
             row["actor_target"] = {"action_field": station_field}
         row["label_template"] = _default_label_template(kind, item_field, station_field)
+        binding = catalog_action_bindings.get(kind)
+        if isinstance(binding, dict) and isinstance(binding.get("projection"), dict):
+            resolved, missing_placeholders = _resolve_action_binding(
+                binding["projection"], item_field=item_field, station_field=station_field
+            )
+            if missing_placeholders:
+                binding_resolution_errors[kind] = sorted(missing_placeholders)
+            else:
+                row = _merge(row, resolved)
+                if binding.get("complete") is True:
+                    declared_action_bindings.append(kind)
         action_visuals[kind] = row
         inferred_action_fields[kind] = {"item_field": item_field, "station_field": station_field}
 
@@ -423,14 +500,20 @@ def bootstrap_profile(
     for entity_id in profile.get("entities", {}):
         if not isinstance(profile["entities"][entity_id].get("home"), list):
             todos.append({"kind": "geometry", "target": f"entities.{entity_id}.home", "reason": "entity home position is illustrative"})
+    declared_set = set(declared_action_bindings)
     for kind in signatures:
-        if kind not in reviewed_actions:
-            todos.append({"kind": "action_projection", "target": f"action_visuals.{kind}", "reason": "motion/state projection needs review"})
+        if kind not in reviewed_actions and kind not in declared_set:
+            reason = "motion/state projection needs an explicit review or catalog binding"
+            if kind in binding_resolution_errors:
+                reason += f"; unresolved placeholders: {binding_resolution_errors[kind]}"
+            todos.append({"kind": "action_projection", "target": f"action_visuals.{kind}", "reason": reason})
 
     profile["bootstrap"] = {
         "schema_version": "world-substrate-scene-profile-bootstrap/v0",
         "inferred_initial_owners": inferred_owners,
         "inferred_action_fields": inferred_action_fields,
+        "declared_action_bindings": sorted(declared_action_bindings),
+        "binding_resolution_errors": binding_resolution_errors,
         "reviewed_actions": sorted(set(str(x) for x in reviewed_actions)),
         "auto_layout": {
             "enabled": auto_layout,

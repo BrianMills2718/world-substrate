@@ -29,24 +29,7 @@
   },
   "stations": {
     "frame-a": {
-      "fill": "#8c6c4e",
-      "item_layout": {
-        "slots": [
-          [
-            0.28,
-            0.64
-          ],
-          [
-            0.72,
-            0.64
-          ],
-          [
-            0.5,
-            0.38
-          ]
-        ],
-        "overflow": "grid"
-      }
+      "fill": "#8c6c4e"
     },
     "parts-rack": {
       "presentation_only": true,
@@ -55,30 +38,5 @@
       "fill": "#9b7b52"
     }
   },
-  "action_visuals": {
-    "pick_up": {
-      "actor_target": {
-        "station": "parts-rack"
-      },
-      "ownership": "take",
-      "clear_item_station": true,
-      "label_template": "pick up {item}"
-    },
-    "attach": {
-      "actor_target": {
-        "action_field": "assembly"
-      },
-      "ownership": "release",
-      "set_state": "attached",
-      "item_target": {
-        "action_field": "assembly"
-      },
-      "label_template": "attach {part} to {assembly}"
-    }
-  },
-  "reviewed_actions": [
-    "pick_up",
-    "attach"
-  ],
   "moment_rules": []
 }
