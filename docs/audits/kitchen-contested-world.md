@@ -1,7 +1,7 @@
 ---
 role: audit
 status: active
-reviewed_through: 2026-09-04
+reviewed_through: 2026-09-07
 authority_refs:
   - ./m5-policy-consumer.md
   - ./m6-second-world.md
@@ -165,15 +165,77 @@ turns on the bottleneck, handed it over on completion, stayed out of each
 other's way, and both finished. Nothing in the prompt mentions cooperating,
 sharing, or waiting; it states the situation and nothing else.
 
-**The weakness this exposes:** after t17 both orders are filled and the world
-has no notion of being finished, so thirteen turns of aimless taking and
-putting down follow. A world built to be watched needs a terminal state, and
-this one does not have one.
+**The weakness this exposed at the time:** after t17 both orders were filled
+and the runner had no world-defined reason to stop, so thirteen turns of
+aimless taking and putting down followed. That observation is intentionally
+retained in the v2 trace. The defect is now closed: the kitchen derives service
+completion from the `filled` state its order entities already carry, and the
+v3 contested runner treats its requested turn count as a ceiling.
+
+## Replication after the terminal-state fix
+
+On 2026-09-07 the complete service was repeated **three fresh times** under the
+same world, model and prompt, using World Substrate runtime revision
+`78c205c531033a3264a8be0b42a06fac90988c45`. The prompt was
+`prompts/kitchen_policy.yaml` at SHA-256
+`8f3ac0a29b1ee67935646dd59796e9849c5ca6331db8ad6e8464a441bcbe408c`.
+Each run requested a 30-turn ceiling and ended when the world terminal predicate
+became true.
+
+| fresh run | Bo fills | Bo releases knife for Ama | Ama takes knife | Ama fills / terminal | actual contention | stale retries | cost |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | t9 | **t10** | t11 | **t17** | 1 | 4 | $0.009512 |
+| 2 | t9 | **t10** | t11 | **t17** | 1 | 3 | $0.010153 |
+| 3 | t9 | **t10** | t11 | **t17** | 1 | 2 | $0.009120 |
+
+The central behavior reproduced **3 of 3**. Every run has the same causal
+shape: Bo acquires the knife at t2, fills its order at t9, deliberately puts the
+knife down at t10 *for Ama*, Ama takes it at t11, and both orders are filled at
+t17. There were zero refusals after retry. The surface retry count varied, but
+the resource handoff and completion sequence did not.
+
+The three t10 reasons are independently worded and explicitly other-directed:
+
+- run 1: *"My order is complete, so putting down the knife lets Ama use it to advance her stew."*
+- run 2: *"Put down the knife so Ama can use it to prepare the remaining stew ingredients."*
+- run 3: *"Put down the knife so Ama can use it to chop ingredients for the stew."*
+
+Raw v3 traces and renders are retained as
+`evidence/kitchen/full-service-replication-v1-run{1,2,3}.json` and
+`evidence/renders/kitchen-full-service-replication-v1-run{1,2,3}.html`.
+`evidence/kitchen/full-service-replication-v1-summary.json` records their
+hashes and execution metadata. The three service runs cost **$0.028785**. A
+one-turn compatibility probe cost $0.00079; the current observability ledger
+records **$0.029571** for this session's `world-substrate-castaway-policy`
+calls.
+
+**Execution caveat.** World Substrate pins `llm_client` at
+`d7a9395a1935010119f5d42a6baf55b9d707443b`, but that exact object was not
+available in the authorized machine's local Git object stores. The current
+local client had changed Luna's registry capability from the pinned revision's
+`native_structured_output: true` to `false`, which caused the first attempted
+call to refuse before model execution. For the replication only, an uncommitted
+model-registry override restored that single pinned capability bit. A one-turn
+probe then confirmed that current OpenRouter still accepts the same strict
+native JSON-schema route. No repository was modified by the override. This
+keeps the model/world/prompt/schema path comparable while making the client
+source-revision difference explicit rather than pretending it does not exist.
+
+Taken together with the original full-service run, four observed services show
+the same handoff shape. The formal replication claim is narrower: **under this
+fixed world, model and prompt, the t10 knife handoff is no longer an n=1
+anecdote.** It is not evidence that arbitrary models, prompts or worlds will
+cooperate, and it is not a claim about private cognition; it is repeated,
+observable behavior through the shared world.
 
 ## Limits
 
-- One run per configuration, one model driving both seats, 14 turns. The
-  three-way comparison changes one thing at a time but is n=1 per cell.
+- The earlier three-way diagnosis remains one run per configuration and n=1
+  per cell; the later full-service replication adds three fresh runs only to
+  the final fixed configuration.
+- The replication holds the world, prompt, model and two-seat model identity
+  fixed. It establishes repeatability under that configuration, not
+  cross-model or prompt robustness.
 - The kitchen prompt names the situation but no strategy. A prompt that told
   either cook to cooperate would make the t10 handover an instruction rather
   than an observation, and that was the point of not writing one.
