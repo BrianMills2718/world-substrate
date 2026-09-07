@@ -10,8 +10,8 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; first flagship artifact ready for human review
-**Last outcome-bearing result:** the replicated service now has a self-explanatory static viewer at `evidence/renders/kitchen-flagship-v1.html`. It places each cook's recorded reasoning beside trace-authoritative order progress and reconstructed holdings/knife ownership; the t10 release and t11 takeover are visually highlighted, and the service ends at the t17 world terminal. It is generated read-only from retained v3 evidence and introduces no second world state.
+**Stage:** prototype complete; graphical flagship replay ready for human review
+**Last outcome-bearing result:** the replicated service now has a graphical top-down replay at `evidence/renders/kitchen-spatial-replay-v1.html`. The cooks visibly move among prep, burner and plating stations while the shared knife, ingredients, order plates and short reasoning bubbles change across the retained 17-turn trace. The kitchen geometry is explicitly illustrative; actions, preparation state, ownership, progress, handoff and terminal completion come from retained evidence. The denser `kitchen-flagship-v1.html` timeline remains available for trace inspection.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
 **Current strategy frontier:** human review of the first flagship artifact; publication/deployment remains an explicit authority boundary
 
@@ -177,26 +177,27 @@ The flagship choices are answered:
   beside world truth and causal outcomes.
 
 **Where it stands.** The service is terminal, the behavior replicated 3/3,
-and the first self-explanatory viewer exists. `kitchen-flagship-v1.html` shows
-each cook's reasoning on the outside and the shared presentation state in the
-center: order progress comes directly from the retained trace; holdings and
-knife ownership are reconstructed only from committed ownership-changing
-actions. The t10 handoff and t11 takeover are highlighted, and t17 is a clear
-service-complete terminal.
+and the primary viewer is now a graphical replay rather than a trace dashboard.
+`kitchen-spatial-replay-v1.html` uses an illustrative top-down kitchen so a
+person can watch the cooks move between prep, cooking and plating stations while
+the knife and ingredients visibly move with the retained actions. Order progress
+comes directly from the trace; item preparation and ownership are reconstructed
+from committed actions. The t10 release and t11 takeover happen in the scene, and
+t17 ends with both order plates complete.
 
-The viewer was generated from replication run 1 and visually checked at a
-1400px desktop viewport, including a targeted t10/t11 handoff view. Focused
-tests assert knife ownership, order completion, the handoff/takeover moments,
-and the read-only evidence boundary.
+The replay was generated from replication run 1 and visually checked in a real
+headless Chrome render at desktop size, including cooking at t4 and the t10
+handoff. Focused tests assert the 17 frames, preparation progression, knife
+release/takeover, terminal orders and the read-only evidence boundary.
 
 **The engineering slice is complete.** The next step is human review of
-`evidence/renders/kitchen-flagship-v1.html`. Showing or publishing it is not an
-implicit continuation of development: deployment/publication remains an
+`evidence/renders/kitchen-spatial-replay-v1.html`. Showing or publishing it is
+not an implicit continuation of development: deployment/publication remains an
 explicit authority boundary.
 
 **What a fresh agent should do first.** Both cost nothing:
 
-1. **Open the flagship** — `evidence/renders/kitchen-flagship-v1.html`. The key sequence is contention at t2, Bo's release at t10, Ama's takeover at t11, and service completion at t17.
+1. **Open the graphical replay** — `evidence/renders/kitchen-spatial-replay-v1.html`. It autoplays the service; the key sequence is contention at t2, Bo's release at t10, Ama's takeover at t11, and service completion at t17.
 2. **Read the audit** — `docs/audits/kitchen-contested-world.md` for the 3/3 replication evidence and execution caveat.
 
 **What not to do.** Do not add another substrate feature, repeat the same model configuration again, deploy, or publish simply because the artifact now exists. The next move crosses a human product/publication boundary.
@@ -263,7 +264,8 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
-| Flagship viewer explains a retained terminal service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace; no external human review yet | established technically, human review pending |
+| Graphical flagship replay shows a retained terminal service as a world | `scripts/render_kitchen_spatial_replay.py`, spatial replay tests, `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
+| Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
 ## Risks and needs resolution
 
@@ -286,7 +288,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; the next viewer increment needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered: `kitchen-flagship-v1.html`, agent reasoning around shared state/action timeline** | artifact exists; deployment/publication remains separately controlled |
+| What a viewer actually sees | **answered: `kitchen-spatial-replay-v1.html`, a top-down kitchen replay with cooks, items, stations, orders and reasoning bubbles** | geometry is illustrative; deployment/publication remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -296,9 +298,11 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Human-review `evidence/renders/kitchen-flagship-v1.html`. The engineering goal
-for this slice is met: a retained replicated service is legible as a standalone
-artifact, and the renderer is read-only and reproducible from v3 evidence.
+Human-review `evidence/renders/kitchen-spatial-replay-v1.html`. The engineering
+goal for this slice is met: a retained replicated service is visible as a
+graphical world replay, while the renderer remains read-only and reproducible
+from v3 evidence. Use `kitchen-flagship-v1.html` only when the denser trace
+timeline is useful.
 
 If the artifact is accepted, the next choice is whether to authorize showing or
 publishing it, or to request a specific presentation refinement first. Do not

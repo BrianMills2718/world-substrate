@@ -69,7 +69,7 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 
 The substrate prototype is complete and the flagship phase has produced its first human-facing artifact. The selected world is the kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. Three fresh same-model/prompt services reproduced the key sequence — Bo completes at t9, releases the knife for Ama at t10, Ama takes it at t11, and both orders are filled at the t17 world terminal.
 
-`evidence/renders/kitchen-flagship-v1.html` renders one retained v3 trace as a read-only three-column timeline: each cook's stated reasoning on the outside, reconstructed holdings/knife ownership and trace-authoritative order progress in the center. The renderer cannot mutate or replay world effects. The next unresolved boundary is whether/how to show or publish the artifact, which remains a human decision. See the [roadmap's active slice](../../roadmap/README.md#vertical-slices-and-current-work).
+`evidence/renders/kitchen-spatial-replay-v1.html` is the primary human-facing replay. It renders one retained v3 trace as an illustrative top-down kitchen: cooks move among prep, burner and plating stations while item preparation, knife ownership, order progress and short reasoning bubbles update from the recorded service. The geometry is presentation-only and cannot mutate or replay world effects. `kitchen-flagship-v1.html` remains the denser trace-oriented timeline. The next unresolved boundary is whether/how to show or publish the graphical replay, which remains a human decision. See the [roadmap's active slice](../../roadmap/README.md#vertical-slices-and-current-work).
 
 ## What exists now?
 
@@ -139,7 +139,8 @@ Castaway remains the adopted M1 implementation and evidence donor. The workshop 
 
 ## Human-reviewable artifacts
 
-- `evidence/renders/kitchen-flagship-v1.html`: self-explanatory flagship view of a fresh terminal replication.
+- `evidence/renders/kitchen-spatial-replay-v1.html`: graphical top-down replay of a fresh terminal replication.
+- `evidence/renders/kitchen-flagship-v1.html`: denser trace-oriented timeline of that retained service.
 - `evidence/kitchen/full-service-replication-v1-summary.json`: hashes, method, costs and 3/3 replication result.
 - `evidence/kitchen/full-service-replication-v1-run{1,2,3}.json`: raw retained v3 traces.
 - `evidence/renders/kitchen-full-service.html`: intentionally historical pre-terminal run that exposed the trailing-turn defect.
