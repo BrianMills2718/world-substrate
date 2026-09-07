@@ -48,6 +48,34 @@
     "water": {
       "kind": "emoji",
       "value": "\ud83d\udca7"
+    },
+    "worker": {
+      "kind": "emoji",
+      "value": "\ud83e\uddd1\u200d\ud83d\udd27"
+    },
+    "tool": {
+      "kind": "emoji",
+      "value": "\ud83d\udee0\ufe0f"
+    },
+    "wrench": {
+      "kind": "emoji",
+      "value": "\ud83d\udd27"
+    },
+    "part": {
+      "kind": "emoji",
+      "value": "\ud83e\udde9"
+    },
+    "leg": {
+      "kind": "emoji",
+      "value": "\ud83e\udeb5"
+    },
+    "seat": {
+      "kind": "emoji",
+      "value": "\ud83d\udfeb"
+    },
+    "bracket": {
+      "kind": "emoji",
+      "value": "\ud83d\udcd0"
     }
   },
   "world_assets": {
@@ -67,6 +95,15 @@
       "cup",
       "water",
       "fire"
+    ],
+    "workshop": [
+      "worker",
+      "tool",
+      "wrench",
+      "part",
+      "leg",
+      "seat",
+      "bracket"
     ]
   },
   "entity_bindings": {
@@ -114,6 +151,29 @@
           "progress_key": "potato"
         }
       }
+    },
+    {
+      "path": "components.tool.tool_kind",
+      "values": {
+        "wrench": {
+          "asset": "wrench",
+          "portable": true
+        }
+      }
+    },
+    {
+      "path": "components.part.part_kind",
+      "values": {
+        "leg": {
+          "asset": "leg"
+        },
+        "seat": {
+          "asset": "seat"
+        },
+        "bracket": {
+          "asset": "bracket"
+        }
+      }
     }
   ],
   "category_station_bindings": {
@@ -131,6 +191,9 @@
     "fire": {
       "role": "workstation",
       "active_asset": "fire"
+    },
+    "assembly": {
+      "role": "goal"
     }
   },
   "world_state_styles": {
@@ -176,6 +239,32 @@
         "brightness": 0.9,
         "saturation": 0.85
       }
+    },
+    "workshop": {
+      "default": {
+        "scale": 1.0,
+        "rotate_deg": 0,
+        "brightness": 1.0,
+        "saturation": 1.0
+      },
+      "attached": {
+        "scale": 0.9,
+        "rotate_deg": 0,
+        "brightness": 1.0,
+        "saturation": 0.9
+      }
+    }
+  },
+  "category_entity_bindings": {
+    "worker": {
+      "asset": "worker"
+    },
+    "tool": {
+      "asset": "tool"
+    },
+    "part": {
+      "asset": "part",
+      "portable": true
     }
   }
 }

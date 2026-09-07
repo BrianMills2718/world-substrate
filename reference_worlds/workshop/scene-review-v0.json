@@ -1,0 +1,66 @@
+{
+  "scene_id": "workshop-bench-greenfield-v0",
+  "title": "Workshop replay: assembling a chair",
+  "subtitle": "A greenfield graphical replay generated from the Workshop world model, a retained engine trace, the shared asset catalog, and this small presentation review overlay.",
+  "note": "Mira picks up the wrench, then picks up and attaches two legs and a seat to the chair frame. Geometry is illustrative; actions and relationships come from the retained trace/world model.",
+  "autoplay_seconds": 2.0,
+  "scene": {
+    "aspect_ratio": "16 / 9",
+    "background": "#d7c6a5",
+    "grid_color": "#b39b7355",
+    "grid_size_px": 64,
+    "shell_background": "#171b1d",
+    "decor": [
+      {"kind": "rect", "x": 0, "y": 0, "w": 100, "h": 17, "fill": "#c8a978", "border_bottom": "#765938"}
+    ]
+  },
+  "actors": {
+    "mira": {
+      "accent": "#4f78b8",
+      "home": [10, 58],
+      "carry_offset": [7, 2],
+      "carry_spacing": [0, 6]
+    }
+  },
+  "stations": {
+    "frame-a": {
+      "rect": [64, 25, 29, 55],
+      "fill": "#8c6c4e",
+      "actor_anchor": [56, 46],
+      "item_anchor": [77, 52]
+    },
+    "parts-rack": {
+      "presentation_only": true,
+      "label": "Parts & tools",
+      "role": "source",
+      "rect": [20, 25, 30, 45],
+      "fill": "#9b7b52",
+      "actor_anchor": [43, 46],
+      "item_anchor": [35, 46]
+    }
+  },
+  "entities": {
+    "wrench-1": {"home": [28, 35]},
+    "leg-1": {"home": [35, 34]},
+    "leg-2": {"home": [42, 34]},
+    "seat-1": {"home": [31, 54]},
+    "shelf-1": {"home": [42, 54]}
+  },
+  "action_visuals": {
+    "pick_up": {
+      "actor_target": {"station": "parts-rack"},
+      "ownership": "take",
+      "clear_item_station": true,
+      "label_template": "pick up {item}"
+    },
+    "attach": {
+      "actor_target": {"action_field": "assembly"},
+      "ownership": "release",
+      "set_state": "attached",
+      "item_target": {"action_field": "assembly"},
+      "label_template": "attach {part} to {assembly}"
+    }
+  },
+  "reviewed_actions": ["pick_up", "attach"],
+  "moment_rules": []
+}

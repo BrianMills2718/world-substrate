@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; scene-profile bootstrapper implemented on two real-world fixtures
-**Last outcome-bearing result:** `scripts/bootstrap_scene_profile.py` now derives the safe portion of `scene-profile/v0` from a reference-world model, retained v3 trace and explicit asset catalog: trace actors, visual entities, initial actor ownership, canonical station candidates, actor-to-goal links, asset/state bindings and candidate action fields. It does not invent coordinates or ambiguous motion/state semantics. With presentation-only review overlays, the bootstrap reproduces the existing Kitchen and Castaway profiles exactly apart from provenance; their per-world review JSON is about 36% and 33% smaller than the previous full profiles. The generic renderer is unchanged.
+**Stage:** prototype complete; scene-profile bootstrap proven greenfield on Workshop
+**Last outcome-bearing result:** Workshop passed the greenfield scene-profile gate with no prior visual profile. A seven-turn, zero-spend trace of real accepted `pick_up`/`attach` actions completed the chair. The bootstrapper inferred Mira, the canonical chair-frame station, portable tool/parts, category/component asset bindings and action fields; nine presentation TODOs remained explicit. A review overlay at 62.6% of the final profile core resolved those choices, and the unchanged generic renderer produced `evidence/renders/workshop-spatial-replay-v0.html`. The run exposed one generic presentation limit: multiple attached items share one station item anchor and overlap visually.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** prove the bootstrap path greenfield on a world that has no existing scene profile to reverse-engineer; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** address the greenfield multi-item station-layout finding generically (slots/fan/grid), without adding Workshop-specific renderer logic; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -168,47 +168,39 @@ observable attempt or trigger
 
 ### Active slice: generate replay scenes from declarations, not bespoke code
 
-The generic graphical layer has now crossed the real-world portability gate.
-Kitchen and Castaway both render through `scripts/render_scene_replay.py`; their
-world-specific work lives in `scene-profile-v0.json` declarations. Kitchen maps
-`take/chop/cook/plate/put_down` into a prep/burner/order scene. Castaway maps
-`fill/drink` into a pool/camp scene and carries initial cup ownership from the
-reference-world model. No Castaway branch was added to the renderer.
+The generic renderer now covers Kitchen, Castaway, and Workshop. Workshop is the
+important proof because no scene profile existed before the test. Its retained
+trace contains seven accepted commits through the existing engine: Mira picks up
+the wrench, then picks up and attaches two legs and a seat to `frame-a`.
 
-The renderer also supports profile-relative image assets embedded into the
-single-file replay, declarative state appearance, station activation, actor and
-item attachment, and trace-derived milestone labels. Scene geometry remains
-presentation-only unless coordinates are part of canonical world state.
+The unreviewed bootstrap inferred the actor, canonical assembly station, wrench
+and part visuals, category/component asset bindings, and both action-field
+signatures. It emitted nine geometry/action-projection TODOs rather than
+inventing them. The presentation review overlay resolved those TODOs and is
+**62.6%** of the final profile core by compact JSON size. The generic renderer
+was unchanged and produced `workshop-spatial-replay-v0.html`.
 
-**The bootstrap path now exists.** `bootstrap_scene_profile.py` safely infers
-trace actors, visual entities, initial `actor:*` ownership, category-backed
-canonical stations, actor-to-goal links, asset/state bindings and action fields
-whose values consistently name visual entities or stations. An unresolved draft
-records geometry and action-projection TODOs instead of inventing them. A small
-review overlay resolves those presentation choices; `--require-complete` then
-produces a profile accepted by the unchanged generic renderer.
+**Greenfield finding.** The final chair is causally correct but not fully legible:
+`frame-a` has one `item_anchor`, so attached leg/seat visuals occupy the same
+slot. This is now evidence for a generic presentation primitive, not permission
+to special-case Workshop.
 
-Kitchen and Castaway are the acceptance fixtures. Their reviewed bootstrap output
-matches the existing scene profiles exactly apart from bootstrap provenance, while
-the per-world review payload is about 64%/67% of the former full profile payload.
-The shared asset catalog is an explicit input, not a source of causal facts.
-
-**Next increment: greenfield bootstrap.** Apply the bootstrapper to a real world
-that has no existing scene profile to copy—prefer the workshop if a no-spend v3
-trace can be produced through the current policy/runner seam. Start from the
-world model + trace + asset catalog, inspect the emitted TODOs, and author only
-the minimal review overlay needed to produce a useful replay. That measures
-whether the reduction survives outside profiles whose answers were already known.
+**Next increment: declarative station item layout.** Add the smallest generic
+scene-profile option that lets a station arrange multiple placed entities (for
+example explicit slots, then a deterministic fallback fan/grid). Use Workshop's
+three attached chair parts as the failing fixture and ensure Kitchen/Castaway
+replays remain deterministic. Keep layout presentation-only; do not infer causal
+positions or modify Workshop mechanics.
 
 **What a fresh agent should do first.** All cost nothing:
 
-1. Compare each `scene-review-v0.json` with its compiled `scene-profile-v0.json`.
-2. Run `bootstrap_scene_profile.py` with `--require-complete` for Kitchen or Castaway and verify the assembled core matches the committed profile.
-3. Read `docs/contracts/scene-profile-v0.md` before changing the profile or bootstrap wire shape.
+1. Open `evidence/renders/workshop-spatial-replay-v0.html` at turn 7 and observe the overlapping attached parts.
+2. Read `docs/audits/workshop-scene-greenfield.md` and `docs/contracts/scene-profile-v0.md`.
+3. Add a generic layout declaration only if it solves the Workshop case without a world-id branch.
 
-**What not to do.** Do not let profile synthesis invent causal facts, promote
-illustrative coordinates into world truth, or add arbitrary executable hooks to
-profiles. Publication/deployment remains separately controlled.
+**What not to do.** Do not make station coordinates causal, add Workshop ids to
+the renderer, repeat model runs, deploy, or publish. The next uncertainty is a
+presentation portability issue exposed by real evidence.
 
 ## Open obligations
 
@@ -272,8 +264,8 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
-| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, kitchen + Castaway scene profiles, lab tests | v0 is 2D and contested-run/v3-oriented | **established on two real worlds** |
-| Scene-profile bootstrapper reduces review-only authoring | `bootstrap_scene_profile.py`, shared asset catalog, Kitchen/Castaway review overlays, [bootstrap audit](../docs/audits/scene-profile-bootstrap.md) and tests | acceptance fixtures had pre-existing full profiles; greenfield proof pending | **established on two fixtures; ~36%/~33% per-world payload reduction** |
+| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, Kitchen + Castaway + Workshop profiles, lab tests | v0 is 2D and v3-envelope-oriented; Workshop exposes single-anchor overlap | **established on three real worlds** |
+| Scene-profile bootstrapper reduces review-only authoring | `bootstrap_scene_profile.py`, shared asset catalog, Kitchen/Castaway backfit + Workshop greenfield audit/tests | Workshop had no prior profile; layout still needs human review | **greenfield established; Workshop manual-review fraction 62.6%** |
 | Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
 | Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
@@ -298,7 +290,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered for kitchen; generic scene profile v0 separates trace truth from visual geometry/assets and now renders Castaway too** | bootstrapping exists; greenfield profile authoring is the remaining automation proof; deployment/publication remains separately controlled |
+| What a viewer actually sees | **answered for kitchen; generic scene profile v0 now renders Kitchen, Castaway, and greenfield Workshop** | multi-item station layout is the current presentation gap; deployment/publication remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -308,14 +300,12 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Use the bootstrapper **greenfield** on a real reference world that has no
-existing scene profile to copy. Prefer the workshop if a no-spend
-`world-substrate-contested-run/v3` trace can be produced through the existing
-policy/runner seam without adding world-specific replay code. Generate the draft
-from the world model + trace + asset catalog, review its explicit TODOs, add the
-smallest presentation overlay that makes the replay legible, and record the
-manual-review fraction. Do not change `render_scene_replay.py` merely to fit the
-new world; a required renderer branch is a portability finding.
+Add a **generic declarative multi-item station layout** to `scene-profile/v0`.
+Workshop turn 7 is the acceptance fixture: its two legs and seat are all attached
+to `frame-a` but currently share one visual anchor. Prefer a small presentation
+primitive such as explicit item slots with a deterministic fallback fan/grid.
+Do not add Workshop ids or causal coordinate claims to `render_scene_replay.py`.
+Regenerate Workshop and verify Kitchen/Castaway remain deterministic.
 
 No model call, deployment or publication is required for this gate.
 
