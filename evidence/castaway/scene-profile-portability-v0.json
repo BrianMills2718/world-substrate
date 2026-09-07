@@ -1,0 +1,548 @@
+{
+  "actors": [
+    "robinson",
+    "friday"
+  ],
+  "claim": "Two policies decide from the same revision and commit in order; whoever is refused for a stale revision re-observes and chooses again. What remains is what the retry cannot fix: an intent the other actor made impossible between rendering and acting. A world-specific terminal predicate may end the run before its turn cap.",
+  "schema_version": "world-substrate-contested-run/v3",
+  "summary": {
+    "plan_actually_taken_by_the_other": 0,
+    "refusal_kinds": [],
+    "refused_after_retry": 0,
+    "retried_because_stale": 8,
+    "terminal_reached": false,
+    "turns": 8
+  },
+  "transcript": [
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 1,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 0,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 0,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 0,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "robinson",
+      "progress": {
+        "friday": {
+          "health": 88
+        },
+        "robinson": {
+          "health": 100
+        }
+      },
+      "revision_when_decided": 0,
+      "turn": 1
+    },
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 5,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 5,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 6,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 5,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "friday",
+      "progress": {
+        "friday": {
+          "health": 88
+        },
+        "robinson": {
+          "health": 88
+        }
+      },
+      "revision_when_decided": 5,
+      "turn": 2
+    },
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 11,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 10,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 10,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 10,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "robinson",
+      "progress": {
+        "friday": {
+          "health": 76
+        },
+        "robinson": {
+          "health": 88
+        }
+      },
+      "revision_when_decided": 10,
+      "turn": 3
+    },
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 15,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 15,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 16,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 15,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "friday",
+      "progress": {
+        "friday": {
+          "health": 76
+        },
+        "robinson": {
+          "health": 76
+        }
+      },
+      "revision_when_decided": 15,
+      "turn": 4
+    },
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 21,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 20,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 20,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 20,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "robinson",
+      "progress": {
+        "friday": {
+          "health": 64
+        },
+        "robinson": {
+          "health": 76
+        }
+      },
+      "revision_when_decided": 20,
+      "turn": 5
+    },
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 25,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 25,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 26,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 25,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "friday",
+      "progress": {
+        "friday": {
+          "health": 64
+        },
+        "robinson": {
+          "health": 64
+        }
+      },
+      "revision_when_decided": 25,
+      "turn": 6
+    },
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 31,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 30,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 30,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 30,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "robinson",
+      "progress": {
+        "friday": {
+          "health": 52
+        },
+        "robinson": {
+          "health": 64
+        }
+      },
+      "revision_when_decided": 30,
+      "turn": 7
+    },
+    {
+      "actors": {
+        "friday": {
+          "did": {
+            "actor": "friday",
+            "base_revision": 35,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "retried": false,
+          "said": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "friday",
+            "base_revision": 35,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        },
+        "robinson": {
+          "did": {
+            "actor": "robinson",
+            "base_revision": 36,
+            "controller": "unselected",
+            "kind": "drink",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          },
+          "lost_what_it_wanted": true,
+          "plan_still_available": true,
+          "refused_because": [],
+          "retried": true,
+          "said": "greedy",
+          "said_on_retry": "greedy",
+          "status": "accepted",
+          "wanted": {
+            "actor": "robinson",
+            "base_revision": 35,
+            "controller": "unselected",
+            "kind": "fill",
+            "source": "unsafe-pool",
+            "vessel": "clay-pot",
+            "volume_ml": 250
+          }
+        }
+      },
+      "committed_first": "friday",
+      "progress": {
+        "friday": {
+          "health": 52
+        },
+        "robinson": {
+          "health": 52
+        }
+      },
+      "revision_when_decided": 35,
+      "turn": 8
+    }
+  ],
+  "turns_run": 8,
+  "world": "castaway"
+}
