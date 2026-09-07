@@ -67,9 +67,9 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 
 ## Where this actually stands
 
-The substrate prototype is complete and the flagship phase is underway. The selected world is the kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. A retained model run filled both orders and showed unprompted waiting, turn-taking, and two knife handovers despite no communication channel or cooperation instruction.
+The substrate prototype is complete and the flagship phase has produced its first human-facing artifact. The selected world is the kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. Three fresh same-model/prompt services reproduced the key sequence — Bo completes at t9, releases the knife for Ama at t10, Ama takes it at t11, and both orders are filled at the t17 world terminal.
 
-That retained run also exposed a presentation defect in the world itself: after the second order was complete, the harness continued for thirteen meaningless turns. The kitchen now derives `service_complete` from the `filled` state its orders already carry, and the contested runner stops before asking either policy to act again once every order is filled. The next uncertainty is behavioral replication, not another substrate feature. See the [roadmap's active slice](../../roadmap/README.md#vertical-slices-and-current-work).
+`evidence/renders/kitchen-flagship-v1.html` renders one retained v3 trace as a read-only three-column timeline: each cook's stated reasoning on the outside, reconstructed holdings/knife ownership and trace-authoritative order progress in the center. The renderer cannot mutate or replay world effects. The next unresolved boundary is whether/how to show or publish the artifact, which remains a human decision. See the [roadmap's active slice](../../roadmap/README.md#vertical-slices-and-current-work).
 
 ## What exists now?
 
@@ -139,9 +139,11 @@ Castaway remains the adopted M1 implementation and evidence donor. The workshop 
 
 ## Human-reviewable artifacts
 
-- `evidence/renders/kitchen-full-service.html`: retained kitchen service with both agents' reasoning beside world outcomes.
-- `evidence/kitchen/full-service-v0.json`: machine trace for that historical run.
-- `docs/audits/kitchen-contested-world.md`: why the kitchen exists and what the retained run established.
+- `evidence/renders/kitchen-flagship-v1.html`: self-explanatory flagship view of a fresh terminal replication.
+- `evidence/kitchen/full-service-replication-v1-summary.json`: hashes, method, costs and 3/3 replication result.
+- `evidence/kitchen/full-service-replication-v1-run{1,2,3}.json`: raw retained v3 traces.
+- `evidence/renders/kitchen-full-service.html`: intentionally historical pre-terminal run that exposed the trailing-turn defect.
+- `docs/audits/kitchen-contested-world.md`: why the kitchen exists, what replicated, and the execution caveat.
 - M1 freshwater traces and replay receipt: the promoted substrate baseline.
 - M3–M7b audits and evidence: mechanics-authoring, interaction, policy, reuse, and authoring-rate findings.
 

@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; flagship experiment underway  
-**Last outcome-bearing result:** three fresh terminal-state kitchen services reproduced the same coordination shape under the same model and prompt: Bo filled at t9, deliberately released the knife for Ama at t10, Ama took it at t11, and both orders were complete at t17 in all three runs. The formal fresh replication is 3/3; together with the retained pre-terminal trace, four observed services show the handoff. See [the kitchen audit](../docs/audits/kitchen-contested-world.md) and `evidence/kitchen/full-service-replication-v1-summary.json`.
+**Stage:** prototype complete; first flagship artifact ready for human review
+**Last outcome-bearing result:** the replicated service now has a self-explanatory static viewer at `evidence/renders/kitchen-flagship-v1.html`. It places each cook's recorded reasoning beside trace-authoritative order progress and reconstructed holdings/knife ownership; the t10 release and t11 takeover are visually highlighted, and the service ends at the t17 world terminal. It is generated read-only from retained v3 evidence and introduces no second world state.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** turn the now-replicated kitchen service into a self-explanatory flagship artifact a person can understand without narration
+**Current strategy frontier:** human review of the first flagship artifact; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -176,31 +176,30 @@ The flagship choices are answered:
 - **What a viewer sees:** a rendered run with each agent's stated reasoning
   beside world truth and causal outcomes.
 
-**Where it stands.** The service is terminal and the behavior has replicated.
-Three fresh runs under the same model and prompt all followed the same core
-sequence: Bo completes at t9, releases the knife explicitly for Ama at t10, Ama
-takes it at t11, and the world ends at t17 with both orders filled. The raw
-traces and renders are retained under `evidence/kitchen/` and
-`evidence/renders/`; the audit records the execution caveat and hashes.
+**Where it stands.** The service is terminal, the behavior replicated 3/3,
+and the first self-explanatory viewer exists. `kitchen-flagship-v1.html` shows
+each cook's reasoning on the outside and the shared presentation state in the
+center: order progress comes directly from the retained trace; holdings and
+knife ownership are reconstructed only from committed ownership-changing
+actions. The t10 handoff and t11 takeover are highlighted, and t17 is a clear
+service-complete terminal.
 
-**Next increment: make one replicated run explain itself.** Build the flagship
-viewer from a fresh terminal trace rather than adding another mechanic or model
-run. A viewer should show, at minimum, each cook's stated reasoning, current
-order progress, what each cook holds, who holds the knife, the attempted and
-committed action, contention/retry when it occurs, and a clear service-complete
-ending. The t10 knife release and t11 takeover should be visually obvious
-without someone narrating why they matter.
+The viewer was generated from replication run 1 and visually checked at a
+1400px desktop viewport, including a targeted t10/t11 handoff view. Focused
+tests assert knife ownership, order completion, the handoff/takeover moments,
+and the read-only evidence boundary.
 
-This is a no-spend increment. Prefer extending the existing retained-run HTML
-renderer over creating a deployment or a second world state representation.
-Publication/deployment remains a separate authority boundary.
+**The engineering slice is complete.** The next step is human review of
+`evidence/renders/kitchen-flagship-v1.html`. Showing or publishing it is not an
+implicit continuation of development: deployment/publication remains an
+explicit authority boundary.
 
 **What a fresh agent should do first.** Both cost nothing:
 
-1. **Watch a fresh terminal run.** Open `evidence/renders/kitchen-full-service-replication-v1-run1.html`, then compare it with the intentionally historical `kitchen-full-service.html` that still shows the old trailing turns.
-2. **Run the scripted world.** `python scripts/run_contested_world.py --world kitchen --turns 12` uses scripted policies and costs nothing.
+1. **Open the flagship** — `evidence/renders/kitchen-flagship-v1.html`. The key sequence is contention at t2, Bo's release at t10, Ama's takeover at t11, and service completion at t17.
+2. **Read the audit** — `docs/audits/kitchen-contested-world.md` for the 3/3 replication evidence and execution caveat.
 
-**What not to do.** Do not add more contracts, general hardening, or more same-configuration model runs simply because they are available. The next uncertainty is viewer legibility, not substrate assurance or another replication count.
+**What not to do.** Do not add another substrate feature, repeat the same model configuration again, deploy, or publish simply because the artifact now exists. The next move crosses a human product/publication boundary.
 
 ## Open obligations
 
@@ -264,10 +263,12 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
+| Flagship viewer explains a retained terminal service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace; no external human review yet | established technically, human review pending |
 
 ## Risks and needs resolution
 
 - The kitchen handoff repeated in 3/3 fresh same-model/prompt runs, but robustness across models, prompts, or changed world conditions is still unknown.
+- The flagship viewer has passed renderer tests and local visual inspection, but no external human has yet established that it is self-explanatory without project context.
 - Linguistic breadth can hide mechanical sparsity.
 - A generic component model can become an untyped property bag.
 - Broad LLM adjudication can bypass local causal authority.
@@ -285,8 +286,8 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; the next viewer increment needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered: rendered reasoning beside world truth** | deployment/publication remains separately controlled |
-| What "sophisticated" means first | **answered: scarce-resource coordination without communication** | the behavior replicated; self-explanatory presentation is the current test |
+| What a viewer actually sees | **answered: `kitchen-flagship-v1.html`, agent reasoning around shared state/action timeline** | artifact exists; deployment/publication remains separately controlled |
+| What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
 ## Refresh and reset triggers
@@ -295,18 +296,18 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Turn one fresh terminal replication into the first self-explanatory flagship
-viewer. Extend the existing run renderer so a person can see order progress,
-held objects, knife ownership, reasoning, intended/committed actions, contention
-and the t17 terminal state in one timeline. The t10 release-for-Ama and t11
-knife takeover must be understandable without project-specific narration.
+Human-review `evidence/renders/kitchen-flagship-v1.html`. The engineering goal
+for this slice is met: a retained replicated service is legible as a standalone
+artifact, and the renderer is read-only and reproducible from v3 evidence.
 
-Do not call a model for this increment. Use the retained v3 replication traces
-as the input and keep the viewer detachable from canonical state.
+If the artifact is accepted, the next choice is whether to authorize showing or
+publishing it, or to request a specific presentation refinement first. Do not
+deploy or publish without that explicit authority. No additional model call is
+needed for either review or presentation refinement.
 
 The historical pre-replication roadmap recorded **$0.123** of model spend. The
 current single-copy observability DB no longer contains that older task history;
-it records **$0.029571** for this session's compatibility probe and replication
-calls. Keep those figures separate rather than replacing the historical lifetime
-number with a falsely lower current-DB total or manually inventing a new
-lifetime total.
+it records **$0.029571** for the compatibility probe and three-run replication
+session. Keep those figures separate rather than replacing the historical
+lifetime number with a falsely lower current-DB total or manually inventing a
+new lifetime total.
