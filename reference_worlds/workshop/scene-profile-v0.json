@@ -37,16 +37,8 @@
       "asset": "worker",
       "accent": "#4f78b8",
       "home": [
-        10,
-        58
-      ],
-      "carry_offset": [
-        7,
-        2
-      ],
-      "carry_spacing": [
-        0,
-        6
+        50.0,
+        78.0
       ]
     }
   },
@@ -54,21 +46,7 @@
     "frame-a": {
       "label": "Chair frame",
       "role": "goal",
-      "rect": [
-        64,
-        25,
-        29,
-        55
-      ],
       "fill": "#8c6c4e",
-      "actor_anchor": [
-        56,
-        46
-      ],
-      "item_anchor": [
-        77,
-        52
-      ],
       "item_layout": {
         "slots": [
           [
@@ -85,26 +63,40 @@
           ]
         ],
         "overflow": "grid"
-      }
+      },
+      "rect": [
+        68.0,
+        25.0,
+        27.0,
+        48.0
+      ],
+      "actor_anchor": [
+        62.0,
+        49.0
+      ],
+      "item_anchor": [
+        81.5,
+        49.0
+      ]
     },
     "parts-rack": {
       "presentation_only": true,
       "label": "Parts & tools",
       "role": "source",
-      "rect": [
-        20,
-        25,
-        30,
-        45
-      ],
       "fill": "#9b7b52",
+      "rect": [
+        5.0,
+        25.0,
+        28.0,
+        45.0
+      ],
       "actor_anchor": [
-        43,
-        46
+        36.0,
+        47.5
       ],
       "item_anchor": [
-        35,
-        46
+        19.0,
+        47.5
       ]
     }
   },
@@ -114,8 +106,8 @@
       "label": "Wrench",
       "portable": true,
       "home": [
-        28,
-        35
+        12.0,
+        40.0
       ]
     },
     "leg-1": {
@@ -123,8 +115,8 @@
       "label": "Chair leg",
       "portable": true,
       "home": [
-        35,
-        34
+        19.0,
+        40.0
       ]
     },
     "leg-2": {
@@ -132,8 +124,8 @@
       "label": "Chair leg",
       "portable": true,
       "home": [
-        42,
-        34
+        26.0,
+        40.0
       ]
     },
     "seat-1": {
@@ -141,8 +133,8 @@
       "label": "Chair seat",
       "portable": true,
       "home": [
-        31,
-        54
+        12.0,
+        55.0
       ]
     },
     "shelf-1": {
@@ -150,8 +142,8 @@
       "label": "Shelf bracket",
       "portable": true,
       "home": [
-        42,
-        54
+        19.0,
+        55.0
       ]
     }
   },
@@ -234,6 +226,24 @@
       "attach",
       "pick_up"
     ],
+    "auto_layout": {
+      "enabled": true,
+      "algorithm": "role-grid-v0",
+      "proposed_geometry": [
+        "actors.mira.home",
+        "entities.leg-1.home",
+        "entities.leg-2.home",
+        "entities.seat-1.home",
+        "entities.shelf-1.home",
+        "entities.wrench-1.home",
+        "stations.frame-a.actor_anchor",
+        "stations.frame-a.item_anchor",
+        "stations.frame-a.rect",
+        "stations.parts-rack.actor_anchor",
+        "stations.parts-rack.item_anchor",
+        "stations.parts-rack.rect"
+      ]
+    },
     "todos": []
   }
 }
