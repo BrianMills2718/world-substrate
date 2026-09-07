@@ -1,0 +1,16 @@
+name: tmp-chat-download-spatial
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kitchen-spatial-replay
+          path: evidence/renders/kitchen-spatial-replay-v1.html
+          retention-days: 1
