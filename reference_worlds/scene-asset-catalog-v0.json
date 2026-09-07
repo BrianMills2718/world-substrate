@@ -1,0 +1,181 @@
+{
+  "schema_version": "world-substrate-scene-asset-catalog/v0",
+  "assets": {
+    "ama": {
+      "kind": "emoji",
+      "value": "\ud83d\udc69\u200d\ud83c\udf73"
+    },
+    "bo": {
+      "kind": "emoji",
+      "value": "\ud83d\udc68\u200d\ud83c\udf73"
+    },
+    "knife": {
+      "kind": "emoji",
+      "value": "\ud83d\udd2a"
+    },
+    "carrot": {
+      "kind": "emoji",
+      "value": "\ud83e\udd55"
+    },
+    "onion": {
+      "kind": "emoji",
+      "value": "\ud83e\uddc5"
+    },
+    "potato": {
+      "kind": "emoji",
+      "value": "\ud83e\udd54"
+    },
+    "fire": {
+      "kind": "emoji",
+      "value": "\ud83d\udd25"
+    },
+    "robinson": {
+      "kind": "emoji",
+      "value": "\ud83e\uddd4"
+    },
+    "friday": {
+      "kind": "emoji",
+      "value": "\ud83e\uddd1"
+    },
+    "pot": {
+      "kind": "emoji",
+      "value": "\ud83c\udffa"
+    },
+    "cup": {
+      "kind": "emoji",
+      "value": "\ud83e\udd64"
+    },
+    "water": {
+      "kind": "emoji",
+      "value": "\ud83d\udca7"
+    }
+  },
+  "world_assets": {
+    "kitchen": [
+      "ama",
+      "bo",
+      "knife",
+      "carrot",
+      "onion",
+      "potato",
+      "fire"
+    ],
+    "castaway": [
+      "robinson",
+      "friday",
+      "pot",
+      "cup",
+      "water",
+      "fire"
+    ]
+  },
+  "entity_bindings": {
+    "ama": {
+      "asset": "ama"
+    },
+    "bo": {
+      "asset": "bo"
+    },
+    "robinson": {
+      "asset": "robinson"
+    },
+    "friday": {
+      "asset": "friday"
+    },
+    "knife": {
+      "asset": "knife"
+    },
+    "clay-pot": {
+      "asset": "pot",
+      "portable": true,
+      "initial_state": "empty"
+    },
+    "cup-robinson": {
+      "asset": "cup",
+      "portable": true,
+      "initial_state": "empty"
+    }
+  },
+  "component_value_bindings": [
+    {
+      "path": "components.ingredient.kind",
+      "state_path": "components.ingredient.stage",
+      "values": {
+        "carrot": {
+          "asset": "carrot",
+          "progress_key": "carrot"
+        },
+        "onion": {
+          "asset": "onion",
+          "progress_key": "onion"
+        },
+        "potato": {
+          "asset": "potato",
+          "progress_key": "potato"
+        }
+      }
+    }
+  ],
+  "category_station_bindings": {
+    "burner": {
+      "role": "workstation",
+      "active_asset": "fire"
+    },
+    "order": {
+      "role": "goal"
+    },
+    "liquid_source": {
+      "role": "source",
+      "active_asset": "water"
+    },
+    "fire": {
+      "role": "workstation",
+      "active_asset": "fire"
+    }
+  },
+  "world_state_styles": {
+    "kitchen": {
+      "raw": {
+        "scale": 1.0,
+        "rotate_deg": 0,
+        "brightness": 1.0,
+        "saturation": 1.0
+      },
+      "chopped": {
+        "scale": 0.85,
+        "rotate_deg": -8,
+        "brightness": 1.0,
+        "saturation": 1.0
+      },
+      "cooked": {
+        "scale": 1.0,
+        "rotate_deg": 0,
+        "brightness": 0.85,
+        "saturation": 0.65
+      },
+      "plated": {
+        "scale": 0.9,
+        "rotate_deg": 0,
+        "brightness": 1.0,
+        "saturation": 1.0
+      }
+    },
+    "castaway": {
+      "empty": {
+        "scale": 1.0,
+        "brightness": 1.0,
+        "saturation": 1.0
+      },
+      "filled": {
+        "scale": 1.08,
+        "brightness": 1.0,
+        "saturation": 1.15
+      },
+      "used": {
+        "scale": 1.0,
+        "brightness": 0.9,
+        "saturation": 0.85
+      }
+    }
+  }
+}

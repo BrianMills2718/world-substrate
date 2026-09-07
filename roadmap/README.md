@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; generic world-to-replay scene profile v0 proven on two real worlds
-**Last outcome-bearing result:** `scripts/render_scene_replay.py` plus `world-substrate-scene-profile/v0` now renders two real reference worlds without world-specific branches. Kitchen contributes declarative geometry/assets/action projection and retains its flagship replay. Castaway contributes a separate profile with `fill`/`drink`, pool/camp/fire geometry, different actors/assets and actor-health progress; an 8-turn scripted trace renders through the same engine. A synthetic lab profile still covers a custom `scan` action and image-asset embedding.
+**Stage:** prototype complete; scene-profile bootstrapper implemented on two real-world fixtures
+**Last outcome-bearing result:** `scripts/bootstrap_scene_profile.py` now derives the safe portion of `scene-profile/v0` from a reference-world model, retained v3 trace and explicit asset catalog: trace actors, visual entities, initial actor ownership, canonical station candidates, actor-to-goal links, asset/state bindings and candidate action fields. It does not invent coordinates or ambiguous motion/state semantics. With presentation-only review overlays, the bootstrap reproduces the existing Kitchen and Castaway profiles exactly apart from provenance; their per-world review JSON is about 36% and 33% smaller than the previous full profiles. The generic renderer is unchanged.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** reduce manual scene-profile authoring by deriving safe defaults/skeletons from world entities, categories, semantic/action metadata and an asset catalog; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** prove the bootstrap path greenfield on a world that has no existing scene profile to reverse-engineer; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -180,25 +180,31 @@ single-file replay, declarative state appearance, station activation, actor and
 item attachment, and trace-derived milestone labels. Scene geometry remains
 presentation-only unless coordinates are part of canonical world state.
 
-**What remains manual.** A human/agent still authors the profile: station
-geometry, asset bindings, which action field names a visual target, and how an
-action changes presentation state. That is now data rather than code, but it is
-not yet inferred from world categories, semantic bindings or relationship
-metadata.
+**The bootstrap path now exists.** `bootstrap_scene_profile.py` safely infers
+trace actors, visual entities, initial `actor:*` ownership, category-backed
+canonical stations, actor-to-goal links, asset/state bindings and action fields
+whose values consistently name visual entities or stations. An unresolved draft
+records geometry and action-projection TODOs instead of inventing them. A small
+review overlay resolves those presentation choices; `--require-complete` then
+produces a profile accepted by the unchanged generic renderer.
 
-**Next increment: bootstrap the profile.** Add a reviewable profile-authoring
-step that can inspect a reference-world model plus an asset catalog and emit a
-scene-profile skeleton: actors/entities, labels/categories, initial ownership,
-known workstations/containers, and candidate action projections. Ambiguous
-geometry or action visualization must remain explicit TODOs rather than being
-silently invented. Generated profiles must still pass the same loader and be
-editable before replay generation.
+Kitchen and Castaway are the acceptance fixtures. Their reviewed bootstrap output
+matches the existing scene profiles exactly apart from bootstrap provenance, while
+the per-world review payload is about 64%/67% of the former full profile payload.
+The shared asset catalog is an explicit input, not a source of causal facts.
+
+**Next increment: greenfield bootstrap.** Apply the bootstrapper to a real world
+that has no existing scene profile to copy—prefer the workshop if a no-spend v3
+trace can be produced through the current policy/runner seam. Start from the
+world model + trace + asset catalog, inspect the emitted TODOs, and author only
+the minimal review overlay needed to produce a useful replay. That measures
+whether the reduction survives outside profiles whose answers were already known.
 
 **What a fresh agent should do first.** All cost nothing:
 
-1. Compare `reference_worlds/kitchen/scene-profile-v0.json` and `reference_worlds/castaway/scene-profile-v0.json`.
-2. Open both generated replays and verify the same renderer supports materially different scenes/actions.
-3. Read `docs/contracts/scene-profile-v0.md` before changing the profile wire shape.
+1. Compare each `scene-review-v0.json` with its compiled `scene-profile-v0.json`.
+2. Run `bootstrap_scene_profile.py` with `--require-complete` for Kitchen or Castaway and verify the assembled core matches the committed profile.
+3. Read `docs/contracts/scene-profile-v0.md` before changing the profile or bootstrap wire shape.
 
 **What not to do.** Do not let profile synthesis invent causal facts, promote
 illustrative coordinates into world truth, or add arbitrary executable hooks to
@@ -266,7 +272,8 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
-| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, kitchen + Castaway scene profiles, lab tests | v0 is 2D and contested-run/v3-oriented; profile authoring is still explicit | **established on two real worlds** |
+| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, kitchen + Castaway scene profiles, lab tests | v0 is 2D and contested-run/v3-oriented | **established on two real worlds** |
+| Scene-profile bootstrapper reduces review-only authoring | `bootstrap_scene_profile.py`, shared asset catalog, Kitchen/Castaway review overlays, [bootstrap audit](../docs/audits/scene-profile-bootstrap.md) and tests | acceptance fixtures had pre-existing full profiles; greenfield proof pending | **established on two fixtures; ~36%/~33% per-world payload reduction** |
 | Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
 | Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
@@ -291,7 +298,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered for kitchen; generic scene profile v0 separates trace truth from visual geometry/assets and now renders Castaway too** | profile bootstrapping is the remaining automation gap; deployment/publication remains separately controlled |
+| What a viewer actually sees | **answered for kitchen; generic scene profile v0 separates trace truth from visual geometry/assets and now renders Castaway too** | bootstrapping exists; greenfield profile authoring is the remaining automation proof; deployment/publication remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -301,14 +308,14 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Build a **scene-profile bootstrapper** that reads a reference-world model and an
-asset catalog and emits a reviewable `world-substrate-scene-profile/v0`
-skeleton. It may safely infer entity ids, labels/categories, actor identity,
-initial ownership attachments and obvious station candidates. It must leave
-illustrative geometry and ambiguous action-to-motion mappings explicit rather
-than fabricating them. Use kitchen and Castaway as acceptance fixtures: the
-bootstrapper should materially reduce their hand-authored profile content while
-the existing generic renderer remains unchanged.
+Use the bootstrapper **greenfield** on a real reference world that has no
+existing scene profile to copy. Prefer the workshop if a no-spend
+`world-substrate-contested-run/v3` trace can be produced through the existing
+policy/runner seam without adding world-specific replay code. Generate the draft
+from the world model + trace + asset catalog, review its explicit TODOs, add the
+smallest presentation overlay that makes the replay legible, and record the
+manual-review fraction. Do not change `render_scene_replay.py` merely to fit the
+new world; a required renderer branch is a portability finding.
 
 No model call, deployment or publication is required for this gate.
 

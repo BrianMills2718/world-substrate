@@ -1,0 +1,284 @@
+{
+  "scene_id": "kitchen-spatial-v1",
+  "title": "Kitchen replay: two cooks, one knife",
+  "subtitle": "A graphical replay of the retained service. The kitchen geometry is illustrative; actions, ownership, preparation state, order progress, and reasoning come from the recorded trace.",
+  "note": "Autoplays the retained service. The main event is the bottleneck release and takeover after the first order completes.",
+  "autoplay_seconds": 2.3,
+  "scene": {
+    "aspect_ratio": "16 / 9",
+    "background": "#d8cdb9",
+    "grid_color": "#bcae9655",
+    "grid_size_px": 64,
+    "shell_background": "#171b1d",
+    "decor": [
+      {
+        "kind": "rect",
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 17,
+        "fill": "#d8b988",
+        "border_bottom": "#8d6846"
+      }
+    ]
+  },
+  "actors": {
+    "ama": {
+      "accent": "#5f7fdb",
+      "home": [
+        13,
+        53
+      ],
+      "carry_offset": [
+        -7,
+        3
+      ],
+      "carry_spacing": [
+        0,
+        6
+      ]
+    },
+    "bo": {
+      "accent": "#d96b5f",
+      "home": [
+        79,
+        53
+      ],
+      "carry_offset": [
+        8,
+        3
+      ],
+      "carry_spacing": [
+        0,
+        6
+      ]
+    }
+  },
+  "stations": {
+    "island": {
+      "presentation_only": true,
+      "label": "Prep island",
+      "role": "surface",
+      "rect": [
+        31,
+        38,
+        38,
+        25
+      ],
+      "fill": "#a96f42",
+      "actor_anchors": {
+        "ama": [
+          27,
+          43
+        ],
+        "bo": [
+          67,
+          43
+        ]
+      },
+      "item_anchor": [
+        49,
+        48
+      ]
+    },
+    "pantry": {
+      "presentation_only": true,
+      "label": "Pantry",
+      "role": "source",
+      "rect": [
+        39,
+        17,
+        22,
+        12
+      ],
+      "fill": "#b9875b",
+      "item_anchor": [
+        50,
+        23
+      ]
+    },
+    "burner-1": {
+      "rect": [
+        39,
+        4,
+        9,
+        12
+      ],
+      "fill": "#565b5d",
+      "actor_anchor": [
+        30,
+        17
+      ],
+      "item_anchor": [
+        43.5,
+        10
+      ]
+    },
+    "burner-2": {
+      "rect": [
+        52,
+        4,
+        9,
+        12
+      ],
+      "fill": "#565b5d",
+      "actor_anchor": [
+        63,
+        17
+      ],
+      "item_anchor": [
+        56.5,
+        10
+      ]
+    },
+    "order-stew": {
+      "label": "Ama \u00b7 stew",
+      "rect": [
+        4,
+        73,
+        22,
+        21
+      ],
+      "fill": "#e9dfc9",
+      "actor_anchor": [
+        17,
+        70
+      ],
+      "item_anchor": [
+        15,
+        80
+      ]
+    },
+    "order-hash": {
+      "label": "Bo \u00b7 hash",
+      "rect": [
+        74,
+        73,
+        22,
+        21
+      ],
+      "fill": "#e9dfc9",
+      "actor_anchor": [
+        80,
+        70
+      ],
+      "item_anchor": [
+        80,
+        80
+      ]
+    }
+  },
+  "entities": {
+    "knife": {
+      "home": [
+        49,
+        48
+      ],
+      "label": "knife"
+    },
+    "carrot-1": {
+      "home": [
+        43,
+        23
+      ],
+      "label": "carrot"
+    },
+    "potato-1": {
+      "home": [
+        54,
+        23
+      ],
+      "label": "potato"
+    },
+    "onion-1": {
+      "home": [
+        47,
+        23
+      ],
+      "label": "onion 1"
+    },
+    "onion-2": {
+      "home": [
+        50,
+        23
+      ],
+      "label": "onion 2"
+    }
+  },
+  "action_visuals": {
+    "take": {
+      "actor_target": {
+        "station": "island"
+      },
+      "ownership": "take",
+      "clear_item_station": true
+    },
+    "put_down": {
+      "actor_target": {
+        "station": "island"
+      },
+      "ownership": "release",
+      "item_target": {
+        "station": "island",
+        "unless_state": [
+          "plated"
+        ]
+      }
+    },
+    "chop": {
+      "actor_target": {
+        "station": "island"
+      },
+      "set_state": "chopped"
+    },
+    "cook": {
+      "activate_station_from": "burner",
+      "set_state": "cooked",
+      "label_template": "cook {item} on {burner}"
+    },
+    "plate": {
+      "set_state": "plated",
+      "item_target": {
+        "action_field": "order"
+      },
+      "label_template": "plate {item} on {order}"
+    }
+  },
+  "moment_rules": [
+    {
+      "id": "contention",
+      "when": "retry_unavailable",
+      "label": "\u26a1 knife contention"
+    },
+    {
+      "id": "handoff",
+      "when": "filled_release",
+      "action_kind": "put_down",
+      "item": "knife",
+      "label": "\ud83e\udd1d knife released for Ama"
+    },
+    {
+      "id": "takeover",
+      "when": "take_after_release",
+      "action_kind": "take",
+      "item": "knife",
+      "label": "\ud83d\udd2a Ama takes the knife"
+    },
+    {
+      "id": "terminal",
+      "when": "all_progress_filled",
+      "label": "\u2713 service complete",
+      "terminal": true
+    }
+  ],
+  "station_precedence_states": [
+    "plated"
+  ],
+  "reviewed_actions": [
+    "chop",
+    "cook",
+    "plate",
+    "put_down",
+    "take"
+  ]
+}
