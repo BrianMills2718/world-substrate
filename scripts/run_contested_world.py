@@ -201,6 +201,21 @@ def _recent_for(engine, actor: str, seen: dict) -> list[str]:
     return lines[-5:]
 
 
+def _referent(action: dict) -> str:
+    """The one entity an action names, e.g. a vessel, item, or burner id.
+
+    Same fix as `policy.describe_action`: render whatever field the envelope
+    actually carries instead of a hardcoded Castaway-only key. This display
+    note kept `w.get("vessel", "?")`, so every kitchen action -- which names
+    `item`, `burner`, or `order` instead -- printed "from ?" regardless of
+    what was actually contested.
+    """
+    for key, value in action.items():
+        if key not in {"actor", "kind", "base_revision", "controller"}:
+            return str(value)
+    return "?"
+
+
 def contested_run(turns: int, seats: dict | None = None, world: str = "castaway") -> dict:
     """Both actors decide from one revision; the loser re-decides and retries.
 
@@ -487,7 +502,7 @@ def main() -> int:
                     else "and nothing was left"
                 )
                 note = (f"  <<< wanted {w.get('kind')} {w.get('volume_ml', '')}"
-                        f" from {w.get('vessel', '?')}, {settled}")
+                        f" from {_referent(w)}, {settled}")
             elif a.get("retried"):
                 note = "  (retried, same choice still available)"
             print(f"     {actor:9} {wanted:6} -> {did:6} {a['status']:18}{note}")
