@@ -24,38 +24,12 @@
   },
   "actors": {
     "mira": {
-      "accent": "#4f78b8",
-      "home": [
-        10,
-        58
-      ],
-      "carry_offset": [
-        7,
-        2
-      ],
-      "carry_spacing": [
-        0,
-        6
-      ]
+      "accent": "#4f78b8"
     }
   },
   "stations": {
     "frame-a": {
-      "rect": [
-        64,
-        25,
-        29,
-        55
-      ],
       "fill": "#8c6c4e",
-      "actor_anchor": [
-        56,
-        46
-      ],
-      "item_anchor": [
-        77,
-        52
-      ],
       "item_layout": {
         "slots": [
           [
@@ -78,53 +52,7 @@
       "presentation_only": true,
       "label": "Parts & tools",
       "role": "source",
-      "rect": [
-        20,
-        25,
-        30,
-        45
-      ],
-      "fill": "#9b7b52",
-      "actor_anchor": [
-        43,
-        46
-      ],
-      "item_anchor": [
-        35,
-        46
-      ]
-    }
-  },
-  "entities": {
-    "wrench-1": {
-      "home": [
-        28,
-        35
-      ]
-    },
-    "leg-1": {
-      "home": [
-        35,
-        34
-      ]
-    },
-    "leg-2": {
-      "home": [
-        42,
-        34
-      ]
-    },
-    "seat-1": {
-      "home": [
-        31,
-        54
-      ]
-    },
-    "shelf-1": {
-      "home": [
-        42,
-        54
-      ]
+      "fill": "#9b7b52"
     }
   },
   "action_visuals": {

@@ -80,8 +80,11 @@ against a 2,668-byte profile core: **63.7% current manual-review fraction**.
 The original 62.6% figure remains the greenfield baseline before the finding was
 closed.
 
-The remaining major automation cost is therefore illustrative scene geometry,
-not multi-item placement.
+The remaining major automation cost at that point was illustrative scene
+geometry, not multi-item placement. A subsequent [auto-layout
+audit](scene-profile-auto-layout.md) closed most of that geometry review: the
+current Workshop review fraction is **50.9%**, with all 12 proposed geometry
+paths recorded as presentation-only bootstrap provenance.
 
 ## Boundary preserved
 

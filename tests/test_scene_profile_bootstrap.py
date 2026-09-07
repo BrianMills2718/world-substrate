@@ -61,6 +61,33 @@ class BootstrapOnlyInfersReviewableFacts(unittest.TestCase):
         self.assertEqual(p["bootstrap"]["inferred_action_fields"]["fill"], {"item_field": "vessel", "station_field": "source"})
         self.assertEqual(p["bootstrap"]["inferred_action_fields"]["drink"], {"item_field": "vessel", "station_field": None})
 
+
+    def test_auto_layout_proposes_geometry_but_not_action_semantics(self):
+        f = FIXTURES["kitchen"]
+        p = bootstrap.bootstrap_profile(
+            load(f["model"]), load(f["trace"]), CATALOG,
+            world_model_ref=f["model_ref"], auto_layout=True,
+        )
+        self.assertIsInstance(p["actors"]["ama"].get("home"), list)
+        self.assertIsInstance(p["stations"]["burner-1"].get("rect"), list)
+        self.assertIsInstance(p["entities"]["knife"].get("home"), list)
+        kinds = {todo["kind"] for todo in p["bootstrap"]["todos"]}
+        self.assertNotIn("geometry", kinds)
+        self.assertIn("action_projection", kinds)
+        self.assertTrue(p["bootstrap"]["auto_layout"]["enabled"])
+        self.assertIn("actors.ama.home", p["bootstrap"]["auto_layout"]["proposed_geometry"])
+
+    def test_review_geometry_overrides_auto_layout(self):
+        f = FIXTURES["kitchen"]
+        p = bootstrap.bootstrap_profile(
+            load(f["model"]), load(f["trace"]), CATALOG,
+            world_model_ref=f["model_ref"],
+            review={"actors": {"ama": {"home": [7, 9]}}},
+            auto_layout=True,
+        )
+        self.assertEqual(p["actors"]["ama"]["home"], [7, 9])
+        self.assertNotIn("actors.ama.home", p["bootstrap"]["auto_layout"]["proposed_geometry"])
+
     def test_unreviewed_bootstrap_does_not_invent_geometry_or_motion(self):
         p = self.profile("kitchen")
         self.assertNotIn("home", p["actors"]["ama"])

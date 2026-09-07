@@ -172,9 +172,32 @@ python scripts/bootstrap_scene_profile.py <world-model.json> <trace.json> \
 ```
 
 `--require-complete` refuses unresolved geometry or unreviewed action
-projection. The assembled result then passes the **unchanged** generic scene
-profile loader and renderer. The review overlay carries no causal authority; it
-only resolves illustrative presentation choices.
+projection. The assembled result then passes the generic scene profile loader
+and renderer. The review overlay carries no causal authority; it only resolves
+illustrative presentation choices.
+
+### Optional presentation auto-layout
+
+`--auto-layout` fills missing actor homes, station rectangles/anchors, and
+entity homes with deterministic `role-grid-v0` presentation geometry. It runs
+after the review overlay is merged and never overwrites reviewed coordinates.
+Every generated path is recorded under
+`bootstrap.auto_layout.proposed_geometry`; `bootstrap.auto_layout.algorithm`
+records the layout version. These coordinates are illustrative and must not be
+read back into canonical world state.
+
+Auto-layout uses already inferred/reviewed scene roles and action targets. It
+does **not** approve action motion/state semantics, so unreviewed action
+projection remains a bootstrap TODO even when all geometry is proposed.
+
+The CLI form is:
+
+```bash
+python scripts/bootstrap_scene_profile.py <world-model.json> <trace.json> \
+  --catalog reference_worlds/scene-asset-catalog-v0.json \
+  --review <scene-review-v0.json> --auto-layout --require-complete \
+  --output <scene-profile-v0.json>
+```
 
 The asset catalog uses
 `world-substrate-scene-asset-catalog/v0`. It is an explicit input that maps
@@ -213,8 +236,7 @@ v0 is intentionally small:
 - the generic renderer has a simple browser presentation, not a game engine;
 - cross-world reuse is proven on Kitchen, Castaway, greenfield Workshop, plus a synthetic lab;
 - station item layout supports explicit relative slots plus deterministic grid/anchor overflow, but does not infer semantic assembly geometry;
-- profile bootstrapping now infers identity/asset/station/action-field structure, but
-  illustrative geometry and ambiguous action motion still require review;
+- profile bootstrapping infers identity/asset/station/action-field structure; optional auto-layout can propose missing illustrative geometry, while ambiguous action motion/state still requires review;
 - the bootstrapper does not yet consume the full semantic-binding graph to infer
   richer action animation safely.
 

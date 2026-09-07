@@ -60,10 +60,15 @@ class WorkshopGreenfieldSceneProof(unittest.TestCase):
 
     def test_reviewed_bootstrap_is_complete_and_renders_without_domain_branch(self):
         assembled = bootstrap.bootstrap_profile(
-            load(MODEL), load(TRACE), load(CATALOG), world_model_ref="bench-v0.json", review=load(REVIEW)
+            load(MODEL), load(TRACE), load(CATALOG), world_model_ref="bench-v0.json",
+            review=load(REVIEW), auto_layout=True,
         )
         self.assertTrue(bootstrap.is_complete(assembled))
         self.assertEqual(assembled, load(PROFILE))
+        proposed = assembled["bootstrap"]["auto_layout"]["proposed_geometry"]
+        self.assertIn("actors.mira.home", proposed)
+        self.assertIn("stations.frame-a.rect", proposed)
+        self.assertIn("entities.leg-1.home", proposed)
         loaded, world_entities = renderer.load_scene_profile(PROFILE)
         frames = renderer.build_frames(load(TRACE), loaded, world_entities)
         self.assertEqual(frames[-1]["items"]["leg-1"]["placed_at"], "frame-a")
@@ -72,9 +77,9 @@ class WorkshopGreenfieldSceneProof(unittest.TestCase):
         positions = frames[-1]["placed_positions"]
         self.assertEqual(set(positions), {"leg-1", "leg-2", "seat-1"})
         self.assertEqual(len({tuple(point) for point in positions.values()}), 3)
-        self.assertEqual(positions["leg-1"], [72.12, 60.2])
-        self.assertEqual(positions["leg-2"], [84.88, 60.2])
-        self.assertEqual(positions["seat-1"], [78.5, 45.9])
+        self.assertEqual(positions["leg-1"], [75.56, 55.72])
+        self.assertEqual(positions["leg-2"], [87.44, 55.72])
+        self.assertEqual(positions["seat-1"], [81.5, 43.24])
         source = (REPO / "scripts/render_scene_replay.py").read_text().lower()
         for token in ("workshop", "mira", "frame-a", "wrench-1"):
             self.assertNotIn(token, source)

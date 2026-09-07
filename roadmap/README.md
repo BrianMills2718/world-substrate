@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; greenfield scene bootstrap plus generic multi-item station layout implemented
-**Last outcome-bearing result:** the Workshop greenfield overlap finding is closed generically. `scene-profile/v0` stations may declare relative `item_layout.slots` with deterministic grid/anchor overflow. Workshop turn 7 now places `leg-1`, `leg-2`, and `seat-1` at three distinct positions inside `frame-a`; the renderer contains no Workshop ids. Kitchen and Castaway, which do not opt in, still regenerate byte-for-byte identically. The original greenfield manual-review baseline was 62.6%; the current Workshop review overlay is 63.7% after adding the slot declaration.
+**Stage:** prototype complete; greenfield scene bootstrap, multi-item layout, and presentation auto-layout implemented
+**Last outcome-bearing result:** optional `bootstrap_scene_profile.py --auto-layout` now proposes missing actor homes, station rectangles/anchors, and loose-entity homes using deterministic `role-grid-v0` presentation geometry after review overrides are applied. Workshop records 12 proposed geometry paths in bootstrap provenance and remains visually legible with its generic chair-part slots. Its manual-review fraction fell from 63.7% after slot closure to **50.9%** now (62.6% original greenfield baseline). Kitchen and Castaway committed replays remain byte-for-byte unchanged.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** reduce the remaining manual scene-geometry review with deterministic presentation-only auto-layout from inferred roles/relationships; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** reduce reviewed action projection using explicit reusable semantic/action presentation bindings, without granting lexical action names causal authority; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -168,38 +168,38 @@ observable attempt or trigger
 
 ### Active slice: generate replay scenes from declarations, not bespoke code
 
-The generic renderer covers Kitchen, Castaway, and Workshop. Workshop remains the
-important greenfield proof: its world/profile relationship was not known before
-the bootstrap test. The initial proof left one renderer portability finding —
-three attached chair parts shared one station item anchor.
+The replay pipeline now covers three real worlds and has crossed three reusable
+presentation gates: greenfield profile bootstrapping, multi-item station layout,
+and deterministic optional auto-layout. Workshop remains the measurement fixture.
 
-That finding is now closed with a generic presentation primitive. A station may
-declare relative `item_layout.slots`; extra placed entities use deterministic
-grid or anchor overflow. Workshop's two legs and seat occupy three distinct
-positions in `frame-a`. No Workshop id appears in renderer code, and Kitchen and
-Castaway output remains byte-for-byte unchanged when they omit the option.
+With `--auto-layout`, reviewed coordinates win and only missing geometry is
+proposed. `role-grid-v0` currently supplies Mira's home, two station rectangles,
+four station anchors, and five loose-entity homes — **12 paths total**, all
+listed under `bootstrap.auto_layout.proposed_geometry`. The Workshop review
+overlay is 1,365 compact bytes against a 2,680-byte profile core (**50.9%**),
+down from 63.7% after slot closure.
 
-The Workshop review overlay is now 1,699 compact bytes against a 2,668-byte
-profile core (**63.7%**). The original greenfield baseline was 62.6%; the small
-increase is the explicit three-slot layout that closes the observed overlap.
+Kitchen and Castaway do not opt into auto-layout in their committed profiles and
+continue to regenerate byte-for-byte identically. Geometry remains illustrative
+and never feeds mechanics.
 
-**Next increment: presentation auto-layout.** The majority of remaining review
-content is actor homes, station rectangles/anchors, and loose-entity homes. Add
-an optional deterministic bootstrap layout pass that can propose those
-illustrative coordinates from already inferred actor/station/entity roles and
-relationships. Generated coordinates must remain reviewable presentation data,
-never world truth. Use Workshop as the greenfield measurement and preserve
-manual overrides plus Kitchen/Castaway renderer behavior.
+**Next increment: explicit action-presentation bindings.** The largest remaining
+structural review block is `action_visuals`: ownership take/release, station
+targets, and item state/placement. Add a reusable declaration seam (prefer the
+shared scene asset/presentation catalog or reviewed semantic bindings) that can
+supply common projections such as pickup and attach. Do not infer those effects
+merely from English-like action names. Workshop should lose reviewed action
+boilerplate while preserving the same trace and renderer output semantics.
 
 **What a fresh agent should do first.** All cost nothing:
 
-1. Open Workshop turn 7 and verify the two legs and seat are now spatially distinct.
-2. Compare `scene-review-v0.json` with the compiled Workshop profile to identify geometry-only review fields.
-3. Read the scene-profile authority section before adding any auto-layout proposal.
+1. Inspect `bootstrap.auto_layout.proposed_geometry` in the Workshop profile.
+2. Compare Workshop `action_visuals` in the review overlay against the inferred `item_field`/`station_field` metadata.
+3. Reuse only explicit declared action semantics; treat ambiguity as a TODO.
 
-**What not to do.** Do not infer causal coordinates, add world ids to renderer
-logic, or treat auto-layout as mechanics. Deployment/publication remains a
-separate authority boundary.
+**What not to do.** Do not let presentation bindings acquire mechanical
+authority, infer effects from lexical names alone, or add Workshop ids to shared
+code. Deployment/publication remains separately controlled.
 
 ## Open obligations
 
@@ -264,7 +264,7 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
 | Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, Kitchen + Castaway + Workshop profiles, lab tests | v0 is 2D and v3-envelope-oriented | **established on three real worlds; multi-item station layout closed generically** |
-| Scene-profile bootstrapper reduces review-only authoring | `bootstrap_scene_profile.py`, shared asset catalog, Kitchen/Castaway backfit + Workshop greenfield audit/tests | illustrative geometry still needs review | **greenfield established; Workshop 62.6% baseline / 63.7% current review fraction** |
+| Scene-profile bootstrapper reduces review-only authoring | `bootstrap_scene_profile.py`, shared asset catalog, Workshop greenfield + auto-layout audits/tests | auto-layout is presentation-only; action projection remains reviewed | **greenfield established; Workshop 62.6% baseline / 50.9% current review fraction** |
 | Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
 | Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
@@ -289,7 +289,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered for kitchen; generic scene profile v0 renders Kitchen, Castaway, and greenfield Workshop with optional multi-item station slots** | presentation auto-layout is the remaining automation gap; deployment/publication remains separately controlled |
+| What a viewer actually sees | **answered for kitchen; generic scene profile v0 renders Kitchen, Castaway, and greenfield Workshop with item slots + optional auto-layout** | explicit action-presentation binding is the remaining structural automation gap; deployment/publication remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -299,13 +299,14 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Add an optional **deterministic presentation auto-layout** pass to scene-profile
-bootstrapping. It may propose actor homes, station rectangles/anchors, and
-loose-entity homes from already inferred scene roles/relationships, but must
-mark them as illustrative and keep review overrides authoritative. Workshop is
-the measurement fixture: reduce the geometry portion of its review overlay while
-producing a legible replay and without changing Workshop mechanics or adding
-world ids to the renderer. Keep Kitchen/Castaway regressions green.
+Add **explicit reusable action-presentation bindings** that the bootstrapper can
+apply after inferring action entity/station fields. Use Workshop `pick_up` and
+`attach` as the first measurement: reduce their review-overlay boilerplate for
+ownership, target motion, and attached-state placement without changing the
+trace or mechanics. Bindings must be explicit shared presentation declarations
+(or grounded reviewed semantic metadata), never effects guessed from action
+names. Preserve unresolved cases as TODOs and keep Kitchen/Castaway regressions
+green.
 
 No model call, deployment or publication is required for this gate.
 

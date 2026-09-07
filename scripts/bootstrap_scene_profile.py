@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Bootstrap a reviewable scene profile from world facts, a trace and an asset catalog.
 
-The bootstrapper deliberately stops where presentation becomes a choice. It can
+The bootstrapper separates represented facts from presentation proposals. It can
 infer entity identity, actors, initial ownership, asset bindings, portable
-objects, canonical station candidates and some action-field structure. It does
-not invent coordinates or claim ambiguous action motion as world truth.
+objects, canonical station candidates and some action-field structure. Optional
+auto-layout may propose deterministic screen geometry, but those coordinates are
+recorded as illustrative bootstrap provenance and review overrides always win.
 """
 from __future__ import annotations
 
@@ -113,6 +114,166 @@ def _initial_owner(entity: dict[str, Any]) -> str | None:
     return None
 
 
+
+_AUTO_LAYOUT_ZONES: dict[str, tuple[float, float, float, float]] = {
+    "source": (5.0, 25.0, 28.0, 45.0),
+    "workstation": (36.0, 20.0, 28.0, 22.0),
+    "surface": (36.0, 43.0, 28.0, 25.0),
+    "goal": (68.0, 25.0, 27.0, 48.0),
+    "default": (36.0, 43.0, 28.0, 25.0),
+}
+
+
+def _grid_rects(zone: tuple[float, float, float, float], count: int) -> list[list[float]]:
+    if count <= 0:
+        return []
+    x, y, width, height = zone
+    columns = 1 if count == 1 else min(2, count)
+    rows = (count + columns - 1) // columns
+    gap_x = 3.0 if columns > 1 else 0.0
+    gap_y = 3.0 if rows > 1 else 0.0
+    cell_w = (width - gap_x * (columns - 1)) / columns
+    cell_h = (height - gap_y * (rows - 1)) / rows
+    result = []
+    for index in range(count):
+        row, column = divmod(index, columns)
+        result.append([
+            round(x + column * (cell_w + gap_x), 2),
+            round(y + row * (cell_h + gap_y), 2),
+            round(cell_w, 2),
+            round(cell_h, 2),
+        ])
+    return result
+
+
+def _station_default_anchor(station: dict[str, Any]) -> list[float]:
+    x, y, width, height = station["rect"]
+    role = str(station.get("role") or "default")
+    if role == "source":
+        point = [x + width + 3.0, y + height / 2]
+    elif role == "goal":
+        point = [x - 6.0, y + height / 2]
+    elif role == "workstation":
+        point = [x + width / 2, y + height + 4.0]
+    else:
+        point = [x + width / 2, y + height / 2]
+    return [round(max(1.0, min(95.0, value)), 2) for value in point]
+
+
+def _interior_points(rect: list[float], count: int) -> list[list[float]]:
+    if count <= 0:
+        return []
+    x, y, width, height = rect
+    columns = min(3, count)
+    rows = (count + columns - 1) // columns
+    points = []
+    for index in range(count):
+        row, column = divmod(index, columns)
+        rel_x = (column + 1) / (columns + 1)
+        rel_y = (row + 1) / (rows + 1)
+        points.append([round(x + width * rel_x, 2), round(y + height * rel_y, 2)])
+    return points
+
+
+def _action_item_station_hints(
+    trace: dict[str, Any], profile: dict[str, Any]
+) -> dict[str, str]:
+    """Return first presentation station implied by reviewed action projection."""
+    hints: dict[str, str] = {}
+    for turn in trace.get("transcript") or []:
+        for record in (turn.get("actors") or {}).values():
+            action = record.get("did") if isinstance(record, dict) else None
+            if not isinstance(action, dict):
+                continue
+            visual = profile.get("action_visuals", {}).get(action.get("kind"))
+            if not isinstance(visual, dict):
+                continue
+            item_field = visual.get("item_field")
+            item = action.get(item_field) if isinstance(item_field, str) else None
+            if not isinstance(item, str) or item in hints:
+                continue
+            target = visual.get("actor_target")
+            station = target.get("station") if isinstance(target, dict) else None
+            if not isinstance(station, str):
+                action_field = target.get("action_field") if isinstance(target, dict) else None
+                value = action.get(action_field) if isinstance(action_field, str) else None
+                station = value if isinstance(value, str) else None
+            if isinstance(station, str) and station in profile.get("stations", {}):
+                hints[item] = station
+    return hints
+
+
+def _apply_auto_layout(
+    profile: dict[str, Any], trace: dict[str, Any], inferred_owners: dict[str, str]
+) -> list[str]:
+    """Fill missing illustrative geometry deterministically; never overwrite review."""
+    proposed: list[str] = []
+    actors = profile.get("actors") or {}
+    actor_ids = list(actors)
+    if actor_ids:
+        if len(actor_ids) == 1:
+            actor_xs = [50.0]
+        else:
+            actor_xs = [20.0 + 60.0 * i / (len(actor_ids) - 1) for i in range(len(actor_ids))]
+        for actor_id, x in zip(actor_ids, actor_xs, strict=True):
+            row = actors[actor_id]
+            if not isinstance(row.get("home"), list):
+                row["home"] = [round(x, 2), 78.0]
+                proposed.append(f"actors.{actor_id}.home")
+
+    stations = profile.get("stations") or {}
+    by_role: dict[str, list[str]] = {}
+    for station_id, station in stations.items():
+        if not isinstance(station.get("rect"), list):
+            by_role.setdefault(str(station.get("role") or "default"), []).append(station_id)
+    for role, station_ids in by_role.items():
+        zone = _AUTO_LAYOUT_ZONES.get(role, _AUTO_LAYOUT_ZONES["default"])
+        for station_id, rect in zip(station_ids, _grid_rects(zone, len(station_ids)), strict=True):
+            stations[station_id]["rect"] = rect
+            proposed.append(f"stations.{station_id}.rect")
+
+    for station_id, station in stations.items():
+        if not isinstance(station.get("rect"), list):
+            continue
+        if not isinstance(station.get("actor_anchor"), list) and not isinstance(station.get("actor_anchors"), dict):
+            station["actor_anchor"] = _station_default_anchor(station)
+            proposed.append(f"stations.{station_id}.actor_anchor")
+        if not isinstance(station.get("item_anchor"), list):
+            x, y, width, height = station["rect"]
+            station["item_anchor"] = [round(x + width / 2, 2), round(y + height / 2, 2)]
+            proposed.append(f"stations.{station_id}.item_anchor")
+
+    entities = profile.get("entities") or {}
+    item_hints = _action_item_station_hints(trace, profile)
+    source_stations = [
+        station_id for station_id, station in stations.items()
+        if station.get("role") in {"source", "surface"}
+    ]
+    fallback_station = source_stations[0] if source_stations else None
+    groups: dict[str, list[str]] = {}
+    for entity_id, entity in entities.items():
+        if isinstance(entity.get("home"), list):
+            continue
+        owner = inferred_owners.get(entity_id)
+        if owner in actors:
+            entity["home"] = list(actors[owner]["home"])
+            proposed.append(f"entities.{entity_id}.home")
+            continue
+        station_id = item_hints.get(entity_id) or fallback_station
+        if station_id in stations:
+            groups.setdefault(str(station_id), []).append(entity_id)
+        else:
+            groups.setdefault("__loose__", []).append(entity_id)
+    for station_id, entity_ids in groups.items():
+        if station_id == "__loose__":
+            points = _interior_points([35.0, 48.0, 30.0, 20.0], len(entity_ids))
+        else:
+            points = _interior_points(stations[station_id]["rect"], len(entity_ids))
+        for entity_id, point in zip(entity_ids, points, strict=True):
+            entities[entity_id]["home"] = point
+            proposed.append(f"entities.{entity_id}.home")
+    return sorted(proposed)
+
 def bootstrap_profile(
     world_model: dict[str, Any],
     trace: dict[str, Any],
@@ -120,6 +281,7 @@ def bootstrap_profile(
     *,
     world_model_ref: str,
     review: dict[str, Any] | None = None,
+    auto_layout: bool = False,
 ) -> dict[str, Any]:
     if trace.get("schema_version") != TRACE_SCHEMA:
         raise ValueError(f"trace must use {TRACE_SCHEMA}")
@@ -249,6 +411,7 @@ def bootstrap_profile(
     if not isinstance(reviewed_actions, list):
         raise ValueError("reviewed_actions must be a list")
     profile = _merge(base, review)
+    proposed_geometry = _apply_auto_layout(profile, trace, inferred_owners) if auto_layout else []
 
     todos: list[dict[str, str]] = []
     for actor in actors:
@@ -269,6 +432,11 @@ def bootstrap_profile(
         "inferred_initial_owners": inferred_owners,
         "inferred_action_fields": inferred_action_fields,
         "reviewed_actions": sorted(set(str(x) for x in reviewed_actions)),
+        "auto_layout": {
+            "enabled": auto_layout,
+            "algorithm": "role-grid-v0" if auto_layout else None,
+            "proposed_geometry": proposed_geometry,
+        },
         "todos": todos,
     }
     return profile
@@ -287,6 +455,7 @@ def main() -> int:
     parser.add_argument("--review", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--require-complete", action="store_true")
+    parser.add_argument("--auto-layout", action="store_true", help="propose deterministic presentation-only geometry")
     args = parser.parse_args()
 
     world_model = _load_json(args.world_model, "world model")
@@ -295,7 +464,9 @@ def main() -> int:
     review = _load_json(args.review, "review overlay") if args.review else None
     args.output.parent.mkdir(parents=True, exist_ok=True)
     world_model_ref = os.path.relpath(args.world_model.resolve(), args.output.parent.resolve())
-    profile = bootstrap_profile(world_model, trace, catalog, world_model_ref=world_model_ref, review=review)
+    profile = bootstrap_profile(
+        world_model, trace, catalog, world_model_ref=world_model_ref, review=review, auto_layout=args.auto_layout
+    )
     args.output.write_text(json.dumps(profile, indent=2) + "\n")
     if args.require_complete and not is_complete(profile):
         todos = profile["bootstrap"]["todos"]
