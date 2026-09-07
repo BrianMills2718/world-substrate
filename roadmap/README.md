@@ -3,17 +3,17 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-09-04
+reviewed_through: 2026-09-07
 ---
 
 # World Substrate living roadmap
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; the project is not  
-**Last outcome-bearing implementation:** a complete two-agent service in the kitchen — both orders filled, with unprompted turn-taking on the single knife; before that, built the kitchen, a third world designed against a measured shortfall — it never idles where Castaway idled 6 turns in 10, and contends 6-to-0 against it under an identical policy — and found that two reasoning agents dissolve that contention into churn rather than using it. See [the kitchen audit](../docs/audits/kitchen-contested-world.md)  
-**Superseded:** re-ran M5 against the repaired observation seam and measured that the belief/state divergence regenerates at the next unexposed threshold; before that, cleared the Open obligations — six of seven closed outright, `unheat`'s binding handed to the upstream ontology, and read-scope enforcement designed and costed rather than implemented  
-**Current strategy frontier:** the gap between a substrate that works and a world worth showing anyone
+**Stage:** prototype complete; flagship experiment underway  
+**Last outcome-bearing implementation:** the kitchen now has a terminal condition derived from the order state it already owns, and the contested runner treats its turn count as a ceiling: once every represented order is filled, no further policy decision is requested. This closes the thirteen post-completion turns exposed by the retained full-service run without adding a second completion flag that could drift. Before that, a complete two-agent service filled both orders with unprompted turn-taking on the single knife. See [the kitchen audit](../docs/audits/kitchen-contested-world.md) for the run that exposed the missing end condition.  
+**Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
+**Current strategy frontier:** determine whether the kitchen's unprompted turn-taking and knife handover are robust enough to be the demonstration rather than one good sample
 
 ## Outcome and success criteria
 
@@ -22,45 +22,39 @@ reviewed_through: 2026-09-04
 **A sophisticated world-modelling system, with one instantiation good enough to
 show off as the flagship.** Stated by Brian on 2026-09-04, in those terms.
 
-This had never been written down. Everything below it — the seven-bullet
-workflow, the six numbered criteria — is the *prototype phase*, and that phase
-is finished. Read the two as a sequence, not as alternatives: the prototype
-asked "do these contracts hold?", and the answer is yes. The project asks "is
-there a world here anyone would want to look at?", and that has not been
-attempted.
+Everything below it — the seven-bullet workflow and six numbered criteria — is
+the *prototype phase*, and that phase is finished. Read the two as a sequence,
+not as alternatives: the prototype asked "do these contracts hold?", and the
+answer is yes. Phase two asks whether one world produces a robust, legible
+behavior worth showing. The kitchen is the selected attempt; robustness is the
+remaining immediate question.
 
 A fresh agent should take three things from this section:
 
 1. **"All six success criteria met" does not mean the project is done.** It
-   means phase one is done. The repository said otherwise until 2026-09-04 and
-   a reader would reasonably have concluded the work was over.
-2. **Nothing here has ever been shown to anyone.** There is no demo, no UI, no
-   deployment, and no consumer: no repository outside this one imports
-   `world_substrate`. Every run to date is a probe, a test, or a retained
-   evidence file.
-3. **The two reference worlds are deliberately small.** Castaway is six
-   entities and seven action kinds; the workshop is seven entities and two.
-   They were built to test whether the contracts transfer, and they do. Neither
-   was built to be interesting, and neither is.
+   means phase one is done.
+2. **The flagship direction is no longer open.** The kitchen is the selected
+   world; its rendered run is the selected viewer surface; the first behavior
+   being tested is coordination over scarce shared resources between agents
+   that cannot talk to each other.
+3. **The first two reference worlds are deliberately small.** Castaway and the
+   workshop were built to test whether the contracts work and transfer. The
+   kitchen is the first world built to be watched rather than merely to prove a
+   substrate property.
 
-### What "sophisticated" and "show off" still need to mean
+### What "sophisticated" and "show off" mean for the active experiment
 
-These are the open questions, and they are Brian's to answer rather than a
-fresh agent's to assume. Do not start building a flagship against a guess.
+The first choices have been made, reversibly:
 
-- **Which world.** A third world built to be watched, or one of the two
-  existing ones grown until it is worth watching? They share no content, so
-  this is a real fork rather than a naming choice.
-- **What a viewer sees.** The substrate has no surface. `policy.present()`
-  renders a text block for a language model, and the probes print JSON. Showing
-  this to a person needs something that does not exist yet, and the project has
-  standing instructions not to deploy or publish without explicit authority.
-- **What makes it impressive.** Candidates the existing evidence points at, in
-  no order: many interacting mechanics rather than four; agents whose beliefs
-  visibly diverge from the world and get corrected by it, which M5 produced by
-  accident and is the most striking thing in the repository; mechanics authored
-  live rather than offline, which is currently deferred by decision; or scale.
-  These pull in different directions and at most one should be chosen first.
+- **World:** the kitchen, chosen from a measured weakness in the two-agent
+  Castaway run rather than from domain taste.
+- **Viewer surface:** a rendered trace showing each agent's stated reasoning
+  beside the world state and causal outcome. Publication/deployment remains a
+  separate authority boundary.
+- **First impressive behavior:** two agents with no communication contending
+  over one knife and zero-slack ingredients, yet partitioning resources,
+  waiting, and handing over the bottleneck without being instructed to
+  cooperate. Replication decides whether that is a demonstration or an anecdote.
 
 ### The prototype phase, and its criteria (complete)
 
@@ -108,19 +102,18 @@ audits; findings live in the audit that produced them.
 - This repository owns the project goal, decisions, architecture, contracts, source dispositions, and roadmap.
 - M1 through M4 are complete and promoted. M1 is pinned at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
 - Contract status is mixed: `core-v0` is implemented; [mechanic profile](../docs/contracts/mechanic-profile-v0.md) and [transition envelope](../docs/contracts/transition-envelope-v0.md) are partially implemented; [semantic binding](../docs/contracts/semantic-mechanical-binding-v0.md) has six bindings of seven, with `unheat` unbound because the pinned extraction has no sense for it. Each contract states its own status.
-- Ownership references are checked: `owner_ref` must be `<kind>:<target>`, enforced in `World.validate()` and refused at construction by `model.owner_ref()`. This closes the one defect class M7 found that nothing in the repository could catch.
-- Declared **write** scopes are enforced by the engine (`scope_violation`; negative controls in `tests/test_write_scope.py`). Declared **read** scopes are recorded on every event and are **not** enforced at runtime; the three rules that under-declared reads are repaired and `tests/test_overheat_assay.py` guards against regression.
+- Ownership references are checked: `owner_ref` must be `<kind>:<target>`, enforced in `World.validate()` and refused at construction by `model.owner_ref()`.
+- Declared **write** scopes are enforced by the engine (`scope_violation`; negative controls in `tests/test_write_scope.py`). Rule-facing discovery, checks, progress, consequences and triggers are isolated from canonical state, and engine-owned revision/history cannot be proposed by mechanics. Declared **read** scopes remain recorded and unenforced at runtime.
 - Three interaction assays exist on three different bases — declarations, differential behaviour, conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient. Evidence: [M3](../docs/audits/m3-overheat-authoring-experiment.md), [M4](../docs/audits/m4-spill-experiment.md).
-- Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has; M4 records one that is live in the world today only because a second mechanic closed it.
-- **A complete service runs, and it is the first thing here worth showing anyone.** Thirty turns, two cooks driven by the same model, $0.0179: both orders filled, Bo at turn 9 and Ama at turn 17. With no channel between them they partition the scarce ingredients on turn one, take turns on the single knife, and Bo hands it over on finishing while naming why — *"put down the knife so Ama can use it to chop the remaining ingredients"* — then stays out of the way until Ama is done, at which point Ama reciprocates. The prompt states the situation and says nothing about cooperating. The gap it exposes is that the world has no finished state, so thirteen aimless turns follow the last plating. See [the kitchen audit](../docs/audits/kitchen-contested-world.md).
-- **The kitchen produces a watchable run, and what made it watchable was a defect fix rather than the prompt.** `describe_action` rendered only Castaway's participant vocabulary, so all five of a cook's opening moves read as the bare word "take" — five action ids, one description, a policy choosing between the knife and a potato with no way to tell them apart. Fixing it took orders filled from 0 to 1; the situational prompt then took stale retries from 14 to 4. That is the third place this hardcoded vocabulary was found, after `assay._subject` and `assay._component_names`, and a test now asserts distinct actions get distinct descriptions. In the good run both cooks take the ingredient only they need on turn one, the blocked cook waits seven turns rather than thrashing, and the winner puts the knife down unprompted when its order is done. See [the kitchen audit](../docs/audits/kitchen-contested-world.md).
-- **A third world exists, built against a measurement rather than a domain preference.** The kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. It never idles (0 of 14 turns against Castaway's 6 of 10) and produces real contention where Castaway produces none (6 versus 0 under the same scripted policy). It does not yet demonstrate anything: neither order was filled in fourteen turns, because both agents spend the run politely putting ingredients down for each other. Two harness defects were found and fixed on the way — a fixed commit order that handed one cook every tie, and a headline metric that read 14 of 14 when the real contention was 1 of 14. See [the kitchen audit](../docs/audits/kitchen-contested-world.md).
-- **The observation seam is the whole game, measured across three runs.** Same world, same model, same 16 turns; the only variable is how much of what the world already knew reached the policy. Final health 60 (action names only), 80 (+ progress and destroyed value), 100 (+ the rule's own warnings). The no-foresight baseline is 4 throughout and no mechanic changed. The original run's 40-point loss was misattributed to re-contamination in the M5 audit and was in fact scald damage from 80.5C water, against a warning `DrinkRule` had already written and `present()` dropped. See [the M5 audit](../docs/audits/m5-policy-consumer.md).
-- The observation-seam fixes work, and the failure they addressed is structural rather than anecdotal. Re-running M5's comparison against the repaired seam for $0.0045 moved final health 60 to 80, removed the heat/unheat churn entirely (four consecutive `wait`s where there were four heats and four unheats), and the policy never re-contaminated its own water again. It then lost 20 health drinking water it had waited two turns to cool, at 66C against a 45C limit — the same shape one threshold downstream. See [the M5 audit's re-run section](../docs/audits/m5-policy-consumer.md).
-- A policy has driven this world (criterion 2, met): an LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief was wrong. See [the M5 audit](../docs/audits/m5-policy-consumer.md).
-- A second, materially different world reuses the contracts (criterion 6, met). **All six prototype success criteria are now met.** The workshop world shares no content with Castaway and the split was clean in both directions: the transition kernel, causal events, exact replay, the profile installer, all three assays and the policy seam transferred with no edits at all, while *zero* Castaway mechanics were reusable — `take`/`give` compute carrying capacity from `liquid.volume_ml` and cannot move a bolt. Four couplings had to be broken: `Entity` was a closed component set, `observe()` required `ActorState`, write-scope binding used Castaway's action vocabulary, and `policy.present()` read health and hydration. Two of the four were written earlier in the same session in modules named for their general purpose. See [the M6 audit](../docs/audits/m6-second-world.md).
-- The declaration language expresses one relation: a selected entity binds a second one it names through its own string field, and conditions and effects reach it by that name. This is the first time an authored mechanic can put a cause on one entity and its effect on another, and the first time an authored write-scope violation is possible rather than self-contradictory. See [the M7b audit](../docs/audits/m7b-relational-authoring.md).
-- The write-scope guard no longer trusts the submitter, and the interaction assays are no longer bound to Castaway's vocabulary. Both were found by probing the workshop rather than reading the code — the same way M6 found its four couplings, in the same modules M6 certified as having transferred unchanged. `assay_undeclared_component_reads` could not produce a finding in the workshop world at all; `_subject` collapsed every workshop action to `?`; and `controller`, a free-form string the submitter chooses, bound a participant and widened a rule's write scope to any entity it named.
+- Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has.
+- **The kitchen has a terminal state without duplicating state.** `reference_worlds/kitchen/terminal.py` derives completion from the existing `order.filled` fields, and `run_contested_world.py` stops before another policy decision once every order is filled. New contested-run outputs use schema v3 and record whether the terminal was reached. The retained `full-service-v0` evidence remains a historical v2 run: its thirteen trailing turns are the observation that motivated this fix, not current runner behavior.
+- **A complete service is still the strongest retained behavioral result.** In the retained 30-turn model run both orders were filled, Bo at turn 9 and Ama at turn 17. With no channel between them the cooks partitioned scarce ingredients on turn one, took turns on the single knife, and handed it over on completion while naming why. The prompt states the situation and says nothing about cooperating. See [the kitchen audit](../docs/audits/kitchen-contested-world.md).
+- **The kitchen became watchable only after the policy could distinguish its actions.** `describe_action` originally rendered only Castaway participant vocabulary, collapsing several kitchen choices to the same word. Fixing that moved the run from blind churn toward purposeful waiting and completion; the audit records the sequence.
+- **The kitchen was built against a measurement rather than a domain preference.** Under the same scripted policy it produces materially more contention than Castaway and does not inherit Castaway's long process waits.
+- **The observation seam is a measured design variable.** Across the M5 comparison, exposing progress, destroyed value and mechanic warnings materially changed policy outcomes without changing the mechanics. The re-run then regenerated the same failure shape at the next hidden threshold, leaving the broader threshold-observation obligation open.
+- A policy has driven this world (criterion 2, met): an LLM chose actions only through the ordinary affordance seam and never received consequence authority.
+- A second, materially different world reuses the contracts (criterion 6, met). **All six prototype success criteria are met.** The workshop shares no content with Castaway; substrate contracts transferred while Castaway mechanics did not.
+- The declaration language expresses one relation between entities, making cross-entity authored behavior and meaningful authored write-scope violations possible.
 - Doctrine, unchanged: Linguistic Core supplies senses and roles, not effects; consequences require a represented causal bearer and an installed mechanic; composites stay derived; observability is required while exact replay is not a universal gate; mechanics authoring is offline and runtime law revision is deferred; donor repositories stay read-only unless a consumer path explicitly adopts code.
 
 ## Applicable context
@@ -146,8 +139,8 @@ observable attempt or trigger
 
 - One canonical persistent state owns material world truth.
 - Natural language and policy models cannot directly mutate it.
-- Local mechanics have independently enforced read/write scopes.
-- One enclosing transition owns each causally coupled commit.
+- Local mechanics have enforced write authority; declared read scopes are recorded and may be verified separately.
+- One enclosing transition owns each causally coupled commit, including revision and causal-history attachment.
 - Independent actions may commit independently.
 - Resident cognition and post-run analysis are not canonical world authorities.
 - Invariants and accounting are goal-relative to the selected representation.
@@ -161,65 +154,47 @@ observable attempt or trigger
 | --- | --- | --- | --- |
 | M0: canonical foundation | complete | repository authorities, navigation, checks | established |
 | M1: freshwater vertical | complete | neutral CLI trace, refusals, persistence, and M1 replay | promoted |
-| M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted: binding (`semantic.py`), authority (giver-only enforced in `GiveRule`), refusal (pre-existing `test_transfer.py::test_recipient_capacity_rejection_is_atomic`), reneging (`test_give_exchange.py`), and no-double-transfer trace cases all pass |
-| M3: offline mechanics-authoring vertical | complete | `process.material.overheat-damage` authored as a package, installed with no findings, frozen as profile `d525940e065d8361`, and run | promoted: installation validated scope, effects, tests, limits; two interaction assays surfaced the package's omitted dependency and one residual survived both — [the experiment](../docs/audits/m3-overheat-authoring-experiment.md) |
-| M4: causal-coherence assay | complete | three assays on three different bases, each with a stated blind spot, plus a negative control that only accounting catches | promoted: M3's residual closed by an honestly-authored mechanic; no single basis and no pair is sufficient — [the experiment](../docs/audits/m4-spill-experiment.md) |
-| M5: policy consumer | complete | an LLM selecting from `discover()` over 16 turns, compared against a no-foresight baseline on the same world | promoted: seam holds (no policy output is ever parsed into an action), the world corrected the model's wrong belief mechanically, and two observation-seam weaknesses surfaced that a scripted controller cannot expose — [the audit](../docs/audits/m5-policy-consumer.md) |
-| M5b: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | Revisit only when a world needs an institution. Atomic commit-or-refuse has existed and been tested since M1, so escrow largely re-exercises machinery rather than testing an open question |
-| M6: second reference world | complete | a workshop world — worker, bench, discrete parts, tool, assembly — sharing no content with Castaway | promoted: the transition kernel, events, replay, profile installer, all three assays and the policy seam transferred with no edits; four substrate/content couplings were found and fixed; zero Castaway mechanics were reusable — [the audit](../docs/audits/m6-second-world.md) |
-| M7: authoring rate | complete | ten mechanics authored by a model that was told neither which mechanic to write nor what the checks look for, graded against criteria fixed beforehand | promoted: 9/10 installed, 0 scope violations, 5/10 added real behaviour, 2/10 were inert, and 2/10 violated an undeclared world convention that nothing can check — [the audit](../docs/audits/m7-authoring-rate.md) |
-| M7b: relational authoring | complete | ten mechanics authored against a language that can express one relation, graded on criteria fixed beforehand and identical to M7's | promoted: 4/8 valid declarations used a relation and two produced cross-entity behaviour nothing in this project could previously express; the two inert clamps recurred anyway, so the language ceiling was real and not the main driver; zero scope violations, this time against machinery a relational write can actually load — [the audit](../docs/audits/m7b-relational-authoring.md) |
+| M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted |
+| M3: offline mechanics-authoring vertical | complete | authored mechanic package, frozen profile, and interaction evidence | promoted |
+| M4: causal-coherence assay | complete | three assays on different bases plus negative control | promoted |
+| M5: policy consumer | complete | LLM selecting only from `discover()` against a mechanical baseline | promoted |
+| M5b: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | revisit only when a world needs an institution |
+| M6: second reference world | complete | materially different workshop world reusing substrate contracts | promoted |
+| M7: authoring rate | complete | model-authored mechanics graded against fixed criteria | promoted |
+| M7b: relational authoring | complete | authored mechanics using one cross-entity relation | promoted |
 | M8: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
-
-Ordering after M4 was re-derived from the unmet success criteria rather than from this table's original sequence. Two of six criteria are unmet — a policy driving the world (2) and a second world (6) — and neither is a mechanics question, so both outrank further mechanics work including M5.
 
 ### Active slice: make the kitchen worth showing someone
 
-The three questions under the end goal are **answered**, so this section no
-longer says to go and ask them:
+The flagship choices are answered:
 
-- **Which world.** A third one, the kitchen, built against a measurement rather
-  than a taste: the two-agent Castaway run idled six turns in ten because that
-  world has nothing to contend over.
-- **What makes it impressive.** Two agents that cannot talk to each other,
-  contending over one knife, dividing a scarce set of ingredients and taking
-  turns. Not an agent making a mistake — the mistake-based demo died when the
-  policy shown everything scored a perfect 100.
-- **What a viewer sees.** A rendered run: each agent's stated reasoning beside
-  what the world actually was. `evidence/renders/` holds four of them.
+- **Which world:** the kitchen.
+- **What makes it impressive:** two agents that cannot talk, contending over a
+  bottleneck and zero-slack ingredients while coordinating through the world.
+- **What a viewer sees:** a rendered run with each agent's stated reasoning
+  beside world truth and causal outcomes.
 
-**Where it stands.** A complete 30-turn service runs: both orders filled, Bo at
-turn 9 and Ama at turn 17, with the knife handed over twice and named both
-times. That is the first artifact in this project a person could be shown. It
-is not yet one they could be shown *without narration*.
+**Where it stands.** A retained model run completes both orders and contains two
+unprompted knife handovers. The defect that made it trail for thirteen turns
+after the last plating is closed: service completion is derived from all
+`order.filled` values and the runner stops before requesting another decision.
+No model call was needed to make or verify that change.
 
-**The next two increments, in order.** Neither needs permission and both are
-small.
+**Next increment: replicate the service.** The turn-taking and knife handover
+are still n=1. Run two or three fresh services under the same model and prompt:
 
-1. **Give the world a terminal state.** After the last plating at t17, thirteen
-   turns of aimless taking and putting down follow, because nothing in the
-   kitchen knows service is over. A run that ends when both orders are filled
-   is the difference between a trace and a story. Start at
-   `reference_worlds/kitchen/mechanics.py`; the orders already carry `filled`.
-2. **Repeat the service two or three times.** The turn-taking and the knife
-   handover are n=1. About $0.02 a run under the standing cap:
-   `python scripts/run_contested_world.py --world kitchen --model openrouter/openai/gpt-5.6-luna --turns 30 --output <path>`.
-   If the handover is robust it is the demonstration; if it was one good
-   sample, that is the more important thing to know.
+`python scripts/run_contested_world.py --world kitchen --model openrouter/openai/gpt-5.6-luna --turns 30 --output <path>`
+
+The turn count is now only a ceiling; successful services end at their terminal
+state. If the handover is robust, that is the demonstration. If it was one good
+sample, that is the more important result and should drive the next change.
 
 **What a fresh agent should do first.** Both cost nothing:
 
-1. **Watch a run.** Open `evidence/renders/kitchen-full-service.html` — the
-   complete service, both columns. Then
-   `evidence/renders/belief-vs-truth-v0.html` and `-v2.html`, which are the same
-   Castaway world before and after the observation seam was repaired, 60 health
-   against 100.
-2. **Run one.** `python scripts/run_contested_world.py --world kitchen --turns 12`
-   uses scripted policies, costs nothing, and prints the contested loop.
+1. **Watch the retained run.** Open `evidence/renders/kitchen-full-service.html` — it is intentionally historical and still shows the trailing turns that motivated the terminal-state fix.
+2. **Run the scripted world.** `python scripts/run_contested_world.py --world kitchen --turns 12` uses scripted policies and costs nothing.
 
-**What not to do.** Do not add contracts, hardening or further verification.
-There are 194 tests and ten pinned probes for three worlds, which is already
-more assurance than the thing has audience.
+**What not to do.** Do not add more contracts or general hardening simply because it is available. The next uncertainty is behavioral replication, not substrate assurance.
 
 ## Open obligations
 
@@ -229,29 +204,23 @@ the audit that found it.
 
 | Obligation | Required by | State |
 | --- | --- | --- |
-| ~~Attach the causal bearer's observation to its event~~ | Decision 002, field 1 of 8 | **closed.** Captured before mutation and attached as `observation`; `null` for a process |
-| ~~Attach the bound Linguistic Core sense and roles to its event~~ | Decision 002, field 3 of 8 | **closed.** Attached as `semantic_binding`; `null` for the six unbound action kinds |
-| ~~Name the authority/causal bearer on an event~~ | Decision 002, field 4 of 8 | **closed.** Attached as `causal_bearer`, distinguishing an actor from a process |
-| Bind the remaining M1 action kinds to Linguistic Core senses | [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) | **six of seven closed.** `drink`, `heat`, `fill`, `take` and `pour` join `give`, every predicate and role id read from the same pinned extraction. `unheat` stays open and not in this repository: none of the extraction's eighteen predicates is the removal of a vessel from a heat source, and the nearest is the application of heat, which is not that sense reversed. Binding it to a predicate that does not mean it, or minting one, would put an invented sense in a module whose whole contract is that it cites a pinned source. Owned by the upstream ontology |
-| ~~Decide the ledger's shape for lost quantities~~ | M4 finding | **closed.** `spilled` is a full `LiquidState` like `evaporated`, so a failed vessel's salt and pathogens are recorded rather than zeroed and forgotten. `overflow_ml` is removed rather than populated: nothing wrote or read it, and a ledger field no mechanic maintains is a false guarantee. `assay_conservation` checks volume always and any other quantity the caller states an initial total for — deriving those from `physical_ledger.initial` was rejected because no mechanic maintains it and it is all zeros in every world here, so every new check would have passed for the wrong reason |
-| ~~Decide whether `World.clone()` should deep-copy the event log~~ | review of `3b89847` | **closed: it shares them.** Measured here at 34/173/732ms for 10/20/40 actions, now 207ms at forty. The objection was that this trades isolation for an unenforced convention, so the convention is not what it rests on: the only operations on `world.events` anywhere are appends and reads, and `tests/test_event_log_sharing.py` fingerprints every event as it appears and re-checks the whole log after every transition in both worlds, including refusals and malformed envelopes, and proves it can go red |
-| Enforce declared read scopes at runtime | this roadmap's own invariant | **designed, not implemented** — [the contract](../docs/contracts/read-scope-enforcement-v0.md). A recording proxy at the rule boundary, measured at 10.9x on `checks()` (8.5us to 92us per call), so it belongs in a verification pass and not the run loop. Four blind spots are stated; the weakest point is that `as_dict()` reads a whole component at once, so bulk projections either hide reads or force rules to declare reads they do not conceptually perform |
-| ~~Surface process progress in the observation~~ | M5 finding | **closed, and the obligation misstated the defect.** `boiling_ticks` was always in `observe()`; what was missing is the threshold, since the count means nothing without knowing two consecutive ticks are needed, and `present()` never rendered it. A process that accumulates toward a threshold now declares `progress` and the affordance page carries current-against-required |
-| ~~Signal that an action destroys the value of existing contents~~ | M5 finding | **closed.** An action rule may declare `consequences`, and `discover()` carries them per affordance. Filling a treated vessel is marked as re-contaminating what it already holds; filling an empty or already-untreated one is silent |
-| ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** `owner_ref` is validated as `<kind>:<target>` in `World.validate()`, and the eighteen call sites that hand-built the convention now go through `model.owner_ref()`, which refuses a malformed reference at the source. `tests/test_owner_ref.py` replays the exact declaration from M7's evidence file and asserts it is now refused with the attachment provenance intact. The wire format is unchanged, so all ten probes remain byte-identical |
+| ~~Attach the causal bearer's observation to its event~~ | Decision 002 | **closed.** Captured before mutation and attached as `observation`; `null` for a process |
+| ~~Attach the bound Linguistic Core sense and roles to its event~~ | Decision 002 | **closed.** Attached as `semantic_binding` where a reviewed binding exists |
+| ~~Name the authority/causal bearer on an event~~ | Decision 002 | **closed.** Attached as `causal_bearer` |
+| Bind the remaining M1 action kinds to Linguistic Core senses | Decision 003 | **six of seven closed.** `unheat` remains upstream-owned because the pinned extraction has no matching sense |
+| ~~Decide the ledger's shape for lost quantities~~ | M4 finding | **closed.** `spilled` is a full `LiquidState` and conservation checks can cover represented quantities |
+| ~~Decide whether `World.clone()` should deep-copy the event log~~ | performance review | **closed.** Ordinary world clones share append-only committed event objects for performance; rule-facing execution now receives detached state without engine history, so mechanics cannot rely on or mutate that optimization boundary |
+| Enforce declared read scopes at runtime | roadmap invariant | **designed, not implemented** — [read-scope enforcement v0](../docs/contracts/read-scope-enforcement-v0.md) specifies an optional recording verification pass rather than always-on overhead |
+| ~~Surface process progress in the observation~~ | M5 finding | **closed.** Processes may declare current-against-required progress |
+| ~~Signal that an action destroys existing value~~ | M5 finding | **closed.** Actions may declare consequences surfaced per affordance |
+| ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** Reference shape is validated and construction goes through `model.owner_ref()` |
+| ~~Refuse authored writes a field's type forbids~~ | M7 generalisation | **closed.** Declaration paths and literal types are checked against component dataclasses |
+| ~~Give the world a way to say "unowned"~~ | M7b finding | **closed.** Reserved `unowned` literal |
+| Surface progress toward *leaving* a threshold, not only toward reaching one | M5 re-run finding | **open.** Cooling toward a safe-drinking threshold remains the concrete case |
 
-| ~~Refuse authored writes a field's type forbids~~ | generalisation of the M7 finding | **closed.** `owner_ref` was one instance of a wider class: `set` put any JSON scalar into any field and `World.validate()` covered only a hand-picked subset, so `worker.fatigue := "tired"` and `location.location_id := ""` both committed — the second silently removing four of seven entities from every observation while `validate()` and snapshot round-trip both passed. Effect and selector paths are now resolved against the owning dataclass at declaration time and the literal value type-checked there; `World.validate()` refuses an emptied `location_id`, `definition_id`, `heat_source_id` or `material_id`. `tests/test_authored_write_types.py` replays all seven observed corruptions. All ten probes remain byte-identical |
-
-| ~~Give the world a way to say "unowned"~~ | M7b finding | **closed.** A reserved `unowned` literal, which costs nothing at the consumers because every one of them compares against a reference it built itself. `tests/test_unowned.py` reads the `worn-tool-drop` declaration a model actually wrote out of M7b evidence, shows it is still refused as written, and shows that changing the one value the model could not express makes it install, fire, and leave the tool held by nobody |
-
-| Surface progress toward *leaving* a threshold, not only toward reaching one | M5 re-run finding | open — `ThermalProcess.progress` reports vessels accumulating toward treatment (`heat_source_id` set, pathogens present) and says nothing about one cooling toward `DrinkRule.safe_drinking_temperature_c`. The re-run policy waited two ticks for "too hot" water, drank at 66C against a 45C limit, and took exactly the 20 damage `hot_harm_per_250ml` specifies. Closing the boiling instance produced the cooling instance immediately; the general form is that any threshold the world enforces and the observation omits regenerates this |
-
-**All eight Decision 002 observability fields are covered, on every event class.**
-The three rows above were closed together as one `core-v0` schema change. This
-was the only requirement the project set for itself and did not meet. A
-malformed envelope records its bearer as `claimed_actor` rather than `actor`,
-since nothing in it has been validated — that path matters because every
-untrusted policy submission arrives through it.
+**All eight Decision 002 observability fields are covered on every event class.**
+Malformed envelopes record a `claimed_actor` bearer rather than pretending an
+unvalidated identity is authoritative.
 
 ## Authoring and causal-closure hypothesis
 
@@ -268,9 +237,10 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Observability over universal replay | human-set in Decision 002 | product evidence |
 | Linguistic Core as semantic interface | human-set in Decision 003 | semantics, not effects |
 | Offline pre-run mechanics authoring | human-set direction | runtime law changes deferred |
-| Give/derived exchange as active vertical | reversible planning choice | replan from M2 evidence |
-| Later M3–M5 ordering | conditional | select from the first bounded authoring scenario |
-| ~~Second reference-world domain~~ | answered: the workshop world (M6) | superseded by the flagship-world decision above |
+| Kitchen as first flagship world | answered 2026-09-04 | reversible product direction |
+| Rendered reasoning beside world truth as viewer surface | answered | publication/deployment remains separate |
+| Scarce-resource coordination as first impressive behavior | answered | replication is the current gate |
+| Second reference-world domain | answered: workshop (M6) | complete |
 
 ## Evidence and review artifacts
 
@@ -278,19 +248,21 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | --- | --- | --- | --- |
 | M1 freshwater behavior works | retained machine/human receipts, probes, tests, and replay | deterministic scripted vertical only | established |
 | M1 exact replay works | fresh-process replay receipt | M1 property, not product requirement | established |
-| Semantic binding works | `semantic.py` binding plus `tests/test_give_exchange.py` | one sense of seven action kinds; no binding is attached to an event | established, narrowly |
-| Derived exchange avoids double application | M2 reciprocal/reneging cases | ordinary voluntary exchange only, and the classifier matches any reciprocal pair regardless of interval or object | established, with a known over-match |
-| Declared write scopes are enforced | `tests/test_write_scope.py` negative controls | writes only; reads are recorded and unenforced | established |
-| Offline mechanics authoring works | M3 and M4 frozen packages, three assays, negative control | two mechanics, one world, and the same person authored both the mechanics and the assays judging them | established for the risk half; the *rate* half is untested |
-| Interaction assays surface omitted dependencies | M3 and M4 findings | each basis has a stated blind spot; no basis and no pair is sufficient, and a residual survives all three | established, with the residual demonstrated |
-| A policy can drive this world | [M5 audit](../docs/audits/m5-policy-consumer.md); `evidence/m5/llm-policy-v0.json` | one model, one prompt, one world, 16 turns; the refusal path was never exercised by the model | **met** (criterion 2) |
+| Semantic binding works | `semantic.py` plus binding/event tests | `unheat` remains unbound upstream | established, narrow |
+| Derived exchange avoids double application | M2 reciprocal/reneging cases | ordinary voluntary exchange only | established |
+| Declared write scopes are enforced | write-scope and rule-authority negative controls | reads remain separately declared and unenforced | established |
+| Offline mechanics authoring works | M3/M4 packages and assays | bounded experiments | established |
+| Interaction assays surface omitted dependencies | M3/M4 findings | every basis has blind spots | established with residual risk |
+| A policy can drive the world | M5 audit and retained trace | one model/prompt/world slice | met |
 | Global causal closure is proven | none | not generally decidable from author declarations | rejected claim |
-| Second-world reuse works | [M6 audit](../docs/audits/m6-second-world.md); `tests/test_workshop_world.py` | one second world, chosen by the substrate's own author to be maximally different; zero Castaway mechanics transferred | **met** (criterion 6) |
+| Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
+| Kitchen service completes | retained `full-service-v0` evidence | one model run | established once, replication pending |
+| Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
 
 ## Risks and needs resolution
 
+- The kitchen's cooperative-looking handover may be sample luck rather than robust behavior.
 - Linguistic breadth can hide mechanical sparsity.
-- A new classification enum could accidentally replace rather than bind donor ontologies.
 - A generic component model can become an untyped property bag.
 - Broad LLM adjudication can bypass local causal authority.
 - Individually valid mechanics can disagree about units, timing, identity, capability revocation, or overlapping effects.
@@ -300,24 +272,16 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 
 ## Human decisions
 
-Boundaries only Brian can clear. Each names what changes if it is answered.
+Boundaries only Brian can clear. Answered choices remain here for traceability rather than being re-presented as blockers.
 
-| Decision | Why it is blocked | What it unblocks |
+| Decision | State | What it means now |
 | --- | --- | --- |
-| ~~Model execution and a spend cap~~ | **Answered 2026-09-04: $2 cap granted** | Spent $0.005 of it. Criterion 2 met; see the M5 audit. Further runs stay under the same cap |
-| ~~Which second reference world~~ | **Answered: the workshop world, built and promoted in M6** | Criterion 6 met. The reuse test was real rather than cosmetic — zero Castaway mechanics transferred and four substrate/content couplings had to be broken |
-| **Which world becomes the flagship** | No world has been chosen to be worth watching, and the two that exist share no content, so this is a fork rather than a naming choice | The only thing that unblocks any flagship work at all. Everything else waits on it |
-| **What a viewer actually sees** | The substrate has no surface: `policy.present()` renders text for a model and the probes print JSON | Whether the next work is a world or an interface. Also crosses the deployment boundary below |
-| **What "sophisticated" means here** | Named candidates pull in different directions: many interacting mechanics, agent belief visibly diverging from the world, live mechanic authoring (currently deferred by decision), or scale | Which of those the flagship is built around. At most one should be first |
-| Deployment and publication | Explicit authority boundary | Showing the flagship to anyone. Not yet blocking, because there is nothing to show |
-
-Selection of the first agent-authored mechanic is no longer a boundary: M3 and
-M4 exercised two, and the remaining authoring questions are answerable without
-a new selection.
-
-The three flagship decisions are stated as questions rather than options on
-purpose. A fresh agent should bring a recommendation to them, not a menu, and
-should have run the world first — see the Active slice section.
+| Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | fresh replication runs may spend within the standing cap |
+| Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
+| Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
+| What a viewer actually sees | **answered: rendered reasoning beside world truth** | deployment/publication remains separately controlled |
+| What "sophisticated" means first | **answered: scarce-resource coordination without communication** | replication, not another feature, is the current test |
+| Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
 ## Refresh and reset triggers
 
@@ -325,14 +289,14 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Nothing is in progress and the working tree is clean.
+Nothing is in progress once the terminal-state branch is merged.
 
-Give the kitchen a terminal state so a service ends when both orders are
-filled, then repeat the 30-turn service two or three times to find out whether
-the knife handover is robust or was one good sample. The Active slice section
-above has the detail and the exact commands.
+Repeat the kitchen service two or three times with the same model and prompt to
+measure whether the unprompted knife handover is robust. The runner now stops at
+world completion, so do not compare raw requested turn counts; compare whether
+both orders fill, completion turn, contention/displacement, and whether the
+knife is deliberately released when a cook finishes.
 
 Model calls are authorized under a $2 cap and have cost **$0.123** to date.
 Read that figure from the observability DB with `get_cost(task=...)` across the
-`world-substrate-*` tasks rather than adding up per-run numbers; a previous
-version of this line went stale by counting them by hand.
+`world-substrate-*` tasks rather than adding up per-run numbers.
