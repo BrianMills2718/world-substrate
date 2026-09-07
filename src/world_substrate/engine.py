@@ -29,7 +29,7 @@ ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
 
 
 class ScopeViolation(RuntimeError):
-    """A registered rule wrote outside its declared write scope."""
+    """A registered rule exceeded its authority over the world."""
 
 
 # The engine's own envelope metadata. `kind` names the action and `controller`
@@ -102,6 +102,41 @@ def _scope_violations(
             and not _path_permitted(change["path"], declared_paths, bound_refs)
         }
     )
+
+
+def _rule_world(world: World) -> World:
+    """Detached material state for rule code, with engine-owned history hidden.
+
+    Rules need the same typed world shape they already consume, but commands and
+    events are coordinator-owned history rather than mechanic state. Replacing
+    those lists in the deepcopy memo avoids both exposing committed event
+    objects and paying to copy a history the rule has no authority to mutate.
+    """
+    return deepcopy(world, {id(world.commands): [], id(world.events): []})
+
+
+def _rule_mutations(before: dict[str, Any], world: World) -> list[str]:
+    """Any mutation made by a hook that is required to be read-only."""
+    paths = {change["path"] for change in differences(before, world.material_dict())}
+    if world.commands:
+        paths.add("commands")
+    if world.events:
+        paths.add("events")
+    return sorted(paths)
+
+
+def _engine_owned_mutations(before: dict[str, Any], world: World) -> list[str]:
+    """Writes a rule may never propose, even inside its declared state scope."""
+    paths = {
+        change["path"]
+        for change in differences(before, world.material_dict())
+        if change["path"] in ENGINE_OWNED_PATHS
+    }
+    if world.commands:
+        paths.add("commands")
+    if world.events:
+        paths.add("events")
+    return sorted(paths)
 
 
 def _identifier(prefix: str, count: int) -> str:
@@ -178,12 +213,44 @@ class Engine:
             "entities": local,
         }
 
-    def _consequences(self, rule: Any, action: TypedAction) -> list[str]:
+    def _readonly_call(
+        self,
+        world: World,
+        before: dict[str, Any],
+        rule_id: str,
+        hook: str,
+        call: Any,
+    ) -> Any:
+        result = call()
+        mutations = _rule_mutations(before, world)
+        if mutations:
+            raise ScopeViolation(
+                f"{rule_id}.{hook} mutated a read-only rule view: {mutations}"
+            )
+        return result
+
+    def _consequences(
+        self,
+        rule: Any,
+        action: TypedAction,
+        world: World,
+        before: dict[str, Any],
+    ) -> list[str]:
         if not isinstance(rule, DeclaresConsequences):
             return []
-        return list(rule.consequences(self.world, action))
+        return list(
+            self._readonly_call(
+                world,
+                before,
+                rule.rule_id,
+                "consequences",
+                lambda: rule.consequences(world, action),
+            )
+        )
 
-    def _progress(self) -> list[dict[str, Any]]:
+    def _progress(
+        self, world: World, before: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """In-flight process progress, for policies that must not act early.
 
         A policy could always read `container.boiling_ticks` -- it is in the
@@ -201,23 +268,48 @@ class Engine:
         for process in self.registry.processes():
             if not isinstance(process, ReportsProgress):
                 continue
-            for row in process.progress(self.world):
+            progress = self._readonly_call(
+                world,
+                before,
+                process.rule_id,
+                "progress",
+                lambda process=process: process.progress(world),
+            )
+            for row in progress:
                 rows.append({"rule_id": process.rule_id, **row})
         return sorted(rows, key=lambda row: (row["entity_id"], row["rule_id"]))
 
     def discover(self, actor_id: str, kind: str | None = None) -> dict[str, Any]:
+        # One detached view is enough for the whole affordance page. Every hook
+        # is checked immediately after it returns; if it mutates the view we
+        # fail before any subsequent hook can consume the altered state.
+        world = _rule_world(self.world)
+        before = world.material_dict()
         actions: list[TypedAction] = []
         for action_kind in self.registry.action_kinds():
             if kind is None or action_kind == kind:
                 rule = self.registry.action(action_kind)
                 assert rule is not None
-                actions.extend(rule.discover(self.world, actor_id))
+                discovered = self._readonly_call(
+                    world,
+                    before,
+                    rule.rule_id,
+                    "discover",
+                    lambda rule=rule: rule.discover(world, actor_id),
+                )
+                actions.extend(discovered)
         available = []
         blocked = []
         for action in actions:
             rule = self.registry.action(action.kind)
             assert rule is not None
-            checks = rule.checks(self.world, action)
+            checks = self._readonly_call(
+                world,
+                before,
+                rule.rule_id,
+                "checks",
+                lambda rule=rule, action=action: rule.checks(world, action),
+            )
             row = {
                 "action_id": _action_id(action),
                 "action": action.as_dict(),
@@ -228,7 +320,7 @@ class Engine:
                 # was presented identically whether or not it re-contaminated a
                 # treated vessel, and the M5 policy filled its own boiled pot
                 # and then drank it (M5 finding).
-                "consequences": self._consequences(rule, action),
+                "consequences": self._consequences(rule, action, world, before),
             }
             if all(check.ok for check in checks):
                 available.append(row)
@@ -241,7 +333,7 @@ class Engine:
             "observation": self.observe(actor_id),
             "available": available,
             "blocked": blocked,
-            "progress": self._progress(),
+            "progress": self._progress(world, before),
             "total": len(available) + len(blocked),
         }
 
@@ -412,7 +504,32 @@ class Engine:
                 before,
                 observation,
             )
-        checks = [revision_check] + rule.checks(self.world, action)
+
+        # Checks execute against the same detached candidate the rule may later
+        # propose effects on. This adds no second world clone to the accepted
+        # path while still making any check-time mutation observable and safe to
+        # discard.
+        candidate = _rule_world(self.world)
+        checks = [revision_check] + rule.checks(candidate, action)
+        check_mutations = _rule_mutations(before, candidate)
+        if check_mutations:
+            return self._reject(
+                action,
+                command_id,
+                event_id,
+                "scope_violation",
+                checks
+                + [
+                    Check(
+                        "Rule checks are read-only",
+                        False,
+                        check_mutations,
+                        [],
+                    )
+                ],
+                before,
+                observation,
+            )
         if not revision_check.ok:
             return self._reject(
                 action, command_id, event_id, "stale_revision", checks, before, observation
@@ -428,8 +545,29 @@ class Engine:
                 observation,
             )
 
-        candidate = self.world.clone()
         rule.apply(candidate, action, event_id)
+        authority_violations = _engine_owned_mutations(before, candidate)
+        if authority_violations:
+            return self._reject(
+                action,
+                command_id,
+                event_id,
+                "scope_violation",
+                checks
+                + [
+                    Check(
+                        "Rules cannot write engine-owned state or history",
+                        False,
+                        authority_violations,
+                        [],
+                    )
+                ],
+                before,
+                observation,
+            )
+
+        # Revision belongs to the enclosing coordinator. It is incremented only
+        # after the rule's proposal has been checked for engine-owned writes.
         candidate.revision += 1
         candidate.validate()
         after = candidate.material_dict()
@@ -473,6 +611,8 @@ class Engine:
             binding=self._binding_of(action),
             observation=observation,
         )
+        candidate.commands = list(self.world.commands)
+        candidate.events = list(self.world.events)
         candidate.commands.append(
             {
                 "command_id": command_id,
@@ -539,17 +679,42 @@ class Engine:
                     }
                 )
                 for process in self.registry.processes():
-                    if process.due(self.world):
-                        produced.append(self._apply_process(process, command_id))
+                    # Build the process candidate before checking its trigger.
+                    # A due() hook that writes can only corrupt this detached
+                    # view, and a due process reuses the same candidate for its
+                    # effect proposal rather than paying for another clone.
+                    candidate = _rule_world(self.world)
+                    before = candidate.material_dict()
+                    due = self._readonly_call(
+                        candidate,
+                        before,
+                        process.rule_id,
+                        "due",
+                        lambda process=process: process.due(candidate),
+                    )
+                    if due:
+                        produced.append(
+                            self._apply_process(process, command_id, candidate, before)
+                        )
             except Exception:
                 self.world = saved
                 raise
         return {"status": "accepted", "events": produced}
 
-    def _apply_process(self, process: ProcessRule, command_id: str) -> dict[str, Any]:
-        before = self.world.material_dict()
-        candidate = self.world.clone()
+    def _apply_process(
+        self,
+        process: ProcessRule,
+        command_id: str,
+        candidate: World,
+        before: dict[str, Any],
+    ) -> dict[str, Any]:
         process.apply(candidate)
+        authority_violations = _engine_owned_mutations(before, candidate)
+        if authority_violations:
+            raise ScopeViolation(
+                f"process {process.rule_id} wrote engine-owned state or history: "
+                f"{authority_violations}"
+            )
         if candidate.material_dict() == before:
             return {}
         candidate.revision += 1
@@ -582,6 +747,8 @@ class Engine:
             binding=None,
             observation=None,
         )
+        candidate.commands = list(self.world.commands)
+        candidate.events = list(self.world.events)
         candidate.events.append(event)
         self.world = candidate
         return event
