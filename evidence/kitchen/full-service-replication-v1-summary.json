@@ -1,0 +1,55 @@
+{
+  "all_actual_contention_count": 1,
+  "all_ama_completion_turn": 17,
+  "all_ama_knife_take_turn": 11,
+  "all_bo_completion_turn": 9,
+  "all_bo_deliberate_knife_release_turn": 10,
+  "all_filled_both_orders": true,
+  "all_reached_terminal": true,
+  "compatibility_probe_cost_usd": 0.00079,
+  "date": "2026-09-07",
+  "execution_caveat": {
+    "compatibility_control": "A temporary, uncommitted model-registry override restored only the pinned revision's Luna native_structured_output=true capability bit. A one-turn probe confirmed the current OpenRouter route still accepted the same strict native JSON-schema path before the three replications were run.",
+    "local_llm_client_revision": "16b9eb19ae6402c23271ee8384c0508dce0f5acd",
+    "reason": "The exact pinned client commit was not present in local object stores and the private client repo did not execute the temporary export workflow.",
+    "repository_mutation_from_override": false,
+    "world_substrate_pinned_llm_client_revision": "d7a9395a1935010119f5d42a6baf55b9d707443b"
+  },
+  "fresh_replication_cost_usd": 0.028785,
+  "fresh_replications": 3,
+  "model": "openrouter/openai/gpt-5.6-luna",
+  "observability_task_cost_this_session_usd": 0.029571,
+  "prompt": "prompts/kitchen_policy.yaml",
+  "prompt_sha256": "8f3ac0a29b1ee67935646dd59796e9849c5ca6331db8ad6e8464a441bcbe408c",
+  "refused_after_retry_total": 0,
+  "requested_turn_ceiling": 30,
+  "run_cost_usd": [
+    0.009512,
+    0.010153,
+    0.00912
+  ],
+  "schema_version": "world-substrate-kitchen-replication/v1",
+  "stale_retries": [
+    4,
+    3,
+    2
+  ],
+  "traces": [
+    {
+      "path": "evidence/kitchen/full-service-replication-v1-run1.json",
+      "run": 1,
+      "sha256": "f53c45aac75b664ad5c87f44d37cd71e7e31c17f314e5f8f24e53d6c9580420f"
+    },
+    {
+      "path": "evidence/kitchen/full-service-replication-v1-run2.json",
+      "run": 2,
+      "sha256": "1d6b667a543456892791259801e8e977ad16a195eb1bf03d04e6e6931311c6f9"
+    },
+    {
+      "path": "evidence/kitchen/full-service-replication-v1-run3.json",
+      "run": 3,
+      "sha256": "68cfbfd23d04f14cd8a7ff8bbd4e8a026babc2098196804ba0697985739a6517"
+    }
+  ],
+  "world_substrate_runtime_revision": "78c205c531033a3264a8be0b42a06fac90988c45"
+}

@@ -11,9 +11,9 @@ reviewed_through: 2026-09-07
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
 **Stage:** prototype complete; flagship experiment underway  
-**Last outcome-bearing implementation:** the kitchen now has a terminal condition derived from the order state it already owns, and the contested runner treats its turn count as a ceiling: once every represented order is filled, no further policy decision is requested. This closes the thirteen post-completion turns exposed by the retained full-service run without adding a second completion flag that could drift. Before that, a complete two-agent service filled both orders with unprompted turn-taking on the single knife. See [the kitchen audit](../docs/audits/kitchen-contested-world.md) for the run that exposed the missing end condition.  
+**Last outcome-bearing result:** three fresh terminal-state kitchen services reproduced the same coordination shape under the same model and prompt: Bo filled at t9, deliberately released the knife for Ama at t10, Ama took it at t11, and both orders were complete at t17 in all three runs. The formal fresh replication is 3/3; together with the retained pre-terminal trace, four observed services show the handoff. See [the kitchen audit](../docs/audits/kitchen-contested-world.md) and `evidence/kitchen/full-service-replication-v1-summary.json`.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** determine whether the kitchen's unprompted turn-taking and knife handover are robust enough to be the demonstration rather than one good sample
+**Current strategy frontier:** turn the now-replicated kitchen service into a self-explanatory flagship artifact a person can understand without narration
 
 ## Outcome and success criteria
 
@@ -26,8 +26,9 @@ Everything below it — the seven-bullet workflow and six numbered criteria — 
 the *prototype phase*, and that phase is finished. Read the two as a sequence,
 not as alternatives: the prototype asked "do these contracts hold?", and the
 answer is yes. Phase two asks whether one world produces a robust, legible
-behavior worth showing. The kitchen is the selected attempt; robustness is the
-remaining immediate question.
+behavior worth showing. The kitchen is the selected attempt; three fresh
+replications have cleared the first robustness gate, so legibility is now the
+immediate question.
 
 A fresh agent should take three things from this section:
 
@@ -54,7 +55,8 @@ The first choices have been made, reversibly:
 - **First impressive behavior:** two agents with no communication contending
   over one knife and zero-slack ingredients, yet partitioning resources,
   waiting, and handing over the bottleneck without being instructed to
-  cooperate. Replication decides whether that is a demonstration or an anecdote.
+  cooperate. Three fresh replications reproduced the handoff; the next gate is
+  whether the evidence can explain itself to a viewer without project narration.
 
 ### The prototype phase, and its criteria (complete)
 
@@ -107,7 +109,7 @@ audits; findings live in the audit that produced them.
 - Three interaction assays exist on three different bases — declarations, differential behaviour, conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient. Evidence: [M3](../docs/audits/m3-overheat-authoring-experiment.md), [M4](../docs/audits/m4-spill-experiment.md).
 - Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has.
 - **The kitchen has a terminal state without duplicating state.** `reference_worlds/kitchen/terminal.py` derives completion from the existing `order.filled` fields, and `run_contested_world.py` stops before another policy decision once every order is filled. New contested-run outputs use schema v3 and record whether the terminal was reached. The retained `full-service-v0` evidence remains a historical v2 run: its thirteen trailing turns are the observation that motivated this fix, not current runner behavior.
-- **A complete service is still the strongest retained behavioral result.** In the retained 30-turn model run both orders were filled, Bo at turn 9 and Ama at turn 17. With no channel between them the cooks partitioned scarce ingredients on turn one, took turns on the single knife, and handed it over on completion while naming why. The prompt states the situation and says nothing about cooperating. See [the kitchen audit](../docs/audits/kitchen-contested-world.md).
+- **The complete service now replicates.** Three fresh post-terminal-state runs under the same model and prompt all filled Bo's order at t9, had Bo deliberately release the knife for Ama at t10, had Ama take it at t11, and reached world completion at t17. Actual contention was 1 in every run; stale retries varied 4/3/2 and zero attempts were refused after retry. The three service runs cost $0.028785. See [the kitchen audit](../docs/audits/kitchen-contested-world.md) and `evidence/kitchen/full-service-replication-v1-summary.json`.
 - **The kitchen became watchable only after the policy could distinguish its actions.** `describe_action` originally rendered only Castaway participant vocabulary, collapsing several kitchen choices to the same word. Fixing that moved the run from blind churn toward purposeful waiting and completion; the audit records the sequence.
 - **The kitchen was built against a measurement rather than a domain preference.** Under the same scripted policy it produces materially more contention than Castaway and does not inherit Castaway's long process waits.
 - **The observation seam is a measured design variable.** Across the M5 comparison, exposing progress, destroyed value and mechanic warnings materially changed policy outcomes without changing the mechanics. The re-run then regenerated the same failure shape at the next hidden threshold, leaving the broader threshold-observation obligation open.
@@ -174,27 +176,31 @@ The flagship choices are answered:
 - **What a viewer sees:** a rendered run with each agent's stated reasoning
   beside world truth and causal outcomes.
 
-**Where it stands.** A retained model run completes both orders and contains two
-unprompted knife handovers. The defect that made it trail for thirteen turns
-after the last plating is closed: service completion is derived from all
-`order.filled` values and the runner stops before requesting another decision.
-No model call was needed to make or verify that change.
+**Where it stands.** The service is terminal and the behavior has replicated.
+Three fresh runs under the same model and prompt all followed the same core
+sequence: Bo completes at t9, releases the knife explicitly for Ama at t10, Ama
+takes it at t11, and the world ends at t17 with both orders filled. The raw
+traces and renders are retained under `evidence/kitchen/` and
+`evidence/renders/`; the audit records the execution caveat and hashes.
 
-**Next increment: replicate the service.** The turn-taking and knife handover
-are still n=1. Run two or three fresh services under the same model and prompt:
+**Next increment: make one replicated run explain itself.** Build the flagship
+viewer from a fresh terminal trace rather than adding another mechanic or model
+run. A viewer should show, at minimum, each cook's stated reasoning, current
+order progress, what each cook holds, who holds the knife, the attempted and
+committed action, contention/retry when it occurs, and a clear service-complete
+ending. The t10 knife release and t11 takeover should be visually obvious
+without someone narrating why they matter.
 
-`python scripts/run_contested_world.py --world kitchen --model openrouter/openai/gpt-5.6-luna --turns 30 --output <path>`
-
-The turn count is now only a ceiling; successful services end at their terminal
-state. If the handover is robust, that is the demonstration. If it was one good
-sample, that is the more important result and should drive the next change.
+This is a no-spend increment. Prefer extending the existing retained-run HTML
+renderer over creating a deployment or a second world state representation.
+Publication/deployment remains a separate authority boundary.
 
 **What a fresh agent should do first.** Both cost nothing:
 
-1. **Watch the retained run.** Open `evidence/renders/kitchen-full-service.html` — it is intentionally historical and still shows the trailing turns that motivated the terminal-state fix.
+1. **Watch a fresh terminal run.** Open `evidence/renders/kitchen-full-service-replication-v1-run1.html`, then compare it with the intentionally historical `kitchen-full-service.html` that still shows the old trailing turns.
 2. **Run the scripted world.** `python scripts/run_contested_world.py --world kitchen --turns 12` uses scripted policies and costs nothing.
 
-**What not to do.** Do not add more contracts or general hardening simply because it is available. The next uncertainty is behavioral replication, not substrate assurance.
+**What not to do.** Do not add more contracts, general hardening, or more same-configuration model runs simply because they are available. The next uncertainty is viewer legibility, not substrate assurance or another replication count.
 
 ## Open obligations
 
@@ -239,7 +245,7 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Offline pre-run mechanics authoring | human-set direction | runtime law changes deferred |
 | Kitchen as first flagship world | answered 2026-09-04 | reversible product direction |
 | Rendered reasoning beside world truth as viewer surface | answered | publication/deployment remains separate |
-| Scarce-resource coordination as first impressive behavior | answered | replication is the current gate |
+| Scarce-resource coordination as first impressive behavior | answered | 3/3 fresh replications cleared the first robustness gate; viewer legibility is current |
 | Second reference-world domain | answered: workshop (M6) | complete |
 
 ## Evidence and review artifacts
@@ -256,12 +262,12 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | A policy can drive the world | M5 audit and retained trace | one model/prompt/world slice | met |
 | Global causal closure is proven | none | not generally decidable from author declarations | rejected claim |
 | Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
-| Kitchen service completes | retained `full-service-v0` evidence | one model run | established once, replication pending |
+| Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
 
 ## Risks and needs resolution
 
-- The kitchen's cooperative-looking handover may be sample luck rather than robust behavior.
+- The kitchen handoff repeated in 3/3 fresh same-model/prompt runs, but robustness across models, prompts, or changed world conditions is still unknown.
 - Linguistic breadth can hide mechanical sparsity.
 - A generic component model can become an untyped property bag.
 - Broad LLM adjudication can bypass local causal authority.
@@ -276,11 +282,11 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 
 | Decision | State | What it means now |
 | --- | --- | --- |
-| Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | fresh replication runs may spend within the standing cap |
+| Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; the next viewer increment needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
 | What a viewer actually sees | **answered: rendered reasoning beside world truth** | deployment/publication remains separately controlled |
-| What "sophisticated" means first | **answered: scarce-resource coordination without communication** | replication, not another feature, is the current test |
+| What "sophisticated" means first | **answered: scarce-resource coordination without communication** | the behavior replicated; self-explanatory presentation is the current test |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
 ## Refresh and reset triggers
@@ -289,14 +295,18 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Nothing is in progress once the terminal-state branch is merged.
+Turn one fresh terminal replication into the first self-explanatory flagship
+viewer. Extend the existing run renderer so a person can see order progress,
+held objects, knife ownership, reasoning, intended/committed actions, contention
+and the t17 terminal state in one timeline. The t10 release-for-Ama and t11
+knife takeover must be understandable without project-specific narration.
 
-Repeat the kitchen service two or three times with the same model and prompt to
-measure whether the unprompted knife handover is robust. The runner now stops at
-world completion, so do not compare raw requested turn counts; compare whether
-both orders fill, completion turn, contention/displacement, and whether the
-knife is deliberately released when a cook finishes.
+Do not call a model for this increment. Use the retained v3 replication traces
+as the input and keep the viewer detachable from canonical state.
 
-Model calls are authorized under a $2 cap and have cost **$0.123** to date.
-Read that figure from the observability DB with `get_cost(task=...)` across the
-`world-substrate-*` tasks rather than adding up per-run numbers.
+The historical pre-replication roadmap recorded **$0.123** of model spend. The
+current single-copy observability DB no longer contains that older task history;
+it records **$0.029571** for this session's compatibility probe and replication
+calls. Keep those figures separate rather than replacing the historical lifetime
+number with a falsely lower current-DB total or manually inventing a new
+lifetime total.
