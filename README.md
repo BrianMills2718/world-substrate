@@ -14,6 +14,18 @@ The project combines:
 
 Exact replay is an implemented M1 capability, not a project-wide requirement. See [Decision 002](docs/decisions/002-observability-and-replay.md).
 
+**Part of a wider research cluster.** This repo is the one applied consumer
+in a wider cluster on canonical semantic representation and capability reuse
+for AI-generated software: it consumes
+[`linguistic-core`](https://github.com/BrianMills2718/linguistic-core) for
+action/effect grounding, with a narrower, applied need than the cluster's
+other vocabulary/compiler repos (`factgraph`, `hypergraph-schema-ir`,
+`semantic-foundry`, `requirement-to-runtime-semantic-compiler`). For current
+state, open cross-repo decisions, and how these repos relate, see the
+baseline synthesis page in
+[`BrianMills2718/vision`](https://github.com/BrianMills2718/vision):
+[`wiki/synthesis/ontology-semantic-cluster-baseline-2026-09-07.md`](https://github.com/BrianMills2718/vision/blob/main/wiki/synthesis/ontology-semantic-cluster-baseline-2026-09-07.md).
+
 Start with:
 
 1. [Project wiki](docs/wiki/README.md) — orientation, terminology, sources, and task routes.
