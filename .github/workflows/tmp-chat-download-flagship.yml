@@ -1,0 +1,16 @@
+name: tmp-chat-download-flagship
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kitchen-flagship-viewer
+          path: evidence/renders/kitchen-flagship-v1.html
+          retention-days: 1
