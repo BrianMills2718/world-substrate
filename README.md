@@ -40,11 +40,11 @@ Start with:
 
 Phase one specified, built, and tested the substrate contracts. The two small reference worlds — Castaway and the workshop — exist to prove those contracts work and transfer. Phase two is about making one world worth showing rather than adding more assurance to the substrate for its own sake.
 
-The flagship world is a kitchen where two cooks with different orders share one knife, two burners, and exactly enough ingredients that waste loses a dish. Three fresh terminal-state services reproduced the same unprompted handoff: Bo finishes at t9, releases the knife explicitly for Ama at t10, Ama takes it at t11, and both orders are complete at t17. `evidence/renders/kitchen-flagship-v1.html` turns one of those retained traces into a self-explanatory timeline showing reasoning beside order progress, holdings, knife ownership and causal actions. See [the kitchen audit](docs/audits/kitchen-contested-world.md) for the evidence and caveats, and the [roadmap](roadmap/README.md#vertical-slices-and-current-work) for the remaining human boundary.
+The flagship world is a kitchen where two cooks with different orders share one knife, two burners, and exactly enough ingredients that waste loses a dish. Three fresh terminal-state services reproduced the same unprompted handoff: Bo finishes at t9, releases the knife explicitly for Ama at t10, Ama takes it at t11, and both orders are complete at t17. `evidence/renders/kitchen-spatial-replay-v1.html` turns one retained trace into a graphical top-down replay: the cooks move between prep, burner and plating stations while the knife, ingredients, orders and short reasoning bubbles update from the recorded service. The geometry is illustrative; the causal state comes from the trace. See [the kitchen audit](docs/audits/kitchen-contested-world.md) for the evidence and caveats, and the [roadmap](roadmap/README.md#vertical-slices-and-current-work) for the remaining human boundary.
 
 If you are picking this up cold:
 
-1. **Watch the flagship** — open `evidence/renders/kitchen-flagship-v1.html`. Read each cook on the outside and the shared world state in the center; t10/t11 is the knife handoff.
+1. **Watch the flagship replay** — open `evidence/renders/kitchen-spatial-replay-v1.html`. It autoplays the 17-turn kitchen service as a top-down scene; t10/t11 is the knife handoff.
 2. **Run one** — `python scripts/run_contested_world.py --world kitchen --turns 12` uses scripted policies and costs nothing.
 3. **Read the roadmap's active slice** before changing direction. The next unresolved step is a human review/publication choice, not another substrate feature.
 
