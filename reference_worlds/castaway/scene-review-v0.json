@@ -1,0 +1,176 @@
+{
+  "scene_id": "castaway-camp-v0",
+  "title": "Castaway replay: water at camp",
+  "subtitle": "A second real-world scene profile rendered by the same generic replay engine. Geometry is illustrative; actions and actor health come from the retained scripted trace.",
+  "note": "This portability proof uses scripted policies and costs nothing. It intentionally exercises different actions and progress fields from the kitchen.",
+  "autoplay_seconds": 1.8,
+  "scene": {
+    "aspect_ratio": "16 / 9",
+    "background": "#d8c79e",
+    "grid_color": "#9f8c6650",
+    "grid_size_px": 72,
+    "shell_background": "#162027",
+    "decor": [
+      {
+        "kind": "rect",
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 18,
+        "fill": "#9bc0d6",
+        "border_bottom": "#607d8b"
+      },
+      {
+        "kind": "rect",
+        "x": 0,
+        "y": 18,
+        "w": 100,
+        "h": 12,
+        "fill": "#d9c48e",
+        "border_bottom": "#aa8f5f"
+      }
+    ]
+  },
+  "actors": {
+    "robinson": {
+      "accent": "#4e7db8",
+      "home": [
+        30,
+        60
+      ],
+      "carry_offset": [
+        -6,
+        4
+      ],
+      "carry_spacing": [
+        0,
+        6
+      ]
+    },
+    "friday": {
+      "accent": "#a05a45",
+      "home": [
+        70,
+        60
+      ],
+      "carry_offset": [
+        7,
+        4
+      ],
+      "carry_spacing": [
+        0,
+        6
+      ]
+    }
+  },
+  "stations": {
+    "unsafe-pool": {
+      "label": "Unsafe pool",
+      "rect": [
+        5,
+        20,
+        24,
+        25
+      ],
+      "fill": "#6da9c7",
+      "actor_anchors": {
+        "robinson": [
+          24,
+          43
+        ],
+        "friday": [
+          29,
+          43
+        ]
+      },
+      "item_anchor": [
+        17,
+        31
+      ]
+    },
+    "pot-area": {
+      "presentation_only": true,
+      "label": "Camp vessels",
+      "role": "surface",
+      "rect": [
+        38,
+        40,
+        26,
+        24
+      ],
+      "fill": "#9c7550",
+      "actor_anchors": {
+        "robinson": [
+          35,
+          52
+        ],
+        "friday": [
+          67,
+          52
+        ]
+      },
+      "item_anchor": [
+        51,
+        51
+      ]
+    },
+    "fire-camp": {
+      "rect": [
+        72,
+        20,
+        18,
+        22
+      ],
+      "fill": "#67513e",
+      "actor_anchor": [
+        70,
+        43
+      ],
+      "item_anchor": [
+        81,
+        31
+      ]
+    }
+  },
+  "entities": {
+    "clay-pot": {
+      "home": [
+        51,
+        51
+      ],
+      "label": "clay pot"
+    },
+    "cup-robinson": {
+      "home": [
+        30,
+        60
+      ],
+      "label": "metal cup"
+    }
+  },
+  "action_visuals": {
+    "fill": {
+      "label_template": "fill {vessel} from {source}",
+      "set_state": "filled",
+      "activate_station_from": "source"
+    },
+    "drink": {
+      "label_template": "drink {volume_ml} ml from {vessel}",
+      "actor_target": {
+        "station": "pot-area"
+      },
+      "set_state": "used"
+    }
+  },
+  "moment_rules": [
+    {
+      "id": "contention",
+      "when": "retry_unavailable",
+      "label": "\u26a1 plan displaced"
+    }
+  ],
+  "reviewed_actions": [
+    "drink",
+    "fill"
+  ]
+}
