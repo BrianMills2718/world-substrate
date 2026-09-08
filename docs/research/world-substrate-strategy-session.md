@@ -17,6 +17,8 @@ authority_refs:
 **Last updated:** 2026-09-02  
 **Purpose:** Preserve the project's evolving theory, decisions, hypotheses, requirements, risks, and open questions before changing the World Substrate repository.
 
+**Follow-on research:** [Competitive landscape — generative agents, social simulation, and governed worlds](competitive-landscape-2026-09.md) compares the project's causal-authoring layer with Concordia, AgentSociety, OASIS, SOTOPIA, Generative Agents, PettingZoo, and Melting Pot.
+
 ## 1. Product thesis
 
 World Substrate is intended to support persistent worlds in which agents and non-agent processes have causal effects. Its vocabulary should draw heavily from existing linguistic and ontological resources, while executable mechanics should be added only where a selected world needs them.
