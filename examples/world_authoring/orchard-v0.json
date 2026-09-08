@@ -1,0 +1,69 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "orchard",
+    "label": "Orchard",
+    "summary": "One worker can eventually pick ripe fruit from a represented tree.",
+    "location": "orchard",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "worker",
+      "fields": [
+        {"name": "stamina", "type": "integer", "default": 10}
+      ]
+    },
+    {
+      "name": "fruit",
+      "fields": [
+        {"name": "stage", "type": "string", "default": "ripe"},
+        {"name": "tree_id", "type": "entity_ref", "default": "tree-1"}
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "ava",
+      "label": "Ava",
+      "categories": ["worker"],
+      "components": {"worker": {"stamina": 10}}
+    },
+    {
+      "id": "tree-1",
+      "label": "Apple tree",
+      "categories": ["tree"],
+      "components": {}
+    },
+    {
+      "id": "apple-1",
+      "label": "Apple",
+      "categories": ["fruit"],
+      "portable": true,
+      "owner_ref": "place:orchard",
+      "components": {"fruit": {"stage": "ripe", "tree_id": "tree-1"}}
+    }
+  ],
+  "actions": [
+    {
+      "kind": "pick",
+      "description": "Pick one represented fruit.",
+      "fields": [
+        {"name": "fruit", "type": "entity_ref"}
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "worker": {"kind": "emoji", "value": "🧑‍🌾"},
+      "fruit": {"kind": "emoji", "value": "🍎"}
+    },
+    "category_assets": {
+      "worker": "worker",
+      "fruit": "fruit"
+    },
+    "station_roles": {
+      "tree": "source"
+    }
+  }
+}

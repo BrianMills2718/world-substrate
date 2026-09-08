@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world-substrate-authoring-bundle/v0",
+  "title": "World Substrate authoring bundle v0",
+  "type": "object",
+  "required": ["schema_version", "world", "components", "entities", "actions", "presentation"],
+  "properties": {
+    "schema_version": {"const": "world-substrate-authoring-bundle/v0"},
+    "world": {
+      "type": "object",
+      "required": ["id", "label", "summary", "location"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+        "label": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "location": {"type": "string", "minLength": 1},
+        "content_version": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "fields"],
+        "properties": {
+          "name": {"type": "string"},
+          "fields": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["name", "type", "default"],
+              "properties": {
+                "name": {"type": "string"},
+                "type": {"enum": ["string", "integer", "number", "boolean", "string_list", "entity_ref", "entity_ref_or_null"]},
+                "default": {}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "categories"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "label": {"type": "string", "minLength": 1},
+          "categories": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "location": {"type": "string"},
+          "portable": {"type": "boolean"},
+          "owner_ref": {"type": "string"},
+          "components": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "description", "fields"],
+        "properties": {
+          "kind": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "description": {"type": "string", "minLength": 1},
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": {"type": "string"},
+                "type": {"enum": ["string", "integer", "number", "boolean", "entity_ref"]}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "required": ["assets", "category_assets", "station_roles"],
+      "properties": {
+        "assets": {"type": "object"},
+        "category_assets": {"type": "object"},
+        "station_roles": {"type": "object"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

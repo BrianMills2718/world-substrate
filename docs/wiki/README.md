@@ -88,7 +88,7 @@ The substrate prototype is complete and the flagship phase has produced its firs
 
 The baseline authoring workflow is now proven **after** the product surface existed. Greenhouse added a new `water` mechanic, shared-tool handoff, terminal state, retained real-engine trace and Automatic replay without a scene review file or world-specific visualization branch. It exposed two reusable assumptions: `take`/`put_down` labels had hard-coded an `item` field, and one action could not visually update two represented entities. The former moved to trace-inferred labels; the latter added generic declarative `state_effects`, so `water` can show both the plant becoming watered and the can becoming empty.
 
-That clears the current product hypothesis. Do not add a fifth generic replay proof automatically. The next boundary is an explicit product choice about how a person should create or import worlds — a schema/form workflow, code-first starter kit, or a specific next domain. Deployment/publication remains separately controlled.
+The authoring product direction is now selected: **both code-first starter and visual/schema builder**, sharing one bundle contract. The code-first starter is implemented at `scripts/scaffold_world.py`; its generated rule stubs always refuse until causal mechanics are implemented and reviewed. The next boundary is the local visual builder over that same bundle. Deployment/publication remains separately controlled.
 
 ## Architecture and workflow
 
