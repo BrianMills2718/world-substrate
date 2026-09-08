@@ -18,7 +18,7 @@ scene choices into mandatory world-authoring work?
 It packages the existing replay documents byte-for-byte and provides a product
 shell around them:
 
-- Kitchen, Castaway, and Workshop world navigation;
+- Kitchen, Castaway, Workshop, and Greenhouse world navigation;
 - Automatic vs Polished variant switching;
 - existing replay playback/step controls inside the embedded document;
 - an "open replay alone" action;
@@ -30,7 +30,7 @@ shell around them:
 belong to a world. Actor/action/turn/model/bootstrap metadata is read from the
 retained zero-review profile and trace instead of copied into product code.
 
-The six embedded replay documents are base64-packaged only for standalone
+The seven embedded replay documents are base64-packaged only for standalone
 portability. Tests decode each one and compare it byte-for-byte with the retained
 artifact.
 
@@ -53,14 +53,22 @@ navigates retained replay artifacts.
 Focused tests cover manifest validation, retained metadata, byte-exact replay
 embedding, deterministic single-file regeneration, and domain isolation in the
 Studio renderer. Real Chrome renders were inspected for polished Kitchen and
-automatic Kitchen/Castaway/Workshop at a laptop-scale viewport.
+automatic Kitchen/Castaway/Workshop at a laptop-scale viewport; Greenhouse was later inspected both standalone and inside the Studio.
 
-## Next product proof
+## Fourth-world product proof
 
-Do not add more generic replay machinery just because the Studio exists. The
-next useful test is the user workflow on a fourth genuinely new world: author the
-world model/mechanics/relationships/assets, retain a no-spend run, and obtain a
-watchable Automatic replay without writing visualization code. Only a concrete
-failure in that flow should reopen generic replay architecture.
+The next proof was completed with Greenhouse after this Studio existed. It added
+real `take` / `fill` / `water` / `put_down` mechanics, a represented garden bed,
+a shared watering-can handoff, a retained zero-spend engine run, and a
+zero-review Automatic replay. No world-specific visualization code was added.
+The Studio now includes Greenhouse as an Automatic-only world; no Polished
+variant is fabricated where none has been authored.
 
-Deployment and publication remain separate authority boundaries.
+See [the Greenhouse authoring proof](greenhouse-authoring-proof.md).
+
+## Current boundary
+
+The baseline product workflow is demonstrated. Further replay/Studio framework
+work should wait for an explicit world-authoring product choice or a concrete
+failure from a real user/domain. Deployment and publication remain separate
+authority boundaries.

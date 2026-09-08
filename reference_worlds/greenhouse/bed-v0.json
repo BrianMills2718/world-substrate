@@ -1,0 +1,59 @@
+{
+  "schema_version": "world-substrate-reference-world/v0",
+  "world_id": "greenhouse-bed-v0",
+  "content_id": "world-substrate-greenhouse@1",
+  "source": {
+    "repository": "world-substrate",
+    "authored_for": "fourth-world authoring workflow proof",
+    "note": "Two gardeners share one watering can, one tap, one represented garden bed, and two dry plants."
+  },
+  "entities": [
+    {
+      "entity_id": "nora",
+      "label": "Nora",
+      "category_ids": ["gardener"],
+      "location": {"location_id": "greenhouse"}
+    },
+    {
+      "entity_id": "leo",
+      "label": "Leo",
+      "category_ids": ["gardener"],
+      "location": {"location_id": "greenhouse"}
+    },
+    {
+      "entity_id": "tap-1",
+      "label": "Water tap",
+      "category_ids": ["liquid_source"],
+      "location": {"location_id": "greenhouse"}
+    },
+    {
+      "entity_id": "bed-1",
+      "label": "Garden bed",
+      "category_ids": ["garden_bed"],
+      "location": {"location_id": "greenhouse"}
+    },
+    {
+      "entity_id": "can-1",
+      "label": "Watering can",
+      "category_ids": ["watering_can"],
+      "location": {"location_id": "greenhouse"},
+      "portable": {"portable": true},
+      "ownership": {"owner_ref": "place:greenhouse"},
+      "components": {"watering_can": {"state": "empty"}}
+    },
+    {
+      "entity_id": "fern-1",
+      "label": "Fern",
+      "category_ids": ["plant"],
+      "location": {"location_id": "greenhouse"},
+      "components": {"plant": {"stage": "dry", "bed_id": "bed-1"}}
+    },
+    {
+      "entity_id": "tomato-1",
+      "label": "Tomato plant",
+      "category_ids": ["plant"],
+      "location": {"location_id": "greenhouse"},
+      "components": {"plant": {"stage": "dry", "bed_id": "bed-1"}}
+    }
+  ]
+}

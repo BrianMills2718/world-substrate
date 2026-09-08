@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; local World Replay Studio implemented; Automatic replay is the authoring baseline
-**Last outcome-bearing result:** `world-replay-studio-v0.html` packages all six retained Automatic/Polished replay documents into one standalone local browser surface. The embedded replay bytes remain exact; world/variant navigation, replay-alone opening, retained profile/trace metadata, and URL initial selection were visually checked across Kitchen, Castaway, and Workshop. Automatic is now the default authoring baseline; Polished remains optional art direction.
+**Stage:** prototype complete; World Replay Studio implemented; fourth-world Automatic authoring workflow proven on Greenhouse
+**Last outcome-bearing result:** Greenhouse was authored after the Automatic baseline and Studio existed: two gardeners share one watering can, refill it at a represented tap, water two plants in a represented bed, and reach a derived terminal state in seven accepted real-engine commits. The zero-review bootstrap has no TODOs, the generic renderer contains no Greenhouse ids, and the Automatic replay is in the Studio. The fourth world exposed two reusable presentation gaps before merge: `take`/`put_down` labels assumed an `item` field, and a single action could not project state changes onto two represented entities. Labels now use trace-inferred fields, and generic declarative `state_effects` lets `water` show both plant→watered and can→empty without a Greenhouse code branch.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** prove the complete authoring workflow on a fourth genuinely new world without visualization code; generic replay architecture reopens only if that real world exposes a concrete gap; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** explicit product choice for how humans author/import new worlds; no additional generic replay proof or framework increment without a concrete product requirement or real-world failure; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -166,26 +166,21 @@ observable attempt or trigger
 | M7b: relational authoring | complete | authored mechanics using one cross-entity relation | promoted |
 | M8: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
-### Active slice: local replay product surface
+### Active slice: fourth-world authoring workflow
 
-**Complete.** `evidence/renders/world-replay-studio-v0.html` is a standalone local browser surface over the retained graphical replays. It embeds the existing replay HTML byte-for-byte rather than reimplementing them, so their playback behavior and causal presentation remain owned by the retained artifacts.
+**Complete.** Greenhouse was created after the Automatic replay baseline and World Replay Studio were already in place, making it a true workflow test rather than a backfit.
 
-The Studio exposes three real worlds and two presentation layers where available:
+The world represents two gardeners, one shared watering can, a water tap, a garden bed, and two dry plants. Its new `water` action names the can, plant and bed and commits both can/plant state changes through the ordinary transition kernel. A seven-turn deterministic run hands the can from Nora to Leo through represented ownership, waters both plants, reaches the derived terminal predicate, costs zero, and passes exact engine replay.
 
-- **Automatic** — the declaration-driven authoring baseline; no per-world review overlay is required for functional generation;
-- **Polished** — optional scene composition/art direction over the same retained behavior.
+The replay path then used only the world model, retained run, shared asset/presentation catalog and deterministic auto-layout. It produced a zero-TODO Automatic profile and visually legible replay **without a Greenhouse review overlay or world-specific renderer/bootstrap branch**. The represented garden-bed relationship gives auto-layout enough information to place the plants in the bed; the can starts at the source.
 
-The product shell adds world navigation, Automatic/Polished switching, an open-replay-alone action, and secondary metadata derived from retained profiles/traces. It is a read-only product surface: no mechanics, trace mutation, or canonical-state write path exists in it.
+Greenhouse exposed two real shared assumptions. Generic `take`/`put_down` presentation labels had hard-coded an `item` field, while the substrate `TakeAction` calls its referent `vessel`; labels now use the trace-inferred field. More importantly, `water` changes both the plant and the can, while prior scene projection could set state only on one primary visual entity. The new generic declarative `state_effects` list projects additional explicit entity state changes, so the plant becomes `watered` and the can returns to `empty`. Neither change adds Greenhouse ids to generic code.
 
-**Engineering/product conclusion.** A new world should now be authored against the Automatic path first. Polishing is a separate product decision, not a prerequisite for world creation.
+The World Replay Studio now lists four real worlds; Greenhouse is Automatic-only because no polished scene was authored.
 
-**What a fresh agent should do first.** All cost nothing:
+**Conclusion.** The baseline sequence — represented world → mechanics/terminal → retained run → shared presentation declarations → Automatic replay → Studio — works end to end on a new world.
 
-1. Open `evidence/renders/world-replay-studio-v0.html` and compare Kitchen Automatic vs Polished.
-2. Read `docs/audits/world-replay-studio.md` and the zero-review audits.
-3. Build the next new world through the baseline workflow before changing generic replay code.
-
-**What not to do.** Do not add Studio server infrastructure, generic renderer primitives, or per-world visualization code without a demonstrated requirement. Do not turn illustrative/polished presentation into canonical world truth. Deployment/publication remains separately controlled.
+**What not to do.** Do not manufacture a Polished Greenhouse merely to fill a toggle, add more generic replay primitives without evidence, or turn presentation coordinates into world truth. Deployment/publication remains separately controlled.
 
 ## Open obligations
 
@@ -249,8 +244,8 @@ The compiler or installer can establish declared enforcement coverage. Causal cl
 | Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
 | Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
 | Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
-| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, Kitchen + Castaway + Workshop profiles, lab tests | v0 is 2D and v3-envelope-oriented | **established on three real worlds; multi-item station layout closed generically** |
-| Scene-profile bootstrapper reduces review-only authoring | bootstrapper + shared presentation catalog + Workshop/Castaway/Kitchen zero-review audits | zero-review defaults are plain; optional polish remains | **zero-review functional on all three real replay worlds; Workshop polish 34.3%** |
+| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, Kitchen + Castaway + Workshop + Greenhouse profiles, lab tests | v0 is 2D and v3-envelope-oriented | **established on four real worlds; Greenhouse required no renderer branch** |
+| Scene-profile bootstrapper reduces review-only authoring | bootstrapper + shared presentation catalog + Workshop/Castaway/Kitchen/Greenhouse zero-review audits | zero-review defaults are plain; optional polish remains | **zero-review functional on four real worlds; Greenhouse proves the post-product authoring workflow** |
 | Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
 | Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
 
@@ -275,7 +270,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered: World Replay Studio over Automatic baselines plus optional Polished variants** | fourth-world authoring is the next product proof; publication/deployment remains separately controlled |
+| What a viewer actually sees | **answered: World Replay Studio over Automatic baselines plus optional Polished variants** | fourth-world workflow is proven; next choice is the human world-authoring/import surface; publication/deployment remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -285,9 +280,9 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-Author a **fourth genuinely new reference world** end to end through the current baseline workflow. It should have represented entities/relationships and at least one behavior not already present as a trivial copy of Kitchen/Castaway/Workshop. Produce a deterministic no-spend retained run, add only the shared asset/presentation declarations justified by that world, and generate its Automatic replay through bootstrap + auto-layout **without writing world-specific visualization code**. Add it to the World Replay Studio only after that replay passes visual review.
+**Choose the human world-authoring/import surface before adding more framework code.** The fourth-world Greenhouse proof established that the current code-first baseline can create a new represented world and obtain a Studio-ready Automatic replay without visualization code. The next product increment therefore depends on the desired author experience: for example a schema/form-driven world builder, a code-first starter package, or a specific real domain supplied by the user.
 
-Treat any need for a renderer/bootstrap branch as a portability finding first, not an invitation to special-case the new world. No model call, deployment, or publication is required for this gate.
+Until that choice is explicit, keep the existing Studio/Automatic pipeline stable. No model call, deployment, or publication is required at this boundary.
 
 The historical pre-replication roadmap recorded **$0.123** of model spend. The
 current single-copy observability DB no longer contains that older task history;

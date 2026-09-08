@@ -41,13 +41,13 @@ Start with:
 
 Phase one specified, built, and tested the substrate contracts. The two small reference worlds — Castaway and the workshop — exist to prove those contracts work and transfer. Phase two is about making one world worth showing rather than adding more assurance to the substrate for its own sake.
 
-The flagship world is a kitchen where two cooks with different orders share one knife, two burners, and exactly enough ingredients that waste loses a dish. Three fresh terminal-state services reproduced the same unprompted handoff: Bo finishes at t9, releases the knife explicitly for Ama at t10, Ama takes it at t11, and both orders are complete at t17. The graphical replay layer is generic and zero-review generation is proven on Workshop, Castaway, and Kitchen. `evidence/renders/world-replay-studio-v0.html` is now the primary local viewing surface: one standalone file embeds the retained Automatic and Polished replays for all three worlds, with world/variant switching and secondary provenance metadata. **Automatic is the authoring baseline; Polished is optional art direction.** The Studio packages retained replays and has no simulation authority. See [the Studio audit](docs/audits/world-replay-studio.md), [scene profile v0](docs/contracts/scene-profile-v0.md), and the [roadmap](roadmap/README.md#vertical-slices-and-current-work).
+The flagship world is still the replicated Kitchen service, but the authoring/product workflow is now broader than that flagship. `evidence/renders/world-replay-studio-v0.html` is the primary local viewing surface and now contains **four real worlds**: Kitchen, Castaway, Workshop, and a newly authored Greenhouse. Greenhouse was created after the Automatic baseline and Studio already existed; its real engine mechanics, shared watering-can handoff, new `water` behavior, retained zero-spend run, zero-review replay, and Studio entry were produced without world-specific visualization code. **Automatic is the authoring baseline; Polished is optional art direction.** See [the Greenhouse proof](docs/audits/greenhouse-authoring-proof.md), [the Studio audit](docs/audits/world-replay-studio.md), and the [roadmap](roadmap/README.md#vertical-slices-and-current-work).
 
 If you are picking this up cold:
 
-1. **Open the Studio** — `evidence/renders/world-replay-studio-v0.html`. Start with Kitchen and switch between Automatic and Polished; t10/t11 is the knife handoff.
-2. **Run one** — `python scripts/run_contested_world.py --world kitchen --turns 12` uses scripted policies and costs nothing.
-3. **Read the roadmap's active slice** before changing direction. The next proof is a fourth new world authored through the baseline workflow; do not add generic replay machinery unless that world exposes a concrete failure.
+1. **Open the Studio** — `evidence/renders/world-replay-studio-v0.html`. Compare the polished Kitchen with Automatic Greenhouse.
+2. **Run the fourth-world proof** — `PYTHONPATH=src:. python scripts/run_greenhouse_fixture.py --output /tmp/greenhouse.json` costs nothing and drives the real engine.
+3. **Read the roadmap's active slice** before changing direction. The baseline workflow is now proven end to end; the next step is a product choice about how humans should author/import worlds, not more generic replay machinery.
 
 There is still no deployment, and no repository outside this one imports `world_substrate`.
 
