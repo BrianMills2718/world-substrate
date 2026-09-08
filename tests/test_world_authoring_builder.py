@@ -100,6 +100,10 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("trace_id:payload.trace_id", source)
         self.assertIn("replay_html hidden on-screen", source)
         self.assertIn("exact replay HTML", source)
+        self.assertIn("filteredLiveLog", source)
+        self.assertIn("Search logs", source)
+        self.assertIn("Errors only", source)
+        self.assertIn("Copy filtered logs", source)
         self.assertIn('data-section="logs"', HTML.read_text())
 
     def test_core_rejects_unknown_entity_reference(self):
