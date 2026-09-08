@@ -17,7 +17,7 @@
       },
       "participants": {},
       "parameters": {
-        "destination": [
+        "location": [
           "staging",
           "dock-a",
           "dock-b"
@@ -38,7 +38,7 @@
           }
         },
         {
-          "label": "destination differs from current location",
+          "label": "location differs from current location",
           "left": {
             "participant": {
               "name": "actor",
@@ -47,7 +47,7 @@
           },
           "op": "ne",
           "right": {
-            "action_field": "destination"
+            "action_field": "location"
           }
         },
         {
@@ -70,7 +70,7 @@
           "path": "location.location_id",
           "op": "set",
           "value": {
-            "action_field": "destination"
+            "action_field": "location"
           }
         },
         {
@@ -294,7 +294,7 @@
         }
       },
       "parameters": {
-        "destination": [
+        "location": [
           "staging",
           "dock-a",
           "dock-b"
@@ -331,7 +331,7 @@
           }
         },
         {
-          "label": "destination differs from current location",
+          "label": "location differs from current location",
           "left": {
             "participant": {
               "name": "actor",
@@ -340,7 +340,7 @@
           },
           "op": "ne",
           "right": {
-            "action_field": "destination"
+            "action_field": "location"
           }
         },
         {
@@ -363,7 +363,7 @@
           "path": "location.location_id",
           "op": "set",
           "value": {
-            "action_field": "destination"
+            "action_field": "location"
           }
         },
         {
@@ -371,7 +371,7 @@
           "path": "location.location_id",
           "op": "set",
           "value": {
-            "action_field": "destination"
+            "action_field": "location"
           }
         },
         {
@@ -422,7 +422,7 @@
         }
       },
       "parameters": {
-        "destination": [
+        "dock": [
           "dock-a",
           "dock-b"
         ]
@@ -519,7 +519,7 @@
           "path": "location.location_id",
           "op": "set",
           "value": {
-            "action_field": "destination"
+            "action_field": "dock"
           }
         },
         {
@@ -527,7 +527,7 @@
           "path": "location.location_id",
           "op": "set",
           "value": {
-            "action_field": "destination"
+            "action_field": "dock"
           }
         },
         {
@@ -535,7 +535,7 @@
           "path": "location.location_id",
           "op": "set",
           "value": {
-            "action_field": "destination"
+            "action_field": "dock"
           }
         },
         {
@@ -670,18 +670,18 @@
           }
         },
         {
-          "label": "cargo destination matches truck",
+          "label": "cargo route matches truck route",
           "left": {
             "participant": {
               "name": "cargo",
-              "path": "components.cargo.destination"
+              "path": "components.cargo.route"
             }
           },
           "op": "eq",
           "right": {
             "participant": {
               "name": "truck",
-              "path": "components.truck.destination"
+              "path": "components.truck.route"
             }
           }
         },

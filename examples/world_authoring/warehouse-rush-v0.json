@@ -32,7 +32,7 @@
           "default": "staged"
         },
         {
-          "name": "destination",
+          "name": "route",
           "type": "string",
           "default": "east"
         },
@@ -52,7 +52,7 @@
           "default": "loading"
         },
         {
-          "name": "destination",
+          "name": "route",
           "type": "string",
           "default": "east"
         },
@@ -156,8 +156,8 @@
       "components": {
         "cargo": {
           "status": "staged",
-          "destination": "east",
-          "assigned_truck": null
+          "assigned_truck": null,
+          "route": "east"
         }
       }
     },
@@ -171,8 +171,8 @@
       "components": {
         "cargo": {
           "status": "staged",
-          "destination": "east",
-          "assigned_truck": null
+          "assigned_truck": null,
+          "route": "east"
         }
       }
     },
@@ -186,8 +186,8 @@
       "components": {
         "cargo": {
           "status": "staged",
-          "destination": "east",
-          "assigned_truck": null
+          "assigned_truck": null,
+          "route": "east"
         }
       }
     },
@@ -201,8 +201,8 @@
       "components": {
         "cargo": {
           "status": "staged",
-          "destination": "west",
-          "assigned_truck": null
+          "assigned_truck": null,
+          "route": "west"
         }
       }
     },
@@ -216,8 +216,8 @@
       "components": {
         "cargo": {
           "status": "staged",
-          "destination": "west",
-          "assigned_truck": null
+          "assigned_truck": null,
+          "route": "west"
         }
       }
     },
@@ -231,8 +231,8 @@
       "components": {
         "cargo": {
           "status": "staged",
-          "destination": "west",
-          "assigned_truck": null
+          "assigned_truck": null,
+          "route": "west"
         }
       }
     },
@@ -246,9 +246,9 @@
       "components": {
         "truck": {
           "status": "loading",
-          "destination": "east",
           "capacity": 3,
-          "loaded": 0
+          "loaded": 0,
+          "route": "east"
         }
       }
     },
@@ -262,9 +262,9 @@
       "components": {
         "truck": {
           "status": "loading",
-          "destination": "west",
           "capacity": 3,
-          "loaded": 0
+          "loaded": 0,
+          "route": "west"
         }
       }
     }
@@ -272,10 +272,10 @@
   "actions": [
     {
       "kind": "move",
-      "description": "Walk empty-handed to one represented warehouse location.",
+      "description": "Walk empty-handed to one represented warehouse location: staging, dock-a, or dock-b.",
       "fields": [
         {
-          "name": "destination",
+          "name": "location",
           "type": "string"
         }
       ]
@@ -302,21 +302,21 @@
     },
     {
       "kind": "drive-forklift",
-      "description": "Drive a held colocated forklift without cargo to one represented warehouse location; worker and forklift arrive together.",
+      "description": "Drive a held colocated forklift without cargo to one represented warehouse location: staging, dock-a, or dock-b; worker and forklift arrive together.",
       "fields": [
         {
           "name": "forklift",
           "type": "entity_ref"
         },
         {
-          "name": "destination",
+          "name": "location",
           "type": "string"
         }
       ]
     },
     {
       "kind": "transport-cargo",
-      "description": "Drive a held forklift with one staged cargo unit from staging to a selected dock; worker and cargo arrive together.",
+      "description": "Drive a held forklift with one staged cargo unit from staging to one physical dock, dock-a or dock-b; route labels east/west are NOT dock ids. Worker, forklift, and cargo arrive together.",
       "fields": [
         {
           "name": "cargo",
@@ -327,14 +327,14 @@
           "type": "entity_ref"
         },
         {
-          "name": "destination",
+          "name": "dock",
           "type": "string"
         }
       ]
     },
     {
       "kind": "load-cargo",
-      "description": "Load staged cargo into a colocated truck using a held forklift when cargo and truck destinations match and capacity remains.",
+      "description": "Load staged cargo into a colocated truck using a held forklift when cargo.route equals truck.route and capacity remains.",
       "fields": [
         {
           "name": "cargo",

@@ -48,13 +48,13 @@ class WarehouseRushTests(unittest.TestCase):
         self.do("worker-a", "claim-forklift", forklift="forklift-red")
         self.do("worker-b", "claim-forklift", forklift="forklift-blue")
         for index in range(1, 4):
-            self.do("worker-a", "transport-cargo", cargo=f"cargo-east-{index}", forklift="forklift-red", destination="dock-a")
-            self.do("worker-b", "transport-cargo", cargo=f"cargo-west-{index}", forklift="forklift-blue", destination="dock-b")
+            self.do("worker-a", "transport-cargo", cargo=f"cargo-east-{index}", forklift="forklift-red", dock="dock-a")
+            self.do("worker-b", "transport-cargo", cargo=f"cargo-west-{index}", forklift="forklift-blue", dock="dock-b")
             self.do("worker-a", "load-cargo", cargo=f"cargo-east-{index}", truck="truck-east", forklift="forklift-red")
             self.do("worker-b", "load-cargo", cargo=f"cargo-west-{index}", truck="truck-west", forklift="forklift-blue")
             if index < 3:
-                self.do("worker-a", "drive-forklift", forklift="forklift-red", destination="staging")
-                self.do("worker-b", "drive-forklift", forklift="forklift-blue", destination="staging")
+                self.do("worker-a", "drive-forklift", forklift="forklift-red", location="staging")
+                self.do("worker-b", "drive-forklift", forklift="forklift-blue", location="staging")
         self.do("worker-a", "dispatch-truck", truck="truck-east")
         self.do("worker-b", "dispatch-truck", truck="truck-west")
 
