@@ -42,6 +42,7 @@ The living-world prototype is currently a UI prototype with synthetic timeline d
 | Product + procurement doctrine | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
 | Living-world overlay semantics | [Living-world projection](../research/living-world-projection-2026-09.md) |
 | Selected commodity defaults | [Technology procurement](../research/technology-procurement-2026-09.md) |
+| Multi-timescale time/process model | [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) |
 | Competitive / adjacent systems | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
 | Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
@@ -69,6 +70,10 @@ The living-world prototype is currently a UI prototype with synthetic timeline d
 - **Cognition context/evidence:** information an external resident runtime was allowed to see; this is not automatically hard causal parentage.
 - **Hard causal ancestry:** mechanically supported parent/dependency relations for committed transitions.
 - **Analytic interpretation:** detachable post-run/observer inference such as Waltzman or Levin findings.
+- **Simulation time:** the canonical represented timeline for world actions/processes; it is distinct from browser/render time.
+- **Process/institution cadence:** when a world mechanism becomes eligible to act on that timeline; different mechanisms need not share one rate.
+- **Duration-bearing activity:** represented ongoing work such as travel, repair, testing, transport, or meetings when elapsed time/interruption matters; completion is another world transition opportunity.
+- **Cognition cadence:** when a private resident runtime wakes to deliberate/replan; by default this should be driven by meaningful events rather than every low-level world step.
 - **Projection state:** possible / enabled / active / realized relationship status derived for visualization from mechanics, current state, and retained history.
 - **Core overlay:** generic read-only projection of residents, information, resources, processes, authority, or causal history.
 - **Analytic overlay:** optional plugin annotation over evidence; never a hidden world variable merely because it is visually overlaid.
@@ -127,7 +132,8 @@ Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter
 | Information/conversation | no first-class generic representation/delivery contract yet |
 | Processes/institutions | core engine concept exists; generic authoring surface is not rich enough for Coordination Lab yet |
 | Resident cognition | Pydantic AI selected but not integrated; current bounded LLM seam remains sufficient for existing fixtures |
-| Scheduling | SimPy selected for future timing/event queue only; not yet integrated |
+| Scheduling | current runtime is integer-tick + per-step `due()` checks; SimPy selected for future independent event/timing queue only; not yet integrated |
+| Multi-timescale execution | target accepted: one canonical simulated timeline; independent mechanism cadences; duration-bearing activities when needed; render/cognition/analysis clocks remain separate |
 | Graph inspector | Cytoscape selected; not yet needed in active slice |
 | Persistence/auth | no saved user worlds/runs or identity-backed approvals yet |
 
@@ -144,8 +150,8 @@ The roadmap owns ordering; the important unresolved capabilities are:
 2. **Information/conversation semantics:** represent utterances/messages, source/recipient/channel/provenance/visibility, and delivery distinctly from private cognition.
 3. **Causal/evidence lineage:** distinguish hard mechanical ancestry from observation/context and analytic inference.
 4. **Generative causal closure:** dependency inventory → enforcement mapping → counterexamples/probes → residual-risk report → smallest repair.
-5. **Processes/institutions:** generic authoring for meetings, schedules, external events, permissions, commitments, and decision procedures when the Coordination Lab demands them.
-6. **Resident cognition:** integrate Pydantic AI behind a narrow adapter only when richer worlds need persistent memory/planning/social behavior.
+5. **Multi-timescale processes/activities/institutions:** move beyond the integer-tick loop only when the Coordination Lab demands independent cadences, travel/task durations, meetings, deadlines, external events, permissions, commitments, or decision procedures. SimPy schedules opportunities; World Substrate owns outcomes.
+6. **Resident cognition:** integrate Pydantic AI behind a narrow adapter only when richer worlds need persistent memory/planning/social behavior; wake cognition on meaningful events rather than every scheduler event.
 7. **Semantic closure/review:** generic new action kinds should eventually bind reviewed Linguistic Core senses/roles; improve review representation when real users cannot distinguish material law differences.
 8. **Persistence/auth:** saved worlds/runs and identity-backed approvals after the authoring/run workflow earns durable state.
 9. **Mechanic/process error events:** promote implementation failures into explicit causal failure evidence when needed for trust/debugging.
@@ -179,7 +185,7 @@ Engine.submit()/process coordinator -> checks -> commit/refusal
       +--> detachable analyses -> Waltzman / Levin / future plugins
 ```
 
-Pydantic AI, SimPy, deck.gl, Cytoscape, persistence, and auth are replaceable external machinery around the owned causal seam. SimPy schedules opportunities only; Pydantic AI selects attempts/utterances only; renderers and analyses are read-only.
+Pydantic AI, SimPy, deck.gl, Cytoscape, persistence, and auth are replaceable external machinery around the owned causal seam. SimPy schedules opportunities only; Pydantic AI selects attempts/utterances only; renderers and analyses are read-only. The target time model uses one canonical simulated timeline with independent process/institution/activity cadences; browser frame rate, playback speed, cognition wake cadence, and analysis sampling are not alternate world clocks.
 
 A conversation is visible world activity even with overlays off. The information overlay adds delivery/provenance semantics. A causal overlay includes that conversation only where the retained causal/evidence model supports the stronger relation. Prompt/context inclusion alone is not proof that the information caused a later decision.
 
@@ -192,6 +198,7 @@ Use these first:
 - `prototypes/living-world-overlay-v0.html` — versioned prototype source.
 - [Living-world projection](../research/living-world-projection-2026-09.md) — overlay semantics and first integration acceptance.
 - [Technology procurement](../research/technology-procurement-2026-09.md) — selected external stack and boundaries.
+- [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) — canonical simulation-time / independent-cadence target and current integer-tick limitation.
 - `evidence/renders/kitchen-spatial-replay-v1.html` — polished flagship replay.
 - `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic presentation proof.
 - [Repair Bay live proof](../audits/repair-bay-live-preflight.md) — nontrivial authoring/run evidence.

@@ -32,6 +32,10 @@ Core overlays are generic simulation projections:
 
 Analytic overlays are plugins, not universal world state. Waltzman trust structure, perceived risk, and coordination readiness belong here, as do future Levin, logistics, epidemiology, market, command-and-control, or other lenses.
 
+## Time in the projection
+
+The client may animate at arbitrary frame rates and expose playback speeds such as 1x/10x/100x, but those controls are presentation only. It follows canonical simulation timestamps/ticks/events and may interpolate between them; it cannot manufacture elapsed world time. As the runtime grows beyond the current integer-tick baseline, the same projection should support independently timed activities/processes without changing this authority rule. See [multi-timescale execution](multi-timescale-execution-2026-09.md).
+
 ## Information is not the same thing as causal ancestry
 
 If Mara speaks to Ari, the simulation may retain several distinct facts:
