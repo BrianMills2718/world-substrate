@@ -1,0 +1,166 @@
+{
+  "schema_version": "warehouse-rush-experiment-summary/v0",
+  "world_bundle": "examples/world_authoring/warehouse-rush-v0.json",
+  "hand_baseline": "examples/world_authoring/warehouse-rush-causal-v0.json",
+  "generation_attempts": [
+    {
+      "attempt": 1,
+      "file": "generated-attempt-1.json",
+      "cost_usd": 0.00747445,
+      "trace_id": "world-builder-live/mechanics/49d832d9f0944a289dedc5b5c0083d64",
+      "terminal": {
+        "mode": "all",
+        "selector": {
+          "categories": [
+            "truck"
+          ],
+          "components": [
+            "truck"
+          ]
+        },
+        "checks": [
+          {
+            "path": "components.truck.status",
+            "op": "eq",
+            "value": "dispatched"
+          }
+        ]
+      },
+      "disposition": "rejected: route label east/west compared to physical dock id; move membership check made dock moves illegal"
+    },
+    {
+      "attempt": 2,
+      "file": "generated-attempt-2.json",
+      "cost_usd": 0.00736865,
+      "trace_id": "world-builder-live/mechanics/70e01d6ea0714092a5069106226f6a15",
+      "terminal": {
+        "mode": "all",
+        "selector": {
+          "categories": [
+            "truck"
+          ],
+          "components": [
+            "truck"
+          ]
+        },
+        "checks": [
+          {
+            "path": "components.truck.status",
+            "op": "eq",
+            "value": "dispatched"
+          }
+        ]
+      },
+      "disposition": "rejected after broader review: repaired scalar-domain bug, but fixture itself lacked an empty forklift reposition action and allowed ownership/location separation"
+    },
+    {
+      "attempt": 3,
+      "file": "generated-attempt-3.json",
+      "cost_usd": 0.0084854,
+      "trace_id": "world-builder-live/mechanics/2d69cda222474f32a50a474e93f8ac70",
+      "terminal": null,
+      "disposition": "rejected: scalar choices mixed route labels with locations, contradictory contains validation, transport domain mismatch, terminal omitted"
+    },
+    {
+      "attempt": 4,
+      "file": "generated-attempt-4.json",
+      "cost_usd": 0.00843945,
+      "trace_id": "world-builder-live/mechanics/2025a49276494c56a29abe01f74f55ff",
+      "terminal": {
+        "mode": "all",
+        "selector": {
+          "categories": [
+            "truck"
+          ],
+          "components": [
+            "truck"
+          ]
+        },
+        "checks": [
+          {
+            "path": "components.truck.status",
+            "op": "eq",
+            "value": "dispatched"
+          }
+        ]
+      },
+      "disposition": "rejected: route/dock/location names disambiguated choices, but contradictory contains checks and post-transport load prerequisites remained"
+    },
+    {
+      "attempt": 5,
+      "file": "generated-attempt-5-approved.json",
+      "cost_usd": 0.00839515,
+      "trace_id": "world-builder-live/mechanics/83aafa35458b427b91a3120a7306dd5c",
+      "terminal": {
+        "mode": "all",
+        "selector": {
+          "categories": [
+            "truck"
+          ],
+          "components": [
+            "truck"
+          ]
+        },
+        "checks": [
+          {
+            "path": "components.truck.status",
+            "op": "eq",
+            "value": "dispatched"
+          }
+        ]
+      },
+      "disposition": "approved: compiler-valid, full-law review coherent, exact generated-law oracle reaches terminal in 20 accepted actions"
+    }
+  ],
+  "generation_cost_usd": 0.0401631,
+  "approved_attempt": 5,
+  "approved_generated_oracle": {
+    "accepted_actions": 20,
+    "terminal_reached": true,
+    "peak_candidates_per_actor_page": 63
+  },
+  "scripted_approved_law": {
+    "turns": 30,
+    "accepted_actions": 72,
+    "terminal_reached": false,
+    "accepted_by_kind": {
+      "claim-forklift": 24,
+      "move": 12,
+      "drive-forklift": 12,
+      "release-forklift": 24
+    },
+    "stale_retries": 64,
+    "cargo_loaded": 0,
+    "worker_energy_final": 0
+  },
+  "live_llm_policy": "partial: useful 2-turn route choice but 4-turn trace exposes missing action-effect semantics in policy presentation",
+  "llm_policy_probes": [
+    {
+      "turns": 2,
+      "terminal_reached": false,
+      "accepted_actions": 8,
+      "cost_usd": 0.0037364,
+      "trace_id": "world-builder-live/run/ad136bf4760b4a2cb53af7251e27137f",
+      "finding": "claims both forklifts and transports East Cargo 1 to dock-a on turn 2"
+    },
+    {
+      "turns": 4,
+      "terminal_reached": false,
+      "accepted_actions": 16,
+      "cost_usd": 0.0081764,
+      "trace_id": "world-builder-live/run/0c0657d48ee3435d972fe80bdf612a73",
+      "accepted_by_kind": {
+        "claim-forklift": 2,
+        "move": 8,
+        "drive-forklift": 6
+      },
+      "stale_retries": 12,
+      "finding": "no cargo transported; policy repeatedly describes empty drive-forklift actions as if they carried cargo"
+    }
+  ],
+  "deployment_liveness": {
+    "aborted_run_reserved_usd": 0.12,
+    "finding": "service process inherited LLM_CLIENT_TIMEOUT_POLICY=ban, ignoring 60s request timeout",
+    "remediation": "World Builder launch environment set to LLM_CLIENT_TIMEOUT_POLICY=allow; subsequent probes completed; stale reservation remains committed"
+  }
+}

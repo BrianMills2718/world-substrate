@@ -1,50 +1,57 @@
 ---
 role: audit
-status: planned-preflight
-reviewed_through: 2026-09-07
+status: active-experiment
+reviewed_through: 2026-09-08
 ---
 
 # Warehouse Rush live-authoring experiment
 
-## Why this world
+## Question
 
-Repair Bay proved that the current causal declaration can express contested tools, relational effects, multi-entity repair, and a useful bounded LLM policy without a heavier cognition framework. The next experiment should change the failure surface rather than make Repair Bay larger.
-
-Warehouse Rush adds three represented locations, scalar destination parameters, local observation boundaries, two scarce forklifts, six cargo-to-truck destination relations, truck capacities, and a terminal that requires both trucks to dispatch. It stays inside the existing action DSL so any failure can be attributed to authoring/review, observation/affordances, policy planning, or presentation rather than a predeclared need for new language.
+Can the existing Builder author and run a world with three locations, scalar action parameters, local observation, scarce mobile equipment, destination-matched cargo, capacity-limited trucks, and multi-step coordination without a new causal DSL or cognition framework?
 
 ## Fixture
 
-- 4 workers at `staging`, each with finite energy;
-- 2 shared portable forklifts at `staging`;
-- 3 east-bound and 3 west-bound cargo units at `staging`;
-- east truck at `dock-a`, west truck at `dock-b`, capacity 3 each;
-- actions: `move`, `claim-forklift`, `release-forklift`, `transport-cargo`, `load-cargo`, `dispatch-truck`;
-- terminal: all selected trucks have status `dispatched`.
+The current fixture has four workers, two shared forklifts, six cargo units, two trucks at separate docks, and seven action kinds: `move`, `claim-forklift`, `release-forklift`, `drive-forklift`, `transport-cargo`, `load-cargo`, and `dispatch-truck`. Cargo/truck `route` values are `east`/`west`; physical action `dock` values are `dock-a`/`dock-b`; generic movement uses `location`. The terminal requires all trucks to be `dispatched`.
 
-The retained hand causal baseline is an oracle/solvability reference, not the law the Builder is expected to copy verbatim.
+The hand causal model is only a solvability oracle. It reaches terminal in 20 accepted actions. Peak discovery during that oracle is 63 total candidates on one actor page, safely below the 256 cap.
 
-## Evidence order
+## Fixture failure found before live approval
 
-1. Compile and execute the hand baseline locally; prove the intended world is solvable without changing the DSL.
-2. Measure initial and peak discovered-action counts so the 256-action ceiling cannot silently contaminate interpretation.
-3. Generate a fresh law through the already-authorized bounded World Builder service.
-4. Inspect the **complete** generation request/response and compiler review before approving anything.
-5. Run zero-spend Scripted first and inspect the full causal trace, not only summary/replay.
-6. If the law is sound but Scripted fails, run the existing bounded LLM policy and inspect its full trace.
-7. Let the first material discrepancy choose the next implementation slice.
+The first hand baseline was itself wrong: transport moved the worker/cargo without moving the owned forklift, and the action set had no honest way to return an empty forklift from a dock. Full state review caught the ownership/location split before it was promoted as evidence. The fixture was repaired by adding `drive-forklift`, making walking empty-handed, moving the forklift during cargo transport, and requiring forklift colocation for load/use. No DSL extension was required.
 
-## What to look for in full logs
+## Generated-law review
 
-- destination parameter choices that omit or invent locations;
-- ownership/location guards around forklift claim/release;
-- cargo being transportable from the wrong location or repeatedly transportable after loading;
-- cargo destination matched against the wrong truck field;
-- truck capacity overrun or dispatch before full load;
-- actions hidden by local observation even though mechanics are correct;
-- repeated legal-but-useless action churn;
-- stale-revision retries masking a coordination failure;
-- replay/presentation disagreement with canonical state.
+Five bounded generation attempts were retained under `evidence/warehouse-rush/` for a total mechanics-generation cost of `$0.04016310`.
 
-## Stop conditions
+1. Attempt 1: rejected. It compared cargo route labels `east`/`west` directly to physical dock ids and made ordinary dock movement illegal with a bad `contains` check.
+2. Attempt 2: rejected after broader review. Guidance fixed the scalar-domain bug, but exposed the fixture-level missing empty-forklift movement described above.
+3. Attempt 3: rejected after the fixture repair. It mixed route labels into movement parameter choices, emitted contradictory `contains` validation, repeated the route/dock mismatch, and omitted the terminal.
+4. Attempt 4: rejected after renaming route/dock/location domains. Parameter choices improved, but contradictory `contains` checks and post-transport load prerequisites remained.
+5. Attempt 5: approved after explicit review guidance. Its scalar domains, ownership/location checks, route matching, capacity checks, energy writes, and terminal are coherent. The exact generated law reaches terminal under the deterministic oracle in 20 accepted actions with peak page size 63.
 
-Do not widen the DSL, add a cognition framework, or generalize the renderer before this experiment produces a concrete failure that requires it. If the existing law and lightweight policy solve Warehouse Rush, move to a qualitatively harder world/process boundary rather than hardening preliminaries.
+The repeated failures are evidence that generic string fields/parameters lack an explicit semantic/domain contract. Do not implement a new enum/domain feature solely from this note, but treat it as the leading authoring-language candidate if another distinct world reproduces the same failure.
+
+## Policy evidence
+
+`scripted-first-available` on the approved generated law fails decisively: 30 turns, 72 accepted actions, terminal false, zero cargo loaded, and all four workers at zero energy. Accepted actions are 24 claims, 24 releases, 12 walks, and 12 empty forklift drives, with 64 stale-revision retries. This is policy selection failure, not causal expressiveness.
+
+A bounded two-turn Luna probe on the same law succeeds at the first meaningful planning test for `$0.00373640`: both forklifts are claimed, then Worker B transports East Cargo 1 to `dock-a`. Other workers reposition in response to stale races. A separate four-turn probe costs `$0.00817640` and exposes a sharper policy-surface failure: it accepts 16 actions but moves no cargo, choosing six `drive-forklift` actions while its reasoning repeatedly claims those empty drives are carrying or advancing cargo. The trace shows the model is not merely planning poorly; it is misunderstanding what an offered action does.
+
+## Liveness/observability failure found
+
+The first 20-turn LLM-policy request did not complete within the client observation window. Full operator logs and a live stack sample showed the request thread blocked in provider SSL read while `LLM_CLIENT_TIMEOUT_POLICY=ban` caused the intended 60-second model timeout to be ignored. The fail-closed daily ledger retained the full `$0.12` reservation.
+
+The World Builder launch environment was changed to `LLM_CLIENT_TIMEOUT_POLICY=allow` and the service restarted. A subsequent two-turn probe completed successfully and the service log confirms `LLM_CLIENT_TIMEOUT_POLICY=allow`. The stale `$0.12` reservation from the aborted request remains committed, preserving fail-closed accounting.
+
+## Current interpretation
+
+Warehouse Rush does not justify DSL breadth or a cognition framework yet. It does justify three narrower conclusions:
+
+- full request/response and operator logs are essential; summary/replay alone would have hidden both the generated-law contradictions and the service timeout policy;
+- generated scalar string domains remain a real review weakness, because multiple superficially compiler-valid proposals were behaviorally impossible;
+- the existing lightweight LLM policy already shows qualitatively better action selection than first-available on the harder world.
+
+## Next evidence
+
+Improve the generic policy presentation so an offered authored action includes a concise compiler-derived preview of its installed effects. The current presentation shows only action kind and arguments, which makes `drive-forklift` indistinguishable from cargo movement at the consequence level. Re-run the same bounded probe after that narrow change. Do not add persistent cognition unless the model still fails while seeing the actual installed effects. Keep schema-domain work conditional on another reproduced scalar-domain failure or on a concrete authoring UX requirement.
