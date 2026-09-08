@@ -88,6 +88,19 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("approved:true", source)
         self.assertIn("iframe", source)
 
+    def test_live_flow_exposes_complete_debug_logs(self):
+        source = APP.read_text()
+        self.assertIn("liveLog = []", source)
+        self.assertIn('recordLiveLog("request"', source)
+        self.assertIn('recordLiveLog("response"', source)
+        self.assertIn("await response.text()", source)
+        self.assertIn("Full logs", source)
+        self.assertIn("Copy complete raw logs", source)
+        self.assertIn("Full engine traces", source)
+        self.assertIn("trace_id:payload.trace_id", source)
+        self.assertIn("replay_html hidden on-screen", source)
+        self.assertIn("exact replay HTML", source)
+
     def test_core_rejects_unknown_entity_reference(self):
         js = (
             "const core=require(process.argv[1]); const fs=require('fs'); "
