@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; zero-review replay generation proven across Workshop, Castaway, and Kitchen
-**Last outcome-bearing result:** Kitchen cleared the five-action zero-review breadth gate. Explicit `take`/`put_down`/`chop`/`cook`/`plate` presentation bindings resolve only trace-grounded fields; auto-layout supplies two actor homes, two burner/workstation scenes, two goal/order scenes, loose item homes and deterministic plated-item grids. The retained zero-review replay shows Bo's t10 release reasoning, Ama holding the knife at t11, and both orders complete at t17, with zero bootstrap TODOs. The polished flagship remains byte-for-byte unchanged. Functional zero-review generation is now established across all three real replay worlds in the repository.
+**Stage:** prototype complete; local World Replay Studio implemented; Automatic replay is the authoring baseline
+**Last outcome-bearing result:** `world-replay-studio-v0.html` packages all six retained Automatic/Polished replay documents into one standalone local browser surface. The embedded replay bytes remain exact; world/variant navigation, replay-alone opening, retained profile/trace metadata, and URL initial selection were visually checked across Kitchen, Castaway, and Workshop. Automatic is now the default authoring baseline; Polished remains optional art direction.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** human/product review of the automatic zero-review Kitchen default versus the polished flagship; no further replay-framework generalization without a new real-world failure or explicit product requirement; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** prove the complete authoring workflow on a fourth genuinely new world without visualization code; generic replay architecture reopens only if that real world exposes a concrete gap; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -166,40 +166,26 @@ observable attempt or trigger
 | M7b: relational authoring | complete | authored mechanics using one cross-entity relation | promoted |
 | M8: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
 
-### Active slice: generate replay scenes from declarations, not bespoke code
+### Active slice: local replay product surface
 
-**Complete for the current real replay worlds.** Workshop, Castaway, and Kitchen
-all retain functional profiles/replays generated from world model + retained
-trace + explicit shared presentation catalog + deterministic auto-layout with no
-per-world review overlay.
+**Complete.** `evidence/renders/world-replay-studio-v0.html` is a standalone local browser surface over the retained graphical replays. It embeds the existing replay HTML byte-for-byte rather than reimplementing them, so their playback behavior and causal presentation remain owned by the retained artifacts.
 
-The three proofs exercise materially different structure:
+The Studio exposes three real worlds and two presentation layers where available:
 
-- Workshop: `pick_up`/`attach`, assembly relation, multi-item station placement;
-- Castaway: `fill`/`drink`, source activation, vessel state, initial actor ownership;
-- Kitchen: five action kinds, two actors, two goal stations, two workstations,
-  staged ingredients, shared knife ownership, and the replicated t10→t11 handoff.
+- **Automatic** — the declaration-driven authoring baseline; no per-world review overlay is required for functional generation;
+- **Polished** — optional scene composition/art direction over the same retained behavior.
 
-Kitchen's default is intentionally plain, but at t10 Bo's recorded reasoning says
-he releases the knife so Ama can use it; t11 shows Ama holding it; t17 shows both
-orders complete. `kitchen-spatial-replay-v1.html` remains the polished flagship
-and regenerates byte-for-byte unchanged.
+The product shell adds world navigation, Automatic/Polished switching, an open-replay-alone action, and secondary metadata derived from retained profiles/traces. It is a read-only product surface: no mechanics, trace mutation, or canonical-state write path exists in it.
 
-**Engineering conclusion.** The requested architecture now exists: represented
-world + retained behavior + explicit reusable assets/presentation semantics can
-produce a graphical replay without a bespoke renderer or per-world review file.
-Optional scene reviews remain valuable for product quality, not correctness or
-basic generation.
+**Engineering/product conclusion.** A new world should now be authored against the Automatic path first. Polishing is a separate product decision, not a prerequisite for world creation.
 
 **What a fresh agent should do first.** All cost nothing:
 
-1. Compare `kitchen-zero-review-v0.html` with `kitchen-spatial-replay-v1.html`.
-2. Read the Workshop, Castaway, and Kitchen zero-review audits before changing the scene contract.
-3. Only reopen generic replay architecture when a new real world or explicit product requirement exposes a concrete gap.
+1. Open `evidence/renders/world-replay-studio-v0.html` and compare Kitchen Automatic vs Polished.
+2. Read `docs/audits/world-replay-studio.md` and the zero-review audits.
+3. Build the next new world through the baseline workflow before changing generic replay code.
 
-**What not to do.** Do not add more generic projection/layout primitives merely
-for completeness. Do not collapse polished presentation into inferred world
-truth. Deployment/publication remains separately controlled.
+**What not to do.** Do not add Studio server infrastructure, generic renderer primitives, or per-world visualization code without a demonstrated requirement. Do not turn illustrative/polished presentation into canonical world truth. Deployment/publication remains separately controlled.
 
 ## Open obligations
 
@@ -289,7 +275,7 @@ Boundaries only Brian can clear. Answered choices remain here for traceability r
 | Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
 | Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
 | Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered: zero-review defaults exist for Workshop/Castaway/Kitchen; polished Kitchen remains the flagship** | productization/publication is now a human boundary, not a renderer gap |
+| What a viewer actually sees | **answered: World Replay Studio over Automatic baselines plus optional Polished variants** | fourth-world authoring is the next product proof; publication/deployment remains separately controlled |
 | What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
 | Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
 
@@ -299,16 +285,9 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-**Human-review the automatically generated Kitchen default beside the polished
-flagship.** Compare `evidence/renders/kitchen-zero-review-v0.html` with
-`evidence/renders/kitchen-spatial-replay-v1.html` and decide whether the
-zero-review generation path is accepted as the authoring baseline and whether a
-specific product surface/refinement should be authorized next. Do not add more
-generic replay machinery without a new real-world failure or an explicit
-presentation requirement.
+Author a **fourth genuinely new reference world** end to end through the current baseline workflow. It should have represented entities/relationships and at least one behavior not already present as a trivial copy of Kitchen/Castaway/Workshop. Produce a deterministic no-spend retained run, add only the shared asset/presentation declarations justified by that world, and generate its Automatic replay through bootstrap + auto-layout **without writing world-specific visualization code**. Add it to the World Replay Studio only after that replay passes visual review.
 
-Publishing or deploying either artifact still requires explicit authority. No
-additional model call is needed for this review.
+Treat any need for a renderer/bootstrap branch as a portability finding first, not an invitation to special-case the new world. No model call, deployment, or publication is required for this gate.
 
 The historical pre-replication roadmap recorded **$0.123** of model spend. The
 current single-copy observability DB no longer contains that older task history;

@@ -69,7 +69,7 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 
 The substrate prototype is complete and the flagship phase has produced its first human-facing artifact. The selected world is the kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. Three fresh same-model/prompt services reproduced the key sequence — Bo completes at t9, releases the knife for Ama at t10, Ama takes it at t11, and both orders are filled at the t17 world terminal.
 
-`evidence/renders/kitchen-spatial-replay-v1.html` is the primary human-facing replay. The same domain-neutral renderer/bootstrap path now also has retained **zero-review defaults for all three real replay worlds**. Workshop covers assembly (`pick_up`/`attach`), Castaway covers `fill`/`drink` plus initial ownership and vessel state, and Kitchen covers five actions, multiple goals/workstations, staged ingredients, shared knife ownership, and the replicated handoff. Each default comes from world model + retained trace + explicit shared presentation catalog + auto-layout with no per-world review overlay. The zero-review Kitchen remains intentionally plain; the polished flagship keeps its hand-authored composition and handoff emphasis. See [scene profile v0](../contracts/scene-profile-v0.md), the [Kitchen zero-review audit](../audits/kitchen-zero-review.md), and the [roadmap](../../roadmap/README.md).
+`evidence/renders/world-replay-studio-v0.html` is now the primary local viewing surface. It is a standalone browser artifact that embeds byte-exact retained Automatic and Polished replay documents for Kitchen, Castaway, and Workshop. Automatic zero-review generation remains the authoring baseline; polished profiles are optional presentation layers. The Studio reads actor/action/turn/model/bootstrap metadata from retained zero-review profiles and traces and has no simulation authority. `kitchen-spatial-replay-v1.html` remains the polished flagship replay inside that surface. See the [Studio audit](../audits/world-replay-studio.md), [scene profile v0](../contracts/scene-profile-v0.md), and the [roadmap](../../roadmap/README.md).
 
 ## What exists now?
 
@@ -86,16 +86,9 @@ The substrate prototype is complete and the flagship phase has produced its firs
 
 ## Current frontier
 
-The declaration-driven replay automation slice is complete for the repository's
-current real replay worlds. Workshop, Castaway, and Kitchen each retain a
-functional zero-review replay/profile. Polished variants remain optional and
-separate, which keeps automatic generation from dictating product presentation.
+The declaration-driven replay authoring path and its first local product surface are complete for the repository's current real worlds. **Automatic replay is the default authoring baseline; Polished replay is optional art direction.** The World Replay Studio makes that distinction visible in one standalone file without adding a server or new causal authority.
 
-Do not continue generalizing renderer/bootstrap machinery without a new real
-world exposing a failure or an explicit product requirement. The immediate
-boundary is human review of the generated default versus the polished Kitchen
-flagship, and whether/how this authoring workflow should become a product
-surface. Deployment/publication still requires explicit authority.
+The next useful product proof is end-to-end authoring of a **fourth genuinely new world**: define its represented entities/relationships/mechanics/assets, retain a no-spend run, and get a useful Automatic graphical replay without writing visualization code. Only a concrete failure in that workflow should reopen generic replay/bootstrap architecture. Deployment/publication still requires explicit authority.
 
 ## Architecture and workflow
 
@@ -145,6 +138,10 @@ Castaway remains the adopted M1 implementation and evidence donor. The workshop 
 
 ## Human-reviewable artifacts
 
+- `evidence/renders/world-replay-studio-v0.html`: standalone local Studio embedding Automatic/Polished replays for all three worlds.
+- `evidence/replay-studio-v0.json`: declarative Studio world/variant manifest.
+- `scripts/render_replay_studio.py`: domain-neutral standalone Studio packager.
+- `docs/audits/world-replay-studio.md`: product-boundary and verification audit.
 - `evidence/renders/kitchen-spatial-replay-v1.html`: graphical top-down replay generated from the generic renderer plus the kitchen scene profile.
 - `evidence/renders/kitchen-zero-review-v0.html`: zero-review Kitchen breadth replay from model + retained replicated trace + shared catalog + auto-layout.
 - `evidence/kitchen/scene-profile-zero-review-v0.json`: retained zero-review Kitchen profile with five declared bindings and no TODOs.

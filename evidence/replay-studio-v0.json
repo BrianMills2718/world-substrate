@@ -1,0 +1,80 @@
+{
+  "schema_version": "world-substrate-replay-studio/v0",
+  "title": "World Replay Studio",
+  "subtitle": "Watch retained worlds. Compare automatic generation with optional polished presentation.",
+  "default_world": "kitchen",
+  "worlds": [
+    {
+      "id": "kitchen",
+      "label": "Kitchen",
+      "summary": "Two cooks coordinate around one shared knife and zero-slack orders.",
+      "trace": "kitchen/full-service-replication-v1-run1.json",
+      "profile": "kitchen/scene-profile-zero-review-v0.json",
+      "default_variant": "polished",
+      "variants": [
+        {
+          "id": "automatic",
+          "label": "Automatic",
+          "kind": "baseline",
+          "description": "Generated from the world model, retained trace, shared presentation catalog and auto-layout with no Kitchen review overlay.",
+          "replay": "renders/kitchen-zero-review-v0.html"
+        },
+        {
+          "id": "polished",
+          "label": "Polished",
+          "kind": "optional polish",
+          "description": "The art-directed flagship scene with the same retained service and stronger handoff emphasis.",
+          "replay": "renders/kitchen-spatial-replay-v1.html"
+        }
+      ]
+    },
+    {
+      "id": "castaway",
+      "label": "Castaway",
+      "summary": "Two survivors act around freshwater, vessels and a camp fire.",
+      "trace": "castaway/scene-profile-portability-v0.json",
+      "profile": "castaway/scene-profile-zero-review-v0.json",
+      "default_variant": "polished",
+      "variants": [
+        {
+          "id": "automatic",
+          "label": "Automatic",
+          "kind": "baseline",
+          "description": "Zero-review replay generated from Castaway declarations, retained behavior and shared presentation bindings.",
+          "replay": "renders/castaway-zero-review-v0.html"
+        },
+        {
+          "id": "polished",
+          "label": "Polished",
+          "kind": "optional polish",
+          "description": "The reviewed Castaway scene using the same generic renderer.",
+          "replay": "renders/castaway-spatial-replay-v0.html"
+        }
+      ]
+    },
+    {
+      "id": "workshop",
+      "label": "Workshop",
+      "summary": "Mira picks up a wrench and assembles a chair from discrete parts.",
+      "trace": "workshop/scene-profile-greenfield-v0.json",
+      "profile": "workshop/scene-profile-zero-review-v0.json",
+      "default_variant": "polished",
+      "variants": [
+        {
+          "id": "automatic",
+          "label": "Automatic",
+          "kind": "baseline",
+          "description": "The greenfield zero-review replay generated without an existing Workshop scene profile.",
+          "replay": "renders/workshop-zero-review-v0.html"
+        },
+        {
+          "id": "polished",
+          "label": "Polished",
+          "kind": "optional polish",
+          "description": "The reviewed Workshop scene built on the same generated authoring baseline.",
+          "replay": "renders/workshop-spatial-replay-v0.html"
+        }
+      ]
+    }
+  ]
+}
