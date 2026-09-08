@@ -158,6 +158,7 @@ def _llm_choice(
         task="world-builder-live-policy",
         trace_id=trace_id,
         max_budget=max_budget,
+        max_tokens=512,
         reasoning_effort="low",
     )
     reasoning = str(value.get("reasoning", "")) if isinstance(value, dict) else "model returned non-object"
