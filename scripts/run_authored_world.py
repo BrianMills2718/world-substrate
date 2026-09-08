@@ -323,8 +323,26 @@ def _runtime_catalog(bundle: dict[str, Any], causal_model: CausalModel | None = 
     assets.setdefault(fallback, {"kind": "text", "value": "●"})
     catalog["assets"].update(assets)
     catalog.setdefault("world_assets", {})[world_id] = sorted(assets)
+    # Exact entity bindings in the shared catalog belong to retained reference
+    # worlds, but their keys are bare entity ids. A fresh authored world may
+    # legitimately reuse one of those ids (for example `bo`) without inheriting
+    # another world's presentation identity. Its own category/presentation
+    # declarations must win, so remove only collisions for entities it defines.
+    exact_bindings = catalog.setdefault("entity_bindings", {})
+    declared_category_assets = presentation.get("category_assets") or {}
+    for entity in bundle.get("entities") or []:
+        exact_bindings.pop(entity["id"], None)
+        # An authored category asset is explicit world-local presentation
+        # authority. Materialize it as an exact binding so broader shared
+        # component-value defaults cannot override it later in bootstrap.
+        for category in entity.get("categories") or []:
+            if category in declared_category_assets:
+                exact_bindings[entity["id"]] = {
+                    "asset": declared_category_assets[category]
+                }
+                break
     category_bindings = catalog.setdefault("category_entity_bindings", {})
-    for category, asset in (presentation.get("category_assets") or {}).items():
+    for category, asset in declared_category_assets.items():
         category_bindings[category] = {"asset": asset}
     for entity in bundle.get("entities") or []:
         for category in entity.get("categories") or []:

@@ -1,0 +1,663 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "repair-bay.action.diagnose",
+      "version": "1",
+      "action_kind": "diagnose",
+      "rationale": "A technician holding the shared scanner can diagnose one broken machine, consuming energy and adding scanner wear.",
+      "actor_selector": {
+        "categories": [
+          "technician"
+        ],
+        "components": [
+          "technician"
+        ]
+      },
+      "participants": {
+        "machine": {
+          "categories": [
+            "machine"
+          ],
+          "components": [
+            "machine"
+          ]
+        },
+        "scanner": {
+          "categories": [
+            "tool",
+            "scanner"
+          ],
+          "components": [
+            "tool"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Machine is broken",
+          "left": {
+            "participant": {
+              "name": "machine",
+              "path": "components.machine.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "broken"
+          }
+        },
+        {
+          "label": "Machine is not yet diagnosed",
+          "left": {
+            "participant": {
+              "name": "machine",
+              "path": "components.machine.diagnosed"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Scanner is held by actor",
+          "left": {
+            "participant": {
+              "name": "scanner",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "Held tool is a scanner",
+          "left": {
+            "participant": {
+              "name": "scanner",
+              "path": "components.tool.tool_kind"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "scanner"
+          }
+        },
+        {
+          "label": "Actor has energy",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.technician.energy"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "machine",
+          "path": "components.machine.diagnosed",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.technician.energy",
+          "op": "subtract",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "participant": "scanner",
+          "path": "components.tool.wear",
+          "op": "add",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Diagnosis abstracts sensing and reveals only that the represented repair requirements are now known."
+      ],
+      "tests": [
+        "held scanner diagnoses each broken machine once; diagnosis consumes energy and wears the scanner"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "repair-bay.action.repair",
+      "version": "1",
+      "action_kind": "repair",
+      "rationale": "A technician can repair a diagnosed machine only with the held required tool and a matching uninstalled part; the repair updates machine, part, tool, and technician state atomically.",
+      "actor_selector": {
+        "categories": [
+          "technician"
+        ],
+        "components": [
+          "technician"
+        ]
+      },
+      "participants": {
+        "machine": {
+          "categories": [
+            "machine"
+          ],
+          "components": [
+            "machine"
+          ]
+        },
+        "tool": {
+          "categories": [
+            "tool"
+          ],
+          "components": [
+            "tool"
+          ]
+        },
+        "part": {
+          "categories": [
+            "part"
+          ],
+          "components": [
+            "part"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Machine is broken",
+          "left": {
+            "participant": {
+              "name": "machine",
+              "path": "components.machine.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "broken"
+          }
+        },
+        {
+          "label": "Machine was diagnosed",
+          "left": {
+            "participant": {
+              "name": "machine",
+              "path": "components.machine.diagnosed"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "Tool is held by actor",
+          "left": {
+            "participant": {
+              "name": "tool",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "Tool kind matches machine",
+          "left": {
+            "participant": {
+              "name": "tool",
+              "path": "components.tool.tool_kind"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "machine",
+              "path": "components.machine.required_tool"
+            }
+          }
+        },
+        {
+          "label": "Part kind matches machine",
+          "left": {
+            "participant": {
+              "name": "part",
+              "path": "components.part.part_kind"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "machine",
+              "path": "components.machine.required_part"
+            }
+          }
+        },
+        {
+          "label": "Part is not installed",
+          "left": {
+            "participant": {
+              "name": "part",
+              "path": "components.part.installed"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Actor is holding a tool",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.technician.hands_free"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Actor has energy",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.technician.energy"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "machine",
+          "path": "components.machine.status",
+          "op": "set",
+          "value": {
+            "literal": "working"
+          }
+        },
+        {
+          "participant": "part",
+          "path": "components.part.installed",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "participant": "part",
+          "path": "components.part.installed_on",
+          "op": "set",
+          "value": {
+            "entity_id": "machine"
+          }
+        },
+        {
+          "participant": "tool",
+          "path": "components.tool.wear",
+          "op": "add",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.technician.energy",
+          "op": "subtract",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Repair is discrete and instantaneous; it does not model duration, partial repair, or skill quality."
+      ],
+      "tests": [
+        "wrong tool or part is blocked; one accepted repair atomically changes machine, part, tool wear, and actor energy"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "repair-bay.action.handoff-tool",
+      "version": "1",
+      "action_kind": "handoff-tool",
+      "rationale": "A technician may hand a sufficiently used held tool to another technician with free hands.",
+      "actor_selector": {
+        "categories": [
+          "technician"
+        ],
+        "components": [
+          "technician"
+        ]
+      },
+      "participants": {
+        "tool": {
+          "categories": [
+            "tool"
+          ],
+          "components": [
+            "tool"
+          ]
+        },
+        "recipient": {
+          "categories": [
+            "technician"
+          ],
+          "components": [
+            "technician"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Recipient is distinct",
+          "left": {
+            "entity_id": "actor"
+          },
+          "op": "ne",
+          "right": {
+            "entity_id": "recipient"
+          }
+        },
+        {
+          "label": "Tool is held by actor",
+          "left": {
+            "participant": {
+              "name": "tool",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "Actor is holding a tool",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.technician.hands_free"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Recipient has free hands",
+          "left": {
+            "participant": {
+              "name": "recipient",
+              "path": "components.technician.hands_free"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "Tool has been used enough to justify handoff",
+          "left": {
+            "participant": {
+              "name": "tool",
+              "path": "components.tool.wear"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 2
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "tool",
+          "path": "ownership.owner_ref",
+          "op": "set",
+          "value": {
+            "owner_ref": "recipient"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.technician.hands_free",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "participant": "recipient",
+          "path": "components.technician.hands_free",
+          "op": "set",
+          "value": {
+            "literal": false
+          }
+        }
+      ],
+      "limits": [
+        "The wear gate exists to keep the deterministic baseline from gratuitously shuffling unused tools; it is a scenario rule, not substrate law."
+      ],
+      "tests": [
+        "used tool can move between distinct technicians without duplicating ownership"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "repair-bay.action.release-tool",
+      "version": "1",
+      "action_kind": "release-tool",
+      "rationale": "A technician may return a sufficiently used held tool to the shared repair-bay store.",
+      "actor_selector": {
+        "categories": [
+          "technician"
+        ],
+        "components": [
+          "technician"
+        ]
+      },
+      "participants": {
+        "tool": {
+          "categories": [
+            "tool"
+          ],
+          "components": [
+            "tool"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Tool is held by actor",
+          "left": {
+            "participant": {
+              "name": "tool",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "Actor is holding a tool",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.technician.hands_free"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Tool has been used enough to justify release",
+          "left": {
+            "participant": {
+              "name": "tool",
+              "path": "components.tool.wear"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 2
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "tool",
+          "path": "ownership.owner_ref",
+          "op": "set",
+          "value": {
+            "literal": "place:repair-bay"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.technician.hands_free",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        }
+      ],
+      "limits": [
+        "Release returns a tool to one shared store; no spatial drop location is modeled."
+      ],
+      "tests": [
+        "held used tool returns to shared ownership and frees the actor's hands"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "repair-bay.action.claim-tool",
+      "version": "1",
+      "action_kind": "claim-tool",
+      "rationale": "A technician with free hands can claim one tool from the shared repair-bay store.",
+      "actor_selector": {
+        "categories": [
+          "technician"
+        ],
+        "components": [
+          "technician"
+        ]
+      },
+      "participants": {
+        "tool": {
+          "categories": [
+            "tool"
+          ],
+          "components": [
+            "tool"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Actor has free hands",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.technician.hands_free"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "Tool is in shared store",
+          "left": {
+            "participant": {
+              "name": "tool",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "place:repair-bay"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "tool",
+          "path": "ownership.owner_ref",
+          "op": "set",
+          "value": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.technician.hands_free",
+          "op": "set",
+          "value": {
+            "literal": false
+          }
+        }
+      ],
+      "limits": [
+        "One boolean hand state models at most one held tool per technician."
+      ],
+      "tests": [
+        "shared tools are contended and one accepted claim prevents simultaneous claims by others"
+      ],
+      "semantic_bindings": []
+    }
+  ],
+  "terminal": {
+    "mode": "all",
+    "selector": {
+      "categories": [
+        "machine"
+      ],
+      "components": [
+        "machine"
+      ]
+    },
+    "checks": [
+      {
+        "path": "components.machine.status",
+        "op": "eq",
+        "value": "working"
+      }
+    ]
+  }
+}

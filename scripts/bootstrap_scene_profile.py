@@ -55,9 +55,6 @@ def _entity_binding(entity: dict[str, Any], catalog: dict[str, Any]) -> dict[str
         row = category_bindings.get(category)
         if isinstance(row, dict):
             result = _merge(result, row)
-    direct = catalog.get("entity_bindings", {}).get(entity_id)
-    if isinstance(direct, dict):
-        result = _merge(result, direct)
     for rule in catalog.get("component_value_bindings") or []:
         if not isinstance(rule, dict) or not isinstance(rule.get("path"), str):
             continue
@@ -67,6 +64,11 @@ def _entity_binding(entity: dict[str, Any], catalog: dict[str, Any]) -> dict[str
             result = _merge(result, match)
             if isinstance(rule.get("state_path"), str):
                 result.setdefault("state_path", rule["state_path"])
+    # Exact entity bindings are the most specific presentation declaration and
+    # therefore override category/component catalog defaults when they overlap.
+    direct = catalog.get("entity_bindings", {}).get(entity_id)
+    if isinstance(direct, dict):
+        result = _merge(result, direct)
     return result
 
 
