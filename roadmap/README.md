@@ -3,7 +3,7 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-09-07
+reviewed_through: 2026-09-08
 ---
 
 # World Substrate living roadmap
@@ -136,7 +136,7 @@ Hard constraints:
 | Nontrivial product-world proof | **complete first gate** | Repair Bay live generation + scripted/LLM comparison + presentation failure discovery |
 | Human review comprehensibility | **next** | can a person reliably approve/refuse generated law on the nontrivial world? |
 | Semantic closure for generic authoring | queued after review evidence | reviewed Linguistic Core sense/role mapping for new actions |
-| Resident cognition / live-world feel | conditional next | compare lightweight vs off-the-shelf agent runtime |
+| Resident cognition / live-world feel | conditional next | Pydantic AI selected behind `CognitionAdapter`; integration waits for a world that needs durable resident cognition |
 | Saved worlds/runs | conditional next | durable product state/auth after workflow earns persistence |
 
 ### Active slice: human review comprehensibility
@@ -162,13 +162,13 @@ Accepted in [Decision 004](../docs/decisions/004-product-and-adoption-strategy.m
 | Causal declaration/compiler | keep project-owned |
 | Semantic-mechanical binding | keep project-owned with Linguistic Core |
 | Scene semantics | keep project-owned |
-| Browser rendering execution | evaluate Phaser rather than grow a bespoke game engine |
-| Resident cognition | compare lightweight custom runtime with Concordia/LangGraph adapters |
+| Browser rendering execution | deck.gl 9.4.x selected for the living projection client; MapLibre optional for real geography |
+| Resident cognition | Pydantic AI 2.41.x selected behind `CognitionAdapter`; LangGraph/Concordia remain alternatives |
 | Multi-agent evaluation | add PettingZoo adapter when useful; never alternate world authority |
 | Persistence/auth | use standard infrastructure |
-| Rich discrete-event scheduling | evaluate SimPy only after a demonstrated need |
+| Rich discrete-event scheduling | SimPy 4.1.2 selected for time/event scheduling only; canonical consequences remain World Substrate-owned |
 
-Assumption to test: the causal kernel is the differentiator; rendering, cognition orchestration, auth, and persistence are leverage surfaces rather than strategic reasons to build from scratch.
+Accepted posture: the causal kernel and generative causal closure are the differentiated research surface; rendering, cognition orchestration, scheduling, graph layout, auth, and persistence are commodity leverage surfaces selected from current external evidence.
 
 ## Evidence and review artifacts
 
@@ -249,4 +249,4 @@ Replan rather than extend blindly if:
 
 The reviewer should decide approve/refuse and state what consequence changed without reading generated source code. Record accuracy, uncertainty, time-to-decision, and which review fields actually carried the decision. If reviewers reliably distinguish the laws, the next slice is generic semantic binding. If they cannot, improve the review representation before adding more causal breadth.
 
-Repair Bay does **not** justify a cognition framework: the current bounded LLM seam already reached terminal. Keep Phaser, persistent cognition, auth/persistence hardening, read-scope enforcement, and broader DSL work conditional on a concrete failure. Do not add arbitrary model-written code or generalize infrastructure merely because it is queued.
+Repair Bay does **not** justify integrating resident cognition yet: the current bounded LLM seam already reached terminal. The commodity choices are now selected—deck.gl for live projection, Pydantic AI behind `CognitionAdapter`, SimPy for scheduling only, and Cytoscape.js for expanded graph inspection—but integration still follows product need. Keep persistence/auth hardening, read-scope enforcement, and broader DSL work conditional on concrete pressure. Do not add arbitrary model-written code or generalize infrastructure merely because it is queued.
