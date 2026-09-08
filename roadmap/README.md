@@ -83,7 +83,8 @@ State, not milestone narrative:
 - [Living-world projection research](../docs/research/living-world-projection-2026-09.md) defines the current visual semantics: one spatial world, dynamic core overlays, analytic plugins, and a strict distinction between information lineage and hard causal ancestry.
 - Commodity procurement is settled by Decision 004: deck.gl 9.4.x for living projection; Pydantic AI 2.41.x behind `CognitionAdapter`; SimPy 4.1.2 for scheduling only; Cytoscape.js 3.34.x for expanded graph inspection.
 - The selection doctrine is **novel uncertainty → experiment; commodity uncertainty → research/reason/select; integration uncertainty → conformance test**.
-- The product does not yet have first-class generic information/conversation semantics, a generic scheduled-process authoring surface, generalized institutions/decision procedures, durable resident cognition, or saved user worlds/runs.
+- The current time/process runtime is still the M1 integer-tick baseline: `Engine.advance()` checks registered processes each step through `due(world)`. It does not yet provide one canonical future-event timeline, duration-bearing activities, independently scheduled cadences, or event-driven cognition wakeups.
+- The product does not yet have first-class generic information/conversation semantics, a generic multi-timescale process/activity authoring surface, generalized institutions/decision procedures, durable resident cognition, or saved user worlds/runs.
 - Open PR #43 (CVS sustainment seam) is a separate integration track and does not define this roadmap. Rebase/review it against current main before any merge decision.
 
 ## Applicable context
@@ -140,9 +141,10 @@ Hard constraints:
 | Living-world visual prototype | **complete prototype** | desired interaction/overlay model is publicly inspectable |
 | Live projection seam | **active / next** | real World Substrate run drives the living visual client |
 | Information/conversation semantics | queued after live projection | represented utterances, source/recipient/channel/provenance/visibility |
-| Processes + institutions | queued from Coordination-Lab pressure | schedules, meetings, external events, decision/authority mechanics |
+| Multi-timescale processes + activities | queued after information semantics, earned by Coordination Lab | one canonical simulated timeline; independent cadences; duration-bearing activities; SimPy schedules opportunities only |
+| Institutions | queued from Coordination-Lab pressure | meetings, deadlines, decision procedures, permissions/commitments on the same timeline |
 | Generative causal closure | core research frontier | dependency inventory → enforcement mapping → counterexamples → residual risk |
-| Cognition adapter | selected dependency, integrate when earned | Pydantic AI resident memory/planning behind authority boundary |
+| Cognition adapter | selected dependency, integrate when earned | Pydantic AI resident memory/planning; wake on meaningful events rather than every scheduler microstep |
 | Coordination Lab vertical | target application | Waltzman scenario + detachable analysis + intervention/fork workflow |
 | Persistence / second-domain proof | later | durable user worlds/runs and proof of generality beyond Waltzman |
 
@@ -180,6 +182,8 @@ Start with an initial snapshot plus incremental event/delta delivery. SSE is suf
 
 After this slice, add **first-class information/conversation semantics**. A conversation is a world interaction plus an information representation/delivery; it becomes part of a causal explanation only where retained mechanics/evidence justify that stronger relation.
 
+The next process/institution slice should then introduce **multi-timescale execution only when a real target world requires it**: one canonical simulated timeline, independently scheduled process/institution triggers, and the minimum duration-bearing activity representation needed for travel/tasks/meetings. SimPy may schedule wakeups; World Substrate still decides consequences. Resident cognition should normally wake on meaningful delivered information, interaction requests, task completion/failure, scheduled reflection, or other bounded triggers rather than every low-level scheduler event. See [multi-timescale execution](../docs/research/multi-timescale-execution-2026-09.md).
+
 ## Decisions and assumptions
 
 ### Product/adoption strategy
@@ -194,7 +198,8 @@ After this slice, add **first-class information/conversation semantics**. A conv
 | Scene/projection semantics | keep project-owned; renderer stays downstream |
 | Living browser rendering | deck.gl 9.4.x selected; MapLibre optional for real geography |
 | Resident cognition | Pydantic AI 2.41.x selected behind `CognitionAdapter`; integrate only when a world needs it |
-| Simulated scheduling | SimPy 4.1.2 selected for event/time scheduling only |
+| Simulated scheduling | SimPy 4.1.2 selected for event/time scheduling only; target is one canonical timeline with independent mechanism cadences |
+| Activity duration | project-owned semantic/causal contract when earned; completion rechecks current world rather than applying a guaranteed delayed write |
 | Expanded graph inspection | Cytoscape.js 3.34.x selected when a non-spatial inspector is needed |
 | Multi-agent evaluation | PettingZoo later if useful; never alternate world authority |
 | Persistence/auth | standard commodity infrastructure later |
@@ -246,6 +251,7 @@ Draft/open work that is useful but not roadmap authority:
 | P1 | information representation/delivery is not first-class generic world semantics | next generic capability after projection |
 | P1 | causal ancestry can be overstated if observation/context is treated as hard cause | explicitly separate causal, delivery, evidence, analysis relations |
 | P1 | generated world may name consequential dependencies that no mechanic enforces | build bounded dependency inventory + closure/counterexample loop |
+| P2 | current integer-tick loop cannot express independent cadences/duration-bearing activities efficiently | add a canonical simulated timeline + minimal activity contract from Coordination-Lab pressure; use SimPy only as scheduler |
 | P2 | generic authoring lacks rich scheduled processes/meetings/institutions | add from Coordination-Lab pressure, not schema completeness |
 | P2 | generic live actions are not semantically closed against Linguistic Core | retain as explicit gap; close when it blocks richer authoring/review |
 | P2 | no durable resident cognition | Pydantic AI selected; integrate when correct worlds need persistent minds |
@@ -271,6 +277,8 @@ Draft/open work that is useful but not roadmap authority:
 | Living renderer | answered — deck.gl 9.4.x |
 | Resident cognition harness | answered — Pydantic AI 2.41.x behind adapter |
 | Scheduler | answered — SimPy 4.1.2 for scheduling only |
+| Time model direction | answered — one canonical simulated timeline; process/institution/activity cadences independent; render/cognition/analysis cadences separate |
+| Cognition cadence | answered — event/meaning-driven wakeups by default, not one LLM deliberation per low-level simulation step |
 | Graph inspector | answered — Cytoscape.js 3.34.x when needed |
 | Deployed living-world prototype | explicitly authorized and live |
 | Public demo vs authenticated authoring | still open |
@@ -281,7 +289,8 @@ Refresh this roadmap when:
 
 - the living client consumes its first real World Substrate run;
 - first-class information/conversation semantics are accepted;
-- a scheduled process/institution authoring need produces a concrete contract;
+- a scheduled process/institution authoring need produces a concrete multi-timescale/activity contract;
+- the first real world uses independent process cadences or duration-bearing activities;
 - a dependency/closure report detects and repairs a missing law;
 - Pydantic AI is integrated behind the cognition seam;
 - the Coordination Lab vertical completes a real World Substrate run;

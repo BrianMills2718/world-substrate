@@ -85,6 +85,23 @@ Autonomous processes use the same canonical state and transition authority as ac
 
 Installed institutions are represented causal bearers whose rules alter future transitions or affordances. They are not special because of their name; they become causal because the world consults and enforces them.
 
+## Time, cadence, and duration model
+
+World Substrate should converge on **one canonical simulated timeline with independently scheduled mechanisms**, not one universal resident turn rate. Render time, process cadence, resident cognition cadence, institution cadence, and analysis cadence are distinct concerns. Only represented simulation time belongs to canonical world truth.
+
+The current implementation is narrower: `World.tick` is an integer and `Engine.advance()` checks every registered process on each step through `due(world)`. That M1 mechanism permits simple conditional cadence but is not yet a first-class future-event scheduler. Richer scheduling is an explicit target rather than an implemented claim.
+
+Target rules:
+
+- autonomous processes and institutions may operate at different cadences on the same canonical timeline;
+- SimPy may schedule future wakeups/timeouts, but a wakeup only creates a World Substrate process opportunity—the installed mechanic still checks and commits/refuses consequences;
+- duration-bearing activities such as travel, repair, testing, transport, or meetings should remain represented while underway when that duration matters to other mechanics; completion is a new transition opportunity that rechecks then-current state, not a guaranteed delayed write;
+- resident cognition should normally wake on meaningful observations, interaction requests, task completion/failure, explicit schedules, or other bounded triggers rather than on every low-level world event;
+- render interpolation/playback speed and analysis sampling never advance canonical simulation time; and
+- cadence/resolution is separate from fidelity: a high-frequency mechanism can be coarse and a low-frequency mechanism can be detailed.
+
+The exact simulation-time/activity schema remains uncommitted until a real Coordination-Lab/process slice needs it. See [multi-timescale execution](research/multi-timescale-execution-2026-09.md).
+
 ## Semantic and causal layers
 
 The architecture distinguishes four causal layers:

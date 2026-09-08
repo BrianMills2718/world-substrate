@@ -36,13 +36,13 @@ The expected layer model is additive: base world, residents, information structu
 
 ## Resident cognition
 
-`CognitionAdapter` is the owned seam. Pydantic AI is the default harness behind it. World Substrate supplies actor-authorized observation, engine-minted offered actions/effect semantics, budgets, and relevant private resident context; the harness returns a selected action id, optional utterance, and private-state update.
+`CognitionAdapter` is the owned seam. Pydantic AI is the default harness behind it. World Substrate supplies actor-authorized observation, engine-minted offered actions/effect semantics, budgets, and relevant private resident context; the harness returns a selected action id, optional utterance, and private-state update. Resident deliberation should usually be event-driven rather than tied to every low-level simulation step: task completion/failure, important delivered information, interaction requests, scheduled reflection, or other bounded wake conditions are the target.
 
 Conformance tests must prove that the harness cannot mutate canonical state, cannot see observer-only evidence, cannot select actions the Engine did not offer, keeps private memory actor-private, and fails without corrupting the World. Do not run model/harness architecture tournaments unless a future question is genuinely novel and material.
 
 ## Scheduling
 
-SimPy may own simulated clock advancement, event ordering, timeouts, and waking process coroutines. It must not become a parallel source of resource truth or consequence authority. A SimPy wakeup produces a World Substrate process attempt; the installed process mechanic still checks canonical state and the Engine still commits or refuses the transition.
+SimPy may own simulated clock advancement, event ordering, timeouts, and waking process coroutines. It must not become a parallel source of resource truth or consequence authority. A SimPy wakeup produces a World Substrate process attempt; the installed process mechanic still checks canonical state and the Engine still commits or refuses the transition. The target is one canonical simulation timeline supporting independently timed processes and duration-bearing activities; render time, cognition cadence, and analysis cadence remain separate. See [multi-timescale execution](multi-timescale-execution-2026-09.md).
 
 ## Graph inspection
 

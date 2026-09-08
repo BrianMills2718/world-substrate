@@ -20,9 +20,10 @@ The live Builder can define represented world structure, request a constrained L
 4. [Decision 004](docs/decisions/004-product-and-adoption-strategy.md) — approved Generative-World Builder / off-the-shelf adoption strategy.
 5. [Living-world projection](docs/research/living-world-projection-2026-09.md) — one-world overlay model, information/causality distinction, and first live-integration acceptance.
 6. [Technology procurement](docs/research/technology-procurement-2026-09.md) — selected deck.gl / Pydantic AI / SimPy / Cytoscape defaults.
-7. [Competitive landscape](docs/research/competitive-landscape-2026-09.md) — adjacent systems and the "own reality; borrow minds" strategy.
-8. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
-9. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
+7. [Multi-timescale execution](docs/research/multi-timescale-execution-2026-09.md) — one canonical world timeline, independent mechanism cadences, duration-bearing activities, event-driven cognition.
+8. [Competitive landscape](docs/research/competitive-landscape-2026-09.md) — adjacent systems and the "own reality; borrow minds" strategy.
+9. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
+10. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
 
 ## Where this stands
 
@@ -45,7 +46,8 @@ The **prototype phase is complete**. The system has progressed from a neutral tr
 | Standalone living-world visualization | deployed prototype; synthetic timeline; not yet fed by World Substrate |
 | Live read-only projection seam | next implementation slice |
 | First-class information/conversation semantics | not yet implemented |
-| Persistent resident cognition | not yet integrated; Pydantic AI selected behind adapter |
+| Multi-timescale scheduling / duration activities | not yet implemented; current runtime is integer tick + per-step process `due()` checks; SimPy selected as future scheduler only |
+| Persistent resident cognition | not yet integrated; Pydantic AI selected behind adapter; target cognition wakeups are event/meaning-driven rather than every microstep |
 | Saved user worlds/runs | not yet implemented |
 
 The current live path is:
