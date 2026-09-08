@@ -92,6 +92,22 @@ demo-friendly law.
 Scripted runs cost zero. LLM policies select only engine-minted action ids; the
 installed mechanics remain the sole source of consequences.
 
+## Deployment budget-ledger follow-up
+
+The first public certification against the newer pinned `llm_client` exposed an
+observability-API compatibility detail: that client treats `trace_prefix` as a
+slash-delimited trace family, while the first service revision used hyphenated
+trace ids. Exact per-trace accounting remained correct, but the prefix-based
+daily total read as zero.
+
+The service no longer delegates its public daily ceiling to that query shape. It
+keeps a small persistent `world-builder-llm-budget/v1` ledger under local state,
+reserves the allowed cap **before** every model call, and settles the reservation
+to observed trace cost afterwards. A call/accounting failure is charged at the
+full reservation and a same-day restart preserves outstanding reservations, so
+the public daily ceiling fails closed. Trace ids also now use the canonical
+`world-builder-live/<kind>/<uuid>` family for observability.
+
 ## Remaining limitation
 
 The action declaration language is intentionally narrower than arbitrary causal

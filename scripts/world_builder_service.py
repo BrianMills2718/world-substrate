@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 import threading
 import time
@@ -32,7 +33,9 @@ DAILY_LLM_BUDGET = 0.50
 LLM_REQUESTS_PER_HOUR = 8
 GENERAL_REQUESTS_PER_MINUTE = 30
 ALLOWED_ORIGINS = {"https://brianmills.dev", "https://www.brianmills.dev"}
-TRACE_PREFIX = "world-builder-live-"
+TRACE_ROOT = "world-builder-live"
+BUDGET_STATE_PATH = Path.home() / ".local/state/world-builder/llm-budget-v1.json"
+BUDGET_STATE_SCHEMA = "world-builder-llm-budget/v1"
 
 _REQUESTS: dict[str, deque[float]] = defaultdict(deque)
 _LLM_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
@@ -56,10 +59,71 @@ def _rate_ok(client: str, *, llm: bool) -> bool:
     return True
 
 
-def _daily_cost() -> float:
-    from llm_client import get_cost
+def _empty_budget_state() -> dict[str, Any]:
+    return {
+        "schema_version": BUDGET_STATE_SCHEMA,
+        "date": date.today().isoformat(),
+        "spent_usd": 0.0,
+        "reserved_usd": 0.0,
+    }
 
-    return float(get_cost(trace_prefix=TRACE_PREFIX, since=date.today()) or 0.0)
+
+def _load_budget_state() -> dict[str, Any]:
+    if not BUDGET_STATE_PATH.exists():
+        return _empty_budget_state()
+    try:
+        value = json.loads(BUDGET_STATE_PATH.read_text())
+    except Exception as error:
+        raise RuntimeError("World Builder budget ledger is unreadable; refusing LLM spend") from error
+    if not isinstance(value, dict) or value.get("schema_version") != BUDGET_STATE_SCHEMA:
+        raise RuntimeError("World Builder budget ledger has an unsupported schema; refusing LLM spend")
+    if value.get("date") != date.today().isoformat():
+        return _empty_budget_state()
+    for key in ("spent_usd", "reserved_usd"):
+        amount = value.get(key)
+        if type(amount) not in (int, float) or not math.isfinite(float(amount)) or amount < 0:
+            raise RuntimeError(f"World Builder budget ledger has invalid {key}; refusing LLM spend")
+    return {
+        "schema_version": BUDGET_STATE_SCHEMA,
+        "date": value["date"],
+        "spent_usd": float(value["spent_usd"]),
+        "reserved_usd": float(value["reserved_usd"]),
+    }
+
+
+def _write_budget_state(state: dict[str, Any]) -> None:
+    BUDGET_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    temp = BUDGET_STATE_PATH.with_name(BUDGET_STATE_PATH.name + ".tmp")
+    temp.write_text(json.dumps(state, sort_keys=True, separators=(",", ":")) + "\n")
+    temp.replace(BUDGET_STATE_PATH)
+
+
+def _daily_cost() -> float:
+    state = _load_budget_state()
+    return float(state["spent_usd"] + state["reserved_usd"])
+
+
+def _reserve_daily_budget(requested_cap: float) -> float | None:
+    state = _load_budget_state()
+    committed = float(state["spent_usd"] + state["reserved_usd"])
+    remaining = max(0.0, DAILY_LLM_BUDGET - committed)
+    if remaining <= 0.0001:
+        return None
+    cap = min(float(requested_cap), remaining)
+    state["reserved_usd"] = float(state["reserved_usd"] + cap)
+    _write_budget_state(state)
+    return cap
+
+
+def _settle_daily_budget(reserved_cap: float, actual_cost: float | None) -> float:
+    state = _load_budget_state()
+    state["reserved_usd"] = max(0.0, float(state["reserved_usd"]) - float(reserved_cap))
+    # If a call or accounting read fails after reservation, charge the whole
+    # reservation. This intentionally fails closed until the next calendar day.
+    charged = float(reserved_cap if actual_cost is None else max(0.0, actual_cost))
+    state["spent_usd"] = float(state["spent_usd"] + charged)
+    _write_budget_state(state)
+    return float(state["spent_usd"] + state["reserved_usd"])
 
 
 def _trace_cost(trace_id: str) -> float:
@@ -127,6 +191,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     "ok": True,
                     "service": "world-builder",
                     "llm_daily_budget_usd": DAILY_LLM_BUDGET,
+                    "llm_daily_committed_usd": _daily_cost(),
                 },
             )
             return
@@ -176,20 +241,20 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if not _rate_ok(client, llm=True):
             self._error(HTTPStatus.TOO_MANY_REQUESTS, "LLM rate limit reached")
             return None
-        spent = _daily_cost()
-        remaining = max(0.0, DAILY_LLM_BUDGET - spent)
-        if remaining <= 0.0001:
+        cap = _reserve_daily_budget(requested_cap)
+        if cap is None:
+            spent = _daily_cost()
             self._error(
                 HTTPStatus.TOO_MANY_REQUESTS,
                 f"daily World Builder LLM budget reached (${spent:.3f}/${DAILY_LLM_BUDGET:.2f})",
             )
             return None
-        return min(requested_cap, remaining)
+        return cap
 
     def _generate(self, client: str, body: dict[str, Any]) -> None:
         bundle = validate_bundle(body.get("bundle"))
         model = str(body.get("model") or DEFAULT_MODEL)
-        trace_id = TRACE_PREFIX + "mechanics-" + uuid.uuid4().hex
+        trace_id = f"{TRACE_ROOT}/mechanics/{uuid.uuid4().hex}"
         guidance = body.get("guidance") or ""
         if not isinstance(guidance, str):
             raise ValueError("guidance must be a string")
@@ -199,17 +264,21 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             budget = self._llm_budget(client, MECHANICS_BUDGET)
             if budget is None:
                 return
-            generated, result = generate_causal_model(
-                bundle,
-                model=model,
-                trace_id=trace_id,
-                max_budget=budget,
-                guidance=guidance[:4000],
-            )
-            causal = _strip_review(generated)
-            compiled = CausalModel.from_dict(causal, bundle=bundle)
-            trace_cost = _trace_cost(trace_id)
-            daily_cost = _daily_cost()
+            try:
+                generated, result = generate_causal_model(
+                    bundle,
+                    model=model,
+                    trace_id=trace_id,
+                    max_budget=budget,
+                    guidance=guidance[:4000],
+                )
+                causal = _strip_review(generated)
+                compiled = CausalModel.from_dict(causal, bundle=bundle)
+                trace_cost = _trace_cost(trace_id)
+            except Exception:
+                _settle_daily_budget(budget, None)
+                raise
+            daily_cost = _settle_daily_budget(budget, trace_cost)
         self._json(
             HTTPStatus.OK,
             {
@@ -219,6 +288,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "model": getattr(result, "model", model),
                 "cost_usd": trace_cost,
                 "daily_cost_usd": daily_cost,
+                "trace_id": trace_id,
             },
         )
 
@@ -237,17 +307,23 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if type(turns) is not int:
             raise ValueError("turns must be an integer")
         model = str(body.get("model") or DEFAULT_MODEL)
-        trace_id = TRACE_PREFIX + "run-" + uuid.uuid4().hex
+        trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
         if policy == "llm":
             with _LLM_LOCK:
                 budget = self._llm_budget(client, RUN_BUDGET)
                 if budget is None:
                     return
-                trace, _, compiled = run_world(
-                    bundle, causal, policy=policy, model_name=model,
-                    max_turns=turns, max_budget=budget, trace_id=trace_id,
-                )
-                daily_cost = _daily_cost()
+                try:
+                    trace, _, compiled = run_world(
+                        bundle, causal, policy=policy, model_name=model,
+                        max_turns=turns, max_budget=budget, trace_id=trace_id,
+                    )
+                    trace_cost = _trace_cost(trace_id)
+                except Exception:
+                    _settle_daily_budget(budget, None)
+                    raise
+                daily_cost = _settle_daily_budget(budget, trace_cost)
+                trace["cost_usd"] = trace_cost
         else:
             trace, _, compiled = run_world(
                 bundle, causal, policy=policy, model_name=model,
@@ -265,6 +341,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "replay_html": replay,
                 "cost_usd": trace.get("cost_usd", 0.0),
                 "daily_cost_usd": daily_cost,
+                "trace_id": trace_id,
             },
         )
 
