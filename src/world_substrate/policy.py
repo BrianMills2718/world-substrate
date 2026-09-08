@@ -156,6 +156,8 @@ def _annotations(row: dict[str, Any]) -> str:
             parts.append(label)
     if row.get("consequences"):
         parts.append("destroys: " + "; ".join(row["consequences"]))
+    if row.get("effects"):
+        parts.append("effects: " + "; ".join(row["effects"]))
     return "  [" + "; ".join(parts) + "]" if parts else ""
 
 

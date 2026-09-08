@@ -374,6 +374,28 @@ class CompiledActionMechanic:
                 break
         return actions
 
+    def effect_preview(self, world: World, action: TypedAction) -> list[str]:
+        """Describe the concrete writes this installed mechanic would perform."""
+        if not isinstance(action, DeclaredAction) or action.kind != self.action_kind:
+            raise TypeError(f"{self.action_kind} declaration requires DeclaredAction")
+        record = action.record
+        participants = {"actor": str(record["actor"])}
+        participants.update(
+            {name: str(record[name]) for name in self.declared.participants}
+        )
+        rows: list[str] = []
+        for effect in self.declared.effects:
+            target_id = participants[effect["participant"]]
+            expr = effect["value"]
+            if "event_id" in expr:
+                value: Any = "<event-id>"
+            else:
+                value = _resolve_expr(expr, world, record, participants, None)
+            rows.append(
+                f"{target_id}.{effect['path']} {effect['op']} {value!r}"
+            )
+        return rows
+
     def checks(self, world: World, action: TypedAction) -> list[Check]:
         if not isinstance(action, DeclaredAction) or action.kind != self.action_kind:
             raise TypeError(f"{self.action_kind} declaration requires DeclaredAction")

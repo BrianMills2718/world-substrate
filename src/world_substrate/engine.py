@@ -11,6 +11,7 @@ from .model import World, differences
 from .rules import (
     Check,
     DeclaresConsequences,
+    DescribesEffects,
     ProcessRule,
     ReportsProgress,
     RuleRegistry,
@@ -248,6 +249,25 @@ class Engine:
             )
         )
 
+    def _effect_preview(
+        self,
+        rule: Any,
+        action: TypedAction,
+        world: World,
+        before: dict[str, Any],
+    ) -> list[str]:
+        if not isinstance(rule, DescribesEffects):
+            return []
+        return list(
+            self._readonly_call(
+                world,
+                before,
+                rule.rule_id,
+                "effect_preview",
+                lambda: rule.effect_preview(world, action),
+            )
+        )
+
     def _progress(
         self, world: World, before: dict[str, Any]
     ) -> list[dict[str, Any]]:
@@ -321,6 +341,7 @@ class Engine:
                 # treated vessel, and the M5 policy filled its own boiled pot
                 # and then drank it (M5 finding).
                 "consequences": self._consequences(rule, action, world, before),
+                "effects": self._effect_preview(rule, action, world, before),
             }
             if all(check.ok for check in checks):
                 available.append(row)
