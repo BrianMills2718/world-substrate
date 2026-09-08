@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import json
+import sys
+import types
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 from scripts.bootstrap_scene_profile import _entity_binding
-from scripts.run_authored_world import _runtime_catalog, build_engine, render_run, run_world
+from scripts.run_authored_world import _llm_choice, _runtime_catalog, build_engine, render_run, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate.action_authoring import ActionDeclarationError
 
@@ -118,6 +121,40 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertIn("effects:", claim["description"])
         self.assertIn("ownership.owner_ref set 'actor:ava'", claim["description"])
         self.assertIn("hands_free set False", claim["description"])
+
+    def test_live_policy_caps_structured_output_tokens(self):
+        engine, _, _ = build_engine(self.bundle, self.causal)
+        page = engine.discover("ava")
+        captured = {}
+        fake = types.ModuleType("llm_client")
+
+        def render_prompt(*args, **kwargs):
+            return [{"role": "user", "content": "fixture"}]
+
+        def call_llm_json_schema(model, messages, schema, **kwargs):
+            captured.update(kwargs)
+            action_id = schema["properties"]["action_id"]["enum"][0]
+            result = types.SimpleNamespace(cost=0.001)
+            return {"action_id": action_id, "reasoning": "choose offered action"}, result
+
+        fake.render_prompt = render_prompt
+        fake.call_llm_json_schema = call_llm_json_schema
+        with patch.dict(sys.modules, {"llm_client": fake}):
+            action, reasoning, cost = _llm_choice(
+                engine,
+                "ava",
+                page,
+                world_summary=self.bundle["world"]["summary"],
+                model="fixture-model",
+                trace_id="fixture-trace",
+                max_budget=0.01,
+                recent=[],
+            )
+
+        self.assertIsNotNone(action)
+        self.assertEqual(reasoning, "choose offered action")
+        self.assertEqual(cost, 0.001)
+        self.assertEqual(captured["max_tokens"], 512)
 
     def test_repair_bay_fresh_replay_is_graphical(self):
         trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=12)
