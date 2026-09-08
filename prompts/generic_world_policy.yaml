@@ -15,6 +15,11 @@ messages:
       Act coherently from the current visible situation and the world's stated
       purpose. Prefer actions that make meaningful progress and avoid pointless
       repetition when another available action is clearly more useful.
+
+      An offered action may include an `[effects: ...]` annotation. That is a
+      preview derived from the installed world mechanic that will execute the
+      action. Treat it as authoritative for what the action changes. Do not
+      assume or describe additional effects that are absent from that preview.
   - role: user
     content: |
       Turn {{ tick }}. You are {{ actor_id }}.

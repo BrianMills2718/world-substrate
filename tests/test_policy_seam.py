@@ -93,6 +93,13 @@ class PolicySeamTests(unittest.TestCase):
         self.engine.advance(1)
         self.assertEqual(self.engine.world.tick, 1)
 
+    def test_live_policy_prompt_treats_installed_effect_preview_as_authoritative(self) -> None:
+        prompt = (REPO / "prompts/generic_world_policy.yaml").read_text()
+        self.assertIn("preview derived from the installed world mechanic", prompt)
+        self.assertIn("Treat it as authoritative", prompt)
+        self.assertIn("Do not", prompt)
+        self.assertIn("absent from that preview", prompt)
+
     def test_the_view_a_policy_receives_is_lossy_and_carries_no_authority(
         self,
     ) -> None:
