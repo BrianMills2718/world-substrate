@@ -1,41 +1,35 @@
 # World Substrate
 
-Build a persistent, observable world substrate in which LLM or human policies express semantically grounded intents and installed mechanics alone determine canonical consequences. Expand behavioral breadth through shared state, Linguistic Core bindings, reusable mechanics, autonomous processes, installed institutions, and frozen world profiles.
+Build a persistent, observable world substrate in which LLM or human policies express semantically grounded intents and installed mechanics alone determine canonical consequences.
 
 ## Start here
 
-Read [the project wiki](docs/wiki/README.md) for orientation and [the roadmap](roadmap/README.md) for current direction and the active slice. Follow the task-specific route from the wiki rather than reading every source.
+Read [the project wiki](docs/wiki/README.md) for orientation and [the roadmap](roadmap/README.md) for current direction. Use [architecture](docs/architecture.md) for durable boundaries and [accepted decisions](docs/decisions/) for human-set doctrine.
 
 Before editing a scoped subtree, read its local `CLAUDE.md`:
-
-- documentation, research, or contracts: `docs/CLAUDE.md`
+- documentation/contracts: `docs/CLAUDE.md`
 - planning authority: `roadmap/CLAUDE.md`
-- reference-world material: `reference_worlds/CLAUDE.md`
-- fixtures and verification: `tests/CLAUDE.md`
+- reference worlds: `reference_worlds/CLAUDE.md`
+- fixtures/verification: `tests/CLAUDE.md`
 
 ## Invariants
 
 - One canonical persistent world owns material truth.
-- Policies and natural-language descriptions do not directly mutate that truth.
-- Linguistic Core identifies senses and participant roles; installed mechanics supply effects.
-- Every state-changing transition identifies a causal bearer and one local authority.
-- Mechanics, permissions, and institutions propose effects; one enclosing transition commits causally coupled writes.
-- Declared write scopes are enforced at state paths; declared read scopes are recorded, not enforced.
-- Composite and analytic descriptions do not duplicate their underlying effects.
-- Unsupported mechanics and interactions fail visibly without partial mutation.
-- Resident-agent cognition remains distinct from canonical world state and post-run analysis.
-- Every attempted transition produces sufficient causal trace for inspection.
-- Exact replay is an optional M1/debugging capability, not a universal requirement.
-- Accounting and conservation invariants are goal-relative to the selected world and mechanic.
+- Policies and natural-language descriptions never mutate canonical state directly.
+- Linguistic Core supplies senses/roles; installed mechanics supply effects.
+- Mechanics propose; one enclosing transition validates and commits or refuses.
+- Declared write scopes are enforced; declared read scopes are recorded, not yet enforced.
+- Composite/analytic descriptions do not duplicate primitive effects.
+- Unsupported or defective behavior fails visibly without partial mutation.
+- Resident cognition and post-run analysis remain separate from canonical world truth.
+- Every attempted transition leaves inspectable causal evidence.
 
 ## Current boundary
 
-This repository is the canonical home for the initiative. M1's neutral freshwater runtime remains promoted: its registered deterministic rules and processes reproduce the bounded Castaway vertical, retain causal evidence, and replay from pinned inputs in a fresh process. Those are M1 implementation facts, not universal architecture requirements.
+The prototype phase is complete. Kitchen is the replicated flagship; Automatic replay generation works across Kitchen, Castaway, Workshop, and Greenhouse; and the deployed World Builder at `https://brianmills.dev/world-builder/` can author represented structure, request a constrained causal-mechanics proposal, review compiler-derived authority, explicitly approve it, and launch fresh scripted or LLM-selected graphical runs.
 
-M2 through M7 are complete and all six prototype success criteria are met: `give` is semantically bound, exchange is derived, write scopes are enforced, ownership references are checked, two mechanics were authored offline and assayed, an LLM policy has driven the world, and a second reference world reuses the contracts.
+The product direction is now: **Generative-World Builder on top; rigorous world-modeling/causal engine underneath.** Keep the canonical state, transition kernel, semantic/mechanical binding, causal compiler, and trace model project-owned. Prefer off-the-shelf infrastructure for cognition, rendering, interoperability, persistence, and auth when it does not acquire causal authority. See [Decision 004](docs/decisions/004-product-and-adoption-strategy.md).
 
-**That was phase one.** The goal is a sophisticated world-modelling system with one instantiation good enough to show off, and phase two is underway. A third world — the kitchen, where two cooks with different orders share one knife and exactly enough ingredients that waste loses a dish — runs a complete two-agent service, and `evidence/renders/` holds rendered runs a person can read. The service now has a world-defined terminal condition derived from its existing filled orders, so the contested runner stops before asking either policy to act again once every order is complete. The remaining immediate question is whether the unprompted knife handover and turn-taking seen in the retained full-service run replicate. There is still no deployment, and no repository outside this one imports `world_substrate`. Read [the roadmap's active slice](roadmap/README.md#vertical-slices-and-current-work) for current truth before deciding anything. Runtime law revision is deferred; do not call a model without explicit model-execution authority and a spend cap.
+The immediate functional gate is a less-trivial authored world through the deployed Build → Generate Mechanics → Review/Approve → Run flow. Extend the constrained causal language only from concrete failures; do not fall back to arbitrary model-written code.
 
-Castaway remains the implementation donor beyond the adopted M1 path. Linguistic Core and the classified research repositories are sources or dependencies, not competing authorities or code-adoption instructions.
-
-Make reversible changes without repeated approval. Do not deploy, publish, spend on model calls, mutate donor repositories, or install runtime-generated mechanics without explicit authorization. Never create a special handoff document; improve the normal root-to-wiki-to-authority route instead.
+Make reversible changes without repeated approval. Do not mutate donor repositories. New deployment/publication, provider spend outside an already-approved bounded service, or runtime-generated-law installation outside the reviewed World Builder path still requires explicit authorization. Never create a special handoff document; improve the normal root → wiki → authority route instead.
