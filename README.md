@@ -1,5 +1,7 @@
 # World Substrate
 
+> **Global navigation:** use the [Vision knowledge index](https://github.com/BrianMills2718/vision/blob/main/wiki/index.md) as the canonical cross-repo entry point. This README remains the local entry point for this repository’s implementation, design, and evidence.
+
 World Substrate is a persistent, observable world engine in which agents express semantically grounded intents and **installed mechanics—not model prose—determine canonical consequences**.
 
 The project now includes both the causal engine and a deployed authoring product:
