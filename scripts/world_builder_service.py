@@ -1,0 +1,289 @@
+#!/usr/bin/env python3
+"""Small same-origin API for World Builder mechanics generation and fresh runs."""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+import threading
+import time
+import uuid
+from collections import defaultdict, deque
+from datetime import date
+from http import HTTPStatus
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from typing import Any
+
+REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
+sys.path.insert(0, str(REPO / "src"))
+
+from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
+from scripts.run_authored_world import render_run, run_world
+from scripts.scaffold_world import BundleError, validate_bundle
+from world_substrate.action_authoring import ActionDeclarationError, CausalModel
+
+API_PREFIX = "/world-builder/api"
+MAX_BODY_BYTES = 512_000
+MECHANICS_BUDGET = 0.12
+RUN_BUDGET = 0.12
+DAILY_LLM_BUDGET = 0.50
+LLM_REQUESTS_PER_HOUR = 8
+GENERAL_REQUESTS_PER_MINUTE = 30
+ALLOWED_ORIGINS = {"https://brianmills.dev", "https://www.brianmills.dev"}
+TRACE_PREFIX = "world-builder-live-"
+
+_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
+_LLM_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
+_LLM_LOCK = threading.Lock()
+
+
+def _prune(queue: deque[float], window: float) -> None:
+    cutoff = time.time() - window
+    while queue and queue[0] < cutoff:
+        queue.popleft()
+
+
+def _rate_ok(client: str, *, llm: bool) -> bool:
+    queue = _LLM_REQUESTS[client] if llm else _REQUESTS[client]
+    window = 3600.0 if llm else 60.0
+    limit = LLM_REQUESTS_PER_HOUR if llm else GENERAL_REQUESTS_PER_MINUTE
+    _prune(queue, window)
+    if len(queue) >= limit:
+        return False
+    queue.append(time.time())
+    return True
+
+
+def _daily_cost() -> float:
+    from llm_client import get_cost
+
+    return float(get_cost(trace_prefix=TRACE_PREFIX, since=date.today()) or 0.0)
+
+
+def _trace_cost(trace_id: str) -> float:
+    from llm_client import get_cost
+
+    return float(get_cost(trace_id=trace_id) or 0.0)
+
+
+def _client_ip(handler: BaseHTTPRequestHandler) -> str:
+    forwarded = handler.headers.get("CF-Connecting-IP") or handler.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",", 1)[0].strip()
+    return handler.client_address[0]
+
+
+def _origin_allowed(handler: BaseHTTPRequestHandler) -> bool:
+    origin = handler.headers.get("Origin")
+    forwarded = handler.headers.get("CF-Connecting-IP") or handler.headers.get("X-Forwarded-For")
+    # A Cloudflare-originated connection is locally sourced at the socket layer,
+    # so absence of Origin must not be mistaken for a trusted localhost caller.
+    if forwarded:
+        return origin in ALLOWED_ORIGINS
+    if origin in ALLOWED_ORIGINS:
+        return True
+    return handler.client_address[0] in {"127.0.0.1", "::1"} and origin in {None, "http://127.0.0.1", "http://localhost"}
+
+
+def _strip_review(value: dict[str, Any]) -> dict[str, Any]:
+    out = json.loads(json.dumps(value))
+    out.pop("review", None)
+    return out
+
+
+class WorldBuilderHandler(BaseHTTPRequestHandler):
+    server_version = "WorldBuilderService/0.1"
+
+    def log_message(self, fmt: str, *args: object) -> None:
+        sys.stderr.write("world-builder-api: " + (fmt % args) + "\n")
+
+    def _json(self, status: int, value: dict[str, Any]) -> None:
+        data = json.dumps(value, separators=(",", ":")).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "same-origin")
+        self.end_headers()
+        self.wfile.write(data)
+
+    def _error(self, status: int, message: str) -> None:
+        self._json(status, {"ok": False, "error": message})
+
+    def _path(self) -> str:
+        path = self.path.split("?", 1)[0]
+        if path.startswith(API_PREFIX):
+            path = path[len(API_PREFIX) :]
+        return path or "/"
+
+    def do_GET(self) -> None:
+        if self._path() == "/health":
+            self._json(
+                HTTPStatus.OK,
+                {
+                    "ok": True,
+                    "service": "world-builder",
+                    "llm_daily_budget_usd": DAILY_LLM_BUDGET,
+                },
+            )
+            return
+        self._error(HTTPStatus.NOT_FOUND, "not found")
+
+    def do_POST(self) -> None:
+        client = _client_ip(self)
+        if not _origin_allowed(self):
+            self._error(HTTPStatus.FORBIDDEN, "same-origin browser request required")
+            return
+        if not _rate_ok(client, llm=False):
+            self._error(HTTPStatus.TOO_MANY_REQUESTS, "request rate limit reached")
+            return
+        length = self.headers.get("Content-Length")
+        if length is None or not length.isdigit():
+            self._error(HTTPStatus.LENGTH_REQUIRED, "Content-Length required")
+            return
+        size = int(length)
+        if size > MAX_BODY_BYTES:
+            self._error(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, "request body too large")
+            return
+        try:
+            body = json.loads(self.rfile.read(size))
+        except Exception:
+            self._error(HTTPStatus.BAD_REQUEST, "request body must be JSON")
+            return
+        if not isinstance(body, dict):
+            self._error(HTTPStatus.BAD_REQUEST, "request body must be an object")
+            return
+
+        path = self._path()
+        try:
+            if path == "/generate-mechanics":
+                self._generate(client, body)
+                return
+            if path == "/run":
+                self._run(client, body)
+                return
+            self._error(HTTPStatus.NOT_FOUND, "not found")
+        except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
+            self._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
+        except Exception as error:  # pragma: no cover - final process boundary
+            self.log_message("internal error: %s: %s", type(error).__name__, str(error)[:300])
+            self._error(HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")
+
+    def _llm_budget(self, client: str, requested_cap: float) -> float | None:
+        if not _rate_ok(client, llm=True):
+            self._error(HTTPStatus.TOO_MANY_REQUESTS, "LLM rate limit reached")
+            return None
+        spent = _daily_cost()
+        remaining = max(0.0, DAILY_LLM_BUDGET - spent)
+        if remaining <= 0.0001:
+            self._error(
+                HTTPStatus.TOO_MANY_REQUESTS,
+                f"daily World Builder LLM budget reached (${spent:.3f}/${DAILY_LLM_BUDGET:.2f})",
+            )
+            return None
+        return min(requested_cap, remaining)
+
+    def _generate(self, client: str, body: dict[str, Any]) -> None:
+        bundle = validate_bundle(body.get("bundle"))
+        model = str(body.get("model") or DEFAULT_MODEL)
+        trace_id = TRACE_PREFIX + "mechanics-" + uuid.uuid4().hex
+        guidance = body.get("guidance") or ""
+        if not isinstance(guidance, str):
+            raise ValueError("guidance must be a string")
+        # Serialize public LLM calls so two concurrent requests cannot both see
+        # the same remaining daily budget and oversubscribe it.
+        with _LLM_LOCK:
+            budget = self._llm_budget(client, MECHANICS_BUDGET)
+            if budget is None:
+                return
+            generated, result = generate_causal_model(
+                bundle,
+                model=model,
+                trace_id=trace_id,
+                max_budget=budget,
+                guidance=guidance[:4000],
+            )
+            causal = _strip_review(generated)
+            compiled = CausalModel.from_dict(causal, bundle=bundle)
+            trace_cost = _trace_cost(trace_id)
+            daily_cost = _daily_cost()
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "causal_model": causal,
+                "review": compiled.as_review(),
+                "model": getattr(result, "model", model),
+                "cost_usd": trace_cost,
+                "daily_cost_usd": daily_cost,
+            },
+        )
+
+    def _run(self, client: str, body: dict[str, Any]) -> None:
+        if body.get("approved") is not True:
+            self._error(HTTPStatus.CONFLICT, "mechanics must be explicitly approved before a run")
+            return
+        bundle = validate_bundle(body.get("bundle"))
+        causal = body.get("causal_model")
+        if not isinstance(causal, dict):
+            raise ValueError("causal_model must be an object")
+        # Compile before any policy/model call. This is the install authority gate.
+        CausalModel.from_dict(causal, bundle=bundle)
+        policy = str(body.get("policy") or "scripted")
+        turns = body.get("turns", 12)
+        if type(turns) is not int:
+            raise ValueError("turns must be an integer")
+        model = str(body.get("model") or DEFAULT_MODEL)
+        trace_id = TRACE_PREFIX + "run-" + uuid.uuid4().hex
+        if policy == "llm":
+            with _LLM_LOCK:
+                budget = self._llm_budget(client, RUN_BUDGET)
+                if budget is None:
+                    return
+                trace, _, compiled = run_world(
+                    bundle, causal, policy=policy, model_name=model,
+                    max_turns=turns, max_budget=budget, trace_id=trace_id,
+                )
+                daily_cost = _daily_cost()
+        else:
+            trace, _, compiled = run_world(
+                bundle, causal, policy=policy, model_name=model,
+                max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
+            )
+            daily_cost = None
+        replay = render_run(bundle, trace, compiled)
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "summary": trace["summary"],
+                "trace": trace,
+                "causal_review": compiled.as_review(),
+                "replay_html": replay,
+                "cost_usd": trace.get("cost_usd", 0.0),
+                "daily_cost_usd": daily_cost,
+            },
+        )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8813)
+    args = parser.parse_args()
+    server = ThreadingHTTPServer((args.host, args.port), WorldBuilderHandler)
+    print(f"World Builder API listening on http://{args.host}:{args.port}", flush=True)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

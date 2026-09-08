@@ -69,7 +69,7 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 
 The substrate prototype is complete and the flagship phase has produced its first human-facing artifact. The selected world is the kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. Three fresh same-model/prompt services reproduced the key sequence — Bo completes at t9, releases the knife for Ama at t10, Ama takes it at t11, and both orders are filled at the t17 world terminal.
 
-`evidence/renders/world-replay-studio-v0.html` is now the primary local viewing surface. It contains Kitchen, Castaway, Workshop, and **Greenhouse**, with Automatic as the authoring baseline and Polished as optional presentation when one exists. Greenhouse is the fourth-world product proof: its model, real mechanics, retained zero-spend run, shared presentation declarations, zero-review replay, and Studio entry were authored after the system existed and required no world-specific visualization code. `kitchen-spatial-replay-v1.html` remains the polished flagship inside the Studio. See the [Greenhouse proof](../audits/greenhouse-authoring-proof.md), [Studio audit](../audits/world-replay-studio.md), and [roadmap](../../roadmap/README.md).
+`evidence/renders/world-replay-studio-v0.html` remains the retained-world viewing surface, while `evidence/renders/world-builder-v0.html` now closes the creation loop: represent a world, request a constrained causal-mechanics proposal, inspect compiler-derived authority, explicitly approve it, and start a fresh scripted or LLM-selected graphical run. The retained Studio still contains Kitchen, Castaway, Workshop, and **Greenhouse**, with Automatic as the baseline and Polished optional. See the [live authoring audit](../audits/live-world-authoring.md), [action mechanic declaration contract](../contracts/action-mechanic-declaration-v0.md), and [roadmap](../../roadmap/README.md).
 
 ## What exists now?
 
@@ -88,7 +88,7 @@ The substrate prototype is complete and the flagship phase has produced its firs
 
 The baseline authoring workflow is now proven **after** the product surface existed. Greenhouse added a new `water` mechanic, shared-tool handoff, terminal state, retained real-engine trace and Automatic replay without a scene review file or world-specific visualization branch. It exposed two reusable assumptions: `take`/`put_down` labels had hard-coded an `item` field, and one action could not visually update two represented entities. The former moved to trace-inferred labels; the latter added generic declarative `state_effects`, so `water` can show both the plant becoming watered and the can becoming empty.
 
-The selected authoring direction is now implemented on both surfaces: **code-first starter plus local visual/schema builder**, sharing `world-substrate-authoring-bundle/v0`. `scripts/scaffold_world.py` generates the safe code package; `evidence/renders/world-builder-v0.html` imports/edits/exports the same bundle. Action signatures remain non-causal and scaffold refusing stubs until mechanics are implemented and reviewed. The next boundary is human use of that handoff, not hidden browser effects. Deployment/publication remains separately controlled.
+The selected authoring direction now works as one browser-to-engine vertical. The structural bundle is still non-causal; a separate constrained causal declaration can be proposed by Luna, compiler-checked, reviewed, and explicitly approved. Fresh runs then use either a zero-spend deterministic policy or an LLM policy that can select only engine-minted action ids. Orchard acceptance proved both seams with tiny real-model probes while preserving the consequence boundary. The next boundary is human evaluation on a less trivial authored world, not arbitrary model-written code.
 
 ## Architecture and workflow
 
@@ -138,7 +138,9 @@ Castaway remains the adopted M1 implementation and evidence donor. The workshop 
 
 ## Human-reviewable artifacts
 
-- `evidence/renders/world-builder-v0.html`: standalone local visual/schema authoring surface over `world-substrate-authoring-bundle/v0`.
+- `evidence/renders/world-builder-v0.html`: visual authoring surface with causal-mechanics review and fresh-run controls when served with the World Builder API.
+- `docs/contracts/action-mechanic-declaration-v0.md`: constrained action-law language, derived authority, compiler repair, and approval boundary.
+- `docs/audits/live-world-authoring.md`: real mechanics-generation / LLM-policy probes, costs, fresh graphical run, and public-service guards.
 - `docs/audits/world-authoring-builder.md`: builder validation, product boundary, and visual review.
 - `evidence/renders/greenhouse-zero-review-v0.html`: fourth-world Automatic replay generated without a scene review or visualization code.
 - `evidence/greenhouse/first-service-v0.json`: retained seven-turn real-engine Greenhouse run.

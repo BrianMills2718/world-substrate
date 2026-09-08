@@ -1,0 +1,116 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "orchard.action.pick",
+      "version": "1",
+      "action_kind": "pick",
+      "rationale": "A worker can take a ripe fruit in the same place; the fruit becomes picked and owned by that worker.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": []
+      },
+      "participants": {
+        "fruit": {
+          "categories": [
+            "fruit"
+          ],
+          "components": [
+            "fruit"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Fruit is ripe",
+          "left": {
+            "participant": {
+              "name": "fruit",
+              "path": "components.fruit.stage"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "ripe"
+          }
+        },
+        {
+          "label": "Fruit is in the worker's location",
+          "left": {
+            "participant": {
+              "name": "fruit",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "Fruit is in the shared store",
+          "left": {
+            "participant": {
+              "name": "fruit",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "place:orchard"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "fruit",
+          "path": "ownership.owner_ref",
+          "op": "set",
+          "value": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "participant": "fruit",
+          "path": "components.fruit.stage",
+          "op": "set",
+          "value": {
+            "literal": "picked"
+          }
+        }
+      ],
+      "limits": [
+        "Picking does not model reach, damage, or carrying capacity."
+      ],
+      "tests": [
+        "ripe fruit can be picked; already-picked fruit is refused"
+      ],
+      "semantic_bindings": []
+    }
+  ],
+  "terminal": {
+    "mode": "all",
+    "selector": {
+      "categories": [
+        "fruit"
+      ],
+      "components": [
+        "fruit"
+      ]
+    },
+    "checks": [
+      {
+        "path": "components.fruit.stage",
+        "op": "eq",
+        "value": "picked"
+      }
+    ]
+  }
+}

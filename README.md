@@ -41,13 +41,13 @@ Start with:
 
 Phase one specified, built, and tested the substrate contracts. The two small reference worlds — Castaway and the workshop — exist to prove those contracts work and transfer. Phase two is about making one world worth showing rather than adding more assurance to the substrate for its own sake.
 
-The flagship world is still the replicated Kitchen service, but the authoring/product workflow is now broader than that flagship. `evidence/renders/world-replay-studio-v0.html` is the primary local viewing surface and now contains **four real worlds**: Kitchen, Castaway, Workshop, and a newly authored Greenhouse. Greenhouse was created after the Automatic baseline and Studio already existed; its real engine mechanics, shared watering-can handoff, new `water` behavior, retained zero-spend run, zero-review replay, and Studio entry were produced without world-specific visualization code. **Automatic is the authoring baseline; Polished is optional art direction.** See [the Greenhouse proof](docs/audits/greenhouse-authoring-proof.md), [the Studio audit](docs/audits/world-replay-studio.md), and the [roadmap](roadmap/README.md#vertical-slices-and-current-work).
+The flagship world is still the replicated Kitchen service, but the authoring/product workflow is now broader than that flagship. `evidence/renders/world-replay-studio-v0.html` contains **four real worlds**: Kitchen, Castaway, Workshop, and Greenhouse. `evidence/renders/world-builder-v0.html` now carries the creation side of the product: structural authoring, bounded causal-mechanics proposal/review/approval, and fresh scripted or LLM-selected graphical runs. Generated mechanics are constrained declarations whose authority is derived and checked locally; model prose never becomes executable law. **Automatic is the replay authoring baseline; Polished is optional art direction.** See [the live authoring audit](docs/audits/live-world-authoring.md), [the Greenhouse proof](docs/audits/greenhouse-authoring-proof.md), and the [roadmap](roadmap/README.md#vertical-slices-and-current-work).
 
 If you are picking this up cold:
 
 1. **Open the Studio** — `evidence/renders/world-replay-studio-v0.html`. Compare the polished Kitchen with Automatic Greenhouse.
 2. **Run the fourth-world proof** — `PYTHONPATH=src:. python scripts/run_greenhouse_fixture.py --output /tmp/greenhouse.json` costs nothing and drives the real engine.
-3. **Author one** — open `evidence/renders/world-builder-v0.html` for the visual/schema builder, or use `scripts/scaffold_world.py` directly. Both surfaces read/write the same `world-substrate-authoring-bundle/v0`.
+3. **Author and run one** — `evidence/renders/world-builder-v0.html` now has separate Causal Mechanics and Run steps. On the deployed same-origin service it can generate a constrained mechanics proposal, show compiler-derived authority for approval, and launch a fresh scripted or LLM-selected graphical run without a download. `scripts/scaffold_world.py` remains the code-first path over the same structural bundle.
 
 There is still no deployment, and no repository outside this one imports `world_substrate`.
 
