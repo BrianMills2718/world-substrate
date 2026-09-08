@@ -3,7 +3,7 @@ schema_version: project-wiki/v1
 type: ProjectWiki
 role: derived-navigation
 status: active
-reviewed_through: 2026-09-07
+reviewed_through: 2026-09-08
 authority_refs:
   - ../../README.md
   - ../../roadmap/README.md
@@ -33,6 +33,7 @@ The deployed product is available at `https://brianmills.dev/world-builder/`.
 | Current direction / exact next action | [Roadmap](../../roadmap/README.md) |
 | Durable system boundaries | [Architecture](../architecture.md) |
 | Product + off-the-shelf strategy | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
+| Competitive / adjacent-system research | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
 | Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
@@ -120,7 +121,7 @@ Reference-world roles:
 - **Greenhouse:** new-world/Automatic-replay portability proof.
 - **Orchard:** live-authoring acceptance fixture.
 
-The approved implementation strategy is to keep the causal kernel custom and evaluate mature systems around it. Phaser is the leading browser-rendering candidate; Concordia/LangGraph are cognition candidates; PettingZoo is an interoperability candidate; persistence/auth should use standard infrastructure; SimPy is conditional on demonstrated scheduling pressure. None is adopted as causal authority merely by being named.
+The approved implementation strategy is to keep the causal kernel custom and evaluate mature systems around it. Phaser is the leading browser-rendering candidate; Concordia/LangGraph are cognition candidates; PettingZoo is an interoperability candidate; persistence/auth should use standard infrastructure; SimPy is conditional on demonstrated scheduling pressure. None is adopted as causal authority merely by being named. The [competitive landscape](../research/competitive-landscape-2026-09.md) explains why the project should own causal-world authoring/authority while borrowing cognition, scale, evaluation, and commodity infrastructure from adjacent systems.
 
 ## Needs resolution
 

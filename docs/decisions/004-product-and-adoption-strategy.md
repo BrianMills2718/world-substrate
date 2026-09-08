@@ -10,6 +10,8 @@ The substrate, replay pipeline, visual authoring surface, constrained causal-mec
 
 The product also has two plausible faces: a rigorous world-modeling/simulation platform and a Generative-Agents-style world builder. The approved direction is to expose the latter as the product experience while preserving the former as the engine underneath.
 
+Follow-on [competitive-landscape research](../research/competitive-landscape-2026-09.md) supports this layer split: Concordia/AgentSociety/OASIS/SOTOPIA are stronger neighbors for cognition, social simulation, scale, or evaluation, while PettingZoo/Melting Pot demonstrate the value of environment-governed transitions. World Substrate should differentiate on generative causal authoring, bounded authority, and provenance rather than rebuilding those neighboring stacks.
+
 ## Decision
 
 World Substrate will pursue a **Generative-World Builder front end over a rigorous causal world engine**.

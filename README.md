@@ -16,8 +16,9 @@ The live Builder can define represented world structure, request a constrained L
 2. [Roadmap](roadmap/README.md) — canonical planning authority, current frontier, risks, and exact next action.
 3. [Architecture](docs/architecture.md) — durable system boundaries and composition model.
 4. [Decision 004](docs/decisions/004-product-and-adoption-strategy.md) — approved Generative-World Builder / off-the-shelf adoption strategy.
-5. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
-6. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
+5. [Competitive landscape](docs/research/competitive-landscape-2026-09.md) — Concordia, AgentSociety, OASIS, SOTOPIA, PettingZoo, Melting Pot, and the layer strategy.
+6. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
+7. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
 
 ## Where this stands
 
@@ -81,7 +82,7 @@ Keep project-owned:
 - causal trace semantics; and
 - the declarative mapping from world truth to presentation.
 
-Prefer off-the-shelf systems around that kernel when they preserve the authority boundary. Current candidates include Phaser for browser 2D execution, Concordia/LangGraph for resident cognition, PettingZoo for multi-agent interoperability/evaluation, and standard persistence/auth infrastructure. SimPy remains conditional on a demonstrated scheduling need. These are evaluation candidates, not adopted foundational dependencies. See [Decision 004](docs/decisions/004-product-and-adoption-strategy.md).
+Prefer off-the-shelf systems around that kernel when they preserve the authority boundary. Current candidates include Phaser for browser 2D execution, Concordia/LangGraph for resident cognition, PettingZoo for multi-agent interoperability/evaluation, and standard persistence/auth infrastructure. SimPy remains conditional on a demonstrated scheduling need. These are evaluation candidates, not adopted foundational dependencies. See [Decision 004](docs/decisions/004-product-and-adoption-strategy.md) and the [competitive-landscape research](docs/research/competitive-landscape-2026-09.md).
 
 ## Reference worlds and product evidence
 
