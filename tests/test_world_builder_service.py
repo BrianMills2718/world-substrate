@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import tempfile
 import threading
 import unittest
 import urllib.error
@@ -37,6 +38,22 @@ class WorldBuilderServiceTests(unittest.TestCase):
     def setUp(self):
         service._REQUESTS.clear()
         service._LLM_REQUESTS.clear()
+        self.state_tmp = tempfile.TemporaryDirectory()
+        self.budget_path = Path(self.state_tmp.name) / "budget.json"
+        self.path_patch = patch.object(service, "BUDGET_STATE_PATH", self.budget_path)
+        self.path_patch.start()
+
+    def tearDown(self):
+        self.path_patch.stop()
+        self.state_tmp.cleanup()
+
+    def write_budget(self, *, spent: float = 0.0, reserved: float = 0.0, day: str | None = None):
+        self.budget_path.write_text(json.dumps({
+            "schema_version": service.BUDGET_STATE_SCHEMA,
+            "date": day or service.date.today().isoformat(),
+            "spent_usd": spent,
+            "reserved_usd": reserved,
+        }))
 
     def post(self, path: str, body: dict, *, origin: str | None = None, extra_headers: dict[str, str] | None = None):
         headers = {"Content-Type": "application/json"}
@@ -97,20 +114,21 @@ class WorldBuilderServiceTests(unittest.TestCase):
 
     def test_daily_budget_caps_next_llm_request_instead_of_overshooting(self):
         fake_generated = json.loads(json.dumps(CAUSAL))
-        with patch.object(service, "_daily_cost", side_effect=[0.49, 0.491]), patch.object(
-            service, "_trace_cost", return_value=0.001
-        ), patch.object(
+        self.write_budget(spent=0.49)
+        with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
             service, "generate_causal_model", return_value=(fake_generated, FakeResult())
         ) as generate:
-            status, _ = self.post("/generate-mechanics", {"bundle": BUNDLE})
+            status, payload = self.post("/generate-mechanics", {"bundle": BUNDLE})
         self.assertEqual(status, 200)
         self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], 0.01, places=6)
+        self.assertAlmostEqual(payload["daily_cost_usd"], 0.491, places=6)
+        state = json.loads(self.budget_path.read_text())
+        self.assertAlmostEqual(state["spent_usd"], 0.491, places=6)
+        self.assertEqual(state["reserved_usd"], 0.0)
 
     def test_generate_endpoint_returns_compiler_review_not_unchecked_model_output(self):
         fake_generated = json.loads(json.dumps(CAUSAL))
-        with patch.object(service, "_daily_cost", return_value=0.0), patch.object(
-            service, "_trace_cost", return_value=0.001
-        ), patch.object(
+        with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
             service,
             "generate_causal_model",
             return_value=(fake_generated, FakeResult()),
@@ -120,6 +138,38 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(payload["causal_model"]["schema_version"], "world-substrate-causal-model/v0")
         self.assertIn("writes", payload["review"]["mechanics"][0])
         self.assertEqual(payload["model"], "fake-model")
+        self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/mechanics/"))
+        self.assertAlmostEqual(payload["daily_cost_usd"], 0.001, places=6)
+
+    def test_failed_llm_request_charges_full_reservation_and_clears_reserved(self):
+        with patch.object(service, "generate_causal_model", side_effect=RuntimeError("provider failed")):
+            status, _ = self.post("/generate-mechanics", {"bundle": BUNDLE})
+        self.assertEqual(status, 500)
+        state = json.loads(self.budget_path.read_text())
+        self.assertAlmostEqual(state["spent_usd"], service.MECHANICS_BUDGET, places=6)
+        self.assertEqual(state["reserved_usd"], 0.0)
+
+    def test_persisted_reservation_reduces_next_available_budget_after_restart(self):
+        fake_generated = json.loads(json.dumps(CAUSAL))
+        self.write_budget(spent=0.03, reserved=0.45)
+        with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
+            service, "generate_causal_model", return_value=(fake_generated, FakeResult())
+        ) as generate:
+            status, payload = self.post("/generate-mechanics", {"bundle": BUNDLE})
+        self.assertEqual(status, 200)
+        self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], 0.02, places=6)
+        self.assertAlmostEqual(payload["daily_cost_usd"], 0.481, places=6)
+
+    def test_old_budget_day_resets_without_carrying_stale_reservations(self):
+        self.write_budget(spent=0.3, reserved=0.2, day="2000-01-01")
+        self.assertEqual(service._daily_cost(), 0.0)
+
+    def test_corrupt_budget_ledger_fails_closed_before_model_call(self):
+        self.budget_path.write_text("not-json")
+        with patch.object(service, "generate_causal_model") as generate:
+            status, _ = self.post("/generate-mechanics", {"bundle": BUNDLE})
+        self.assertEqual(status, 500)
+        generate.assert_not_called()
 
 
 if __name__ == "__main__":
