@@ -69,12 +69,24 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
     def test_builder_surface_makes_causal_boundary_explicit(self):
         source = APP.read_text()
         self.assertIn("Signatures describe intent shape only", source)
-        self.assertIn("The builder does not author causal effects", source)
-        self.assertIn("refusing rule stub", source)
+        self.assertIn("LLM proposes; compiler governs", source)
+        self.assertIn("Signatures still are not causal law", source)
         self.assertNotIn("write_paths", source)
+        self.assertIn("/generate-mechanics", source)
+        self.assertIn("/run", source)
+        self.assertIn("Approve mechanics for run", source)
         html_source = HTML.read_text()
-        for label in ("World", "Components", "Entities", "Action signatures", "Presentation", "Review & export"):
+        for label in ("World", "Components", "Entities", "Action signatures", "Causal mechanics", "Presentation", "Run", "Review & export"):
             self.assertIn(label, html_source)
+
+    def test_live_flow_keeps_mechanics_separate_from_bundle_export(self):
+        source = APP.read_text()
+        self.assertIn("let causalModel = null", source)
+        self.assertIn("mechanicsSource", source)
+        self.assertIn("mechanicsApproved", source)
+        self.assertIn("causal_model:causalModel", source)
+        self.assertIn("approved:true", source)
+        self.assertIn("iframe", source)
 
     def test_core_rejects_unknown_entity_reference(self):
         js = (

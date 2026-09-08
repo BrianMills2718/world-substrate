@@ -27,19 +27,22 @@ component/value agreement and entity-reference resolution.
 
 ## Causal boundary
 
-An action signature is not a mechanic. The starter intentionally generates a
-rule stub whose discovery is empty and whose checks always refuse. It never
-registers those stubs in the generated probe. A world author must still provide:
+An action signature is not a mechanic. The code-first starter still generates a
+rule stub whose discovery is empty and whose checks always refuse. The live
+World Builder may now ask a model to propose a **separate**
+`world-substrate-causal-model/v0`, but that proposal is not part of this bundle
+and does not execute directly.
 
-- causal preconditions;
-- declared reads and writes;
-- effects;
-- tests and interference cases;
-- any semantic/mechanic package required by project doctrine;
-- registration in the world's rule registry.
+The causal declaration is compiled under
+[action mechanic declaration v0](action-mechanic-declaration-v0.md): participants
+and state paths are checked, read/write authority is derived locally rather than
+accepted from the proposer, a mechanic profile is installed/frozen, and the UI
+requires explicit approval before a fresh run. Hand-written mechanics remain the
+escape hatch when the constrained declaration language is insufficient.
 
-This preserves the project invariant that natural language, a form field, or a
-well-shaped action envelope cannot acquire consequence authority by existing.
+This preserves the project invariant that natural language, a form field, a
+well-shaped action envelope, or raw model output cannot acquire consequence
+authority merely by existing.
 
 ## Generated package
 

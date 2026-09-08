@@ -2,8 +2,12 @@
   "use strict";
   const core = window.WorldBuilderCore;
   let bundle = core.clone(window.INITIAL_BUNDLE);
+  let causalModel = null, causalReview = null, mechanicsSource = null, mechanicsApproved = false;
+  let mechanicGuidance = "", generationMeta = null, runResult = null, liveBusy = false;
+  let runPolicy = "scripted", runTurns = 12;
+  const LIVE_MODEL = "openrouter/openai/gpt-5.6-luna";
   let active = new URLSearchParams(location.search).get("section") || "world";
-  const sections = ["world", "components", "entities", "actions", "presentation", "export"];
+  const sections = ["world", "components", "entities", "actions", "mechanics", "presentation", "run", "export"];
   if (!sections.includes(active)) active = "world";
 
   const editor = document.getElementById("editor");
@@ -40,6 +44,7 @@
   }
   function card(title) { const c=el("section","card"); if(title)c.append(el("h3",null,title)); return c; }
   function sync() {
+    if (mechanicsStale()) mechanicsApproved = false;
     preview.textContent = JSON.stringify(bundle, null, 2);
     const result = core.validateBundle(bundle);
     badge.textContent = result.ok ? "Valid bundle" : `${result.errors.length} issue${result.errors.length===1?"":"s"}`;
@@ -70,6 +75,26 @@
     if (kind === "string_list") return Array.isArray(value)?value.join(", "):String(value??"");
     if (value === null || value === undefined) return "";
     return String(value);
+  }
+  function bundleKey() { return JSON.stringify(bundle); }
+  function mechanicsStale() { return !!mechanicsSource && mechanicsSource !== bundleKey(); }
+  async function api(path, body) {
+    const response = await fetch(`/world-builder/api${path}`, {
+      method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)
+    });
+    let payload = {}; try { payload = await response.json(); } catch {}
+    if (!response.ok) throw new Error(payload.error || `API request failed (${response.status})`);
+    return payload;
+  }
+  function liveMessage(text, kind="muted") { const d=el("div",`live-message ${kind}`,text); return d; }
+  function codeList(title, values) {
+    const box=el("div","authority-block"); box.append(el("div","field-label",title));
+    const list=el("div","code-list"); (values||[]).forEach(v=>list.append(el("code",null,String(v))));
+    if(!(values||[]).length) list.append(el("span","muted","none")); box.append(list); return box;
+  }
+  function jsonRows(title, rows) {
+    const box=el("div","authority-block"); box.append(el("div","field-label",title));
+    (rows||[]).forEach(row=>box.append(el("pre","mini-json",JSON.stringify(row,null,2)))); return box;
   }
   function renderWorld() {
     editor.append(sectionHead("World", "Name the represented world and its shared starting location."));
@@ -123,6 +148,35 @@
       else row.append(selectField(kind==="category"?"Asset":"Role",String(val),options(),v=>{obj[key]=v;sync()}));
       row.append(button("×","icon danger",()=>{delete obj[key];rerender()}));box.append(row)}); return box;
   }
+  async function generateMechanics() {
+    const check=core.validateBundle(bundle);
+    if(!check.ok){alert("Fix bundle validation issues before generating mechanics.");return;}
+    if(!(bundle.actions||[]).length){alert("Add at least one action signature first.");return;}
+    liveBusy=true; runResult=null; rerender();
+    try{
+      const payload=await api("/generate-mechanics",{bundle,model:LIVE_MODEL,guidance:mechanicGuidance});
+      causalModel=payload.causal_model; causalReview=payload.review; mechanicsSource=bundleKey(); mechanicsApproved=false;
+      generationMeta={cost_usd:payload.cost_usd||0,daily_cost_usd:payload.daily_cost_usd,model:payload.model||LIVE_MODEL};
+    }catch(err){alert(`Mechanics generation failed: ${err.message}`);}
+    finally{liveBusy=false;rerender();}
+  }
+  function renderMechanics() {
+    const head=sectionHead("Causal mechanics","Generate a constrained mechanics proposal, inspect the compiler-derived authority, then explicitly approve it before any run.");
+    const gen=button(liveBusy?"Generating…":(causalModel?"Regenerate mechanics":"Generate causal mechanics"),"primary",generateMechanics);
+    gen.disabled=liveBusy || !core.validateBundle(bundle).ok || !(bundle.actions||[]).length; head.append(gen); editor.append(head);
+    const boundary=el("div","boundary");boundary.append(el("strong",null,"LLM proposes; compiler governs."),document.createTextNode(" The model cannot write Python or declare its own write scope. State paths, participants, checks and effects must compile against the represented world. A rejected proposal never installs."));editor.append(boundary);
+    const guide=card("Optional guidance"); guide.append(field("What should the mechanics mean?",mechanicGuidance,v=>{mechanicGuidance=v;},{textarea:true,placeholder:"Example: Picking a fruit should transfer ownership, but do not invent a new completion state unless the world represents one."}));editor.append(guide);
+    if(!causalModel){editor.append(liveMessage(liveBusy?"Asking the bounded mechanics proposer and compiling its answer…":"No causal mechanics have been generated yet."));return;}
+    const stale=mechanicsStale();
+    if(stale) editor.append(liveMessage("World structure changed after these mechanics were generated. Regenerate before approving or running.","warn"));
+    if(generationMeta){const meta=card("Generation receipt");meta.append(el("div","receipt",`${generationMeta.model} · $${Number(generationMeta.cost_usd||0).toFixed(6)} this proposal${generationMeta.daily_cost_usd==null?"":` · $${Number(generationMeta.daily_cost_usd).toFixed(4)} World Builder today`}`));editor.append(meta);}
+    (causalReview?.mechanics||[]).forEach(row=>{
+      const c=card(`${row.action_kind} · ${row.mechanic_id}`); c.append(el("p","mechanic-rationale",row.rationale||""));
+      const grid=el("div","authority-grid");grid.append(codeList("Derived reads",row.reads),codeList("Derived writes",row.writes));c.append(grid,jsonRows("Checks",row.checks),jsonRows("Effects",row.effects),codeList("Limits",row.limits),codeList("Declared tests",row.tests));editor.append(c);
+    });
+    const terminal=card("Terminal condition"); terminal.append(causalReview?.terminal?el("pre","mini-json",JSON.stringify(causalReview.terminal,null,2)):liveMessage("No terminal condition was proposed. A run can still stop when no actions remain or at its turn ceiling."));editor.append(terminal);
+    const approve=button(mechanicsApproved?"✓ Mechanics approved":"Approve mechanics for run",mechanicsApproved?"secondary":"primary",()=>{if(!stale){mechanicsApproved=true;runResult=null;rerender();}});approve.disabled=stale||mechanicsApproved;editor.append(approve);
+  }
   function renderPresentation() {
     editor.append(sectionHead("Presentation", "Presentation suggests how the eventual Automatic replay should look. It never changes world truth."));
     const p=bundle.presentation ||= {assets:{},category_assets:{},station_roles:{}};
@@ -130,20 +184,44 @@
     c=card("Category → asset");c.append(objectRows(p.category_assets,"category",()=>Object.keys(p.assets).map(x=>[x,x])),button("+ Binding","secondary",()=>{let n=1;while(p.category_assets[`category_${n}`])n++;p.category_assets[`category_${n}`]=Object.keys(p.assets)[0]||"";rerender()}));editor.append(c);
     c=card("Station roles");c.append(objectRows(p.station_roles,"role",()=>[["source","source"],["workstation","workstation"],["surface","surface"],["goal","goal"]]),button("+ Station role","secondary",()=>{let n=1;while(p.station_roles[`station_${n}`])n++;p.station_roles[`station_${n}`]="surface";rerender()}));editor.append(c);
   }
+  async function startFreshRun() {
+    if(!causalModel || mechanicsStale() || !mechanicsApproved){alert("Generate and approve current mechanics first.");return;}
+    liveBusy=true;runResult=null;rerender();
+    try{
+      runResult=await api("/run",{bundle,causal_model:causalModel,approved:true,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
+    }catch(err){alert(`Run failed: ${err.message}`);}
+    finally{liveBusy=false;rerender();}
+  }
+  function renderRun() {
+    const head=sectionHead("Run this world","Start a fresh simulation from the current represented world and approved mechanics, then watch the resulting graphical replay here.");
+    const run=button(liveBusy?"Running…":"Run fresh simulation","primary",startFreshRun);run.disabled=liveBusy||!causalModel||mechanicsStale()||!mechanicsApproved;head.append(run);editor.append(head);
+    if(!causalModel) editor.append(liveMessage("Generate causal mechanics first."));
+    else if(mechanicsStale()) editor.append(liveMessage("Mechanics are stale because the world changed. Regenerate them first.","warn"));
+    else if(!mechanicsApproved) editor.append(liveMessage("Review and approve the generated mechanics before running.","warn"));
+    const controls=card("Run controls");
+    controls.append(selectField("Policy",runPolicy,[["scripted","Scripted · deterministic first available · $0"],["llm","LLM · chooses among engine-offered actions"]],v=>{runPolicy=v;runResult=null;sync()}));
+    controls.append(field("Turn ceiling",runTurns,v=>{const n=Number(v);runTurns=Number.isInteger(n)?Math.max(1,Math.min(30,n)):12;},{type:"number"}));
+    if(runPolicy==="llm") controls.append(liveMessage(`LLM policy uses ${LIVE_MODEL}. The model selects action IDs only; installed mechanics compute consequences. Each public run is budget- and rate-limited.`));
+    editor.append(controls);
+    if(runResult){
+      const summary=card("Fresh run result");const sm=runResult.summary||{};summary.append(el("div","receipt",`${sm.turns||0} turn(s) · ${sm.accepted_actions||0} accepted action(s) · terminal ${sm.terminal_reached?"reached":"not reached"} · $${Number(runResult.cost_usd||0).toFixed(6)}`));editor.append(summary);
+      const frame=document.createElement("iframe");frame.className="run-frame";frame.setAttribute("sandbox","allow-scripts");frame.srcdoc=runResult.replay_html||"";editor.append(frame);
+    }
+  }
   function renderExport() {
-    editor.append(sectionHead("Review & export", "Export this exact bundle, then scaffold the code-first world package from it."));
+    editor.append(sectionHead("Review & export", "Optional code-first handoff. You can build, generate mechanics, and run on this page without downloading anything."));
     const c=card("What happens next");
-    const ol=el("ol","steps");["Download the valid authoring bundle.","Run the scaffold command shown on the right.","Implement causal mechanics in the generated refusing stubs.","Derive a terminal predicate from represented state.","Retain a deterministic run, then bootstrap an Automatic replay."].forEach(x=>ol.append(el("li",null,x)));c.append(ol);editor.append(c);
-    const b=el("div","boundary");b.append(el("strong",null,"The builder does not author causal effects."),document.createTextNode(" It authors structure, signatures, and presentation intent. This is intentional."));editor.append(b);
+    const ol=el("ol","steps");["Use Download only if you want the bundle as a code artifact.","The code-first scaffold preserves the same represented state and action signatures.","Generated causal mechanics remain a separate reviewed declaration rather than hidden browser behavior."].forEach(x=>ol.append(el("li",null,x)));c.append(ol);editor.append(c);
+    const b=el("div","boundary");b.append(el("strong",null,"Signatures still are not causal law."),document.createTextNode(" Causal effects come only from a separately generated, compiler-validated, explicitly approved mechanics declaration."));editor.append(b);
   }
   function renderSection() {
     editor.replaceChildren();
-    ({world:renderWorld,components:renderComponents,entities:renderEntities,actions:renderActions,presentation:renderPresentation,export:renderExport})[active]();
+    ({world:renderWorld,components:renderComponents,entities:renderEntities,actions:renderActions,mechanics:renderMechanics,presentation:renderPresentation,run:renderRun,export:renderExport})[active]();
   }
   document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>{active=b.dataset.section;history.replaceState(null,"",`?section=${active}`);rerender()}));
   document.getElementById("import-bundle").addEventListener("click",()=>document.getElementById("file-input").click());
-  document.getElementById("file-input").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const value=JSON.parse(await file.text());if(!value||typeof value!=="object")throw new Error("not an object");bundle=value;active="world";rerender()}catch(err){alert(`Could not import JSON: ${err.message}`)}finally{e.target.value=""}});
-  document.getElementById("reset-example").addEventListener("click",()=>{if(confirm("Reset to the embedded Orchard example?")){bundle=core.clone(window.INITIAL_BUNDLE);active="world";rerender()}});
+  document.getElementById("file-input").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const value=JSON.parse(await file.text());if(!value||typeof value!=="object")throw new Error("not an object");bundle=value;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;runResult=null;active="world";rerender()}catch(err){alert(`Could not import JSON: ${err.message}`)}finally{e.target.value=""}});
+  document.getElementById("reset-example").addEventListener("click",()=>{if(confirm("Reset to the embedded Orchard example?")){bundle=core.clone(window.INITIAL_BUNDLE);causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;runResult=null;active="world";rerender()}});
   downloadBtn.addEventListener("click",()=>{const r=core.validateBundle(bundle);if(!r.ok)return;const blob=new Blob([JSON.stringify(bundle,null,2)+"\n"],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${bundle.world.id}-authoring-v0.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
   async function copyText(text) {
     try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return; } } catch {}

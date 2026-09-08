@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; code-first starter and visual/schema world builder implemented over one authoring contract
-**Last outcome-bearing result:** Greenhouse was authored after the Automatic baseline and Studio existed: two gardeners share one watering can, refill it at a represented tap, water two plants in a represented bed, and reach a derived terminal state in seven accepted real-engine commits. The zero-review bootstrap has no TODOs, the generic renderer contains no Greenhouse ids, and the Automatic replay is in the Studio. The fourth world exposed two reusable presentation gaps before merge: `take`/`put_down` labels assumed an `item` field, and a single action could not project state changes onto two represented entities. Labels now use trace-inferred fields, and generic declarative `state_effects` lets `water` show both plant→watered and can→empty without a Greenhouse code branch.
+**Stage:** prototype complete; live causal-mechanics authoring and fresh graphical runs implemented in the World Builder
+**Last outcome-bearing result:** the Orchard acceptance vertical now goes from `world-substrate-authoring-bundle/v0` through a bounded Luna mechanics proposal, local causal compiler, derived authority review, explicit approval, frozen mechanic profile, fresh scripted/LLM policy execution, and generic graphical replay. A real mechanics trace needed one compiler-guided repair and cost $0.00156146 total; a real Luna policy then selected the engine-offered `pick apple-1` for $0.0001138. Raw model text never executes, and a fresh action's ownership effect can drive presentation without verb-specific renderer code.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** human-test the visual-builder → bundle → code-first scaffold handoff; causal mechanic authoring remains a separate authority/product decision; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** human-test the deployed Build → Generate Mechanics → Review/Approve → Run flow on a less trivial authored world; extend the constrained causal language only from a concrete expressiveness failure
 
 ## Outcome and success criteria
 
@@ -280,9 +280,9 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-**Human-test the shared authoring handoff.** Open `evidence/renders/world-builder-v0.html`, edit/import a `world-substrate-authoring-bundle/v0`, export it, and scaffold it with `scripts/scaffold_world.py`. The two requested authoring surfaces now share one tested contract. Do not add browser-authored causal effects implicitly: action signatures still scaffold refusing mechanic stubs until causal law is implemented/reviewed.
+**Human-test live causal authoring on a less trivial world.** Use the deployed World Builder to define/import represented structure, add optional mechanic guidance, generate the constrained causal proposal, inspect its compiler-derived reads/writes/checks/effects/limits, approve only if they match the intended world, then compare a zero-spend Scripted run with an LLM-selected run. Record the first concrete point where the declaration language or review surface cannot express/communicate the intended law; do not add arbitrary code generation pre-emptively.
 
-A future mechanic-authoring UI is a separate product/authority decision. No model call, deployment, or publication is required for this gate.
+The live service keeps model calls bounded: public LLM requests are same-origin/rate-limited/serialized, mechanics and policy calls have per-request caps, and the World Builder has a $0.50/day ceiling. The successful acceptance probes in this slice observed $0.00156146 for mechanics proposal+repair and $0.0001138 for one live policy choice. Deployment/publication for this World Builder slice was explicitly authorized by the user.
 
 The historical pre-replication roadmap recorded **$0.123** of model spend. The
 current single-copy observability DB no longer contains that older task history;
