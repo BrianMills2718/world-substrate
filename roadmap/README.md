@@ -10,10 +10,10 @@ reviewed_through: 2026-09-07
 
 **Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
 **Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; World Replay Studio implemented; fourth-world Automatic authoring workflow proven on Greenhouse
+**Stage:** prototype complete; code-first world authoring starter implemented; visual/schema builder next
 **Last outcome-bearing result:** Greenhouse was authored after the Automatic baseline and Studio existed: two gardeners share one watering can, refill it at a represented tap, water two plants in a represented bed, and reach a derived terminal state in seven accepted real-engine commits. The zero-review bootstrap has no TODOs, the generic renderer contains no Greenhouse ids, and the Automatic replay is in the Studio. The fourth world exposed two reusable presentation gaps before merge: `take`/`put_down` labels assumed an `item` field, and a single action could not project state changes onto two represented entities. Labels now use trace-inferred fields, and generic declarative `state_effects` lets `water` show both plant→watered and can→empty without a Greenhouse code branch.
 **Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** explicit product choice for how humans author/import new worlds; no additional generic replay proof or framework increment without a concrete product requirement or real-world failure; publication/deployment remains an explicit authority boundary
+**Current strategy frontier:** implement the approved visual/schema builder on the same `world-substrate-authoring-bundle/v0` used by the code-first starter; publication/deployment remains an explicit authority boundary
 
 ## Outcome and success criteria
 
@@ -280,9 +280,9 @@ Refresh this roadmap after an outcome-bearing slice, a material user correction,
 
 ## Exact next action
 
-**Choose the human world-authoring/import surface before adding more framework code.** The fourth-world Greenhouse proof established that the current code-first baseline can create a new represented world and obtain a Studio-ready Automatic replay without visualization code. The next product increment therefore depends on the desired author experience: for example a schema/form-driven world builder, a code-first starter package, or a specific real domain supplied by the user.
+**Build the local visual/schema world builder on `world-substrate-authoring-bundle/v0`.** The user selected both product paths: code-first starter plus visual/schema builder, with the starter first. The starter now exists and deliberately scaffolds refusing mechanic stubs rather than converting signatures into causal law. The visual builder must import/edit/export the same bundle, validate the same structural obligations, and keep mechanics causal implementation/review outside hidden UI behavior.
 
-Until that choice is explicit, keep the existing Studio/Automatic pipeline stable. No model call, deployment, or publication is required at this boundary.
+No model call, deployment, or publication is required for this gate.
 
 The historical pre-replication roadmap recorded **$0.123** of model spend. The
 current single-copy observability DB no longer contains that older task history;

@@ -47,7 +47,7 @@ If you are picking this up cold:
 
 1. **Open the Studio** — `evidence/renders/world-replay-studio-v0.html`. Compare the polished Kitchen with Automatic Greenhouse.
 2. **Run the fourth-world proof** — `PYTHONPATH=src:. python scripts/run_greenhouse_fixture.py --output /tmp/greenhouse.json` costs nothing and drives the real engine.
-3. **Read the roadmap's active slice** before changing direction. The baseline workflow is now proven end to end; the next step is a product choice about how humans should author/import worlds, not more generic replay machinery.
+3. **Author one structurally** — `python scripts/scaffold_world.py examples/world_authoring/orchard-v0.json --check-only` validates the shared starter/builder bundle. The code-first starter is implemented; the visual builder is the next product surface.
 
 There is still no deployment, and no repository outside this one imports `world_substrate`.
 
