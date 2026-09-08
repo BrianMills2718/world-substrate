@@ -241,6 +241,17 @@
       "peak_candidates_per_actor_page": 63
     },
     "wrong_dock_result": "cargo-west-1 exposes dock-b only; dock-a is blocked by dock matches cargo target",
-    "live_status": "not yet regenerated/run; preserve v0 evidence and test v1 next rather than widening the DSL"
+    "live_status": "generation attempted but blocked before model output by provider request envelope on the pre-fix runtime; retest after daily budget reset"
+  },
+  "warehouse_v1_generation_attempt": {
+    "trace_id": "world-builder-live/mechanics/787c8a58c69e4134b5f3a305ce6b36f9",
+    "call_count": 1,
+    "error_count": 1,
+    "observed_cost_usd": 0.0,
+    "result": "HTTP 500 before mechanics output",
+    "provider_error": "request advertised max_tokens=65536 while active key could afford 12440",
+    "fail_closed_ledger_committed_usd_after": 0.49906366,
+    "product_fix": "PR #41 caps mechanics generation at 8192 tokens and is merged/deployed at c3d31de",
+    "retest": "next daily budget reset; no same-day retry"
   }
 }

@@ -62,7 +62,9 @@ The smallest response is a new fixture, not a generic DSL extension. `warehouse-
 
 The ordinary validator and causal compiler accept v1. After a worker claims a forklift, `cargo-west-1` exposes only `dock-b`; the `dock-a` attempt is explicitly blocked by `dock matches cargo target`. The deterministic oracle still reaches terminal in 20 accepted actions with peak actor-page size 63. v0 remains retained unchanged as the evidence that earned this representation change.
 
-No live generated v1 law has been approved or run yet. The next live generation should determine whether explicit target state is enough or whether authored scalar parameter domains need first-class schema support.
+A first live v1 generation attempt reached the provider but produced no mechanics output: observability trace `world-builder-live/mechanics/787c8a58c69e4134b5f3a305ce6b36f9` records one errored call at `$0` because the pre-fix mechanics path advertised `max_tokens=65536` while the active OpenRouter key could afford 12,440. The public fail-closed ledger charged the full reservation, ending the day at `$0.49906366` committed, so no retry was made.
+
+That operator finding drove PR #41: mechanics generation now caps output at 8192 tokens, mirroring the already-bounded live-policy path while leaving room for the ~24–28KB causal proposals observed in Warehouse Rush. The fix is merged and deployed at `c3d31de`. v1 still has no generated law to review; retest after the daily budget resets.
 
 ## Liveness/observability failure found
 
