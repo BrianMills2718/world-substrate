@@ -193,5 +193,54 @@
       "finding": "effect preview produces two transports and two loads, but turn-4 reasoning still claims empty drive-forklift moves loaded cargo although cargo is absent from its effect preview"
     }
   ],
-  "policy_effect_preview_interpretation": "material improvement, but prompt must explicitly state that effect annotations are authoritative and absent effects must not be inferred"
+  "policy_effect_preview_interpretation": "material improvement, but prompt must explicitly state that effect annotations are authoritative and absent effects must not be inferred",
+  "authoritative_effect_policy_probes": [
+    {
+      "turns": 4,
+      "terminal_reached": false,
+      "accepted_actions": 16,
+      "cost_usd": 0.0092201,
+      "trace_id": "world-builder-live/run/93f298a4c8e542b29f7e03c6fa1b931a",
+      "accepted_by_kind": {
+        "claim-forklift": 2,
+        "move": 8,
+        "transport-cargo": 2,
+        "load-cargo": 2,
+        "drive-forklift": 2
+      },
+      "stale_retries": 12,
+      "finding": "effect previews plus explicit authority retain two transports/two loads; executed retries mostly stop claiming drive-forklift carries cargo, though some stale/pre-retry reasoning remains semantically loose"
+    },
+    {
+      "turns": 8,
+      "terminal_reached": false,
+      "accepted_actions": 29,
+      "cost_usd": 0.01500593,
+      "trace_id": "world-builder-live/run/273d424324904baf8e2d2054b508f28f",
+      "accepted_by_kind": {
+        "claim-forklift": 3,
+        "move": 12,
+        "transport-cargo": 4,
+        "load-cargo": 3,
+        "drive-forklift": 5,
+        "release-forklift": 1,
+        "dispatch-truck": 1
+      },
+      "stale_retries": 21,
+      "finding": "east truck dispatches on turn 6, then west cargo 1 is legally transported to dock-a on turn 8; v0 has no route-to-physical-dock constraint, so that cargo becomes stranded"
+    }
+  ],
+  "policy_authority_interpretation": "authoritative effect wording improves but does not make free-form reasoning perfectly faithful; causal authority still protects state. The next blocker is v0 route-to-dock under-specification, not cognition infrastructure.",
+  "warehouse_v1": {
+    "bundle": "examples/world_authoring/warehouse-rush-v1.json",
+    "hand_baseline": "examples/world_authoring/warehouse-rush-causal-v1.json",
+    "change": "cargo.target_dock explicitly represents the physical dock and transport refuses a different dock",
+    "oracle": {
+      "accepted_actions": 20,
+      "terminal_reached": true,
+      "peak_candidates_per_actor_page": 63
+    },
+    "wrong_dock_result": "cargo-west-1 exposes dock-b only; dock-a is blocked by dock matches cargo target",
+    "live_status": "not yet regenerated/run; preserve v0 evidence and test v1 next rather than widening the DSL"
+  }
 }
