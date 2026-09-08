@@ -168,11 +168,11 @@
   const core = window.WorldBuilderCore;
   let bundle = core.clone(window.INITIAL_BUNDLE);
   let causalModel = null, causalReview = null, mechanicsSource = null, mechanicsApproved = false;
-  let mechanicGuidance = "", generationMeta = null, runResult = null, liveBusy = false;
+  let mechanicGuidance = "", generationMeta = null, runResult = null, liveBusy = false, liveLog = [];
   let runPolicy = "scripted", runTurns = 12;
   const LIVE_MODEL = "openrouter/openai/gpt-5.6-luna";
   let active = new URLSearchParams(location.search).get("section") || "world";
-  const sections = ["world", "components", "entities", "actions", "mechanics", "presentation", "run", "export"];
+  const sections = ["world", "components", "entities", "actions", "mechanics", "presentation", "run", "logs", "export"];
   if (!sections.includes(active)) active = "world";
 
   const editor = document.getElementById("editor");
@@ -243,11 +243,23 @@
   }
   function bundleKey() { return JSON.stringify(bundle); }
   function mechanicsStale() { return !!mechanicsSource && mechanicsSource !== bundleKey(); }
+  function recordLiveLog(direction, path, value, status=null) {
+    const row={at:new Date().toISOString(),direction,path,value};
+    if(status!==null) row.status=status;
+    liveLog.push(row);
+  }
+  function liveLogText(display=false) {
+    return JSON.stringify(liveLog,(key,value)=>display && key==="replay_html" && typeof value==="string" ? `[replay_html hidden on-screen: ${value.length} chars; use Copy complete raw logs for the exact payload]` : value,2);
+  }
+  function openLogs() { active="logs"; history.replaceState(null,"",`?section=${active}`); rerender(); }
   async function api(path, body) {
+    recordLiveLog("request",path,body);
     const response = await fetch(`/world-builder/api${path}`, {
       method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)
     });
-    let payload = {}; try { payload = await response.json(); } catch {}
+    const text=await response.text();
+    let payload = {}; try { payload = text ? JSON.parse(text) : {}; } catch { payload={raw_response:text}; }
+    recordLiveLog("response",path,payload,response.status);
     if (!response.ok) throw new Error(payload.error || `API request failed (${response.status})`);
     return payload;
   }
@@ -321,8 +333,8 @@
     try{
       const payload=await api("/generate-mechanics",{bundle,model:LIVE_MODEL,guidance:mechanicGuidance});
       causalModel=payload.causal_model; causalReview=payload.review; mechanicsSource=bundleKey(); mechanicsApproved=false;
-      generationMeta={cost_usd:payload.cost_usd||0,daily_cost_usd:payload.daily_cost_usd,model:payload.model||LIVE_MODEL};
-    }catch(err){alert(`Mechanics generation failed: ${err.message}`);}
+      generationMeta={cost_usd:payload.cost_usd||0,daily_cost_usd:payload.daily_cost_usd,model:payload.model||LIVE_MODEL,trace_id:payload.trace_id||null};
+    }catch(err){alert(`Mechanics generation failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
   function renderMechanics() {
@@ -334,7 +346,7 @@
     if(!causalModel){editor.append(liveMessage(liveBusy?"Asking the bounded mechanics proposer and compiling its answer…":"No causal mechanics have been generated yet."));return;}
     const stale=mechanicsStale();
     if(stale) editor.append(liveMessage("World structure changed after these mechanics were generated. Regenerate before approving or running.","warn"));
-    if(generationMeta){const meta=card("Generation receipt");meta.append(el("div","receipt",`${generationMeta.model} · $${Number(generationMeta.cost_usd||0).toFixed(6)} this proposal${generationMeta.daily_cost_usd==null?"":` · $${Number(generationMeta.daily_cost_usd).toFixed(4)} World Builder today`}`));editor.append(meta);}
+    if(generationMeta){const meta=card("Generation receipt");meta.append(el("div","receipt",`${generationMeta.model} · $${Number(generationMeta.cost_usd||0).toFixed(6)} this proposal${generationMeta.daily_cost_usd==null?"":` · $${Number(generationMeta.daily_cost_usd).toFixed(4)} World Builder today`}${generationMeta.trace_id?` · ${generationMeta.trace_id}`:""}`),button("Open full logs","secondary",openLogs));editor.append(meta);}
     (causalReview?.mechanics||[]).forEach(row=>{
       const c=card(`${row.action_kind} · ${row.mechanic_id}`); c.append(el("p","mechanic-rationale",row.rationale||""));
       const grid=el("div","authority-grid");grid.append(codeList("Derived reads",row.reads),codeList("Derived writes",row.writes));c.append(grid,jsonRows("Checks",row.checks),jsonRows("Effects",row.effects),codeList("Limits",row.limits),codeList("Declared tests",row.tests));editor.append(c);
@@ -354,7 +366,7 @@
     liveBusy=true;runResult=null;rerender();
     try{
       runResult=await api("/run",{bundle,causal_model:causalModel,approved:true,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
-    }catch(err){alert(`Run failed: ${err.message}`);}
+    }catch(err){alert(`Run failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
   function renderRun() {
@@ -369,9 +381,17 @@
     if(runPolicy==="llm") controls.append(liveMessage(`LLM policy uses ${LIVE_MODEL}. The model selects action IDs only; installed mechanics compute consequences. Each public run is budget- and rate-limited.`));
     editor.append(controls);
     if(runResult){
-      const summary=card("Fresh run result");const sm=runResult.summary||{};summary.append(el("div","receipt",`${sm.turns||0} turn(s) · ${sm.accepted_actions||0} accepted action(s) · terminal ${sm.terminal_reached?"reached":"not reached"} · $${Number(runResult.cost_usd||0).toFixed(6)}`));editor.append(summary);
+      const summary=card("Fresh run result");const sm=runResult.summary||{};summary.append(el("div","receipt",`${sm.turns||0} turn(s) · ${sm.accepted_actions||0} accepted action(s) · terminal ${sm.terminal_reached?"reached":"not reached"} · $${Number(runResult.cost_usd||0).toFixed(6)}${runResult.trace_id?` · ${runResult.trace_id}`:""}`),button("Open full logs","secondary",openLogs));editor.append(summary);
       const frame=document.createElement("iframe");frame.className="run-frame";frame.setAttribute("sandbox","allow-scripts");frame.srcdoc=runResult.replay_html||"";editor.append(frame);
     }
+  }
+  function renderLogs() {
+    const head=sectionHead("Full logs","Inspect the complete request/response history for mechanics generation and runs. Full engine traces, compiler review, costs, trace ids, refusals and policy reasoning are retained here for debugging.");
+    head.append(button("Copy complete raw logs","primary",async()=>{await copyText(liveLogText(false)+"\n");}));editor.append(head);
+    const boundary=el("div","boundary");boundary.append(el("strong",null,"Debug from evidence, not summaries."),document.createTextNode(" The on-screen view preserves every request, causal model, compiler review and execution trace. Replay HTML is collapsed only in this view to keep it readable; Copy complete raw logs includes the exact replay HTML too."));editor.append(boundary);
+    if(!liveLog.length){editor.append(liveMessage("No live API calls have been made in this browser session yet."));return;}
+    const controls=card("Log controls");controls.append(el("div","receipt",`${liveLog.length} request/response record(s)`),button("Clear logs","secondary",()=>{if(confirm("Clear this browser session's logs?")){liveLog=[];rerender();}}));editor.append(controls);
+    const pre=el("pre","mini-json",liveLogText(true));pre.style.whiteSpace="pre";pre.style.maxHeight="72vh";pre.style.overflow="auto";editor.append(pre);
   }
   function renderExport() {
     editor.append(sectionHead("Review & export", "Optional code-first handoff. You can build, generate mechanics, and run on this page without downloading anything."));
@@ -381,7 +401,7 @@
   }
   function renderSection() {
     editor.replaceChildren();
-    ({world:renderWorld,components:renderComponents,entities:renderEntities,actions:renderActions,mechanics:renderMechanics,presentation:renderPresentation,run:renderRun,export:renderExport})[active]();
+    ({world:renderWorld,components:renderComponents,entities:renderEntities,actions:renderActions,mechanics:renderMechanics,presentation:renderPresentation,run:renderRun,logs:renderLogs,export:renderExport})[active]();
   }
   document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>{active=b.dataset.section;history.replaceState(null,"",`?section=${active}`);rerender()}));
   document.getElementById("import-bundle").addEventListener("click",()=>document.getElementById("file-input").click());
@@ -395,5 +415,4 @@
   document.getElementById("copy-json").addEventListener("click",async()=>{await copyText(JSON.stringify(bundle,null,2)+"\n");});
   document.getElementById("copy-command").addEventListener("click",async()=>{const id=bundle.world?.id||"world";await copyText(`python scripts/scaffold_world.py ${id}-authoring-v0.json --output-root reference_worlds`);});
   rerender();
-})();
-</script></body></html>
+})();</script></body></html>

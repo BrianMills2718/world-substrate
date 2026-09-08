@@ -169,7 +169,7 @@
       const payload=await api("/generate-mechanics",{bundle,model:LIVE_MODEL,guidance:mechanicGuidance});
       causalModel=payload.causal_model; causalReview=payload.review; mechanicsSource=bundleKey(); mechanicsApproved=false;
       generationMeta={cost_usd:payload.cost_usd||0,daily_cost_usd:payload.daily_cost_usd,model:payload.model||LIVE_MODEL,trace_id:payload.trace_id||null};
-    }catch(err){alert(`Mechanics generation failed: ${err.message}`);}
+    }catch(err){alert(`Mechanics generation failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
   function renderMechanics() {
@@ -201,7 +201,7 @@
     liveBusy=true;runResult=null;rerender();
     try{
       runResult=await api("/run",{bundle,causal_model:causalModel,approved:true,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
-    }catch(err){alert(`Run failed: ${err.message}`);}
+    }catch(err){alert(`Run failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
   function renderRun() {
