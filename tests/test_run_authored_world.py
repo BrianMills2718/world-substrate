@@ -107,6 +107,18 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertEqual(engine.world.entities["scanner-1"].ownership.owner_ref, "actor:dee")
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
 
+
+    def test_policy_view_shows_installed_authored_effects(self):
+        from world_substrate.policy import present
+
+        engine, _, _ = build_engine(self.bundle, self.causal)
+        page = engine.discover("ava")
+        context = present(engine, "ava", page)
+        claim = next(row for row in context["actions"] if "claim-tool" in row["description"])
+        self.assertIn("effects:", claim["description"])
+        self.assertIn("ownership.owner_ref set 'actor:ava'", claim["description"])
+        self.assertIn("hands_free set False", claim["description"])
+
     def test_repair_bay_fresh_replay_is_graphical(self):
         trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=12)
         html = render_run(self.bundle, trace, compiled)

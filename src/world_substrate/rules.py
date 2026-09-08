@@ -342,6 +342,18 @@ class DeclaresConsequences(Protocol):
 
 
 @runtime_checkable
+class DescribesEffects(Protocol):
+    """An action rule that can preview its installed positive effects.
+
+    This is presentation metadata derived from the rule that will actually
+    execute. It helps a policy distinguish offered actions without granting the
+    policy any consequence authority.
+    """
+
+    def effect_preview(self, world: World, action: TypedAction) -> list[str]: ...
+
+
+@runtime_checkable
 class ReportsProgress(Protocol):
     """A process that accumulates toward a threshold and can report how far.
 
