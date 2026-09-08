@@ -6,8 +6,8 @@ reviewed_through: 2026-09-07
 
 # World authoring bundle v0
 
-`world-substrate-authoring-bundle/v0` is the shared input between the code-first
-starter kit and the local visual world builder. It describes **represented world
+`world-substrate-authoring-bundle/v0` is the shared input between the implemented code-first
+starter kit and the implemented local visual world builder (`evidence/renders/world-builder-v0.html`). It describes **represented world
 structure and authoring intent**, not executable consequence authority.
 
 ## What the bundle owns

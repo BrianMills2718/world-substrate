@@ -88,7 +88,7 @@ The substrate prototype is complete and the flagship phase has produced its firs
 
 The baseline authoring workflow is now proven **after** the product surface existed. Greenhouse added a new `water` mechanic, shared-tool handoff, terminal state, retained real-engine trace and Automatic replay without a scene review file or world-specific visualization branch. It exposed two reusable assumptions: `take`/`put_down` labels had hard-coded an `item` field, and one action could not visually update two represented entities. The former moved to trace-inferred labels; the latter added generic declarative `state_effects`, so `water` can show both the plant becoming watered and the can becoming empty.
 
-The authoring product direction is now selected: **both code-first starter and visual/schema builder**, sharing one bundle contract. The code-first starter is implemented at `scripts/scaffold_world.py`; its generated rule stubs always refuse until causal mechanics are implemented and reviewed. The next boundary is the local visual builder over that same bundle. Deployment/publication remains separately controlled.
+The selected authoring direction is now implemented on both surfaces: **code-first starter plus local visual/schema builder**, sharing `world-substrate-authoring-bundle/v0`. `scripts/scaffold_world.py` generates the safe code package; `evidence/renders/world-builder-v0.html` imports/edits/exports the same bundle. Action signatures remain non-causal and scaffold refusing stubs until mechanics are implemented and reviewed. The next boundary is human use of that handoff, not hidden browser effects. Deployment/publication remains separately controlled.
 
 ## Architecture and workflow
 
@@ -138,6 +138,8 @@ Castaway remains the adopted M1 implementation and evidence donor. The workshop 
 
 ## Human-reviewable artifacts
 
+- `evidence/renders/world-builder-v0.html`: standalone local visual/schema authoring surface over `world-substrate-authoring-bundle/v0`.
+- `docs/audits/world-authoring-builder.md`: builder validation, product boundary, and visual review.
 - `evidence/renders/greenhouse-zero-review-v0.html`: fourth-world Automatic replay generated without a scene review or visualization code.
 - `evidence/greenhouse/first-service-v0.json`: retained seven-turn real-engine Greenhouse run.
 - `evidence/greenhouse/scene-profile-zero-review-v0.json`: zero-TODO Automatic Greenhouse scene profile.
