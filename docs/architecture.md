@@ -2,205 +2,202 @@
 
 ## Architectural thesis
 
-A rich world comes from shared persistent state, semantic grounding, and installed mechanics with explicit local causal authority. LLM sophistication is useful for resident policy and offline mechanics authoring, but policy prose must not compensate for missing world mechanics or directly mutate canonical state.
+A rich world comes from **shared persistent state, semantic grounding, and installed mechanics with explicit local causal authority**. LLM sophistication is useful for policy, cognition, and mechanic proposal, but model prose must not compensate for missing world law or directly mutate canonical state.
 
 ```text
-semantic intent or autonomous trigger
-        |
-        v
-Linguistic Core sense + role binding
-        |
-        v
-installed local mechanic -> proposed effects -> validation -> commit/refusal
-        |                                              |
-        v                                              v
-bounded observation                         persistent state + causal trace
-                                                       |
-                                                       v
-                                            detachable analytic views
+represented state
+      |
+      v
+semantic intent / autonomous trigger
+      |
+      v
+Linguistic Core sense + participant roles
+      |
+      v
+installed / constrained mechanic
+      |
+      v
+checks + proposed effects
+      |
+      v
+one Engine commit or refusal
+      |
+      +--> canonical state + causal event
+      |
+      +--> replay / analysis / observer views
 ```
+
+The product direction in [Decision 004](decisions/004-product-and-adoption-strategy.md) is a Generative-World Builder front end over this causal engine. Product frameworks may surround the engine; they do not replace its consequence authority.
 
 ## Architecture-description discipline
 
-This project uses a small architecture-description discipline to keep different
-representations of the same substrate consistent. It selectively borrows the
-distinction between concerns, reusable viewpoints, and project-specific views
-from [ISO/IEC/IEEE 42010](https://www.iso.org/standard/74393.html).
-[UML](https://www.omg.org/uml/),
-[SysML v2](https://www.omg.org/sysml/sysmlv2/), and
-[KerML](https://www.omg.org/spec/KerML/1.0/About-KerML) may supply useful
-notations or semantic patterns, but the project does not claim conformance and
-does not require their toolchains.
+Architecture documents answer stable concerns rather than narrate milestones. A maintained view must identify its authority source, use implementation IDs where code exists, state material omissions, and agree with contracts/tests/evidence.
 
-- A **concern** is a question that a representation must answer.
-- A **viewpoint** defines the conventions for answering a recurring concern.
-- A **view** applies a viewpoint to a particular project revision.
-- A **model kind** is the form used by a view, such as a boundary table,
-  transition specification, sequence, or evidence trace.
+The recurring viewpoints are:
 
-The maintained viewpoints are deliberately few:
+| Viewpoint | Concern | Authority |
+| --- | --- | --- |
+| Boundary | who owns state/decisions/effects/failure containment? | this document + accepted decisions |
+| Transition | how can state change or refuse? | [core contract](contracts/core-v0.md) + Engine |
+| Actor information | what may an actor observe/select? | core contract + policy/observation code |
+| Observability | how is an attempt/outcome explained? | Decision 002 + causal events/evidence |
+| Adoption | when does a donor/framework become a project capability? | [source dispositions](source-dispositions.md) + Decision 004 |
 
-| Viewpoint | Concern | Model kind and maintained view | Current authority |
-| --- | --- | --- | --- |
-| `VP-BOUNDARY` | Who owns state, decisions, effects, and failure containment? | boundary/component table in this document | M1 path and explicit envelope negatives implemented and promoted |
-| `VP-TRANSITION` | How can an action or process change state, and how does it fail? | transition kernel and operation contracts in [core contract v0](contracts/core-v0.md) | fill, heat, unheat, pour, drink, take, give, processes, rejection, and replay implemented |
-| `VP-ACTOR-INFORMATION` | What can an actor observe and select versus what an observer can inspect? | projection and information-flow descriptions here and in the core contract | minimal full-path observation/discovery implemented; broader authorization and paging open |
-| `VP-OBSERVABILITY` | How is each attempt, refusal, and consequence explained? | causal trace, check results, state-path operations, snapshots, and optional replay | M1 evidence and replay established; the broader observability contract is proposed |
-| `VP-ADOPTION` | When has a donor capability actually become a project capability? | source disposition plus consumer-path evidence | [source dispositions](source-dispositions.md) and revision-bound evidence |
-
-A view need not be a diagram. Every maintained view must use the native stable
-IDs and terms of the contract or implementation it represents, state its source
-revision and claim status, label the meaning of edges or arrows, and identify
-material omissions. Corresponding views must agree on authority boundaries,
-rule and operation identities, accepted/rejected status, and evidence links.
-After code exists, views that describe implementation must bind to real modules,
-interfaces, and tests. Visual agreement or standards-shaped notation is not
-evidence that the runtime behaves as shown.
+Standards such as ISO/IEC/IEEE 42010, UML, SysML, or KerML may supply useful notation; the project does not claim conformance or require those toolchains.
 
 ## Authority boundaries
 
 | Boundary | Owns | Must not own |
 | --- | --- | --- |
-| Canonical world | state, revision, authoritative time, atomic commit | policy or narrative |
-| Mechanic registry | semantic bindings, applicability, local reads/writes, proposed effects, processes, invariants, and limits | world instances or undeclared authority |
-| Content packs | objects, properties, recipes, starting state, ontology bindings | new effects without rules |
-| Affordance discovery | actor-local rule instantiation, filtering, paging | consequence calculation |
-| Policy adapter | LLM, human, or scripted selection and explanation | state mutation |
-| Persistence | canonical state, versions, snapshots, and causal traces | alternate effects or resident-agent private cognition |
-| Authoring and installer | reference integrity, semantic/mechanic binding, scope validation, declared coverage, tests, and frozen profiles | unreviewed runtime law changes or direct canonical mutation |
-| Observer surfaces | canonical and historical projections | hidden simulation state |
+| Canonical world | material state, revision, time, identity | policy prose, UI state, private cognition |
+| Engine / transition coordinator | validation, singular commit/refusal, causal-history attachment | undeclared mechanic effects |
+| Mechanic/profile | applicability, checks, declared reads/writes, effects, processes, limits | direct canonical commit |
+| Content/authoring bundle | entities, typed properties, starting relations, action signatures, presentation declarations | executable consequences merely by description |
+| Semantic binding | sense/role identity and causal classification | persistence, quantities, effects, scheduling |
+| Affordance discovery | actor-local instantiation/filtering of installed mechanics | consequence calculation |
+| Policy adapter | scripted/human/LLM selection and explanation | canonical mutation |
+| Resident cognition | memory, beliefs, goals, reflection, plans | alternate world truth |
+| Persistence | canonical snapshots/history/profile IDs and future user-world storage | alternate effects |
+| Replay/observer surface | visual/historical projection of represented truth | hidden or invented causal state |
+| Analysis | derived interpretation/measurement | rewriting canonical history |
 
 ## Composition model
 
-An object has stable identity and typed components or properties. Rule families declare which components they read and write.
+Entities have stable identity and typed components. Independent mechanics operate on shared component state under declared authority.
 
-For example, a vessel may have:
+A vessel, for example, may simultaneously carry location, owner, material, capacity, contents, temperature, condition, and heat-source relation. Transfer moves the same vessel with its contents/temperature intact because identity is shared across mechanics.
 
-- location and owner;
-- material and mass;
-- capacity and condition;
-- liquid contents with extensive quantities;
-- temperature;
-- attachment to a heat source.
+Adding another vessel is a **content extension** when existing components/mechanics suffice. Adding pressure is a **mechanism extension** because it requires represented pressure/sealed-volume state, heating interaction, failure behavior, and evidence.
 
-Independent rules can therefore transfer the vessel, transfer its contents, heat it, cool it, damage it, or include its mass in carrying capacity. Giving away a hot vessel transfers the same object with its heat and contents intact.
+The system should grow by composing reusable state/mechanics, not by enumerating every natural-language command.
 
-Adding a stone beaker is a content extension when all required properties already exist. Adding pressure is a mechanism extension because the substrate needs pressure state, sealed-volume rules, heating interaction, failure behavior, and evidence.
+## Action and affordance model
 
-## Action model
+Rules generate finite action instances from current local state. A policy selects among concrete offered actions; it does not receive an abstract promise that anything describable is executable.
 
-A rule schema generates finite action instances from current local state. A policy never receives an abstract promise that it can “do anything.”
+For a parameterized action such as `pour(source, target, amount)`, discovery enumerates bounded candidate values and checks state-dependent constraints. Generated live mechanics likewise require finite scalar choices so the action space remains bounded.
 
-`pour(source, target, amount)`, for example, requires accessible compatible vessels, positive contents, free target capacity, and an allowed integer amount. The effect moves every conserved liquid component proportionally and emits before/after evidence.
+Candidate/action-space size and observation size are separate scaling concerns and should be measured only when a real world makes them limiting.
 
-The possible action space grows through combinations of objects, relations, parameters, and rules. Presentation may be bounded even when candidate generation is large. Candidate enumeration and observation size must be measured separately.
+## Process and institution model
 
-## Process model
+Autonomous processes use the same canonical state and transition authority as actions. A process must declare activation/reads/writes/timing/sources/sinks/interruption semantics and emit causal evidence.
 
-Processes use the same objects and advance only under canonical time. Each declares:
-
-- activation conditions;
-- state read/write surface;
-- timing;
-- sources and sinks;
-- ordering or conflict semantics;
-- termination/interruption behavior; and
-- causal events.
-
-A fire checking for fuel but never deducting it is an incomplete rule. It is not an ontology failure.
+Installed institutions are represented causal bearers whose rules alter future transitions or affordances. They are not special because of their name; they become causal because the world consults and enforces them.
 
 ## Semantic and causal layers
 
-The architecture distinguishes four layers:
+The architecture distinguishes four causal layers:
 
-1. **substrate physics and autonomous processes** that enforce selected world behavior;
-2. **installed institutions** whose represented rules alter transitions or affordances;
-3. **resident-agent cognition** owned by agent runtimes; and
-4. **analytic interpretation** that classifies or measures history without writing it.
+1. substrate physics and autonomous processes;
+2. installed institutions;
+3. resident-agent cognition; and
+4. derived analytic interpretation.
 
-A semantic predicate does not select its layer by name alone. A Linguistic Core `exchange` sense can describe two reciprocal gives without becoming another transfer mechanic. An escrow institution can instead acquire causal force because the world consults and enforces it.
+A semantic predicate does not choose its causal layer by name. Apply the causal-force test:
 
-Use the causal-force test before adding a mechanic: if lower-level events are held fixed and removing the named phenomenon changes no later transition or affordance, it is normally derived.
+> If lower-level events were held fixed and this named phenomenon were removed, would later transitions or affordances change?
+
+If not, it is normally a derived description rather than a new mechanic.
+
+`exchange`, for example, can describe two reciprocal `give` events without reapplying transfer. Escrow can become causal if a represented institution actually couples release conditions and transfers.
 
 ## Semantic–mechanical binding
 
-Linguistic Core is the semantic compiler interface. It contributes predicate senses, roles, specializations, and relationships among meanings. It does not determine persistence, quantities, effects, scheduling, authority, invariants, or commit semantics.
+Linguistic Core contributes predicate senses, participant roles, specializations, and semantic relationships. It does **not** determine persistence, quantities, effects, scheduling, authority, invariants, or commit semantics.
 
-A state-changing attempt must bind:
+A causally meaningful attempt should ultimately carry:
 
 - one reviewed predicate sense;
-- participant roles to canonical references;
-- a provisional causal class;
+- participant roles bound to canonical references;
+- a causal classification;
 - a represented causal bearer; and
-- one mechanic installed in the active profile.
+- one installed mechanic/profile identity.
 
-Free text may accompany the binding but cannot substitute for these fields. See the proposed [semantic–mechanical binding contract](contracts/semantic-mechanical-binding-v0.md).
-
-The initial causal classifications—primitive action, autonomous process, state relation, composite event, analytic pattern, declaration, and installed institution—are a binding vocabulary, not a new upper ontology. Donor review may revise them.
+Free text may accompany this binding but cannot substitute for it. The implemented M1 path has reviewed bindings for six of seven action kinds; generic live authoring currently permits causal declarations before this semantic loop is fully closed. That gap is explicit in the roadmap, not a change to the doctrine. See [Decision 003](decisions/003-semantic-mechanical-boundary.md) and [semantic–mechanical binding v0](contracts/semantic-mechanical-binding-v0.md).
 
 ## Transition envelope and local authority
 
-A mechanic, permission rule, pricing rule, or institution may inspect state and propose effects. Only the enclosing action or process coordinator commits effects that belong to the same claimed causal transition.
+Only the enclosing coordinator commits effects belonging to one causal transition.
 
-The transition path is:
+Write declarations are enforced at state paths: the engine compares every candidate change with the mechanic's declared `write_paths` and refuses/raises on out-of-scope writes. Rule-facing hooks run against detached state, and revision/commands/events are engine-owned.
+
+Declared read paths are retained on events but are not currently runtime-enforced; enforcing reads requires an observation/recording mechanism rather than before/after state comparison. See [read-scope enforcement v0](contracts/read-scope-enforcement-v0.md).
+
+This is not universal ACID. Independent attempts may commit independently. A represented institution may instead define one broader transition that legitimately couples multiple writes.
+
+## Causal authoring and installation
+
+Structural authoring and causal law are separate:
 
 ```text
-observation or trigger
-  -> sense and role binding
-  -> selected local mechanic
-  -> applicability and authorization
-  -> proposed effects
-  -> resource and invariant checks
-  -> one commit or refusal
-  -> causal trace
+world-substrate-authoring-bundle/v0
+        |
+        | represented entities/components/action signatures
+        v
+world-substrate-causal-model/v0
+        |
+        | constrained checks/effects/terminal
+        v
+local causal compiler derives reads/writes and validates types/paths/selectors
+        |
+        v
+human review + explicit approval
+        |
+        v
+MechanicProfile install/freeze
+        |
+        v
+normal Engine execution
 ```
 
-Write declarations are enforced at state paths, independently of implementation
-language: the engine compares every committed change against the mechanic's
-declared `write_paths` and refuses the transition otherwise (`scope_violation`
-for an action, `ScopeViolation` for a process). Read declarations are recorded
-on every causal event but are **not** enforced at runtime — a read leaves no
-trace in state, so enforcing it needs a different mechanism than comparing
-before and after. State outside a mechanic's contract may coexist on an entity
-but remains outside that mechanic's authority.
+The proposer never supplies its own authority. Unknown paths/operators/participants are rejected; model-written source is not executed. One compiler-guided repair may be attempted under the same bounded model trace.
 
-This is not universal ACID. Independent gives may commit independently, allowing reneging. An installed escrow release may instead couple two asset transfers and its own state update in one commit.
+Compiler/installer acceptance proves **declared enforcement coverage**, not completeness. The project therefore keeps causal-closure assays, counterexamples, overlapping-write checks, and residual-risk statements separate from schema validity.
 
-## Authoring, installation, and causal closure
+## Observability, replay, and presentation
 
-Scenario and content authoring instantiate installed mechanics. Offline mechanics authoring may produce declarative packages or executable source, but the output is not installed merely because it parses or passes isolated unit tests.
+Every attempted transition should expose enough evidence to reconstruct the causal story: delivered observation when applicable, bearer, semantic binding when available, selected mechanic, checks, declared authority, committed changes, failure status, and resulting state identity.
 
-A mechanic package declares semantic bindings, causal bearer, required state, optional modifiers, incompatibilities, reads, writes, effects, scheduling, goal-relative invariants, dependencies, unsupported interactions, representation, limits, tests, and trace behavior. The installer validates these surfaces and freezes a mechanics profile before the run.
+Rejected/unsupported/invalid actions do not partially commit their claimed transition.
 
-The compiler can establish **declared enforcement coverage**: every consequence and dependency the author named is bound to an enforceable interface. It cannot prove that the author remembered every consequential dependency.
+Exact replay is an implemented M1/debugging capability, not a universal requirement. Stable snapshots/profile identities and causal traces are the broader observability requirement.
 
-A **causal-closure assay** therefore combines semantic inspection, dependency comparison, overlapping-write analysis, counterexamples, and interaction tests. Its output is evidence and residual risk, not a universal-completeness boolean.
-
-### Concrete coherence case
-
-A sealed clay pot may individually support heat, pressure, material strength, container damage, and fluid flow while the composition remains incoherent. Failure modes include pressure continuing after rupture, a broken container remaining sealed, water being both retained and leaked, incompatible units, duplicated or lost quantity, or heat and contents remaining attached to a replaced object.
-
-No individual equation must be absurd. The incoherence appears at shared meanings, update order, capability revocation, identity handoff, and overlapping authority.
-
-## Observability, persistence, and replay
-
-Each attempted transition exposes what was observed or read, the semantic binding, selected mechanic, checks, proposed effects, committed state paths, failures or unsupported interactions, and resulting persistent state identity at the resolution required by the world.
-
-Snapshots and stable mechanic/profile identities support inspection and debugging. Exact replay is optional.
-
-M1 remains deterministic and exactly replayable for its pinned engine, content, initial state, registry, and command sequence. `World.snapshot()`, `World.from_snapshot()`, and `Engine.replay_commands()` are implemented M1 capabilities and the retained replay receipt remains valid evidence. They are not requirements imposed on future mechanics.
-
-Rejected, invalid, and unsupported actions do not partially commit their claimed transition. Their checks and reasons remain inspectable.
+Presentation is downstream of world truth. Scene profiles/assets/auto-layout may choose where/how an entity appears, but presentation coordinates or animation state never become canonical causal state merely because the UI renders them.
 
 ## Agent and observer separation
 
-Actors see only authorized observations, known definitions, and bounded affordances. The observer may inspect the selected world truth, histories, provenance, and traces. Agent memory, beliefs, uncertainty, planning, and private reasoning remain inside the resident-agent runtime unless a selected world explicitly represents a belief-like state for a mechanic to read. The substrate records delivered observations, attempts, and causal results; analysis cannot overwrite canonical truth.
+Actors receive bounded observations and offered actions. Observer surfaces may inspect broader canonical/history/provenance data. Resident memory, beliefs, uncertainty, planning, schedules, and reflection remain private agent-runtime state unless a selected mechanic explicitly represents and reads them.
+
+This boundary is what allows an off-the-shelf cognition framework to be integrated safely: it may decide **what the resident wants to attempt**; the Engine still decides what the world says happened.
+
+## Product and off-the-shelf adoption posture
+
+[Decision 004](decisions/004-product-and-adoption-strategy.md) makes the division explicit.
+
+Keep project-owned:
+
+- canonical world/identity;
+- transition authority;
+- semantic/mechanical binding;
+- causal declaration/compiler;
+- mechanic authority/profile semantics;
+- causal trace; and
+- declarative scene semantics.
+
+Evaluate/adopt at the boundary when useful:
+
+- **Phaser** for browser 2D scene/game execution;
+- **Concordia/LangGraph** for cognition/memory/planning adapters;
+- **PettingZoo** for multi-agent evaluation/interoperability;
+- standard persistence/auth for durable user worlds/runs/access; and
+- **SimPy** only for a demonstrated richer event-scheduling need.
+
+An external system is not adopted because it exists or is mature. It becomes a project dependency only after a bounded consumer-path proof shows useful leverage without moving canonical consequence authority out of World Substrate.
 
 ## Dependency posture
 
-- Castaway donates the first behavior and evidence vertical.
-- Cybernetic Influence V3 donates a canonical intent/proposed-patch/commit boundary and observability patterns; V2 donates bounded local authority.
-- Linguistic Core is the pinned semantic interface, subject to a persistent-state and quantities coverage audit.
-- Agent Ecology, Data Contracts, and Collective Competence are idea, contract, and failure-analysis donors rather than code-adoption decisions.
-- Shared `llm_client` is the only planned model-provider seam.
-- Concordia remains an evaluated optional lifecycle dependency, not a foundational commitment.
+- Linguistic Core is the pinned semantic interface.
+- Shared `llm_client` is the model-provider seam.
+- Castaway, Cybernetic Influence, Agent Ecology, Data Contracts, and Collective Competence remain bounded donors according to [source dispositions](source-dispositions.md).
+- Product-framework candidates are governed by Decision 004 and remain replaceable adapters until explicitly adopted.
