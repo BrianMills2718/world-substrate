@@ -185,19 +185,20 @@ Keep project-owned:
 - causal trace; and
 - declarative scene semantics.
 
-Evaluate/adopt at the boundary when useful:
+Selected commodity defaults at the boundary are:
 
-- **Phaser** for browser 2D scene/game execution;
-- **Concordia/LangGraph** for cognition/memory/planning adapters;
-- **PettingZoo** for multi-agent evaluation/interoperability;
-- standard persistence/auth for durable user worlds/runs/access; and
-- **SimPy** only for a demonstrated richer event-scheduling need.
+- **deck.gl 9.4.x** for the living spatial/semantic projection client; `OrthographicView` is the default for schematic worlds, with MapLibre available when the canonical world uses real geography;
+- **Pydantic AI 2.41.x** behind `CognitionAdapter` for resident memory/planning/tool orchestration while the Engine retains consequence authority;
+- **SimPy 4.1.2** as a scheduling primitive only: it may advance simulated time and wake processes, but it does not own canonical resources or effects;
+- **Cytoscape.js 3.34.x** for expanded causal/institutional graph inspection when needed;
+- **PettingZoo** for future multi-agent evaluation/interoperability; and
+- standard persistence/auth for durable user worlds/runs/access.
 
-An external system is not adopted because it exists or is mature. It becomes a project dependency only after a bounded consumer-path proof shows useful leverage without moving canonical consequence authority out of World Substrate.
+Commodity selection follows research → reason → select; local tests are boundary-conformance tests, not framework bake-offs. Novel World Substrate uncertainty still earns experiments. All external systems remain replaceable adapters and must preserve canonical consequence authority.
 
 ## Dependency posture
 
 - Linguistic Core is the pinned semantic interface.
 - Shared `llm_client` is the model-provider seam.
 - Castaway, Cybernetic Influence, Agent Ecology, Data Contracts, and Collective Competence remain bounded donors according to [source dispositions](source-dispositions.md).
-- Product-framework candidates are governed by Decision 004 and remain replaceable adapters until explicitly adopted.
+- Selected product dependencies are governed by Decision 004 and remain replaceable adapters; exact versions are pinned in implementation lockfiles and upgraded deliberately.
