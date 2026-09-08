@@ -76,7 +76,7 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("/run", source)
         self.assertIn("Approve mechanics for run", source)
         html_source = HTML.read_text()
-        for label in ("World", "Components", "Entities", "Action signatures", "Causal mechanics", "Presentation", "Run", "Review & export"):
+        for label in ("World", "Components", "Entities", "Action signatures", "Causal mechanics", "Presentation", "Run", "Full logs", "Review & export"):
             self.assertIn(label, html_source)
 
     def test_live_flow_keeps_mechanics_separate_from_bundle_export(self):
@@ -100,6 +100,7 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("trace_id:payload.trace_id", source)
         self.assertIn("replay_html hidden on-screen", source)
         self.assertIn("exact replay HTML", source)
+        self.assertIn('data-section="logs"', HTML.read_text())
 
     def test_core_rejects_unknown_entity_reference(self):
         js = (

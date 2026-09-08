@@ -30,7 +30,8 @@ BODY = r'''
       <button data-section="mechanics">5 · Causal mechanics</button>
       <button data-section="presentation">6 · Presentation</button>
       <button data-section="run">7 · Run</button>
-      <button data-section="export">8 · Review & export</button>
+      <button data-section="logs">8 · Full logs</button>
+      <button data-section="export">9 · Review & export</button>
     </nav>
     <div class="side-actions">
       <button id="import-bundle">Import bundle JSON</button>
