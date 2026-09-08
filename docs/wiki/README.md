@@ -16,15 +16,22 @@ authority_refs:
 
 # World Substrate project wiki
 
-This is the single orientation surface for the project. It summarizes current truth and routes readers to native authorities; it does not replace architecture, contracts, decisions, code, or evidence.
+This is the single compact orientation surface for the repository. It summarizes current truth and routes readers to native authorities; it does not replace architecture, contracts, decisions, code, evidence, or the roadmap.
 
 ## What this project is
 
-World Substrate is a persistent, observable simulation engine and authoring system. LLM or human policies express intents. Linguistic Core supplies semantic senses and participant roles. Installed mechanics with explicit local authority determine canonical consequences.
+World Substrate is a persistent, observable simulation engine and generative authoring system. Human or model policies express intents; installed mechanics with explicit local authority determine canonical consequences.
 
-The product direction is a **Generative-World Builder on top of a rigorous causal world engine**. The distinctive claim is not that an LLM can narrate a plausible world; it is that the world has represented state, installed law, and inspectable evidence for what actually happened.
+The product direction is now a **generative living-world builder over a rigorous causal engine**. The user should be able to describe a world conversationally, review represented structure and executable law, run residents/processes through it, watch it evolve spatially, and inspect why outcomes occurred without allowing presentation, cognition, or analysis to become alternate truth.
 
-The deployed product is available at `https://brianmills.dev/world-builder/`.
+The first serious application vertical is a **Coordination Environment Lab** inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
+
+Public surfaces:
+
+- World Builder: `https://brianmills.dev/world-builder/`
+- Living-world visualization prototype: `https://brianmills.dev/world-substrate-visualization/`
+
+The living-world prototype is currently a UI prototype with synthetic timeline data. The active implementation goal is to feed it a real World Substrate run.
 
 ## Start here
 
@@ -32,160 +39,165 @@ The deployed product is available at `https://brianmills.dev/world-builder/`.
 | --- | --- |
 | Current direction / exact next action | [Roadmap](../../roadmap/README.md) |
 | Durable system boundaries | [Architecture](../architecture.md) |
-| Product + off-the-shelf strategy | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
-| Competitive / adjacent-system research | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
+| Product + procurement doctrine | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
+| Living-world overlay semantics | [Living-world projection](../research/living-world-projection-2026-09.md) |
+| Selected commodity defaults | [Technology procurement](../research/technology-procurement-2026-09.md) |
+| Competitive / adjacent systems | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
 | Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
-| Commit boundary | [Transition envelope v0](../contracts/transition-envelope-v0.md) |
-| Optional read-scope verification | [Read-scope enforcement v0](../contracts/read-scope-enforcement-v0.md) |
 | Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) |
-| Why neighboring repos are not authority | [Source dispositions](../source-dispositions.md) |
-| Reference worlds | [Reference-world guide](../../reference_worlds/README.md) |
-| Live authoring evidence | [Live authoring audit](../audits/live-world-authoring.md) |
-| Flagship behavior | [Kitchen audit](../audits/kitchen-contested-world.md) |
+| Cross-repo donor roles | [Source dispositions](../source-dispositions.md) |
+| Nontrivial live-authoring evidence | [Repair Bay live proof](../audits/repair-bay-live-preflight.md) |
 
 ## Concepts and terminology
 
-- **Canonical state:** the only material world truth. Prompts, UI, model beliefs, and analysis are not competing authorities.
-- **Semantic binding:** a Linguistic Core sense plus participant-role mapping and causal classification.
-- **Causal bearer:** the represented actor, process, institution, disposition, or input whose presence changes possible transitions.
-- **Mechanic:** an installed rule/process with applicability, declared state authority, checks, effects, limits, and trace behavior.
-- **Mechanic profile:** the validated/frozen set of mechanics used for one run.
+- **Canonical state:** the only material world truth. Prompts, UI state, resident beliefs, and analyses do not compete with it.
+- **Semantic binding:** reviewed Linguistic Core sense/roles plus causal classification; meaning does not imply effects.
+- **Causal bearer:** represented actor, process, institution, disposition, or input whose presence changes possible transitions.
+- **Mechanic:** installed rule/process with applicability, checks, declared reads/writes, effects, limits, and trace behavior.
+- **Mechanic profile:** validated/frozen mechanic set for a run.
 - **Affordance:** one currently available action instance derived from canonical state.
-- **Observation:** an actor-authorized projection of canonical state.
-- **Composite event:** a description of committed lower-level events that does not apply their effects again.
-- **Declared enforcement coverage:** whether everything the author explicitly declared is bound to an enforceable interface.
-- **Causal-closure assay:** fallible review/testing that searches for consequential dependencies the author did not declare.
-- **Authoring bundle:** non-causal represented structure, action signatures, and presentation declarations.
-- **Causal model:** constrained, reviewable law for action signatures; it is data, not model-written executable source.
-- **Terminal condition:** a state-derived predicate saying represented work is complete.
-- **Automatic replay:** graphical presentation generated from world/trace/shared presentation semantics without world-specific renderer code.
-- **Polished replay:** optional art-direction overlay on top of the same world truth.
+- **Observation:** actor-authorized projection of world state/information.
+- **Authoring bundle:** represented entities/components/action signatures/presentation intent; not executable law by itself.
+- **Causal model:** constrained reviewable declaration of executable action law; data, not model-written source code.
+- **Declared enforcement coverage:** whether explicitly declared behavior is bound to enforceable interfaces.
+- **Bounded causal closure:** evidence that material dependencies are represented/enforced/coarse/external/unsupported/unknown, with residual risk rather than a universal completeness proof.
+- **World interaction:** a represented occurrence such as moving, speaking, meeting, transferring, failing, or operating.
+- **Information lineage:** representation + source + recipient + channel + delivery/observation/provenance.
+- **Cognition context/evidence:** information an external resident runtime was allowed to see; this is not automatically hard causal parentage.
+- **Hard causal ancestry:** mechanically supported parent/dependency relations for committed transitions.
+- **Analytic interpretation:** detachable post-run/observer inference such as Waltzman or Levin findings.
+- **Projection state:** possible / enabled / active / realized relationship status derived for visualization from mechanics, current state, and retained history.
+- **Core overlay:** generic read-only projection of residents, information, resources, processes, authority, or causal history.
+- **Analytic overlay:** optional plugin annotation over evidence; never a hidden world variable merely because it is visually overlaid.
 
-The four causal layers remain: substrate processes, installed institutions, resident-agent cognition, and derived analytic interpretation. Agent memory/plans remain private cognition unless a selected world explicitly represents them as mechanic-readable state.
+The causal layers remain: substrate processes, installed institutions, resident cognition, and derived analysis. Resident memory/plans remain private unless a selected world explicitly represents them as mechanic-readable state.
 
 ## Sources and evidence
 
-[Source dispositions](../source-dispositions.md) classifies donor roles and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donor repositories may contribute ideas, evidence, or adopted code only through an explicit consumer path.
+[Source dispositions](../source-dispositions.md) classifies donor roles and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donor repositories are sources, not automatic runtime dependencies.
 
-Retained evidence is revision/run scoped. Important current evidence includes:
+Important current evidence:
 
-- M1 freshwater traces and fresh-process replay for the implemented substrate baseline;
-- M3/M4 mechanic-authoring and causal-coherence assays;
-- M5 LLM policy use through the ordinary affordance seam;
-- M6 Workshop cross-domain reuse;
-- M7/M7b model-authored mechanic experiments;
+- M1–M7b substrate / semantic / mechanic-authoring / policy-consumer evidence;
 - three replicated Kitchen full-service traces;
-- Greenhouse zero-review replay as the post-renderer new-world proof; and
-- Orchard live causal-generation + fresh-run acceptance evidence.
+- Greenhouse zero-review replay as a post-renderer new-world proof;
+- Orchard live causal generation + fresh-run acceptance;
+- Repair Bay as the first nontrivial deployed authoring world;
+- Warehouse Rush draft evidence showing a route→physical-dock omission and minimal `target_dock` repair; and
+- full World Builder request/response/operator/causal logs as the debugging source of truth.
 
-Historical evidence is not rewritten to resemble current behavior. For example, the old Kitchen full-service trace keeps its trailing turns because those turns motivated the terminal-state fix.
+The living-world UI source is versioned at `prototypes/living-world-overlay-v0.html`; it is design evidence, not evidence of a real simulation run until the live projection slice replaces its synthetic data.
 
 ## Accepted authorities and decisions
 
-- [Roadmap](../../roadmap/README.md) owns current planning and prioritization.
-- [Architecture](../architecture.md) owns durable system boundaries.
+- [Roadmap](../../roadmap/README.md) owns current sequencing and exact next action.
+- [Architecture](../architecture.md) owns durable boundaries.
 - [Decision 001](../decisions/001-project-scope.md) owns canonical project scope.
 - [Decision 002](../decisions/002-observability-and-replay.md) owns observability/replay doctrine.
 - [Decision 003](../decisions/003-semantic-mechanical-boundary.md) owns the semantic/effect boundary.
-- [Decision 004](../decisions/004-product-and-adoption-strategy.md) owns the Generative-World Builder and off-the-shelf adoption posture.
-- Implemented contracts own only their declared seam; proposed/partial contracts must say so.
-- Code/tests own current runtime behavior.
-- Revision-bound evidence owns observed outcome claims.
+- [Decision 004](../decisions/004-product-and-adoption-strategy.md) owns product direction and commodity-selection doctrine.
+- Implemented contracts own only their declared seam.
+- Code/tests own runtime behavior.
+- Revision/run-bound evidence owns observed outcome claims.
+
+Decision 004 now classifies uncertainty as:
+
+- **novel** → experiment;
+- **commodity** → research → reason → select; and
+- **integration** → bounded conformance test.
+
+Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter`, SimPy 4.1.2 for scheduling only, and Cytoscape.js 3.34.x for expanded graph inspection.
 
 ## Working context
-
-The substrate phase is complete. Current product/engineering truth:
 
 | Area | Current state |
 | --- | --- |
 | Core transition engine | implemented; write scopes enforced; rule views detached |
 | Semantic grounding | six of seven M1 kinds bound; generic live actions not yet semantically closed |
-| Kitchen flagship | 3/3 replicated handoff/completion; polished and Automatic replay |
-| Replay system | one generic renderer + scene semantics + auto-layout across real worlds |
-| Builder | deployed; structural authoring + causal proposal/review/approval + fresh runs |
-| Causal generation | Luna proposes constrained JSON; local compiler is authority; one repair attempt allowed |
-| Live policies | scripted or LLM; LLM selects only engine-minted action IDs |
-| Deployment | public static Builder/Play shell + loopback API behind Cloudflare |
-| Spend control | per-call caps + rate limits + persistent $0.50/day reservation ledger |
-| Resident cognition | intentionally separate; durable memory/reflection/planning not yet implemented |
-| User persistence | no saved-user-world/run product yet |
+| Causal generation | constrained JSON proposal + local compiler + explicit approval + frozen profile |
+| Live policies | scripted/LLM; LLM selects only Engine-minted action IDs |
+| Replay | portable read-only scene-profile renderer across multiple worlds |
+| World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs |
+| Full logs | deployed; complete request/response/compiler/operator/causal traces available |
+| Living-world UI | deployed standalone prototype; synthetic data; source now versioned |
+| Live projection | **active next slice**; no canonical feed yet |
+| Information/conversation | no first-class generic representation/delivery contract yet |
+| Processes/institutions | core engine concept exists; generic authoring surface is not rich enough for Coordination Lab yet |
+| Resident cognition | Pydantic AI selected but not integrated; current bounded LLM seam remains sufficient for existing fixtures |
+| Scheduling | SimPy selected for future timing/event queue only; not yet integrated |
+| Graph inspector | Cytoscape selected; not yet needed in active slice |
+| Persistence/auth | no saved user worlds/runs or identity-backed approvals yet |
 
-Reference-world roles:
+Open work at the handoff point:
 
-- **Castaway:** M1 implementation/evidence donor.
-- **Workshop:** materially different reuse proof.
-- **Kitchen:** flagship watched world.
-- **Greenhouse:** new-world/Automatic-replay portability proof.
-- **Orchard:** live-authoring acceptance fixture.
-
-The approved implementation strategy is to keep the causal kernel custom and evaluate mature systems around it. Phaser is the leading browser-rendering candidate; Concordia/LangGraph are cognition candidates; PettingZoo is an interoperability candidate; persistence/auth should use standard infrastructure; SimPy is conditional on demonstrated scheduling pressure. None is adopted as causal authority merely by being named. The [competitive landscape](../research/competitive-landscape-2026-09.md) explains why the project should own causal-world authoring/authority while borrowing cognition, scale, evaluation, and commodity infrastructure from adjacent systems.
+- **PR #37** — Warehouse Rush draft experiment. Useful retained evidence; v1 provider retry remains pending but is deliberately deferred behind live projection.
+- **PR #43** — CVS sustainment seam from a separate integration track. It does not set roadmap priority and should be rebased/reviewed against current main before a merge decision.
 
 ## Needs resolution
 
-These are the important open boundaries now:
+The roadmap owns ordering; the important unresolved capabilities are:
 
-1. **Semantic closure for live authoring:** generated action mechanics can currently compile while `semantic_bindings` is empty; new authored action kinds should eventually bind a reviewed Linguistic Core sense/role mapping.
-2. **Less-trivial authoring proof:** Orchard is intentionally tiny. The next real product test must exercise multiple actors/resources/actions and reveal the first genuine causal-language/review failure.
-3. **Mechanic failure evidence:** implementation exceptions are safely isolated/rolled back but should become explicit `mechanic_error` / `process_error` causal events.
-4. **Approval/auth semantics:** public same-origin/rate-limit controls bound abuse economically, but identity and durable server-issued approval receipts remain product/security decisions.
-5. **Resident cognition:** memory, reflection, planning, schedules, and social models should be added behind the policy seam, preferably via a bounded off-the-shelf comparison rather than a framework rewrite.
-6. **Saved worlds/runs:** the live Builder currently creates ephemeral fresh runs; durable user-owned worlds/run history are not yet a product surface.
-7. **Read-scope verification:** declared reads remain recorded but not enforced; activate only if measured value justifies overhead.
-8. **Upstream semantic gap:** `unheat` still lacks an appropriate pinned Linguistic Core sense.
-9. **Deployment reproducibility/CI:** source is pinned, but the live Python dependency environment is not fully hermetic and permanent required CI is still desirable.
+1. **Live projection seam:** real canonical snapshot/events must drive the living client without renderer-owned truth.
+2. **Information/conversation semantics:** represent utterances/messages, source/recipient/channel/provenance/visibility, and delivery distinctly from private cognition.
+3. **Causal/evidence lineage:** distinguish hard mechanical ancestry from observation/context and analytic inference.
+4. **Generative causal closure:** dependency inventory → enforcement mapping → counterexamples/probes → residual-risk report → smallest repair.
+5. **Processes/institutions:** generic authoring for meetings, schedules, external events, permissions, commitments, and decision procedures when the Coordination Lab demands them.
+6. **Resident cognition:** integrate Pydantic AI behind a narrow adapter only when richer worlds need persistent memory/planning/social behavior.
+7. **Semantic closure/review:** generic new action kinds should eventually bind reviewed Linguistic Core senses/roles; improve review representation when real users cannot distinguish material law differences.
+8. **Persistence/auth:** saved worlds/runs and identity-backed approvals after the authoring/run workflow earns durable state.
+9. **Mechanic/process error events:** promote implementation failures into explicit causal failure evidence when needed for trust/debugging.
+10. **Scale/read enforcement:** defer until measured pressure appears.
 
 ## Architecture and workflow
 
 ```text
-represented structure
+conversational authoring
       |
       v
-semantic intent / action signature
+represented world + dependency intent
       |
       v
-reviewed semantic binding (partial for generic live authoring today)
+semantic/action structure + generated causal declarations
       |
       v
-constrained causal-mechanic declaration
+local compiler derives authority -> human approval -> frozen profile
       |
       v
-local compiler derives authority + validates paths/types
+resident action OR process trigger
       |
       v
-explicit approval -> frozen mechanic profile
+Engine.submit()/process coordinator -> checks -> commit/refusal
       |
-      v
-scripted / human / LLM policy selects offered action_id
+      +--> canonical state + causal/evidence history
       |
-      v
-Engine.submit() -> checks -> one commit or refusal
+      +--> read-only live projection -> deck.gl living world
+      |                             -> optional Cytoscape inspector
       |
-      +--> canonical persistent state + causal event
-      |
-      +--> retained trace -> scene semantics -> graphical replay
+      +--> detachable analyses -> Waltzman / Levin / future plugins
 ```
 
-Off-the-shelf cognition, renderer, interoperability, persistence, and auth may surround this path. They must not replace the Engine as consequence authority.
+Pydantic AI, SimPy, deck.gl, Cytoscape, persistence, and auth are replaceable external machinery around the owned causal seam. SimPy schedules opportunities only; Pydantic AI selects attempts/utterances only; renderers and analyses are read-only.
+
+A conversation is visible world activity even with overlays off. The information overlay adds delivery/provenance semantics. A causal overlay includes that conversation only where the retained causal/evidence model supports the stronger relation. Prompt/context inclusion alone is not proof that the information caused a later decision.
 
 ## Human-reviewable artifacts
 
-Use these instead of reading every milestone audit:
+Use these first:
 
-- `https://brianmills.dev/world-builder/` — deployed Build/Play product surface.
-- `evidence/renders/kitchen-spatial-replay-v1.html` — polished graphical flagship.
-- `evidence/renders/kitchen-zero-review-v0.html` — Automatic Kitchen breadth proof.
-- `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic proof.
-- `evidence/renders/world-replay-studio-v0.html` — retained-world Studio.
-- [Live authoring audit](../audits/live-world-authoring.md) — real mechanics-generation/policy calls and service guards.
-- [Action mechanic declaration contract](../contracts/action-mechanic-declaration-v0.md) — live causal language/authority boundary.
-- [Scene profile contract](../contracts/scene-profile-v0.md) — trace/world/presentation-to-replay boundary.
-- [Greenhouse proof](../audits/greenhouse-authoring-proof.md) — end-to-end fourth-world portability evidence.
-- [Kitchen audit](../audits/kitchen-contested-world.md) — replicated flagship behavior.
-- [Decision 004](../decisions/004-product-and-adoption-strategy.md) — current product/adoption strategy.
+- `https://brianmills.dev/world-builder/` — deployed Build/Play alpha.
+- `https://brianmills.dev/world-substrate-visualization/` — living-world visual interaction prototype.
+- `prototypes/living-world-overlay-v0.html` — versioned prototype source.
+- [Living-world projection](../research/living-world-projection-2026-09.md) — overlay semantics and first integration acceptance.
+- [Technology procurement](../research/technology-procurement-2026-09.md) — selected external stack and boundaries.
+- `evidence/renders/kitchen-spatial-replay-v1.html` — polished flagship replay.
+- `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic presentation proof.
+- [Repair Bay live proof](../audits/repair-bay-live-preflight.md) — nontrivial authoring/run evidence.
+- [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) — current generated-law language.
+- [Scene profile v0](../contracts/scene-profile-v0.md) — current read-only presentation contract.
 
 ## Roadmap
 
-Use [the canonical roadmap](../../roadmap/README.md) for current priorities, risks, refresh triggers, and the exact next action. The wiki is navigation; it must not become a second roadmap.
+Use [the canonical roadmap](../../roadmap/README.md) for current priorities, risks, refresh triggers, and the exact next action. The wiki is navigation and current-state orientation; it must not become a second roadmap.

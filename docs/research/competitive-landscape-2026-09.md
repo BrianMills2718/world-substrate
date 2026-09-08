@@ -112,14 +112,9 @@ Concordia agent / AgentSociety agent / custom LLM / human / RL policy
 
 A sophisticated cognition framework should be allowed to improve decisions without acquiring consequence authority. Likewise, a weaker policy should fail inside the same world without requiring different physics.
 
-This makes an eventual comparison especially valuable:
+This makes cognition replaceable without making cognition selection a local research program. Current procurement selects Pydantic AI behind `CognitionAdapter`; future harness/model changes should normally follow current external evidence and preserve the same observation/action boundary. Local tests should prove conformance—not re-run general agent-framework comparisons.
 
-- simple bounded LLM policy -> one World Substrate world;
-- Concordia-backed policy -> the same world and law;
-- scripted/human policy -> the same world and law;
-- PettingZoo adapter -> the same world exposed through a standard MARL interface.
-
-If Concordia dramatically outperforms the lightweight policy without an engine change, that supports the layer thesis rather than undermining it: **better minds can plug in while reality stays fixed**.
+If a stronger resident stack later improves behavior without an engine change, that supports the layer thesis rather than undermining it: **better minds can plug in while reality stays fixed**.
 ## Build / borrow / integrate / refuse
 
 ### Build and keep project-owned
@@ -134,9 +129,9 @@ If Concordia dramatically outperforms the lightweight policy without an engine c
 
 ### Borrow or integrate
 
-- resident cognition, memory, planning, reflection, and social-agent patterns from Concordia/LangGraph-class systems;
+- resident cognition, memory, planning, reflection, and tool orchestration through the selected Pydantic AI `CognitionAdapter` boundary (with other harnesses remaining replaceable alternatives);
 - standard multi-agent policy/evaluation interfaces from PettingZoo-class systems;
-- rendering/game execution from mature engines where scene semantics remain downstream of world truth;
+- living rendering from the selected deck.gl projection stack (and optional MapLibre for real geography) while scene/projection semantics remain downstream of world truth;
 - persistence, auth, queues, and ordinary infrastructure from standard platforms.
 
 ### Refuse to build without observed pressure
@@ -165,7 +160,7 @@ The relevant scaling metric is therefore not raw agent count. It is **how quickl
 
 ## Research triggers
 
-- If correct worlds repeatedly fail because lightweight policies cannot plan, run a bounded Concordia/LangGraph cognition comparison behind the existing policy seam.
+- If correct worlds repeatedly fail because current resident cognition is inadequate, re-check current harness/model evidence and upgrade/replace the `CognitionAdapter`; do not default to a local architecture tournament.
 - If external policy/evaluation tooling becomes useful, implement a PettingZoo adapter without moving state authority out of the Engine.
 - If multiple distinct worlds repeat scalar-domain confusion, promote explicit author-declared parameter domains/enums into the authoring contract.
 - If generated laws remain hard to review, invest in compiler-derived warnings and behavioral previews rather than asking users to read raw declarations.
