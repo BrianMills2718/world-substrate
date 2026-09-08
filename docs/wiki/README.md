@@ -69,7 +69,7 @@ Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily s
 
 The substrate prototype is complete and the flagship phase has produced its first human-facing artifact. The selected world is the kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. Three fresh same-model/prompt services reproduced the key sequence — Bo completes at t9, releases the knife for Ama at t10, Ama takes it at t11, and both orders are filled at the t17 world terminal.
 
-`evidence/renders/world-replay-studio-v0.html` is now the primary local viewing surface. It is a standalone browser artifact that embeds byte-exact retained Automatic and Polished replay documents for Kitchen, Castaway, and Workshop. Automatic zero-review generation remains the authoring baseline; polished profiles are optional presentation layers. The Studio reads actor/action/turn/model/bootstrap metadata from retained zero-review profiles and traces and has no simulation authority. `kitchen-spatial-replay-v1.html` remains the polished flagship replay inside that surface. See the [Studio audit](../audits/world-replay-studio.md), [scene profile v0](../contracts/scene-profile-v0.md), and the [roadmap](../../roadmap/README.md).
+`evidence/renders/world-replay-studio-v0.html` is now the primary local viewing surface. It contains Kitchen, Castaway, Workshop, and **Greenhouse**, with Automatic as the authoring baseline and Polished as optional presentation when one exists. Greenhouse is the fourth-world product proof: its model, real mechanics, retained zero-spend run, shared presentation declarations, zero-review replay, and Studio entry were authored after the system existed and required no world-specific visualization code. `kitchen-spatial-replay-v1.html` remains the polished flagship inside the Studio. See the [Greenhouse proof](../audits/greenhouse-authoring-proof.md), [Studio audit](../audits/world-replay-studio.md), and [roadmap](../../roadmap/README.md).
 
 ## What exists now?
 
@@ -86,9 +86,9 @@ The substrate prototype is complete and the flagship phase has produced its firs
 
 ## Current frontier
 
-The declaration-driven replay authoring path and its first local product surface are complete for the repository's current real worlds. **Automatic replay is the default authoring baseline; Polished replay is optional art direction.** The World Replay Studio makes that distinction visible in one standalone file without adding a server or new causal authority.
+The baseline authoring workflow is now proven **after** the product surface existed. Greenhouse added a new `water` mechanic, shared-tool handoff, terminal state, retained real-engine trace and Automatic replay without a scene review file or world-specific visualization branch. It exposed two reusable assumptions: `take`/`put_down` labels had hard-coded an `item` field, and one action could not visually update two represented entities. The former moved to trace-inferred labels; the latter added generic declarative `state_effects`, so `water` can show both the plant becoming watered and the can becoming empty.
 
-The next useful product proof is end-to-end authoring of a **fourth genuinely new world**: define its represented entities/relationships/mechanics/assets, retain a no-spend run, and get a useful Automatic graphical replay without writing visualization code. Only a concrete failure in that workflow should reopen generic replay/bootstrap architecture. Deployment/publication still requires explicit authority.
+That clears the current product hypothesis. Do not add a fifth generic replay proof automatically. The next boundary is an explicit product choice about how a person should create or import worlds — a schema/form workflow, code-first starter kit, or a specific next domain. Deployment/publication remains separately controlled.
 
 ## Architecture and workflow
 
@@ -138,7 +138,11 @@ Castaway remains the adopted M1 implementation and evidence donor. The workshop 
 
 ## Human-reviewable artifacts
 
-- `evidence/renders/world-replay-studio-v0.html`: standalone local Studio embedding Automatic/Polished replays for all three worlds.
+- `evidence/renders/greenhouse-zero-review-v0.html`: fourth-world Automatic replay generated without a scene review or visualization code.
+- `evidence/greenhouse/first-service-v0.json`: retained seven-turn real-engine Greenhouse run.
+- `evidence/greenhouse/scene-profile-zero-review-v0.json`: zero-TODO Automatic Greenhouse scene profile.
+- `docs/audits/greenhouse-authoring-proof.md`: end-to-end fourth-world authoring and portability audit.
+- `evidence/renders/world-replay-studio-v0.html`: standalone local Studio covering four real worlds; Greenhouse is Automatic-only and the earlier three retain optional Polished variants.
 - `evidence/replay-studio-v0.json`: declarative Studio world/variant manifest.
 - `scripts/render_replay_studio.py`: domain-neutral standalone Studio packager.
 - `docs/audits/world-replay-studio.md`: product-boundary and verification audit.

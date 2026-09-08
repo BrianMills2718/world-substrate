@@ -17,12 +17,18 @@ ARTIFACT = REPO / "evidence/renders/world-replay-studio-v0.html"
 
 
 class ReplayStudioTests(unittest.TestCase):
-    def test_manifest_exposes_all_real_replay_worlds_and_both_variants(self):
+    def test_manifest_exposes_all_real_replay_worlds_and_available_variants(self):
         manifest = studio.load_manifest(MANIFEST)
         self.assertEqual(manifest["default_world"], "kitchen")
-        self.assertEqual([w["id"] for w in manifest["worlds"]], ["kitchen", "castaway", "workshop"])
+        self.assertEqual([w["id"] for w in manifest["worlds"]], ["kitchen", "castaway", "workshop", "greenhouse"])
+        expected_variants = {
+            "kitchen": {"automatic", "polished"},
+            "castaway": {"automatic", "polished"},
+            "workshop": {"automatic", "polished"},
+            "greenhouse": {"automatic"},
+        }
         for world in manifest["worlds"]:
-            self.assertEqual({v["id"] for v in world["variants"]}, {"automatic", "polished"})
+            self.assertEqual({v["id"] for v in world["variants"]}, expected_variants[world["id"]])
 
     def test_bundle_metadata_comes_from_retained_zero_review_profiles_and_traces(self):
         manifest, _ = studio.build_bundle(MANIFEST)
@@ -30,7 +36,9 @@ class ReplayStudioTests(unittest.TestCase):
         self.assertEqual(set(by_world["kitchen"]["metadata"]["action_kinds"]), {"take", "put_down", "chop", "cook", "plate"})
         self.assertEqual(set(by_world["castaway"]["metadata"]["action_kinds"]), {"fill", "drink"})
         self.assertEqual(set(by_world["workshop"]["metadata"]["action_kinds"]), {"pick_up", "attach"})
+        self.assertEqual(set(by_world["greenhouse"]["metadata"]["action_kinds"]), {"take", "fill", "water", "put_down"})
         self.assertEqual(by_world["kitchen"]["metadata"]["turns"], 17)
+        self.assertEqual(by_world["greenhouse"]["metadata"]["turns"], 7)
         self.assertTrue(all(w["metadata"]["bootstrap_todos"] == 0 for w in by_world.values()))
 
     def test_embedded_replays_are_byte_exact_copies_of_retained_artifacts(self):

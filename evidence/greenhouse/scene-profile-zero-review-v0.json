@@ -1,0 +1,221 @@
+{
+  "schema_version": "world-substrate-scene-profile/v0",
+  "world": "greenhouse",
+  "world_model": "../../reference_worlds/greenhouse/bed-v0.json",
+  "assets": {
+    "gardener": {
+      "kind": "emoji",
+      "value": "\ud83e\uddd1\u200d\ud83c\udf3e"
+    },
+    "watering_can": {
+      "kind": "emoji",
+      "value": "\ud83e\udea3"
+    },
+    "plant": {
+      "kind": "emoji",
+      "value": "\ud83e\udeb4"
+    },
+    "water": {
+      "kind": "emoji",
+      "value": "\ud83d\udca7"
+    }
+  },
+  "actors": {
+    "nora": {
+      "asset": "gardener",
+      "home": [
+        20.0,
+        78.0
+      ]
+    },
+    "leo": {
+      "asset": "gardener",
+      "home": [
+        80.0,
+        78.0
+      ]
+    }
+  },
+  "stations": {
+    "tap-1": {
+      "label": "Water tap",
+      "role": "source",
+      "active_asset": "water",
+      "rect": [
+        5.0,
+        25.0,
+        28.0,
+        45.0
+      ],
+      "actor_anchor": [
+        36.0,
+        47.5
+      ],
+      "item_anchor": [
+        19.0,
+        47.5
+      ]
+    },
+    "bed-1": {
+      "label": "Garden bed",
+      "role": "surface",
+      "rect": [
+        36.0,
+        43.0,
+        28.0,
+        25.0
+      ],
+      "actor_anchor": [
+        50.0,
+        55.5
+      ],
+      "item_anchor": [
+        50.0,
+        55.5
+      ]
+    }
+  },
+  "entities": {
+    "can-1": {
+      "asset": "watering_can",
+      "label": "Watering can",
+      "portable": true,
+      "state_path": "components.watering_can.state",
+      "home": [
+        19.0,
+        47.5
+      ]
+    },
+    "fern-1": {
+      "asset": "plant",
+      "label": "Fern",
+      "state_path": "components.plant.stage",
+      "home": [
+        45.33,
+        55.5
+      ]
+    },
+    "tomato-1": {
+      "asset": "plant",
+      "label": "Tomato plant",
+      "state_path": "components.plant.stage",
+      "home": [
+        54.67,
+        55.5
+      ]
+    }
+  },
+  "action_visuals": {
+    "take": {
+      "item_field": "vessel",
+      "label_template": "take {vessel}",
+      "ownership": "take",
+      "clear_item_station": true,
+      "actor_target": {
+        "entity_field": "vessel"
+      }
+    },
+    "fill": {
+      "item_field": "vessel",
+      "actor_target": {
+        "action_field": "source"
+      },
+      "label_template": "fill {vessel} from {source}",
+      "set_state": "filled",
+      "activate_station_from": "source"
+    },
+    "water": {
+      "actor_target": {
+        "action_field": "bed"
+      },
+      "label_template": "water {plant} at {bed}",
+      "item_field": "plant",
+      "set_state": "watered",
+      "state_effects": [
+        {
+          "entity_field": "vessel",
+          "set_state": "empty"
+        }
+      ]
+    },
+    "put_down": {
+      "item_field": "vessel",
+      "label_template": "put down {vessel}",
+      "ownership": "release",
+      "actor_target": {
+        "entity_field": "vessel"
+      }
+    }
+  },
+  "progress_assets": {},
+  "state_styles": {
+    "empty": {
+      "scale": 1.0,
+      "brightness": 0.95,
+      "saturation": 0.9
+    },
+    "filled": {
+      "scale": 1.08,
+      "brightness": 1.0,
+      "saturation": 1.15
+    },
+    "dry": {
+      "scale": 0.9,
+      "brightness": 0.9,
+      "saturation": 0.55
+    },
+    "watered": {
+      "scale": 1.14,
+      "brightness": 1.05,
+      "saturation": 1.25
+    }
+  },
+  "bootstrap": {
+    "schema_version": "world-substrate-scene-profile-bootstrap/v0",
+    "inferred_initial_owners": {},
+    "inferred_action_fields": {
+      "take": {
+        "item_field": "vessel",
+        "station_field": null
+      },
+      "fill": {
+        "item_field": "vessel",
+        "station_field": "source"
+      },
+      "water": {
+        "item_field": null,
+        "station_field": "bed"
+      },
+      "put_down": {
+        "item_field": "vessel",
+        "station_field": null
+      }
+    },
+    "declared_action_bindings": [
+      "fill",
+      "put_down",
+      "take",
+      "water"
+    ],
+    "binding_resolution_errors": {},
+    "reviewed_actions": [],
+    "auto_layout": {
+      "enabled": true,
+      "algorithm": "role-grid-v0",
+      "proposed_geometry": [
+        "actors.leo.home",
+        "actors.nora.home",
+        "entities.can-1.home",
+        "entities.fern-1.home",
+        "entities.tomato-1.home",
+        "stations.bed-1.actor_anchor",
+        "stations.bed-1.item_anchor",
+        "stations.bed-1.rect",
+        "stations.tap-1.actor_anchor",
+        "stations.tap-1.item_anchor",
+        "stations.tap-1.rect"
+      ]
+    },
+    "todos": []
+  }
+}

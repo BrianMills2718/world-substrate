@@ -1,0 +1,408 @@
+{
+  "schema_version": "world-substrate-contested-run/v3",
+  "world": "greenhouse",
+  "actors": [
+    "nora",
+    "leo"
+  ],
+  "model": "scripted-greenhouse-fixture",
+  "cost_usd": 0.0,
+  "claim": "Deterministic two-gardener Greenhouse trace. Every action is an accepted commit through the shared engine; the run demonstrates represented shared-tool handoff, not concurrent-policy behavior.",
+  "summary": {
+    "turns": 7,
+    "terminal_reached": true,
+    "plants_watered": 2,
+    "model_spend_usd": 0.0
+  },
+  "transcript": [
+    {
+      "turn": 1,
+      "revision_when_decided": 0,
+      "committed_first": "nora",
+      "actors": {
+        "nora": {
+          "wanted": {
+            "actor": "nora",
+            "kind": "take",
+            "vessel": "can-1",
+            "base_revision": 0,
+            "controller": "greenhouse-fixture"
+          },
+          "did": {
+            "actor": "nora",
+            "kind": "take",
+            "vessel": "can-1",
+            "base_revision": 0,
+            "controller": "greenhouse-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Take the shared watering can so the fern can be watered first."
+        },
+        "leo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Wait while the other gardener uses the shared watering can."
+        }
+      },
+      "progress": {
+        "nora": {
+          "plant": "fern-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "fern-1"
+          ]
+        },
+        "leo": {
+          "plant": "tomato-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "tomato-1"
+          ]
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "revision_when_decided": 1,
+      "committed_first": "nora",
+      "actors": {
+        "nora": {
+          "wanted": {
+            "actor": "nora",
+            "kind": "fill",
+            "vessel": "can-1",
+            "source": "tap-1",
+            "volume_ml": 1,
+            "base_revision": 1,
+            "controller": "greenhouse-fixture"
+          },
+          "did": {
+            "actor": "nora",
+            "kind": "fill",
+            "vessel": "can-1",
+            "source": "tap-1",
+            "volume_ml": 1,
+            "base_revision": 1,
+            "controller": "greenhouse-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Fill the watering can at the tap before using it on a plant."
+        },
+        "leo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Wait while the other gardener uses the shared watering can."
+        }
+      },
+      "progress": {
+        "nora": {
+          "plant": "fern-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "fern-1"
+          ]
+        },
+        "leo": {
+          "plant": "tomato-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "tomato-1"
+          ]
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "revision_when_decided": 2,
+      "committed_first": "nora",
+      "actors": {
+        "nora": {
+          "wanted": {
+            "actor": "nora",
+            "kind": "water",
+            "vessel": "can-1",
+            "plant": "fern-1",
+            "bed": "bed-1",
+            "base_revision": 2,
+            "controller": "greenhouse-fixture"
+          },
+          "did": {
+            "actor": "nora",
+            "kind": "water",
+            "vessel": "can-1",
+            "plant": "fern-1",
+            "bed": "bed-1",
+            "base_revision": 2,
+            "controller": "greenhouse-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Water the dry fern in the garden bed, consuming the can's water."
+        },
+        "leo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Wait while the other gardener uses the shared watering can."
+        }
+      },
+      "progress": {
+        "nora": {
+          "plant": "fern-1",
+          "filled": true,
+          "plated": [],
+          "still_wants": []
+        },
+        "leo": {
+          "plant": "tomato-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "tomato-1"
+          ]
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "revision_when_decided": 3,
+      "committed_first": "nora",
+      "actors": {
+        "nora": {
+          "wanted": {
+            "actor": "nora",
+            "kind": "put_down",
+            "vessel": "can-1",
+            "base_revision": 3,
+            "controller": "greenhouse-fixture"
+          },
+          "did": {
+            "actor": "nora",
+            "kind": "put_down",
+            "vessel": "can-1",
+            "base_revision": 3,
+            "controller": "greenhouse-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Return the empty watering can to the shared store so Leo can use it."
+        },
+        "leo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Wait while the other gardener uses the shared watering can."
+        }
+      },
+      "progress": {
+        "nora": {
+          "plant": "fern-1",
+          "filled": true,
+          "plated": [],
+          "still_wants": []
+        },
+        "leo": {
+          "plant": "tomato-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "tomato-1"
+          ]
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "revision_when_decided": 4,
+      "committed_first": "leo",
+      "actors": {
+        "nora": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Wait while the other gardener uses the shared watering can."
+        },
+        "leo": {
+          "wanted": {
+            "actor": "leo",
+            "kind": "take",
+            "vessel": "can-1",
+            "base_revision": 4,
+            "controller": "greenhouse-fixture"
+          },
+          "did": {
+            "actor": "leo",
+            "kind": "take",
+            "vessel": "can-1",
+            "base_revision": 4,
+            "controller": "greenhouse-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Take the returned watering can to finish the remaining dry plant."
+        }
+      },
+      "progress": {
+        "nora": {
+          "plant": "fern-1",
+          "filled": true,
+          "plated": [],
+          "still_wants": []
+        },
+        "leo": {
+          "plant": "tomato-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "tomato-1"
+          ]
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "revision_when_decided": 5,
+      "committed_first": "leo",
+      "actors": {
+        "nora": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Wait while the other gardener uses the shared watering can."
+        },
+        "leo": {
+          "wanted": {
+            "actor": "leo",
+            "kind": "fill",
+            "vessel": "can-1",
+            "source": "tap-1",
+            "volume_ml": 1,
+            "base_revision": 5,
+            "controller": "greenhouse-fixture"
+          },
+          "did": {
+            "actor": "leo",
+            "kind": "fill",
+            "vessel": "can-1",
+            "source": "tap-1",
+            "volume_ml": 1,
+            "base_revision": 5,
+            "controller": "greenhouse-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Refill the empty can at the tap before watering the tomato plant."
+        }
+      },
+      "progress": {
+        "nora": {
+          "plant": "fern-1",
+          "filled": true,
+          "plated": [],
+          "still_wants": []
+        },
+        "leo": {
+          "plant": "tomato-1",
+          "filled": false,
+          "plated": [],
+          "still_wants": [
+            "tomato-1"
+          ]
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "revision_when_decided": 6,
+      "committed_first": "leo",
+      "actors": {
+        "nora": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Wait while the other gardener uses the shared watering can."
+        },
+        "leo": {
+          "wanted": {
+            "actor": "leo",
+            "kind": "water",
+            "vessel": "can-1",
+            "plant": "tomato-1",
+            "bed": "bed-1",
+            "base_revision": 6,
+            "controller": "greenhouse-fixture"
+          },
+          "did": {
+            "actor": "leo",
+            "kind": "water",
+            "vessel": "can-1",
+            "plant": "tomato-1",
+            "bed": "bed-1",
+            "base_revision": 6,
+            "controller": "greenhouse-fixture"
+          },
+          "status": "accepted",
+          "retried": false,
+          "lost_what_it_wanted": false,
+          "refused_because": [],
+          "said": "Water the tomato plant so every represented plant is watered."
+        }
+      },
+      "progress": {
+        "nora": {
+          "plant": "fern-1",
+          "filled": true,
+          "plated": [],
+          "still_wants": []
+        },
+        "leo": {
+          "plant": "tomato-1",
+          "filled": true,
+          "plated": [],
+          "still_wants": []
+        }
+      }
+    }
+  ]
+}

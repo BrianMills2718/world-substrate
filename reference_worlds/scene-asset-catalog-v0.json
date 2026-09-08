@@ -76,6 +76,18 @@
     "bracket": {
       "kind": "emoji",
       "value": "\ud83d\udcd0"
+    },
+    "gardener": {
+      "kind": "emoji",
+      "value": "\ud83e\uddd1\u200d\ud83c\udf3e"
+    },
+    "watering_can": {
+      "kind": "emoji",
+      "value": "\ud83e\udea3"
+    },
+    "plant": {
+      "kind": "emoji",
+      "value": "\ud83e\udeb4"
     }
   },
   "world_assets": {
@@ -104,6 +116,12 @@
       "leg",
       "seat",
       "bracket"
+    ],
+    "greenhouse": [
+      "gardener",
+      "watering_can",
+      "plant",
+      "water"
     ]
   },
   "entity_bindings": {
@@ -194,6 +212,9 @@
     },
     "assembly": {
       "role": "goal"
+    },
+    "garden_bed": {
+      "role": "surface"
     }
   },
   "world_state_styles": {
@@ -253,6 +274,28 @@
         "brightness": 1.0,
         "saturation": 0.9
       }
+    },
+    "greenhouse": {
+      "empty": {
+        "scale": 1.0,
+        "brightness": 0.95,
+        "saturation": 0.9
+      },
+      "filled": {
+        "scale": 1.08,
+        "brightness": 1.0,
+        "saturation": 1.15
+      },
+      "dry": {
+        "scale": 0.9,
+        "brightness": 0.9,
+        "saturation": 0.55
+      },
+      "watered": {
+        "scale": 1.14,
+        "brightness": 1.05,
+        "saturation": 1.25
+      }
     }
   },
   "category_entity_bindings": {
@@ -265,6 +308,18 @@
     "part": {
       "asset": "part",
       "portable": true
+    },
+    "gardener": {
+      "asset": "gardener"
+    },
+    "watering_can": {
+      "asset": "watering_can",
+      "portable": true,
+      "state_path": "components.watering_can.state"
+    },
+    "plant": {
+      "asset": "plant",
+      "state_path": "components.plant.stage"
     }
   },
   "action_visual_bindings": {
@@ -313,8 +368,7 @@
         "clear_item_station": true,
         "actor_target": {
           "entity_field": "$item_field"
-        },
-        "label_template": "take {item}"
+        }
       }
     },
     "put_down": {
@@ -323,8 +377,7 @@
         "ownership": "release",
         "actor_target": {
           "entity_field": "$item_field"
-        },
-        "label_template": "put down {item}"
+        }
       }
     },
     "chop": {
@@ -353,6 +406,23 @@
           "action_field": "$station_field"
         },
         "label_template": "plate {item} on {order}"
+      }
+    },
+    "water": {
+      "complete": true,
+      "projection": {
+        "item_field": "plant",
+        "actor_target": {
+          "action_field": "$station_field"
+        },
+        "set_state": "watered",
+        "label_template": "water {plant} at {bed}",
+        "state_effects": [
+          {
+            "entity_field": "vessel",
+            "set_state": "empty"
+          }
+        ]
       }
     }
   }

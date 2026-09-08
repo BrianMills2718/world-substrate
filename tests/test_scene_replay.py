@@ -145,6 +145,29 @@ class GenericSceneReplay(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "relative 0..1 coordinates"):
                 scene.load_scene_profile(path)
 
+    def test_action_can_apply_additional_declared_entity_state_effects(self):
+        profile = lab_profile()
+        profile["entities"]["indicator-1"] = {
+            "asset": "sample", "home": [58, 50], "label": "indicator", "initial_state": "off"
+        }
+        profile["action_visuals"]["scan"]["state_effects"] = [
+            {"entity_field": "indicator", "set_state": "on"}
+        ]
+        trace = lab_trace()
+        trace["transcript"][1]["actors"]["rhea"]["did"]["indicator"] = "indicator-1"
+        trace["transcript"][1]["actors"]["rhea"]["wanted"]["indicator"] = "indicator-1"
+        frames = scene.build_frames(trace, profile)
+        self.assertEqual(frames[1]["items"]["sample-1"]["state"], "analyzed")
+        self.assertEqual(frames[1]["items"]["indicator-1"]["state"], "on")
+
+    def test_additional_state_effect_rejects_unknown_visual_entity(self):
+        profile = lab_profile()
+        profile["action_visuals"]["scan"]["state_effects"] = [
+            {"entity_field": "indicator", "set_state": "on"}
+        ]
+        with self.assertRaisesRegex(ValueError, "unknown visual entity"):
+            scene.build_frames(lab_trace(), profile)
+
     def test_image_assets_are_embedded_for_single_file_replays(self):
         profile = lab_profile()
         with tempfile.TemporaryDirectory() as tmp:

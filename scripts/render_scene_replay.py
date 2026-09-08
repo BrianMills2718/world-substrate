@@ -102,6 +102,29 @@ def load_scene_profile(path: Path) -> tuple[dict[str, Any], dict[str, dict[str, 
                 raise ValueError(f"station {station_id}.item_layout.overflow must be grid or anchor")
             layout["overflow"] = overflow
 
+    for action_kind, visual in profile["action_visuals"].items():
+        if not isinstance(visual, dict):
+            raise ValueError(f"action visual {action_kind!r} must be an object")
+        state_effects = visual.get("state_effects")
+        if state_effects is not None:
+            if not isinstance(state_effects, list):
+                raise ValueError(f"action visual {action_kind}.state_effects must be a list")
+            for index, effect in enumerate(state_effects):
+                if not isinstance(effect, dict):
+                    raise ValueError(
+                        f"action visual {action_kind}.state_effects[{index}] must be an object"
+                    )
+                entity_field = effect.get("entity_field")
+                set_state = effect.get("set_state")
+                if not isinstance(entity_field, str) or not entity_field:
+                    raise ValueError(
+                        f"action visual {action_kind}.state_effects[{index}].entity_field must be a nonempty string"
+                    )
+                if not isinstance(set_state, str) or not set_state:
+                    raise ValueError(
+                        f"action visual {action_kind}.state_effects[{index}].set_state must be a nonempty string"
+                    )
+
     for actor_id, actor in profile["actors"].items():
         if not isinstance(actor, dict):
             raise ValueError(f"actor visual {actor_id!r} must be an object")
@@ -352,6 +375,14 @@ def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities:
                 blocked = isinstance(unless, list) and item_state[item].get("state") in unless
                 if station and not blocked:
                     item_state[item]["placed_at"] = station
+            for effect in visual.get("state_effects") or []:
+                entity_id = action.get(effect["entity_field"])
+                if not isinstance(entity_id, str) or entity_id not in item_state:
+                    raise ValueError(
+                        f"action {action.get('kind')!r} state effect references unknown visual entity via "
+                        f"{effect['entity_field']!r}: {entity_id!r}"
+                    )
+                item_state[entity_id]["state"] = effect["set_state"]
             active_field = visual.get("activate_station_from")
             if isinstance(active_field, str) and isinstance(action.get(active_field), str):
                 active_stations.append(action[active_field])

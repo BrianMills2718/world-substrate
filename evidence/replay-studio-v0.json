@@ -75,6 +75,23 @@
           "replay": "renders/workshop-spatial-replay-v0.html"
         }
       ]
+    },
+    {
+      "id": "greenhouse",
+      "label": "Greenhouse",
+      "summary": "Two gardeners share one watering can to water two plants in a represented garden bed.",
+      "trace": "greenhouse/first-service-v0.json",
+      "profile": "greenhouse/scene-profile-zero-review-v0.json",
+      "default_variant": "automatic",
+      "variants": [
+        {
+          "id": "automatic",
+          "label": "Automatic",
+          "kind": "baseline",
+          "description": "Fourth-world authoring proof: generated from the Greenhouse world, real-engine retained trace, shared presentation catalog and auto-layout with no visualization code or review overlay.",
+          "replay": "renders/greenhouse-zero-review-v0.html"
+        }
+      ]
     }
   ]
 }

@@ -80,7 +80,8 @@ An `action_visuals` entry may currently declare:
 - `ownership: take|release`: reconstruct presentation ownership from an
   accepted action;
 - `clear_item_station`: detach a newly taken entity from a previous station;
-- `set_state`: set the entity's presentation state after the accepted action;
+- `set_state`: set the primary `item_field` entity's presentation state after the accepted action;
+- `state_effects`: optionally update additional explicitly named visual entities, each as `{entity_field, set_state}`; this supports one causal action changing more than one represented entity without choosing a single fake visual owner;
 - `item_target.station` or `.action_field`: place the entity at a station;
 - `item_target.unless_state`: preserve an existing placement for selected
   states;
