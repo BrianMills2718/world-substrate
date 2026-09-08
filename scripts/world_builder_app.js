@@ -4,6 +4,7 @@
   let bundle = core.clone(window.INITIAL_BUNDLE);
   let causalModel = null, causalReview = null, mechanicsSource = null, mechanicsApproved = false;
   let mechanicGuidance = "", generationMeta = null, runResult = null, liveBusy = false, liveLog = [];
+  let logQuery = "", logKind = "all", logPath = "all";
   let runPolicy = "scripted", runTurns = 12;
   const LIVE_MODEL = "openrouter/openai/gpt-5.6-luna";
   let active = new URLSearchParams(location.search).get("section") || "world";
@@ -83,8 +84,22 @@
     if(status!==null) row.status=status;
     liveLog.push(row);
   }
-  function liveLogText(display=false) {
-    return JSON.stringify(liveLog,(key,value)=>display && key==="replay_html" && typeof value==="string" ? `[replay_html hidden on-screen: ${value.length} chars; use Copy complete raw logs for the exact payload]` : value,2);
+  function liveLogText(display=false, rows=liveLog) {
+    return JSON.stringify(rows,(key,value)=>display && key==="replay_html" && typeof value==="string" ? `[replay_html hidden on-screen: ${value.length} chars; use Copy complete raw logs for the exact payload]` : value,2);
+  }
+  function filteredLiveLog() {
+    const query=logQuery.trim().toLowerCase();
+    return liveLog.filter(row=>{
+      if(logKind==="request" && row.direction!=="request") return false;
+      if(logKind==="response" && row.direction!=="response") return false;
+      if(logKind==="error" && !(row.direction==="response" && Number(row.status)>=400)) return false;
+      if(logPath!=="all" && row.path!==logPath) return false;
+      if(query){
+        const searchable=JSON.stringify(row,(key,value)=>key==="replay_html"?"":value).toLowerCase();
+        if(!searchable.includes(query)) return false;
+      }
+      return true;
+    });
   }
   function openLogs() { active="logs"; history.replaceState(null,"",`?section=${active}`); rerender(); }
   async function api(path, body) {
@@ -225,8 +240,20 @@
     head.append(button("Copy complete raw logs","primary",async()=>{await copyText(liveLogText(false)+"\n");}));editor.append(head);
     const boundary=el("div","boundary");boundary.append(el("strong",null,"Debug from evidence, not summaries."),document.createTextNode(" The on-screen view preserves every request, causal model, compiler review and execution trace. Replay HTML is collapsed only in this view to keep it readable; Copy complete raw logs includes the exact replay HTML too."));editor.append(boundary);
     if(!liveLog.length){editor.append(liveMessage("No live API calls have been made in this browser session yet."));return;}
-    const controls=card("Log controls");controls.append(el("div","receipt",`${liveLog.length} request/response record(s)`),button("Clear logs","secondary",()=>{if(confirm("Clear this browser session's logs?")){liveLog=[];rerender();}}));editor.append(controls);
-    const pre=el("pre","mini-json",liveLogText(true));pre.style.whiteSpace="pre";pre.style.maxHeight="72vh";pre.style.overflow="auto";editor.append(pre);
+    const controls=card("Log controls");
+    const query=el("input","input");query.type="search";query.placeholder="Search logs · actor, action, refusal, trace id, field…";query.value=logQuery;
+    const kind=el("select","input");[["all","All records"],["request","Requests only"],["response","Responses only"],["error","Errors only"]].forEach(([v,t])=>{const o=el("option",null,t);o.value=v;if(v===logKind)o.selected=true;kind.append(o);});
+    const path=el("select","input");[["all","All endpoints"],["/generate-mechanics","Mechanics generation"],["/run","Runs"]].forEach(([v,t])=>{const o=el("option",null,t);o.value=v;if(v===logPath)o.selected=true;path.append(o);});
+    const count=el("div","receipt");
+    const actions=el("div","authority-grid");
+    actions.append(button("Copy filtered logs","secondary",async()=>{await copyText(liveLogText(false,filteredLiveLog())+"\n");}),button("Clear logs","secondary",()=>{if(confirm("Clear this browser session's logs?")){liveLog=[];rerender();}}));
+    controls.append(el("div","field-label","Search logs"),query,el("div","field-label","Record type"),kind,el("div","field-label","Endpoint"),path,count,actions);editor.append(controls);
+    const pre=el("pre","mini-json");pre.style.whiteSpace="pre";pre.style.maxHeight="72vh";pre.style.overflow="auto";editor.append(pre);
+    function refreshLogView(){const rows=filteredLiveLog();count.textContent=`Showing ${rows.length} of ${liveLog.length} request/response record(s)`;pre.textContent=liveLogText(true,rows);}
+    query.addEventListener("input",()=>{logQuery=query.value;refreshLogView();});
+    kind.addEventListener("change",()=>{logKind=kind.value;refreshLogView();});
+    path.addEventListener("change",()=>{logPath=path.value;refreshLogView();});
+    refreshLogView();
   }
   function renderExport() {
     editor.append(sectionHead("Review & export", "Optional code-first handoff. You can build, generate mechanics, and run on this page without downloading anything."));
