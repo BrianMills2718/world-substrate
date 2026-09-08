@@ -10,7 +10,7 @@ reviewed_through: 2026-09-07
 
 **Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), and [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md).  
 **Stage:** prototype complete; deployed authoring/run alpha; next phase is product/semantic depth rather than more generic substrate breadth.  
-**Current frontier:** prove the deployed Builder on a meaningfully less-trivial authored world, then close the semantic loop and evaluate off-the-shelf cognition/rendering only where the world exposes a real need.  
+**Current frontier:** Repair Bay has passed the first nontrivial deployed Builder proof; next test whether a human can correctly review the generated law before adding semantic closure or any heavier cognition/rendering infrastructure.
 **Deployment boundary:** the current `brianmills.dev/world-builder/` deployment and its bounded LLM service were explicitly authorized. New deployment/publication or provider spend outside an already-approved bounded service remains an explicit human authority boundary.
 
 ## Outcome and success criteria
@@ -76,6 +76,9 @@ State, not milestone narrative:
 - `world-substrate-causal-model/v0` is the separate constrained causal companion. The model proposes JSON; the local compiler derives reads/writes and rejects unsupported paths/types/selectors before installation.
 - The deployed World Builder can Generate Mechanics → show compiler review → require explicit approval → Run Scripted or Run with LLM → render the fresh trace graphically.
 - The live LLM policy can select only engine-minted action IDs. Installed mechanics still determine consequences.
+- Repair Bay is the first nontrivial deployed-authoring proof: live Luna mechanics generation compiled for five action kinds at `$0.00631945`; the generated law is solvable without a DSL extension; and a bounded Luna policy reached terminal in 5 turns / 15 accepted actions at `$0.0072462`.
+- The same generated law exposes the limit of `scripted-first-available`: after diagnosing the machines it legally cycles tool handoffs for 30 turns instead of repairing, while an 11-action deterministic oracle reaches terminal. That is policy/affordance selection evidence, not a causal-language failure.
+- Repair Bay exposed a fresh-world presentation namespace leak from retained exact/component catalog defaults. The current branch fix gives authored presentation declarations precedence; deployment of that fix remains a separate authority boundary.
 - The public service binds loopback behind Cloudflare, requires same-origin browser POSTs, rate-limits/serializes model calls, uses per-request caps, and enforces a persistent fail-closed `$0.50/day` reservation ledger.
 - The product does not yet provide durable resident cognition, saved user worlds/runs, or identity-backed approval receipts.
 
@@ -130,33 +133,21 @@ Hard constraints:
 | Greenhouse new-world proof | complete | post-system authoring + zero-review Automatic replay |
 | Code-first + visual authoring | complete first gate | one authoring bundle across CLI/browser |
 | Live causal authoring | complete first gate | model proposal → compiler → approval → fresh run |
-| Nontrivial product-world proof | **next** | product/DSL/review failure discovery |
-| Semantic closure for generic authoring | queued after product-world evidence | reviewed Linguistic Core sense/role mapping for new actions |
+| Nontrivial product-world proof | **complete first gate** | Repair Bay live generation + scripted/LLM comparison + presentation failure discovery |
+| Human review comprehensibility | **next** | can a person reliably approve/refuse generated law on the nontrivial world? |
+| Semantic closure for generic authoring | queued after review evidence | reviewed Linguistic Core sense/role mapping for new actions |
 | Resident cognition / live-world feel | conditional next | compare lightweight vs off-the-shelf agent runtime |
 | Saved worlds/runs | conditional next | durable product state/auth after workflow earns persistence |
 
-### Active slice: nontrivial live authoring proof
+### Active slice: human review comprehensibility
 
-Use the deployed World Builder as the authoring surface, not a bespoke repo fixture.
+Repair Bay has completed the first nontrivial deployed-authoring gate. The live generated mechanics compiled without a DSL extension; the exact world exposed a presentation namespace bug that is fixed on the current branch; the generated law is deterministically solvable; and the existing bounded LLM policy reached terminal without a heavier cognition runtime. See [Repair Bay live proof](../docs/audits/repair-bay-live-preflight.md).
 
-The test world should be materially richer than Orchard and should include enough structure to stress the current system—for example 3–5 actors, multiple resources/locations/goals, several action kinds, shared or contested objects, and at least one process or relationship-dependent effect.
+The unresolved question is now whether the **review surface actually lets a person understand what law they are approving**. Repair Bay is a strong fixture because the live proposal differs materially-but-plausibly from the retained hand baseline: diagnosis accounting differs, and the hand baseline contains a post-use wear gate that changes first-available policy dynamics even though both laws are causally valid.
 
-**Chosen world: Repair Bay.** A zero-spend local preflight now proves the current language can run four technicians, three contested tools, three broken machines, matched parts, five action kinds, multi-entity repair, stale-revision contention, and a tool handoff to terminal in five turns. It also exposed and fixed one concrete fresh-world presentation-binding collision. This is a solvability/preflight baseline, not yet the deployed generated-mechanics review result; see [Repair Bay preflight](../docs/audits/repair-bay-live-preflight.md).
+For the review experiment, present the generated proposal plus a small set of plausible alternatives that each change one material fact—for example a missing ownership prerequisite, an over-broad handoff, a mismatched repair part check, an unintended extra write, or a terminal condition that accepts partial completion. Measure whether the reviewer identifies the difference and approves/refuses correctly from the compiler-derived review alone.
 
-For each generated mechanic, review:
-
-- semantic intent and participant meaning;
-- actor/participant selectors;
-- derived reads/writes;
-- preconditions/checks;
-- effects;
-- terminal condition;
-- stated limits/tests; and
-- whether the graphical projection remains faithful to canonical state.
-
-Run a zero-spend Scripted baseline first, then an LLM-selected run only under the approved bounded service. Record the **first concrete point** where the language, review UI, observation, policy cognition, or renderer cannot express/communicate the intended world.
-
-Do not expand the causal language or swap frameworks pre-emptively. The failure is the input to the next design decision.
+Do not add cognition infrastructure, widen the DSL, or close generic semantics merely because those items are queued. If reviewers can already understand the law, proceed to semantic closure. If they cannot, improve the review representation first. The observed review failure chooses the next slice.
 
 ## Decisions and assumptions
 
@@ -189,7 +180,8 @@ Primary current evidence:
 - [Scene profile contract](../docs/contracts/scene-profile-v0.md) and replay/bootstrap audits;
 - [World authoring bundle](../docs/contracts/world-authoring-bundle-v0.md) + starter/builder audits;
 - [Action mechanic declaration](../docs/contracts/action-mechanic-declaration-v0.md);
-- [Live authoring audit](../docs/audits/live-world-authoring.md); and
+- [Live authoring audit](../docs/audits/live-world-authoring.md);
+- [Repair Bay live proof](../docs/audits/repair-bay-live-preflight.md) + `evidence/repair-bay/live-experiment-v0-summary.json`; and
 - deployed `https://brianmills.dev/world-builder/`.
 
 Older M1–M7b evidence remains authoritative for the narrower claims it established; it should not be copied into the active product narrative unless needed to explain a current boundary.
@@ -200,12 +192,12 @@ Cost records are evidence-scope specific. Do not fabricate a single lifetime tot
 
 | Priority | Risk / open need | Current stance |
 | --- | --- | --- |
-| P1 | generic live actions can compile without reviewed Linguistic Core binding | close after nontrivial-world test clarifies authoring UX |
+| P1 | generic live actions can compile without reviewed Linguistic Core binding | close after the Repair Bay review-comprehension experiment unless review UX proves the nearer blocker |
 | P1 | mechanic/process implementation exceptions are rollback-safe but not yet explicit causal failure events | stabilization target |
 | P1 | current public approval is a client assertion after review, not an identity-bound server receipt | decide before consequential/persistent worlds |
 | P1 | Builder is public/same-origin but not user-authenticated | decide whether product is public demo vs private authoring surface |
 | P2 | causal language is intentionally narrow | extend only from observed expressiveness failures |
-| P2 | no persistent resident memory/planning/reflection | evaluate after nontrivial world needs it |
+| P2 | no persistent resident memory/planning/reflection | Repair Bay did not need it; defer until a harder world exposes a real cognition failure |
 | P2 | no saved user worlds/run history | add after authoring loop proves persistence value |
 | P2 | root deployment uses pinned source but a shared mutable Python dependency environment | make deployment more hermetic before broader reliance |
 | P2 | permanent required CI is absent | stabilization target |
@@ -253,8 +245,8 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Human-test Repair Bay through the deployed World Builder.** Import `examples/world_authoring/repair-bay-v0.json`, generate constrained mechanics with optional guidance, inspect the compiler-derived authority and effects against the retained hand-reviewed baseline, approve only what matches the intended law, run Scripted first, then compare an LLM-selected run under the existing bounded service.
+**Human-test the Repair Bay mechanics review, not another world.** Use the retained live proposal in `evidence/repair-bay/live-generated-mechanics-v0.json` as the control. Present its compiler-derived review together with a small number of one-change alternatives covering: missing ownership prerequisite, over-broad handoff, wrong part/tool compatibility, one unintended extra write, and a terminal that accepts partial completion.
 
-Retain the first concrete failure or ambiguity. Classify it as one of: semantic grounding, causal-language expressiveness, review comprehensibility, affordance/observation, resident cognition, graphical presentation, persistence/product UX, or deployment/security. That classification—not framework availability—determines the next implementation slice.
+The reviewer should decide approve/refuse and state what consequence changed without reading generated source code. Record accuracy, uncertainty, time-to-decision, and which review fields actually carried the decision. If reviewers reliably distinguish the laws, the next slice is generic semantic binding. If they cannot, improve the review representation before adding more causal breadth.
 
-After that evidence, the expected sequence is: close semantic binding for generic actions; add explicit mechanic-error events/permanent CI/auth as warranted; run a bounded cognition-framework comparison; then consider Phaser/persistence work. Do **not** add arbitrary model-written code or generalize the renderer/DSL without a demonstrated need.
+Repair Bay does **not** justify a cognition framework: the current bounded LLM seam already reached terminal. Keep Phaser, persistent cognition, auth/persistence hardening, read-scope enforcement, and broader DSL work conditional on a concrete failure. Do not add arbitrary model-written code or generalize infrastructure merely because it is queued.

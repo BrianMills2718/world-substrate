@@ -1,0 +1,41 @@
+{
+  "bounded_llm_policy": {
+    "accepted_actions": 15,
+    "cost_usd": 0.0072462,
+    "evidence": "live-llm-v0.json",
+    "terminal_reached": true,
+    "trace_id": "world-builder-live/run/ad1f335a490f432f8429a2f1917aea4d",
+    "turn_limit": 8,
+    "turns_used": 5
+  },
+  "deterministic_oracle": {
+    "accepted_actions": 11,
+    "conclusion": "generated mechanics are sufficient to solve the intended world; scripted failure is policy/affordance selection, not causal expressiveness",
+    "terminal_reached": true
+  },
+  "exact_bundle_public_scripted": {
+    "disposition": "fixed generically on PR branch; no deployment performed",
+    "local_reproduction": [
+      "reference-world exact entity binding leaked through id bo",
+      "shared component-value wrench asset overrode authored tool asset"
+    ],
+    "result": "HTTP 500 during fresh replay rendering"
+  },
+  "generated_law_scripted_after_local_fix": {
+    "accepted_actions": 90,
+    "dominant_behavior": "post-diagnosis handoff-tool cycling under first-available policy",
+    "evidence": "live-generated-scripted-v0.json",
+    "terminal_reached": false,
+    "turns": 30
+  },
+  "mechanics_generation": {
+    "compiler_result": "accepted after service generation path",
+    "cost_usd": 0.00631945,
+    "evidence": "live-generated-mechanics-v0.json",
+    "model": "openrouter/openai/gpt-5.6-luna",
+    "trace_id": "world-builder-live/mechanics/98622cb483da4264ab75aa8b6da5f039"
+  },
+  "next_question": "test human review comprehension of the generated Repair Bay law before adding cognition or DSL breadth",
+  "schema_version": "repair-bay-live-experiment-summary/v0",
+  "world_bundle": "examples/world_authoring/repair-bay-v0.json"
+}
