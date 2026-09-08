@@ -1,0 +1,319 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>World Authoring Studio</title><style>
+:root{--bg:#0f1417;--panel:#151c20;--panel2:#1b2429;--line:#314047;--text:#edf1f2;--muted:#a9b5ba;--accent:#f1e8d5;--ink:#1c2326;--good:#63ba78;--bad:#e37a6c;--warn:#dca942}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,sans-serif}.shell{min-height:100vh;display:grid;grid-template-columns:230px minmax(480px,1fr) minmax(320px,420px)}.side{border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;background:#11171a}.brand{font-size:20px;font-weight:900;letter-spacing:-.03em}.side p{color:var(--muted);font-size:12px}.world-title{margin:22px 0 2px;font-weight:850}.counts{font-size:11px;color:var(--muted);margin-bottom:18px}.nav{display:grid;gap:5px}.nav button{border:1px solid transparent;background:transparent;color:var(--text);padding:9px 10px;border-radius:9px;text-align:left;font-weight:700}.nav button.active{background:var(--panel2);border-color:var(--line)}.side-actions{display:grid;gap:8px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}button{font:inherit;cursor:pointer}.side-actions button,.primary,.secondary,.danger,.icon{border-radius:9px;padding:8px 11px;border:1px solid var(--line)}.side-actions button,.secondary{background:#172025;color:var(--text)}.primary{background:var(--accent);color:var(--ink);border-color:var(--accent);font-weight:850}.danger{background:transparent;color:#ffada2}.icon{padding:5px 8px;align-self:end}.main{padding:24px 28px 70px;min-width:0}.main-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.main-top h1{font-size:28px;margin:0;letter-spacing:-.04em}.status{border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:850}.status.ok{color:#bfecc9;border-color:#3a7d49}.status.bad{color:#ffc0b7;border-color:#8d4c43}.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:8px 0 14px}.section-head h2{margin:0;font-size:22px}.section-head p{margin:3px 0 0;max-width:700px}.muted{color:var(--muted)}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}.card h3{margin:0 0 12px}.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.card-top h3{margin:0}.field{display:grid;gap:5px;margin-bottom:10px}.field-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:800}.input{width:100%;background:#0f1518;border:1px solid #3a494f;color:var(--text);border-radius:8px;padding:9px 10px;outline:none}.input:focus{border-color:#8ba1ab}.input.invalid{border-color:var(--bad)}textarea.input{min-height:76px;resize:vertical;font-family:inherit}select.input{appearance:auto}.rows{display:grid;gap:8px}.row-grid{display:grid;gap:8px;align-items:end;border-top:1px solid #28363b;padding-top:10px}.component-row{grid-template-columns:1.2fr 1fr 1.3fr 38px}.action-row{grid-template-columns:1.2fr 1fr 38px}.presentation-row{grid-template-columns:1.1fr .8fr 1.2fr 38px}.boundary{border:1px solid #705f31;background:#272313;color:#ecd99f;border-radius:12px;padding:12px 14px;margin:0 0 12px}.empty{border:1px dashed var(--line);border-radius:12px;padding:18px;color:var(--muted)}.steps{margin:0;padding-left:20px}.steps li{margin:8px 0}.preview{border-left:1px solid var(--line);height:100vh;position:sticky;top:0;background:#0c1113;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}.preview h2{font-size:15px;margin:0}.validation{max-height:160px;overflow:auto}.validation-error{font-size:11px;color:#ffc0b7;margin:3px 0}.validation-ok{font-size:11px;color:#bfecc9}.preview pre{flex:1;overflow:auto;margin:0;background:#080c0e;border:1px solid #263238;border-radius:10px;padding:12px;font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;color:#cbd6da;white-space:pre}.export-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.export-actions button{border:1px solid var(--line);border-radius:9px;padding:9px;background:#172025;color:var(--text)}.export-actions button:first-child{grid-column:1/-1;background:var(--accent);color:var(--ink);font-weight:850}.export-actions button:disabled{opacity:.35;cursor:not-allowed}.preview-note{font-size:11px;color:var(--muted)}@media(max-width:1100px){.shell{grid-template-columns:200px 1fr}.preview{position:relative;height:560px;grid-column:1/-1;border-left:0;border-top:1px solid var(--line)}.side{grid-row:1/2}.main{grid-column:2}}@media(max-width:720px){.shell{display:block}.side{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}.nav{grid-template-columns:repeat(2,1fr)}.main{padding:18px}.row-grid,.component-row,.action-row,.presentation-row{grid-template-columns:1fr}.preview{height:600px}.section-head{align-items:start;flex-direction:column}}
+</style></head><body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">World Authoring Studio</div>
+    <p>Define represented state visually. Export the same bundle used by the code-first starter.</p>
+    <div class="world-title" id="world-name"></div>
+    <div class="counts" id="counts"></div>
+    <nav class="nav">
+      <button data-section="world">1 · World</button>
+      <button data-section="components">2 · Components</button>
+      <button data-section="entities">3 · Entities</button>
+      <button data-section="actions">4 · Action signatures</button>
+      <button data-section="presentation">5 · Presentation</button>
+      <button data-section="export">6 · Review & export</button>
+    </nav>
+    <div class="side-actions">
+      <button id="import-bundle">Import bundle JSON</button>
+      <button id="reset-example">Reset Orchard example</button>
+      <input id="file-input" type="file" accept="application/json,.json" hidden>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="main-top"><h1>Build a world</h1><div class="status" id="validation-badge"></div></div>
+    <div id="editor"></div>
+  </main>
+  <aside class="preview">
+    <h2>Bundle preview</h2>
+    <div class="validation" id="validation-errors"></div>
+    <pre id="json-preview"></pre>
+    <div class="export-actions">
+      <button id="download-bundle">Download authoring bundle</button>
+      <button id="copy-json">Copy JSON</button>
+      <button id="copy-command">Copy scaffold command</button>
+    </div>
+    <div class="preview-note">Actions here are signatures only. The starter emits refusing rule stubs until causal mechanics are implemented and reviewed.</div>
+  </aside>
+</div>
+<script>(function (root, factory) {
+  const api = factory();
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.WorldBuilderCore = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+  const SCHEMA_VERSION = "world-substrate-authoring-bundle/v0";
+  const ID_RE = /^[a-z][a-z0-9-]*$/;
+  const IDENT_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
+  const OWNER_RE = /^(?:(?:actor|place|entity):[^:]+|unowned)$/;
+  const FIELD_TYPES = new Set(["string", "integer", "number", "boolean", "string_list", "entity_ref", "entity_ref_or_null"]);
+  const ACTION_TYPES = new Set(["string", "integer", "number", "boolean", "entity_ref"]);
+  const RESERVED_ACTION_FIELDS = new Set(["actor", "kind", "base_revision", "controller"]);
+
+  function clone(value) { return JSON.parse(JSON.stringify(value)); }
+  function fail(errors, message) { errors.push(message); }
+  function typeOk(kind, value) {
+    if (kind === "string" || kind === "entity_ref") return typeof value === "string" && value.length > 0;
+    if (kind === "entity_ref_or_null") return value === null || (typeof value === "string" && value.length > 0);
+    if (kind === "integer") return Number.isInteger(value);
+    if (kind === "number") return typeof value === "number" && Number.isFinite(value);
+    if (kind === "boolean") return typeof value === "boolean";
+    if (kind === "string_list") return Array.isArray(value) && value.every(x => typeof x === "string");
+    return false;
+  }
+  function validateBundle(value) {
+    const errors = [];
+    if (!value || typeof value !== "object" || Array.isArray(value)) return {ok:false, errors:["bundle must be a JSON object"]};
+    if (value.schema_version !== SCHEMA_VERSION) fail(errors, `schema_version must be ${SCHEMA_VERSION}`);
+    const world = value.world;
+    if (!world || typeof world !== "object" || Array.isArray(world)) fail(errors, "world must be an object");
+    else {
+      if (!ID_RE.test(world.id || "")) fail(errors, "world.id must be a lowercase slug");
+      for (const key of ["label", "summary", "location"]) if (typeof world[key] !== "string" || !world[key].trim()) fail(errors, `world.${key} must be nonempty`);
+      if (world.content_version !== undefined && (!Number.isInteger(world.content_version) || world.content_version < 1)) fail(errors, "world.content_version must be a positive integer");
+    }
+    const componentMap = new Map();
+    if (!Array.isArray(value.components)) fail(errors, "components must be a list");
+    else value.components.forEach((comp, ci) => {
+      if (!comp || typeof comp !== "object") return fail(errors, `component ${ci} must be an object`);
+      if (!IDENT_RE.test(comp.name || "")) fail(errors, `component ${ci} name must be an identifier`);
+      if (componentMap.has(comp.name)) fail(errors, `duplicate component: ${comp.name}`); else componentMap.set(comp.name, comp);
+      if (!Array.isArray(comp.fields) || !comp.fields.length) fail(errors, `component ${comp.name || ci} needs fields`);
+      else {
+        const seen = new Set();
+        comp.fields.forEach(field => {
+          if (!field || typeof field !== "object") return fail(errors, `component ${comp.name} field must be an object`);
+          if (!IDENT_RE.test(field.name || "")) fail(errors, `component ${comp.name} field name must be an identifier`);
+          if (seen.has(field.name)) fail(errors, `duplicate field ${comp.name}.${field.name}`); seen.add(field.name);
+          if (!FIELD_TYPES.has(field.type)) fail(errors, `unsupported field type at ${comp.name}.${field.name}`);
+          else if (!("default" in field) || !typeOk(field.type, field.default)) fail(errors, `default for ${comp.name}.${field.name} does not match ${field.type}`);
+        });
+      }
+    });
+    const entityIds = new Set();
+    if (!Array.isArray(value.entities) || !value.entities.length) fail(errors, "entities must be a nonempty list");
+    else value.entities.forEach((entity, ei) => {
+      if (!entity || typeof entity !== "object") return fail(errors, `entity ${ei} must be an object`);
+      if (!ID_RE.test(entity.id || "")) fail(errors, `entity ${ei} id must be a lowercase slug`);
+      if (entityIds.has(entity.id)) fail(errors, `duplicate entity: ${entity.id}`); entityIds.add(entity.id);
+      if (typeof entity.label !== "string" || !entity.label.trim()) fail(errors, `entity ${entity.id || ei} label must be nonempty`);
+      if (!Array.isArray(entity.categories) || !entity.categories.length || entity.categories.some(x => typeof x !== "string" || !x)) fail(errors, `entity ${entity.id || ei} categories must be nonempty strings`);
+      if (entity.owner_ref !== undefined && (!OWNER_RE.test(entity.owner_ref || ""))) fail(errors, `entity ${entity.id || ei} owner_ref is invalid`);
+      const comps = entity.components || {};
+      if (!comps || typeof comps !== "object" || Array.isArray(comps)) fail(errors, `entity ${entity.id || ei} components must be an object`);
+      else Object.entries(comps).forEach(([name, fields]) => {
+        const comp = componentMap.get(name);
+        if (!comp) return fail(errors, `entity ${entity.id} uses undeclared component ${name}`);
+        if (!fields || typeof fields !== "object" || Array.isArray(fields)) return fail(errors, `entity ${entity.id} component ${name} must be an object`);
+        const declared = new Map(comp.fields.map(f => [f.name, f]));
+        const actual = Object.keys(fields).sort().join("|"); const expected = [...declared.keys()].sort().join("|");
+        if (actual !== expected) fail(errors, `entity ${entity.id} component ${name} fields must match its declaration`);
+        for (const [fname, spec] of declared) if (fname in fields && !typeOk(spec.type, fields[fname])) fail(errors, `entity ${entity.id} value ${name}.${fname} does not match ${spec.type}`);
+      });
+    });
+    if (Array.isArray(value.entities)) value.entities.forEach(entity => Object.entries(entity.components || {}).forEach(([name, fields]) => {
+      const comp = componentMap.get(name); if (!comp) return;
+      comp.fields.forEach(spec => {
+        const target = fields[spec.name];
+        if ((spec.type === "entity_ref" || spec.type === "entity_ref_or_null") && target !== null && target !== undefined && !entityIds.has(target)) fail(errors, `entity ${entity.id} reference ${name}.${spec.name} names unknown entity ${JSON.stringify(target)}`);
+      });
+    }));
+    const kinds = new Set();
+    if (!Array.isArray(value.actions)) fail(errors, "actions must be a list");
+    else value.actions.forEach((action, ai) => {
+      if (!action || typeof action !== "object") return fail(errors, `action ${ai} must be an object`);
+      if (!ID_RE.test(action.kind || "")) fail(errors, `action ${ai} kind must be a lowercase slug`);
+      if (kinds.has(action.kind)) fail(errors, `duplicate action kind: ${action.kind}`); kinds.add(action.kind);
+      if (typeof action.description !== "string" || !action.description.trim()) fail(errors, `action ${action.kind || ai} description must be nonempty`);
+      if (!Array.isArray(action.fields)) fail(errors, `action ${action.kind || ai} fields must be a list`);
+      else {
+        const seen = new Set();
+        action.fields.forEach(field => {
+          if (!field || typeof field !== "object") return fail(errors, `action ${action.kind} field must be an object`);
+          if (!IDENT_RE.test(field.name || "")) fail(errors, `action ${action.kind} field name must be an identifier`);
+          if (RESERVED_ACTION_FIELDS.has(field.name) || seen.has(field.name)) fail(errors, `reserved/duplicate action field: ${field.name}`); seen.add(field.name);
+          if (!ACTION_TYPES.has(field.type)) fail(errors, `unsupported action field type at ${action.kind}.${field.name}`);
+        });
+      }
+    });
+    const p = value.presentation || {};
+    if (!p || typeof p !== "object" || Array.isArray(p)) fail(errors, "presentation must be an object");
+    else {
+      const assets = p.assets || {};
+      if (!assets || typeof assets !== "object" || Array.isArray(assets)) fail(errors, "presentation.assets must be an object");
+      else Object.entries(assets).forEach(([id, asset]) => {
+        if (!IDENT_RE.test(id)) fail(errors, `asset id must be an identifier: ${id}`);
+        if (!asset || typeof asset !== "object" || !["emoji","text"].includes(asset.kind) || typeof asset.value !== "string") fail(errors, `asset ${id} must be emoji/text with string value`);
+      });
+      for (const key of ["category_assets","station_roles"]) if (!p[key] || typeof p[key] !== "object" || Array.isArray(p[key])) fail(errors, `presentation.${key} must be an object`);
+      Object.entries(p.category_assets || {}).forEach(([cat, id]) => { if (!(id in assets)) fail(errors, `category ${cat} references unknown asset ${id}`); });
+      Object.entries(p.station_roles || {}).forEach(([cat, role]) => { if (!["source","workstation","surface","goal"].includes(role)) fail(errors, `category ${cat} has unsupported station role ${role}`); });
+    }
+    return {ok: errors.length === 0, errors};
+  }
+  function defaultForType(kind) {
+    if (kind === "integer" || kind === "number") return 0;
+    if (kind === "boolean") return false;
+    if (kind === "string_list") return [];
+    if (kind === "entity_ref_or_null") return null;
+    return "value";
+  }
+  return {SCHEMA_VERSION, FIELD_TYPES:[...FIELD_TYPES], ACTION_TYPES:[...ACTION_TYPES], validateBundle, defaultForType, clone};
+});
+</script><script>window.INITIAL_BUNDLE={"schema_version":"world-substrate-authoring-bundle/v0","world":{"id":"orchard","label":"Orchard","summary":"One worker can eventually pick ripe fruit from a represented tree.","location":"orchard","content_version":1},"components":[{"name":"worker","fields":[{"name":"stamina","type":"integer","default":10}]},{"name":"fruit","fields":[{"name":"stage","type":"string","default":"ripe"},{"name":"tree_id","type":"entity_ref","default":"tree-1"}]}],"entities":[{"id":"ava","label":"Ava","categories":["worker"],"components":{"worker":{"stamina":10}}},{"id":"tree-1","label":"Apple tree","categories":["tree"],"components":{}},{"id":"apple-1","label":"Apple","categories":["fruit"],"portable":true,"owner_ref":"place:orchard","components":{"fruit":{"stage":"ripe","tree_id":"tree-1"}}}],"actions":[{"kind":"pick","description":"Pick one represented fruit.","fields":[{"name":"fruit","type":"entity_ref"}]}],"presentation":{"assets":{"worker":{"kind":"emoji","value":"\ud83e\uddd1\u200d\ud83c\udf3e"},"fruit":{"kind":"emoji","value":"\ud83c\udf4e"}},"category_assets":{"worker":"worker","fruit":"fruit"},"station_roles":{"tree":"source"}}};</script><script>(function () {
+  "use strict";
+  const core = window.WorldBuilderCore;
+  let bundle = core.clone(window.INITIAL_BUNDLE);
+  let active = new URLSearchParams(location.search).get("section") || "world";
+  const sections = ["world", "components", "entities", "actions", "presentation", "export"];
+  if (!sections.includes(active)) active = "world";
+
+  const editor = document.getElementById("editor");
+  const preview = document.getElementById("json-preview");
+  const errorsBox = document.getElementById("validation-errors");
+  const badge = document.getElementById("validation-badge");
+  const downloadBtn = document.getElementById("download-bundle");
+
+  function el(tag, cls, text) {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function button(text, cls, fn) {
+    const b = el("button", cls, text); b.type = "button"; b.addEventListener("click", fn); return b;
+  }
+  function field(label, value, fn, opts={}) {
+    const wrap = el("label", "field"); wrap.append(el("span", "field-label", label));
+    const input = opts.textarea ? el("textarea", "input") : el("input", "input");
+    if (!opts.textarea) input.type = opts.type || "text";
+    input.value = value ?? "";
+    input.placeholder = opts.placeholder || "";
+    input.addEventListener(opts.event || "input", () => fn(input.value, input));
+    wrap.append(input); return wrap;
+  }
+  function selectField(label, value, options, fn) {
+    const wrap=el("label","field"); wrap.append(el("span","field-label",label)); const s=el("select","input");
+    options.forEach(([v,t])=>{const o=el("option",null,t);o.value=v;if(v===value)o.selected=true;s.append(o);});
+    s.addEventListener("change",()=>fn(s.value)); wrap.append(s); return wrap;
+  }
+  function sectionHead(title, copy) {
+    const h=el("div","section-head"); const box=el("div"); box.append(el("h2",null,title),el("p","muted",copy)); h.append(box); return h;
+  }
+  function card(title) { const c=el("section","card"); if(title)c.append(el("h3",null,title)); return c; }
+  function sync() {
+    preview.textContent = JSON.stringify(bundle, null, 2);
+    const result = core.validateBundle(bundle);
+    badge.textContent = result.ok ? "Valid bundle" : `${result.errors.length} issue${result.errors.length===1?"":"s"}`;
+    badge.className = `status ${result.ok ? "ok" : "bad"}`;
+    errorsBox.replaceChildren();
+    if (result.ok) errorsBox.append(el("div","validation-ok","Ready to export and scaffold."));
+    else result.errors.slice(0,12).forEach(x=>errorsBox.append(el("div","validation-error",x)));
+    if (result.errors.length>12) errorsBox.append(el("div","validation-error",`+ ${result.errors.length-12} more`));
+    downloadBtn.disabled = !result.ok;
+    document.getElementById("world-name").textContent = bundle.world?.label || "Untitled world";
+    document.getElementById("counts").textContent = `${bundle.entities?.length||0} entities · ${bundle.components?.length||0} components · ${bundle.actions?.length||0} action signatures`;
+  }
+  function rerender() { renderNav(); renderSection(); sync(); }
+  function renderNav() {
+    document.querySelectorAll("[data-section]").forEach(b=>b.classList.toggle("active",b.dataset.section===active));
+  }
+  function parseCategories(text) { return text.split(",").map(x=>x.trim()).filter(Boolean); }
+  function parseDefault(kind, text) {
+    if (kind === "string" || kind === "entity_ref") return text;
+    if (kind === "entity_ref_or_null") return text.trim() ? text : null;
+    if (kind === "integer") { const n=Number(text); return Number.isInteger(n)?n:text; }
+    if (kind === "number") { const n=Number(text); return Number.isFinite(n)?n:text; }
+    if (kind === "boolean") return text === "true";
+    if (kind === "string_list") return text.split(",").map(x=>x.trim()).filter(Boolean);
+    return text;
+  }
+  function defaultText(kind, value) {
+    if (kind === "string_list") return Array.isArray(value)?value.join(", "):String(value??"");
+    if (value === null || value === undefined) return "";
+    return String(value);
+  }
+  function renderWorld() {
+    editor.append(sectionHead("World", "Name the represented world and its shared starting location."));
+    const c=card(); const w=bundle.world ||= {id:"new-world",label:"New world",summary:"Describe the represented world.",location:"world",content_version:1};
+    c.append(field("World id",w.id,v=>{w.id=v;sync()}),field("Label",w.label,v=>{w.label=v;sync()}),field("Summary",w.summary,v=>{w.summary=v;sync()},{textarea:true}),field("Shared location",w.location,v=>{w.location=v;sync()}),field("Content version",w.content_version,v=>{const n=Number(v);w.content_version=Number.isInteger(n)?n:v;sync()},{type:"number"})); editor.append(c);
+  }
+  function renderComponents() {
+    const head=sectionHead("Components", "Define typed state carried by entities. Relationship fields use entity_ref or entity_ref_or_null.");
+    head.append(button("+ Component","primary",()=>{bundle.components.push({name:`component_${bundle.components.length+1}`,fields:[{name:"value",type:"string",default:"value"}]});rerender()})); editor.append(head);
+    bundle.components.forEach((comp,ci)=>{
+      const c=card(); const top=el("div","card-top"); top.append(el("h3",null,comp.name||`Component ${ci+1}`),button("Remove","danger",()=>{bundle.components.splice(ci,1);rerender()})); c.append(top);
+      c.append(field("Component name",comp.name,v=>{comp.name=v;sync()}));
+      const table=el("div","rows");
+      comp.fields.forEach((f,fi)=>{
+        const row=el("div","row-grid component-row");
+        row.append(field("Field",f.name,v=>{f.name=v;sync()}));
+        row.append(selectField("Type",f.type,core.FIELD_TYPES.map(x=>[x,x]),v=>{f.type=v;f.default=core.defaultForType(v);rerender()}));
+        if(f.type==="boolean") row.append(selectField("Default",String(f.default),[["false","false"],["true","true"]],v=>{f.default=v==="true";sync()}));
+        else row.append(field("Default",defaultText(f.type,f.default),v=>{f.default=parseDefault(f.type,v);sync()}));
+        row.append(button("×","icon danger",()=>{comp.fields.splice(fi,1);rerender()})); table.append(row);
+      });
+      c.append(table,button("+ Field","secondary",()=>{comp.fields.push({name:`field_${comp.fields.length+1}`,type:"string",default:"value"});rerender()})); editor.append(c);
+    });
+    if(!bundle.components.length) editor.append(el("div","empty","No custom components yet. Built-in location, ownership and portability are available on entities."));
+  }
+  function renderEntities() {
+    const head=sectionHead("Entities", "Create represented things and attach component values. Component values are JSON so the bundle remains explicit.");
+    head.append(button("+ Entity","primary",()=>{bundle.entities.push({id:`entity-${bundle.entities.length+1}`,label:"New entity",categories:["thing"],components:{}});rerender()})); editor.append(head);
+    bundle.entities.forEach((entity,ei)=>{
+      const c=card(); const top=el("div","card-top");top.append(el("h3",null,entity.label||entity.id||`Entity ${ei+1}`),button("Remove","danger",()=>{bundle.entities.splice(ei,1);rerender()}));c.append(top);
+      c.append(field("Entity id",entity.id,v=>{entity.id=v;sync()}),field("Label",entity.label,v=>{entity.label=v;sync()}),field("Categories (comma-separated)",(entity.categories||[]).join(", "),v=>{entity.categories=parseCategories(v);sync()}),field("Location override",entity.location||"",v=>{if(v.trim())entity.location=v;else delete entity.location;sync()},{placeholder:bundle.world?.location||"world default"}));
+      c.append(selectField("Portable",entity.portable===undefined?"unset":String(entity.portable),[["unset","Not specified"],["true","Portable"],["false","Not portable"]],v=>{if(v==="unset")delete entity.portable;else entity.portable=v==="true";sync()}));
+      c.append(field("Owner ref",entity.owner_ref||"",v=>{if(v.trim())entity.owner_ref=v;else delete entity.owner_ref;sync()},{placeholder:"place:location / actor:id / unowned"}));
+      const compField=field("Component values (JSON)",JSON.stringify(entity.components||{},null,2),(v,input)=>{try{entity.components=JSON.parse(v||"{}");input.classList.remove("invalid");sync()}catch{input.classList.add("invalid");}},{textarea:true,event:"change"}); c.append(compField); editor.append(c);
+    });
+  }
+  function renderActions() {
+    const head=sectionHead("Action signatures", "Signatures describe intent shape only. They do not define checks, effects or write authority.");
+    head.append(button("+ Action signature","primary",()=>{bundle.actions.push({kind:`action-${bundle.actions.length+1}`,description:"Describe the intent.",fields:[]});rerender()})); editor.append(head);
+    const warning=el("div","boundary"); warning.append(el("strong",null,"Causal boundary"),document.createTextNode(" — the starter will generate a refusing rule stub for every signature here. Mechanics must still be implemented and reviewed in code.")); editor.append(warning);
+    bundle.actions.forEach((action,ai)=>{
+      const c=card();const top=el("div","card-top");top.append(el("h3",null,action.kind||`Action ${ai+1}`),button("Remove","danger",()=>{bundle.actions.splice(ai,1);rerender()}));c.append(top);
+      c.append(field("Action kind",action.kind,v=>{action.kind=v;sync()}),field("Description",action.description,v=>{action.description=v;sync()},{textarea:true}));
+      const rows=el("div","rows"); action.fields.forEach((f,fi)=>{const row=el("div","row-grid action-row");row.append(field("Field",f.name,v=>{f.name=v;sync()}),selectField("Type",f.type,core.ACTION_TYPES.map(x=>[x,x]),v=>{f.type=v;sync()}),button("×","icon danger",()=>{action.fields.splice(fi,1);rerender()}));rows.append(row)});c.append(rows,button("+ Field","secondary",()=>{action.fields.push({name:`target_${action.fields.length+1}`,type:"entity_ref"});rerender()}));editor.append(c);
+    });
+  }
+  function objectRows(obj, kind, options) {
+    const box=el("div","rows"); const entries=Object.entries(obj||{});
+    entries.forEach(([key,val],i)=>{const row=el("div","row-grid presentation-row");row.append(field(kind==="asset"?"Asset id":"Category",key,v=>{delete obj[key];obj[v]=val;rerender()},{event:"change"}));
+      if(kind==="asset") {row.append(selectField("Kind",val.kind,[["emoji","emoji"],["text","text"]],v=>{val.kind=v;sync()}),field("Value",val.value,v=>{val.value=v;sync()}));}
+      else row.append(selectField(kind==="category"?"Asset":"Role",String(val),options(),v=>{obj[key]=v;sync()}));
+      row.append(button("×","icon danger",()=>{delete obj[key];rerender()}));box.append(row)}); return box;
+  }
+  function renderPresentation() {
+    editor.append(sectionHead("Presentation", "Presentation suggests how the eventual Automatic replay should look. It never changes world truth."));
+    const p=bundle.presentation ||= {assets:{},category_assets:{},station_roles:{}};
+    let c=card("Assets");c.append(objectRows(p.assets,"asset",()=>[]),button("+ Asset","secondary",()=>{let n=1;while(p.assets[`asset_${n}`])n++;p.assets[`asset_${n}`]={kind:"emoji",value:"◼"};rerender()}));editor.append(c);
+    c=card("Category → asset");c.append(objectRows(p.category_assets,"category",()=>Object.keys(p.assets).map(x=>[x,x])),button("+ Binding","secondary",()=>{let n=1;while(p.category_assets[`category_${n}`])n++;p.category_assets[`category_${n}`]=Object.keys(p.assets)[0]||"";rerender()}));editor.append(c);
+    c=card("Station roles");c.append(objectRows(p.station_roles,"role",()=>[["source","source"],["workstation","workstation"],["surface","surface"],["goal","goal"]]),button("+ Station role","secondary",()=>{let n=1;while(p.station_roles[`station_${n}`])n++;p.station_roles[`station_${n}`]="surface";rerender()}));editor.append(c);
+  }
+  function renderExport() {
+    editor.append(sectionHead("Review & export", "Export this exact bundle, then scaffold the code-first world package from it."));
+    const c=card("What happens next");
+    const ol=el("ol","steps");["Download the valid authoring bundle.","Run the scaffold command shown on the right.","Implement causal mechanics in the generated refusing stubs.","Derive a terminal predicate from represented state.","Retain a deterministic run, then bootstrap an Automatic replay."].forEach(x=>ol.append(el("li",null,x)));c.append(ol);editor.append(c);
+    const b=el("div","boundary");b.append(el("strong",null,"The builder does not author causal effects."),document.createTextNode(" It authors structure, signatures, and presentation intent. This is intentional."));editor.append(b);
+  }
+  function renderSection() {
+    editor.replaceChildren();
+    ({world:renderWorld,components:renderComponents,entities:renderEntities,actions:renderActions,presentation:renderPresentation,export:renderExport})[active]();
+  }
+  document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>{active=b.dataset.section;history.replaceState(null,"",`?section=${active}`);rerender()}));
+  document.getElementById("import-bundle").addEventListener("click",()=>document.getElementById("file-input").click());
+  document.getElementById("file-input").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const value=JSON.parse(await file.text());if(!value||typeof value!=="object")throw new Error("not an object");bundle=value;active="world";rerender()}catch(err){alert(`Could not import JSON: ${err.message}`)}finally{e.target.value=""}});
+  document.getElementById("reset-example").addEventListener("click",()=>{if(confirm("Reset to the embedded Orchard example?")){bundle=core.clone(window.INITIAL_BUNDLE);active="world";rerender()}});
+  downloadBtn.addEventListener("click",()=>{const r=core.validateBundle(bundle);if(!r.ok)return;const blob=new Blob([JSON.stringify(bundle,null,2)+"\n"],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${bundle.world.id}-authoring-v0.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
+  async function copyText(text) {
+    try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return; } } catch {}
+    const area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.append(area);area.select();document.execCommand("copy");area.remove();
+  }
+  document.getElementById("copy-json").addEventListener("click",async()=>{await copyText(JSON.stringify(bundle,null,2)+"\n");});
+  document.getElementById("copy-command").addEventListener("click",async()=>{const id=bundle.world?.id||"world";await copyText(`python scripts/scaffold_world.py ${id}-authoring-v0.json --output-root reference_worlds`);});
+  rerender();
+})();
+</script></body></html>

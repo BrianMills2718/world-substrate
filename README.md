@@ -47,7 +47,7 @@ If you are picking this up cold:
 
 1. **Open the Studio** — `evidence/renders/world-replay-studio-v0.html`. Compare the polished Kitchen with Automatic Greenhouse.
 2. **Run the fourth-world proof** — `PYTHONPATH=src:. python scripts/run_greenhouse_fixture.py --output /tmp/greenhouse.json` costs nothing and drives the real engine.
-3. **Author one structurally** — `python scripts/scaffold_world.py examples/world_authoring/orchard-v0.json --check-only` validates the shared starter/builder bundle. The code-first starter is implemented; the visual builder is the next product surface.
+3. **Author one** — open `evidence/renders/world-builder-v0.html` for the visual/schema builder, or use `scripts/scaffold_world.py` directly. Both surfaces read/write the same `world-substrate-authoring-bundle/v0`.
 
 There is still no deployment, and no repository outside this one imports `world_substrate`.
 
