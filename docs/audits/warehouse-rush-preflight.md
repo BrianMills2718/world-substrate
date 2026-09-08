@@ -38,6 +38,14 @@ The repeated failures are evidence that generic string fields/parameters lack an
 
 A bounded two-turn Luna probe on the same law succeeds at the first meaningful planning test for `$0.00373640`: both forklifts are claimed, then Worker B transports East Cargo 1 to `dock-a`. Other workers reposition in response to stale races. A separate four-turn probe costs `$0.00817640` and exposes a sharper policy-surface failure: it accepts 16 actions but moves no cargo, choosing six `drive-forklift` actions while its reasoning repeatedly claims those empty drives are carrying or advancing cargo. The trace shows the model is not merely planning poorly; it is misunderstanding what an offered action does.
 
+## Installed-effect preview follow-up
+
+Warehouse Rush then drove a narrow generic policy-surface change: offered authored actions now carry a read-only preview derived from the installed mechanic's concrete effects. This does not grant policy causal authority; it exposes what the already-installed law will write.
+
+A two-turn post-change probe costs `$0.00435080` and changes behavior materially: after the two forklift claims, both active forklift workers choose `transport-cargo`, sending west cargo to `dock-b` and east cargo to `dock-a`. A four-turn probe costs `$0.00844043` and produces two transports plus two `load-cargo` actions; the pre-change four-turn probe produced zero transports and zero loads.
+
+The four-turn trace still contains one semantic mistake: after cargo has been loaded into a truck, the model describes an empty `drive-forklift` action as advancing the loaded cargo even though that action's installed effect preview contains only worker/forklift location writes and energy cost. The prompt currently displays `[effects: ...]` without telling the model that this is the authoritative installed-effect preview. The next cheapest experiment is therefore a prompt clarification, not persistent cognition.
+
 ## Liveness/observability failure found
 
 The first 20-turn LLM-policy request did not complete within the client observation window. Full operator logs and a live stack sample showed the request thread blocked in provider SSL read while `LLM_CLIENT_TIMEOUT_POLICY=ban` caused the intended 60-second model timeout to be ignored. The fail-closed daily ledger retained the full `$0.12` reservation.

@@ -162,5 +162,36 @@
     "aborted_run_reserved_usd": 0.12,
     "finding": "service process inherited LLM_CLIENT_TIMEOUT_POLICY=ban, ignoring 60s request timeout",
     "remediation": "World Builder launch environment set to LLM_CLIENT_TIMEOUT_POLICY=allow; subsequent probes completed; stale reservation remains committed"
-  }
+  },
+  "effect_preview_policy_probes": [
+    {
+      "turns": 2,
+      "terminal_reached": false,
+      "accepted_actions": 8,
+      "cost_usd": 0.0043508,
+      "trace_id": "world-builder-live/run/44e9bac2c27b4ba4ba07f7491631b6ab",
+      "accepted_by_kind": {
+        "claim-forklift": 2,
+        "move": 4,
+        "transport-cargo": 2
+      },
+      "finding": "with installed effect previews visible, both forklift workers choose cargo transport on turn 2; east -> dock-a and west -> dock-b"
+    },
+    {
+      "turns": 4,
+      "terminal_reached": false,
+      "accepted_actions": 16,
+      "cost_usd": 0.00844043,
+      "trace_id": "world-builder-live/run/feea2556553444bc9156ef507500d9f5",
+      "accepted_by_kind": {
+        "claim-forklift": 2,
+        "move": 8,
+        "transport-cargo": 2,
+        "load-cargo": 2,
+        "drive-forklift": 2
+      },
+      "finding": "effect preview produces two transports and two loads, but turn-4 reasoning still claims empty drive-forklift moves loaded cargo although cargo is absent from its effect preview"
+    }
+  ],
+  "policy_effect_preview_interpretation": "material improvement, but prompt must explicitly state that effect annotations are authoritative and absent effects must not be inferred"
 }
