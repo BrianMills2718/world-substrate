@@ -102,6 +102,22 @@ If not, it is normally a derived description rather than a new mechanic.
 
 `exchange`, for example, can describe two reciprocal `give` events without reapplying transfer. Escrow can become causal if a represented institution actually couples release conditions and transfers.
 
+## Information, cognition evidence, and causal ancestry
+
+A represented communication is a world interaction first. When a selected world models information, the system should retain the representation, source, recipient, channel, provenance, delivery/observation, and visibility semantics needed by that world. Those records are canonical only to the extent the world represents them.
+
+Information lineage is not automatically the same as hard causal ancestry. A resident may receive a report and later choose an action; the report may be retained as observation/context evidence without claiming that it mechanically caused the choice. Hard causal parentage is reserved for dependencies the installed transition actually consumes or other explicitly justified parent relations. Derived analysis may make narrower claims later, but it cannot rewrite either history.
+
+The durable distinction is therefore:
+
+1. world interaction/event;
+2. information representation/delivery/observation lineage;
+3. cognition context or retained rationale/evidence;
+4. hard mechanical causal parentage; and
+5. derived analytic interpretation.
+
+The current runtime does not yet provide a complete generic information/communication contract. [Living-world projection research](research/living-world-projection-2026-09.md) records the target semantics without pretending they are implemented.
+
 ## Semantic–mechanical binding
 
 Linguistic Core contributes predicate senses, participant roles, specializations, and semantic relationships. It does **not** determine persistence, quantities, effects, scheduling, authority, invariants, or commit semantics.
@@ -165,9 +181,13 @@ Exact replay is an implemented M1/debugging capability, not a universal requirem
 
 Presentation is downstream of world truth. Scene profiles/assets/auto-layout may choose where/how an entity appears, but presentation coordinates or animation state never become canonical causal state merely because the UI renders them.
 
+The same rule applies to the living-world client. A live projection may combine an initial snapshot with incremental canonical events/deltas and render derived **possible / enabled / active / realized** relationship states. These are visualization classifications over installed structure, current state, and retained history—not new world variables. Renderer selection, interpolation, camera state, filters, and overlay visibility remain client-local. The first live-projection implementation must be one-way/read-only.
+
 ## Agent and observer separation
 
 Actors receive bounded observations and offered actions. Observer surfaces may inspect broader canonical/history/provenance data. Resident memory, beliefs, uncertainty, planning, schedules, and reflection remain private agent-runtime state unless a selected mechanic explicitly represents and reads them.
+
+A resident utterance may be returned by the cognition adapter, but it only becomes shared world information through an installed communication/information mechanic or process. The harness cannot make another resident know something merely by emitting prose.
 
 This boundary is what allows an off-the-shelf cognition framework to be integrated safely: it may decide **what the resident wants to attempt**; the Engine still decides what the world says happened.
 

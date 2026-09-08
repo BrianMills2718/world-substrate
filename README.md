@@ -8,6 +8,8 @@ The project now includes both the causal engine and a deployed authoring product
 
 **World Builder:** https://brianmills.dev/world-builder/
 
+**Living-world visualization prototype:** https://brianmills.dev/world-substrate-visualization/
+
 The live Builder can define represented world structure, request a constrained LLM mechanics proposal, show compiler-derived authority for review, require explicit approval, and launch a fresh scripted or LLM-selected graphical run in the browser.
 
 ## Start here
@@ -16,9 +18,11 @@ The live Builder can define represented world structure, request a constrained L
 2. [Roadmap](roadmap/README.md) — canonical planning authority, current frontier, risks, and exact next action.
 3. [Architecture](docs/architecture.md) — durable system boundaries and composition model.
 4. [Decision 004](docs/decisions/004-product-and-adoption-strategy.md) — approved Generative-World Builder / off-the-shelf adoption strategy.
-5. [Competitive landscape](docs/research/competitive-landscape-2026-09.md) — Concordia, AgentSociety, OASIS, SOTOPIA, PettingZoo, Melting Pot, and the layer strategy.
-6. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
-7. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
+5. [Living-world projection](docs/research/living-world-projection-2026-09.md) — one-world overlay model, information/causality distinction, and first live-integration acceptance.
+6. [Technology procurement](docs/research/technology-procurement-2026-09.md) — selected deck.gl / Pydantic AI / SimPy / Cytoscape defaults.
+7. [Competitive landscape](docs/research/competitive-landscape-2026-09.md) — adjacent systems and the "own reality; borrow minds" strategy.
+8. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
+9. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
 
 ## Where this stands
 
@@ -38,7 +42,10 @@ The **prototype phase is complete**. The system has progressed from a neutral tr
 | Zero-review replay bootstrap/auto-layout | demonstrated across multiple real worlds |
 | Visual world authoring | implemented and deployed |
 | Fresh scripted/LLM graphical run | implemented and deployed |
-| Persistent resident cognition | not yet implemented |
+| Standalone living-world visualization | deployed prototype; synthetic timeline; not yet fed by World Substrate |
+| Live read-only projection seam | next implementation slice |
+| First-class information/conversation semantics | not yet implemented |
+| Persistent resident cognition | not yet integrated; Pydantic AI selected behind adapter |
 | Saved user worlds/runs | not yet implemented |
 
 The current live path is:
@@ -58,6 +65,10 @@ authoring bundle
 
 See [the live authoring audit](docs/audits/live-world-authoring.md).
 
+## Current next move
+
+The exact next action is **not another framework bake-off or another toy world**. Feed a real retained World Substrate run (prefer Repair Bay) into the versioned living-world prototype through the smallest read-only projection seam, preserving canonical entity/event IDs and existing scene semantics. After that works, add first-class information/conversation representation so visible agent interaction and provenance overlays are grounded in world truth. The [roadmap](roadmap/README.md) owns the full sequence.
+
 ## Architectural thesis
 
 A rich world should come from **shared persistent state + semantic grounding + installed causal mechanics**, not from asking an LLM to narrate plausible consequences.
@@ -70,7 +81,8 @@ Linguistic Core supplies meanings and participant roles. It does not supply pers
 
 The approved product posture is:
 
-> **Generative-World Builder on top; rigorous world-modeling engine underneath.**
+> **Generative worlds with executable laws.**
+> The product experience is a Generative-World Builder / living-world interface over a rigorous causal engine.
 
 Keep project-owned:
 
@@ -82,7 +94,7 @@ Keep project-owned:
 - causal trace semantics; and
 - the declarative mapping from world truth to presentation.
 
-Prefer off-the-shelf systems around that kernel when they preserve the authority boundary. Current candidates include Phaser for browser 2D execution, Concordia/LangGraph for resident cognition, PettingZoo for multi-agent interoperability/evaluation, and standard persistence/auth infrastructure. SimPy remains conditional on a demonstrated scheduling need. These are evaluation candidates, not adopted foundational dependencies. See [Decision 004](docs/decisions/004-product-and-adoption-strategy.md) and the [competitive-landscape research](docs/research/competitive-landscape-2026-09.md).
+Use mature commodity systems around that kernel rather than rebuilding them. The selected defaults are **deck.gl 9.4.x** for the living projection client, **Pydantic AI 2.41.x** behind `CognitionAdapter`, **SimPy 4.1.2** for simulated-time/event scheduling only, and **Cytoscape.js 3.34.x** for expanded causal/institutional graph inspection. PettingZoo remains a future interoperability option; persistence/auth should use standard infrastructure. Commodity choices follow research → reason → select, while local tests prove only boundary conformance. See [Decision 004](docs/decisions/004-product-and-adoption-strategy.md), [technology procurement](docs/research/technology-procurement-2026-09.md), and [living-world projection](docs/research/living-world-projection-2026-09.md).
 
 ## Reference worlds and product evidence
 
@@ -93,6 +105,7 @@ Prefer off-the-shelf systems around that kernel when they preserve the authority
 | Kitchen | flagship watched world | replicated scarce-knife coordination; polished + Automatic graphical replay |
 | Greenhouse | post-renderer authoring proof | new world, shared tool handoff, zero-review Automatic replay |
 | Orchard | live-authoring acceptance fixture | generated causal law, compiler review, explicit approval, fresh scripted/LLM run |
+| Repair Bay | first nontrivial deployed authoring proof | generated five-action law, deterministic solvability, bounded LLM terminal run, full-log evidence |
 
 The Kitchen remains the flagship demonstration: three same-model/prompt replications reproduced Bo completing at t9, deliberately releasing the shared knife at t10, Ama taking it at t11, and both orders reaching the t17 terminal. See [the Kitchen audit](docs/audits/kitchen-contested-world.md).
 

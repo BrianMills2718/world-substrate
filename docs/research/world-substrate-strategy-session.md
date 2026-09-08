@@ -17,7 +17,7 @@ authority_refs:
 **Last updated:** 2026-09-02  
 **Purpose:** Preserve the project's evolving theory, decisions, hypotheses, requirements, risks, and open questions before changing the World Substrate repository.
 
-**Follow-on research:** [Competitive landscape — generative agents, social simulation, and governed worlds](competitive-landscape-2026-09.md) compares the project's causal-authoring layer with Concordia, AgentSociety, OASIS, SOTOPIA, Generative Agents, PettingZoo, and Melting Pot.
+**Follow-on research:** [Competitive landscape — generative agents, social simulation, and governed worlds](competitive-landscape-2026-09.md) compares the project's causal-authoring layer with adjacent systems. Subsequent accepted procurement is recorded in [technology procurement](technology-procurement-2026-09.md), and the current visual product target is recorded in [living-world projection](living-world-projection-2026-09.md). This memo remains historical/non-authoritative.
 
 ## 1. Product thesis
 
