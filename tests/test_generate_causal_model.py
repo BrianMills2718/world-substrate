@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import json
+import sys
 import unittest
+from types import ModuleType, SimpleNamespace
+from unittest.mock import MagicMock, patch
 from pathlib import Path
 
-from scripts.generate_causal_model import causal_model_schema
+from scripts.generate_causal_model import MAX_MECHANICS_OUTPUT_TOKENS, causal_model_schema, generate_causal_model
 from scripts.scaffold_world import validate_bundle
 
 REPO = Path(__file__).resolve().parents[1]
@@ -28,6 +31,21 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         parameters = schema["properties"]["mechanics"]["items"]["anyOf"][0]["properties"]["parameters"]
         self.assertEqual(parameters["required"], ["count"])
         self.assertEqual(parameters["properties"]["count"]["items"]["type"], "integer")
+
+    def test_generation_caps_provider_output_tokens(self):
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
+        fake = SimpleNamespace(content=json.dumps(causal), cost=0.0, model="fake-model")
+        call = MagicMock(return_value=fake)
+        fake_module = ModuleType("llm_client")
+        fake_module.call_llm = call
+        fake_module.safe_json_loads = json.loads
+        with patch.dict(sys.modules, {"llm_client": fake_module}):
+            generated, result = generate_causal_model(bundle, model="fake-model", trace_id="test-output-cap")
+        self.assertEqual(generated["schema_version"], "world-substrate-causal-model/v0")
+        self.assertIs(result, fake)
+        self.assertEqual(MAX_MECHANICS_OUTPUT_TOKENS, 8192)
+        self.assertEqual(call.call_args.kwargs["max_tokens"], MAX_MECHANICS_OUTPUT_TOKENS)
 
 
 if __name__ == "__main__":

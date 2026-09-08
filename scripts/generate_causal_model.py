@@ -27,6 +27,7 @@ from world_substrate.action_authoring import (
 
 DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
 DEFAULT_BUDGET = 0.12
+MAX_MECHANICS_OUTPUT_TOKENS = 8192
 
 
 def _primitive_schema(kind: str) -> dict[str, Any]:
@@ -359,6 +360,7 @@ def generate_causal_model(
             task="world-substrate-mechanic-authoring",
             trace_id=trace_id,
             max_budget=max_budget,
+            max_tokens=MAX_MECHANICS_OUTPUT_TOKENS,
             reasoning_effort=reasoning_effort,
             num_retries=1,
         )
