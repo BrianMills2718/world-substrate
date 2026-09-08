@@ -1,0 +1,397 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "repair-bay",
+    "label": "Repair Bay",
+    "summary": "Four technicians share scarce diagnostic and repair tools while restoring three broken machines with matched parts.",
+    "location": "repair-bay",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "technician",
+      "fields": [
+        {
+          "name": "hands_free",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "name": "energy",
+          "type": "integer",
+          "default": 3
+        },
+        {
+          "name": "specialty",
+          "type": "string",
+          "default": "general"
+        }
+      ]
+    },
+    {
+      "name": "machine",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "default": "broken"
+        },
+        {
+          "name": "diagnosed",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "required_tool",
+          "type": "string",
+          "default": "wrench"
+        },
+        {
+          "name": "required_part",
+          "type": "string",
+          "default": "seal"
+        }
+      ]
+    },
+    {
+      "name": "tool",
+      "fields": [
+        {
+          "name": "tool_kind",
+          "type": "string",
+          "default": "wrench"
+        },
+        {
+          "name": "wear",
+          "type": "integer",
+          "default": 0
+        }
+      ]
+    },
+    {
+      "name": "part",
+      "fields": [
+        {
+          "name": "part_kind",
+          "type": "string",
+          "default": "seal"
+        },
+        {
+          "name": "installed",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "installed_on",
+          "type": "string",
+          "default": "none"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "ava",
+      "label": "Ava",
+      "categories": [
+        "technician"
+      ],
+      "components": {
+        "technician": {
+          "hands_free": true,
+          "energy": 3,
+          "specialty": "mechanical"
+        }
+      }
+    },
+    {
+      "id": "bo",
+      "label": "Bo",
+      "categories": [
+        "technician"
+      ],
+      "components": {
+        "technician": {
+          "hands_free": true,
+          "energy": 3,
+          "specialty": "electrical"
+        }
+      }
+    },
+    {
+      "id": "cam",
+      "label": "Cam",
+      "categories": [
+        "technician"
+      ],
+      "components": {
+        "technician": {
+          "hands_free": true,
+          "energy": 3,
+          "specialty": "diagnostics"
+        }
+      }
+    },
+    {
+      "id": "dee",
+      "label": "Dee",
+      "categories": [
+        "technician"
+      ],
+      "components": {
+        "technician": {
+          "hands_free": true,
+          "energy": 3,
+          "specialty": "general"
+        }
+      }
+    },
+    {
+      "id": "pump-1",
+      "label": "Coolant Pump",
+      "categories": [
+        "machine"
+      ],
+      "components": {
+        "machine": {
+          "status": "broken",
+          "diagnosed": false,
+          "required_tool": "wrench",
+          "required_part": "seal"
+        }
+      }
+    },
+    {
+      "id": "generator-1",
+      "label": "Backup Generator",
+      "categories": [
+        "machine"
+      ],
+      "components": {
+        "machine": {
+          "status": "broken",
+          "diagnosed": false,
+          "required_tool": "driver",
+          "required_part": "fuse"
+        }
+      }
+    },
+    {
+      "id": "conveyor-1",
+      "label": "Parts Conveyor",
+      "categories": [
+        "machine"
+      ],
+      "components": {
+        "machine": {
+          "status": "broken",
+          "diagnosed": false,
+          "required_tool": "wrench",
+          "required_part": "belt"
+        }
+      }
+    },
+    {
+      "id": "scanner-1",
+      "label": "Diagnostic Scanner",
+      "categories": [
+        "scanner",
+        "tool"
+      ],
+      "portable": true,
+      "owner_ref": "place:repair-bay",
+      "components": {
+        "tool": {
+          "tool_kind": "scanner",
+          "wear": 0
+        }
+      }
+    },
+    {
+      "id": "wrench-1",
+      "label": "Torque Wrench",
+      "categories": [
+        "wrench",
+        "tool"
+      ],
+      "portable": true,
+      "owner_ref": "place:repair-bay",
+      "components": {
+        "tool": {
+          "tool_kind": "wrench",
+          "wear": 0
+        }
+      }
+    },
+    {
+      "id": "driver-1",
+      "label": "Insulated Driver",
+      "categories": [
+        "driver",
+        "tool"
+      ],
+      "portable": true,
+      "owner_ref": "place:repair-bay",
+      "components": {
+        "tool": {
+          "tool_kind": "driver",
+          "wear": 0
+        }
+      }
+    },
+    {
+      "id": "seal-1",
+      "label": "Pump Seal",
+      "categories": [
+        "part"
+      ],
+      "components": {
+        "part": {
+          "part_kind": "seal",
+          "installed": false,
+          "installed_on": "none"
+        }
+      }
+    },
+    {
+      "id": "fuse-1",
+      "label": "Generator Fuse",
+      "categories": [
+        "part"
+      ],
+      "components": {
+        "part": {
+          "part_kind": "fuse",
+          "installed": false,
+          "installed_on": "none"
+        }
+      }
+    },
+    {
+      "id": "belt-1",
+      "label": "Conveyor Belt",
+      "categories": [
+        "part"
+      ],
+      "components": {
+        "part": {
+          "part_kind": "belt",
+          "installed": false,
+          "installed_on": "none"
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "diagnose",
+      "description": "Use a held diagnostic scanner to identify a broken machine's repair requirements.",
+      "fields": [
+        {
+          "name": "machine",
+          "type": "entity_ref"
+        },
+        {
+          "name": "scanner",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "repair",
+      "description": "Repair a diagnosed machine using its required held tool and matching uninstalled part.",
+      "fields": [
+        {
+          "name": "machine",
+          "type": "entity_ref"
+        },
+        {
+          "name": "tool",
+          "type": "entity_ref"
+        },
+        {
+          "name": "part",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "handoff-tool",
+      "description": "Hand a held tool to a different technician who has free hands.",
+      "fields": [
+        {
+          "name": "tool",
+          "type": "entity_ref"
+        },
+        {
+          "name": "recipient",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "release-tool",
+      "description": "Return a held tool to the shared repair-bay store.",
+      "fields": [
+        {
+          "name": "tool",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "claim-tool",
+      "description": "Take one available shared tool when the technician has free hands.",
+      "fields": [
+        {
+          "name": "tool",
+          "type": "entity_ref"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "technician": {
+        "kind": "emoji",
+        "value": "🧑‍🔧"
+      },
+      "machine": {
+        "kind": "emoji",
+        "value": "⚙️"
+      },
+      "tool": {
+        "kind": "emoji",
+        "value": "🧰"
+      },
+      "part": {
+        "kind": "emoji",
+        "value": "🔩"
+      },
+      "scanner": {
+        "kind": "emoji",
+        "value": "🔍"
+      },
+      "wrench": {
+        "kind": "emoji",
+        "value": "🔧"
+      },
+      "driver": {
+        "kind": "emoji",
+        "value": "🪛"
+      }
+    },
+    "category_assets": {
+      "technician": "technician",
+      "machine": "machine",
+      "tool": "tool",
+      "part": "part",
+      "scanner": "scanner",
+      "wrench": "wrench",
+      "driver": "driver"
+    },
+    "station_roles": {
+      "machine": "goal"
+    }
+  }
+}

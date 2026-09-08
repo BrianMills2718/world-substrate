@@ -141,6 +141,8 @@ Use the deployed World Builder as the authoring surface, not a bespoke repo fixt
 
 The test world should be materially richer than Orchard and should include enough structure to stress the current system—for example 3–5 actors, multiple resources/locations/goals, several action kinds, shared or contested objects, and at least one process or relationship-dependent effect.
 
+**Chosen world: Repair Bay.** A zero-spend local preflight now proves the current language can run four technicians, three contested tools, three broken machines, matched parts, five action kinds, multi-entity repair, stale-revision contention, and a tool handoff to terminal in five turns. It also exposed and fixed one concrete fresh-world presentation-binding collision. This is a solvability/preflight baseline, not yet the deployed generated-mechanics review result; see [Repair Bay preflight](../docs/audits/repair-bay-live-preflight.md).
+
 For each generated mechanic, review:
 
 - semantic intent and participant meaning;
@@ -227,7 +229,7 @@ Cost records are evidence-scope specific. Do not fabricate a single lifetime tot
 | Off-the-shelf posture | answered — keep causal kernel custom; evaluate commodity layers via adapters/spikes |
 | Current World Builder deployment/model service | explicitly authorized and live |
 | Public demo vs authenticated private authoring | **open** |
-| First nontrivial product-test world/domain | **open; choose for the active slice** |
+| First nontrivial product-test world/domain | **answered — Repair Bay** |
 
 ## Refresh and reset triggers
 
@@ -251,7 +253,7 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Human-test live authoring on one meaningfully less-trivial world.** Use `https://brianmills.dev/world-builder/` to define/import the represented structure, generate constrained mechanics with optional guidance, inspect the compiler-derived authority and effects, approve only what matches the intended law, run Scripted first, then compare an LLM-selected run under the existing bounded service.
+**Human-test Repair Bay through the deployed World Builder.** Import `examples/world_authoring/repair-bay-v0.json`, generate constrained mechanics with optional guidance, inspect the compiler-derived authority and effects against the retained hand-reviewed baseline, approve only what matches the intended law, run Scripted first, then compare an LLM-selected run under the existing bounded service.
 
 Retain the first concrete failure or ambiguity. Classify it as one of: semantic grounding, causal-language expressiveness, review comprehensibility, affordance/observation, resident cognition, graphical presentation, persistence/product UX, or deployment/security. That classification—not framework availability—determines the next implementation slice.
 

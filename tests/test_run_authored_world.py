@@ -4,13 +4,16 @@ import json
 import unittest
 from pathlib import Path
 
-from scripts.run_authored_world import build_engine, render_run, run_world
+from scripts.bootstrap_scene_profile import _entity_binding
+from scripts.run_authored_world import _runtime_catalog, build_engine, render_run, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate.action_authoring import ActionDeclarationError
 
 REPO = Path(__file__).resolve().parents[1]
 BUNDLE_PATH = REPO / "examples/world_authoring/orchard-v0.json"
 CAUSAL_PATH = REPO / "examples/world_authoring/orchard-causal-v0.json"
+REPAIR_BUNDLE_PATH = REPO / "examples/world_authoring/repair-bay-v0.json"
+REPAIR_CAUSAL_PATH = REPO / "examples/world_authoring/repair-bay-causal-v0.json"
 
 
 class AuthoredWorldRunTests(unittest.TestCase):
@@ -43,6 +46,15 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertIn("Ava", html)
         self.assertIn("document.getElementById(\'turn\')", html)
 
+    def test_fresh_world_entity_id_does_not_inherit_reference_world_asset_binding(self):
+        bundle = json.loads(json.dumps(self.bundle))
+        bundle["entities"][0]["id"] = "bo"
+        bundle["entities"][0]["label"] = "New-world Bo"
+        trace, _, compiled = run_world(bundle, self.causal, policy="scripted", max_turns=5)
+        html = render_run(bundle, trace, compiled)
+        self.assertIn("New-world Bo", html)
+        self.assertIn("Scene replay", html)
+
     def test_unreviewable_mechanic_never_reaches_runtime(self):
         causal = json.loads(json.dumps(self.causal))
         causal["mechanics"][0]["effects"][0]["path"] = "components.fruit.nonexistent"
@@ -54,6 +66,54 @@ class AuthoredWorldRunTests(unittest.TestCase):
             run_world(self.bundle, self.causal, max_turns=31)
         with self.assertRaisesRegex(ValueError, "scripted or llm"):
             run_world(self.bundle, self.causal, policy="random")
+
+
+class RepairBayLiveProofTests(unittest.TestCase):
+    def setUp(self):
+        self.bundle = load_bundle(REPAIR_BUNDLE_PATH)
+        self.causal = json.loads(REPAIR_CAUSAL_PATH.read_text())
+
+    def test_scripted_baseline_reaches_terminal_through_contention_and_retries(self):
+        initial, _, _ = build_engine(self.bundle, self.causal)
+        self.assertEqual([initial.discover(a)["total"] for a in ("ava", "bo", "cam", "dee")], [48] * 4)
+
+        trace, engine, model = run_world(
+            self.bundle, self.causal, policy="scripted", max_turns=12
+        )
+        self.assertEqual(
+            trace["summary"],
+            {"turns": 5, "terminal_reached": True, "accepted_actions": 10},
+        )
+        accepted_kinds = [
+            row["did"]["kind"]
+            for turn in trace["transcript"]
+            for row in turn["actors"].values()
+            if row.get("did") and row.get("status") == "accepted"
+        ]
+        self.assertEqual(accepted_kinds.count("claim-tool"), 3)
+        self.assertEqual(accepted_kinds.count("diagnose"), 3)
+        self.assertEqual(accepted_kinds.count("repair"), 3)
+        self.assertEqual(accepted_kinds.count("handoff-tool"), 1)
+        self.assertEqual(
+            sum(bool(row.get("retried")) for turn in trace["transcript"] for row in turn["actors"].values()),
+            6,
+        )
+        self.assertEqual(
+            sum(row.get("status") == "nothing_left" for turn in trace["transcript"] for row in turn["actors"].values()),
+            1,
+        )
+        for machine_id in ("pump-1", "generator-1", "conveyor-1"):
+            self.assertEqual(engine.world.entities[machine_id].component("machine").status, "working")
+        self.assertEqual(engine.world.entities["scanner-1"].ownership.owner_ref, "actor:dee")
+        self.assertTrue(model.terminal and model.terminal.reached(engine.world))
+
+    def test_repair_bay_fresh_replay_is_graphical(self):
+        trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=12)
+        html = render_run(self.bundle, trace, compiled)
+        self.assertIn("Scene replay", html)
+        self.assertIn("Coolant Pump", html)
+        self.assertIn("Diagnostic Scanner", html)
+        self.assertIn("Parts Conveyor", html)
 
 
 if __name__ == "__main__":

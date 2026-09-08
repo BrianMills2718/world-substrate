@@ -1,0 +1,392 @@
+{
+  "schema_version": "world-substrate-contested-run/v3",
+  "world": "repair-bay",
+  "actors": [
+    "ava",
+    "bo",
+    "cam",
+    "dee"
+  ],
+  "model": "scripted-first-available",
+  "cost_usd": 0.0,
+  "mechanic_profile_id": "0a3b54de96a5d968",
+  "summary": {
+    "turns": 5,
+    "terminal_reached": true,
+    "accepted_actions": 10
+  },
+  "transcript": [
+    {
+      "turn": 1,
+      "revision_when_decided": 0,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "claim-tool",
+            "base_revision": 1,
+            "controller": "unselected",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "claim-tool",
+            "base_revision": 2,
+            "controller": "unselected",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 2,
+      "revision_when_decided": 3,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 3,
+            "controller": "unselected",
+            "machine": "conveyor-1",
+            "scanner": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 3,
+            "controller": "unselected",
+            "machine": "conveyor-1",
+            "scanner": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 3,
+      "revision_when_decided": 4,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "repair",
+            "base_revision": 4,
+            "controller": "unselected",
+            "machine": "conveyor-1",
+            "part": "belt-1",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "repair",
+            "base_revision": 4,
+            "controller": "unselected",
+            "machine": "conveyor-1",
+            "part": "belt-1",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 4,
+            "controller": "unselected",
+            "machine": "generator-1",
+            "scanner": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 5,
+            "controller": "unselected",
+            "machine": "generator-1",
+            "scanner": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 4,
+      "revision_when_decided": 6,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "repair",
+            "base_revision": 6,
+            "controller": "unselected",
+            "machine": "generator-1",
+            "part": "fuse-1",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "repair",
+            "base_revision": 6,
+            "controller": "unselected",
+            "machine": "generator-1",
+            "part": "fuse-1",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 6,
+            "controller": "unselected",
+            "machine": "pump-1",
+            "scanner": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 7,
+            "controller": "unselected",
+            "machine": "pump-1",
+            "scanner": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 5,
+      "revision_when_decided": 8,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 8,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 8,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "repair",
+            "base_revision": 8,
+            "controller": "unselected",
+            "machine": "pump-1",
+            "part": "seal-1",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "repair",
+            "base_revision": 9,
+            "controller": "unselected",
+            "machine": "pump-1",
+            "part": "seal-1",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        }
+      },
+      "progress": {}
+    }
+  ]
+}
