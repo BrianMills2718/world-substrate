@@ -1,0 +1,1064 @@
+{
+  "causal_review": {
+    "mechanics": [
+      {
+        "action_kind": "diagnose",
+        "checks": [
+          {
+            "label": "scanner is held by actor",
+            "left": {
+              "participant": {
+                "name": "scanner",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "owner_ref": "actor"
+            }
+          },
+          {
+            "label": "actor is holding scanner",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.technician.hands_free"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "machine is broken",
+            "left": {
+              "participant": {
+                "name": "machine",
+                "path": "components.machine.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "broken"
+            }
+          },
+          {
+            "label": "machine is undiagnosed",
+            "left": {
+              "participant": {
+                "name": "machine",
+                "path": "components.machine.diagnosed"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "scanner kind is scanner",
+            "left": {
+              "participant": {
+                "name": "scanner",
+                "path": "components.tool.tool_kind"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "scanner"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "machine",
+            "path": "components.machine.diagnosed",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "Does not change machine requirements or technician state.",
+          "Refuses operational or already diagnosed machines.",
+          "Refuses scanners not held by the acting technician."
+        ],
+        "mechanic_id": "diagnose-held-scanner",
+        "rationale": "A technician can diagnose only a broken undiagnosed machine while holding the diagnostic scanner.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.technician",
+          "entities.<actor>.components.technician.hands_free",
+          "entities.<machine>.category_ids",
+          "entities.<machine>.components.machine",
+          "entities.<machine>.components.machine.diagnosed",
+          "entities.<machine>.components.machine.status",
+          "entities.<scanner>.category_ids",
+          "entities.<scanner>.components.tool",
+          "entities.<scanner>.components.tool.tool_kind",
+          "entities.<scanner>.ownership.owner_ref"
+        ],
+        "tests": [
+          "A held scanner diagnoses a broken undiagnosed machine.",
+          "An operational machine is refused.",
+          "A non-scanner tool is refused."
+        ],
+        "writes": [
+          "entities.<machine>.components.machine.diagnosed",
+          "entities.<machine>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "repair",
+        "checks": [
+          {
+            "label": "machine is diagnosed",
+            "left": {
+              "participant": {
+                "name": "machine",
+                "path": "components.machine.diagnosed"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "machine is broken",
+            "left": {
+              "participant": {
+                "name": "machine",
+                "path": "components.machine.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "broken"
+            }
+          },
+          {
+            "label": "tool is held by actor",
+            "left": {
+              "participant": {
+                "name": "tool",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "owner_ref": "actor"
+            }
+          },
+          {
+            "label": "tool matches requirement",
+            "left": {
+              "participant": {
+                "name": "tool",
+                "path": "components.tool.tool_kind"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "machine",
+                "path": "components.machine.required_tool"
+              }
+            }
+          },
+          {
+            "label": "part is uninstalled",
+            "left": {
+              "participant": {
+                "name": "part",
+                "path": "components.part.installed"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "part matches requirement",
+            "left": {
+              "participant": {
+                "name": "part",
+                "path": "components.part.part_kind"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "machine",
+                "path": "components.machine.required_part"
+              }
+            }
+          },
+          {
+            "label": "actor has energy",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.technician.energy"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "machine",
+            "path": "components.machine.status",
+            "value": {
+              "literal": "operational"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "part",
+            "path": "components.part.installed",
+            "value": {
+              "literal": true
+            }
+          },
+          {
+            "op": "set",
+            "participant": "part",
+            "path": "components.part.installed_on",
+            "value": {
+              "action_field": "machine"
+            }
+          },
+          {
+            "op": "subtract",
+            "participant": "actor",
+            "path": "components.technician.energy",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "op": "add",
+            "participant": "tool",
+            "path": "components.tool.wear",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "Refuses undiagnosed, operational, or mismatched repairs.",
+          "Does not select or create parts.",
+          "Requires positive technician energy."
+        ],
+        "mechanic_id": "repair-diagnosed-machine",
+        "rationale": "Repair consumes technician energy, installs the matching uninstalled part, makes the diagnosed machine operational, and increases wear on the held matching tool.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.technician",
+          "entities.<actor>.components.technician.energy",
+          "entities.<machine>.category_ids",
+          "entities.<machine>.components.machine",
+          "entities.<machine>.components.machine.diagnosed",
+          "entities.<machine>.components.machine.required_part",
+          "entities.<machine>.components.machine.required_tool",
+          "entities.<machine>.components.machine.status",
+          "entities.<part>.category_ids",
+          "entities.<part>.components.part",
+          "entities.<part>.components.part.installed",
+          "entities.<part>.components.part.part_kind",
+          "entities.<tool>.category_ids",
+          "entities.<tool>.components.tool",
+          "entities.<tool>.components.tool.tool_kind",
+          "entities.<tool>.components.tool.wear",
+          "entities.<tool>.ownership.owner_ref"
+        ],
+        "tests": [
+          "A diagnosed broken machine with matching held tool and part becomes operational.",
+          "A mismatched tool or part is refused.",
+          "Zero-energy repair is refused."
+        ],
+        "writes": [
+          "entities.<actor>.components.technician.energy",
+          "entities.<actor>.last_cause_event_id",
+          "entities.<machine>.components.machine.status",
+          "entities.<machine>.last_cause_event_id",
+          "entities.<part>.components.part.installed",
+          "entities.<part>.components.part.installed_on",
+          "entities.<part>.last_cause_event_id",
+          "entities.<tool>.components.tool.wear",
+          "entities.<tool>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "handoff-tool",
+        "checks": [
+          {
+            "label": "tool is held by actor",
+            "left": {
+              "participant": {
+                "name": "tool",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "owner_ref": "actor"
+            }
+          },
+          {
+            "label": "recipient has free hands",
+            "left": {
+              "participant": {
+                "name": "recipient",
+                "path": "components.technician.hands_free"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "recipient differs from actor",
+            "left": {
+              "entity_id": "actor"
+            },
+            "op": "ne",
+            "right": {
+              "entity_id": "recipient"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "tool",
+            "path": "ownership.owner_ref",
+            "value": {
+              "owner_ref": "recipient"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "actor",
+            "path": "components.technician.hands_free",
+            "value": {
+              "literal": true
+            }
+          },
+          {
+            "op": "set",
+            "participant": "recipient",
+            "path": "components.technician.hands_free",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "Refuses self-handoff.",
+          "Refuses tools not held by the actor.",
+          "Refuses recipients without free hands."
+        ],
+        "mechanic_id": "handoff-held-tool",
+        "rationale": "A held tool can be transferred to a distinct technician whose hands are free.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.technician",
+          "entities.<recipient>.category_ids",
+          "entities.<recipient>.components.technician",
+          "entities.<recipient>.components.technician.hands_free",
+          "entities.<tool>.category_ids",
+          "entities.<tool>.components.tool",
+          "entities.<tool>.ownership.owner_ref"
+        ],
+        "tests": [
+          "A held tool transfers to a distinct free-handed technician.",
+          "Self-handoff is refused.",
+          "A busy recipient is refused."
+        ],
+        "writes": [
+          "entities.<actor>.components.technician.hands_free",
+          "entities.<actor>.last_cause_event_id",
+          "entities.<recipient>.components.technician.hands_free",
+          "entities.<recipient>.last_cause_event_id",
+          "entities.<tool>.last_cause_event_id",
+          "entities.<tool>.ownership.owner_ref"
+        ]
+      },
+      {
+        "action_kind": "release-tool",
+        "checks": [
+          {
+            "label": "tool is held by actor",
+            "left": {
+              "participant": {
+                "name": "tool",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "owner_ref": "actor"
+            }
+          },
+          {
+            "label": "tool is portable",
+            "left": {
+              "participant": {
+                "name": "tool",
+                "path": "portable.portable"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "tool",
+            "path": "ownership.owner_ref",
+            "value": {
+              "literal": "place:repair-bay"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "actor",
+            "path": "components.technician.hands_free",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "Refuses tools not held by the actor.",
+          "Refuses non-portable tools."
+        ],
+        "mechanic_id": "release-held-tool",
+        "rationale": "A technician returns a held tool to the shared repair-bay store and frees their hands.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.technician",
+          "entities.<tool>.category_ids",
+          "entities.<tool>.components.tool",
+          "entities.<tool>.ownership.owner_ref",
+          "entities.<tool>.portable.portable"
+        ],
+        "tests": [
+          "A held portable tool is returned and the actor's hands become free.",
+          "A tool held by another technician is refused."
+        ],
+        "writes": [
+          "entities.<actor>.components.technician.hands_free",
+          "entities.<actor>.last_cause_event_id",
+          "entities.<tool>.last_cause_event_id",
+          "entities.<tool>.ownership.owner_ref"
+        ]
+      },
+      {
+        "action_kind": "claim-tool",
+        "checks": [
+          {
+            "label": "actor has free hands",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.technician.hands_free"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "tool is in repair-bay store",
+            "left": {
+              "participant": {
+                "name": "tool",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "place:repair-bay"
+            }
+          },
+          {
+            "label": "tool is portable",
+            "left": {
+              "participant": {
+                "name": "tool",
+                "path": "portable.portable"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "tool",
+            "path": "ownership.owner_ref",
+            "value": {
+              "owner_ref": "actor"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "actor",
+            "path": "components.technician.hands_free",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "Refuses unavailable or non-portable tools.",
+          "Refuses claims by technicians whose hands are not free."
+        ],
+        "mechanic_id": "claim-shared-tool",
+        "rationale": "A free-handed technician can claim an available portable tool from the shared repair-bay store.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.technician",
+          "entities.<actor>.components.technician.hands_free",
+          "entities.<tool>.category_ids",
+          "entities.<tool>.components.tool",
+          "entities.<tool>.ownership.owner_ref",
+          "entities.<tool>.portable.portable"
+        ],
+        "tests": [
+          "A free-handed technician claims a stored portable tool.",
+          "A tool held by a technician is unavailable.",
+          "A technician with occupied hands is refused."
+        ],
+        "writes": [
+          "entities.<actor>.components.technician.hands_free",
+          "entities.<actor>.last_cause_event_id",
+          "entities.<tool>.last_cause_event_id",
+          "entities.<tool>.ownership.owner_ref"
+        ]
+      }
+    ],
+    "schema_version": "world-substrate-causal-model/v0",
+    "terminal": {
+      "checks": [
+        {
+          "op": "eq",
+          "path": "components.machine.status",
+          "value": "operational"
+        }
+      ],
+      "mode": "all",
+      "selector": {
+        "categories": [
+          "machine"
+        ],
+        "components": [
+          "machine"
+        ]
+      }
+    }
+  },
+  "cost_usd": 0.0072462,
+  "daily_cost_usd": 0.02170325,
+  "experiment_context": {
+    "bundle_adjustments": [
+      "actor id bo -> ben to avoid retained Kitchen exact-entity presentation collision",
+      "wrench-1/tool_kind wrench -> torque-1/tool_kind torque and matching machine required_tool values to avoid retained Workshop component-value asset collision"
+    ],
+    "causal_model_source": "evidence/repair-bay/live-generated-mechanics-v0.json",
+    "note": "These naming-only adjustments were used against the still-deployed pre-fix service; the branch fix removes the need for them.",
+    "reason": "temporary presentation-catalog collision workaround; causal mechanics unchanged",
+    "schema_version": "repair-bay-live-run-context/v0"
+  },
+  "ok": true,
+  "summary": {
+    "accepted_actions": 15,
+    "terminal_reached": true,
+    "turns": 5
+  },
+  "trace": {
+    "actors": [
+      "ava",
+      "ben",
+      "cam",
+      "dee"
+    ],
+    "cost_usd": 0.0072462,
+    "mechanic_profile_id": "ce2740865c4534f1",
+    "model": "openrouter/openai/gpt-5.6-luna",
+    "schema_version": "world-substrate-contested-run/v3",
+    "summary": {
+      "accepted_actions": 15,
+      "terminal_reached": true,
+      "turns": 5
+    },
+    "transcript": [
+      {
+        "actors": {
+          "ava": {
+            "did": {
+              "actor": "ava",
+              "base_revision": 0,
+              "controller": "unselected",
+              "kind": "claim-tool",
+              "tool": "torque-1"
+            },
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "Claim the torque tool to support mechanical repairs on the conveyor or coolant pump.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ava",
+              "base_revision": 0,
+              "controller": "unselected",
+              "kind": "claim-tool",
+              "tool": "torque-1"
+            }
+          },
+          "ben": {
+            "did": {
+              "actor": "ben",
+              "base_revision": 1,
+              "controller": "unselected",
+              "kind": "claim-tool",
+              "tool": "scanner-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Claim the driver to handle the generator\u2019s electrical repair, matching my electrical specialty and leaving the scanner and torque tool for other technicians.",
+            "said_on_retry": "Claim the diagnostic scanner so I can make progress identifying the broken machines and guide the repairs.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ben",
+              "base_revision": 0,
+              "controller": "unselected",
+              "kind": "claim-tool",
+              "tool": "driver-1"
+            }
+          },
+          "cam": {
+            "did": {
+              "actor": "cam",
+              "base_revision": 2,
+              "controller": "unselected",
+              "kind": "claim-tool",
+              "tool": "driver-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Claim the diagnostic scanner so Cam can efficiently diagnose a broken machine next.",
+            "said_on_retry": "Claim the available driver so it is secured for repairing the backup generator.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "cam",
+              "base_revision": 0,
+              "controller": "unselected",
+              "kind": "claim-tool",
+              "tool": "scanner-1"
+            }
+          },
+          "dee": {
+            "did": null,
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Claiming the diagnostic scanner enables the required diagnosis step for the broken machines and advances restoration planning.",
+            "said_on_retry": "wait: no offered action",
+            "status": "nothing_left",
+            "wanted": {
+              "actor": "dee",
+              "base_revision": 0,
+              "controller": "unselected",
+              "kind": "claim-tool",
+              "tool": "scanner-1"
+            }
+          }
+        },
+        "committed_first": "ava",
+        "progress": {},
+        "revision_when_decided": 0,
+        "turn": 1
+      },
+      {
+        "actors": {
+          "ava": {
+            "did": {
+              "actor": "ava",
+              "base_revision": 5,
+              "controller": "unselected",
+              "kind": "repair",
+              "machine": "conveyor-1",
+              "part": "belt-1",
+              "tool": "torque-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Hand the torque tool to free-handed Dee so it remains available for the team while freeing Ava to take another needed tool or task.",
+            "said_on_retry": "Repair the diagnosed conveyor now using the held torque tool and matching belt, advancing restoration efficiently.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ava",
+              "base_revision": 3,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "dee",
+              "tool": "torque-1"
+            }
+          },
+          "ben": {
+            "did": {
+              "actor": "ben",
+              "base_revision": 3,
+              "controller": "unselected",
+              "kind": "diagnose",
+              "machine": "conveyor-1",
+              "scanner": "scanner-1"
+            },
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "Diagnose the conveyor first so its repair can proceed using Ava's available torque tool and matching belt.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ben",
+              "base_revision": 3,
+              "controller": "unselected",
+              "kind": "diagnose",
+              "machine": "conveyor-1",
+              "scanner": "scanner-1"
+            }
+          },
+          "cam": {
+            "did": {
+              "actor": "cam",
+              "base_revision": 4,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "dee",
+              "tool": "driver-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Hand the driver to Dee so the free technician can use this scarce tool for the generator work.",
+            "said_on_retry": "Handing the driver to Dee makes the available tool accessible to a free technician who can progress the undiagnosed generator repair.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "cam",
+              "base_revision": 3,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "dee",
+              "tool": "driver-1"
+            }
+          },
+          "dee": {
+            "did": null,
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "wait: no offered action",
+            "status": "no_action",
+            "wanted": null
+          }
+        },
+        "committed_first": "ben",
+        "progress": {},
+        "revision_when_decided": 3,
+        "turn": 2
+      },
+      {
+        "actors": {
+          "ava": {
+            "did": {
+              "actor": "ava",
+              "base_revision": 7,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "dee",
+              "tool": "torque-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Handing the torque tool to Cam puts the scarce repair tool with the only technician currently free to use it.",
+            "said_on_retry": "Handing the torque tool to Dee keeps it available for repairing the coolant pump while freeing Ava\u2019s hands for further work.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ava",
+              "base_revision": 6,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "cam",
+              "tool": "torque-1"
+            }
+          },
+          "ben": {
+            "did": {
+              "actor": "ben",
+              "base_revision": 8,
+              "controller": "unselected",
+              "kind": "diagnose",
+              "machine": "generator-1",
+              "scanner": "scanner-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Diagnose the backup generator first, matching Ben\u2019s electrical specialty and enabling its fuse repair.",
+            "said_on_retry": "Diagnose the backup generator first so its repair can be planned and the electrical specialist can advance the restoration.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ben",
+              "base_revision": 6,
+              "controller": "unselected",
+              "kind": "diagnose",
+              "machine": "generator-1",
+              "scanner": "scanner-1"
+            }
+          },
+          "cam": {
+            "did": null,
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "wait: no offered action",
+            "status": "no_action",
+            "wanted": null
+          },
+          "dee": {
+            "did": {
+              "actor": "dee",
+              "base_revision": 6,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "cam",
+              "tool": "driver-1"
+            },
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "Hand the driver to Cam, who has free hands and can make better use of the scarce tool while advancing the restoration work.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "dee",
+              "base_revision": 6,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "cam",
+              "tool": "driver-1"
+            }
+          }
+        },
+        "committed_first": "cam",
+        "progress": {},
+        "revision_when_decided": 6,
+        "turn": 3
+      },
+      {
+        "actors": {
+          "ava": {
+            "did": null,
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "wait: no offered action",
+            "status": "no_action",
+            "wanted": null
+          },
+          "ben": {
+            "did": {
+              "actor": "ben",
+              "base_revision": 10,
+              "controller": "unselected",
+              "kind": "diagnose",
+              "machine": "pump-1",
+              "scanner": "scanner-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Diagnose the broken coolant pump now using the scanner I hold, advancing restoration of the remaining machine.",
+            "said_on_retry": "Use the scanner I am holding to diagnose the broken coolant pump and advance its repair.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ben",
+              "base_revision": 9,
+              "controller": "unselected",
+              "kind": "diagnose",
+              "machine": "pump-1",
+              "scanner": "scanner-1"
+            }
+          },
+          "cam": {
+            "did": {
+              "actor": "cam",
+              "base_revision": 11,
+              "controller": "unselected",
+              "kind": "repair",
+              "machine": "generator-1",
+              "part": "fuse-1",
+              "tool": "driver-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Repair the diagnosed Backup Generator using the held driver and matching fuse to restore a broken machine.",
+            "said_on_retry": "Repair the diagnosed broken generator now using the held driver and its matching fuse.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "cam",
+              "base_revision": 9,
+              "controller": "unselected",
+              "kind": "repair",
+              "machine": "generator-1",
+              "part": "fuse-1",
+              "tool": "driver-1"
+            }
+          },
+          "dee": {
+            "did": {
+              "actor": "dee",
+              "base_revision": 9,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "ava",
+              "tool": "torque-1"
+            },
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "Hand the torque tool to Ava so the free mechanical technician can help repair the broken coolant pump once it is diagnosed.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "dee",
+              "base_revision": 9,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "ava",
+              "tool": "torque-1"
+            }
+          }
+        },
+        "committed_first": "dee",
+        "progress": {},
+        "revision_when_decided": 9,
+        "turn": 4
+      },
+      {
+        "actors": {
+          "ava": {
+            "did": {
+              "actor": "ava",
+              "base_revision": 12,
+              "controller": "unselected",
+              "kind": "repair",
+              "machine": "pump-1",
+              "part": "seal-1",
+              "tool": "torque-1"
+            },
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "Repair the broken Coolant Pump using the held Torque Tool and available Pump Seal, matching the required part and tool.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ava",
+              "base_revision": 12,
+              "controller": "unselected",
+              "kind": "repair",
+              "machine": "pump-1",
+              "part": "seal-1",
+              "tool": "torque-1"
+            }
+          },
+          "ben": {
+            "did": {
+              "actor": "ben",
+              "base_revision": 13,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "dee",
+              "tool": "scanner-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Hand the scanner to Dee so the tool remains available while freeing my hands for future repair coordination.",
+            "said_on_retry": "Hand the scanner to Dee so the available free technician can use the shared diagnostic tool.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "ben",
+              "base_revision": 12,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "dee",
+              "tool": "scanner-1"
+            }
+          },
+          "cam": {
+            "did": {
+              "actor": "cam",
+              "base_revision": 14,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "ben",
+              "tool": "driver-1"
+            },
+            "lost_what_it_wanted": true,
+            "refused_because": [],
+            "retried": true,
+            "said": "Hand the driver to Dee to keep the scarce tool available while freeing Cam\u2019s hands for future repair work.",
+            "said_on_retry": "Handing the driver to Ben makes the scarce tool available to another technician for continued repair work.",
+            "status": "accepted",
+            "wanted": {
+              "actor": "cam",
+              "base_revision": 12,
+              "controller": "unselected",
+              "kind": "handoff-tool",
+              "recipient": "dee",
+              "tool": "driver-1"
+            }
+          },
+          "dee": {
+            "did": null,
+            "lost_what_it_wanted": false,
+            "refused_because": [],
+            "retried": false,
+            "said": "wait: no offered action",
+            "status": "no_action",
+            "wanted": null
+          }
+        },
+        "committed_first": "ava",
+        "progress": {},
+        "revision_when_decided": 12,
+        "turn": 5
+      }
+    ],
+    "world": "repair-bay"
+  },
+  "trace_id": "world-builder-live/run/ad1f335a490f432f8429a2f1917aea4d"
+}

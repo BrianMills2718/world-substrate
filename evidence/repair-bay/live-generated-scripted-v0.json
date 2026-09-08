@@ -1,0 +1,2661 @@
+{
+  "schema_version": "world-substrate-contested-run/v3",
+  "world": "repair-bay",
+  "actors": [
+    "ava",
+    "bo",
+    "cam",
+    "dee"
+  ],
+  "model": "scripted-first-available",
+  "cost_usd": 0.0,
+  "mechanic_profile_id": "ce2740865c4534f1",
+  "summary": {
+    "turns": 30,
+    "terminal_reached": false,
+    "accepted_actions": 90
+  },
+  "transcript": [
+    {
+      "turn": 1,
+      "revision_when_decided": 0,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "claim-tool",
+            "base_revision": 1,
+            "controller": "unselected",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "claim-tool",
+            "base_revision": 2,
+            "controller": "unselected",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "claim-tool",
+            "base_revision": 0,
+            "controller": "unselected",
+            "tool": "driver-1"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 2,
+      "revision_when_decided": 3,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 3,
+            "controller": "unselected",
+            "machine": "conveyor-1",
+            "scanner": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 3,
+            "controller": "unselected",
+            "machine": "conveyor-1",
+            "scanner": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 3,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 4,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 3,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 5,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 3,
+      "revision_when_decided": 6,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 6,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 6,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 6,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 7,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 6,
+            "controller": "unselected",
+            "machine": "generator-1",
+            "scanner": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 8,
+            "controller": "unselected",
+            "machine": "generator-1",
+            "scanner": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 4,
+      "revision_when_decided": 9,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 9,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 9,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 9,
+            "controller": "unselected",
+            "machine": "pump-1",
+            "scanner": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "diagnose",
+            "base_revision": 10,
+            "controller": "unselected",
+            "machine": "pump-1",
+            "scanner": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 9,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 11,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 5,
+      "revision_when_decided": 12,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 12,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 12,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 12,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 13,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 12,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 14,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 6,
+      "revision_when_decided": 15,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 15,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 15,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 15,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 16,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 15,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 17,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 7,
+      "revision_when_decided": 18,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 18,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 18,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 18,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 19,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 18,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 20,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 8,
+      "revision_when_decided": 21,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 21,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 21,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 21,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 22,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "bo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 21,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 23,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 9,
+      "revision_when_decided": 24,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 24,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 24,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 24,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 25,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 24,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 26,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 10,
+      "revision_when_decided": 27,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 27,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 27,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 27,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 28,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 27,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 29,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 11,
+      "revision_when_decided": 30,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 30,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 30,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 30,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 31,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 30,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 32,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 12,
+      "revision_when_decided": 33,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 33,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 33,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 33,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 34,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "bo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 33,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 35,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 13,
+      "revision_when_decided": 36,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 36,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 36,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 36,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 37,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 36,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 38,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 14,
+      "revision_when_decided": 39,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 39,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 39,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 39,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 40,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 39,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 41,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 15,
+      "revision_when_decided": 42,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 42,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 42,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 42,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 43,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 42,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 44,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 16,
+      "revision_when_decided": 45,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 45,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 45,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 45,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 46,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "bo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 45,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 47,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 17,
+      "revision_when_decided": 48,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 48,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 48,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 48,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 49,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 48,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 50,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 18,
+      "revision_when_decided": 51,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 51,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 51,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 51,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 52,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 51,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 53,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 19,
+      "revision_when_decided": 54,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 54,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 54,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 54,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 55,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 54,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 56,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 20,
+      "revision_when_decided": 57,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 57,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 57,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 57,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 58,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "bo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 57,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 59,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 21,
+      "revision_when_decided": 60,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 60,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 60,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 60,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 61,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 60,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 62,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 22,
+      "revision_when_decided": 63,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 63,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 63,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 63,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 64,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 63,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 65,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 23,
+      "revision_when_decided": 66,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 66,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 66,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 66,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 67,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 66,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 68,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 24,
+      "revision_when_decided": 69,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 69,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 69,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 69,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 70,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "bo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 69,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 71,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 25,
+      "revision_when_decided": 72,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 72,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 72,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 72,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 73,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 72,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 74,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 26,
+      "revision_when_decided": 75,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 75,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 75,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 75,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 76,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 75,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 77,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 27,
+      "revision_when_decided": 78,
+      "committed_first": "cam",
+      "actors": {
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 78,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 78,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 78,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 79,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "ava": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 78,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 80,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 28,
+      "revision_when_decided": 81,
+      "committed_first": "dee",
+      "actors": {
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 81,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 81,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 81,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 82,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "bo": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 81,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 83,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 29,
+      "revision_when_decided": 84,
+      "committed_first": "ava",
+      "actors": {
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 84,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 84,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 84,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 85,
+            "controller": "unselected",
+            "recipient": "ava",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "cam": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "dee": {
+          "wanted": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 84,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "dee",
+            "kind": "handoff-tool",
+            "base_revision": 86,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 30,
+      "revision_when_decided": 87,
+      "committed_first": "bo",
+      "actors": {
+        "bo": {
+          "wanted": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 87,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "did": {
+            "actor": "bo",
+            "kind": "handoff-tool",
+            "base_revision": 87,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "driver-1"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "cam": {
+          "wanted": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 87,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "wrench-1"
+          },
+          "did": {
+            "actor": "cam",
+            "kind": "handoff-tool",
+            "base_revision": 88,
+            "controller": "unselected",
+            "recipient": "bo",
+            "tool": "wrench-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "dee": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "ava": {
+          "wanted": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 87,
+            "controller": "unselected",
+            "recipient": "dee",
+            "tool": "scanner-1"
+          },
+          "did": {
+            "actor": "ava",
+            "kind": "handoff-tool",
+            "base_revision": 89,
+            "controller": "unselected",
+            "recipient": "cam",
+            "tool": "scanner-1"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    }
+  ]
+}
