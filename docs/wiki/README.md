@@ -11,174 +11,180 @@ authority_refs:
   - ../decisions/001-project-scope.md
   - ../decisions/002-observability-and-replay.md
   - ../decisions/003-semantic-mechanical-boundary.md
+  - ../decisions/004-product-and-adoption-strategy.md
 ---
 
 # World Substrate project wiki
 
-This is the single orientation surface for the project. It explains the current synthesis and routes readers to native authorities; it does not replace them.
+This is the single orientation surface for the project. It summarizes current truth and routes readers to native authorities; it does not replace architecture, contracts, decisions, code, or evidence.
 
 ## What this project is
 
-World Substrate is a persistent, observable simulation substrate. LLM or human policies express semantically grounded intents. Linguistic Core identifies senses and participant roles. Installed mechanics with explicit local authority determine and commit canonical consequences.
+World Substrate is a persistent, observable simulation engine and authoring system. LLM or human policies express intents. Linguistic Core supplies semantic senses and participant roles. Installed mechanics with explicit local authority determine canonical consequences.
 
-The intended result is a wide compositional space rather than an enumerated list of natural-language commands or one bespoke mechanic per predicate. Persistent objects participate in multiple mechanics because those mechanics act on shared typed state under declared authority.
+The product direction is a **Generative-World Builder on top of a rigorous causal world engine**. The distinctive claim is not that an LLM can narrate a plausible world; it is that the world has represented state, installed law, and inspectable evidence for what actually happened.
+
+The deployed product is available at `https://brianmills.dev/world-builder/`.
 
 ## Start here
 
 | Need | Read next |
 | --- | --- |
-| Current direction or next work | [Roadmap](../../roadmap/README.md) |
-| Enduring system boundaries | [Architecture](../architecture.md) |
-| Implemented M1 interface | [Core contract v0](../contracts/core-v0.md) |
-| Semantic binding contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
-| Mechanics-agent package | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
+| Current direction / exact next action | [Roadmap](../../roadmap/README.md) |
+| Durable system boundaries | [Architecture](../architecture.md) |
+| Product + off-the-shelf strategy | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
+| Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
+| Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
+| Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
+| Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
 | Commit boundary | [Transition envelope v0](../contracts/transition-envelope-v0.md) |
-| Optional read-scope verification design | [Read-scope enforcement v0](../contracts/read-scope-enforcement-v0.md) |
-| Product evidence goals | [Decision 002](../decisions/002-observability-and-replay.md) |
-| Semantic and causal boundary | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) |
-| Why neighboring projects are not the authority | [Source dispositions](../source-dispositions.md) |
-| Reference-world expectations | [Reference worlds](../../reference_worlds/README.md) |
-| The contested two-agent world | [Kitchen audit](../audits/kitchen-contested-world.md) |
-| Rendered runs a person can read | `evidence/renders/` |
+| Optional read-scope verification | [Read-scope enforcement v0](../contracts/read-scope-enforcement-v0.md) |
+| Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) |
+| Why neighboring repos are not authority | [Source dispositions](../source-dispositions.md) |
+| Reference worlds | [Reference-world guide](../../reference_worlds/README.md) |
+| Live authoring evidence | [Live authoring audit](../audits/live-world-authoring.md) |
+| Flagship behavior | [Kitchen audit](../audits/kitchen-contested-world.md) |
 
 ## Concepts and terminology
 
-- **Canonical state:** the only material world truth. Prompts, narratives, UI views, resident-agent private state, and analysis are not competing authorities.
-- **Semantic binding:** a Linguistic Core predicate sense, participant-role binding, causal classification, and—when causal—a binding to an installed mechanic.
-- **Causal bearer:** the represented agent, process, disposition, institution, or exogenous input whose existence changes what the world can do next.
-- **Mechanic:** an installed rule or process with declared applicability, local reads/writes, effects, invariants, limits, and trace behavior.
-- **Mechanic profile:** the validated set of mechanics and bindings frozen for a simulation run.
-- **Composite event:** a description of multiple committed events that does not reapply their effects.
-- **Affordance:** one installed mechanic currently available to one actor, derived from canonical state.
-- **Observation:** an actor-authorized, intentionally lossy projection of canonical state.
-- **Declared enforcement coverage:** whether every consequence the mechanic author declared is bound to an enforceable interface.
-- **Causal-closure assay:** fallible dependency and interaction review that searches for consequential state the author failed to declare.
-- **Reference world:** a bounded end-to-end world that exercises shared substrate contracts without owning a private engine.
-- **Terminal condition:** a world-specific predicate over canonical state that tells a runner represented work is complete; it should be derived when existing state already says enough.
+- **Canonical state:** the only material world truth. Prompts, UI, model beliefs, and analysis are not competing authorities.
+- **Semantic binding:** a Linguistic Core sense plus participant-role mapping and causal classification.
+- **Causal bearer:** the represented actor, process, institution, disposition, or input whose presence changes possible transitions.
+- **Mechanic:** an installed rule/process with applicability, declared state authority, checks, effects, limits, and trace behavior.
+- **Mechanic profile:** the validated/frozen set of mechanics used for one run.
+- **Affordance:** one currently available action instance derived from canonical state.
+- **Observation:** an actor-authorized projection of canonical state.
+- **Composite event:** a description of committed lower-level events that does not apply their effects again.
+- **Declared enforcement coverage:** whether everything the author explicitly declared is bound to an enforceable interface.
+- **Causal-closure assay:** fallible review/testing that searches for consequential dependencies the author did not declare.
+- **Authoring bundle:** non-causal represented structure, action signatures, and presentation declarations.
+- **Causal model:** constrained, reviewable law for action signatures; it is data, not model-written executable source.
+- **Terminal condition:** a state-derived predicate saying represented work is complete.
+- **Automatic replay:** graphical presentation generated from world/trace/shared presentation semantics without world-specific renderer code.
+- **Polished replay:** optional art-direction overlay on top of the same world truth.
 
-## Four causal layers
+The four causal layers remain: substrate processes, installed institutions, resident-agent cognition, and derived analytic interpretation. Agent memory/plans remain private cognition unless a selected world explicitly represents them as mechanic-readable state.
 
-1. Substrate physics and autonomous processes.
-2. Installed institutions.
-3. Resident-agent cognition.
-4. Derived analytic interpretation.
+## Sources and evidence
 
-Agent memory, beliefs, uncertainty, planning, and private reasoning ordinarily stay inside the resident-agent runtime. Analysis can classify exchange, trust, cooperation, or collective competence without causing those patterns again. Either layer may become mechanically explicit only when a selected world represents a causal bearer and binds it to an installed mechanic.
+[Source dispositions](../source-dispositions.md) classifies donor roles and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donor repositories may contribute ideas, evidence, or adopted code only through an explicit consumer path.
 
-## Where this actually stands
+Retained evidence is revision/run scoped. Important current evidence includes:
 
-The substrate prototype is complete and the flagship phase has produced its first human-facing artifact. The selected world is the kitchen: two cooks with different orders, one knife, two burners, and zero ingredient slack. Three fresh same-model/prompt services reproduced the key sequence — Bo completes at t9, releases the knife for Ama at t10, Ama takes it at t11, and both orders are filled at the t17 world terminal.
+- M1 freshwater traces and fresh-process replay for the implemented substrate baseline;
+- M3/M4 mechanic-authoring and causal-coherence assays;
+- M5 LLM policy use through the ordinary affordance seam;
+- M6 Workshop cross-domain reuse;
+- M7/M7b model-authored mechanic experiments;
+- three replicated Kitchen full-service traces;
+- Greenhouse zero-review replay as the post-renderer new-world proof; and
+- Orchard live causal-generation + fresh-run acceptance evidence.
 
-`evidence/renders/world-replay-studio-v0.html` remains the retained-world viewing surface, while `evidence/renders/world-builder-v0.html` now closes the creation loop: represent a world, request a constrained causal-mechanics proposal, inspect compiler-derived authority, explicitly approve it, and start a fresh scripted or LLM-selected graphical run. The retained Studio still contains Kitchen, Castaway, Workshop, and **Greenhouse**, with Automatic as the baseline and Polished optional. See the [live authoring audit](../audits/live-world-authoring.md), [action mechanic declaration contract](../contracts/action-mechanic-declaration-v0.md), and [roadmap](../../roadmap/README.md).
+Historical evidence is not rewritten to resemble current behavior. For example, the old Kitchen full-service trace keeps its trailing turns because those turns motivated the terminal-state fix.
 
-## What exists now?
+## Accepted authorities and decisions
 
-- M1 is promoted through registered fill, heat, unheat, pour, drink, take, and give rules plus deterministic processes. Discovery, observation, causal events, atomic rejection, persistent cross-system identity, and exact pinned replay work in `core-v0`.
-- Six of seven M1 action kinds have reviewed Linguistic Core bindings; `unheat` remains upstream-owned because the pinned ontology extraction contains no appropriate sense.
-- `give` plus reciprocal history can be classified as derived exchange without a second transfer (M2).
-- Declared **write** scopes are enforced. Rule-facing read-only hooks execute on detached state, and mechanics cannot own revision or causal history. Declared **read** scopes are recorded and remain unenforced at runtime; an optional verification design exists.
-- Two adjacent mechanics were authored offline and exercised through the mechanic-profile workflow (M3, M4), and three interaction assays attack different causal-closure failure bases.
-- An LLM policy has driven the ordinary affordance seam (M5).
-- A materially different workshop world reuses the substrate contracts while reusing none of Castaway's mechanics (M6).
-- A model authored mechanics it was not handed, including relational mechanics that affect a second entity (M7/M7b). The dominant observed failure was triviality rather than uncontrolled authority.
-- Ownership references and authored field types are checked rather than left as conventions.
-- The kitchen is the third world and the first one built to be watched. Its completion condition is derived from its orders, and new contested-run outputs record whether the world reached that terminal state.
+- [Roadmap](../../roadmap/README.md) owns current planning and prioritization.
+- [Architecture](../architecture.md) owns durable system boundaries.
+- [Decision 001](../decisions/001-project-scope.md) owns canonical project scope.
+- [Decision 002](../decisions/002-observability-and-replay.md) owns observability/replay doctrine.
+- [Decision 003](../decisions/003-semantic-mechanical-boundary.md) owns the semantic/effect boundary.
+- [Decision 004](../decisions/004-product-and-adoption-strategy.md) owns the Generative-World Builder and off-the-shelf adoption posture.
+- Implemented contracts own only their declared seam; proposed/partial contracts must say so.
+- Code/tests own current runtime behavior.
+- Revision-bound evidence owns observed outcome claims.
 
-## Current frontier
+## Working context
 
-The baseline authoring workflow is now proven **after** the product surface existed. Greenhouse added a new `water` mechanic, shared-tool handoff, terminal state, retained real-engine trace and Automatic replay without a scene review file or world-specific visualization branch. It exposed two reusable assumptions: `take`/`put_down` labels had hard-coded an `item` field, and one action could not visually update two represented entities. The former moved to trace-inferred labels; the latter added generic declarative `state_effects`, so `water` can show both the plant becoming watered and the can becoming empty.
+The substrate phase is complete. Current product/engineering truth:
 
-The selected authoring direction now works as one browser-to-engine vertical. The structural bundle is still non-causal; a separate constrained causal declaration can be proposed by Luna, compiler-checked, reviewed, and explicitly approved. Fresh runs then use either a zero-spend deterministic policy or an LLM policy that can select only engine-minted action ids. Orchard acceptance proved both seams with tiny real-model probes while preserving the consequence boundary. The next boundary is human evaluation on a less trivial authored world, not arbitrary model-written code.
+| Area | Current state |
+| --- | --- |
+| Core transition engine | implemented; write scopes enforced; rule views detached |
+| Semantic grounding | six of seven M1 kinds bound; generic live actions not yet semantically closed |
+| Kitchen flagship | 3/3 replicated handoff/completion; polished and Automatic replay |
+| Replay system | one generic renderer + scene semantics + auto-layout across real worlds |
+| Builder | deployed; structural authoring + causal proposal/review/approval + fresh runs |
+| Causal generation | Luna proposes constrained JSON; local compiler is authority; one repair attempt allowed |
+| Live policies | scripted or LLM; LLM selects only engine-minted action IDs |
+| Deployment | public static Builder/Play shell + loopback API behind Cloudflare |
+| Spend control | per-call caps + rate limits + persistent $0.50/day reservation ledger |
+| Resident cognition | intentionally separate; durable memory/reflection/planning not yet implemented |
+| User persistence | no saved-user-world/run product yet |
+
+Reference-world roles:
+
+- **Castaway:** M1 implementation/evidence donor.
+- **Workshop:** materially different reuse proof.
+- **Kitchen:** flagship watched world.
+- **Greenhouse:** new-world/Automatic-replay portability proof.
+- **Orchard:** live-authoring acceptance fixture.
+
+The approved implementation strategy is to keep the causal kernel custom and evaluate mature systems around it. Phaser is the leading browser-rendering candidate; Concordia/LangGraph are cognition candidates; PettingZoo is an interoperability candidate; persistence/auth should use standard infrastructure; SimPy is conditional on demonstrated scheduling pressure. None is adopted as causal authority merely by being named.
+
+## Needs resolution
+
+These are the important open boundaries now:
+
+1. **Semantic closure for live authoring:** generated action mechanics can currently compile while `semantic_bindings` is empty; new authored action kinds should eventually bind a reviewed Linguistic Core sense/role mapping.
+2. **Less-trivial authoring proof:** Orchard is intentionally tiny. The next real product test must exercise multiple actors/resources/actions and reveal the first genuine causal-language/review failure.
+3. **Mechanic failure evidence:** implementation exceptions are safely isolated/rolled back but should become explicit `mechanic_error` / `process_error` causal events.
+4. **Approval/auth semantics:** public same-origin/rate-limit controls bound abuse economically, but identity and durable server-issued approval receipts remain product/security decisions.
+5. **Resident cognition:** memory, reflection, planning, schedules, and social models should be added behind the policy seam, preferably via a bounded off-the-shelf comparison rather than a framework rewrite.
+6. **Saved worlds/runs:** the live Builder currently creates ephemeral fresh runs; durable user-owned worlds/run history are not yet a product surface.
+7. **Read-scope verification:** declared reads remain recorded but not enforced; activate only if measured value justifies overhead.
+8. **Upstream semantic gap:** `unheat` still lacks an appropriate pinned Linguistic Core sense.
+9. **Deployment reproducibility/CI:** source is pinned, but the live Python dependency environment is not fully hermetic and permanent required CI is still desirable.
 
 ## Architecture and workflow
 
 ```text
-semantic intent or autonomous trigger
-        |
-        v
-Linguistic Core sense + role binding
-        |
-        v
-installed local mechanic -> proposed effects -> validation -> one commit/refusal
-        |                                              |
-        v                                              v
-bounded observation                         persistent state + causal trace
-                                                       |
-                                                       v
-                                            detachable analytic views
+represented structure
+      |
+      v
+semantic intent / action signature
+      |
+      v
+reviewed semantic binding (partial for generic live authoring today)
+      |
+      v
+constrained causal-mechanic declaration
+      |
+      v
+local compiler derives authority + validates paths/types
+      |
+      v
+explicit approval -> frozen mechanic profile
+      |
+      v
+scripted / human / LLM policy selects offered action_id
+      |
+      v
+Engine.submit() -> checks -> one commit or refusal
+      |
+      +--> canonical persistent state + causal event
+      |
+      +--> retained trace -> scene semantics -> graphical replay
 ```
 
-## Sources and evidence
-
-[Source dispositions](../source-dispositions.md) classifies material donors and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donors are design, implementation, or failure-analysis inputs; they are not code-adoption instructions.
-
-Retained evidence records what a particular revision/run established. In particular, `evidence/kitchen/full-service-v0.json` is intentionally historical: its trailing turns are the evidence that motivated the terminal-state fix, not the behavior of the current runner.
-
-## Accepted authorities and decisions
-
-- [Roadmap](../../roadmap/README.md) owns project direction and active work.
-- [Architecture](../architecture.md) owns durable system boundaries.
-- Accepted decisions own human-set doctrine.
-- `core-v0` owns the implemented M1 seam.
-- Proposed/partial contracts own only the status they explicitly claim.
-- Code and tests own implemented behavior.
-- Revision-bound evidence owns observed claims.
-- The kitchen, rendered reasoning-vs-world view, and scarce-resource coordination are the current reversible flagship choices.
-
-## Working context
-
-Castaway remains the adopted M1 implementation and evidence donor. The workshop is the cross-domain reuse proof. The kitchen is the flagship experiment. Linguistic Core is the semantic interface. Cybernetic Influence, Agent Ecology, Data Contracts, and Collective Competence remain bounded design or failure-analysis donors rather than competing authorities.
-
-## Needs resolution
-
-- the upstream `unheat` semantic sense;
-- progress toward leaving enforced thresholds such as cooling to a safe temperature;
-- whether/when optional read-scope verification is worth its measured overhead;
-- deployment/publication, which remains an explicit human authority boundary.
+Off-the-shelf cognition, renderer, interoperability, persistence, and auth may surround this path. They must not replace the Engine as consequence authority.
 
 ## Human-reviewable artifacts
 
-- `evidence/renders/world-builder-v0.html`: visual authoring surface with causal-mechanics review and fresh-run controls when served with the World Builder API.
-- `docs/contracts/action-mechanic-declaration-v0.md`: constrained action-law language, derived authority, compiler repair, and approval boundary.
-- `docs/audits/live-world-authoring.md`: real mechanics-generation / LLM-policy probes, costs, fresh graphical run, and public-service guards.
-- `docs/audits/world-authoring-builder.md`: builder validation, product boundary, and visual review.
-- `evidence/renders/greenhouse-zero-review-v0.html`: fourth-world Automatic replay generated without a scene review or visualization code.
-- `evidence/greenhouse/first-service-v0.json`: retained seven-turn real-engine Greenhouse run.
-- `evidence/greenhouse/scene-profile-zero-review-v0.json`: zero-TODO Automatic Greenhouse scene profile.
-- `docs/audits/greenhouse-authoring-proof.md`: end-to-end fourth-world authoring and portability audit.
-- `evidence/renders/world-replay-studio-v0.html`: standalone local Studio covering four real worlds; Greenhouse is Automatic-only and the earlier three retain optional Polished variants.
-- `evidence/replay-studio-v0.json`: declarative Studio world/variant manifest.
-- `scripts/render_replay_studio.py`: domain-neutral standalone Studio packager.
-- `docs/audits/world-replay-studio.md`: product-boundary and verification audit.
-- `evidence/renders/kitchen-spatial-replay-v1.html`: graphical top-down replay generated from the generic renderer plus the kitchen scene profile.
-- `evidence/renders/kitchen-zero-review-v0.html`: zero-review Kitchen breadth replay from model + retained replicated trace + shared catalog + auto-layout.
-- `evidence/kitchen/scene-profile-zero-review-v0.json`: retained zero-review Kitchen profile with five declared bindings and no TODOs.
-- `docs/audits/kitchen-zero-review.md`: all-three-world zero-review breadth proof and automation boundary.
-- `evidence/renders/castaway-spatial-replay-v0.html`: second real-world portability replay generated by the same renderer.
-- `evidence/renders/castaway-zero-review-v0.html`: zero-review Castaway replay from model + trace + shared catalog + auto-layout.
-- `evidence/castaway/scene-profile-zero-review-v0.json`: retained zero-review Castaway profile with no bootstrap TODOs.
-- `docs/audits/castaway-zero-review.md`: second-world zero-review portability proof and authority boundary.
-- `evidence/renders/workshop-spatial-replay-v0.html`: greenfield Workshop replay generated with no renderer branch.
-- `evidence/renders/workshop-zero-review-v0.html`: zero-review Workshop replay generated from model + trace + shared catalog + auto-layout only.
-- `reference_worlds/workshop/scene-profile-v0.json`: first Workshop scene profile, assembled from bootstrap + review.
-- `reference_worlds/workshop/scene-review-v0.json`: optional polished review overlay; 62.6% greenfield baseline, 34.3% current.
-- `docs/audits/workshop-scene-greenfield.md`: greenfield method, measurement, and single-anchor portability finding.
-- `docs/audits/scene-profile-auto-layout.md`: deterministic geometry proposal method, provenance boundary, and 50.9% measurement.
-- `docs/audits/scene-action-presentation-bindings.md`: explicit action-binding authority, negative controls, 34.3% polish measurement, and zero-review proof.
-- `reference_worlds/castaway/scene-profile-v0.json`: Castaway scene declaration with no generic renderer branch.
-- `reference_worlds/kitchen/scene-profile-v0.json`: declarative kitchen geometry, assets, action projection and replay milestone labels.
-- `reference_worlds/scene-asset-catalog-v0.json`: explicit asset/category/component bindings used by profile bootstrapping.
-- `reference_worlds/{kitchen,castaway}/scene-review-v0.json`: presentation-only overlays for geometry and ambiguous action projection.
-- `scripts/bootstrap_scene_profile.py`: safe world/trace/catalog → reviewable scene-profile bootstrapper.
-- `docs/contracts/scene-profile-v0.md`: generic trace + world model + scene profile → 2D replay contract, bootstrap path and limits.
-- `evidence/renders/kitchen-flagship-v1.html`: denser trace-oriented timeline of that retained service.
-- `evidence/kitchen/full-service-replication-v1-summary.json`: hashes, method, costs and 3/3 replication result.
-- `evidence/kitchen/full-service-replication-v1-run{1,2,3}.json`: raw retained v3 traces.
-- `evidence/renders/kitchen-full-service.html`: intentionally historical pre-terminal run that exposed the trailing-turn defect.
-- `docs/audits/kitchen-contested-world.md`: why the kitchen exists, what replicated, and the execution caveat.
-- M1 freshwater traces and replay receipt: the promoted substrate baseline.
-- M3–M7b audits and evidence: mechanics-authoring, interaction, policy, reuse, and authoring-rate findings.
+Use these instead of reading every milestone audit:
+
+- `https://brianmills.dev/world-builder/` — deployed Build/Play product surface.
+- `evidence/renders/kitchen-spatial-replay-v1.html` — polished graphical flagship.
+- `evidence/renders/kitchen-zero-review-v0.html` — Automatic Kitchen breadth proof.
+- `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic proof.
+- `evidence/renders/world-replay-studio-v0.html` — retained-world Studio.
+- [Live authoring audit](../audits/live-world-authoring.md) — real mechanics-generation/policy calls and service guards.
+- [Action mechanic declaration contract](../contracts/action-mechanic-declaration-v0.md) — live causal language/authority boundary.
+- [Scene profile contract](../contracts/scene-profile-v0.md) — trace/world/presentation-to-replay boundary.
+- [Greenhouse proof](../audits/greenhouse-authoring-proof.md) — end-to-end fourth-world portability evidence.
+- [Kitchen audit](../audits/kitchen-contested-world.md) — replicated flagship behavior.
+- [Decision 004](../decisions/004-product-and-adoption-strategy.md) — current product/adoption strategy.
 
 ## Roadmap
 
-Use [the canonical roadmap](../../roadmap/README.md) for the active experiment, authority boundaries, claim limitations, and exact next action.
+Use [the canonical roadmap](../../roadmap/README.md) for current priorities, risks, refresh triggers, and the exact next action. The wiki is navigation; it must not become a second roadmap.

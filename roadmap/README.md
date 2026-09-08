@@ -8,285 +8,251 @@ reviewed_through: 2026-09-07
 
 # World Substrate living roadmap
 
-**Authority:** user-approved direction in [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), and [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md)  
-**Selected path:** durable solo; one writer; reversible branches; no deployment, publication, or model spend without explicit authority  
-**Stage:** prototype complete; live causal-mechanics authoring and fresh graphical runs implemented in the World Builder
-**Last outcome-bearing result:** the Orchard acceptance vertical now goes from `world-substrate-authoring-bundle/v0` through a bounded Luna mechanics proposal, local causal compiler, derived authority review, explicit approval, frozen mechanic profile, fresh scripted/LLM policy execution, and generic graphical replay. A real mechanics trace needed one compiler-guided repair and cost $0.00156146 total; a real Luna policy then selected the engine-offered `pick apple-1` for $0.0001138. Raw model text never executes, and a fresh action's ownership effect can drive presentation without verb-specific renderer code.
-**Superseded:** the flagship-world, viewer-surface, and first-impressive-behavior decisions are answered by the kitchen, the rendered reasoning-vs-world view, and scarce-resource coordination respectively; before that, the observation seam and authoring obligations were narrowed through M5–M7b.  
-**Current strategy frontier:** human-test the deployed Build → Generate Mechanics → Review/Approve → Run flow on a less trivial authored world; extend the constrained causal language only from a concrete expressiveness failure
+**Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), and [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md).  
+**Stage:** prototype complete; deployed authoring/run alpha; next phase is product/semantic depth rather than more generic substrate breadth.  
+**Current frontier:** prove the deployed Builder on a meaningfully less-trivial authored world, then close the semantic loop and evaluate off-the-shelf cognition/rendering only where the world exposes a real need.  
+**Deployment boundary:** the current `brianmills.dev/world-builder/` deployment and its bounded LLM service were explicitly authorized. New deployment/publication or provider spend outside an already-approved bounded service remains an explicit human authority boundary.
 
 ## Outcome and success criteria
 
-### The end goal
+### End goal
 
-**A sophisticated world-modelling system, with one instantiation good enough to
-show off as the flagship.** Stated by Brian on 2026-09-04, in those terms.
+Build **a sophisticated world-modeling system with one instantiation compelling enough to show**, while preserving a stronger causal contract than ordinary generative-agent demos.
 
-Everything below it — the seven-bullet workflow and six numbered criteria — is
-the *prototype phase*, and that phase is finished. Read the two as a sequence,
-not as alternatives: the prototype asked "do these contracts hold?", and the
-answer is yes. Phase two asks whether one world produces a robust, legible
-behavior worth showing. The kitchen is the selected attempt; three fresh
-replications have cleared the first robustness gate, so legibility is now the
-immediate question.
+The approved product thesis is now:
 
-A fresh agent should take three things from this section:
+> **Generative-World Builder on top; rigorous causal world engine underneath.**
 
-1. **"All six success criteria met" does not mean the project is done.** It
-   means phase one is done.
-2. **The flagship direction is no longer open.** The kitchen is the selected
-   world; its rendered run is the selected viewer surface; the first behavior
-   being tested is coordination over scarce shared resources between agents
-   that cannot talk to each other.
-3. **The first two reference worlds are deliberately small.** Castaway and the
-   workshop were built to test whether the contracts work and transfer. The
-   kitchen is the first world built to be watched rather than merely to prove a
-   substrate property.
+A person should be able to represent a world, define/ground the things that can happen, review generated causal law, run scripted or LLM residents, and watch the world evolve graphically. The world—not a narrator—owns what actually happened.
 
-### What "sophisticated" and "show off" mean for the active experiment
+### Prototype phase — complete
 
-The first choices have been made, reversibly:
+The original prototype succeeds when it can:
 
-- **World:** the kitchen, chosen from a measured weakness in the two-agent
-  Castaway run rather than from domain taste.
-- **Viewer surface:** a rendered trace showing each agent's stated reasoning
-  beside the world state and causal outcome. Publication/deployment remains a
-  separate authority boundary.
-- **First impressive behavior:** two agents with no communication contending
-  over one knife and zero-slack ingredients, yet partitioning resources,
-  waiting, and handing over the bottleneck without being instructed to
-  cooperate. Three fresh replications reproduced the handoff; the next gate is
-  whether the evidence can explain itself to a viewer without project narration.
+1. represent persistent typed state;
+2. expose bounded observations and state-derived affordances;
+3. let scripted/human/LLM policies choose without consequence authority;
+4. bind semantic intent separately from effects;
+5. install/review mechanics under explicit local authority;
+6. atomically commit or refuse causally coupled writes;
+7. retain enough causal evidence to inspect failures and outcomes; and
+8. transfer the substrate to a materially different world.
 
-### The prototype phase, and its criteria (complete)
+Those questions are answered. Exact replay remains an M1/debugging capability, not a universal project goal.
 
-For a substrate developer and later a data-oriented world builder, change the recurring task of hand-coding isolated actions and narrating missing consequences into a reviewable workflow that:
+### Product-phase success criteria
 
-- defines persistent typed world state;
-- grounds intents in Linguistic Core senses and roles;
-- binds causal primitives and processes to installed local mechanics;
-- exposes state-derived affordances;
-- validates and commits causally coupled effects once;
-- makes attempts, refusals, assumptions, and consequences observable; and
-- lets mechanics agents expand a world before a run through reviewable, frozen profiles.
+The next phase succeeds when:
 
-The prototype succeeds when:
-
-1. one reference world runs end to end through neutral substrate contracts;
-2. the same semantic action interface can be exercised by scripted, human, or LLM policies without giving policy prose consequence authority;
-3. ordinary composites and analytic patterns can be recognized without double-applying primitive effects;
-4. one agent-authored adjacent mechanic is installed offline, frozen, and exercised with interaction evidence;
-5. unsupported behavior and residual causal-closure risk remain visible; and
-6. a second materially different world reuses the semantic, transition, and mechanic-profile contracts.
-
-Exact replay, universal physics, predictive validity, complete linguistic coverage, and defining all mechanics up front are not success criteria.
+- a nontrivial world can be authored primarily through the product rather than bespoke repo surgery;
+- newly authored actions carry reviewed semantic identity as well as causal law;
+- generated mechanics are understandable enough for a human to approve/refuse with confidence;
+- resident agents can maintain useful cognition without becoming world authority;
+- graphical execution feels like a world rather than a trace viewer; and
+- useful worlds/runs can persist without compromising causal provenance.
 
 ## Canonical outcome probe
 
-M1 remains the first implementation probe: two actors, persistent vessels, a finite pathogen-bearing freshwater source, a finite-fuel fire, and registered ownership, container, liquid, heat, material, and process rules.
+M1 remains the canonical substrate probe: persistent actors/vessels, finite contaminated water, finite fuel, ownership/container/liquid/thermal/material state, actions and autonomous processes, atomic rejection, causal events, snapshots, and exact pinned replay.
 
-The promoted trace exercises fill, heat, unheat, pour, drink, take, and give; advances canonical time; exposes finite water and fuel use, heat and pathogen changes, cross-system vessel identity, automatic processes, atomic rejection, and an exact replay hash.
+M1 establishes the implemented `core-v0` seam. It does **not** establish universal physics, complete semantics, global causal closure, or a requirement that future worlds remain deterministic.
 
-That probe establishes the implemented `core-v0` seam. It does not establish:
-
-- a general semantic compiler;
-- a complete rights model;
-- agent-authored mechanics;
-- cross-domain reuse;
-- global causal closure; or
-- a requirement that future worlds replay exactly.
+For current product behavior, the Kitchen/Greenhouse/Orchard evidence is more relevant than M1; M1 remains the substrate baseline rather than the active product experiment.
 
 ## Current truth
 
-State, not history. Milestone narratives live in the milestone table and their
-audits; findings live in the audit that produced them.
+State, not milestone narrative:
 
-- This repository owns the project goal, decisions, architecture, contracts, source dispositions, and roadmap.
-- M1 through M4 are complete and promoted. M1 is pinned at implementation revision `4c3303828b7c9b97e22a806caa404306f8616f7a`; its retained evidence remains authoritative for that claim.
-- Contract status is mixed: `core-v0` is implemented; [mechanic profile](../docs/contracts/mechanic-profile-v0.md) and [transition envelope](../docs/contracts/transition-envelope-v0.md) are partially implemented; [semantic binding](../docs/contracts/semantic-mechanical-binding-v0.md) has six bindings of seven, with `unheat` unbound because the pinned extraction has no sense for it. Each contract states its own status.
-- Ownership references are checked: `owner_ref` must be `<kind>:<target>`, enforced in `World.validate()` and refused at construction by `model.owner_ref()`.
-- Declared **write** scopes are enforced by the engine (`scope_violation`; negative controls in `tests/test_write_scope.py`). Rule-facing discovery, checks, progress, consequences and triggers are isolated from canonical state, and engine-owned revision/history cannot be proposed by mechanics. Declared **read** scopes remain recorded and unenforced at runtime.
-- Three interaction assays exist on three different bases — declarations, differential behaviour, conserved-quantity accounting. Each has a stated blind spot; no single basis and no pair is sufficient. Evidence: [M3](../docs/audits/m3-overheat-authoring-experiment.md), [M4](../docs/audits/m4-spill-experiment.md).
-- Installation validates internal consistency and never completeness. A residual class of omission survives every check the repository has.
-- **The kitchen has a terminal state without duplicating state.** `reference_worlds/kitchen/terminal.py` derives completion from the existing `order.filled` fields, and `run_contested_world.py` stops before another policy decision once every order is filled. New contested-run outputs use schema v3 and record whether the terminal was reached. The retained `full-service-v0` evidence remains a historical v2 run: its thirteen trailing turns are the observation that motivated this fix, not current runner behavior.
-- **The complete service now replicates.** Three fresh post-terminal-state runs under the same model and prompt all filled Bo's order at t9, had Bo deliberately release the knife for Ama at t10, had Ama take it at t11, and reached world completion at t17. Actual contention was 1 in every run; stale retries varied 4/3/2 and zero attempts were refused after retry. The three service runs cost $0.028785. See [the kitchen audit](../docs/audits/kitchen-contested-world.md) and `evidence/kitchen/full-service-replication-v1-summary.json`.
-- **The kitchen became watchable only after the policy could distinguish its actions.** `describe_action` originally rendered only Castaway participant vocabulary, collapsing several kitchen choices to the same word. Fixing that moved the run from blind churn toward purposeful waiting and completion; the audit records the sequence.
-- **The kitchen was built against a measurement rather than a domain preference.** Under the same scripted policy it produces materially more contention than Castaway and does not inherit Castaway's long process waits.
-- **The observation seam is a measured design variable.** Across the M5 comparison, exposing progress, destroyed value and mechanic warnings materially changed policy outcomes without changing the mechanics. The re-run then regenerated the same failure shape at the next hidden threshold, leaving the broader threshold-observation obligation open.
-- A policy has driven this world (criterion 2, met): an LLM chose actions only through the ordinary affordance seam and never received consequence authority.
-- A second, materially different world reuses the contracts (criterion 6, met). **All six prototype success criteria are met.** The workshop shares no content with Castaway; substrate contracts transferred while Castaway mechanics did not.
-- The declaration language expresses one relation between entities, making cross-entity authored behavior and meaningful authored write-scope violations possible.
-- Doctrine, unchanged: Linguistic Core supplies senses and roles, not effects; consequences require a represented causal bearer and an installed mechanic; composites stay derived; observability is required while exact replay is not a universal gate; mechanics authoring is offline and runtime law revision is deferred; donor repositories stay read-only unless a consumer path explicitly adopts code.
+- Canonical material truth lives in one `World`; policy text, UI, resident private cognition, and analysis are not alternate authorities.
+- The engine enforces declared **write** scopes. Rule-facing discovery/check/progress/consequence/trigger hooks use detached state, and rules cannot write revision, commands, or causal history.
+- Declared **read** scopes are recorded but not runtime-enforced; an optional recording/verification contract exists.
+- Linguistic Core provides semantic senses/roles, not effects. Six of seven M1 action kinds are reviewed/bound; `unheat` remains upstream-unbound.
+- Mechanic-profile installation checks declared surfaces but cannot prove causal completeness. Three complementary assay bases exist and all retain blind spots.
+- Scripted, human-shaped, and LLM policy seams all remain outside consequence authority.
+- Kitchen is the flagship watched world. Three same-model/prompt runs reproduced Bo completing at t9, releasing the knife for Ama at t10, Ama taking it at t11, and both orders completing at t17.
+- One generic replay system now renders Kitchen, Castaway, Workshop, and Greenhouse. Automatic replay is the authoring baseline; Polished is optional art direction.
+- Greenhouse proved the replay/authoring pipeline on a world created after the system existed, including a multi-entity `water` effect with no world-specific renderer branch.
+- `world-substrate-authoring-bundle/v0` is the shared code-first/browser structural authoring format.
+- `world-substrate-causal-model/v0` is the separate constrained causal companion. The model proposes JSON; the local compiler derives reads/writes and rejects unsupported paths/types/selectors before installation.
+- The deployed World Builder can Generate Mechanics → show compiler review → require explicit approval → Run Scripted or Run with LLM → render the fresh trace graphically.
+- The live LLM policy can select only engine-minted action IDs. Installed mechanics still determine consequences.
+- The public service binds loopback behind Cloudflare, requires same-origin browser POSTs, rate-limits/serializes model calls, uses per-request caps, and enforces a persistent fail-closed `$0.50/day` reservation ledger.
+- The product does not yet provide durable resident cognition, saved user worlds/runs, or identity-backed approval receipts.
 
 ## Applicable context
 
-- [Decision 001](../docs/decisions/001-project-scope.md) establishes the canonical project and executable-consequence boundary.
-- [Decision 002](../docs/decisions/002-observability-and-replay.md) makes observability required and exact replay optional outside M1.
-- [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md) establishes Linguistic Core binding, causal bearers, derived composites, and offline mechanics authoring.
-- Castaway remains the adopted M1 implementation donor; other classified repositories remain idea, theory, contract, or failure-analysis donors.
-- The proposed contracts describe the target seam and do not claim implementation.
+- [Decision 001](../docs/decisions/001-project-scope.md): this repository is the canonical applied project and executable-consequence authority.
+- [Decision 002](../docs/decisions/002-observability-and-replay.md): attempts/refusals/consequences must remain inspectable; exact replay is optional outside the bounded evidence case.
+- [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md): semantic predicates do not imply effects; resident cognition/analysis remain separate causal layers.
+- [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md): Generative-World Builder front end; custom causal kernel; off-the-shelf systems around it when they preserve authority.
+- [Source dispositions](../docs/source-dispositions.md): neighboring repositories remain donors/dependencies only through explicit adoption paths.
 
 ## Constraints and authorities
 
 ```text
-observable attempt or trigger
-  <- resident policy or autonomous bearer
-  -> Linguistic Core sense and role binding
-  -> installed local mechanic
-  -> proposed effects + checks
-  -> one canonical commit or refusal
-  -> persistent state + causal trace
-  -> detachable analysis
+represented state
+  -> semantic intent / action signature
+  -> reviewed semantic binding
+  -> installed/constrained mechanic
+  -> checks + proposed effects
+  -> one Engine commit or refusal
+  -> canonical state + causal event
+  -> detachable replay / analysis
 ```
 
-- One canonical persistent state owns material world truth.
-- Natural language and policy models cannot directly mutate it.
-- Local mechanics have enforced write authority; declared read scopes are recorded and may be verified separately.
-- One enclosing transition owns each causally coupled commit, including revision and causal-history attachment.
-- Independent actions may commit independently.
-- Resident cognition and post-run analysis are not canonical world authorities.
-- Invariants and accounting are goal-relative to the selected representation.
-- Passing declared-contract checks does not prove the author named every consequential dependency.
+Hard constraints:
+
+- policy prose cannot mutate canonical state;
+- a mechanic cannot enlarge its own write authority;
+- model-generated source is not a live-law fallback;
+- composition/analytics cannot duplicate primitive effects;
+- presentation coordinates/assets are not world truth;
+- cognition frameworks may choose actions but not adjudicate consequences;
+- external frameworks become dependencies only after a bounded consumer proof; and
+- future generic work must answer a concrete world/product failure.
 
 ## Vertical slices and current work
 
 ### Milestone horizon
 
-| Milestone | State | Inspectable output | Promotion or replan trigger |
-| --- | --- | --- | --- |
-| M0: canonical foundation | complete | repository authorities, navigation, checks | established |
-| M1: freshwater vertical | complete | neutral CLI trace, refusals, persistence, and M1 replay | promoted |
-| M2: semantic/causal give vertical | complete | Linguistic Core binding for `give`; two independent gives derivable as exchange without duplicate effects | promoted |
-| M3: offline mechanics-authoring vertical | complete | authored mechanic package, frozen profile, and interaction evidence | promoted |
-| M4: causal-coherence assay | complete | three assays on different bases plus negative control | promoted |
-| M5: policy consumer | complete | LLM selecting only from `discover()` against a mechanical baseline | promoted |
-| M5b: installed institution | deprioritized | escrow-like bearer couples effects through one transition envelope | revisit only when a world needs an institution |
-| M6: second reference world | complete | materially different workshop world reusing substrate contracts | promoted |
-| M7: authoring rate | complete | model-authored mechanics graded against fixed criteria | promoted |
-| M7b: relational authoring | complete | authored mechanics using one cross-entity relation | promoted |
-| M8: scale and dynamical evaluation | deliberately_deferred | measurements or perturbation studies that can change a design decision | activate only when a real world exposes the need |
-
-### Active slice: fourth-world authoring workflow
-
-**Complete.** Greenhouse was created after the Automatic replay baseline and World Replay Studio were already in place, making it a true workflow test rather than a backfit.
-
-The world represents two gardeners, one shared watering can, a water tap, a garden bed, and two dry plants. Its new `water` action names the can, plant and bed and commits both can/plant state changes through the ordinary transition kernel. A seven-turn deterministic run hands the can from Nora to Leo through represented ownership, waters both plants, reaches the derived terminal predicate, costs zero, and passes exact engine replay.
-
-The replay path then used only the world model, retained run, shared asset/presentation catalog and deterministic auto-layout. It produced a zero-TODO Automatic profile and visually legible replay **without a Greenhouse review overlay or world-specific renderer/bootstrap branch**. The represented garden-bed relationship gives auto-layout enough information to place the plants in the bed; the can starts at the source.
-
-Greenhouse exposed two real shared assumptions. Generic `take`/`put_down` presentation labels had hard-coded an `item` field, while the substrate `TakeAction` calls its referent `vessel`; labels now use the trace-inferred field. More importantly, `water` changes both the plant and the can, while prior scene projection could set state only on one primary visual entity. The new generic declarative `state_effects` list projects additional explicit entity state changes, so the plant becomes `watered` and the can returns to `empty`. Neither change adds Greenhouse ids to generic code.
-
-The World Replay Studio now lists four real worlds; Greenhouse is Automatic-only because no polished scene was authored.
-
-**Conclusion.** The baseline sequence — represented world → mechanics/terminal → retained run → shared presentation declarations → Automatic replay → Studio — works end to end on a new world.
-
-**What not to do.** Do not manufacture a Polished Greenhouse merely to fill a toggle, add more generic replay primitives without evidence, or turn presentation coordinates into world truth. Deployment/publication remains separately controlled.
-
-## Open obligations
-
-Work an accepted decision or contract already requires, which no milestone
-currently owns. Listed here so it is schedulable rather than resident only in
-the audit that found it.
-
-| Obligation | Required by | State |
+| Milestone | State | What it established |
 | --- | --- | --- |
-| ~~Attach the causal bearer's observation to its event~~ | Decision 002 | **closed.** Captured before mutation and attached as `observation`; `null` for a process |
-| ~~Attach the bound Linguistic Core sense and roles to its event~~ | Decision 002 | **closed.** Attached as `semantic_binding` where a reviewed binding exists |
-| ~~Name the authority/causal bearer on an event~~ | Decision 002 | **closed.** Attached as `causal_bearer` |
-| Bind the remaining M1 action kinds to Linguistic Core senses | Decision 003 | **six of seven closed.** `unheat` remains upstream-owned because the pinned extraction has no matching sense |
-| ~~Decide the ledger's shape for lost quantities~~ | M4 finding | **closed.** `spilled` is a full `LiquidState` and conservation checks can cover represented quantities |
-| ~~Decide whether `World.clone()` should deep-copy the event log~~ | performance review | **closed.** Ordinary world clones share append-only committed event objects for performance; rule-facing execution now receives detached state without engine history, so mechanics cannot rely on or mutate that optimization boundary |
-| Enforce declared read scopes at runtime | roadmap invariant | **designed, not implemented** — [read-scope enforcement v0](../docs/contracts/read-scope-enforcement-v0.md) specifies an optional recording verification pass rather than always-on overhead |
-| ~~Surface process progress in the observation~~ | M5 finding | **closed.** Processes may declare current-against-required progress |
-| ~~Signal that an action destroys existing value~~ | M5 finding | **closed.** Actions may declare consequences surfaced per affordance |
-| ~~Make `owner_ref` a typed reference~~ | M7 finding | **closed.** Reference shape is validated and construction goes through `model.owner_ref()` |
-| ~~Refuse authored writes a field's type forbids~~ | M7 generalisation | **closed.** Declaration paths and literal types are checked against component dataclasses |
-| ~~Give the world a way to say "unowned"~~ | M7b finding | **closed.** Reserved `unowned` literal |
-| Surface progress toward *leaving* a threshold, not only toward reaching one | M5 re-run finding | **open.** Cooling toward a safe-drinking threshold remains the concrete case |
+| M0 foundation | complete | canonical repo/navigation/authority |
+| M1 freshwater | complete | neutral persistent transition substrate + replay |
+| M2 give/exchange | complete | semantic binding + derived composite without duplicate effects |
+| M3 mechanic authoring | complete | offline reviewed mechanic/profile workflow |
+| M4 coherence assays | complete | multiple causal-closure evidence bases |
+| M5 policy consumer | complete | LLM choosing through ordinary affordances |
+| M6 second world | complete | cross-domain substrate reuse |
+| M7/M7b model authoring | complete | generated and relational mechanics under bounded authority |
+| Kitchen flagship | complete first gate | replicated scarce-resource coordination + polished replay |
+| Generic replay | complete first gate | one renderer/profile system across real worlds |
+| Greenhouse new-world proof | complete | post-system authoring + zero-review Automatic replay |
+| Code-first + visual authoring | complete first gate | one authoring bundle across CLI/browser |
+| Live causal authoring | complete first gate | model proposal → compiler → approval → fresh run |
+| Nontrivial product-world proof | **next** | product/DSL/review failure discovery |
+| Semantic closure for generic authoring | queued after product-world evidence | reviewed Linguistic Core sense/role mapping for new actions |
+| Resident cognition / live-world feel | conditional next | compare lightweight vs off-the-shelf agent runtime |
+| Saved worlds/runs | conditional next | durable product state/auth after workflow earns persistence |
 
-**All eight Decision 002 observability fields are covered on every event class.**
-Malformed envelopes record a `claimed_actor` bearer rather than pretending an
-unvalidated identity is authoritative.
+### Active slice: nontrivial live authoring proof
 
-## Authoring and causal-closure hypothesis
+Use the deployed World Builder as the authoring surface, not a bespoke repo fixture.
 
-The central test is whether agent teams can add useful, coherent mechanics faster than interaction risk grows.
+The test world should be materially richer than Orchard and should include enough structure to stress the current system—for example 3–5 actors, multiple resources/locations/goals, several action kinds, shared or contested objects, and at least one process or relationship-dependent effect.
 
-An agent-authored package must include semantic bindings, causal bearer, applicability, local authority, proposed effects, goal-relative invariants, dependencies, interaction cases, unsupported combinations, limits, and a trace contract. Passing isolated tests is insufficient.
+For each generated mechanic, review:
 
-The compiler or installer can establish declared enforcement coverage. Causal closure remains a fallible assay because an author may omit a dependency entirely. Mechanics agents should inspect neighboring semantic state, search for unbound consequential relations, generate counterexamples, and label residual risk.
+- semantic intent and participant meaning;
+- actor/participant selectors;
+- derived reads/writes;
+- preconditions/checks;
+- effects;
+- terminal condition;
+- stated limits/tests; and
+- whether the graphical projection remains faithful to canonical state.
+
+Run a zero-spend Scripted baseline first, then an LLM-selected run only under the approved bounded service. Record the **first concrete point** where the language, review UI, observation, policy cognition, or renderer cannot express/communicate the intended world.
+
+Do not expand the causal language or swap frameworks pre-emptively. The failure is the input to the next design decision.
 
 ## Decisions and assumptions
 
-| Choice | Disposition | Boundary |
-| --- | --- | --- |
-| Observability over universal replay | human-set in Decision 002 | product evidence |
-| Linguistic Core as semantic interface | human-set in Decision 003 | semantics, not effects |
-| Offline pre-run mechanics authoring | human-set direction | runtime law changes deferred |
-| Kitchen as first flagship world | answered 2026-09-04 | reversible product direction |
-| Rendered reasoning beside world truth as viewer surface | answered | publication/deployment remains separate |
-| Scarce-resource coordination as first impressive behavior | answered | 3/3 fresh replications cleared the first robustness gate; viewer legibility is current |
-| Second reference-world domain | answered: workshop (M6) | complete |
+### Product/adoption strategy
+
+Accepted in [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md):
+
+| Layer | Posture |
+| --- | --- |
+| Canonical state / identity | keep project-owned |
+| Transition kernel / authority / traces | keep project-owned |
+| Causal declaration/compiler | keep project-owned |
+| Semantic-mechanical binding | keep project-owned with Linguistic Core |
+| Scene semantics | keep project-owned |
+| Browser rendering execution | evaluate Phaser rather than grow a bespoke game engine |
+| Resident cognition | compare lightweight custom runtime with Concordia/LangGraph adapters |
+| Multi-agent evaluation | add PettingZoo adapter when useful; never alternate world authority |
+| Persistence/auth | use standard infrastructure |
+| Rich discrete-event scheduling | evaluate SimPy only after a demonstrated need |
+
+Assumption to test: the causal kernel is the differentiator; rendering, cognition orchestration, auth, and persistence are leverage surfaces rather than strategic reasons to build from scratch.
 
 ## Evidence and review artifacts
 
-| Claim | Evidence | Limitation | Status |
-| --- | --- | --- | --- |
-| M1 freshwater behavior works | retained machine/human receipts, probes, tests, and replay | deterministic scripted vertical only | established |
-| M1 exact replay works | fresh-process replay receipt | M1 property, not product requirement | established |
-| Semantic binding works | `semantic.py` plus binding/event tests | `unheat` remains unbound upstream | established, narrow |
-| Derived exchange avoids double application | M2 reciprocal/reneging cases | ordinary voluntary exchange only | established |
-| Declared write scopes are enforced | write-scope and rule-authority negative controls | reads remain separately declared and unenforced | established |
-| Offline mechanics authoring works | M3/M4 packages and assays | bounded experiments | established |
-| Interaction assays surface omitted dependencies | M3/M4 findings | every basis has blind spots | established with residual risk |
-| A policy can drive the world | M5 audit and retained trace | one model/prompt/world slice | met |
-| Global causal closure is proven | none | not generally decidable from author declarations | rejected claim |
-| Second-world reuse works | M6 audit and workshop tests | one materially different second world | met |
-| Kitchen service and knife handoff repeat under the fixed configuration | three fresh v3 traces plus retained `full-service-v0` | same model, prompt and world; execution-layer caveat documented in audit | **replicated 3/3 fresh runs** |
-| Kitchen runner ends at represented completion | `terminal.py`, terminal tests, scripted runner smoke test | terminal condition is world-specific by design | established |
-| Generic scene renderer projects retained traces into 2D world replays | `scripts/render_scene_replay.py`, `scene-profile-v0.md`, Kitchen + Castaway + Workshop + Greenhouse profiles, lab tests | v0 is 2D and v3-envelope-oriented | **established on four real worlds; Greenhouse required no renderer branch** |
-| Scene-profile bootstrapper reduces review-only authoring | bootstrapper + shared presentation catalog + Workshop/Castaway/Kitchen/Greenhouse zero-review audits | zero-review defaults are plain; optional polish remains | **zero-review functional on four real worlds; Greenhouse proves the post-product authoring workflow** |
-| Graphical flagship replay shows a retained terminal service as a world | generic renderer + kitchen scene profile + spatial replay tests + `evidence/renders/kitchen-spatial-replay-v1.html` | spatial geometry is illustrative; one replicated trace; no external human review yet | established technically, human review pending |
-| Trace-oriented flagship timeline explains the same service | `scripts/render_kitchen_service.py`, renderer tests, `evidence/renders/kitchen-flagship-v1.html` | static read-only view of one replicated trace | established technically |
+Primary current evidence:
+
+- [Kitchen audit](../docs/audits/kitchen-contested-world.md) + `evidence/kitchen/full-service-replication-v1-summary.json`;
+- `evidence/renders/kitchen-spatial-replay-v1.html` and `kitchen-zero-review-v0.html`;
+- [Greenhouse authoring proof](../docs/audits/greenhouse-authoring-proof.md) + `evidence/renders/greenhouse-zero-review-v0.html`;
+- [Scene profile contract](../docs/contracts/scene-profile-v0.md) and replay/bootstrap audits;
+- [World authoring bundle](../docs/contracts/world-authoring-bundle-v0.md) + starter/builder audits;
+- [Action mechanic declaration](../docs/contracts/action-mechanic-declaration-v0.md);
+- [Live authoring audit](../docs/audits/live-world-authoring.md); and
+- deployed `https://brianmills.dev/world-builder/`.
+
+Older M1–M7b evidence remains authoritative for the narrower claims it established; it should not be copied into the active product narrative unless needed to explain a current boundary.
+
+Cost records are evidence-scope specific. Do not fabricate a single lifetime total by adding figures from observability stores that do not cover the same period.
 
 ## Risks and needs resolution
 
-- The kitchen handoff repeated in 3/3 fresh same-model/prompt runs, but robustness across models, prompts, or changed world conditions is still unknown.
-- The flagship viewer has passed renderer tests and local visual inspection, but no external human has yet established that it is self-explanatory without project context.
-- Linguistic breadth can hide mechanical sparsity.
-- A generic component model can become an untyped property bag.
-- Broad LLM adjudication can bypass local causal authority.
-- Individually valid mechanics can disagree about units, timing, identity, capability revocation, or overlapping effects.
-- Declared dependencies can create false confidence when consequential state was never declared.
-- Coarse organizational or social surrogates can double-count detailed lower-level mechanisms.
-- Documentation can outrun implementation; proposed contracts must remain labeled.
+| Priority | Risk / open need | Current stance |
+| --- | --- | --- |
+| P1 | generic live actions can compile without reviewed Linguistic Core binding | close after nontrivial-world test clarifies authoring UX |
+| P1 | mechanic/process implementation exceptions are rollback-safe but not yet explicit causal failure events | stabilization target |
+| P1 | current public approval is a client assertion after review, not an identity-bound server receipt | decide before consequential/persistent worlds |
+| P1 | Builder is public/same-origin but not user-authenticated | decide whether product is public demo vs private authoring surface |
+| P2 | causal language is intentionally narrow | extend only from observed expressiveness failures |
+| P2 | no persistent resident memory/planning/reflection | evaluate after nontrivial world needs it |
+| P2 | no saved user worlds/run history | add after authoring loop proves persistence value |
+| P2 | root deployment uses pinned source but a shared mutable Python dependency environment | make deployment more hermetic before broader reliance |
+| P2 | permanent required CI is absent | stabilization target |
+| P3 | declared read scopes not runtime-enforced | optional measured verification, not current blocker |
+| P3 | global component registration remains process/import coupled | defer until a real isolation failure |
+| upstream | `unheat` lacks suitable pinned Linguistic Core sense | donor-owned semantic gap |
 
 ## Human decisions
 
-Boundaries only Brian can clear. Answered choices remain here for traceability rather than being re-presented as blockers.
-
-| Decision | State | What it means now |
-| --- | --- | --- |
-| Model execution and a spend cap | **answered 2026-09-04: $2 cap granted** | replication is complete; scene-profile portability work needs no model spend |
-| Which second reference world | **answered: workshop, promoted in M6** | reuse criterion met |
-| Which world becomes the flagship | **answered: kitchen** | current work stays on the kitchen unless evidence replans it |
-| What a viewer actually sees | **answered: World Replay Studio over Automatic baselines plus optional Polished variants** | fourth-world workflow is proven; next choice is the human world-authoring/import surface; publication/deployment remains separately controlled |
-| What "sophisticated" means first | **answered: scarce-resource coordination without communication** | behavior replicated and viewer built; human review is current |
-| Deployment and publication | **open authority boundary** | do not publish or deploy without explicit permission |
+| Decision | Status |
+| --- | --- |
+| Canonical project is World Substrate | answered — Decision 001 |
+| Observability required; exact replay not universal | answered — Decision 002 |
+| Semantics do not imply effects | answered — Decision 003 |
+| Flagship world | answered — Kitchen |
+| First watched behavior | answered — scarce shared-resource coordination |
+| Replay product baseline | answered — Automatic; Polished optional |
+| Authoring surfaces | answered — code-first starter + browser Builder over one bundle |
+| Live causal generation | answered — constrained declaration + local compiler + explicit approval |
+| Product face | answered — Generative-World Builder over causal engine |
+| Off-the-shelf posture | answered — keep causal kernel custom; evaluate commodity layers via adapters/spikes |
+| Current World Builder deployment/model service | explicitly authorized and live |
+| Public demo vs authenticated private authoring | **open** |
+| First nontrivial product-test world/domain | **open; choose for the active slice** |
 
 ## Refresh and reset triggers
 
-Refresh this roadmap after an outcome-bearing slice, a material user correction, an accepted decision, a selected donor revision, or evidence that invalidates a contract. Replan after two consecutive non-vertical increments or when a later milestone no longer tests the central hypothesis.
+Refresh this roadmap when any of these happens:
+
+- a nontrivial live-authored world exposes the first causal-language/review failure;
+- a generic authored action gains required semantic binding;
+- an off-the-shelf cognition/rendering/interoperability spike is accepted/rejected;
+- saved-world persistence or authentication becomes implemented;
+- the public deployment/security/spend boundary changes;
+- a new reference world exposes substrate coupling; or
+- evidence contradicts a current truth statement above.
+
+Replan rather than extend blindly if:
+
+- generated mechanics routinely require arbitrary code;
+- human reviewers cannot understand/meaningfully approve the generated law;
+- agent behavior needs private cognition that the current policy seam cannot support;
+- the renderer prevents world legibility despite correct scene semantics; or
+- off-the-shelf integration would require surrendering canonical consequence authority.
 
 ## Exact next action
 
-**Human-test live causal authoring on a less trivial world.** Use the deployed World Builder to define/import represented structure, add optional mechanic guidance, generate the constrained causal proposal, inspect its compiler-derived reads/writes/checks/effects/limits, approve only if they match the intended world, then compare a zero-spend Scripted run with an LLM-selected run. Record the first concrete point where the declaration language or review surface cannot express/communicate the intended law; do not add arbitrary code generation pre-emptively.
+**Human-test live authoring on one meaningfully less-trivial world.** Use `https://brianmills.dev/world-builder/` to define/import the represented structure, generate constrained mechanics with optional guidance, inspect the compiler-derived authority and effects, approve only what matches the intended law, run Scripted first, then compare an LLM-selected run under the existing bounded service.
 
-The live service keeps model calls bounded: public LLM requests are same-origin/rate-limited/serialized, mechanics and policy calls have per-request caps, and the World Builder has a $0.50/day ceiling. The successful acceptance probes in this slice observed $0.00156146 for mechanics proposal+repair and $0.0001138 for one live policy choice. Deployment/publication for this World Builder slice was explicitly authorized by the user.
+Retain the first concrete failure or ambiguity. Classify it as one of: semantic grounding, causal-language expressiveness, review comprehensibility, affordance/observation, resident cognition, graphical presentation, persistence/product UX, or deployment/security. That classification—not framework availability—determines the next implementation slice.
 
-The historical pre-replication roadmap recorded **$0.123** of model spend. The
-current single-copy observability DB no longer contains that older task history;
-it records **$0.029571** for the compatibility probe and three-run replication
-session. Keep those figures separate rather than replacing the historical
-lifetime number with a falsely lower current-DB total or manually inventing a
-new lifetime total.
+After that evidence, the expected sequence is: close semantic binding for generic actions; add explicit mechanic-error events/permanent CI/auth as warranted; run a bounded cognition-framework comparison; then consider Phaser/persistence work. Do **not** add arbitrary model-written code or generalize the renderer/DSL without a demonstrated need.

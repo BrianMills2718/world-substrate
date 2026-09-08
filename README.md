@@ -1,102 +1,138 @@
 # World Substrate
 
-World Substrate is the canonical project for building persistent, observable worlds where agents express semantically grounded intents and installed mechanics with explicit local authority determine and commit causal consequences.
+World Substrate is a persistent, observable world engine in which agents express semantically grounded intents and **installed mechanics—not model prose—determine canonical consequences**.
 
-The project combines:
+The project now includes both the causal engine and a deployed authoring product:
 
-- typed persistent world state;
-- Linguistic Core sense and role bindings without ontology-implied effects;
-- reusable actions, autonomous processes, and installed institutions;
-- state-derived, bounded affordances;
-- singular commit boundaries and inspectable causal traces;
-- pre-run, agent-assisted mechanics expansion through frozen world profiles; and
-- LLM or human policies that remain outside consequence authority.
+**World Builder:** https://brianmills.dev/world-builder/
 
-Exact replay is an implemented M1 capability, not a project-wide requirement. See [Decision 002](docs/decisions/002-observability-and-replay.md).
+The live Builder can define represented world structure, request a constrained LLM mechanics proposal, show compiler-derived authority for review, require explicit approval, and launch a fresh scripted or LLM-selected graphical run in the browser.
 
-**Cross-repo role.** World Substrate is the applied persistent-world engine and
-a demanding consumer/testbed for semantic grounding. Linguistic Core can ground
-action/relation identity and roles, but ontology terms do **not** imply causal
-effects here: installed mechanics with explicit local authority determine and
-commit consequences. World Substrate is not the ordinary application SystemSpec
-or a global semantic authority.
+## Start here
 
-For the current authority matrix, lineage dispositions, empirical gates, and
-cleanup policy, see the [current ontology/semantic cluster architecture](https://github.com/BrianMills2718/vision/blob/main/wiki/synthesis/ontology-semantic-cluster-current-architecture-2026-09-07.md).
-The earlier dated baseline is historical.
-
-Start with:
-
-1. [Project wiki](docs/wiki/README.md) — orientation, terminology, sources, and task routes.
-2. [Roadmap](roadmap/README.md) — current truth, active slice, later milestones, and decisions.
-3. [Architecture](docs/architecture.md) — enduring system boundaries.
-4. [Core contract v0](docs/contracts/core-v0.md) — the implemented M1 seam.
-5. [Scene profile v0](docs/contracts/scene-profile-v0.md) — declarative world-to-replay presentation.
-6. [Proposed semantic/mechanical contracts](docs/contracts/semantic-mechanical-binding-v0.md) — the semantic/mechanical architecture seam.
+1. [Project wiki](docs/wiki/README.md) — compact orientation, terminology, current state, and task routes.
+2. [Roadmap](roadmap/README.md) — canonical planning authority, current frontier, risks, and exact next action.
+3. [Architecture](docs/architecture.md) — durable system boundaries and composition model.
+4. [Decision 004](docs/decisions/004-product-and-adoption-strategy.md) — approved Generative-World Builder / off-the-shelf adoption strategy.
+5. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
+6. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
 
 ## Where this stands
 
-**The substrate works, the prototype phase is complete, and flagship work is underway.**
+The **prototype phase is complete**. The system has progressed from a neutral transition kernel to a deployed authoring/run loop.
 
-Phase one specified, built, and tested the substrate contracts. The two small reference worlds — Castaway and the workshop — exist to prove those contracts work and transfer. Phase two is about making one world worth showing rather than adding more assurance to the substrate for its own sake.
+| Capability | Current state |
+| --- | --- |
+| Canonical typed world state | implemented |
+| Atomic commit/refusal + causal events | implemented |
+| Declared write-scope enforcement | implemented |
+| Rule-facing authority isolation | implemented |
+| Linguistic Core binding | implemented for six of seven M1 action kinds; live generic action authoring is not yet semantically closed |
+| Scripted / human / LLM policy seam | implemented |
+| Offline model-assisted mechanic authoring | implemented and assayed |
+| Constrained live causal-mechanic generation | implemented and deployed |
+| Generic graphical replay | implemented |
+| Zero-review replay bootstrap/auto-layout | demonstrated across multiple real worlds |
+| Visual world authoring | implemented and deployed |
+| Fresh scripted/LLM graphical run | implemented and deployed |
+| Persistent resident cognition | not yet implemented |
+| Saved user worlds/runs | not yet implemented |
 
-The flagship world is still the replicated Kitchen service, but the authoring/product workflow is now broader than that flagship. `evidence/renders/world-replay-studio-v0.html` contains **four real worlds**: Kitchen, Castaway, Workshop, and Greenhouse. `evidence/renders/world-builder-v0.html` now carries the creation side of the product: structural authoring, bounded causal-mechanics proposal/review/approval, and fresh scripted or LLM-selected graphical runs. Generated mechanics are constrained declarations whose authority is derived and checked locally; model prose never becomes executable law. **Automatic is the replay authoring baseline; Polished is optional art direction.** See [the live authoring audit](docs/audits/live-world-authoring.md), [the Greenhouse proof](docs/audits/greenhouse-authoring-proof.md), and the [roadmap](roadmap/README.md#vertical-slices-and-current-work).
+The current live path is:
 
-If you are picking this up cold:
+```text
+authoring bundle
+  -> bounded mechanics proposal
+  -> local causal compiler
+  -> compiler-derived authority review
+  -> explicit approval
+  -> frozen mechanic profile
+  -> scripted or LLM policy chooses an offered action
+  -> Engine commit/refusal
+  -> retained causal trace
+  -> graphical replay
+```
 
-1. **Open the Studio** — `evidence/renders/world-replay-studio-v0.html`. Compare the polished Kitchen with Automatic Greenhouse.
-2. **Run the fourth-world proof** — `PYTHONPATH=src:. python scripts/run_greenhouse_fixture.py --output /tmp/greenhouse.json` costs nothing and drives the real engine.
-3. **Author and run one** — `evidence/renders/world-builder-v0.html` now has separate Causal Mechanics and Run steps. On the deployed same-origin service it can generate a constrained mechanics proposal, show compiler-derived authority for approval, and launch a fresh scripted or LLM-selected graphical run without a download. `scripts/scaffold_world.py` remains the code-first path over the same structural bundle.
+See [the live authoring audit](docs/audits/live-world-authoring.md).
 
-There is still no deployment, and no repository outside this one imports `world_substrate`.
+## Architectural thesis
 
-## What phase one established
+A rich world should come from **shared persistent state + semantic grounding + installed causal mechanics**, not from asking an LLM to narrate plausible consequences.
 
-M1 is promoted. The neutral runtime reaches the pinned final freshwater checkpoint through registered fill, heat, unheat, pour, drink, take, and give actions plus deterministic processes. Retained evidence compares semantic state and conservation fields, preserves vessel identity across liquid, heat, carrying, and bounded ownership systems, and distinguishes precondition failure from unsupported and malformed actions. Its versioned initial snapshot, pinned registry/content identity, and 22 commands also reproduce the final state and events in a [fresh process](evidence/m1/transfer-replay-v1.json). The revision-bound [end-to-end observation](evidence/m1/end-to-end-observation-v1.json) passed the M1 maturity gate.
+Policies may be scripted, human, or model-driven. They receive bounded observations and state-derived affordances and may select only actions the world offers. They do not directly mutate world truth.
 
-M3 is complete: one adjacent mechanic was authored offline as a reviewable package, installed with no findings, frozen into a profile, and run. It was run adversarially — the package omits a real consequential dependency — and the result is that installation alone surfaces nothing, two complementary interaction assays surface it, and one incoherence survives both. See [the M3 experiment](docs/audits/m3-overheat-authoring-experiment.md).
+Linguistic Core supplies meanings and participant roles. It does not supply persistence, quantities, effects, scheduling, authority, or commit semantics. Those belong to installed mechanics. See [Decision 003](docs/decisions/003-semantic-mechanical-boundary.md).
 
-M7 tested the half of the central hypothesis that had never been tried: whether an agent can author a mechanic it was not handed. A model shown the workshop world — told neither which mechanic to write nor what the checks look for — produced nine installable mechanics for $0.015 with zero write-scope violations. Five added real behaviour, two were inert no-ops, and two violated an ownership convention the world never declared and therefore nothing can check. Risk did not outrun usefulness; triviality, not danger, is the bottleneck. See [the M7 audit](docs/audits/m7-authoring-rate.md).
+## Product direction
 
-M7b asked whether that triviality was the model's or the language's, since a language confined to one entity can only express a clamp or a decay — and, for the same reason, can barely express a scope violation. The language now expresses one relation between two entities, and the experiment was re-run unchanged otherwise. Four of eight valid declarations used the relation and two produced cross-entity behaviour nothing here could previously express, but the same two inert clamps came back: the ceiling was real and was not the main driver. Zero scope violations again, this time against machinery a relational write can genuinely load. And the empty-`owner_ref` defect recurred at the same rate from the same model — and was refused by the substrate instead of committing. See [the M7b audit](docs/audits/m7b-relational-authoring.md).
+The approved product posture is:
 
-All six prototype success criteria are met as of M6. A [second reference world](docs/audits/m6-second-world.md) — a workshop of discrete parts and tools, sharing no content with Castaway — reuses the transition kernel, causal events, exact replay, the mechanic-profile installer, all three interaction assays and the policy seam with no edits, while reusing none of the Castaway mechanics. Four substrate/content couplings were found and fixed in the process.
+> **Generative-World Builder on top; rigorous world-modeling engine underneath.**
 
-M5 is the first time a policy other than a script drove this world: an LLM chose 16 actions through the ordinary affordance seam for $0.005, beat a no-foresight baseline on health 60 to 4, and was corrected by a mechanic when its stated belief about the world turned out to be wrong. See [the M5 audit](docs/audits/m5-policy-consumer.md).
+Keep project-owned:
 
-M4 completes the pair. A second mechanic, authored without a planted omission, closes M3's uncaught incoherence and keeps volume conserved. The three assays behaved completely differently on it — the behavioural one found nothing at all, because every affordance was already refused — establishing that no single assay basis, and no pair, is sufficient. See [the M4 experiment](docs/audits/m4-spill-experiment.md).
+- canonical state and identity;
+- transition authority and refusal semantics;
+- semantic/mechanical binding;
+- causal mechanic declarations/compiler;
+- local write authority;
+- causal trace semantics; and
+- the declarative mapping from world truth to presentation.
 
-What remains of the semantic/mechanical frontier is narrower than it was: `give` is bound and exchange derives without double application (M2), and a policy consumer has run under a granted $2 cap (M5). Still open are the upstream-owned `unheat` semantic binding, optional read-scope verification, and the other explicitly listed obligations in the roadmap.
+Prefer off-the-shelf systems around that kernel when they preserve the authority boundary. Current candidates include Phaser for browser 2D execution, Concordia/LangGraph for resident cognition, PettingZoo for multi-agent interoperability/evaluation, and standard persistence/auth infrastructure. SimPy remains conditional on a demonstrated scheduling need. These are evaluation candidates, not adopted foundational dependencies. See [Decision 004](docs/decisions/004-product-and-adoption-strategy.md).
 
-Related repositories remain unchanged and are classified in [source dispositions](docs/source-dispositions.md).
+## Reference worlds and product evidence
 
-## Project checks
+| World | Purpose | Current evidence |
+| --- | --- | --- |
+| Castaway | M1 implementation/reference world | persistent state, processes, semantic bindings, exact pinned replay |
+| Workshop | cross-domain substrate reuse | materially different mechanics and components |
+| Kitchen | flagship watched world | replicated scarce-knife coordination; polished + Automatic graphical replay |
+| Greenhouse | post-renderer authoring proof | new world, shared tool handoff, zero-review Automatic replay |
+| Orchard | live-authoring acceptance fixture | generated causal law, compiler review, explicit approval, fresh scripted/LLM run |
+
+The Kitchen remains the flagship demonstration: three same-model/prompt replications reproduced Bo completing at t9, deliberately releasing the shared knife at t10, Ama taking it at t11, and both orders reaching the t17 terminal. See [the Kitchen audit](docs/audits/kitchen-contested-world.md).
+
+## Important current limitations
+
+These are active boundaries, not hidden TODOs:
+
+- Newly authored generic actions can have valid causal mechanics without yet binding a reviewed Linguistic Core sense/role mapping.
+- The live causal declaration language intentionally does not express arbitrary Python, continuous physics, unrestricted collection mutation, or every institution/process form.
+- Compiler acceptance establishes declared authority/type consistency, not global causal completeness.
+- Declared read scopes are recorded but not enforced at runtime; an optional verification design exists.
+- Resident-agent memory, reflection, long-range planning, and social cognition are not yet part of the runtime.
+- The deployed Builder creates fresh runs but does not yet provide durable user-owned world/run persistence.
+- Runtime mechanic/process implementation exceptions should become explicit causal failure events rather than only process-boundary errors.
+
+The roadmap owns prioritization of these boundaries.
+
+## Cross-repo role
+
+World Substrate is the applied persistent-world engine and a demanding consumer/testbed for semantic grounding. Linguistic Core can ground action/relation identity and roles, but ontology terms do **not** imply causal effects here. World Substrate is not the ordinary application SystemSpec or a global semantic authority.
+
+For the current authority matrix, lineage dispositions, empirical gates, and cleanup policy, see the [current ontology/semantic cluster architecture](https://github.com/BrianMills2718/vision/blob/main/wiki/synthesis/ontology-semantic-cluster-current-architecture-2026-09-07.md). Donor repositories are sources, not automatic adoption instructions. See [source dispositions](docs/source-dispositions.md).
+
+## Verification
+
+The default project check validates navigation, authority surfaces, links, contract status facts, retained evidence, and the neutral test suite:
 
 ```sh
 python scripts/check_project.py
+```
+
+Useful deterministic probes include:
+
+```sh
 python scripts/run_first_fill_probe.py --check
-python scripts/run_boiling_probe.py --check
-python scripts/run_pour_probe.py --check
-python scripts/run_drink_probe.py --check
 python scripts/run_transfer_probe.py --check
 python scripts/replay_transfer_evidence.py --check
 python scripts/run_freshwater_probe.py --check
 python scripts/run_give_exchange_probe.py --check
 python scripts/run_overheat_assay_probe.py --check
 python scripts/run_spill_assay_probe.py --check
-python scripts/run_authoring_experiment.py --check --output evidence/m7/authoring-attempts-relational-v1.json
 ```
 
-Two things here are run rather than checked, because they show behaviour rather than pin it:
+Use `python scripts/check_project.py --with-donors` when the locally pinned donor revisions are available.
 
-```sh
-# a contested run with scripted policies, no model calls
-python scripts/run_contested_world.py --world kitchen --turns 12
-
-# re-render a retained policy trace as belief beside replayed world state
-python scripts/render_belief_vs_truth.py evidence/m5/llm-policy-v0.json
-```
-
-The authoring command re-grades the retained M7b declarations without calling a model. The retained M5 and M7 traces are live observation receipts rather than deterministic probes, and are deliberately not gated.
-
-The default project check is self-contained and uses committed fixtures. When the sibling donor repositories are available, also run `python scripts/check_project.py --with-donors`; the optional donor check reads pinned revisions rather than requiring their current checkouts to remain at those commits.
+For current work, do not infer direction from old milestone narratives: read the [roadmap](roadmap/README.md).
