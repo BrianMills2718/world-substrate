@@ -36,6 +36,7 @@ The deployed product is available at `https://brianmills.dev/world-builder/`.
 | Competitive / adjacent-system research | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
 | Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
+| CVS analytical-model structural import | [CVS Situation IR structural import v0](../contracts/cvs-situation-import-v0.md) |
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
 | Commit boundary | [Transition envelope v0](../contracts/transition-envelope-v0.md) |

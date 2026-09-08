@@ -1,6 +1,6 @@
 {
   "schema_version": "world-substrate-sources/v1",
-  "reviewed": "2026-09-02",
+  "reviewed": "2026-09-08",
   "path_base": "repository_root",
   "sources": {
     "castaway_world_systems": {
@@ -133,6 +133,18 @@
       "remote": "git@github.com-personal:BrianMills2718/collective-competence.git",
       "disposition": "research_only",
       "local_path": "../collective-competence"
+    },
+    "compositional_viable_systems": {
+      "role": "analytical_model_structural_input",
+      "repository": "BrianMills2718/compositional-viable-systems",
+      "branch": "main",
+      "revision": "5cb9933f2551ca3e0e75590814f7e686f50d8edb",
+      "remote": "git@github.com-personal:BrianMills2718/compositional-viable-systems.git",
+      "artifact_path": "applications/sustainment/sustainment_situation_ir.json",
+      "artifact_sha256": "e357e25db6c4c7979e1f235fba1fceeb61b36e1c1448816845973bca3a68894b",
+      "disposition": "bounded_structural_import",
+      "authority_limit": "Imported analytical structure and candidate interventions do not define World Substrate causal mechanics or canonical consequence truth.",
+      "local_path": "../compositional-viable-systems"
     }
   }
 }

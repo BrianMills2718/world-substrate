@@ -155,6 +155,12 @@ The proposer never supplies its own authority. Unknown paths/operators/participa
 
 Compiler/installer acceptance proves **declared enforcement coverage**, not completeness. The project therefore keeps causal-closure assays, counterexamples, overlapping-write checks, and residual-risk statements separate from schema validity.
 
+### External analytical-model structural imports
+
+An upstream analytical or architecture model may seed **represented structure** through a bounded adapter without acquiring causal authority. The first exercised path is [CVS Situation IR structural import v0](contracts/cvs-situation-import-v0.md): a CVS role/pool/capability/action/rule/scenario slice becomes a `world-substrate-authoring-bundle/v0`, with source identity retained explicitly and unsupported semantics rejected. The imported bundle still enters the same separate causal-model/compiler/review/approval path shown above.
+
+Do not generalize this into a universal architecture schema. Add another import distinction only when an authentic producer/consumer case demonstrates that the current projection loses decision-relevant meaning.
+
 ## Observability, replay, and presentation
 
 Every attempted transition should expose enough evidence to reconstruct the causal story: delivered observation when applicable, bearer, semantic binding when available, selected mechanic, checks, declared authority, committed changes, failure status, and resulting state identity.
