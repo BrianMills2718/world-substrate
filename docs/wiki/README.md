@@ -31,7 +31,7 @@ Public surfaces:
 - World Builder: `https://brianmills.dev/world-builder/`
 - Standalone living-world URL: `https://brianmills.dev/world-substrate-visualization/`
 
-The standalone living-world URL currently serves the earlier synthetic UI prototype. The product decision is now answered: replace that public surface with the canonical Waltzman client at the same URL and retain the synthetic prototype as versioned design evidence. The first public demo does not require World Builder integration. The Waltzman client is already available as a self-contained static artifact built from canonical projection bundles; JSON/SSE remains an optional observer/live seam.
+The standalone Waltzman client remains available as a self-contained reference artifact built from canonical projection bundles, but the 2026-09-09 stakeholder decision supersedes publishing that replay as the finished demo. The sendable Waltzman experience must combine natural-language authoring, a fresh retained run, and living inspection. The fastest path reuses Cybernetic Influence V3's existing public V2 authoring/run pipeline and adapts its retained run projection into World Substrate's living presentation; it does not require rebuilding general authoring in World Builder first.
 
 ## Start here
 
@@ -113,7 +113,7 @@ The synthetic living-world UI source remains versioned at `prototypes/living-wor
 - Implemented contracts own only their declared seam.
 - Code/tests own runtime behavior.
 - Revision/run-bound evidence owns observed outcome claims.
-- Human product decision, 2026-09-08: the canonical Waltzman client replaces the standalone synthetic visualization for the first public demo; Builder integration is not required for that demo.
+- Human product decision, 2026-09-09: the static canonical Waltzman client is retained reference/presentation evidence, not the finished outreach demo; the sendable demo requires natural-language generation + fresh execution + living inspection, reusing the existing Cybernetic V3 authoring/run path for speed.
 
 Decision 004 classifies uncertainty as:
 
@@ -134,7 +134,7 @@ Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter
 | Replay | portable read-only scene-profile renderer across multiple worlds |
 | World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs |
 | Full logs | deployed; complete request/response/compiler/operator/causal traces available |
-| Living-world UI | public synthetic prototype still deployed; canonical Waltzman static client is implemented and selected as its replacement |
+| Living-world UI | canonical Waltzman living client implemented as reference/presentation fixture; interactive retained-run adapter is the active stakeholder integration |
 | Live projection | implemented local first gate: exact initial-snapshot + retained-event/delta reconstruction, self-contained HTML, JSON, and one-way SSE |
 | Information/conversation | implemented bounded v0: source/recipient/channel/visibility/delivery/provenance + asymmetric actor observation; not a belief model |
 | Processes/institutions | Waltzman first gate has tick-specific processes, explicit commitments, a duration-bearing meeting, and an installed coalition gate; generic authoring remains narrow |
@@ -153,8 +153,8 @@ Open work at the handoff point:
 
 The roadmap owns ordering. The unresolved work is deliberately split into **before public demo**, **post-demo hardening**, and **later capabilities**.
 
-1. **Publish canonical Waltzman demo — immediate:** make the small truth-label cleanup in the client/evidence, replace the existing standalone synthetic public surface with `evidence/renders/waltzman-demo-v0.html`, and smoke-test the public URL. Do not add Builder integration just to ship the demo.
-2. **Truth-label cleanup — immediate and small:** describe adequacy as declared dependencies mapped to installed enforcement surfaces rather than counterfactual proof; describe hard parentage as mechanic-declared. No new causal machinery is required.
+1. **Interactive Waltzman integration — immediate:** reuse the existing Cybernetic V3 natural-language authoring/run path and project one retained general run into the World Substrate living view. Preserve the current static Waltzman artifact as reference evidence rather than publishing it as the finished outreach demo.
+2. **First-two-minute UX — immediate:** the visitor should understand the local-information-to-collective-action proposition quickly and be able to start typing a simulation request without choosing a workflow, model, analysis, or methodology first. The existing V3 configure-first outreach funnel is the donor surface to preserve.
 3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version. This matters before durable user-generated law, not before the hand-authored Waltzman reference demo.
 4. **Local-authority correctness — post-demo hardening:** bind write-scope placeholders to exact action roles and make authored affordance-cap overflow explicit rather than silently truncating valid actions.
 5. **Repository reproducibility — post-demo hardening:** add appropriate CI/project gates and exact dependency locking when the selected external dependencies enter reproducible production paths.
