@@ -1,0 +1,596 @@
+{
+  "schema_version": "world-substrate-reference-world/v0",
+  "world_id": "waltzman-coordination-lab-v0",
+  "content_id": "world-substrate-waltzman-demo@1",
+  "source": {
+    "repository": "world-substrate",
+    "authored_for": "Waltzman Coordination Lab integrated deliverable",
+    "note": "A bounded coordination world with asymmetric information, explicit commitments, shared constraints, a duration-bearing meeting, an institution gate, and a forkable stabilization intervention."
+  },
+  "entities": [
+    {
+      "entity_id": "mara",
+      "label": "Mara Ellison",
+      "category_ids": [
+        "resident"
+      ],
+      "components": {
+        "resident": {
+          "role": "Alba epidemiologist",
+          "organization": "Alba"
+        },
+        "commitment": {
+          "stance": "support",
+          "constraint_id": "validation-capacity"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "ari",
+      "label": "Ari Chen",
+      "category_ids": [
+        "resident"
+      ],
+      "components": {
+        "resident": {
+          "role": "regional scientific adviser",
+          "organization": "Regional"
+        },
+        "commitment": {
+          "stance": "support",
+          "constraint_id": "always-ready"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "tomas",
+      "label": "Tomas Vey",
+      "category_ids": [
+        "resident"
+      ],
+      "components": {
+        "resident": {
+          "role": "Borin operations lead",
+          "organization": "Borin"
+        },
+        "commitment": {
+          "stance": "support",
+          "constraint_id": "clinical-staff"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "nira",
+      "label": "Nira Sol",
+      "category_ids": [
+        "resident"
+      ],
+      "components": {
+        "resident": {
+          "role": "Cyrenia logistics coordinator",
+          "organization": "Cyrenia"
+        },
+        "commitment": {
+          "stance": "support",
+          "constraint_id": "shared-reserve"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "idris",
+      "label": "Idris Vale",
+      "category_ids": [
+        "resident"
+      ],
+      "components": {
+        "resident": {
+          "role": "Darsia legal adviser",
+          "organization": "Darsia"
+        },
+        "commitment": {
+          "stance": "support",
+          "constraint_id": "safeguard-record"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "selene",
+      "label": "Selene Ward",
+      "category_ids": [
+        "resident"
+      ],
+      "components": {
+        "resident": {
+          "role": "regional coordinator",
+          "organization": "Regional"
+        },
+        "commitment": {
+          "stance": "support",
+          "constraint_id": "always-ready"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "validation-capacity",
+      "label": "Cross-lab validation capacity",
+      "category_ids": [
+        "resource",
+        "constraint"
+      ],
+      "components": {
+        "resource": {
+          "current": 4,
+          "required": 3,
+          "unit": "labs"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "clinical-staff",
+      "label": "Clinical staffing",
+      "category_ids": [
+        "resource",
+        "constraint"
+      ],
+      "components": {
+        "resource": {
+          "current": 42,
+          "required": 42,
+          "unit": "clinicians"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "shared-reserve",
+      "label": "Shared reserve",
+      "category_ids": [
+        "resource",
+        "constraint"
+      ],
+      "components": {
+        "resource": {
+          "current": 100,
+          "required": 80,
+          "unit": "percent"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "safeguard-record",
+      "label": "Emergency safeguard record",
+      "category_ids": [
+        "constraint"
+      ],
+      "components": {
+        "constraint": {
+          "status": "clear",
+          "required_status": "clear"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "always-ready",
+      "label": "No additional prerequisite",
+      "category_ids": [
+        "constraint"
+      ],
+      "components": {
+        "constraint": {
+          "status": "clear",
+          "required_status": "clear"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "coalition-hub",
+      "label": "Coalition decision gate",
+      "category_ids": [
+        "institution"
+      ],
+      "components": {
+        "institution": {
+          "status": "ready",
+          "support_count": 6,
+          "conditional_count": 0,
+          "required_support": 6,
+          "last_evaluated_tick": -1
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "coordination-meeting",
+      "label": "Coordination meeting",
+      "category_ids": [
+        "activity",
+        "institutional-process"
+      ],
+      "components": {
+        "activity": {
+          "kind": "coordination-meeting",
+          "status": "pending",
+          "duration_ticks": 2,
+          "started_tick": null,
+          "end_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "stabilization-package",
+      "label": "Cross-domain stabilization package",
+      "category_ids": [
+        "intervention"
+      ],
+      "components": {
+        "package": {
+          "status": "available"
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "brief-validation",
+      "label": "Alba instrument failure bulletin",
+      "category_ids": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "Validation redundancy has fallen to two labs.",
+          "source_id": "lab-alba",
+          "channel_id": "system-feed",
+          "visibility": "direct",
+          "topic": "validation",
+          "derived_from_info_id": null,
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-validation-mara",
+      "label": "Delivery of Alba instrument failure bulletin",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "brief-validation",
+          "recipient_id": "mara",
+          "channel_id": "system-feed",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "brief-staff",
+      "label": "Borin staffing bulletin",
+      "category_ids": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "Only eighteen clinicians are currently available.",
+          "source_id": "borin-ops",
+          "channel_id": "system-feed",
+          "visibility": "direct",
+          "topic": "staffing",
+          "derived_from_info_id": null,
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-staff-tomas",
+      "label": "Delivery of Borin staffing bulletin",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "brief-staff",
+          "recipient_id": "tomas",
+          "channel_id": "system-feed",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "brief-reserve",
+      "label": "Cyrenia reserve bulletin",
+      "category_ids": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "The shared reserve has fallen to sixty-one percent.",
+          "source_id": "cyrenia-logistics",
+          "channel_id": "system-feed",
+          "visibility": "direct",
+          "topic": "reserve",
+          "derived_from_info_id": null,
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-reserve-nira",
+      "label": "Delivery of Cyrenia reserve bulletin",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "brief-reserve",
+          "recipient_id": "nira",
+          "channel_id": "system-feed",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "brief-safeguard",
+      "label": "Darsia legal bulletin",
+      "category_ids": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "The safeguard record is still pending.",
+          "source_id": "darsia-legal",
+          "channel_id": "system-feed",
+          "visibility": "direct",
+          "topic": "safeguard",
+          "derived_from_info_id": null,
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-safeguard-idris",
+      "label": "Delivery of Darsia legal bulletin",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "brief-safeguard",
+          "recipient_id": "idris",
+          "channel_id": "system-feed",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "msg-mara-validation",
+      "label": "Mara validation report",
+      "category_ids": [
+        "information",
+        "utterance"
+      ],
+      "components": {
+        "information": {
+          "content": "The instrument failure cut our validation redundancy in half.",
+          "source_id": "mara",
+          "channel_id": "spoken",
+          "visibility": "direct",
+          "topic": "validation",
+          "derived_from_info_id": "brief-validation",
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-mara-ari",
+      "label": "Delivery of Mara validation report",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "msg-mara-validation",
+          "recipient_id": "ari",
+          "channel_id": "spoken",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "msg-tomas-staff",
+      "label": "Tomas staffing report",
+      "category_ids": [
+        "information",
+        "utterance"
+      ],
+      "components": {
+        "information": {
+          "content": "We are short twenty-four clinicians; I cannot commit yet.",
+          "source_id": "tomas",
+          "channel_id": "spoken",
+          "visibility": "direct",
+          "topic": "staffing",
+          "derived_from_info_id": "brief-staff",
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-tomas-selene",
+      "label": "Delivery of Tomas staffing report",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "msg-tomas-staff",
+          "recipient_id": "selene",
+          "channel_id": "spoken",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "msg-nira-reserve",
+      "label": "Nira reserve report",
+      "category_ids": [
+        "information",
+        "utterance"
+      ],
+      "components": {
+        "information": {
+          "content": "The reciprocal allocations are individually feasible but not together.",
+          "source_id": "nira",
+          "channel_id": "spoken",
+          "visibility": "direct",
+          "topic": "reserve",
+          "derived_from_info_id": "brief-reserve",
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-nira-selene",
+      "label": "Delivery of Nira reserve report",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "msg-nira-reserve",
+          "recipient_id": "selene",
+          "channel_id": "spoken",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "msg-idris-safeguard",
+      "label": "Idris safeguard report",
+      "category_ids": [
+        "information",
+        "utterance"
+      ],
+      "components": {
+        "information": {
+          "content": "Emergency authority still lacks the required safeguard record.",
+          "source_id": "idris",
+          "channel_id": "spoken",
+          "visibility": "direct",
+          "topic": "safeguard",
+          "derived_from_info_id": "brief-safeguard",
+          "active": false
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    },
+    {
+      "entity_id": "delivery-idris-selene",
+      "label": "Delivery of Idris safeguard report",
+      "category_ids": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "msg-idris-safeguard",
+          "recipient_id": "selene",
+          "channel_id": "spoken",
+          "status": "pending",
+          "delivered_tick": null
+        }
+      },
+      "location": {
+        "location_id": "coordination-hall"
+      }
+    }
+  ]
+}

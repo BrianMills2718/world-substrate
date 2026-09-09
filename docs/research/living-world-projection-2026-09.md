@@ -15,7 +15,7 @@ authority_refs:
 
 World Substrate should feel like a living world rather than a trace viewer while preserving the rule that presentation never becomes a second source of truth. The primary experience is one persistent spatial scene. Core semantic overlays are drawn on that same scene and update as canonical state and retained events change.
 
-The current standalone prototype is deployed at `https://brianmills.dev/world-substrate-visualization/` and versioned at `prototypes/living-world-overlay-v0.html` (SHA-256 `95def20d0225a0f3df4ad25a6dd4f64853b8a7404351a871ae76f376d4443288`). It is a UI prototype only: its timeline is synthetic and it does not yet consume a World Substrate run.
+The authorized standalone prototype is deployed at `https://brianmills.dev/world-substrate-visualization/` and versioned at `prototypes/living-world-overlay-v0.html` (SHA-256 `95def20d0225a0f3df4ad25a6dd4f64853b8a7404351a871ae76f376d4443288`). That public surface still uses its original synthetic timeline. The repository now also implements `world-substrate-live-projection/v0` and an integrated local Waltzman client that reconstructs baseline/intervention worlds from canonical initial snapshots plus retained event deltas, with JSON/SSE delivery. See [live projection v0](../contracts/live-projection-v0.md) and the [Waltzman audit](../audits/waltzman-coordination-lab-v0.md). Public replacement remains a separate deployment authority decision.
 
 ## Base world and overlays
 

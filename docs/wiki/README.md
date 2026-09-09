@@ -24,14 +24,14 @@ World Substrate is a persistent, observable simulation engine and generative aut
 
 The product direction is now a **generative living-world builder over a rigorous causal engine**. The user should be able to describe a world conversationally, review represented structure and executable law, run residents/processes through it, watch it evolve spatially, and inspect why outcomes occurred without allowing presentation, cognition, or analysis to become alternate truth.
 
-The first serious application vertical is a **Coordination Environment Lab** inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
+The current prototype/deliverable is the **Waltzman Coordination Lab**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*. Its first integrated local gate now runs through canonical World Substrate state/events. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
 
 Public surfaces:
 
 - World Builder: `https://brianmills.dev/world-builder/`
 - Living-world visualization prototype: `https://brianmills.dev/world-substrate-visualization/`
 
-The living-world prototype is currently a UI prototype with synthetic timeline data. The active implementation goal is to feed it a real World Substrate run.
+The authorized public living-world URL still serves the earlier synthetic UI prototype. The repository now also contains a local integrated Waltzman client driven by `world-substrate-live-projection/v0` canonical snapshots/events plus JSON/SSE; replacing the public surface is a separate deployment decision.
 
 ## Start here
 
@@ -41,6 +41,9 @@ The living-world prototype is currently a UI prototype with synthetic timeline d
 | Durable system boundaries | [Architecture](../architecture.md) |
 | Product + procurement doctrine | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
 | Living-world overlay semantics | [Living-world projection](../research/living-world-projection-2026-09.md) |
+| Implemented information/delivery seam | [Information and delivery v0](../contracts/information-delivery-v0.md) |
+| Implemented canonical client seam | [Live projection v0](../contracts/live-projection-v0.md) |
+| Integrated Waltzman evidence | [Waltzman Coordination Lab v0 audit](../audits/waltzman-coordination-lab-v0.md) |
 | Selected commodity defaults | [Technology procurement](../research/technology-procurement-2026-09.md) |
 | Multi-timescale time/process model | [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) |
 | Competitive / adjacent systems | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
@@ -91,7 +94,8 @@ Important current evidence:
 - Greenhouse zero-review replay as a post-renderer new-world proof;
 - Orchard live causal generation + fresh-run acceptance;
 - Repair Bay as the first nontrivial deployed authoring world;
-- Warehouse Rush draft evidence showing a route→physical-dock omission and minimal `target_dock` repair; and
+- Warehouse Rush draft evidence showing a route→physical-dock omission and minimal `target_dock` repair;
+- the Waltzman blocked baseline + exact-history recovery fork, canonical living projection, information/causal distinction, detachable analysis, and bounded adequacy report; and
 - full World Builder request/response/operator/causal logs as the debugging source of truth.
 
 The living-world UI source is versioned at `prototypes/living-world-overlay-v0.html`; it is design evidence, not evidence of a real simulation run until the live projection slice replaces its synthetic data.
@@ -127,13 +131,13 @@ Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter
 | Replay | portable read-only scene-profile renderer across multiple worlds |
 | World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs |
 | Full logs | deployed; complete request/response/compiler/operator/causal traces available |
-| Living-world UI | deployed standalone prototype; synthetic data; source now versioned |
-| Live projection | **active next slice**; no canonical feed yet |
-| Information/conversation | no first-class generic representation/delivery contract yet |
-| Processes/institutions | core engine concept exists; generic authoring surface is not rich enough for Coordination Lab yet |
+| Living-world UI | authorized public prototype remains synthetic; integrated local Waltzman client now consumes canonical projection bundles |
+| Live projection | implemented local first gate: exact initial-snapshot + retained-event/delta reconstruction, JSON, and one-way SSE |
+| Information/conversation | implemented bounded v0: source/recipient/channel/visibility/delivery/provenance + asymmetric actor observation; not a belief model |
+| Processes/institutions | Waltzman first gate has tick-specific processes, explicit commitments, a duration-bearing meeting, and an installed coalition gate; generic authoring remains narrow |
 | Resident cognition | Pydantic AI selected but not integrated; current bounded LLM seam remains sufficient for existing fixtures |
-| Scheduling | current runtime is integer-tick + per-step `due()` checks; SimPy selected for future independent event/timing queue only; not yet integrated |
-| Multi-timescale execution | target accepted: one canonical simulated timeline; independent mechanism cadences; duration-bearing activities when needed; render/cognition/analysis clocks remain separate |
+| Scheduling | core remains integer-tick + per-step `due()` checks; Waltzman proves scenario-specific independent trigger ticks + duration activity; SimPy future-event queue still unintegrated |
+| Multi-timescale execution | first scenario gate implemented on canonical ticks with independently due processes + represented meeting duration; generic scheduler contract remains later |
 | Graph inspector | Cytoscape selected; not yet needed in active slice |
 | Persistence/auth | no saved user worlds/runs or identity-backed approvals yet |
 
@@ -146,12 +150,12 @@ Open work at the handoff point:
 
 The roadmap owns ordering; the important unresolved capabilities are:
 
-1. **Live projection seam:** real canonical snapshot/events must drive the living client without renderer-owned truth.
-2. **Information/conversation semantics:** represent utterances/messages, source/recipient/channel/provenance/visibility, and delivery distinctly from private cognition.
-3. **Causal/evidence lineage:** distinguish hard mechanical ancestry from observation/context and analytic inference.
-4. **Generative causal closure:** dependency inventory → enforcement mapping → counterexamples/probes → residual-risk report → smallest repair.
-5. **Multi-timescale processes/activities/institutions:** move beyond the integer-tick loop only when the Coordination Lab demands independent cadences, travel/task durations, meetings, deadlines, external events, permissions, commitments, or decision procedures. SimPy schedules opportunities; World Substrate owns outcomes.
-6. **Resident cognition:** integrate Pydantic AI behind a narrow adapter only when richer worlds need persistent memory/planning/social behavior; wake cognition on meaningful events rather than every scheduler event.
+1. **Waltzman first-gate review/integration:** review the retained blocked/recovered branches, living client, causal distinctions, and bounded adequacy report; land fixes against acceptance criteria rather than widening the framework.
+2. **Public product integration:** the local canonical projection/SSE path is implemented, but replacing/integrating the authorized synthetic public visualization requires an explicit deployment decision.
+3. **Generative causal closure:** the hand-authored Waltzman report maps eight declared dependencies with no in-scope gap; the harder frontier is generating dependency inventories, finding counterexamples, reporting residual risk, and proposing the smallest repair.
+4. **Generative richer-world authoring:** the current Builder does not yet conversationally author the new information/activity/institution mechanics. Extend the declaration language only after review identifies the smallest useful addition.
+5. **Resident cognition:** integrate Pydantic AI behind a narrow adapter only when a scenario needs persistent memory/planning/social behavior; the first Waltzman gate does not.
+6. **Generic scheduling:** add a SimPy-backed future-event queue only when integer-tick `due()` scanning becomes a measured limitation; keep World Substrate consequence authority.
 7. **Semantic closure/review:** generic new action kinds should eventually bind reviewed Linguistic Core senses/roles; improve review representation when real users cannot distinguish material law differences.
 8. **Persistence/auth:** saved worlds/runs and identity-backed approvals after the authoring/run workflow earns durable state.
 9. **Mechanic/process error events:** promote implementation failures into explicit causal failure evidence when needed for trust/debugging.

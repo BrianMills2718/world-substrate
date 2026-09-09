@@ -1,0 +1,85 @@
+{
+  "schema_version": "world-substrate-waltzman-scene/v0",
+  "world_id": "waltzman-coordination-lab-v0",
+  "places": {
+    "coordination-hall": {
+      "label": "Coordination Hall"
+    }
+  },
+  "positions": {
+    "mara": {
+      "x": 16,
+      "y": 18
+    },
+    "ari": {
+      "x": 39,
+      "y": 34
+    },
+    "tomas": {
+      "x": 79,
+      "y": 18
+    },
+    "nira": {
+      "x": 16,
+      "y": 70
+    },
+    "idris": {
+      "x": 79,
+      "y": 70
+    },
+    "selene": {
+      "x": 50,
+      "y": 43
+    },
+    "validation-capacity": {
+      "x": 8,
+      "y": 38
+    },
+    "clinical-staff": {
+      "x": 85,
+      "y": 38
+    },
+    "shared-reserve": {
+      "x": 8,
+      "y": 84
+    },
+    "safeguard-record": {
+      "x": 85,
+      "y": 84
+    },
+    "coalition-hub": {
+      "x": 50,
+      "y": 70
+    },
+    "coordination-meeting": {
+      "x": 50,
+      "y": 55
+    },
+    "stabilization-package": {
+      "x": 50,
+      "y": 88
+    }
+  },
+  "resident_glyphs": {
+    "mara": "M",
+    "ari": "A",
+    "tomas": "T",
+    "nira": "N",
+    "idris": "I",
+    "selene": "S"
+  },
+  "zones": [
+    {
+      "id": "north",
+      "label": "Briefing desks"
+    },
+    {
+      "id": "center",
+      "label": "Coalition chamber"
+    },
+    {
+      "id": "south",
+      "label": "Constraint board"
+    }
+  ]
+}

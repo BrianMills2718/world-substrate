@@ -1,30 +1,27 @@
 # Reference worlds
 
-Reference worlds prove that the shared substrate supports real end-to-end behavior. They supply content and scenario parameters, not private engines.
+Reference worlds prove that the shared substrate supports real end-to-end behavior. They supply content, scenario parameters, and world-local mechanics where genuinely required; they do not own private engines or alternate canonical state.
 
-## Castaway
+## Current fixtures
 
-**State:** M1 promoted with positive, negative, replay, human-review, and revision-bound evidence.
+| World | Role | Current evidence |
+| --- | --- | --- |
+| Castaway | M1 neutral substrate/reference world | persistent material state, autonomous processes, semantic bindings, exact pinned replay |
+| Workshop | cross-domain reuse proof | materially different components/mechanics through the same transition envelope |
+| Kitchen | flagship watched-world coordination proof | replicated scarce-knife coordination and portable graphical replay |
+| Greenhouse | post-renderer portability proof | new-world shared-tool handoff and zero-review replay |
+| Orchard | live-authoring acceptance fixture | generated causal law, local compiler review, explicit approval, fresh run |
+| Repair Bay | first nontrivial deployed authoring proof | five-action generated law, deterministic solvability, bounded LLM terminal run |
+| Waltzman Coordination Lab | **current integrated product deliverable** | blocked baseline, exact-history intervention recovery, asymmetric information, duration/institution gate, canonical live projection, detachable analysis, bounded causal-adequacy report |
 
-**Donor:** `../castaway-world/worktrees/world-systems` at the pinned revision in `references/sources.json`.
+## Waltzman Coordination Lab
 
-**First vertical:** one persistent clay pot, supported by a separate drinking cup, participates in bounded operational possession/control, carrying, finite liquid transfer, shared finite heating, boiling, evaporation, cooling, damage, pouring, drinking, and transfer between actors. The M1 `owner` field is not a general legal-ownership model.
+`reference_worlds/waltzman/` is the current capability driver. It deliberately runs through the ordinary `World`/`Engine`/policy seams. World-local resident/resource/commitment/activity/institution components are registered through the open component model; generic information visibility, explicit causal-parent retention, and live projection live in `src/world_substrate/`.
 
-The registered fill-through-transfer consumer path now runs and replays through
-the neutral core without Castaway-specific dispatch. Its retained
-[first-fill](../evidence/m1/first-fill-v0.json) and
-[boiling](../evidence/m1/boiling-v0.json),
-[pour](../evidence/m1/pour-v0.json), and
-[drink](../evidence/m1/drink-v0.json), and
-[transfer](../evidence/m1/transfer-v0.json) evidence match selected semantic donor
-checkpoint fields without requiring donor-specific event IDs or state hashes.
-The positive reference path and documented negatives are adopted. See the
-combined [machine](../evidence/m1/freshwater-v0.json) and
-[human](../evidence/m1/freshwater-v0.md) review artifacts and the validated
-[end-to-end observation](../evidence/m1/end-to-end-observation-v1.json).
+The fixture is not a claim that every Waltzman construct belongs in canonical state. Trust/risk/readiness remain detachable analysis. The world represents only the causal facts needed by the bounded scenario: asymmetric brief delivery, explicit commitments to four prerequisites, a two-tick coordination meeting, a coalition decision gate, and a represented stabilization intervention.
 
-## Later reference worlds
+See [the Waltzman audit](../docs/audits/waltzman-coordination-lab-v0.md), [information/delivery v0](../docs/contracts/information-delivery-v0.md), and [live projection v0](../docs/contracts/live-projection-v0.md).
 
-A materially different second world will be selected after the semantic/mechanical and mechanics-authoring verticals. It must reuse the canonical-state, semantic-binding, transition-envelope, mechanic-profile, observation, and trace seams while adding at least one genuinely new mechanism family. Exact replay is optional.
+## Extension rule
 
-No later reference world is active yet.
+A new reference world should reuse canonical identity/state, the Engine transition envelope, bounded observations/affordances, retained evidence, and downstream presentation. Add a shared mechanism only when more than one world or a durable architecture boundary earns it; keep scenario-specific content/mechanics local when generalizing them would merely create schema breadth. Exact replay is a debugging/evidence capability, not a universal product requirement.
