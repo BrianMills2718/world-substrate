@@ -80,9 +80,9 @@ See the [roadmap acceptance criteria](roadmap/README.md) for the authoritative d
 
 ## Current next move
 
-The exact next action is **review and land the integrated Waltzman first gate**, not another framework bake-off or generic breadth exercise. Run the deterministic demo verification, inspect the baseline/intervention evidence and living client, and resolve findings against the Waltzman acceptance criteria.
+The integrated Waltzman first gate is now implemented, reviewed, and landed on `main` through PR #47. The exact next action is the **product-surface integration decision**, not another framework bake-off or generic breadth exercise.
 
-The repository implementation is intentionally local: the already-authorized public standalone visualization still shows the earlier synthetic prototype. Publishing/replacing that surface is a separate deployment-authority decision. If authorized, integrate the new client through the implemented read-only projection/SSE seam rather than recreating synthetic stage data. The [roadmap](roadmap/README.md) owns the full sequence.
+The already-authorized public standalone visualization still shows the earlier synthetic prototype. Publishing/replacing or integrating that surface is a separate deployment-authority decision. If authorized, use the implemented read-only projection/SSE seam rather than recreating synthetic stage data; otherwise keep the verified local Waltzman demo as the current deliverable. The [roadmap](roadmap/README.md) owns the full sequence.
 
 ## Architectural thesis
 

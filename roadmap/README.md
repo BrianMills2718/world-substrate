@@ -9,8 +9,8 @@ reviewed_through: 2026-09-08
 # World Substrate living roadmap
 
 **Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), and [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md).  
-**Stage:** prototype substrate complete; deployed authoring/run alpha; integrated local Waltzman Coordination Lab demo first gate implemented; current phase is review, hardening, and authorized product-surface integration.
-**Current frontier:** validate and land the integrated Waltzman demo as one canonical World Substrate vertical. The local implementation now covers read-only snapshot/event projection, asymmetric information, explicit hard-causal parents, scenario-driven cadence/duration, a represented coalition institution, a forked stabilization intervention, detachable Waltzman analysis, and bounded causal-adequacy reporting. Do not add generic breadth unless review of this demo exposes a concrete gap.
+**Stage:** prototype substrate complete; deployed authoring/run alpha; integrated Waltzman Coordination Lab demo first gate implemented, reviewed, and landed on `main`; current phase is the product-surface integration decision.
+**Current frontier:** preserve the accepted Waltzman vertical and decide whether to replace/integrate the already-authorized synthetic public visualization and/or World Builder surface using the implemented read-only projection/SSE seam. No further generic capability slice is authorized merely because the local first gate is complete.
 **Deployment boundary:** the existing World Builder and standalone visualization prototype are authorized/public. New publication surfaces, provider spend outside the bounded Builder service, or runtime-generated-law installation outside the reviewed path still require explicit human authority.
 
 ## Outcome and success criteria
@@ -163,9 +163,9 @@ Hard constraints:
 | Waltzman integrated demo | **implemented local first gate / current deliverable** | one coherent living coordination scenario with detachable Waltzman analysis and retained evidence |
 | Persistence / second-domain proof | later | durable user worlds/runs and proof of generality beyond Waltzman |
 
-### Active slice — Waltzman integrated demo review and product integration
+### Active slice — Waltzman product integration decision
 
-The first integrated local Waltzman gate is now implemented. The active work is to review and harden this one vertical rather than starting another capability expansion.
+The first integrated Waltzman gate is implemented, reviewed, and landed on `main` through PR #47. The active gate is now product integration authority: decide whether the canonical Waltzman client should replace/integrate the already-authorized synthetic public visualization and/or connect into the World Builder. Until that decision is explicit, keep the verified local demo as the deliverable and do not create a new framework-breadth milestone just to stay busy.
 
 Implemented flow:
 
@@ -336,8 +336,6 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Review and land the integrated Waltzman demo first gate; do not start another generic framework/capability expansion.**
+**Make the Waltzman product-surface integration decision. Do not deploy or start another generic capability expansion by default.**
 
-Run `python scripts/run_waltzman_demo.py --check`, inspect the retained baseline/intervention traces, causal-adequacy report, and `evidence/renders/waltzman-demo-v0.html`, then use the existing full repository check. Resolve any review finding against the Waltzman acceptance criteria rather than broadening schemas preemptively.
-
-After this implementation is accepted, the next product decision is whether/where to publish it: replace or integrate with the already-authorized standalone visualization and/or World Builder using the implemented read-only projection/SSE seam. That is a deployment/publication authority decision. If deployment is not yet authorized, keep the verified local demo as the current deliverable and move only on concrete findings from review.
+PR #47 has landed the verified local demo. The next human authority question is whether to replace/integrate the already-authorized synthetic visualization and/or World Builder with the canonical Waltzman projection/SSE path. If publication/integration is authorized, use `world-substrate-live-projection/v0` directly and preserve the existing read-only authority boundary. If it is not yet authorized, keep `evidence/renders/waltzman-demo-v0.html` plus the local service as the current deliverable and wait for a concrete product/research finding before opening another implementation slice.
