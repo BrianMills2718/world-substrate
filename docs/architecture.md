@@ -29,6 +29,16 @@ one Engine commit or refusal
 
 The product direction in [Decision 004](decisions/004-product-and-adoption-strategy.md) is a Generative-World Builder front end over this causal engine. Product frameworks may surround the engine; they do not replace its consequence authority.
 
+## Causal claim boundary
+
+A World Substrate causal claim is **internal to a represented world under its installed mechanics**. If an installed rule says an overloaded bridge collapses and that rule commits, the system should be able to explain that the represented overload was consumed by the installed collapse mechanic and produced the represented consequence.
+
+That does not by itself establish that the rule is scientifically or empirically correct for a real bridge. Real-world predictive validity, calibration, and causal identification require separate evidence. The substrate's core guarantee is therefore about **explicit consequence authority and inspectable modeled dependencies**, not automatic truth of the model's assumptions.
+
+Current hard parent event IDs are mechanic-declared and validated against retained canonical history. They are stronger than temporal proximity or prompt/context inclusion, but the runtime does not yet derive them from instrumented reads. Use the precise phrase **mechanic-declared hard causal ancestry** when that distinction matters.
+
+Likewise, the current bounded causal-adequacy surface is a dependency inventory mapped to represented state and installed enforcement surfaces plus explicit residual risk. It does not yet provide automatic counterfactual proof of necessity/sufficiency. Stronger counterfactual or mutation verification is a later research option, not a prerequisite for the first public Waltzman demo.
+
 ## Architecture-description discipline
 
 Architecture documents answer stable concerns rather than narrate milestones. A maintained view must identify its authority source, use implementation IDs where code exists, state material omissions, and agree with contracts/tests/evidence.
@@ -77,7 +87,7 @@ Rules generate finite action instances from current local state. A policy select
 
 For a parameterized action such as `pour(source, target, amount)`, discovery enumerates bounded candidate values and checks state-dependent constraints. Generated live mechanics likewise require finite scalar choices so the action space remains bounded.
 
-Candidate/action-space size and observation size are separate scaling concerns and should be measured only when a real world makes them limiting.
+Candidate/action-space size and observation size are separate scaling concerns and should be measured only when a real world makes them limiting. A bounded implementation must not silently hide valid actions when a candidate cap is reached; overflow should become explicit refusal, paging, or another visible bounded representation when this limit is hardened.
 
 ## Process and institution model
 
@@ -123,14 +133,14 @@ If not, it is normally a derived description rather than a new mechanic.
 
 A represented communication is a world interaction first. When a selected world models information, the system should retain the representation, source, recipient, channel, provenance, delivery/observation, and visibility semantics needed by that world. Those records are canonical only to the extent the world represents them.
 
-Information lineage is not automatically the same as hard causal ancestry. A resident may receive a report and later choose an action; the report may be retained as observation/context evidence without claiming that it mechanically caused the choice. Hard causal parentage is reserved for dependencies the installed transition actually consumes or other explicitly justified parent relations. Derived analysis may make narrower claims later, but it cannot rewrite either history.
+Information lineage is not automatically the same as hard causal ancestry. A resident may receive a report and later choose an action; the report may be retained as observation/context evidence without claiming that it mechanically caused the choice. Hard causal parentage is reserved for dependencies an installed transition explicitly declares as mechanically consumed or otherwise justified. Current parent IDs are validated against retained history but are not automatically derived from runtime read provenance. Derived analysis may make narrower claims later, but it cannot rewrite either history.
 
 The durable distinction is therefore:
 
 1. world interaction/event;
 2. information representation/delivery/observation lineage;
 3. cognition context or retained rationale/evidence;
-4. hard mechanical causal parentage; and
+4. mechanic-declared hard causal parentage; and
 5. derived analytic interpretation.
 
 The runtime now implements a bounded generic v0 for represented information and delivery: source, recipient, channel, visibility, delivery status, optional lineage, and actor-local asymmetric observation. Engine events may retain `information_context` separately from opt-in `causal_parent_event_ids`. It is deliberately not a belief/reputation/channel-fidelity model. See [information and delivery v0](contracts/information-delivery-v0.md) and [living-world projection research](research/living-world-projection-2026-09.md).
@@ -154,6 +164,8 @@ Free text may accompany this binding but cannot substitute for it. The implement
 Only the enclosing coordinator commits effects belonging to one causal transition.
 
 Write declarations are enforced at state paths: the engine compares every candidate change with the mechanic's declared `write_paths` and refuses/raises on out-of-scope writes. Rule-facing hooks run against detached state, and revision/commands/events are engine-owned.
+
+For actions, current placeholder enforcement restricts writes to entities named by the attempt, but it does not yet bind each placeholder name to one specific action role. Strengthening this to role-specific authority (for example, `<target>` means exactly the action's `target`) is a straightforward hardening task after the public demo rather than a reason to reopen the architecture.
 
 Declared read paths are retained on events but are not currently runtime-enforced; enforcing reads requires an observation/recording mechanism rather than before/after state comparison. See [read-scope enforcement v0](contracts/read-scope-enforcement-v0.md).
 
@@ -188,6 +200,8 @@ The proposer never supplies its own authority. Unknown paths/operators/participa
 
 Compiler/installer acceptance proves **declared enforcement coverage**, not completeness. The project therefore keeps causal-closure assays, counterexamples, overlapping-write checks, and residual-risk statements separate from schema validity.
 
+The current `MechanicProfile.freeze()` gives the reviewed package set a stable declaration identity before a run. For future durable generated-law provenance, approval/run identity should be strengthened to fingerprint the exact executable law plus the compiler/interpreter version that gives the declaration meaning. That hardening matters before persistent long-lived user law is treated as cryptographically reproducible; it is not a blocker for publishing the current hand-authored Waltzman reference demo.
+
 ## Observability, replay, and presentation
 
 Every attempted transition should expose enough evidence to reconstruct the causal story: delivered observation when applicable, bearer, semantic binding when available, selected mechanic, checks, declared authority, committed changes, failure status, and resulting state identity.
@@ -199,6 +213,8 @@ Exact replay is an implemented M1/debugging capability, not a universal requirem
 Presentation is downstream of world truth. Scene profiles/assets/auto-layout may choose where/how an entity appears, but presentation coordinates or animation state never become canonical causal state merely because the UI renders them.
 
 The same rule applies to the living-world client. The implemented `world-substrate-live-projection/v0` seam combines an initial snapshot with incremental canonical events/deltas and may render derived **possible / enabled / active / realized** relationship states. These are visualization classifications over installed structure, current state, and retained history—not new world variables. Renderer selection, interpolation, camera state, filters, and overlay visibility remain client-local. The Waltzman client verifies one-way reconstruction for baseline and intervention branches and exposes the same observer data over JSON/SSE. See [live projection v0](contracts/live-projection-v0.md).
+
+The first public Waltzman demo may publish the generated self-contained client because it embeds those canonical projection bundles; a continuously running public simulation service is not required to preserve this presentation boundary.
 
 ## Agent and observer separation
 
@@ -238,4 +254,4 @@ Commodity selection follows research → reason → select; local tests are boun
 - Linguistic Core is the pinned semantic interface.
 - Shared `llm_client` is the model-provider seam.
 - Castaway, Cybernetic Influence, Agent Ecology, Data Contracts, and Collective Competence remain bounded donors according to [source dispositions](source-dispositions.md).
-- Selected product dependencies are governed by Decision 004 and remain replaceable adapters; exact versions are pinned in implementation lockfiles and upgraded deliberately.
+- Selected product dependencies are governed by Decision 004 and remain replaceable adapters; implementation should pin exact versions before those dependencies become part of a reproducible production run manifest, and upgrades should be deliberate.
