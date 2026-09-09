@@ -1,7 +1,7 @@
 ---
 role: audit
 status: active
-reviewed_through: 2026-09-08
+reviewed_through: 2026-09-09
 ---
 
 # Waltzman Coordination Lab v0 audit
@@ -130,11 +130,12 @@ generic layer is complete.
 - Persistent resident memory/planning is not integrated; the demo uses the
   existing bounded policy seam, which is sufficient for the accepted scripted
   scenario.
-- The public product decision is now made: replace the existing standalone
-  synthetic visualization with this canonical Waltzman client at the existing
-  public visualization URL, while retaining the synthetic prototype as
-  versioned design evidence. World Builder integration is not required for the
-  first public demo.
+- This reference-world client remains valid presentation/evidence, but the
+  2026-09-09 stakeholder decision supersedes publishing it as the finished
+  outreach demo. The sendable demo must add natural-language authoring and fresh
+  execution, then reuse these living-view semantics for inspection. The fastest
+  path reuses Cybernetic V3's existing authoring/run pipeline rather than
+  rebuilding general authoring in World Builder first.
 - Generic live authoring does not yet generate these richer information,
   institution, and activity mechanics from conversation. The public Waltzman
   demo must therefore be presented as a reviewed reference world, not as a

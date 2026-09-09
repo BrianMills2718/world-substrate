@@ -86,13 +86,21 @@ See the [roadmap acceptance criteria](roadmap/README.md) and [Waltzman audit](do
 
 ## Current next move
 
-The integrated Waltzman first gate is implemented, reviewed, and landed on `main` through PR #47. The product decision is now made: **replace the existing standalone synthetic visualization with the canonical Waltzman client at the existing public visualization URL.**
+The integrated Waltzman reference-world gate remains valid, but the 2026-09-09 stakeholder decision changes what counts as a sendable demo. A static canonical replay is useful proof and a visual donor; by itself it is not enough.
 
-The first public demo does **not** require World Builder integration. Present Waltzman as a reviewed reference world running through the real substrate; do not imply that the current Builder generatively authored its richer hand-written information/activity/institution mechanics.
+The fastest demo path is now:
 
-The generated `evidence/renders/waltzman-demo-v0.html` is already self-contained and embeds the canonical baseline/intervention projection bundles, so the first public demo can remain a static read-only surface. The JSON/SSE service remains available as an optional observer/live seam rather than a publication prerequisite.
+```text
+ordinary-language situation
+  -> existing Cybernetic V3 public V2 authoring/coverage/review
+  -> fresh retained run
+  -> World-Substrate-style living projection
+  -> click-through information, constraints, causal ancestry, evidence, and detachable Waltzman analysis
+```
 
-Before publication, make only the small truth-label cleanup needed to avoid overclaiming—especially describing the current adequacy surface as mapped dependencies rather than counterfactual proof and describing causal parentage as mechanic-declared. Then publish the canonical artifact, smoke-test the public URL, and stop. The [roadmap](roadmap/README.md) owns the post-demo hardening sequence.
+Do **not** rebuild Cybernetic V3's mature natural-language authoring/run pipeline inside World Builder just to reach the Waltzman demo. World Builder remains the long-term World Substrate product path; for this stakeholder slice, Cybernetic V3 is an implementation donor under a World Substrate-branded experience. The existing `evidence/renders/waltzman-demo-v0.html` remains retained reference/presentation evidence, not the final outreach endpoint.
+
+The next engineering gate is a thin adapter from one retained Cybernetic V3 general-run projection into the living-world presentation semantics already proven by the Waltzman client: residents, information delivery, constraints/resources, accepted versus rejected changes, timeline, mechanic-declared ancestry, and detachable analysis.
 
 ## Architectural thesis
 
