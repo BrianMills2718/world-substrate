@@ -9,8 +9,8 @@ reviewed_through: 2026-09-08
 # World Substrate living roadmap
 
 **Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), and [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md).  
-**Stage:** prototype substrate complete; deployed authoring/run alpha; integrated Waltzman Coordination Lab first gate implemented/reviewed/landed; current phase is **public canonical demo publication**.  
-**Current frontier:** make the small truth-label cleanup, replace the existing standalone synthetic visualization with the already-implemented canonical Waltzman client at the same public URL, smoke-test it, and stop. Do not widen the framework to ship this demo.  
+**Stage:** prototype substrate complete; deployed authoring/run alpha; integrated Waltzman Coordination Lab first gate implemented/reviewed/landed; current phase is **public canonical demo publication**.
+**Current frontier:** make the small truth-label cleanup, replace the existing standalone synthetic visualization with the already-implemented canonical Waltzman client at the same public URL, smoke-test it, and stop. Do not widen the framework to ship this demo.
 **Deployment boundary:** the 2026-09-08 human product decision explicitly authorizes replacing the existing standalone synthetic visualization with the canonical Waltzman demo at `https://brianmills.dev/world-substrate-visualization/`. World Builder integration is not required for this demo. Other new publication surfaces, provider spend outside the bounded Builder service, or runtime-generated-law installation outside the reviewed path still require explicit human authority.
 
 ## Outcome and success criteria
