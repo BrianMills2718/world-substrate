@@ -89,7 +89,7 @@ Installed institutions are represented causal bearers whose rules alter future t
 
 World Substrate should converge on **one canonical simulated timeline with independently scheduled mechanisms**, not one universal resident turn rate. Render time, process cadence, resident cognition cadence, institution cadence, and analysis cadence are distinct concerns. Only represented simulation time belongs to canonical world truth.
 
-The current implementation is narrower: `World.tick` is an integer and `Engine.advance()` checks every registered process on each step through `due(world)`. That M1 mechanism permits simple conditional cadence but is not yet a first-class future-event scheduler. Richer scheduling is an explicit target rather than an implemented claim.
+The generic runtime remains narrower: `World.tick` is an integer and `Engine.advance()` checks every registered process on each step through `due(world)`. The Waltzman first gate now proves that this canonical timeline can support scenario-specific trigger ticks and a represented duration-bearing meeting whose completion rechecks current time/state. That does **not** make the core a first-class future-event scheduler; richer scheduling remains an explicit target only when a real world outgrows the current seam.
 
 Target rules:
 
@@ -100,7 +100,7 @@ Target rules:
 - render interpolation/playback speed and analysis sampling never advance canonical simulation time; and
 - cadence/resolution is separate from fidelity: a high-frequency mechanism can be coarse and a low-frequency mechanism can be detailed.
 
-The exact simulation-time/activity schema remains uncommitted until a real Coordination-Lab/process slice needs it. See [multi-timescale execution](research/multi-timescale-execution-2026-09.md).
+The Waltzman fixture has now earned one scenario-specific `ActivityState` for its two-tick meeting, while the generic simulation-time/activity schema remains uncommitted. Do not promote that world component into a universal contract without another use case. See [multi-timescale execution](research/multi-timescale-execution-2026-09.md).
 
 ## Semantic and causal layers
 
@@ -133,7 +133,7 @@ The durable distinction is therefore:
 4. hard mechanical causal parentage; and
 5. derived analytic interpretation.
 
-The current runtime does not yet provide a complete generic information/communication contract. [Living-world projection research](research/living-world-projection-2026-09.md) records the target semantics without pretending they are implemented.
+The runtime now implements a bounded generic v0 for represented information and delivery: source, recipient, channel, visibility, delivery status, optional lineage, and actor-local asymmetric observation. Engine events may retain `information_context` separately from opt-in `causal_parent_event_ids`. It is deliberately not a belief/reputation/channel-fidelity model. See [information and delivery v0](contracts/information-delivery-v0.md) and [living-world projection research](research/living-world-projection-2026-09.md).
 
 ## Semantic–mechanical binding
 
@@ -198,7 +198,7 @@ Exact replay is an implemented M1/debugging capability, not a universal requirem
 
 Presentation is downstream of world truth. Scene profiles/assets/auto-layout may choose where/how an entity appears, but presentation coordinates or animation state never become canonical causal state merely because the UI renders them.
 
-The same rule applies to the living-world client. A live projection may combine an initial snapshot with incremental canonical events/deltas and render derived **possible / enabled / active / realized** relationship states. These are visualization classifications over installed structure, current state, and retained history—not new world variables. Renderer selection, interpolation, camera state, filters, and overlay visibility remain client-local. The first live-projection implementation must be one-way/read-only.
+The same rule applies to the living-world client. The implemented `world-substrate-live-projection/v0` seam combines an initial snapshot with incremental canonical events/deltas and may render derived **possible / enabled / active / realized** relationship states. These are visualization classifications over installed structure, current state, and retained history—not new world variables. Renderer selection, interpolation, camera state, filters, and overlay visibility remain client-local. The Waltzman client verifies one-way reconstruction for baseline and intervention branches and exposes the same observer data over JSON/SSE. See [live projection v0](contracts/live-projection-v0.md).
 
 ## Agent and observer separation
 

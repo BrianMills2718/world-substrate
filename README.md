@@ -29,7 +29,7 @@ The live Builder can define represented world structure, request a constrained L
 
 The **prototype substrate phase is complete**. The system has progressed from a neutral transition kernel to a deployed authoring/run loop and a deployed synthetic living-world visualization prototype.
 
-The **current prototype/deliverable is the Waltzman Coordination Lab demo**. The roadmap is organized around making that demo real through World Substrate rather than treating Waltzman as a later optional vertical. Live projection, information/conversation semantics, multi-timescale processes and activities, institutions, resident cognition, bounded causal-adequacy reporting, and intervention/fork behavior are enabling slices to add only as the Waltzman scenario requires them.
+The **current prototype/deliverable is the Waltzman Coordination Lab demo**. Its first integrated local gate is now implemented through the real World Substrate path: canonical projection, asymmetric represented information, explicit causal parents, a duration-bearing meeting, a represented coalition institution, exact-history intervention/fork behavior, detachable Waltzman analysis, and bounded causal-adequacy reporting. Persistent cognition and a generic future-event scheduler were not required for this first gate.
 
 | Capability | Current state |
 | --- | --- |
@@ -45,12 +45,12 @@ The **current prototype/deliverable is the Waltzman Coordination Lab demo**. The
 | Zero-review replay bootstrap/auto-layout | demonstrated across multiple real worlds |
 | Visual world authoring | implemented and deployed |
 | Fresh scripted/LLM graphical run | implemented and deployed |
-| Standalone living-world visualization | deployed prototype; synthetic timeline; not yet fed by World Substrate |
-| Waltzman slice 1: live read-only projection seam | next implementation slice |
-| Waltzman slice 2: first-class information/conversation semantics | not yet implemented |
-| Waltzman multi-timescale scheduling / duration activities | not yet implemented; current runtime is integer tick + per-step process `due()` checks; SimPy selected as future scheduler only |
-| Waltzman resident cognition | not yet integrated; Pydantic AI selected behind adapter; target cognition wakeups are event/meaning-driven rather than every microstep |
-| Waltzman institutions / intervention / causal-adequacy workflow | not yet implemented; add from scenario pressure |
+| Authorized public standalone visualization | deployed earlier synthetic prototype; not yet replaced by the new local Waltzman client |
+| Waltzman live read-only projection | implemented local first gate; exact snapshot/event reconstruction plus JSON/SSE observer seam |
+| First-class information/delivery v0 | implemented; asymmetric source/recipient/channel/visibility/delivery/provenance plus retained context evidence |
+| Waltzman cadence / duration activity | implemented scenario first gate on canonical integer ticks; generic SimPy/future-event scheduler remains later |
+| Waltzman resident cognition | persistent cognition not integrated; existing bounded policy seam is sufficient for the accepted first gate |
+| Waltzman institution / intervention / causal-adequacy | implemented first bounded gate; coalition decision, exact-history fork, intervention, eight dependency mappings + residual risk |
 | Saved user worlds/runs | not yet implemented; not required for first Waltzman demo unless the scenario proves otherwise |
 
 The current live path is:
@@ -80,9 +80,9 @@ See the [roadmap acceptance criteria](roadmap/README.md) for the authoritative d
 
 ## Current next move
 
-The exact next action is **Waltzman demo slice 1**, not another framework bake-off, generic breadth exercise, or toy world. Feed a real retained World Substrate run (prefer Repair Bay) into the versioned living-world prototype through the smallest read-only projection seam, preserving canonical entity/event IDs and existing scene semantics. Repair Bay is the technical stepping stone, not the deliverable.
+The exact next action is **review and land the integrated Waltzman first gate**, not another framework bake-off or generic breadth exercise. Run the deterministic demo verification, inspect the baseline/intervention evidence and living client, and resolve findings against the Waltzman acceptance criteria.
 
-After that works, move directly to **Waltzman slice 2**: first-class information/conversation representation sufficient to model asymmetric information in the target scenario so visible agent interaction and provenance overlays are grounded in world truth. Subsequent process, institution, cognition, intervention, and causal-adequacy work should be justified against the Waltzman demo acceptance criteria. The [roadmap](roadmap/README.md) owns the full sequence.
+The repository implementation is intentionally local: the already-authorized public standalone visualization still shows the earlier synthetic prototype. Publishing/replacing that surface is a separate deployment-authority decision. If authorized, integrate the new client through the implemented read-only projection/SSE seam rather than recreating synthetic stage data. The [roadmap](roadmap/README.md) owns the full sequence.
 
 ## Architectural thesis
 
@@ -123,7 +123,7 @@ Use mature commodity systems around that kernel rather than rebuilding them. The
 | Greenhouse | post-renderer authoring proof | new world, shared tool handoff, zero-review Automatic replay |
 | Orchard | live-authoring acceptance fixture | generated causal law, compiler review, explicit approval, fresh scripted/LLM run |
 | Repair Bay | Waltzman slice-1 technical fixture | generated five-action law, deterministic solvability, bounded LLM terminal run, full-log evidence; suitable retained run for live projection |
-| Waltzman Coordination Lab | current integrated deliverable | target living coordination scenario; enabling slices in progress |
+| Waltzman Coordination Lab | current integrated deliverable | local first gate implemented: blocked baseline, exact-history intervention recovery, canonical living projection, information/causal overlays, detachable analysis |
 
 The Kitchen remains the flagship completed watched-world demonstration: three same-model/prompt replications reproduced Bo completing at t9, deliberately releasing the shared knife at t10, Ama taking it at t11, and both orders reaching the t17 terminal. See [the Kitchen audit](docs/audits/kitchen-contested-world.md).
 
@@ -135,9 +135,9 @@ These are active boundaries, not hidden TODOs:
 - The live causal declaration language intentionally does not express arbitrary Python, continuous physics, unrestricted collection mutation, or every institution/process form.
 - Compiler acceptance establishes declared authority/type consistency, not global causal completeness.
 - Declared read scopes are recorded but not enforced at runtime; an optional verification design exists.
-- First-class generic information/conversation semantics required by the Waltzman demo are not yet implemented.
-- Resident-agent memory, reflection, long-range planning, and social cognition are not yet part of the runtime.
-- Multi-timescale scheduling, duration-bearing activities, and generalized institutions are not yet implemented; add the minimum needed from Waltzman scenario pressure.
+- Information/delivery v0 is intentionally bounded: generic latency, corruption, audience groups, belief revision, and deception semantics are not yet modeled.
+- Resident-agent memory, reflection, long-range planning, and social cognition are not yet part of the runtime; the first Waltzman gate uses the existing policy seam.
+- The Waltzman fixture has tick-specific processes, one duration-bearing activity, and one represented institution, but the generic future-event/SimPy scheduler and generalized process/institution authoring surface are not yet implemented.
 - The deployed Builder creates fresh runs but does not yet provide durable user-owned world/run persistence.
 - Runtime mechanic/process implementation exceptions should become explicit causal failure events rather than only process-boundary errors.
 
@@ -160,6 +160,7 @@ python scripts/check_project.py
 Useful deterministic probes include:
 
 ```sh
+python scripts/run_waltzman_demo.py --check
 python scripts/run_first_fill_probe.py --check
 python scripts/run_transfer_probe.py --check
 python scripts/replay_transfer_evidence.py --check

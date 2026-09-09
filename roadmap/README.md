@@ -9,8 +9,8 @@ reviewed_through: 2026-09-08
 # World Substrate living roadmap
 
 **Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), and [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md).  
-**Stage:** prototype substrate complete; deployed authoring/run alpha; deployed living-world visualization prototype; current phase is delivery of the Waltzman Coordination Lab demo.
-**Current frontier:** build the Waltzman Coordination Lab demo by progressively replacing synthetic/demo-only behavior with canonical World Substrate capabilities. The immediate slice is a read-only live projection of a real retained World Substrate run; subsequent slices add only the information, process, institution, cognition, intervention, and causal-closure capabilities required by the Waltzman scenario.
+**Stage:** prototype substrate complete; deployed authoring/run alpha; integrated local Waltzman Coordination Lab demo first gate implemented; current phase is review, hardening, and authorized product-surface integration.
+**Current frontier:** validate and land the integrated Waltzman demo as one canonical World Substrate vertical. The local implementation now covers read-only snapshot/event projection, asymmetric information, explicit hard-causal parents, scenario-driven cadence/duration, a represented coalition institution, a forked stabilization intervention, detachable Waltzman analysis, and bounded causal-adequacy reporting. Do not add generic breadth unless review of this demo exposes a concrete gap.
 **Deployment boundary:** the existing World Builder and standalone visualization prototype are authorized/public. New publication surfaces, provider spend outside the bounded Builder service, or runtime-generated-law installation outside the reviewed path still require explicit human authority.
 
 ## Outcome and success criteria
@@ -91,12 +91,15 @@ State, not milestone narrative:
 - Repair Bay proved nontrivial generated law can compile and a bounded LLM policy can reach terminal without a heavier cognition framework.
 - Warehouse Rush v0 exposed a real law/representation omission (`route` did not enforce physical dock); v1 represents `target_dock`. Draft PR #37 retains the experiment and awaits a provider retry, but that retry is no longer the exact next action.
 - The deployed World Builder is `https://brianmills.dev/world-builder/`.
-- A standalone living-world visualization prototype is deployed at `https://brianmills.dev/world-substrate-visualization/` and versioned at `prototypes/living-world-overlay-v0.html`. It is currently synthetic UI data and is **not yet fed by World Substrate**.
+- The authorized public standalone visualization at `https://brianmills.dev/world-substrate-visualization/` remains the earlier synthetic prototype. Separately, the repository now has an integrated local Waltzman living client driven by `world-substrate-live-projection/v0` snapshot/event data; replacing the public surface is a deployment decision, not an implementation assumption.
+- `world_substrate.information` now implements a bounded first-class information/delivery v0 with source, recipient, channel, visibility, delivery status, provenance linkage, and actor-local asymmetric visibility. Retained actor observations may surface `information_context` without turning it into hard causal ancestry.
+- Rules/processes can now opt into explicit `causal_parent_event_ids`; parentage is mechanically declared rather than inferred from temporal order or prompt context.
+- The Waltzman fixture has a represented two-tick meeting, tick-specific autonomous prerequisite changes, an installed coalition gate, and a forked stabilization intervention. These prove the scenario's required cadence/duration/institution seam without claiming a generic future-event scheduler.
 - [Living-world projection research](../docs/research/living-world-projection-2026-09.md) defines the current visual semantics: one spatial world, dynamic core overlays, analytic plugins, and a strict distinction between information lineage and hard causal ancestry.
 - Commodity procurement is settled by Decision 004: deck.gl 9.4.x for living projection; Pydantic AI 2.41.x behind `CognitionAdapter`; SimPy 4.1.2 for scheduling only; Cytoscape.js 3.34.x for expanded graph inspection.
 - The selection doctrine is **novel uncertainty → experiment; commodity uncertainty → research/reason/select; integration uncertainty → conformance test**.
-- The current time/process runtime is still the M1 integer-tick baseline: `Engine.advance()` checks registered processes each step through `due(world)`. It does not yet provide one canonical future-event timeline, duration-bearing activities, independently scheduled cadences, or event-driven cognition wakeups.
-- The product does not yet have first-class generic information/conversation semantics, a generic multi-timescale process/activity authoring surface, generalized institutions/decision procedures, durable resident cognition, or saved user worlds/runs.
+- The core time/process runtime remains the integer-tick `Engine.advance()` + `due(world)` baseline. The Waltzman first gate uses that canonical timeline for independent scheduled triggers and one represented duration-bearing activity; a generic future-event/SimPy scheduler remains unimplemented because this scenario does not require it.
+- Persistent resident memory/planning, generic rich process/institution authoring, saved user worlds/runs, and conversational generation of the new Waltzman-specific richer mechanics remain unimplemented. The first integrated demo uses the existing bounded policy seam rather than adding cognition framework complexity it does not need.
 - Open PR #43 (CVS sustainment seam) is a separate integration track and does not define this roadmap. Rebase/review it against current main before any merge decision.
 
 ## Applicable context
@@ -151,54 +154,61 @@ Hard constraints:
 | Warehouse Rush | retained draft evidence | law/representation failure discovered and minimally repaired |
 | Commodity procurement | **complete** | deck.gl / Pydantic AI / SimPy / Cytoscape defaults selected |
 | Living-world visual prototype | **complete prototype** | desired interaction/overlay model is publicly inspectable |
-| Waltzman slice 1 — live projection seam | **active / next** | a real World Substrate run drives the living visual client |
-| Waltzman slice 2 — information/conversation | queued | represented utterances, source/recipient/channel/provenance/visibility and observation lineage |
-| Waltzman slice 3 — timeline/process/activity | queued, scenario-driven | one canonical simulated timeline; independent cadences; minimum duration-bearing activities |
-| Waltzman slice 4 — institutions | queued, scenario-driven | meetings/deadlines/decision procedures/permissions/commitments needed by the scenario |
-| Waltzman slice 5 — cognition adapter | queued, scenario-driven | persistent resident memory/planning when the demo requires it, behind consequence authority |
-| Waltzman slice 6 — causal adequacy + intervention | core research frontier | dependency inventory → enforcement mapping → counterexamples/residual risk + fork/intervention workflow |
-| Waltzman integrated demo | **current deliverable** | one coherent living coordination scenario with detachable Waltzman analysis |
+| Waltzman slice 1 — live projection seam | **implemented local first gate** | canonical snapshot/event deltas reconstruct both branches exactly; JSON + SSE observer seam |
+| Waltzman slice 2 — information/conversation | **implemented v0 first gate** | asymmetric represented source/recipient/channel/provenance/visibility + observation context |
+| Waltzman slice 3 — timeline/process/activity | **implemented scenario first gate** | tick-specific processes + one represented two-tick meeting on canonical time; generic scheduler still later |
+| Waltzman slice 4 — institutions | **implemented scenario first gate** | explicit commitments + represented coalition gate consume canonical state/events |
+| Waltzman slice 5 — cognition adapter | **not required for first gate** | existing bounded policy seam is sufficient; persistent cognition remains later if earned |
+| Waltzman slice 6 — causal adequacy + intervention | **implemented first bounded gate** | eight dependency mappings, residual risk, exact-history fork + represented stabilization intervention |
+| Waltzman integrated demo | **implemented local first gate / current deliverable** | one coherent living coordination scenario with detachable Waltzman analysis and retained evidence |
 | Persistence / second-domain proof | later | durable user worlds/runs and proof of generality beyond Waltzman |
 
-### Waltzman slice 1 — real World Substrate → living world
+### Active slice — Waltzman integrated demo review and product integration
 
-Do **not** add a new toy world first. Use a real retained run (prefer Repair Bay) to replace the deployed prototype's synthetic timeline. Repair Bay is a technical stepping stone, not the product deliverable; this slice exists to establish the live projection path that the Waltzman scenario will use.
+The first integrated local Waltzman gate is now implemented. The active work is to review and harden this one vertical rather than starting another capability expansion.
 
-The minimal vertical is:
+Implemented flow:
 
 ```text
-real World snapshot/run
-      +
-retained event stream/deltas
-      +
-existing scene semantics
+canonical Waltzman World
+      |
+      +--> scheduled prerequisite changes + asymmetric information delivery
+      |
+      +--> bounded resident policy choices + represented communication/commitments
+      |
+      +--> duration-bearing meeting + installed coalition gate
+      |
+      +--> blocked baseline
+      |
+      +--> exact-history intervention fork -> restored prerequisites -> resident reassessment -> ready gate
       |
       v
-read-only projection adapter
+initial snapshot + retained canonical event/deltas
       |
       v
-deck.gl living client
+read-only projection / JSON / SSE
+      |
+      v
+living client + detachable Waltzman analysis + bounded adequacy report
 ```
 
-First acceptance:
+Current acceptance evidence:
 
-1. canonical entity IDs, event IDs, revision/tick, accepted/refused outcomes, and state changes displayed in the client match the retained run exactly;
-2. play/pause/step/scrub/select are presentation controls only;
-3. visual movement/state changes come from scene/projection semantics, not Repair-Bay-specific renderer branches;
-4. causal highlighting is limited to mechanically supported ancestry/evidence categories;
-5. information/conversation overlays are hidden or explicitly unsupported until generic information semantics exist;
-6. the projection seam is one-way/read-only and cannot mutate the World; and
-7. full logs/full traces remain the debugging authority if UI and canonical history disagree.
+1. both baseline and intervention branches replay exactly through the Engine;
+2. snapshot + retained deltas reconstruct each final material world and hash exactly;
+3. information can be delivered asymmetrically and appears separately as observation/context evidence;
+4. hard causal parents are explicitly declared by mechanics/processes and are not inferred from message history;
+5. the represented two-tick meeting must complete before the coalition institution evaluates;
+6. the baseline blocks at 2 support / 4 conditional, while the forked stabilization intervention reaches 6 / 0 and `ready`;
+7. Waltzman trust/risk/readiness proxies are computed as detachable observer analysis and do not mutate the world;
+8. the bounded adequacy report maps eight declared consequential dependencies to enforcement and retains explicit residual risk; and
+9. the interactive client is data-driven by the same projection bundles exposed over the one-way SSE service.
 
-Start with an initial snapshot plus incremental event/delta delivery. SSE is sufficient for the first one-way live stream. Do not introduce WebSocket, Pydantic AI, SimPy, Cytoscape, persistence, or a new causal DSL feature just to complete this slice.
+Primary retained evidence is in `evidence/waltzman/`, `evidence/renders/waltzman-demo-v0.html`, and [the Waltzman audit](../docs/audits/waltzman-coordination-lab-v0.md).
 
-### Subsequent Waltzman slices
+The authorized public standalone visualization still shows the earlier synthetic prototype. Do not replace/deploy a public surface without the separate deployment authority already required by this repository. If public integration is authorized, use the implemented projection/SSE seam rather than reintroducing synthetic stage data.
 
-After live projection, add **first-class information/conversation semantics specifically sufficient for the Waltzman scenario**. A conversation is a world interaction plus an information representation/delivery; it becomes part of a causal explanation only where retained mechanics/evidence justify that stronger relation. The first Waltzman scenario should deliberately include asymmetric information so the product must show the distinction between source/delivery/observation, cognition context, hard mechanical ancestry, and later analytic interpretation.
-
-Then introduce **multi-timescale execution only where the Waltzman scenario requires it**: one canonical simulated timeline, independently scheduled process/institution triggers, and the minimum duration-bearing activity representation needed for travel/tasks/meetings/deadlines. SimPy may schedule wakeups; World Substrate still decides consequences. Resident cognition should normally wake on meaningful delivered information, interaction requests, task completion/failure, scheduled reflection, or other bounded triggers rather than every low-level scheduler event. See [multi-timescale execution](../docs/research/multi-timescale-execution-2026-09.md).
-
-Add institutions, persistent cognition, and richer causal-closure machinery from demonstrated Waltzman scenario pressure, not from schema-completeness goals. The integrated demo should culminate in at least one consequential coordination outcome whose explanation crosses represented information, resident choice, shared constraints/processes or institutions, and detachable Waltzman analysis without conflating those causal layers.
+Persistent Pydantic-AI cognition and a generic SimPy future-event scheduler are deliberately **not** blockers for this first gate: the accepted scenario proves resident selection through the existing policy seam and its required duration/cadence through canonical ticks. Add either dependency only when a reviewed scenario demonstrates a need that this implementation cannot meet.
 
 ## Decisions and assumptions
 
@@ -247,6 +257,8 @@ Primary current artifacts:
 - `prototypes/living-world-overlay-v0.html` — versioned source for that prototype;
 - [Living-world projection research](../docs/research/living-world-projection-2026-09.md);
 - [Technology procurement](../docs/research/technology-procurement-2026-09.md);
+- [Waltzman integrated demo audit](../docs/audits/waltzman-coordination-lab-v0.md) + `evidence/waltzman/` + `evidence/renders/waltzman-demo-v0.html`;
+- [Information/delivery v0](../docs/contracts/information-delivery-v0.md) and [live projection v0](../docs/contracts/live-projection-v0.md);
 - [Repair Bay live proof](../docs/audits/repair-bay-live-preflight.md) + `evidence/repair-bay/live-experiment-v0-summary.json`;
 - [Live authoring audit](../docs/audits/live-world-authoring.md);
 - [Kitchen audit](../docs/audits/kitchen-contested-world.md) and retained renders;
@@ -256,19 +268,19 @@ Primary current artifacts:
 
 Draft/open work that is useful but not roadmap authority:
 
-- PR #37 — Warehouse Rush experiment; retained evidence, v1 retry pending, currently deferred behind Waltzman slice 1/live projection.
+- PR #37 — Warehouse Rush experiment; retained evidence, v1 retry pending, currently deferred behind integrated Waltzman-demo review.
 - PR #43 — bounded CVS sustainment integration from a separate track; rebase/review before merge.
 
 ## Risks and needs resolution
 
 | Priority | Risk / open need | Current stance |
 | --- | --- | --- |
-| P1 | living prototype is disconnected from canonical runs | Waltzman slice 1: live read-only projection |
-| P1 | information representation/delivery is not first-class generic world semantics | Waltzman slice 2 after projection |
-| P1 | causal ancestry can be overstated if observation/context is treated as hard cause | explicitly separate causal, delivery, evidence, analysis relations in the Waltzman UI/trace |
-| P1 | generated world may name consequential dependencies that no mechanic enforces | Waltzman causal-adequacy slice: dependency inventory + closure/counterexample loop |
-| P2 | current integer-tick loop cannot express independent cadences/duration-bearing activities efficiently | add a canonical simulated timeline + minimum activity contract from Waltzman pressure; use SimPy only as scheduler |
-| P2 | generic authoring lacks rich scheduled processes/meetings/institutions | add only what the Waltzman scenario requires, not schema completeness |
+| P1 | authorized public visualization is still the synthetic prototype | local canonical projection/SSE is implemented; public replacement requires deployment authority |
+| P1 | information v0 is intentionally narrow | first-class source/recipient/channel/visibility/delivery/provenance is implemented; extend only for demonstrated latency/corruption/audience needs |
+| P1 | causal ancestry can be overstated if observation/context is treated as hard cause | implemented separate `information_context` and opt-in `causal_parent_event_ids`; keep this separation in every new mechanic/UI |
+| P1 | generated world may name consequential dependencies that no mechanic enforces | first Waltzman bounded report maps eight dependencies with zero in-scope gaps; generative closure/repair remains the research frontier |
+| P2 | integer-tick loop may become inefficient for richer independent schedules | first Waltzman gate proves tick-specific triggers + represented duration; add SimPy only when a later scenario earns a future-event queue |
+| P2 | generic authoring cannot yet generate the richer Waltzman information/activity/institution mechanics | keep the hand-authored accepted fixture as evidence; extend authoring only after demo review identifies the smallest useful language addition |
 | P2 | generic live actions are not semantically closed against Linguistic Core | retain as explicit gap; close when it blocks Waltzman authoring/review |
 | P2 | no durable resident cognition | Pydantic AI selected; integrate when the Waltzman scenario requires persistent minds |
 | P2 | no saved user worlds/run history | not required for first Waltzman demo unless intervention/fork UX proves persistence necessary; otherwise later |
@@ -287,7 +299,8 @@ Draft/open work that is useful but not roadmap authority:
 | Semantics do not imply effects | answered — Decision 003 |
 | Product face | answered — generative living worlds over causal engine |
 | Current prototype/deliverable | answered — Waltzman Coordination Lab demo |
-| Role of Repair Bay/live projection | answered — enabling slice/stepping stone toward Waltzman, not the deliverable |
+| Role of Repair Bay/live projection | answered — Repair Bay was a stepping stone; canonical Waltzman projection is now implemented locally |
+| Integrated Waltzman first gate | answered — implemented locally; current work is review/landing and authorized product integration |
 | Waltzman constructs in core state? | answered — no; detachable analytic plugin |
 | Behavioral predictive validity current goal? | answered — no; internal/plausible causal coherence first |
 | Commodity selection method | answered — research/reason/select, not local bake-offs |
@@ -304,13 +317,11 @@ Draft/open work that is useful but not roadmap authority:
 
 Refresh this roadmap when:
 
-- Waltzman slice 1 makes the living client consume its first real World Substrate run;
-- first-class information/conversation semantics required by the Waltzman scenario are accepted;
-- the Waltzman scenario produces a concrete multi-timescale/activity contract;
-- the first Waltzman process/institution uses independent cadence or duration-bearing activity;
-- a Waltzman dependency/closure report detects and repairs a missing law;
-- Pydantic AI is integrated behind the cognition seam for the scenario;
-- the integrated Waltzman Coordination Lab demo satisfies or materially revises its acceptance criteria;
+- review of the integrated Waltzman first gate accepts it or materially revises an acceptance criterion;
+- the canonical Waltzman projection replaces or integrates with an authorized public product surface;
+- conversational authoring first produces the richer information/activity/institution mechanics used by the demo;
+- a new causal-closure counterexample exposes an in-scope enforcement gap or repairs one;
+- a scenario earns Pydantic AI resident cognition or a SimPy-backed future-event queue;
 - persistence/auth changes product authority; or
 - evidence contradicts a current truth statement.
 
@@ -325,8 +336,8 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Build Waltzman demo slice 1: the live-projection vertical. Do not run another framework comparison, generic breadth exercise, or toy-world experiment first.**
+**Review and land the integrated Waltzman demo first gate; do not start another generic framework/capability expansion.**
 
-Use Repair Bay or another already-retained real run as the technical fixture. Define the smallest read-only projection representation needed to drive the versioned prototype, then replace the prototype's synthetic timeline with canonical snapshot/event data. Preserve stable entity/event IDs and current scene semantics. Add one-way incremental delivery (SSE is enough) only after the retained-run projection is correct.
+Run `python scripts/run_waltzman_demo.py --check`, inspect the retained baseline/intervention traces, causal-adequacy report, and `evidence/renders/waltzman-demo-v0.html`, then use the existing full repository check. Resolve any review finding against the Waltzman acceptance criteria rather than broadening schemas preemptively.
 
-Acceptance is exact agreement between UI-visible state/event identity and the full retained run, with no renderer-specific canonical state and no invented information/causal links. When this slice succeeds, immediately move to Waltzman slice 2: first-class information/conversation semantics sufficient to represent asymmetric information in the demo. Every subsequent capability should be justified against the Waltzman demo acceptance criteria above.
+After this implementation is accepted, the next product decision is whether/where to publish it: replace or integrate with the already-authorized standalone visualization and/or World Builder using the implemented read-only projection/SSE seam. That is a deployment/publication authority decision. If deployment is not yet authorized, keep the verified local demo as the current deliverable and move only on concrete findings from review.
