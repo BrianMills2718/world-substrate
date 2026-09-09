@@ -8,9 +8,11 @@ The project now includes both the causal engine and a deployed authoring product
 
 **World Builder:** https://brianmills.dev/world-builder/
 
-**Living-world visualization prototype:** https://brianmills.dev/world-substrate-visualization/
+**Standalone living-world URL:** https://brianmills.dev/world-substrate-visualization/
 
 The live Builder can define represented world structure, request a constrained LLM mechanics proposal, show compiler-derived authority for review, require explicit approval, and launch a fresh scripted or LLM-selected graphical run in the browser.
+
+The standalone living-world URL currently serves the earlier synthetic visualization prototype. The approved next product move is to replace that surface with the already-implemented canonical Waltzman Coordination Lab client while retaining the synthetic prototype as versioned design evidence.
 
 ## Start here
 
@@ -29,7 +31,7 @@ The live Builder can define represented world structure, request a constrained L
 
 The **prototype substrate phase is complete**. The system has progressed from a neutral transition kernel to a deployed authoring/run loop and a deployed synthetic living-world visualization prototype.
 
-The **current prototype/deliverable is the Waltzman Coordination Lab demo**. Its first integrated local gate is now implemented through the real World Substrate path: canonical projection, asymmetric represented information, explicit causal parents, a duration-bearing meeting, a represented coalition institution, exact-history intervention/fork behavior, detachable Waltzman analysis, and bounded causal-adequacy reporting. Persistent cognition and a generic future-event scheduler were not required for this first gate.
+The **current prototype/deliverable is the Waltzman Coordination Lab demo**. Its first integrated local gate is now implemented through the real World Substrate path: canonical projection, asymmetric represented information, explicit mechanic-declared causal parents, a duration-bearing meeting, a represented coalition institution, exact-history intervention/fork behavior, detachable Waltzman analysis, and bounded dependency/adequacy reporting. Persistent cognition and a generic future-event scheduler were not required for this first gate.
 
 | Capability | Current state |
 | --- | --- |
@@ -45,15 +47,15 @@ The **current prototype/deliverable is the Waltzman Coordination Lab demo**. Its
 | Zero-review replay bootstrap/auto-layout | demonstrated across multiple real worlds |
 | Visual world authoring | implemented and deployed |
 | Fresh scripted/LLM graphical run | implemented and deployed |
-| Authorized public standalone visualization | deployed earlier synthetic prototype; not yet replaced by the new local Waltzman client |
+| Public standalone visualization | synthetic prototype currently deployed; canonical Waltzman replacement now authorized as the next product step |
 | Waltzman live read-only projection | implemented local first gate; exact snapshot/event reconstruction plus JSON/SSE observer seam |
 | First-class information/delivery v0 | implemented; asymmetric source/recipient/channel/visibility/delivery/provenance plus retained context evidence |
 | Waltzman cadence / duration activity | implemented scenario first gate on canonical integer ticks; generic SimPy/future-event scheduler remains later |
 | Waltzman resident cognition | persistent cognition not integrated; existing bounded policy seam is sufficient for the accepted first gate |
-| Waltzman institution / intervention / causal-adequacy | implemented first bounded gate; coalition decision, exact-history fork, intervention, eight dependency mappings + residual risk |
+| Waltzman institution / intervention / adequacy | implemented first bounded gate; coalition decision, exact-history fork, intervention, eight declared dependency mappings + residual risk |
 | Saved user worlds/runs | not yet implemented; not required for first Waltzman demo unless the scenario proves otherwise |
 
-The current live path is:
+The current live authoring path is:
 
 ```text
 authoring bundle
@@ -74,15 +76,23 @@ See [the live authoring audit](docs/audits/live-world-authoring.md).
 
 The target experience is one coherent **Waltzman Coordination Lab** run in which residents inhabit a bounded coordination world, receive asymmetric represented information, communicate through represented channels, act under resource/process/institution constraints, and evolve on one canonical simulated timeline. The user watches and interrogates the world through the living client, while Waltzman trust/risk/readiness analysis remains detachable from canonical world truth.
 
-The first integrated demo must make it possible to distinguish world interaction, information lineage, cognition context/evidence, hard mechanical causal ancestry, and analytic interpretation rather than collapsing them into a single narrative explanation. It should also support at least one represented intervention/fork and expose consequential dependency assumptions plus residual causal-adequacy risk rather than claiming completeness.
+The first integrated demo distinguishes world interaction, information lineage, cognition context/evidence, mechanic-declared hard causal ancestry, and analytic interpretation rather than collapsing them into a single narrative explanation. It also supports a represented intervention/fork and exposes consequential dependency assumptions plus explicit residual risk.
 
-See the [roadmap acceptance criteria](roadmap/README.md) for the authoritative demo definition.
+**Causal claim boundary:** World Substrate explains why an outcome occurred **inside the represented world under the installed mechanics that governed the run**. That does not by itself claim that those mechanics are scientifically true of the corresponding real-world system. Predictive validity, calibration, and real-world causal identification require separate evidence.
+
+The current Waltzman adequacy report should be read as a bounded dependency inventory: eight declared consequential assumptions are mapped to represented state and installed enforcement surfaces, with known residual risks. It is not a counterfactual proof of necessity/sufficiency. Stronger automatic counterfactual/mutation verification is a deferred research idea, not a first-demo requirement.
+
+See the [roadmap acceptance criteria](roadmap/README.md) and [Waltzman audit](docs/audits/waltzman-coordination-lab-v0.md) for the authoritative demo definition and evidence.
 
 ## Current next move
 
-The integrated Waltzman first gate is now implemented, reviewed, and landed on `main` through PR #47. The exact next action is the **product-surface integration decision**, not another framework bake-off or generic breadth exercise.
+The integrated Waltzman first gate is implemented, reviewed, and landed on `main` through PR #47. The product decision is now made: **replace the existing standalone synthetic visualization with the canonical Waltzman client at the existing public visualization URL.**
 
-The already-authorized public standalone visualization still shows the earlier synthetic prototype. Publishing/replacing or integrating that surface is a separate deployment-authority decision. If authorized, use the implemented read-only projection/SSE seam rather than recreating synthetic stage data; otherwise keep the verified local Waltzman demo as the current deliverable. The [roadmap](roadmap/README.md) owns the full sequence.
+The first public demo does **not** require World Builder integration. Present Waltzman as a reviewed reference world running through the real substrate; do not imply that the current Builder generatively authored its richer hand-written information/activity/institution mechanics.
+
+The generated `evidence/renders/waltzman-demo-v0.html` is already self-contained and embeds the canonical baseline/intervention projection bundles, so the first public demo can remain a static read-only surface. The JSON/SSE service remains available as an optional observer/live seam rather than a publication prerequisite.
+
+Before publication, make only the small truth-label cleanup needed to avoid overclaiming—especially describing the current adequacy surface as mapped dependencies rather than counterfactual proof and describing causal parentage as mechanic-declared. Then publish the canonical artifact, smoke-test the public URL, and stop. The [roadmap](roadmap/README.md) owns the post-demo hardening sequence.
 
 ## Architectural thesis
 
@@ -100,6 +110,8 @@ The approved product posture is:
 > The product experience is a Generative-World Builder / living-world interface over a rigorous causal engine.
 
 The current product proof for that posture is the **Waltzman Coordination Lab demo**. Generality remains an architectural constraint and later validation target; it should not displace delivery of the current vertical.
+
+Waltzman is currently a **reviewed reference world**, not proof that the live Builder can conversationally generate its complete richer law. Generic authoring of information/activity/institution mechanics remains a later capability to earn from another concrete world rather than a prerequisite for publishing this demo.
 
 Keep project-owned:
 
@@ -123,7 +135,7 @@ Use mature commodity systems around that kernel rather than rebuilding them. The
 | Greenhouse | post-renderer authoring proof | new world, shared tool handoff, zero-review Automatic replay |
 | Orchard | live-authoring acceptance fixture | generated causal law, compiler review, explicit approval, fresh scripted/LLM run |
 | Repair Bay | Waltzman slice-1 technical fixture | generated five-action law, deterministic solvability, bounded LLM terminal run, full-log evidence; suitable retained run for live projection |
-| Waltzman Coordination Lab | current integrated deliverable | local first gate implemented: blocked baseline, exact-history intervention recovery, canonical living projection, information/causal overlays, detachable analysis |
+| Waltzman Coordination Lab | current integrated deliverable | reviewed reference world: blocked baseline, exact-history intervention recovery, canonical living projection, information/causal overlays, detachable analysis |
 
 The Kitchen remains the flagship completed watched-world demonstration: three same-model/prompt replications reproduced Bo completing at t9, deliberately releasing the shared knife at t10, Ama taking it at t11, and both orders reaching the t17 terminal. See [the Kitchen audit](docs/audits/kitchen-contested-world.md).
 
@@ -135,13 +147,18 @@ These are active boundaries, not hidden TODOs:
 - The live causal declaration language intentionally does not express arbitrary Python, continuous physics, unrestricted collection mutation, or every institution/process form.
 - Compiler acceptance establishes declared authority/type consistency, not global causal completeness.
 - Declared read scopes are recorded but not enforced at runtime; an optional verification design exists.
+- Current action write-scope placeholder binding is participant-bounded but not yet role-specific; strengthening `<target>`/`<source>`/etc. to bind exactly to their named action roles is planned post-demo hardening.
+- Current authored-action discovery has a finite candidate cap; silent overflow should become explicit refusal or paging before large generated worlds depend on it.
+- Current `MechanicProfile.freeze()` gives a reviewed package set a stable declaration identity, but future durable generated-law provenance should also fingerprint the exact executable law and compiler/interpreter version.
+- `causal_parent_event_ids` are mechanic-declared and history-validated; they are not currently inferred from instrumented reads or proof of real-world causality.
+- The bounded Waltzman adequacy report maps declared dependencies to installed enforcement surfaces; automated counterfactual/mutation verification is deferred.
 - Information/delivery v0 is intentionally bounded: generic latency, corruption, audience groups, belief revision, and deception semantics are not yet modeled.
 - Resident-agent memory, reflection, long-range planning, and social cognition are not yet part of the runtime; the first Waltzman gate uses the existing policy seam.
 - The Waltzman fixture has tick-specific processes, one duration-bearing activity, and one represented institution, but the generic future-event/SimPy scheduler and generalized process/institution authoring surface are not yet implemented.
 - The deployed Builder creates fresh runs but does not yet provide durable user-owned world/run persistence.
 - Runtime mechanic/process implementation exceptions should become explicit causal failure events rather than only process-boundary errors.
 
-The roadmap owns prioritization of these boundaries.
+None of the post-demo hardening items above requires reopening the core product architecture. The roadmap owns prioritization.
 
 ## Cross-repo role
 

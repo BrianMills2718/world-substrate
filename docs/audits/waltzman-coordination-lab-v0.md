@@ -61,9 +61,14 @@ while unrelated residents cannot.
 
 Selene's `start_meeting` event retains three delivered resident messages as
 `information_context`, but declares no hard causal parents. The coalition gate,
-by contrast, names the meeting-completion and explicit commitment events it
-mechanically consumes. Communication events are not silently promoted into the
-gate's ancestry.
+by contrast, names the meeting-completion and explicit commitment events its
+installed rule declares as hard causal parents. Communication events are not
+silently promoted into the gate's ancestry.
+
+These are **mechanic-declared causal relations inside this represented world**.
+The Engine validates that named parent event IDs exist in retained history; the
+current runtime does not infer parentage from instrumented reads or claim that
+the scenario mechanics establish scientific causality in the real world.
 
 ## Living client and stream
 
@@ -76,15 +81,24 @@ gate's ancestry.
 
 The HTML client reconstructs state from the projection bundles and supports
 branch switching, play/pause/step/scrub, information/causal/constraint layers,
-and detachable Waltzman analysis. `scripts/waltzman_demo_service.py` exposes
-the same data over JSON and a one-way SSE event stream.
+and detachable Waltzman analysis. The artifact is self-contained: its canonical
+baseline/intervention projection bundles are embedded in the generated HTML.
+`scripts/waltzman_demo_service.py` additionally exposes the same data over JSON
+and a one-way SSE event stream, but that service is not required for the first
+public standalone demo.
 
 ## Causal adequacy
 
-The retained bounded report maps eight consequential scenario dependencies to
-the represented state and installed rules that enforce them. The report has
-zero known enforcement gaps inside that declared scope and explicitly refuses a
-global completeness claim.
+The retained bounded report is a **declared dependency inventory**. It maps eight
+consequential scenario assumptions to represented state and the installed rule
+surfaces intended to enforce them, and it explicitly refuses a global
+completeness claim.
+
+At v0, a dependency being mapped to installed rules is not a counterfactual
+proof that those rules are necessary and sufficient, nor evidence that the
+scenario dependency is true of the real world. Stronger automatic
+counterfactual/mutation verification is a deferred research option rather than a
+first-demo requirement.
 
 Residual risk includes unmodeled psychological belief/trust dynamics, channel
 latency/corruption/deception, simplified institution structure, lack of
@@ -114,8 +128,16 @@ generic layer is complete.
 - Persistent resident memory/planning is not integrated; the demo uses the
   existing bounded policy seam, which is sufficient for the accepted scripted
   scenario.
-- The current public standalone visualization remains the previously authorized
-  synthetic prototype. Publishing/replacing it is a separate deployment
-  authority decision.
+- The public product decision is now made: replace the existing standalone
+  synthetic visualization with this canonical Waltzman client at the existing
+  public visualization URL, while retaining the synthetic prototype as
+  versioned design evidence. World Builder integration is not required for the
+  first public demo.
 - Generic live authoring does not yet generate these richer information,
-  institution, and activity mechanics from conversation.
+  institution, and activity mechanics from conversation. The public Waltzman
+  demo must therefore be presented as a reviewed reference world, not as a
+  claim that the current Builder generated its complete law.
+- Future durable generated-law provenance should bind approval/run identity to
+  the exact executable law and compiler/interpreter version. That hardening is
+  important for the broader product but is not a blocker for publishing this
+  hand-authored reference demo.
