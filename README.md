@@ -31,7 +31,7 @@ The standalone living-world URL currently serves the earlier synthetic visualiza
 
 The **prototype substrate phase is complete**. The system has progressed from a neutral transition kernel to a deployed authoring/run loop and a deployed synthetic living-world visualization prototype.
 
-The **current prototype/deliverable is the Waltzman Coordination Lab demo**. Its first integrated local gate is now implemented through the real World Substrate path: canonical projection, asymmetric represented information, explicit mechanic-declared causal parents, a duration-bearing meeting, a represented coalition institution, exact-history intervention/fork behavior, detachable Waltzman analysis, and bounded dependency/adequacy reporting. Persistent cognition and a generic future-event scheduler were not required for this first gate.
+The product being demonstrated is **World Substrate**. **Waltzman Coordination Lab is the current showcase/reference world running inside it**, not a separate product or the identity of the platform. Its first integrated local gate is now implemented through the real World Substrate path: canonical projection, asymmetric represented information, explicit mechanic-declared causal parents, a duration-bearing meeting, a represented coalition institution, exact-history intervention/fork behavior, detachable Waltzman analysis, and bounded dependency/adequacy reporting. Persistent cognition and a generic future-event scheduler were not required for this first gate.
 
 | Capability | Current state |
 | --- | --- |

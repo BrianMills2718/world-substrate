@@ -6530,6 +6530,8 @@
     "scope": "waltzman-coordination-lab-v0",
     "bounded": true,
     "global_completeness_claimed": false,
+    "claim_level": "declared-dependency-mapping",
+    "interpretation": "Mapped means the declared enforcement rule IDs are installed for this scenario; it does not prove counterfactual necessity/sufficiency or real-world causal validity.",
     "dependencies": [
       {
         "id": "validation-capacity-binds-mara",
@@ -6542,6 +6544,7 @@
           "waltzman.process.validation-failure",
           "waltzman.commitment.reassess"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       },
@@ -6556,6 +6559,7 @@
           "waltzman.process.staffing-shortfall",
           "waltzman.commitment.reassess"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       },
@@ -6570,6 +6574,7 @@
           "waltzman.process.reserve-conflict",
           "waltzman.commitment.reassess"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       },
@@ -6584,6 +6589,7 @@
           "waltzman.process.safeguard-gap",
           "waltzman.commitment.reassess"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       },
@@ -6600,6 +6606,7 @@
         "substrate_enforcement": [
           "world_substrate.information.entity_visible_to_actor"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       },
@@ -6615,6 +6622,7 @@
           "waltzman.process.meeting-completion",
           "waltzman.institution.coalition-gate"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       },
@@ -6628,6 +6636,7 @@
         "enforced_by": [
           "waltzman.institution.coalition-gate"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       },
@@ -6644,11 +6653,14 @@
           "waltzman.commitment.reassess",
           "waltzman.institution.coalition-gate"
         ],
+        "mapping_status": "mapped",
         "status": "enforced",
         "missing_enforcement": []
       }
     ],
     "summary": {
+      "mapped": 8,
+      "unmapped": 0,
       "enforced": 8,
       "gaps": 0
     },

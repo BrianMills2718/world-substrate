@@ -24,7 +24,7 @@ World Substrate is a persistent, observable simulation engine and generative aut
 
 The product direction is now a **generative living-world builder over a rigorous causal engine**. The user should be able to describe a world conversationally, review represented structure and executable law, run residents/processes through it, watch it evolve spatially, and inspect why outcomes occurred without allowing presentation, cognition, or analysis to become alternate truth.
 
-The current prototype/deliverable is the **Waltzman Coordination Lab**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*. Its first integrated local gate now runs through canonical World Substrate state/events. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
+The product being demonstrated is **World Substrate**. **Waltzman Coordination Lab is its current showcase/reference world**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*; Cybernetic Influence is research lineage, not the product or demo surface. Its first integrated local gate now runs through canonical World Substrate state/events. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
 
 Public surfaces:
 
