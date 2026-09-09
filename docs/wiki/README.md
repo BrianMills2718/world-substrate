@@ -134,7 +134,7 @@ Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter
 | Replay | portable read-only scene-profile renderer across multiple worlds |
 | World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs |
 | Full logs | deployed; complete request/response/compiler/operator/causal traces available |
-| Living-world UI | canonical Waltzman living client implemented as reference/presentation fixture; interactive retained-run adapter is the active stakeholder integration |
+| Living-world UI | canonical Waltzman reference client plus generated-run living replay implemented; Cloudflare-native public promotion is active |
 | Live projection | implemented local first gate: exact initial-snapshot + retained-event/delta reconstruction, self-contained HTML, JSON, and one-way SSE |
 | Information/conversation | implemented bounded v0: source/recipient/channel/visibility/delivery/provenance + asymmetric actor observation; not a belief model |
 | Processes/institutions | Waltzman first gate has tick-specific processes, explicit commitments, a duration-bearing meeting, and an installed coalition gate; generic authoring remains narrow |
@@ -153,7 +153,7 @@ Open work at the handoff point:
 
 The roadmap owns ordering. The unresolved work is deliberately split into **before public demo**, **post-demo hardening**, and **later capabilities**.
 
-1. **Interactive Waltzman integration — immediate:** reuse the existing Cybernetic V3 natural-language authoring/run path and project one retained general run into the World Substrate living view. Preserve the current static Waltzman artifact as reference evidence rather than publishing it as the finished outreach demo.
+1. **Cloudflare-native Waltzman promotion — immediate:** the Cybernetic V3 donor path now has the configure-first outreach funnel and generated-run living replay. Deploy that combined surface/API on the Cloudflare-native `world-substrate-visualization` route, preserve route certification, and prove one fresh Waltzman-relevant generated run while the Mac is off.
 2. **First-two-minute UX — immediate:** the visitor should understand the local-information-to-collective-action proposition quickly and be able to start typing a simulation request without choosing a workflow, model, analysis, or methodology first. The existing V3 configure-first outreach funnel is the donor surface to preserve.
 3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version. This matters before durable user-generated law, not before the hand-authored Waltzman reference demo.
 4. **Local-authority correctness — post-demo hardening:** bind write-scope placeholders to exact action roles and make authored affordance-cap overflow explicit rather than silently truncating valid actions.
