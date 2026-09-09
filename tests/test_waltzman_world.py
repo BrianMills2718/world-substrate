@@ -171,9 +171,14 @@ class WaltzmanRunTests(unittest.TestCase):
         report = build_adequacy_report(build_registry())
         self.assertTrue(report["bounded"])
         self.assertFalse(report["global_completeness_claimed"])
-        self.assertEqual(report["summary"], {"enforced": 8, "gaps": 0})
+        self.assertEqual(report["summary"]["mapped"], 8)
+        self.assertEqual(report["summary"]["unmapped"], 0)
+        self.assertEqual(report["summary"]["enforced"], 8)  # legacy v0 compatibility
+        self.assertEqual(report["summary"]["gaps"], 0)
+        self.assertEqual(report["claim_level"], "declared-dependency-mapping")
+        self.assertIn("does not prove counterfactual", report["interpretation"])
         self.assertTrue(report["residual_risk"])
-        self.assertTrue(all(row["status"] == "enforced" for row in report["dependencies"]))
+        self.assertTrue(all(row["mapping_status"] == "mapped" for row in report["dependencies"]))
 
 
 if __name__ == "__main__":

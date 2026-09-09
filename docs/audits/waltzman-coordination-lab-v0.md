@@ -6,6 +6,8 @@ reviewed_through: 2026-09-08
 
 # Waltzman Coordination Lab v0 audit
 
+This is an audit of the **World Substrate product demo using Waltzman Coordination Lab as its reviewed reference world**. Waltzman/Cybernetic Influence supply scenario and analytic lineage; World Substrate is the engine and product being demonstrated.
+
 ## Question
 
 Can the current product deliverable run as one real World Substrate world—not a

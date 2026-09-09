@@ -1,4 +1,4 @@
-"""Bounded causal-adequacy inventory for the Waltzman demo scenario."""
+"""Bounded declared-dependency mapping for the Waltzman showcase scenario."""
 
 from __future__ import annotations
 
@@ -10,7 +10,11 @@ ADEQUACY_SCHEMA_VERSION = "world-substrate-causal-adequacy-report/v0"
 
 
 def build_adequacy_report(registry: RuleRegistry) -> dict[str, Any]:
-    """Map consequential demo assumptions to represented enforcement surfaces."""
+    """Map declared consequential assumptions to installed enforcement surfaces.
+
+    Mapping says the named enforcing rule IDs are installed. It is not a
+    counterfactual proof of necessity/sufficiency or a real-world validity claim.
+    """
 
     installed = set(registry.versions())
     dependencies = [
@@ -66,15 +70,27 @@ def build_adequacy_report(registry: RuleRegistry) -> dict[str, Any]:
     ]
     for dependency in dependencies:
         required = set(dependency["enforced_by"])
-        dependency["status"] = "enforced" if required <= installed else "gap"
+        mapped = required <= installed
+        dependency["mapping_status"] = "mapped" if mapped else "unmapped"
+        # Retained for compatibility with the v0 evidence schema. New UI/docs use
+        # mapping_status because installation mapping is the claim actually tested.
+        dependency["status"] = "enforced" if mapped else "gap"
         dependency["missing_enforcement"] = sorted(required - installed)
     return {
         "schema_version": ADEQUACY_SCHEMA_VERSION,
         "scope": "waltzman-coordination-lab-v0",
         "bounded": True,
         "global_completeness_claimed": False,
+        "claim_level": "declared-dependency-mapping",
+        "interpretation": (
+            "Mapped means the declared enforcement rule IDs are installed for this scenario; "
+            "it does not prove counterfactual necessity/sufficiency or real-world causal validity."
+        ),
         "dependencies": dependencies,
         "summary": {
+            "mapped": sum(row["mapping_status"] == "mapped" for row in dependencies),
+            "unmapped": sum(row["mapping_status"] == "unmapped" for row in dependencies),
+            # Legacy v0 names retained for compatibility.
             "enforced": sum(row["status"] == "enforced" for row in dependencies),
             "gaps": sum(row["status"] == "gap" for row in dependencies),
         },

@@ -34,9 +34,9 @@ Current `causal_parent_event_ids` are **mechanic-declared hard causal ancestry**
 
 The current Waltzman adequacy surface is a **bounded dependency inventory**: declared consequential assumptions are mapped to represented state and installed enforcement surfaces, with residual risk. It is not counterfactual proof of necessity/sufficiency. Stronger automatic counterfactual/mutation verification is deferred unless later evidence makes it worth building.
 
-### Current deliverable — Waltzman Coordination Lab demo
+### Current showcase world — Waltzman Coordination Lab
 
-The concrete deliverable is the **Waltzman Coordination Lab demo**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*.
+The demo is a **World Substrate product demo**. **Waltzman Coordination Lab is the showcase/reference world used to demonstrate it**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*. Cybernetic Influence remains research lineage, not the product surface.
 
 The demo makes the product thesis visible end to end: a bounded coordination world runs under canonical executable mechanics; residents receive asymmetric represented information, communicate through represented channels, act under resource/process/institution constraints, and evolve on one canonical simulated timeline; the user watches and interrogates that world through the living client; and Waltzman trust/risk/readiness analysis remains detachable analysis rather than hidden universal world state.
 
