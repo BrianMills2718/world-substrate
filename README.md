@@ -27,7 +27,9 @@ The live Builder can define represented world structure, request a constrained L
 
 ## Where this stands
 
-The **prototype phase is complete**. The system has progressed from a neutral transition kernel to a deployed authoring/run loop.
+The **prototype substrate phase is complete**. The system has progressed from a neutral transition kernel to a deployed authoring/run loop and a deployed synthetic living-world visualization prototype.
+
+The **current prototype/deliverable is the Waltzman Coordination Lab demo**. The roadmap is organized around making that demo real through World Substrate rather than treating Waltzman as a later optional vertical. Live projection, information/conversation semantics, multi-timescale processes and activities, institutions, resident cognition, bounded causal-adequacy reporting, and intervention/fork behavior are enabling slices to add only as the Waltzman scenario requires them.
 
 | Capability | Current state |
 | --- | --- |
@@ -44,11 +46,12 @@ The **prototype phase is complete**. The system has progressed from a neutral tr
 | Visual world authoring | implemented and deployed |
 | Fresh scripted/LLM graphical run | implemented and deployed |
 | Standalone living-world visualization | deployed prototype; synthetic timeline; not yet fed by World Substrate |
-| Live read-only projection seam | next implementation slice |
-| First-class information/conversation semantics | not yet implemented |
-| Multi-timescale scheduling / duration activities | not yet implemented; current runtime is integer tick + per-step process `due()` checks; SimPy selected as future scheduler only |
-| Persistent resident cognition | not yet integrated; Pydantic AI selected behind adapter; target cognition wakeups are event/meaning-driven rather than every microstep |
-| Saved user worlds/runs | not yet implemented |
+| Waltzman slice 1: live read-only projection seam | next implementation slice |
+| Waltzman slice 2: first-class information/conversation semantics | not yet implemented |
+| Waltzman multi-timescale scheduling / duration activities | not yet implemented; current runtime is integer tick + per-step process `due()` checks; SimPy selected as future scheduler only |
+| Waltzman resident cognition | not yet integrated; Pydantic AI selected behind adapter; target cognition wakeups are event/meaning-driven rather than every microstep |
+| Waltzman institutions / intervention / causal-adequacy workflow | not yet implemented; add from scenario pressure |
+| Saved user worlds/runs | not yet implemented; not required for first Waltzman demo unless the scenario proves otherwise |
 
 The current live path is:
 
@@ -67,9 +70,19 @@ authoring bundle
 
 See [the live authoring audit](docs/audits/live-world-authoring.md).
 
+## Current deliverable
+
+The target experience is one coherent **Waltzman Coordination Lab** run in which residents inhabit a bounded coordination world, receive asymmetric represented information, communicate through represented channels, act under resource/process/institution constraints, and evolve on one canonical simulated timeline. The user watches and interrogates the world through the living client, while Waltzman trust/risk/readiness analysis remains detachable from canonical world truth.
+
+The first integrated demo must make it possible to distinguish world interaction, information lineage, cognition context/evidence, hard mechanical causal ancestry, and analytic interpretation rather than collapsing them into a single narrative explanation. It should also support at least one represented intervention/fork and expose consequential dependency assumptions plus residual causal-adequacy risk rather than claiming completeness.
+
+See the [roadmap acceptance criteria](roadmap/README.md) for the authoritative demo definition.
+
 ## Current next move
 
-The exact next action is **not another framework bake-off or another toy world**. Feed a real retained World Substrate run (prefer Repair Bay) into the versioned living-world prototype through the smallest read-only projection seam, preserving canonical entity/event IDs and existing scene semantics. After that works, add first-class information/conversation representation so visible agent interaction and provenance overlays are grounded in world truth. The [roadmap](roadmap/README.md) owns the full sequence.
+The exact next action is **Waltzman demo slice 1**, not another framework bake-off, generic breadth exercise, or toy world. Feed a real retained World Substrate run (prefer Repair Bay) into the versioned living-world prototype through the smallest read-only projection seam, preserving canonical entity/event IDs and existing scene semantics. Repair Bay is the technical stepping stone, not the deliverable.
+
+After that works, move directly to **Waltzman slice 2**: first-class information/conversation representation sufficient to model asymmetric information in the target scenario so visible agent interaction and provenance overlays are grounded in world truth. Subsequent process, institution, cognition, intervention, and causal-adequacy work should be justified against the Waltzman demo acceptance criteria. The [roadmap](roadmap/README.md) owns the full sequence.
 
 ## Architectural thesis
 
@@ -85,6 +98,8 @@ The approved product posture is:
 
 > **Generative worlds with executable laws.**
 > The product experience is a Generative-World Builder / living-world interface over a rigorous causal engine.
+
+The current product proof for that posture is the **Waltzman Coordination Lab demo**. Generality remains an architectural constraint and later validation target; it should not displace delivery of the current vertical.
 
 Keep project-owned:
 
@@ -107,9 +122,10 @@ Use mature commodity systems around that kernel rather than rebuilding them. The
 | Kitchen | flagship watched world | replicated scarce-knife coordination; polished + Automatic graphical replay |
 | Greenhouse | post-renderer authoring proof | new world, shared tool handoff, zero-review Automatic replay |
 | Orchard | live-authoring acceptance fixture | generated causal law, compiler review, explicit approval, fresh scripted/LLM run |
-| Repair Bay | first nontrivial deployed authoring proof | generated five-action law, deterministic solvability, bounded LLM terminal run, full-log evidence |
+| Repair Bay | Waltzman slice-1 technical fixture | generated five-action law, deterministic solvability, bounded LLM terminal run, full-log evidence; suitable retained run for live projection |
+| Waltzman Coordination Lab | current integrated deliverable | target living coordination scenario; enabling slices in progress |
 
-The Kitchen remains the flagship demonstration: three same-model/prompt replications reproduced Bo completing at t9, deliberately releasing the shared knife at t10, Ama taking it at t11, and both orders reaching the t17 terminal. See [the Kitchen audit](docs/audits/kitchen-contested-world.md).
+The Kitchen remains the flagship completed watched-world demonstration: three same-model/prompt replications reproduced Bo completing at t9, deliberately releasing the shared knife at t10, Ama taking it at t11, and both orders reaching the t17 terminal. See [the Kitchen audit](docs/audits/kitchen-contested-world.md).
 
 ## Important current limitations
 
@@ -119,7 +135,9 @@ These are active boundaries, not hidden TODOs:
 - The live causal declaration language intentionally does not express arbitrary Python, continuous physics, unrestricted collection mutation, or every institution/process form.
 - Compiler acceptance establishes declared authority/type consistency, not global causal completeness.
 - Declared read scopes are recorded but not enforced at runtime; an optional verification design exists.
+- First-class generic information/conversation semantics required by the Waltzman demo are not yet implemented.
 - Resident-agent memory, reflection, long-range planning, and social cognition are not yet part of the runtime.
+- Multi-timescale scheduling, duration-bearing activities, and generalized institutions are not yet implemented; add the minimum needed from Waltzman scenario pressure.
 - The deployed Builder creates fresh runs but does not yet provide durable user-owned world/run persistence.
 - Runtime mechanic/process implementation exceptions should become explicit causal failure events rather than only process-boundary errors.
 
