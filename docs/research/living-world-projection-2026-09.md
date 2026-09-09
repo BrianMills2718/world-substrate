@@ -15,7 +15,9 @@ authority_refs:
 
 World Substrate should feel like a living world rather than a trace viewer while preserving the rule that presentation never becomes a second source of truth. The primary experience is one persistent spatial scene. Core semantic overlays are drawn on that same scene and update as canonical state and retained events change.
 
-The authorized standalone prototype is deployed at `https://brianmills.dev/world-substrate-visualization/` and versioned at `prototypes/living-world-overlay-v0.html` (SHA-256 `95def20d0225a0f3df4ad25a6dd4f64853b8a7404351a871ae76f376d4443288`). That public surface still uses its original synthetic timeline. The repository now also implements `world-substrate-live-projection/v0` and an integrated local Waltzman client that reconstructs baseline/intervention worlds from canonical initial snapshots plus retained event deltas, with JSON/SSE delivery. See [live projection v0](../contracts/live-projection-v0.md) and the [Waltzman audit](../audits/waltzman-coordination-lab-v0.md). Public replacement remains a separate deployment authority decision.
+The authorized standalone URL is `https://brianmills.dev/world-substrate-visualization/`. Its currently deployed surface is the earlier synthetic prototype, versioned at `prototypes/living-world-overlay-v0.html` (SHA-256 `95def20d0225a0f3df4ad25a6dd4f64853b8a7404351a871ae76f376d4443288`). The repository now also implements `world-substrate-live-projection/v0` and an integrated Waltzman client that reconstructs baseline/intervention worlds from canonical initial snapshots plus retained event deltas, with optional JSON/SSE delivery. See [live projection v0](../contracts/live-projection-v0.md) and the [Waltzman audit](../audits/waltzman-coordination-lab-v0.md).
+
+The product decision is now made: **replace the synthetic standalone public surface with the canonical Waltzman client at the existing URL and retain the synthetic prototype as versioned design evidence.** The first public demo may use the already-generated self-contained `evidence/renders/waltzman-demo-v0.html`, which embeds the canonical projection bundles; the JSON/SSE service is useful for the live observer seam but is not a prerequisite for that first publication. Integration into World Builder is a later product choice, not a demo blocker.
 
 ## Base world and overlays
 
@@ -28,7 +30,7 @@ Core overlays are generic simulation projections:
 - **Resources** — represented stocks, capacity, reservations, transfers, shortages, and bottlenecks.
 - **Processes** — scheduled/running autonomous processes and their current phase.
 - **Authority** — represented permissions, jurisdictions, institutions, commitments, and decision procedures.
-- **Causal focus/history** — mechanically supported ancestry for selected consequences and recent committed transitions.
+- **Causal focus/history** — mechanic-declared ancestry for selected consequences and recent committed transitions.
 
 Analytic overlays are plugins, not universal world state. Waltzman trust structure, perceived risk, and coordination readiness belong here, as do future Levin, logistics, epidemiology, market, command-and-control, or other lenses.
 
@@ -51,11 +53,13 @@ observation/delivery: Ari receives R19
 
 Those are canonical world/information events when the selected world represents them. They do **not** automatically prove that R19 caused Ari's later choice.
 
-A later action may retain that R19 was in Ari's authorized observation/context. If an exact mechanic mechanically reads or depends on R19, that dependency can be a hard causal parent. If a resident harness merely saw R19 before selecting an action, R19 is retained evidence/context unless the cognition system supplies a narrower attributable reason. The UI must not turn temporal precedence or prompt inclusion into stronger causal claims.
+A later action may retain that R19 was in Ari's authorized observation/context. If an installed mechanic explicitly declares that it consumes or depends on R19, that relation can be retained as hard causal parentage inside the represented world. If a resident harness merely saw R19 before selecting an action, R19 is retained evidence/context unless the cognition system supplies a narrower attributable reason. The UI must not turn temporal precedence or prompt inclusion into stronger causal claims.
+
+Current `causal_parent_event_ids` are mechanic-declared and validated against retained history; they are not automatically derived from instrumented reads. They explain the installed world's causal account, not scientific truth about the corresponding real-world phenomenon.
 
 The event/evidence model therefore needs to distinguish at least:
 
-- hard mechanical causal parentage;
+- mechanic-declared hard causal parentage;
 - information delivery / observation lineage;
 - evidence/context available to cognition; and
 - derived analytic interpretation.
@@ -100,9 +104,9 @@ analysis-plugin annotations
 
 Cross-selection must preserve canonical entity/event IDs. Selecting an actor or event should filter/highlight relevant overlay data without inventing new relationships.
 
-## Proposed live projection seam
+## Implemented live projection seam
 
-The first implementation should be deliberately small. A projection adapter should turn a real World Substrate run into:
+The implemented projection adapter turns a real World Substrate run into:
 
 - current world/run identity, tick, and revision;
 - canonical entity/component state needed for presentation;
@@ -111,22 +115,21 @@ The first implementation should be deliberately small. A projection adapter shou
 - mechanically grounded causal/evidence relations that the current contracts can actually support; and
 - explicit unsupported/unknown overlay categories rather than guessed semantics.
 
-The browser needs an initial snapshot plus an incremental event/delta stream. SSE is sufficient for the first one-way live view; WebSocket is unnecessary unless later interaction requires bidirectional low-latency transport.
+The browser consumes an initial snapshot plus incremental event/delta data. SSE is sufficient for the first one-way live view; WebSocket remains unnecessary unless later interaction requires bidirectional low-latency transport.
 
 No renderer callback may mutate the World. Presentation animation state, camera state, selection, and interpolation remain client-local.
 
-## First vertical acceptance
+## First vertical acceptance — satisfied
 
-The first integration should use an existing real World Substrate run rather than adding another world mechanic. Repair Bay is a suitable fixture because it has multiple actors, contested tools, accepted/refused/retried actions, and retained full logs.
+The early design proposed Repair Bay as the first real-run fixture. The accepted implementation has moved beyond that stepping stone: the Waltzman Coordination Lab now drives the living client from canonical World Substrate snapshot/event data and satisfies the stronger integrated gate.
 
-Acceptance for the first slice:
+Current acceptance evidence includes:
 
-1. the versioned prototype consumes a real World Substrate snapshot/run instead of its synthetic state table;
-2. canonical entity IDs, event IDs, tick/revision, and accepted/refused results match the retained trace exactly;
-3. the browser can play, pause, step, scrub, and select residents/events without changing canonical truth;
-4. movement/state visuals are derived through scene semantics rather than hard-coded Repair Bay entity logic;
-5. causal highlighting never treats ordinary observation/context as hard mechanical causation;
-6. information/conversation overlays remain absent or explicitly unsupported until first-class information semantics exist;
-7. complete request/response logs and retained traces remain the debugging source of truth.
+1. baseline and intervention branches reconstruct from the initial snapshot plus retained deltas;
+2. canonical entity IDs, event IDs, tick/revision, and state changes come from the Engine path rather than a synthetic UI timeline;
+3. the browser can play, pause, step, scrub, switch branches, and select events without changing canonical truth;
+4. information context and mechanic-declared causal parentage are displayed separately;
+5. constraints/institution state and detachable Waltzman analysis are visible in the same living-world surface; and
+6. the same projection data is available as a self-contained static artifact and through the optional JSON/SSE service.
 
-Once that is green, the next generic capability is first-class information/conversation representation and delivery. That unlocks genuinely visible agent interaction, provenance-aware information overlays, and the Waltzman Coordination Lab without making Waltzman constructs part of the core world.
+The immediate product move is publication of that accepted canonical client at the existing standalone visualization URL, not another projection-framework experiment.
