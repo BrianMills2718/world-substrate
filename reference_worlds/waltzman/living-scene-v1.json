@@ -13,6 +13,10 @@
         "status": "components.activity.status"
       },
       "label": "Coordination meeting",
+      "mobile_anchor": [
+        50,
+        43
+      ],
       "participants": [
         "mara",
         "ari",
@@ -39,6 +43,10 @@
         28,
         26
       ],
+      "mobile_home": [
+        50,
+        17
+      ],
       "render": {
         "state_binding": "stance"
       }
@@ -54,6 +62,10 @@
       "home": [
         87,
         26
+      ],
+      "mobile_home": [
+        82,
+        31
       ],
       "render": {
         "state_binding": "stance"
@@ -71,6 +83,10 @@
         13,
         26
       ],
+      "mobile_home": [
+        18,
+        17
+      ],
       "render": {
         "state_binding": "stance"
       }
@@ -86,6 +102,10 @@
       "home": [
         72,
         26
+      ],
+      "mobile_home": [
+        50,
+        31
       ],
       "render": {
         "state_binding": "stance"
@@ -103,6 +123,10 @@
         43,
         26
       ],
+      "mobile_home": [
+        82,
+        17
+      ],
       "render": {
         "state_binding": "stance"
       }
@@ -118,6 +142,10 @@
       "home": [
         57,
         26
+      ],
+      "mobile_home": [
+        18,
+        31
       ],
       "render": {
         "state_binding": "stance"
@@ -183,6 +211,10 @@
         87,
         48
       ],
+      "mobile_home": [
+        80,
+        76
+      ],
       "render": {
         "current_binding": "current",
         "kind": "resource",
@@ -201,6 +233,10 @@
         87,
         85
       ],
+      "mobile_home": [
+        80,
+        89
+      ],
       "render": {
         "kind": "constraint",
         "state_binding": "state"
@@ -217,6 +253,10 @@
       "home": [
         13,
         85
+      ],
+      "mobile_home": [
+        20,
+        89
       ],
       "render": {
         "current_binding": "current",
@@ -235,6 +275,10 @@
         50,
         87
       ],
+      "mobile_home": [
+        50,
+        68
+      ],
       "render": {
         "kind": "package",
         "state_binding": "state"
@@ -251,6 +295,10 @@
       "home": [
         13,
         48
+      ],
+      "mobile_home": [
+        20,
+        76
       ],
       "render": {
         "current_binding": "current",
@@ -355,6 +403,10 @@
         "support": "components.institution.support_count"
       },
       "label": "Coalition decision gate",
+      "mobile_anchor": [
+        50,
+        56
+      ],
       "render": {
         "conditional_binding": "conditional",
         "required_binding": "required",
@@ -371,6 +423,7 @@
     "aspect_ratio": "16 / 9",
     "autoplay_ms": 1150,
     "background": "#d9e4df",
+    "mobile_min_height": 700,
     "shell_background": "#101820"
   },
   "scene_id": "waltzman-coordination-lab-living-v1",
@@ -397,6 +450,12 @@
         24
       ],
       "label": "Residents and briefings",
+      "mobile_rect": [
+        7,
+        9,
+        86,
+        28
+      ],
       "rect": [
         7,
         11,
@@ -410,6 +469,12 @@
         55
       ],
       "label": "Coalition chamber",
+      "mobile_rect": [
+        7,
+        38,
+        86,
+        25
+      ],
       "rect": [
         25,
         37,
@@ -423,6 +488,12 @@
         85
       ],
       "label": "Consequential prerequisites",
+      "mobile_rect": [
+        7,
+        71,
+        86,
+        23
+      ],
       "rect": [
         7,
         78,
@@ -436,6 +507,12 @@
         51
       ],
       "label": "Coordination Hall",
+      "mobile_rect": [
+        3,
+        5,
+        94,
+        91
+      ],
       "rect": [
         3,
         7,
