@@ -102,6 +102,52 @@ def entity_visible_to_actor(world: World, actor_id: str, entity: Entity) -> bool
     return True
 
 
+def information_visible_in_material_world(
+    material_world: dict[str, Any], actor_id: str, info_id: str
+) -> bool:
+    """Apply canonical information-delivery visibility to a material projection.
+
+    This is the dict/projection counterpart of :func:`information_visible_to_actor`.
+    It exists so read-only clients can enforce the same represented visibility
+    boundary without reconstructing a mutable ``World`` instance.
+    """
+
+    entities = material_world.get("entities")
+    if not isinstance(entities, dict):
+        return False
+    entity = entities.get(info_id)
+    if not isinstance(entity, dict):
+        return False
+    components = entity.get("components")
+    if not isinstance(components, dict):
+        return False
+    info = components.get("information")
+    if not isinstance(info, dict):
+        return False
+    visibility = info.get("visibility")
+    if visibility not in INFORMATION_VISIBILITIES:
+        return False
+    if info.get("source_id") == actor_id:
+        return True
+    if info.get("active") is not True:
+        return False
+    if visibility == "public":
+        return True
+    for row in entities.values():
+        if not isinstance(row, dict):
+            continue
+        row_components = row.get("components")
+        delivery = row_components.get("delivery") if isinstance(row_components, dict) else None
+        if (
+            isinstance(delivery, dict)
+            and delivery.get("info_id") == info_id
+            and delivery.get("recipient_id") == actor_id
+            and delivery.get("status") in DELIVERED_STATUSES
+        ):
+            return True
+    return False
+
+
 def observation_information_context(observation: dict[str, Any] | None) -> list[dict[str, Any]]:
     """Summarize represented information present in a retained actor observation.
 
