@@ -119,7 +119,7 @@ Logical frames include:
 
 - exact scene/world/branch identity;
 - canonical boundary index, tick, and revision;
-- the retained event at that boundary;
+- a presentation-safe retained event summary at that boundary;
 - its exact declared or neutral event presentation record; and
 - read-only projected actor/entity/activity/institution bindings.
 
@@ -152,6 +152,22 @@ Simulation tick, event order, activity start/end ticks, and status are canonical
 facts. Animation duration is presentation metadata only. Changing animation
 milliseconds cannot change the logical view at a canonical event boundary.
 
+
+### Responsive presentation overrides
+
+Living Scene v1 may provide `mobile_home` on actors/entities, `mobile_anchor` on
+activities/institutions/zones, and `mobile_rect` on zones. These are validated
+with the same point/rectangle shapes as desktop presentation geometry. They are
+selected only by the browser presentation layer and never change canonical
+location, state, tick, event order, or branch history. `scene.mobile_min_height`
+is likewise a presentation-only viewport hint.
+
+The generic player exposes an HTML range scrubber whose values are retained
+canonical frame boundaries. Selecting a value calls the same deterministic frame
+render used by next/previous controls; it does not advance world time. A generic
+multi-branch wrapper may swap self-contained branch documents, but it selects
+retained histories rather than editing one branch into another.
+
 ## Compatibility
 
 `load_scene_contract()` accepts both:
@@ -177,13 +193,14 @@ live in reference-world profile/assets rather than this shared contract layer.
 
 ## Current implementation boundary
 
-The deterministic read-only logical frame seam and a generic 2D embodied renderer
+The deterministic read-only logical frame seam and generic 2D embodied renderer
 are implemented. The renderer can place declared actors and zones, show canonical
 resource/constraint values, present duration-bearing activities and institution
-status, gather declared participants around an active activity, and apply exact
-`actor.move_to` presentation operations. These behaviors remain downstream of
-canonical frame state.
+status, gather declared participants, visualize visibility-bounded information
+transmission, show retained action feedback, apply responsive presentation
+overrides, and scrub exact event boundaries. The generic multi-branch wrapper
+selects among retained branch documents without rewriting history.
 
-Information transmission, action-result feedback, Waltzman composition, deeper
-inspection, and public product integration remain separate downstream work units.
-The generic renderer must remain free of Waltzman entity/action branches.
+Waltzman composition is declarative reference-world data. Deeper inspection and
+public funnel integration remain downstream work; the generic runtime remains
+free of Waltzman entity/action branches.

@@ -109,8 +109,12 @@ def _validate_v1_profile(raw: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(zone_id, str) or not zone_id or not isinstance(zone, dict):
             raise ValueError("living scene zones must map nonempty ids to objects")
         zone["rect"] = _rect(zone.get("rect"), f"zone {zone_id}.rect")
+        if "mobile_rect" in zone:
+            zone["mobile_rect"] = _rect(zone["mobile_rect"], f"zone {zone_id}.mobile_rect")
         if "anchor" in zone:
             zone["anchor"] = _point(zone["anchor"], f"zone {zone_id}.anchor")
+        if "mobile_anchor" in zone:
+            zone["mobile_anchor"] = _point(zone["mobile_anchor"], f"zone {zone_id}.mobile_anchor")
 
     allowed_style_tokens = {"positive", "warning", "danger", "neutral", "muted"}
     for state, token in profile["state_styles"].items():
@@ -128,8 +132,12 @@ def _validate_v1_profile(raw: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError(f"living scene {group} must map nonempty ids to objects")
             if "home" in visual:
                 visual["home"] = _point(visual["home"], f"{group}.{visual_id}.home")
+            if "mobile_home" in visual:
+                visual["mobile_home"] = _point(visual["mobile_home"], f"{group}.{visual_id}.mobile_home")
             if "anchor" in visual:
                 visual["anchor"] = _point(visual["anchor"], f"{group}.{visual_id}.anchor")
+            if "mobile_anchor" in visual:
+                visual["mobile_anchor"] = _point(visual["mobile_anchor"], f"{group}.{visual_id}.mobile_anchor")
             entity_id = visual.get("entity", visual_id)
             if not isinstance(entity_id, str) or not entity_id:
                 raise ValueError(f"{group}.{visual_id}.entity must be a nonempty string")

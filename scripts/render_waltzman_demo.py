@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Render the Waltzman living-world demo from canonical projection bundles."""
+"""Legacy Waltzman analytical renderer retained as comparison evidence.
+
+The primary living-world path now uses the generic Living Scene v1 renderer.
+"""
 
 from __future__ import annotations
 
