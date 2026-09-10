@@ -1,0 +1,70 @@
+{
+  "schema_version": "world-substrate-kitchen-quality-acceptance/v2",
+  "artifact": {
+    "path": "evidence/renders/waltzman-living-v2.html",
+    "sha256": "c7fdfc95cb36a8dc36f58dd0664025a357292dc2995c9de082380622d153221f"
+  },
+  "manifest": {
+    "path": "evidence/waltzman/living-replay-manifest-v2.json",
+    "sha256": "e385d1debe34400fad607abe4cc868342a28fe763d2a4b5e6a5f75c4d1484ba4"
+  },
+  "baseline": {
+    "hud": "tick 6 · Coalition decision gate evaluates",
+    "state": "blocked",
+    "counts": "support 2 / 6 · conditional 4",
+    "actors": 6,
+    "overflow": false,
+    "scrub": "21"
+  },
+  "intervention": {
+    "hud": "tick 7 · Coalition decision gate evaluates",
+    "state": "ready",
+    "counts": "support 6 / 6 · conditional 0",
+    "actors": 6,
+    "overflow": false,
+    "scrub": "28"
+  },
+  "inspector": {
+    "open": true,
+    "title": "Ari Chen",
+    "rows": [
+      "role",
+      "regional scientific adviser",
+      "organization",
+      "Regional",
+      "stance",
+      "support",
+      "Represented deliveries",
+      "1",
+      "Latest from",
+      "Mara Ellison",
+      "Latest topic",
+      "validation",
+      "Message detail",
+      "Private in this public view"
+    ]
+  },
+  "mobile": {
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "overflow": false
+  },
+  "page_errors": [],
+  "console_errors": [],
+  "portability": {
+    "kitchen_sha256": "c1130ddfef9a08967ebb8c709303c40fe14ca41d6071bc37e1909162b718d619",
+    "castaway_sha256": "cd6941e4eb8cad377cd6a22b86249e1cc3fa381ec05b27a46b5a2df74a33c922",
+    "byte_identical": true
+  },
+  "tests": {
+    "focused_passed": 57,
+    "full_passed": 376,
+    "project_check": "passed"
+  },
+  "visual_disposition": {
+    "v1_product_owner_review": "failed — debug/card/token presentation",
+    "v2_agent_gate": "pass — composed room, characters, stations, physical meeting/intervention, compact chrome, contextual inspector",
+    "kitchen_product_category_parity": true
+  },
+  "provider_spend_usd": 0
+}
