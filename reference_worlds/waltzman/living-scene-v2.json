@@ -1,0 +1,698 @@
+{
+  "activities": {
+    "coordination-meeting": {
+      "anchor": [
+        50,
+        49
+      ],
+      "asset": "meeting",
+      "bindings": {
+        "duration_ticks": "components.activity.duration_ticks",
+        "end_tick": "components.activity.end_tick",
+        "label": "label",
+        "started_tick": "components.activity.started_tick",
+        "status": "components.activity.status"
+      },
+      "label": "Coordination meeting",
+      "mobile_anchor": [
+        50,
+        46
+      ],
+      "participants": [
+        "mara",
+        "ari",
+        "selene",
+        "tomas",
+        "nira",
+        "idris"
+      ],
+      "render": {
+        "accent": "#76c9c1",
+        "display": "world",
+        "gather_radius": 11.5,
+        "inspector_fields": [
+          "status",
+          "duration_ticks",
+          "started_tick",
+          "end_tick"
+        ],
+        "mobile_gather_radius": 15,
+        "status_binding": "status"
+      }
+    }
+  },
+  "actors": {
+    "ari": {
+      "asset": "resident-ari",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        29,
+        22
+      ],
+      "mobile_home": [
+        50,
+        15
+      ],
+      "render": {
+        "accent": "#68a9cb",
+        "display": "character",
+        "inspector_fields": [
+          "role",
+          "organization",
+          "stance"
+        ],
+        "state_binding": "stance"
+      }
+    },
+    "idris": {
+      "asset": "resident-idris",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        85,
+        27
+      ],
+      "mobile_home": [
+        82,
+        31
+      ],
+      "render": {
+        "accent": "#73b4bb",
+        "display": "character",
+        "inspector_fields": [
+          "role",
+          "organization",
+          "stance"
+        ],
+        "state_binding": "stance"
+      }
+    },
+    "mara": {
+      "asset": "resident-mara",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        15,
+        27
+      ],
+      "mobile_home": [
+        18,
+        17
+      ],
+      "render": {
+        "accent": "#d78373",
+        "display": "character",
+        "inspector_fields": [
+          "role",
+          "organization",
+          "stance"
+        ],
+        "state_binding": "stance"
+      }
+    },
+    "nira": {
+      "asset": "resident-nira",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        71,
+        22
+      ],
+      "mobile_home": [
+        50,
+        29
+      ],
+      "render": {
+        "accent": "#72b58b",
+        "display": "character",
+        "inspector_fields": [
+          "role",
+          "organization",
+          "stance"
+        ],
+        "state_binding": "stance"
+      }
+    },
+    "selene": {
+      "asset": "resident-selene",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        43,
+        20
+      ],
+      "mobile_home": [
+        82,
+        17
+      ],
+      "render": {
+        "accent": "#b889c8",
+        "display": "character",
+        "inspector_fields": [
+          "role",
+          "organization",
+          "stance"
+        ],
+        "state_binding": "stance"
+      }
+    },
+    "tomas": {
+      "asset": "resident-tomas",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        57,
+        20
+      ],
+      "mobile_home": [
+        18,
+        31
+      ],
+      "render": {
+        "accent": "#dda15b",
+        "display": "character",
+        "inspector_fields": [
+          "role",
+          "organization",
+          "stance"
+        ],
+        "state_binding": "stance"
+      }
+    }
+  },
+  "assets": {
+    "coalition": {
+      "kind": "image",
+      "path": "assets-v2/coalition.svg"
+    },
+    "hall-background": {
+      "kind": "image",
+      "path": "assets-v2/coordination-hall.svg"
+    },
+    "meeting": {
+      "kind": "image",
+      "path": "assets-v2/meeting.svg"
+    },
+    "package": {
+      "kind": "image",
+      "path": "assets-v2/package.svg"
+    },
+    "reserve": {
+      "kind": "image",
+      "path": "assets-v2/reserve.svg"
+    },
+    "resident-ari": {
+      "kind": "image",
+      "path": "assets-v2/resident-ari.svg"
+    },
+    "resident-idris": {
+      "kind": "image",
+      "path": "assets-v2/resident-idris.svg"
+    },
+    "resident-mara": {
+      "kind": "image",
+      "path": "assets-v2/resident-mara.svg"
+    },
+    "resident-nira": {
+      "kind": "image",
+      "path": "assets-v2/resident-nira.svg"
+    },
+    "resident-selene": {
+      "kind": "image",
+      "path": "assets-v2/resident-selene.svg"
+    },
+    "resident-tomas": {
+      "kind": "image",
+      "path": "assets-v2/resident-tomas.svg"
+    },
+    "safeguard": {
+      "kind": "image",
+      "path": "assets-v2/safeguard.svg"
+    },
+    "staff": {
+      "kind": "image",
+      "path": "assets-v2/staff.svg"
+    },
+    "validation": {
+      "kind": "image",
+      "path": "assets-v2/validation.svg"
+    }
+  },
+  "entities": {
+    "clinical-staff": {
+      "asset": "staff",
+      "bindings": {
+        "current": "components.resource.current",
+        "label": "label",
+        "required": "components.resource.required",
+        "unit": "components.resource.unit"
+      },
+      "home": [
+        86,
+        56
+      ],
+      "mobile_home": [
+        80,
+        73
+      ],
+      "render": {
+        "accent": "#72a9cf",
+        "current_binding": "current",
+        "display": "world",
+        "inspector_fields": [
+          "current",
+          "required",
+          "unit"
+        ],
+        "kind": "resource",
+        "required_binding": "required",
+        "unit_binding": "unit"
+      }
+    },
+    "safeguard-record": {
+      "asset": "safeguard",
+      "bindings": {
+        "label": "label",
+        "required_state": "components.constraint.required_status",
+        "state": "components.constraint.status"
+      },
+      "home": [
+        81,
+        80
+      ],
+      "mobile_home": [
+        80,
+        88
+      ],
+      "render": {
+        "accent": "#8ccda5",
+        "display": "world",
+        "inspector_fields": [
+          "required_state",
+          "state"
+        ],
+        "kind": "constraint",
+        "state_binding": "state"
+      }
+    },
+    "shared-reserve": {
+      "asset": "reserve",
+      "bindings": {
+        "current": "components.resource.current",
+        "label": "label",
+        "required": "components.resource.required",
+        "unit": "components.resource.unit"
+      },
+      "home": [
+        19,
+        80
+      ],
+      "mobile_home": [
+        20,
+        88
+      ],
+      "render": {
+        "accent": "#d7ad65",
+        "current_binding": "current",
+        "display": "world",
+        "inspector_fields": [
+          "current",
+          "required",
+          "unit"
+        ],
+        "kind": "resource",
+        "required_binding": "required",
+        "unit_binding": "unit"
+      }
+    },
+    "stabilization-package": {
+      "asset": "package",
+      "bindings": {
+        "label": "label",
+        "state": "components.package.status"
+      },
+      "home": [
+        50,
+        82
+      ],
+      "mobile_home": [
+        50,
+        82
+      ],
+      "render": {
+        "accent": "#d9b375",
+        "display": "world",
+        "inspector_fields": [
+          "state"
+        ],
+        "kind": "package",
+        "mobile_position_by_state": {
+          "available": [
+            50,
+            80
+          ],
+          "delivered": [
+            72,
+            62
+          ]
+        },
+        "position_by_state": {
+          "available": [
+            50,
+            82
+          ],
+          "delivered": [
+            62,
+            66
+          ]
+        },
+        "position_state_binding": "state",
+        "state_binding": "state"
+      }
+    },
+    "validation-capacity": {
+      "asset": "validation",
+      "bindings": {
+        "current": "components.resource.current",
+        "label": "label",
+        "required": "components.resource.required",
+        "unit": "components.resource.unit"
+      },
+      "home": [
+        14,
+        56
+      ],
+      "mobile_home": [
+        20,
+        73
+      ],
+      "render": {
+        "accent": "#73c3b7",
+        "current_binding": "current",
+        "display": "world",
+        "inspector_fields": [
+          "current",
+          "required",
+          "unit"
+        ],
+        "kind": "resource",
+        "required_binding": "required",
+        "unit_binding": "unit"
+      }
+    }
+  },
+  "event_visuals": {
+    "system.clock.advance": {
+      "label": "World time advances",
+      "operations": []
+    },
+    "waltzman.activity.start-meeting": {
+      "label": "Coordination meeting begins",
+      "operations": [
+        {
+          "label": "meeting started",
+          "op": "action.feedback"
+        },
+        {
+          "entity": "coordination-meeting",
+          "op": "presentation.emphasize"
+        }
+      ]
+    },
+    "waltzman.commitment.reassess": {
+      "label": "A resident reassesses a commitment",
+      "operations": []
+    },
+    "waltzman.information.communicate": {
+      "label": "A resident shares represented information",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        }
+      ]
+    },
+    "waltzman.institution.coalition-gate": {
+      "label": "Coalition decision gate evaluates",
+      "operations": [
+        {
+          "entity": "coalition-hub",
+          "op": "presentation.emphasize"
+        }
+      ]
+    },
+    "waltzman.intervention.deliver-package": {
+      "label": "Stabilization package applied",
+      "operations": [
+        {
+          "label": "stabilization package applied",
+          "op": "action.feedback"
+        },
+        {
+          "entity": "stabilization-package",
+          "op": "presentation.emphasize"
+        }
+      ]
+    },
+    "waltzman.process.meeting-completion": {
+      "label": "Coordination meeting completes",
+      "operations": [
+        {
+          "entity": "coordination-meeting",
+          "op": "presentation.emphasize"
+        }
+      ]
+    },
+    "waltzman.process.reserve-conflict": {
+      "label": "Shared reserve tightens",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        },
+        {
+          "entity": "shared-reserve",
+          "op": "presentation.emphasize"
+        }
+      ]
+    },
+    "waltzman.process.safeguard-gap": {
+      "label": "Safeguard record becomes pending",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        },
+        {
+          "entity": "safeguard-record",
+          "op": "presentation.emphasize"
+        }
+      ]
+    },
+    "waltzman.process.staffing-shortfall": {
+      "label": "Clinical staffing falls",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        },
+        {
+          "entity": "clinical-staff",
+          "op": "presentation.emphasize"
+        }
+      ]
+    },
+    "waltzman.process.validation-failure": {
+      "label": "Validation capacity drops",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        },
+        {
+          "entity": "validation-capacity",
+          "op": "presentation.emphasize"
+        }
+      ]
+    }
+  },
+  "institutions": {
+    "coalition-hub": {
+      "anchor": [
+        50,
+        64
+      ],
+      "asset": "coalition",
+      "bindings": {
+        "conditional": "components.institution.conditional_count",
+        "label": "label",
+        "required": "components.institution.required_support",
+        "status": "components.institution.status",
+        "support": "components.institution.support_count"
+      },
+      "label": "Coalition decision gate",
+      "mobile_anchor": [
+        50,
+        58
+      ],
+      "render": {
+        "accent": "#7ec8bd",
+        "conditional_binding": "conditional",
+        "display": "world",
+        "inspector_fields": [
+          "status",
+          "support",
+          "required",
+          "conditional"
+        ],
+        "required_binding": "required",
+        "status_binding": "status",
+        "support_binding": "support"
+      }
+    }
+  },
+  "presentation": {
+    "geometry_authority": "illustrative-only",
+    "reference": "Kitchen/cooking-game interaction model"
+  },
+  "scene": {
+    "aspect_ratio": "16 / 9",
+    "autoplay_ms": 1050,
+    "background": "#1b2b31",
+    "background_asset": "hall-background",
+    "mobile_min_height": 760,
+    "shell_background": "#081116"
+  },
+  "scene_id": "waltzman-coordination-lab-living-v2",
+  "schema_version": "world-substrate-living-scene/v1",
+  "state_styles": {
+    "active": "warning",
+    "available": "neutral",
+    "blocked": "danger",
+    "clear": "positive",
+    "completed": "positive",
+    "conditional": "warning",
+    "delivered": "positive",
+    "pending": "warning",
+    "ready": "positive",
+    "support": "positive"
+  },
+  "subtitle": "Six residents coordinate under partial information, binding prerequisites, and a recoverable intervention fork.",
+  "title": "Waltzman Coordination Lab",
+  "world": "waltzman-coordination-lab-v0",
+  "zones": {
+    "briefing-ring": {
+      "anchor": [
+        50,
+        24
+      ],
+      "label": "Residents and briefings",
+      "mobile_rect": [
+        7,
+        9,
+        86,
+        28
+      ],
+      "presentation": {
+        "visible": false
+      },
+      "rect": [
+        7,
+        11,
+        86,
+        25
+      ]
+    },
+    "coalition-chamber": {
+      "anchor": [
+        50,
+        55
+      ],
+      "label": "Coalition chamber",
+      "mobile_rect": [
+        7,
+        38,
+        86,
+        25
+      ],
+      "presentation": {
+        "visible": false
+      },
+      "rect": [
+        25,
+        37,
+        50,
+        42
+      ]
+    },
+    "constraint-band": {
+      "anchor": [
+        50,
+        85
+      ],
+      "label": "Consequential prerequisites",
+      "mobile_rect": [
+        7,
+        71,
+        86,
+        23
+      ],
+      "presentation": {
+        "visible": false
+      },
+      "rect": [
+        7,
+        78,
+        86,
+        14
+      ]
+    },
+    "coordination-hall": {
+      "anchor": [
+        50,
+        51
+      ],
+      "label": "Coordination Hall",
+      "mobile_rect": [
+        3,
+        5,
+        94,
+        91
+      ],
+      "presentation": {
+        "visible": false
+      },
+      "rect": [
+        3,
+        7,
+        94,
+        88
+      ]
+    }
+  }
+}
