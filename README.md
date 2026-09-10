@@ -100,7 +100,7 @@ ordinary-language situation
 
 Do **not** rebuild Cybernetic V3's mature natural-language authoring/run pipeline inside World Builder just to reach the Waltzman demo. World Builder remains the long-term World Substrate product path; for this stakeholder slice, Cybernetic V3 is an implementation donor under a World Substrate-branded experience. The existing `evidence/renders/waltzman-demo-v0.html` remains retained reference/presentation evidence, not the final outreach endpoint.
 
-That thin retained-run adapter is now implemented in the Cybernetic V3 donor path: generated `general_world_v2` summaries drive a read-only living replay with play/step/scrub, information/world/causal layers, selected-event explanation, and deeper retained evidence still available. The next gate is Cloudflare-native deployment plus one certified fresh natural-language run through that living replay, independent of the Mac-mini tunnel.
+That thin retained-run adapter is now implemented and stakeholder-promoted through the Cybernetic V3 donor path: generated `general_world_v2` summaries drive a read-only living replay with play/step/scrub, information/world/causal layers, selected-event explanation, and deeper retained evidence still available. Promotion evidence is retained in `evidence/waltzman/public-promotion-2026-09-09.md`; the current Mac origin is temporary, and the approved shared Netcup VPS is the next hosting target.
 
 ## Architectural thesis
 

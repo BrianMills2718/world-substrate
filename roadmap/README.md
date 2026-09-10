@@ -9,8 +9,8 @@ reviewed_through: 2026-09-09
 # World Substrate living roadmap
 
 **Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), and [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md).  
-**Stage:** prototype substrate complete; deployed authoring/run alpha; Waltzman outreach funnel and generated-run living replay implemented in the Cybernetic V3 donor path; current phase is **Cloudflare-native stakeholder deployment and fresh-run proof**.
-**Current frontier:** deploy the already-implemented first-two-minute funnel + living replay on the Cloudflare-native path, preserve the existing route-certification gate, and prove one Waltzman-relevant natural-language request through review, fresh execution, and living inspection. Do not reopen simulator architecture to finish this proof.
+**Stage:** prototype substrate complete; deployed authoring/run alpha; Waltzman outreach funnel, generated-run living replay, certified fresh-run proof, and stakeholder promotion complete through the Cybernetic V3 donor path. Current phase is **post-demo hardening plus migration of the temporary Mac origin to the approved shared Netcup VPS**.
+**Current frontier:** preserve the promoted Waltzman experience and retained evidence while hardening provenance/authority boundaries and moving the donor backend off the Mac to the shared Netcup VPS. Do not reopen simulator architecture merely to change hosting.
 **Deployment boundary:** the 2026-09-09 human decision supersedes publishing the static replay as the finished demo. The sendable Waltzman experience requires natural-language generation, fresh execution, and living inspection. Reusing Cybernetic V3's existing public V2 authoring/run service for this demo is authorized as the fastest implementation path; Cybernetic Influence remains implementation/research lineage rather than public product identity. Provider spend and production hosting changes remain separately bounded by their existing controls.
 
 ## Outcome and success criteria
@@ -175,7 +175,8 @@ Hard constraints:
 | Waltzman reference-world demo | implemented local | coherent living coordination world with detachable analysis; retained as presentation/evidence fixture |
 | Waltzman outreach authoring/run path | existing donor capability | Cybernetic V3 public V2 path already supports prose -> editable configuration -> approval -> fresh run -> retained evidence |
 | Waltzman outreach + living replay | implemented donor integration | Cybernetic V3 Plans 37–38 provide the first-two-minute funnel and read-only living replay over retained general-run summaries |
-| Cloudflare-native Waltzman stakeholder demo | **active** | deploy the combined surface/API independent of the Mac and prove one certified fresh generated run |
+| Waltzman stakeholder demo | **promoted 2026-09-09** | `65eb465a` public donor build; separated Sol authoring/execution certification; approved fresh `general_world_v2` run `run_0e488a37157f`; desktop/mobile living replay verified |
+| Shared Netcup VPS migration | next hosting step | move the donor backend off the temporary Mac origin without changing the promoted product contract; preserve the Mac as rollback |
 | Provenance/authority/repro hardening | next after demo | exact law fingerprint, role-specific scopes, visible action-space overflow, appropriate CI/locking |
 | Persistence / second-domain proof | later | durable user worlds/runs and proof beyond Waltzman |
 
@@ -209,8 +210,8 @@ This is an integration strategy, not a new product identity. **World Substrate i
 1. **Acquisition funnel — implemented:** Cybernetic V3 Plan 37 leads with the local-information-to-collective-action question, retained proof, and configure-first natural-language composer.
 2. **Projection adapter — implemented:** Cybernetic V3 Plan 38 consumes the existing compact run summary and projects its retained nodes/edges/scenes into a living presentation without rerunning the world.
 3. **Living inspection — implemented first gate:** play/step/scrub, information/world/causal layers, selected-event explanation, and node inspection share the same retained replay index; the deeper graph/evidence view remains available.
-4. **Cloudflare-native deploy — active:** route `brianmills.dev/world-substrate-visualization*` to Workers Static Assets plus one Container-hosted existing FastAPI/Concordia backend so the demo no longer depends on the Mac tunnel.
-5. **Fresh-run promotion proof — remaining:** preserve the existing seven-day route-certification gate, then prove prose -> generated editable configuration -> approval -> fresh execution -> living replay on one Waltzman-relevant request and smoke-test the first 30 seconds / first two minutes.
+4. **Stakeholder deploy — promoted:** `https://brianmills.dev/waltzman/` serves Cybernetic V3 donor commit `65eb465a48f8f1f996afd81f64105a99c982f070`. The current Mac origin is temporary; the approved shared Netcup VPS is the next hosting target, and the closed Cloudflare Container path is not the deployment plan.
+5. **Fresh-run promotion proof — complete:** Sol authoring and execution are independently certified through 2026-09-17; natural-language draft `draft_ad3653c88637` was reviewed/approved and executed as retained run `run_0e488a37157f`. Its `general_world_v2` summary projects eight living-replay scenes with information/world/causal layers. Desktop and mobile acceptance, same-origin browser network/console checks, public assets, and first-contact timing passed. See [`evidence/waltzman/public-promotion-2026-09-09.md`](../evidence/waltzman/public-promotion-2026-09-09.md).
 
 The existing `evidence/renders/waltzman-demo-v0.html` and its canonical baseline/intervention bundles remain valuable regression fixtures and visual design evidence. They are not deleted and do not become claims about generative authoring.
 
@@ -385,15 +386,14 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Finish the Cloudflare-native deployment and prove one certified fresh Waltzman-relevant run.**
+**Keep the promoted Waltzman demo stable while hardening provenance/authority boundaries and migrating the temporary Mac origin to the approved shared Netcup VPS.**
 
 Concretely:
 
-1. land the Cybernetic V3 Cloudflare Worker + Static Assets + Container deployment slice;
-2. connect that Worker to GitHub `main` and the `brianmills.dev/world-substrate-visualization*` route, preserving the Mac as rollback rather than production dependency;
-3. materialize a current, exact-revision route-certification bundle and runtime provider secret without weakening the existing certification checks;
-4. verify the public share URL returns HTTP 200 while the Mac is off;
-5. enter one Waltzman-relevant situation in natural language, review/approve it, run a fresh trajectory, and reach the living replay; and
-6. smoke-test the 30-second hook, two-minute participation path, information/world/causal inspection, and retained evidence boundary.
+1. preserve the `65eb465a` stakeholder experience and retained promotion evidence as the regression target;
+2. provision the existing donor backend on the approved shared Netcup VPS without reviving the closed Cloudflare Container path;
+3. move the public route only after health, route-certification, retained-run access, and rollback checks pass against the VPS;
+4. retain the Mac origin as rollback until the VPS route has been independently verified; and
+5. resume the already-listed provenance/authority/repro hardening work without changing the promoted product contract merely for infrastructure reasons.
 
 Do **not** port the Cybernetic simulator into World Substrate, add durable storage, broaden the mechanics DSL, or bypass route certification merely to make the public demo green. The current filesystem-backed Container store is a bounded-session deployment surface, not durable saved-world storage.

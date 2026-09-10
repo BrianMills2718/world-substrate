@@ -134,7 +134,7 @@ Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter
 | Replay | portable read-only scene-profile renderer across multiple worlds |
 | World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs |
 | Full logs | deployed; complete request/response/compiler/operator/causal traces available |
-| Living-world UI | canonical Waltzman reference client plus generated-run living replay implemented; Cloudflare-native public promotion is active |
+| Living-world UI | canonical Waltzman reference client plus generated-run living replay stakeholder-promoted on `65eb465a`; temporary Mac origin remains until migration to the approved shared Netcup VPS |
 | Live projection | implemented local first gate: exact initial-snapshot + retained-event/delta reconstruction, self-contained HTML, JSON, and one-way SSE |
 | Information/conversation | implemented bounded v0: source/recipient/channel/visibility/delivery/provenance + asymmetric actor observation; not a belief model |
 | Processes/institutions | Waltzman first gate has tick-specific processes, explicit commitments, a duration-bearing meeting, and an installed coalition gate; generic authoring remains narrow |
@@ -153,8 +153,8 @@ Open work at the handoff point:
 
 The roadmap owns ordering. The unresolved work is deliberately split into **before public demo**, **post-demo hardening**, and **later capabilities**.
 
-1. **Cloudflare-native Waltzman promotion — immediate:** the Cybernetic V3 donor path now has the configure-first outreach funnel and generated-run living replay. Deploy that combined surface/API on the Cloudflare-native `world-substrate-visualization` route, preserve route certification, and prove one fresh Waltzman-relevant generated run while the Mac is off.
-2. **First-two-minute UX — immediate:** the visitor should understand the local-information-to-collective-action proposition quickly and be able to start typing a simulation request without choosing a workflow, model, analysis, or methodology first. The existing V3 configure-first outreach funnel is the donor surface to preserve.
+1. **Waltzman promotion — complete; hosting migration next:** the Cybernetic V3 donor path now serves the configure-first outreach funnel and generated-run living replay at `https://brianmills.dev/waltzman/`. Separated Sol authoring/execution certification and fresh run `run_0e488a37157f` satisfy the promotion proof. Keep the Mac as temporary/rollback origin while moving the backend to the approved shared Netcup VPS; do not revive the closed Cloudflare Container path.
+2. **First-two-minute UX — promoted regression target:** the visitor should understand the local-information-to-collective-action proposition quickly and be able to start typing a simulation request without choosing a workflow, model, analysis, or methodology first. The existing V3 configure-first outreach funnel is the donor surface to preserve.
 3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version. This matters before durable user-generated law, not before the hand-authored Waltzman reference demo.
 4. **Local-authority correctness — post-demo hardening:** bind write-scope placeholders to exact action roles and make authored affordance-cap overflow explicit rather than silently truncating valid actions.
 5. **Repository reproducibility — post-demo hardening:** add appropriate CI/project gates and exact dependency locking when the selected external dependencies enter reproducible production paths.
