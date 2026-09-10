@@ -185,17 +185,22 @@ def load_scene_contract(path: Path) -> dict[str, Any]:
     raise ValueError(f"unsupported scene contract schema: {schema!r}")
 
 
-def _validate_live_projection(bundle: dict[str, Any], profile: dict[str, Any]) -> None:
+def validate_live_projection_bundle(bundle: dict[str, Any]) -> None:
+    """Validate the retained canonical projection seam without interpreting a scene."""
+
     if bundle.get("schema_version") != LIVE_PROJECTION_SCHEMA_VERSION:
         raise ValueError("living scene requires world-substrate-live-projection/v0")
-    if profile.get("schema_version") != LIVING_SCENE_SCHEMA_VERSION:
-        raise ValueError("logical living frames require world-substrate-living-scene/v1")
+    branch_id = bundle.get("branch_id")
+    if not isinstance(branch_id, str) or not branch_id:
+        raise ValueError("living scene projection branch_id must be nonempty")
     initial = bundle.get("initial_snapshot")
     if not isinstance(initial, dict) or initial.get("schema_version") != "world-substrate-snapshot/v1":
         raise ValueError("living scene requires world-substrate-snapshot/v1 initial_snapshot")
     world = initial.get("world")
-    if not isinstance(world, dict) or world.get("world_id") != profile.get("world"):
-        raise ValueError("living scene profile world does not match canonical snapshot")
+    if not isinstance(world, dict) or not isinstance(world.get("world_id"), str) or not world["world_id"]:
+        raise ValueError("living scene initial snapshot must name world_id")
+    if bundle.get("world_id") != world["world_id"]:
+        raise ValueError("living scene bundle world_id does not match initial snapshot")
     events = bundle.get("events")
     if not isinstance(events, list):
         raise ValueError("living scene projection events must be an array")
@@ -204,6 +209,41 @@ def _validate_live_projection(bundle: dict[str, Any], profile: dict[str, Any]) -
         raise ValueError("every living scene event must have a stable event_id")
     if len(set(ids)) != len(ids):
         raise ValueError("living scene event ids must be unique")
+    for event in events:
+        if not isinstance(event.get("changes"), list):
+            raise ValueError("living scene event changes must be an array")
+
+
+def load_live_projection_bundle(path: Path) -> dict[str, Any]:
+    """Load one retained live-projection bundle without invoking simulation authority."""
+
+    raw = json.loads(path.read_text())
+    if not isinstance(raw, dict):
+        raise ValueError("living scene projection must be a JSON object")
+    validate_live_projection_bundle(raw)
+    return deepcopy(raw)
+
+
+def canonical_world_at_boundary(bundle: dict[str, Any], boundary_index: int) -> dict[str, Any]:
+    """Reconstruct canonical material state at one retained event boundary."""
+
+    validate_live_projection_bundle(bundle)
+    events = bundle["events"]
+    if boundary_index < -1 or boundary_index >= len(events):
+        raise IndexError("living scene boundary index is outside retained history")
+    world = deepcopy(bundle["initial_snapshot"]["world"])
+    for index in range(boundary_index + 1):
+        apply_changes(world, events[index]["changes"])
+    return world
+
+
+def _validate_live_projection(bundle: dict[str, Any], profile: dict[str, Any]) -> None:
+    validate_live_projection_bundle(bundle)
+    if profile.get("schema_version") != LIVING_SCENE_SCHEMA_VERSION:
+        raise ValueError("logical living frames require world-substrate-living-scene/v1")
+    world = bundle["initial_snapshot"]["world"]
+    if world.get("world_id") != profile.get("world"):
+        raise ValueError("living scene profile world does not match canonical snapshot")
 
 
 def _project_group(world: dict[str, Any], profile: dict[str, Any], group: str) -> dict[str, Any]:
