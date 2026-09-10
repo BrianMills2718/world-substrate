@@ -51,7 +51,7 @@ The standalone Waltzman client remains available as a self-contained reference a
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
-| Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) |
+| Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) · [Living Scene v1](../contracts/living-scene-v1.md) |
 | Cross-repo donor roles | [Source dispositions](../source-dispositions.md) |
 | Nontrivial live-authoring evidence | [Repair Bay live proof](../audits/repair-bay-live-preflight.md) |
 
@@ -211,7 +211,8 @@ Use these first:
 - `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic presentation proof.
 - [Repair Bay live proof](../audits/repair-bay-live-preflight.md) — nontrivial authoring/run evidence.
 - [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) — current generated-law language.
-- [Scene profile v0](../contracts/scene-profile-v0.md) — current read-only presentation contract.
+- [Scene profile v0](../contracts/scene-profile-v0.md) — retained contested-run replay presentation contract.
+- [Living Scene v1](../contracts/living-scene-v1.md) — deterministic read-only logical frames over canonical live projections.
 
 ## Roadmap
 
