@@ -155,10 +155,15 @@ The generic Living Scene runtime is additionally scanned for Waltzman names,
 entity ids, and scenario-specific branches. Waltzman-specific composition must
 live in reference-world profile/assets rather than this shared contract layer.
 
-## Current limit
+## Current implementation boundary
 
-This contract establishes the deterministic, read-only logical frame seam only.
-Embodied actor/resource/activity/institution rendering, information transmission,
-action-result feedback, Waltzman composition, and public product integration are
-separate downstream work units. Keeping that boundary narrow prevents the v1
-contract from becoming a disguised Waltzman renderer.
+The deterministic read-only logical frame seam and a generic 2D embodied renderer
+are implemented. The renderer can place declared actors and zones, show canonical
+resource/constraint values, present duration-bearing activities and institution
+status, gather declared participants around an active activity, and apply exact
+`actor.move_to` presentation operations. These behaviors remain downstream of
+canonical frame state.
+
+Information transmission, action-result feedback, Waltzman composition, deeper
+inspection, and public product integration remain separate downstream work units.
+The generic renderer must remain free of Waltzman entity/action branches.
