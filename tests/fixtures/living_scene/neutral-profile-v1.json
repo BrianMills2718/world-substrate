@@ -1,0 +1,89 @@
+{
+  "activities": {
+    "activity-a": {
+      "anchor": [
+        50,
+        40
+      ],
+      "bindings": {
+        "end_tick": "components.activity.end_tick",
+        "started_tick": "components.activity.started_tick",
+        "status": "components.activity.status"
+      }
+    }
+  },
+  "actors": {
+    "actor-a": {
+      "bindings": {
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        20,
+        50
+      ]
+    }
+  },
+  "assets": {},
+  "entities": {
+    "resource-a": {
+      "bindings": {
+        "current": "components.resource.current",
+        "required": "components.resource.required"
+      },
+      "home": [
+        80,
+        30
+      ]
+    }
+  },
+  "event_visuals": {
+    "neutral.resource.drop": {
+      "label": "resource changed",
+      "operations": [
+        {
+          "animation_ms": 500,
+          "op": "event.emphasize",
+          "read_paths": {
+            "current": "components.resource.current"
+          },
+          "target": "resource-a"
+        }
+      ]
+    }
+  },
+  "institutions": {
+    "institution-a": {
+      "anchor": [
+        50,
+        75
+      ],
+      "bindings": {
+        "status": "components.institution.status"
+      }
+    }
+  },
+  "presentation": {},
+  "scene": {
+    "animation_ms": 400
+  },
+  "scene_id": "neutral-lab-v1",
+  "schema_version": "world-substrate-living-scene/v1",
+  "state_styles": {},
+  "title": "Neutral lab",
+  "world": "neutral-lab",
+  "zones": {
+    "room": {
+      "anchor": [
+        50,
+        50
+      ],
+      "label": "Room",
+      "rect": [
+        0,
+        0,
+        100,
+        100
+      ]
+    }
+  }
+}

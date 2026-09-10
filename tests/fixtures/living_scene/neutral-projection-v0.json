@@ -1,0 +1,110 @@
+{
+  "branch_id": "baseline",
+  "events": [
+    {
+      "changes": [
+        {
+          "after": 1,
+          "before": 0,
+          "path": "revision"
+        },
+        {
+          "after": 1,
+          "before": 0,
+          "path": "tick"
+        },
+        {
+          "after": 6,
+          "before": 10,
+          "path": "entities.resource-a.components.resource.current"
+        }
+      ],
+      "event_id": "e1",
+      "rule_id": "neutral.resource.drop",
+      "status": "accepted",
+      "tick": 1,
+      "world_revision": 1
+    },
+    {
+      "changes": [
+        {
+          "after": 2,
+          "before": 1,
+          "path": "revision"
+        },
+        {
+          "after": 2,
+          "before": 1,
+          "path": "tick"
+        },
+        {
+          "after": "active",
+          "before": "pending",
+          "path": "entities.activity-a.components.activity.status"
+        },
+        {
+          "after": 2,
+          "before": null,
+          "path": "entities.activity-a.components.activity.started_tick"
+        },
+        {
+          "after": 4,
+          "before": null,
+          "path": "entities.activity-a.components.activity.end_tick"
+        }
+      ],
+      "event_id": "e2",
+      "rule_id": "neutral.activity.start",
+      "status": "accepted",
+      "tick": 2,
+      "world_revision": 2
+    }
+  ],
+  "initial_snapshot": {
+    "schema_version": "world-substrate-snapshot/v1",
+    "world": {
+      "entities": {
+        "activity-a": {
+          "components": {
+            "activity": {
+              "end_tick": null,
+              "started_tick": null,
+              "status": "pending"
+            }
+          },
+          "entity_id": "activity-a"
+        },
+        "actor-a": {
+          "components": {
+            "commitment": {
+              "stance": "support"
+            }
+          },
+          "entity_id": "actor-a"
+        },
+        "institution-a": {
+          "components": {
+            "institution": {
+              "status": "ready"
+            }
+          },
+          "entity_id": "institution-a"
+        },
+        "resource-a": {
+          "components": {
+            "resource": {
+              "current": 10,
+              "required": 8
+            }
+          },
+          "entity_id": "resource-a"
+        }
+      },
+      "revision": 0,
+      "tick": 0,
+      "world_id": "neutral-lab"
+    }
+  },
+  "schema_version": "world-substrate-live-projection/v0",
+  "world_id": "neutral-lab"
+}
