@@ -13,6 +13,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
+from world_substrate.information import DELIVERED_STATUSES, information_visible_in_material_world
 from world_substrate.projection import LIVE_PROJECTION_SCHEMA_VERSION, apply_changes
 
 LIVING_SCENE_SCHEMA_VERSION = "world-substrate-living-scene/v1"
@@ -269,6 +270,120 @@ def _project_group(world: dict[str, Any], profile: dict[str, Any], group: str) -
     return rows
 
 
+def _changed_entity_ids(event: dict[str, Any]) -> list[str]:
+    ids: list[str] = []
+    for change in event.get("changes") or []:
+        path = change.get("path") if isinstance(change, dict) else None
+        if not isinstance(path, str):
+            continue
+        parts = path.split(".")
+        if len(parts) >= 2 and parts[0] == "entities" and parts[1] not in ids:
+            ids.append(parts[1])
+    return ids
+
+
+def _information_transmissions(
+    world: dict[str, Any],
+    event: dict[str, Any],
+    operation: dict[str, Any],
+    observer_actor_id: str | None,
+) -> list[dict[str, Any]]:
+    entities = world.get("entities")
+    if not isinstance(entities, dict):
+        return []
+    explicit = operation.get("delivery_entity")
+    if explicit is not None and (not isinstance(explicit, str) or not explicit):
+        raise ValueError("information.transmit delivery_entity must be a nonempty string")
+    if isinstance(explicit, str):
+        candidates = [explicit]
+    elif operation.get("delivery_from_changed_entities") is True:
+        candidates = _changed_entity_ids(event)
+    else:
+        raise ValueError(
+            "information.transmit requires delivery_entity or delivery_from_changed_entities=true"
+        )
+
+    rows: list[dict[str, Any]] = []
+    for delivery_id in candidates:
+        delivery_entity = entities.get(delivery_id)
+        if not isinstance(delivery_entity, dict):
+            if isinstance(explicit, str):
+                raise ValueError(f"information.transmit references absent delivery entity {delivery_id!r}")
+            continue
+        components = delivery_entity.get("components")
+        delivery = components.get("delivery") if isinstance(components, dict) else None
+        if not isinstance(delivery, dict) or delivery.get("status") not in DELIVERED_STATUSES:
+            continue
+        info_id = delivery.get("info_id")
+        if not isinstance(info_id, str):
+            continue
+        info_entity = entities.get(info_id)
+        info_components = info_entity.get("components") if isinstance(info_entity, dict) else None
+        info = info_components.get("information") if isinstance(info_components, dict) else None
+        if not isinstance(info, dict):
+            continue
+        source_id = info.get("source_id")
+        recipient_id = delivery.get("recipient_id")
+        if not isinstance(source_id, str) or not isinstance(recipient_id, str):
+            continue
+        public_content = info.get("visibility") == "public" and info.get("active") is True
+        observer_authorized = (
+            isinstance(observer_actor_id, str)
+            and information_visible_in_material_world(world, observer_actor_id, info_id)
+        )
+        content_visible = public_content or observer_authorized
+        rows.append(
+            {
+                "kind": "information_transmission",
+                "delivery_id": delivery_id,
+                "info_id": info_id,
+                "source_id": source_id,
+                "recipient_id": recipient_id,
+                "channel_id": delivery.get("channel_id"),
+                "topic": info.get("topic"),
+                "content_visible": content_visible,
+                "content": deepcopy(info.get("content")) if content_visible else None,
+            }
+        )
+    return rows
+
+
+def _action_feedback(event: dict[str, Any], operation: dict[str, Any]) -> dict[str, Any]:
+    status = event.get("status")
+    if status not in {"accepted", "rejected", "refused", "blocked"}:
+        status = "unknown"
+    reasons: list[str] = []
+    for check in event.get("checks") or []:
+        if isinstance(check, dict) and check.get("ok") is False:
+            label = check.get("label")
+            if isinstance(label, str) and label:
+                reasons.append(label)
+    return {
+        "kind": "action_feedback",
+        "status": status,
+        "label": operation.get("label"),
+        "reasons": reasons,
+    }
+
+
+def _presentation_effects(
+    world: dict[str, Any],
+    event: dict[str, Any] | None,
+    event_visual: dict[str, Any] | None,
+    observer_actor_id: str | None,
+) -> list[dict[str, Any]]:
+    if event is None or not isinstance(event_visual, dict) or event_visual.get("kind") != "declared":
+        return []
+    effects: list[dict[str, Any]] = []
+    for operation in event_visual.get("operations") or []:
+        op = operation.get("op") if isinstance(operation, dict) else None
+        if op == "information.transmit":
+            effects.extend(_information_transmissions(world, event, operation, observer_actor_id))
+        elif op == "action.feedback":
+            effects.append(_action_feedback(event, operation))
+    return effects
+
+
 def _event_visual(event: dict[str, Any], profile: dict[str, Any]) -> dict[str, Any]:
     rule_id = event.get("rule_id")
     visual = profile["event_visuals"].get(rule_id) if isinstance(rule_id, str) else None
@@ -286,13 +401,41 @@ def _event_visual(event: dict[str, Any], profile: dict[str, Any]) -> dict[str, A
     }
 
 
+def _presentation_event(event: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Return only event metadata safe for the generic living-scene payload.
+
+    Retained events can carry actor-scoped observations and information-context
+    content. Those remain evidence-layer data and are deliberately not copied
+    wholesale into a public presentation frame.
+    """
+
+    if event is None:
+        return None
+    safe: dict[str, Any] = {}
+    for key in (
+        "event_id",
+        "rule_id",
+        "rule_version",
+        "status",
+        "tick",
+        "world_revision",
+        "causal_bearer",
+        "causal_parent_event_ids",
+    ):
+        if key in event:
+            safe[key] = deepcopy(event[key])
+    return safe
+
+
 def _frame_from_world(
     bundle: dict[str, Any],
     profile: dict[str, Any],
     world: dict[str, Any],
     boundary_index: int,
     event: dict[str, Any] | None,
+    observer_actor_id: str | None = None,
 ) -> dict[str, Any]:
+    event_visual = _event_visual(event, profile) if event is not None else None
     return {
         "schema_version": LIVING_SCENE_SCHEMA_VERSION,
         "scene_id": profile["scene_id"],
@@ -301,8 +444,11 @@ def _frame_from_world(
         "boundary_index": boundary_index,
         "tick": world.get("tick"),
         "revision": world.get("revision"),
-        "event": deepcopy(event),
-        "event_visual": _event_visual(event, profile) if event is not None else None,
+        "event": _presentation_event(event),
+        "event_visual": event_visual,
+        "presentation_effects": _presentation_effects(
+            world, event, event_visual, observer_actor_id
+        ),
         "views": {
             "zones": deepcopy(profile["zones"]),
             "actors": _project_group(world, profile, "actors"),
@@ -314,7 +460,11 @@ def _frame_from_world(
 
 
 def rebuild_living_scene_frame(
-    bundle: dict[str, Any], profile: dict[str, Any], boundary_index: int
+    bundle: dict[str, Any],
+    profile: dict[str, Any],
+    boundary_index: int,
+    *,
+    observer_actor_id: str | None = None,
 ) -> dict[str, Any]:
     """Rebuild one logical frame directly from canonical retained inputs.
 
@@ -334,23 +484,30 @@ def rebuild_living_scene_frame(
         if not isinstance(changes, list):
             raise ValueError("living scene event changes must be an array")
         apply_changes(world, changes)
-    return _frame_from_world(bundle, profile, world, boundary_index, event)
+    return _frame_from_world(
+        bundle, profile, world, boundary_index, event, observer_actor_id
+    )
 
 
 def build_living_scene_frames(
-    bundle: dict[str, Any], profile: dict[str, Any]
+    bundle: dict[str, Any],
+    profile: dict[str, Any],
+    *,
+    observer_actor_id: str | None = None,
 ) -> list[dict[str, Any]]:
     """Build initial plus every canonical event-boundary logical frame."""
 
     _validate_live_projection(bundle, profile)
     world = deepcopy(bundle["initial_snapshot"]["world"])
-    frames = [_frame_from_world(bundle, profile, world, -1, None)]
+    frames = [_frame_from_world(bundle, profile, world, -1, None, observer_actor_id)]
     for index, event in enumerate(bundle["events"]):
         changes = event.get("changes")
         if not isinstance(changes, list):
             raise ValueError("living scene event changes must be an array")
         apply_changes(world, changes)
-        frames.append(_frame_from_world(bundle, profile, world, index, event))
+        frames.append(
+            _frame_from_world(bundle, profile, world, index, event, observer_actor_id)
+        )
     return frames
 
 

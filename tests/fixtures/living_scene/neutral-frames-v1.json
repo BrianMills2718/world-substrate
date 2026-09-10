@@ -4,6 +4,7 @@
     "branch_id": "baseline",
     "event": null,
     "event_visual": null,
+    "presentation_effects": [],
     "revision": 0,
     "scene_id": "neutral-lab-v1",
     "schema_version": "world-substrate-living-scene/v1",
@@ -82,23 +83,6 @@
     "boundary_index": 0,
     "branch_id": "baseline",
     "event": {
-      "changes": [
-        {
-          "after": 1,
-          "before": 0,
-          "path": "revision"
-        },
-        {
-          "after": 1,
-          "before": 0,
-          "path": "tick"
-        },
-        {
-          "after": 6,
-          "before": 10,
-          "path": "entities.resource-a.components.resource.current"
-        }
-      ],
       "event_id": "e1",
       "rule_id": "neutral.resource.drop",
       "status": "accepted",
@@ -120,6 +104,7 @@
       ],
       "rule_id": "neutral.resource.drop"
     },
+    "presentation_effects": [],
     "revision": 1,
     "scene_id": "neutral-lab-v1",
     "schema_version": "world-substrate-living-scene/v1",
@@ -198,33 +183,6 @@
     "boundary_index": 1,
     "branch_id": "baseline",
     "event": {
-      "changes": [
-        {
-          "after": 2,
-          "before": 1,
-          "path": "revision"
-        },
-        {
-          "after": 2,
-          "before": 1,
-          "path": "tick"
-        },
-        {
-          "after": "active",
-          "before": "pending",
-          "path": "entities.activity-a.components.activity.status"
-        },
-        {
-          "after": 2,
-          "before": null,
-          "path": "entities.activity-a.components.activity.started_tick"
-        },
-        {
-          "after": 4,
-          "before": null,
-          "path": "entities.activity-a.components.activity.end_tick"
-        }
-      ],
       "event_id": "e2",
       "rule_id": "neutral.activity.start",
       "status": "accepted",
@@ -236,6 +194,7 @@
       "operations": [],
       "rule_id": "neutral.activity.start"
     },
+    "presentation_effects": [],
     "revision": 2,
     "scene_id": "neutral-lab-v1",
     "schema_version": "world-substrate-living-scene/v1",

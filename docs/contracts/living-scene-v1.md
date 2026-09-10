@@ -126,6 +126,26 @@ Logical frames include:
 `normalized_frame_json()` supplies stable sorted serialization for regression
 and retained evidence comparisons.
 
+## Information and outcome presentation
+
+Living Scene frames expose a presentation-safe event summary rather than copying
+the full retained event object. Actor-scoped `observation`, raw `changes`, and
+`information_context` content remain evidence-layer data and are not embedded in
+the generic public scene payload. Stable event/rule/tick/revision/status identity
+and mechanic-declared causal parent ids may remain visible as metadata.
+
+An exact declared `information.transmit` operation resolves canonical
+`information` + `delivery` records. Source, recipient, channel, and topic may be
+shown as represented transmission metadata. Message content is included only
+when the information is public or the requested observer is authorized by the
+canonical information-delivery visibility rules. A public scene with no observer
+therefore cannot expose direct/private content merely because a delivery exists.
+
+An exact declared `action.feedback` operation may display the retained event
+status and failed check labels. It does not generate a new explanation and does
+not infer causal ancestry from those labels. Rendering a transmission or cognition
+context never promotes that information into `causal_parent_event_ids`.
+
 ## Time boundary
 
 Simulation tick, event order, activity start/end ticks, and status are canonical
