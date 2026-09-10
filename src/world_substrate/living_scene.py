@@ -112,6 +112,16 @@ def _validate_v1_profile(raw: dict[str, Any]) -> dict[str, Any]:
         if "anchor" in zone:
             zone["anchor"] = _point(zone["anchor"], f"zone {zone_id}.anchor")
 
+    allowed_style_tokens = {"positive", "warning", "danger", "neutral", "muted"}
+    for state, token in profile["state_styles"].items():
+        if not isinstance(state, str) or not state:
+            raise ValueError("state_styles keys must be nonempty strings")
+        if token not in allowed_style_tokens:
+            raise ValueError(
+                "state_styles values must be one of: "
+                + ", ".join(sorted(allowed_style_tokens))
+            )
+
     for group in _BINDABLE_GROUPS:
         for visual_id, visual in profile[group].items():
             if not isinstance(visual_id, str) or not visual_id or not isinstance(visual, dict):
