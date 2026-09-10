@@ -1,0 +1,148 @@
+{
+  "activities": {
+    "activity-a": {
+      "anchor": [
+        50,
+        45
+      ],
+      "bindings": {
+        "end_tick": "components.activity.end_tick",
+        "started_tick": "components.activity.started_tick",
+        "status": "components.activity.status"
+      },
+      "label": "Coordination task",
+      "participants": [
+        "actor-a",
+        "actor-b"
+      ],
+      "render": {
+        "status_binding": "status"
+      }
+    }
+  },
+  "actors": {
+    "actor-a": {
+      "asset": "a",
+      "bindings": {
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        20,
+        58
+      ],
+      "label": "Rhea",
+      "render": {
+        "state_binding": "stance"
+      }
+    },
+    "actor-b": {
+      "asset": "b",
+      "bindings": {
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        80,
+        58
+      ],
+      "label": "Sol",
+      "render": {
+        "state_binding": "stance"
+      }
+    }
+  },
+  "assets": {
+    "a": {
+      "kind": "text",
+      "value": "A"
+    },
+    "b": {
+      "kind": "text",
+      "value": "B"
+    },
+    "battery": {
+      "kind": "text",
+      "value": "R"
+    }
+  },
+  "entities": {
+    "resource-a": {
+      "asset": "battery",
+      "bindings": {
+        "current": "components.resource.current",
+        "required": "components.resource.required",
+        "unit": "components.resource.unit"
+      },
+      "home": [
+        20,
+        28
+      ],
+      "label": "Reserve",
+      "render": {
+        "current_binding": "current",
+        "kind": "resource",
+        "required_binding": "required",
+        "unit_binding": "unit"
+      }
+    }
+  },
+  "event_visuals": {
+    "neutral.resource.drop": {
+      "label": "reserve falls",
+      "operations": [
+        {
+          "actor": "actor-a",
+          "animation_ms": 350,
+          "entity": "resource-a",
+          "op": "actor.move_to"
+        }
+      ]
+    }
+  },
+  "institutions": {
+    "institution-a": {
+      "anchor": [
+        50,
+        78
+      ],
+      "bindings": {
+        "required": "components.institution.required",
+        "status": "components.institution.status",
+        "support": "components.institution.support"
+      },
+      "label": "Shared gate",
+      "render": {
+        "required_binding": "required",
+        "status_binding": "status",
+        "support_binding": "support"
+      }
+    }
+  },
+  "presentation": {},
+  "scene": {
+    "aspect_ratio": "16 / 9",
+    "autoplay_ms": 900,
+    "background": "#dce7e1",
+    "shell_background": "#101820"
+  },
+  "scene_id": "neutral-render-v1",
+  "schema_version": "world-substrate-living-scene/v1",
+  "state_styles": {},
+  "subtitle": "Actors, resource, activity, and institution from retained state.",
+  "title": "Living Scene neutral renderer",
+  "world": "neutral-render",
+  "zones": {
+    "lab": {
+      "anchor": [
+        50,
+        50
+      ],
+      "label": "Shared lab",
+      "rect": [
+        4,
+        8,
+        92,
+        84
+      ]
+    }
+  }
+}
