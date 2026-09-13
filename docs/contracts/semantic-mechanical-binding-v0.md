@@ -20,14 +20,23 @@ A conforming binding contains:
 | --- | --- |
 | `binding_id` | Stable identity for the binding |
 | `sense_id` | Pinned Linguistic Core predicate sense or an explicitly reviewed overlay |
-| `roles` | Sense-role to canonical entity/value references |
+| `roles` | Consumer participant name to reusable Linguistic Core `lc.role.*` identity |
+| `role_definition_ids` | Optional profile metadata mapping participant names to predicate-local `lc.roledef.*` identities; keys must exactly match `roles`; intentionally not serialized by the v0 event binding |
 | `specialization` | Optional more specific sense or world-profile specialization |
 | `causal_class` | Primitive action, autonomous process, state relation, composite, analytic pattern, declaration, or installed institution |
 | `causal_bearer` | Agent, process, disposition, institution, or explicit exogenous input; absent for a purely derived view |
 | `mechanic_id` | Installed mechanic selected for a state-changing binding; absent for a derived-only binding |
 | `interpretation_limits` | Ambiguity, unsupported senses, or abstraction limits exposed to the trace |
 
-Free text may accompany a binding but cannot substitute for the sense, roles, bearer, and mechanic identity required by the selected profile.
+Free text may accompany a binding but cannot substitute for the sense, roles, bearer, and mechanic identity required by the selected profile. Predicate-local role-definition IDs are semantic compatibility metadata only: they refine which role position of a sense the consumer means, but they do not supply effects or authority. They are deliberately omitted from `SemanticBinding.as_dict()` in v0 so existing retained event/evidence identity remains stable; trace-level publication requires an explicit versioned contract/evidence change.
+
+## Predicate-local role compatibility
+
+Linguistic Core now has a candidate M4 contract that distinguishes a reusable role concept such as `lc.role.theme` from a predicate-local role definition such as `lc.roledef.give_transfer.transferred_object`. World Substrate may cite those local role-definition IDs when reviewed, while retaining the existing `lc.role.*` grounding for compatibility.
+
+The current first proof is `binding.give.v0`: `giver`, `transferred_object`, and `recipient` cite the candidate local roles for `lc:give_transfer`. The other bound M1 actions remain valid without local role-definition metadata until corresponding LC schemas are reviewed. `unheat` remains unbound; local role metadata cannot manufacture a missing predicate sense.
+
+This does not move the semantic/mechanical boundary. `causal_class`, `causal_bearer`, `mechanic_id`, effects, read/write authority, scheduling, invariants, and commit/refusal semantics remain World Substrate concerns.
 
 ## Binding rules
 
