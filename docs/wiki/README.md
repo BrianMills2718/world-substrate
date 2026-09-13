@@ -3,7 +3,7 @@ schema_version: project-wiki/v1
 type: ProjectWiki
 role: derived-navigation
 status: active
-reviewed_through: 2026-09-08
+reviewed_through: 2026-09-12
 authority_refs:
   - ../../README.md
   - ../../roadmap/README.md
@@ -24,14 +24,15 @@ World Substrate is a persistent, observable simulation engine and generative aut
 
 The product direction is now a **generative living-world builder over a rigorous causal engine**. The user should be able to describe a world conversationally, review represented structure and executable law, run residents/processes through it, watch it evolve spatially, and inspect why outcomes occurred without allowing presentation, cognition, or analysis to become alternate truth.
 
-The product being demonstrated is **World Substrate**. **Waltzman Coordination Lab is its current showcase/reference world**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*; Cybernetic Influence is research lineage, not the product or demo surface. Its first integrated local gate now runs through canonical World Substrate state/events. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
+The product being demonstrated is **World Substrate**. **Waltzman Coordination Lab is its current showcase/reference world**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*; Cybernetic Influence is research lineage, not the product or demo surface. Its first integrated local gate runs through canonical World Substrate state/events. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
 
 Public surfaces:
 
 - World Builder: `https://brianmills.dev/world-builder/`
-- Standalone living-world URL: `https://brianmills.dev/world-substrate-visualization/`
+- Promoted Waltzman stakeholder demo: `https://brianmills.dev/waltzman/`
+- Legacy standalone living-world URL: `https://brianmills.dev/world-substrate-visualization/`
 
-The standalone Waltzman client remains available as a self-contained reference artifact built from canonical projection bundles, but the 2026-09-09 stakeholder decision supersedes publishing that replay as the finished demo. The sendable Waltzman experience must combine natural-language authoring, a fresh retained run, and living inspection. The fastest path reuses Cybernetic Influence V3's existing public V2 authoring/run pipeline and adapts its retained run projection into World Substrate's living presentation; it does not require rebuilding general authoring in World Builder first.
+The stakeholder demo is already promoted: it combines natural-language authoring, a fresh retained run, and living inspection through the bounded Cybernetic V3 donor path. The old standalone URL still serves the earlier synthetic visualization prototype and is now a retained legacy/design surface, not the active promotion target. The current operational frontier is migration of the promoted donor backend from the temporary Mac origin to the approved shared Netcup VPS while preserving route certification and rollback.
 
 ## Start here
 
@@ -58,7 +59,7 @@ The standalone Waltzman client remains available as a self-contained reference a
 ## Concepts and terminology
 
 - **Canonical state:** the only material world truth. Prompts, UI state, resident beliefs, and analyses do not compete with it.
-- **Semantic binding:** reviewed Linguistic Core sense/roles plus causal classification; meaning does not imply effects.
+- **Semantic binding:** a World Substrate profile over reviewed Linguistic Core meaning: pinned sense/role identities plus local specialization, causal classification, causal bearer, mechanic identity, and interpretation limits. Meaning does not imply effects.
 - **Causal bearer:** represented actor, process, institution, disposition, or input whose presence changes possible transitions.
 - **Mechanic:** installed rule/process with applicability, checks, declared reads/writes, effects, limits, and trace behavior.
 - **Mechanic profile:** validated/frozen declaration set for a run. Future durable generated-law provenance should additionally fingerprint the exact executable law and compiler/interpreter version.
@@ -85,6 +86,8 @@ The standalone Waltzman client remains available as a self-contained reference a
 
 The causal layers remain: substrate processes, installed institutions, resident cognition, and derived analysis. Resident memory/plans remain private unless a selected world explicitly represents them as mechanic-readable state.
 
+Linguistic Core's fact-oriented design is converging on richer typed n-ary relation/role representation. World Substrate can consume that semantic precision when it becomes a stable interface, but it does not move persistence, quantities, effects, scheduling, write authority, or commit semantics into Linguistic Core.
+
 ## Sources and evidence
 
 [Source dispositions](../source-dispositions.md) classifies donor roles and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donor repositories are sources, not automatic runtime dependencies.
@@ -97,10 +100,11 @@ Important current evidence:
 - Orchard live causal generation + fresh-run acceptance;
 - Repair Bay as the first nontrivial deployed authoring world;
 - Warehouse Rush draft evidence showing a route→physical-dock omission and minimal `target_dock` repair;
-- the Waltzman blocked baseline + exact-history recovery fork, canonical living projection, information/causal distinction, detachable analysis, and bounded dependency/adequacy report; and
+- the Waltzman blocked baseline + exact-history recovery fork, canonical living projection, information/causal distinction, detachable analysis, and bounded dependency/adequacy report;
+- the promoted generated-run stakeholder surface and retained promotion proof in `evidence/waltzman/public-promotion-2026-09-09.md`; and
 - full World Builder request/response/operator/causal logs as the debugging source of truth.
 
-The synthetic living-world UI source remains versioned at `prototypes/living-world-overlay-v0.html` as design evidence. The canonical Waltzman client at `evidence/renders/waltzman-demo-v0.html` is the real-run product artifact selected to replace it publicly.
+The synthetic living-world UI source remains versioned at `prototypes/living-world-overlay-v0.html` as design evidence. The canonical Waltzman client at `evidence/renders/waltzman-demo-v0.html` remains a real-run reference/regression artifact; the promoted outreach endpoint is the generated-run `/waltzman/` surface.
 
 ## Accepted authorities and decisions
 
@@ -114,6 +118,7 @@ The synthetic living-world UI source remains versioned at `prototypes/living-wor
 - Code/tests own runtime behavior.
 - Revision/run-bound evidence owns observed outcome claims.
 - Human product decision, 2026-09-09: the static canonical Waltzman client is retained reference/presentation evidence, not the finished outreach demo; the sendable demo requires natural-language generation + fresh execution + living inspection, reusing the existing Cybernetic V3 authoring/run path for speed.
+- Human semantic review, 2026-09-12: richer Linguistic Core n-ary/role representation may refine semantic bindings, but the semantic/mechanical boundary remains unchanged; effects and consequence authority stay in World Substrate.
 
 Decision 004 classifies uncertainty as:
 
@@ -128,40 +133,41 @@ Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter
 | Area | Current state |
 | --- | --- |
 | Core transition engine | implemented; write scopes enforced; rule views detached |
-| Semantic grounding | six of seven M1 kinds bound; generic live actions not yet semantically closed |
+| Semantic grounding | six of seven M1 kinds bound; generic live actions not yet semantically closed; `unheat` intentionally remains unbound rather than inventing an LC sense |
 | Causal generation | constrained JSON proposal + local compiler + explicit approval + frozen declaration profile |
 | Live policies | scripted/LLM; LLM selects only Engine-minted action IDs |
 | Replay | portable read-only scene-profile renderer across multiple worlds |
 | World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs |
 | Full logs | deployed; complete request/response/compiler/operator/causal traces available |
-| Living-world UI | canonical Waltzman reference client plus generated-run living replay stakeholder-promoted on `65eb465a`; temporary Mac origin remains until migration to the approved shared Netcup VPS |
+| Living-world UI | generated-run living replay stakeholder-promoted on `65eb465a`; temporary Mac origin remains until migration to the approved shared Netcup VPS; canonical Waltzman reference client remains retained evidence |
 | Live projection | implemented local first gate: exact initial-snapshot + retained-event/delta reconstruction, self-contained HTML, JSON, and one-way SSE |
 | Information/conversation | implemented bounded v0: source/recipient/channel/visibility/delivery/provenance + asymmetric actor observation; not a belief model |
 | Processes/institutions | Waltzman first gate has tick-specific processes, explicit commitments, a duration-bearing meeting, and an installed coalition gate; generic authoring remains narrow |
 | Resident cognition | Pydantic AI selected but not integrated; current bounded policy seam remains sufficient for existing fixtures |
 | Scheduling | core remains integer-tick + per-step `due()` checks; Waltzman proves scenario-specific independent trigger ticks + duration activity; SimPy future-event queue still unintegrated |
 | Multi-timescale execution | first scenario gate implemented on canonical ticks with independently due processes + represented meeting duration; generic scheduler contract remains later |
-| Graph inspector | Cytoscape selected; not needed for the first public demo |
+| Graph inspector | Cytoscape selected; not needed for the promoted stakeholder demo |
 | Persistence/auth | no saved user worlds/runs or identity-backed approvals yet |
 
 Open work at the handoff point:
 
-- **PR #37** — Warehouse Rush draft experiment. Useful retained evidence; v1 provider retry remains pending and is deliberately deferred behind the public Waltzman demo.
+- **PR #37** — Warehouse Rush draft experiment. Useful retained evidence; provider retry remains pending and is not active roadmap priority.
 - **PR #43** — CVS sustainment seam from a separate integration track. It does not set roadmap priority and should be rebased/reviewed against current main before a merge decision.
 
 ## Needs resolution
 
-The roadmap owns ordering. The unresolved work is deliberately split into **before public demo**, **post-demo hardening**, and **later capabilities**.
+The roadmap owns ordering. Current unresolved work is split into **active hosting**, **post-demo hardening**, and **later capabilities**.
 
-1. **Waltzman promotion — complete; hosting migration next:** the Cybernetic V3 donor path now serves the configure-first outreach funnel and generated-run living replay at `https://brianmills.dev/waltzman/`. Separated Sol authoring/execution certification and fresh run `run_0e488a37157f` satisfy the promotion proof. Keep the Mac as temporary/rollback origin while moving the backend to the approved shared Netcup VPS; do not revive the closed Cloudflare Container path.
-2. **First-two-minute UX — promoted regression target:** the visitor should understand the local-information-to-collective-action proposition quickly and be able to start typing a simulation request without choosing a workflow, model, analysis, or methodology first. The existing V3 configure-first outreach funnel is the donor surface to preserve.
-3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version. This matters before durable user-generated law, not before the hand-authored Waltzman reference demo.
+1. **Hosting migration — active:** keep the Mac as temporary/rollback origin while moving the promoted donor backend to the approved shared Netcup VPS; require health, route certification, retained-run access, browser checks, and rollback verification before cutover.
+2. **First-two-minute UX — promoted regression target:** preserve the configure-first local-information-to-collective-action experience; do not reopen it as unfinished acquisition work unless evidence regresses.
+3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version.
 4. **Local-authority correctness — post-demo hardening:** bind write-scope placeholders to exact action roles and make authored affordance-cap overflow explicit rather than silently truncating valid actions.
-5. **Repository reproducibility — post-demo hardening:** add appropriate CI/project gates and exact dependency locking when the selected external dependencies enter reproducible production paths.
-6. **Generative causal closure — later research:** continue dependency inventories, gap finding, residual risk, and smallest-repair work. Automatic counterfactual/mutation verification is a deferred option, not a current requirement.
-7. **Generative richer-world authoring — later:** the current Builder does not yet conversationally author Waltzman's information/activity/institution mechanics. Extend the declaration language only from another concrete world/product need.
-8. **Resident cognition / generic scheduling / persistence — later:** integrate Pydantic AI, SimPy future-event scheduling, and saved user worlds only when a real scenario earns them.
-9. **Semantic closure / mechanic failure events / read verification / scale — later:** retain as explicit boundaries and promote them only when they block a real product or evidence need.
+5. **Repository reproducibility — post-demo hardening:** add appropriate CI/project gates and exact dependency locking when selected external dependencies enter reproducible production paths.
+6. **Semantic closure — later / when blocking:** continue to cite reviewed LC senses/roles, keep unsupported bindings visible, and consume a richer LC role/relation contract only when it materially improves a real binding or authoring/review path.
+7. **Generative causal closure — later research:** continue dependency inventories, gap finding, residual risk, and smallest-repair work. Automatic counterfactual/mutation verification is a deferred option, not a current requirement.
+8. **Generative richer-world authoring — later:** the current Builder does not yet conversationally author Waltzman's information/activity/institution mechanics. Extend the declaration language only from another concrete world/product need.
+9. **Resident cognition / generic scheduling / persistence — later:** integrate Pydantic AI, SimPy future-event scheduling, and saved user worlds only when a real scenario earns them.
+10. **Mechanic failure events / read verification / scale — later:** retain as explicit boundaries and promote them only when they block a real product or evidence need.
 
 ## Architecture and workflow
 
@@ -200,8 +206,9 @@ A conversation is visible world activity even with overlays off. The information
 Use these first:
 
 - `https://brianmills.dev/world-builder/` — deployed Build/Play alpha.
-- `https://brianmills.dev/world-substrate-visualization/` — currently synthetic public surface; selected to become the canonical Waltzman public demo.
-- `evidence/renders/waltzman-demo-v0.html` — implemented self-contained canonical Waltzman client selected for publication.
+- `https://brianmills.dev/waltzman/` — promoted stakeholder demo: natural-language authoring, fresh retained run, and living inspection through the bounded donor path.
+- `https://brianmills.dev/world-substrate-visualization/` — legacy synthetic public surface retained as design evidence.
+- `evidence/renders/waltzman-demo-v0.html` — implemented self-contained canonical Waltzman reference/regression client.
 - `prototypes/living-world-overlay-v0.html` — retained synthetic design prototype.
 - [Waltzman Coordination Lab v0 audit](../audits/waltzman-coordination-lab-v0.md) — integrated reference-world evidence and claim boundaries.
 - [Living-world projection](../research/living-world-projection-2026-09.md) — overlay semantics and accepted integration path.
@@ -211,6 +218,7 @@ Use these first:
 - `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic presentation proof.
 - [Repair Bay live proof](../audits/repair-bay-live-preflight.md) — nontrivial authoring/run evidence.
 - [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) — current generated-law language.
+- [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) — current downstream LC-to-mechanic profile contract.
 - [Scene profile v0](../contracts/scene-profile-v0.md) — retained contested-run replay presentation contract.
 - [Living Scene v1](../contracts/living-scene-v1.md) — deterministic read-only logical frames over canonical live projections.
 
