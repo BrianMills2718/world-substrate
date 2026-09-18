@@ -17,7 +17,7 @@ class JevEstimatorProbeTests(unittest.TestCase):
     def test_request_is_decisions_shape_and_pinned(self):
         case = probe.CASES[0]
         payload = probe.build_request(case)
-        self.assertEqual(payload["model"], "typesafe/jev-1.13")
+        self.assertEqual(payload["model"], "openrouter/typesafe/jev-1.13")
         self.assertEqual(payload["state"], case["state"])
         self.assertEqual(
             set(payload["questions"]),
@@ -51,9 +51,18 @@ class JevEstimatorProbeTests(unittest.TestCase):
         self.assertEqual(grade["predicted_failure_mode"], "shaft_misalignment")
         self.assertEqual(grade["severity"], 2.7)
 
+    def test_grade_accepts_shared_client_noul_shape(self):
+        case = probe.CASES[3]
+        response = {"answers": {"failure_mode": {"choice": "sensor_fault", "probabilities": {"sensor_fault": .99}}, "shutdown_required": {"probability": .22}, "severity": {"score": 1.37}}}
+        grade = probe.grade_case(case, response)
+        self.assertFalse(grade["predicted_shutdown_required"])
+        self.assertTrue(grade["shutdown_correct"])
+        self.assertEqual(grade["shutdown_probability"], .22)
+
     def test_dry_run_never_requires_credentials(self):
-        payload = probe.dry_run("typesafe/jev-1.13", "sensor-01")
+        payload = probe.dry_run("openrouter/typesafe/jev-1.13", "sensor-01")
         self.assertEqual(payload["status"], "dry-run")
+        self.assertEqual(payload["transport"], "llm_client.call_decisions")
         self.assertEqual(len(payload["requests"]), 1)
         self.assertEqual(payload["requests"][0]["case_id"], "sensor-01")
 

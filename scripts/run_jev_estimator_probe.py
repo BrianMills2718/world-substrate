@@ -5,11 +5,9 @@ This is deliberately outside the consequence engine. Jev receives bounded
 maintenance evidence and returns typed probabilities; no answer mutates world
 state or bypasses installed mechanics.
 
-OpenRouter exposes Jev through its Decisions API, not chat completions:
-    POST https://openrouter.ai/api/alpha/decisions
-
-The script reuses llm_client's OpenRouter account/key resolution so experimental
-spend follows the same billing-account policy as the rest of this repository.
+Jev is invoked through llm_client's provider-neutral typed Decisions API, not
+through chat completions or provider HTTP. llm_client owns credential routing,
+budget enforcement, provider adaptation, and observability.
 """
 
 from __future__ import annotations
@@ -17,10 +15,8 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import time
-import urllib.error
-import urllib.request
 import uuid
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -28,46 +24,38 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
-DEFAULT_MODEL = "typesafe/jev-1.13"
-ENDPOINT = "https://openrouter.ai/api/alpha/decisions"
+from llm_client import ChoiceQuestion, NoulQuestion, ScoreQuestion, call_decisions
+
+DEFAULT_MODEL = "openrouter/typesafe/jev-1.13"
 DEFAULT_OUTPUT = REPO / "evidence/jev/maintenance-estimator-probe-v0.json"
 
 QUESTIONS: dict[str, Any] = {
-    "failure_mode": {
-        "type": "choice",
-        "instructions": (
-            "Which failure mode best explains the maintenance evidence? Choose "
-            "the most likely primary diagnosis, not every plausible contributor."
-        ),
-        "criteria": {
+    "failure_mode": ChoiceQuestion(
+        "Which failure mode best explains the maintenance evidence? Choose the most likely primary diagnosis, not every plausible contributor.",
+        {
             "bearing_wear": "Mechanical bearing wear or seizure.",
             "shaft_misalignment": "Rotating shaft or coupling misalignment.",
             "coolant_loss": "Cooling-fluid loss or inadequate cooling flow.",
             "sensor_fault": "The apparent problem is primarily a faulty sensor or instrumentation.",
             "electrical_fault": "Electrical supply, motor, wiring, or control-electronics fault.",
         },
-    },
-    "shutdown_required": {
-        "type": "noul",
-        "instructions": (
-            "Should this machine be taken out of service immediately based only "
-            "on the supplied evidence?"
-        ),
-        "criteria": {
+    ),
+    "shutdown_required": NoulQuestion(
+        "Should this machine be taken out of service immediately based only on the supplied evidence?",
+        {
             "true": "Continuing operation presents a meaningful immediate damage or safety risk.",
             "false": "The evidence supports continued monitored operation or routine maintenance.",
         },
-    },
-    "severity": {
-        "type": "score",
-        "instructions": "How severe is the likely equipment condition?",
-        "criteria": [
+    ),
+    "severity": ScoreQuestion(
+        "How severe is the likely equipment condition?",
+        (
             "Minor: routine monitoring or maintenance is sufficient.",
             "Moderate: maintenance should be scheduled soon.",
             "Serious: prompt intervention is warranted.",
             "Critical: immediate shutdown or emergency intervention is warranted.",
-        ],
-    },
+        ),
+    ),
 }
 
 CASES: list[dict[str, Any]] = [
@@ -161,66 +149,42 @@ CASES: list[dict[str, Any]] = [
 
 
 def build_request(case: dict[str, Any], model: str = DEFAULT_MODEL) -> dict[str, Any]:
-    """Build the exact Decisions API payload for one benchmark case."""
+    """Build a provider-neutral description of one typed estimator request."""
     return {
         "model": model,
         "state": case["state"],
-        "questions": QUESTIONS,
+        "questions": {name: question.as_payload() for name, question in QUESTIONS.items()},
     }
-
-
-def _resolve_openrouter_key() -> str:
-    """Use llm_client's account-aware OpenRouter key resolution.
-
-    The helper is private because llm_client has not yet exposed the Decisions
-    API as a first-class transport. This research-only probe keeps the exception
-    local and obvious instead of adding a provider client to runtime code.
-    """
-    from llm_client.utils.openrouter import _openrouter_key_candidates_from_env
-
-    candidates = _openrouter_key_candidates_from_env()
-    if not candidates:
-        raise RuntimeError(
-            "No OpenRouter credential is configured through llm_client's supported "
-            "environment/account routing."
-        )
-    return candidates[0]
 
 
 def call_jev(
     case: dict[str, Any],
     *,
     model: str = DEFAULT_MODEL,
+    trace_id: str,
+    max_budget: float,
     timeout_seconds: float = 30.0,
 ) -> dict[str, Any]:
-    """Run one live Jev Decisions request and return response plus timing."""
-    payload = build_request(case, model=model)
-    request = urllib.request.Request(
-        ENDPOINT,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {_resolve_openrouter_key()}",
-            "Content-Type": "application/json",
-            "X-OpenRouter-Title": "World Substrate Jev research probe",
-        },
-        method="POST",
+    """Run one live Jev request through llm_client's typed Decisions API."""
+    result = call_decisions(
+        model,
+        state=case["state"],
+        questions=QUESTIONS,
+        task="world-substrate Jev maintenance estimator probe",
+        trace_id=trace_id,
+        max_budget=max_budget,
+        timeout=timeout_seconds,
     )
-    started = time.perf_counter()
-    try:
-        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
-            body = response.read().decode("utf-8")
-            status = response.status
-    except urllib.error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"OpenRouter Decisions API HTTP {exc.code}: {detail}") from exc
-    elapsed_ms = round((time.perf_counter() - started) * 1000.0, 3)
-    parsed = json.loads(body)
-    if not isinstance(parsed, dict) or not isinstance(parsed.get("answers"), dict):
-        raise RuntimeError("OpenRouter Decisions API response is missing an answers object")
+    answers = {name: asdict(answer) for name, answer in result.answers.items()}
     return {
-        "http_status": status,
-        "latency_ms": elapsed_ms,
-        "response": parsed,
+        "latency_ms": round(result.latency_s * 1000.0, 3),
+        "response": {
+            "model": result.model,
+            "answers": answers,
+            "usage": result.usage,
+            "cost": result.cost,
+            "cost_source": result.cost_source,
+        },
     }
 
 
@@ -230,7 +194,7 @@ def grade_case(case: dict[str, Any], response: dict[str, Any]) -> dict[str, Any]
     failure = answers.get("failure_mode") or {}
     shutdown = answers.get("shutdown_required") or {}
     predicted_mode = failure.get("choice")
-    shutdown_p = shutdown.get("noul")
+    shutdown_p = shutdown.get("probability", shutdown.get("noul"))
     predicted_shutdown = (
         bool(float(shutdown_p) >= 0.5)
         if isinstance(shutdown_p, (int, float))
@@ -247,15 +211,15 @@ def grade_case(case: dict[str, Any], response: dict[str, Any]) -> dict[str, Any]
     }
 
 
-def run_live(model: str, selected_case: str | None) -> dict[str, Any]:
+def run_live(model: str, selected_case: str | None, max_budget: float = 0.01) -> dict[str, Any]:
     chosen = [case for case in CASES if selected_case in {None, case["id"]}]
     if selected_case and not chosen:
         raise ValueError(f"unknown case id: {selected_case}")
 
-    trace_id = f"world-substrate-jev-{uuid.uuid4().hex[:10]}"
+    trace_id = f"world-substrate/jev/probe-{uuid.uuid4().hex[:10]}"
     rows: list[dict[str, Any]] = []
     for case in chosen:
-        result = call_jev(case, model=model)
+        result = call_jev(case, model=model, trace_id=trace_id, max_budget=max_budget)
         response = result["response"]
         rows.append(
             {
@@ -279,7 +243,7 @@ def run_live(model: str, selected_case: str | None) -> dict[str, Any]:
         "schema_version": "world-substrate-jev-estimator-probe/v0",
         "status": "live",
         "trace_id": trace_id,
-        "endpoint": ENDPOINT,
+        "transport": "llm_client.call_decisions",
         "requested_model": model,
         "claim_boundary": (
             "Jev performs typed non-cognitive estimation only. These answers do not "
@@ -302,7 +266,7 @@ def dry_run(model: str, selected_case: str | None) -> dict[str, Any]:
     return {
         "schema_version": "world-substrate-jev-estimator-probe/v0",
         "status": "dry-run",
-        "endpoint": ENDPOINT,
+        "transport": "llm_client.call_decisions",
         "requested_model": model,
         "requests": [
             {
@@ -327,12 +291,13 @@ def main() -> int:
         action="store_true",
         help="spend against OpenRouter; without this flag only print request payloads",
     )
+    parser.add_argument("--max-budget", type=float, default=0.01)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
 
     payload = (
-        run_live(args.model, args.case)
+        run_live(args.model, args.case, args.max_budget)
         if args.live
         else dry_run(args.model, args.case)
     )
