@@ -309,6 +309,7 @@ def _living_ui(
     html = render_html(projection, profile, REPO)
     return profile, frames, html
 
+
 def run_native_coordination(
     bundle: dict[str, Any],
     causal_value: dict[str, Any],
@@ -416,7 +417,7 @@ def run_native_coordination(
         initial_snapshot=engine.initial_snapshot(),
         events=engine.world.events,
         scene={
-            "kind": "automatic-scene-profile-v0",
+            "kind": "automatic-living-scene-v1",
             "source": "structured-native-coordination",
         },
         branch_id=f"{bundle['world']['id']}-deterministic",
