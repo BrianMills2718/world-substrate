@@ -13,10 +13,10 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
-from scripts.bootstrap_scene_profile import bootstrap_profile
-from scripts.render_scene_replay import render_html
-from scripts.run_authored_world import _runtime_catalog, build_engine
-from scripts.scaffold_world import _render_model, load_bundle
+from scripts.render_composed_living_scene import render_html
+from scripts.run_authored_world import build_engine
+from scripts.scaffold_world import load_bundle
+from world_substrate.living_scene import build_living_scene_frames
 from world_substrate.projection import build_live_projection
 
 DEFAULT_CAUSAL = REPO / "examples/native_coordination/coordination-causal-v0.json"
@@ -148,27 +148,166 @@ def _transcript_turn(
     }
 
 
-def _automatic_profile(
-    bundle: dict[str, Any],
-    trace: dict[str, Any],
-    causal_model: Any,
-) -> tuple[dict[str, Any], str]:
-    model = _render_model(bundle)
-    catalog = _runtime_catalog(bundle, causal_model)
-    profile = bootstrap_profile(
-        model,
-        trace,
-        catalog,
-        world_model_ref=f"{bundle['world']['id']}-v0.json",
-        auto_layout=True,
-    )
-    for actor in profile.get("actors", {}).values():
-        actor.setdefault("carry_offset", [5, 3])
-        actor.setdefault("carry_spacing", [0, 5])
-    by_id = {row["entity_id"]: row for row in model["entities"]}
-    html = render_html(trace, profile, by_id, REPO)
-    return profile, html
+def _spread_points(count: int, *, y: float) -> list[list[float]]:
+    if count < 1:
+        return []
+    if count == 1:
+        return [[50.0, y]]
+    left, right = 14.0, 86.0
+    step = (right - left) / (count - 1)
+    return [[round(left + index * step, 2), y] for index in range(count)]
 
+
+def _living_profile(
+    bundle: dict[str, Any],
+    projection: dict[str, Any],
+) -> dict[str, Any]:
+    presentation = bundle.get("presentation") or {}
+    assets = deepcopy(presentation.get("assets") or {})
+    assets.setdefault("gate_marker", {"kind": "text", "value": "◎"})
+    category_assets = presentation.get("category_assets") or {}
+
+    members = [
+        row for row in bundle["entities"]
+        if "member" in row.get("categories", [])
+    ]
+    resources = [
+        row for row in bundle["entities"]
+        if "resource" in row.get("categories", [])
+    ]
+    gates = [
+        row for row in bundle["entities"]
+        if "gate" in row.get("categories", [])
+    ]
+    if len(gates) != 1:
+        raise ValueError(f"expected exactly one gate for Living Scene, got {len(gates)}")
+
+    actors: dict[str, Any] = {}
+    for row, home in zip(members, _spread_points(len(members), y=76.0), strict=True):
+        actors[row["id"]] = {
+            "entity": row["id"],
+            "asset": category_assets.get("member", "participant"),
+            "label": row["label"],
+            "home": home,
+            "bindings": {
+                "role": "components.member.role",
+                "authorized": "components.member.authorized",
+                "approved": "components.member.approved",
+                "aware": "components.member.aware",
+            },
+            "render": {
+                "state_binding": "approved",
+                "inspector_fields": ["role", "authorized", "approved", "aware"],
+            },
+        }
+
+    entity_views: dict[str, Any] = {}
+    for row, home in zip(resources, _spread_points(len(resources), y=28.0), strict=True):
+        entity_views[row["id"]] = {
+            "entity": row["id"],
+            "asset": category_assets.get("resource", "resource"),
+            "label": row["label"],
+            "home": home,
+            "bindings": {
+                "current": "components.resource.current",
+                "required": "components.resource.required",
+                "unit": "components.resource.unit",
+            },
+            "render": {
+                "kind": "resource",
+                "current_binding": "current",
+                "required_binding": "required",
+                "unit_binding": "unit",
+                "inspector_fields": ["current", "required", "unit"],
+            },
+        }
+
+    gate = gates[0]
+    institutions = {
+        gate["id"]: {
+            "entity": gate["id"],
+            "asset": "gate_marker",
+            "label": gate["label"],
+            "anchor": [50.0, 53.0],
+            "bindings": {
+                "status": "components.gate.status",
+                "support": "components.gate.approval_count",
+                "required": "components.gate.required_approvals",
+            },
+            "render": {
+                "status_binding": "status",
+                "support_binding": "support",
+                "required_binding": "required",
+                "inspector_fields": ["status", "support", "required"],
+            },
+        }
+    }
+
+    event_visuals = {
+        "coordination.action.communicate": {
+            "label": "represented information delivered",
+            "operations": [
+                {"op": "information.transmit", "delivery_from_changed_entities": True},
+                {"op": "action.feedback", "label": "communication attempt"},
+            ],
+        },
+        "coordination.action.approve": {
+            "label": "approval attempt",
+            "operations": [{"op": "action.feedback", "label": "approval attempt"}],
+        },
+        "coordination.action.intervene": {
+            "label": "represented prerequisite restored",
+            "operations": [{"op": "action.feedback", "label": "intervention attempt"}],
+        },
+        "coordination.action.finalize": {
+            "label": "coordination gate evaluated",
+            "operations": [{"op": "action.feedback", "label": "finalization attempt"}],
+        },
+    }
+
+    return {
+        "schema_version": "world-substrate-living-scene/v1",
+        "scene_id": f"{bundle['world']['id']}-automatic-v1",
+        "world": projection["world_id"],
+        "title": bundle["world"]["label"],
+        "subtitle": bundle["world"]["summary"],
+        "note": "Automatic read-only Living Scene generated from structured world state and retained Engine history.",
+        "assets": assets,
+        "scene": {
+            "aspect_ratio": "16 / 9",
+            "autoplay_ms": 900,
+            "mobile_min_height": 680,
+        },
+        "zones": {
+            "coordination-space": {
+                "label": "Coordination space",
+                "rect": [4.0, 7.0, 92.0, 86.0],
+                "anchor": [50.0, 50.0],
+            }
+        },
+        "actors": actors,
+        "entities": entity_views,
+        "activities": {},
+        "institutions": institutions,
+        "event_visuals": event_visuals,
+        "state_styles": {
+            "true": "positive",
+            "false": "neutral",
+            "ready": "positive",
+            "blocked": "danger",
+        },
+        "presentation": {},
+    }
+
+
+def _living_ui(
+    bundle: dict[str, Any],
+    projection: dict[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, Any]], str]:
+    profile = _living_profile(bundle, projection)
+    frames = build_living_scene_frames(projection, profile)
+    html = render_html(projection, profile, REPO)
+    return profile, frames, html
 
 def run_native_coordination(
     bundle: dict[str, Any],
@@ -282,11 +421,12 @@ def run_native_coordination(
         },
         branch_id=f"{bundle['world']['id']}-deterministic",
     )
-    profile, html = _automatic_profile(bundle, trace, causal_model)
+    profile, frames, html = _living_ui(bundle, projection)
     return {
         "trace": trace,
         "projection": projection,
         "profile": profile,
+        "frames": frames,
         "html": html,
         "engine": engine,
         "causal_model": causal_model,
