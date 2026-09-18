@@ -556,6 +556,50 @@ This is consistent with the existing project posture only if estimator outputs r
 - Is "Estimator" the right abstraction, or should this remain a generic external-analysis adapter until multiple worlds require it?
 - Which use case actually earns this abstraction first?
 
+## Implemented research probe
+
+A bounded Jev maintenance-estimation probe now exists at:
+
+`scripts/run_jev_estimator_probe.py`
+
+It is intentionally a research script, not runtime architecture. It uses OpenRouter's current alpha Decisions endpoint:
+
+`POST https://openrouter.ai/api/alpha/decisions`
+
+with the pinned model `typesafe/jev-1.13`.
+
+The probe contains five predeclared maintenance cases and asks three independent typed questions per case:
+
+- `failure_mode` — `choice` over five bounded diagnoses;
+- `shutdown_required` — `noul` probability;
+- `severity` — four-level `score`.
+
+It records the returned distributions/score, versioned model identity, reported usage, and wall-clock latency. The fixture's expected failure-mode and shutdown labels are fixed before inference, so the script can report simple bounded accuracy without letting model output define its own grading target.
+
+No Jev answer mutates World Substrate state or enters the Engine. This is solely an estimator-interface assay.
+
+Dry-run the exact payloads without credentials or spend:
+
+```sh
+python scripts/run_jev_estimator_probe.py
+```
+
+Run one live case:
+
+```sh
+python scripts/run_jev_estimator_probe.py --live --case sensor-01
+```
+
+Run the full five-case live probe and retain evidence:
+
+```sh
+python scripts/run_jev_estimator_probe.py --live --write
+```
+
+The live path reuses `llm_client`'s account-aware OpenRouter credential resolution. It currently calls the Decisions HTTP endpoint directly because the shared client exposes chat/structured-generation transports but not OpenRouter's new Decisions API. That private-helper dependency is acceptable only for this exploratory script; any adopted capability should first earn a public shared-client Decisions transport.
+
+Neutral tests at `tests/test_jev_estimator_probe.py` verify request shape, pinned model, grading, and credential-free dry-run behavior. They do not perform network calls or spend.
+
 ## Current disposition
 
 **Explore later; do not adopt yet.**
