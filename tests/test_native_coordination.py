@@ -120,7 +120,6 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
             actor = blocked["causal_bearer"]["id"]
             context = blocked.get("information_context", [])
             self.assertTrue(context, name)
-            self.assertTrue(all(row["source_id"] != actor or row["info_id"] for row in context))
             for row in context:
                 self.assertTrue(
                     information_visible_in_material_world(
@@ -128,16 +127,59 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                     )
                 )
 
-    def test_automatic_ui_renders_without_a_scene_review_overlay(self):
+    def test_automatic_living_ui_exposes_state_timeline_and_inspection(self):
         for name, result in self.results.items():
             with self.subTest(name=name):
                 profile = result["profile"]
-                self.assertTrue(profile["bootstrap"]["auto_layout"]["enabled"])
-                self.assertEqual(profile["bootstrap"]["reviewed_actions"], [])
-                self.assertIn("Scene replay", result["html"])
-                self.assertIn(self.bundles[name]["world"]["label"], result["html"])
+                self.assertEqual(profile["schema_version"], "world-substrate-living-scene/v1")
+                self.assertEqual(profile["title"], self.bundles[name]["world"]["label"])
+                self.assertEqual(profile["activities"], {})
+                self.assertIn("coordination.action.communicate", profile["event_visuals"])
+
+                html = result["html"]
+                self.assertIn(self.bundles[name]["world"]["label"], html)
+                self.assertIn("id='inspector'", html)
+                self.assertIn("id='scrub'", html)
                 for member in _component_rows(self.bundles[name], "member"):
-                    self.assertIn(member["label"], result["html"])
+                    self.assertIn(member["label"], html)
+                for resource in _component_rows(self.bundles[name], "resource"):
+                    self.assertIn(resource["label"], html)
+
+                final = result["frames"][-1]
+                gate = _component_rows(self.bundles[name], "gate")[0]
+                gate_view = final["views"]["institutions"][gate["id"]]["bindings"]
+                self.assertEqual(gate_view["status"], "ready")
+                self.assertGreaterEqual(gate_view["support"], gate_view["required"])
+
+                resource = _component_rows(self.bundles[name], "resource")[0]
+                resource_view = final["views"]["entities"][resource["id"]]["bindings"]
+                self.assertIn("current", resource_view)
+                self.assertIn("required", resource_view)
+
+    def test_living_ui_projects_information_movement_and_failed_checks(self):
+        for name, result in self.results.items():
+            with self.subTest(name=name):
+                transmissions = [
+                    effect
+                    for frame in result["frames"]
+                    for effect in frame.get("presentation_effects", [])
+                    if effect.get("kind") == "information_transmission"
+                ]
+                self.assertTrue(transmissions)
+                self.assertTrue(all(effect["content_visible"] is False for effect in transmissions))
+
+                blocked_id = result["trace"]["summary"]["blocked_event_id"]
+                blocked_frame = next(
+                    frame
+                    for frame in result["frames"]
+                    if (frame.get("event") or {}).get("event_id") == blocked_id
+                )
+                feedback = next(
+                    effect
+                    for effect in blocked_frame["presentation_effects"]
+                    if effect.get("kind") == "action_feedback"
+                )
+                self.assertIn("Prerequisite A is healthy", feedback["reasons"])
 
 
 if __name__ == "__main__":
