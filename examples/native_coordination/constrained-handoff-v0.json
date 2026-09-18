@@ -1,0 +1,449 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "constrained-handoff",
+    "label": "Constrained handoff",
+    "summary": "Four participants coordinate a handoff with one scarce resource, two information channels, unique intervention authorization, and a two-approval threshold.",
+    "location": "handoff-room",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "member",
+      "fields": [
+        {
+          "name": "role",
+          "type": "string",
+          "default": "participant"
+        },
+        {
+          "name": "authorized",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "approved",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "aware",
+          "type": "boolean",
+          "default": false
+        }
+      ]
+    },
+    {
+      "name": "resource",
+      "fields": [
+        {
+          "name": "current",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "required",
+          "type": "integer",
+          "default": 1
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "default": "unit"
+        }
+      ]
+    },
+    {
+      "name": "gate",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "default": "blocked"
+        },
+        {
+          "name": "approval_count",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "required_approvals",
+          "type": "integer",
+          "default": 1
+        }
+      ]
+    },
+    {
+      "name": "information",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string",
+          "default": "report"
+        },
+        {
+          "name": "source_id",
+          "type": "entity_ref",
+          "default": "placeholder"
+        },
+        {
+          "name": "channel_id",
+          "type": "string",
+          "default": "brief"
+        },
+        {
+          "name": "visibility",
+          "type": "string",
+          "default": "direct"
+        },
+        {
+          "name": "topic",
+          "type": "string",
+          "default": "coordination"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "default": false
+        }
+      ]
+    },
+    {
+      "name": "delivery",
+      "fields": [
+        {
+          "name": "info_id",
+          "type": "entity_ref",
+          "default": "placeholder"
+        },
+        {
+          "name": "recipient_id",
+          "type": "entity_ref",
+          "default": "placeholder"
+        },
+        {
+          "name": "channel_id",
+          "type": "string",
+          "default": "brief"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "default": "pending"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "ana",
+      "label": "Ana",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "handoff lead",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "bo",
+      "label": "Bo",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "receiver",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "cy",
+      "label": "Cy",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "observer",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "dev",
+      "label": "Dev",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "release authority",
+          "authorized": true,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "handoff-token",
+      "label": "Shared handoff token",
+      "categories": [
+        "resource",
+        "prereq-a",
+        "restorable"
+      ],
+      "components": {
+        "resource": {
+          "current": 0,
+          "required": 1,
+          "unit": "token"
+        }
+      }
+    },
+    {
+      "id": "queue-capacity",
+      "label": "Queue capacity",
+      "categories": [
+        "resource",
+        "prereq-b"
+      ],
+      "components": {
+        "resource": {
+          "current": 1,
+          "required": 1,
+          "unit": "slot"
+        }
+      }
+    },
+    {
+      "id": "link-health",
+      "label": "Link health",
+      "categories": [
+        "resource",
+        "prereq-c"
+      ],
+      "components": {
+        "resource": {
+          "current": 1,
+          "required": 1,
+          "unit": "online"
+        }
+      }
+    },
+    {
+      "id": "safety-window",
+      "label": "Safety window",
+      "categories": [
+        "resource",
+        "prereq-d"
+      ],
+      "components": {
+        "resource": {
+          "current": 1,
+          "required": 1,
+          "unit": "open"
+        }
+      }
+    },
+    {
+      "id": "handoff-gate",
+      "label": "Constrained handoff gate",
+      "categories": [
+        "gate"
+      ],
+      "components": {
+        "gate": {
+          "status": "blocked",
+          "approval_count": 0,
+          "required_approvals": 2
+        }
+      }
+    },
+    {
+      "id": "report-token",
+      "label": "Token unavailable notice",
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "The shared handoff token is unavailable.",
+          "source_id": "dev",
+          "channel_id": "ops-chat",
+          "visibility": "direct",
+          "topic": "resource",
+          "active": false
+        }
+      }
+    },
+    {
+      "id": "delivery-report-token",
+      "label": "Delivery: Token unavailable notice",
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "report-token",
+          "recipient_id": "ana",
+          "channel_id": "ops-chat",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "id": "report-link",
+      "label": "Link status note",
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "The link is healthy but the token still blocks transfer.",
+          "source_id": "dev",
+          "channel_id": "radio",
+          "visibility": "direct",
+          "topic": "channel",
+          "active": false
+        }
+      }
+    },
+    {
+      "id": "delivery-report-link",
+      "label": "Delivery: Link status note",
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "report-link",
+          "recipient_id": "bo",
+          "channel_id": "radio",
+          "status": "pending"
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "communicate",
+      "description": "Deliver one represented information item to its declared recipient.",
+      "fields": [
+        {
+          "name": "information",
+          "type": "entity_ref"
+        },
+        {
+          "name": "delivery",
+          "type": "entity_ref"
+        },
+        {
+          "name": "recipient",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "approve",
+      "description": "Add one informed member approval when all represented prerequisites are healthy.",
+      "fields": [
+        {
+          "name": "gate",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_a",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_b",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_c",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_d",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "intervene",
+      "description": "Restore the one represented restorable prerequisite when authorized.",
+      "fields": [
+        {
+          "name": "resource",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "finalize",
+      "description": "Mark the represented gate ready after threshold and prerequisite checks pass.",
+      "fields": [
+        {
+          "name": "gate",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_a",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_b",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_c",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_d",
+          "type": "entity_ref"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "participant": {
+        "kind": "emoji",
+        "value": "👤"
+      },
+      "resource": {
+        "kind": "emoji",
+        "value": "📦"
+      },
+      "information": {
+        "kind": "emoji",
+        "value": "✉️"
+      },
+      "delivery": {
+        "kind": "text",
+        "value": "→"
+      }
+    },
+    "category_assets": {
+      "member": "participant",
+      "resource": "resource",
+      "information": "information",
+      "delivery": "delivery"
+    },
+    "station_roles": {
+      "gate": "goal"
+    }
+  }
+}
