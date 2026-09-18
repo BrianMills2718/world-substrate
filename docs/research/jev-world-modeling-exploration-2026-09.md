@@ -220,6 +220,177 @@ Potential benefit: uncertainty becomes explicit at the boundary instead of disap
 
 Potential risk: an ingestion estimator could accidentally become a hidden semantic or causal authority. Any promoted design should make clear whether it is producing a source observation, a derived interpretation, a canonical represented fact, or evidence that an installed mechanic may later consume.
 
+## Scaling thesis: relieve the LLM game-master bottleneck
+
+A stronger reason to explore this pattern is **world-modeling scale**, especially where mechanisms are hard to specify explicitly.
+
+A naive generative-world architecture often centralizes fuzzy adjudication in a general LLM:
+
+```text
+world state
+   |
+   v
+LLM game master
+   |
+   +--> interpret the situation
+   +--> identify relevant factors
+   +--> infer a likely outcome
+   +--> format the result
+   +--> effectively adjudicate consequences
+   |
+   v
+state mutation
+```
+
+That can work for prototypes, but it creates a central throughput and authority bottleneck. As worlds grow, the game master may be asked to adjudicate large numbers of semantically difficult effects involving many entities, relationships, observations, and mechanisms.
+
+The cost is not only token spend. A universal LLM adjudicator tends to combine too many responsibilities:
+
+- semantic interpretation;
+- mechanism selection;
+- latent-state inference;
+- probabilistic judgment;
+- consequence generation;
+- formatting;
+- and, in weak architectures, de facto transition authority.
+
+A Jev-like or otherwise typed System-One layer suggests a different decomposition:
+
+```text
+world state / evidence
+        |
+        v
+typed probabilistic estimator
+        |
+        v
+bounded intermediate judgment
+        |
+        v
+explicit installed mechanic
+        |
+        v
+Engine commit/refusal
+```
+
+The estimator handles a hard-to-specify intermediate judgment. The mechanic still determines what that judgment means for the represented world.
+
+### Where this is more useful than equations
+
+This should not replace explicit equations or mechanistic models when those are available.
+
+Preferred order:
+
+```text
+known quantitative relationship
+    -> equation / table / explicit rule
+
+hard quantitative relationship with trusted simulator
+    -> simulator / surrogate
+
+structured prediction with task data
+    -> conventional statistical or ML model
+
+messy semantic evidence or dynamic hypotheses
+    -> typed zero-shot / System-One estimator
+
+novel planning, explanation, invention
+    -> general reasoning/generative LLM
+
+canonical consequence
+    -> installed World Substrate mechanics + Engine
+```
+
+The promising niche is therefore **hard semantic or high-dimensional mechanisms that are awkward to hand-code but do not deserve a full generative adjudication call**.
+
+Examples might include:
+
+- panic or unrest risk from heterogeneous observations;
+- probable equipment failure mode from maintenance notes and telemetry;
+- credibility or relevance classification of incoming represented reports;
+- terrain or route difficulty from mixed structured and descriptive evidence;
+- likelihood of detection given contextual cues;
+- social or institutional pressure categories derived from many represented signals;
+- external event interpretation before that evidence enters the represented world.
+
+### Why this may matter at scale
+
+In a persistent world, fuzzy judgments can multiply with:
+
+- active entities;
+- active relationships;
+- incoming observations;
+- autonomous processes;
+- candidate interactions;
+- and mechanism opportunities.
+
+If each such judgment requires a general autoregressive LLM call, cognition/adjudication becomes a central simulation bottleneck even when the judgment itself is small.
+
+A typed System-One layer could potentially move many of those judgments into cheap, bounded, parallel inference while reserving expensive LLM calls for genuinely deliberative or generative work.
+
+Conceptually:
+
+```text
+thousands of active world situations
+            |
+            v
+parallel bounded estimators
+            |
+            +--> panic risk
+            +--> failure mode
+            +--> detection likelihood
+            +--> report relevance
+            +--> route difficulty
+            +--> supply disruption risk
+            |
+            v
+explicit mechanics consume selected estimates
+            |
+            v
+Engine remains singular consequence authority
+```
+
+The architectural payoff would be **decentralizing fuzzy adjudication without decentralizing world truth**.
+
+### Important boundary
+
+The target is not to replace one opaque game master with hundreds of opaque learned mechanics.
+
+The intended sweet spot is:
+
+> explicit mechanics for consequences; learned estimators for difficult intermediate judgments.
+
+A model may estimate:
+
+```text
+P(panic) = 0.73
+```
+
+but it should not directly invent:
+
+```text
+therefore 40 people flee, three exits block, and food prices double
+```
+
+Those downstream consequences remain the job of installed mechanics operating over canonical state.
+
+### Research implication
+
+If this pattern proves useful, one important evaluation dimension is **throughput substitution**:
+
+> How much general-LLM adjudication can be removed from a large world by replacing narrow fuzzy judgments with typed estimators, without materially weakening causal inspectability or model quality?
+
+A future spike should therefore compare not just estimator accuracy, but:
+
+- latency per judgment;
+- cost per judgment;
+- number of judgments evaluated in parallel;
+- calibration quality;
+- rate of LLM escalation;
+- consequence-trace clarity;
+- and total reduction in general game-master/model calls.
+
+This scaling thesis is exploratory, but it may be a stronger motivation than using Jev-like models merely as another cognition adapter.
+
 ## Possible future abstraction: Estimator / Probabilistic Oracle
 
 If repeated use cases justify it, World Substrate could eventually explore an explicit non-mutating estimator contract.
