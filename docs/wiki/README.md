@@ -3,7 +3,7 @@ schema_version: project-wiki/v1
 type: ProjectWiki
 role: derived-navigation
 status: active
-reviewed_through: 2026-09-12
+reviewed_through: 2026-09-18
 authority_refs:
   - ../../README.md
   - ../../roadmap/README.md
@@ -12,6 +12,7 @@ authority_refs:
   - ../decisions/002-observability-and-replay.md
   - ../decisions/003-semantic-mechanical-boundary.md
   - ../decisions/004-product-and-adoption-strategy.md
+  - ../decisions/005-native-waltzman-delivery.md
 ---
 
 # World Substrate project wiki
@@ -32,7 +33,7 @@ Public surfaces:
 - Promoted Waltzman stakeholder demo: `https://brianmills.dev/waltzman/`
 - Legacy standalone living-world URL: `https://brianmills.dev/world-substrate-visualization/`
 
-The stakeholder demo is already promoted: it combines natural-language authoring, a fresh retained run, and living inspection through the bounded Cybernetic V3 donor path. The old standalone URL still serves the earlier synthetic visualization prototype and is now a retained legacy/design surface, not the active promotion target. The current operational frontier is migration of the promoted donor backend from the temporary Mac origin to the approved shared Netcup VPS while preserving route certification and rollback.
+The stakeholder demo is already promoted: it combines natural-language authoring, a fresh retained run, and living inspection through the bounded Cybernetic V3 donor path. That route remains useful regression/fallback evidence, but [Decision 005](../decisions/005-native-waltzman-delivery.md) makes native World Substrate convergence the active product frontier: one-shot text -> editable draft -> approved mechanics -> native Engine run -> automatic generic UI -> bounded Waltzman inspection/comparison. The old standalone URL remains legacy/design evidence.
 
 ## Start here
 
@@ -41,6 +42,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | Current direction / exact next action | [Roadmap](../../roadmap/README.md) |
 | Durable system boundaries | [Architecture](../architecture.md) |
 | Product + procurement doctrine | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
+| Native Waltzman delivery / donor boundary / stopping rule | [Decision 005](../decisions/005-native-waltzman-delivery.md) |
 | Living-world overlay semantics | [Living-world projection](../research/living-world-projection-2026-09.md) |
 | Implemented information/delivery seam | [Information and delivery v0](../contracts/information-delivery-v0.md) |
 | Implemented canonical client seam | [Live projection v0](../contracts/live-projection-v0.md) |
@@ -114,10 +116,12 @@ The synthetic living-world UI source remains versioned at `prototypes/living-wor
 - [Decision 002](../decisions/002-observability-and-replay.md) owns observability/replay doctrine.
 - [Decision 003](../decisions/003-semantic-mechanical-boundary.md) owns the semantic/effect boundary.
 - [Decision 004](../decisions/004-product-and-adoption-strategy.md) owns product direction and commodity-selection doctrine.
+- [Decision 005](../decisions/005-native-waltzman-delivery.md) owns the native Waltzman delivery target, Cybernetic donor boundary, first-release stopping rule, and explicit uncertainties/failure responses.
 - Implemented contracts own only their declared seam.
 - Code/tests own runtime behavior.
 - Revision/run-bound evidence owns observed outcome claims.
-- Human product decision, 2026-09-09: the static canonical Waltzman client is retained reference/presentation evidence, not the finished outreach demo; the sendable demo requires natural-language generation + fresh execution + living inspection, reusing the existing Cybernetic V3 authoring/run path for speed.
+- Human product decision, 2026-09-09: the static canonical Waltzman client is retained reference/presentation evidence, not the finished outreach demo; the sendable demo requires natural-language generation + fresh execution + living inspection, and the Cybernetic donor path was authorized as the fastest promotion route.
+- Human product decision, 2026-09-18: the next Waltzman release should converge that experience onto native World Substrate authoring/execution/automatic UI; Cybernetic remains donor/analysis lineage and the existing donor-backed surface remains regression/fallback during convergence.
 - Human semantic review, 2026-09-12: richer Linguistic Core n-ary/role representation may refine semantic bindings, but the semantic/mechanical boundary remains unchanged; effects and consequence authority stay in World Substrate.
 
 Decision 004 classifies uncertainty as:

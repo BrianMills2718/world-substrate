@@ -14,7 +14,7 @@ The project now includes both the causal engine and deployed authoring/demo surf
 
 The live Builder can define represented world structure, request a constrained LLM mechanics proposal, show compiler-derived authority for review, require explicit approval, and launch a fresh scripted or LLM-selected graphical run in the browser.
 
-The standalone living-world URL still serves the earlier synthetic visualization prototype. It is now a retained legacy/public design surface rather than the active promotion target. The promoted Waltzman stakeholder experience combines natural-language authoring, a fresh retained run, and living inspection through the Cybernetic V3 donor path; the current operational next step is migration of that temporary Mac origin to the approved shared Netcup VPS while preserving rollback and route certification.
+The standalone living-world URL still serves the earlier synthetic visualization prototype and remains legacy/design evidence. The promoted Waltzman stakeholder experience still combines natural-language authoring, a fresh retained run, and living inspection through a Cybernetic V3 donor path, but that donor route is now a regression/fallback bridge rather than the target product architecture. The active product work is the native World Substrate path defined in Decision 005: description -> editable draft -> approved mechanics -> native Engine run -> automatic living UI -> bounded inspection/comparison.
 
 ## Start here
 
@@ -22,12 +22,13 @@ The standalone living-world URL still serves the earlier synthetic visualization
 2. [Roadmap](roadmap/README.md) — canonical planning authority, current frontier, risks, and exact next action.
 3. [Architecture](docs/architecture.md) — durable system boundaries and composition model.
 4. [Decision 004](docs/decisions/004-product-and-adoption-strategy.md) — approved Generative-World Builder / off-the-shelf adoption strategy.
-5. [Living-world projection](docs/research/living-world-projection-2026-09.md) — one-world overlay model, information/causality distinction, and first live-integration acceptance.
-6. [Technology procurement](docs/research/technology-procurement-2026-09.md) — selected deck.gl / Pydantic AI / SimPy / Cytoscape defaults.
-7. [Multi-timescale execution](docs/research/multi-timescale-execution-2026-09.md) — one canonical world timeline, independent mechanism cadences, duration-bearing activities, event-driven cognition.
-8. [Competitive landscape](docs/research/competitive-landscape-2026-09.md) — adjacent systems and the "own reality; borrow minds" strategy.
-9. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
-10. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
+5. [Decision 005](docs/decisions/005-native-waltzman-delivery.md) — approved native Waltzman delivery, Cybernetic donor boundary, stopping rule, uncertainties, and failure responses.
+6. [Living-world projection](docs/research/living-world-projection-2026-09.md) — one-world overlay model, information/causality distinction, and first live-integration acceptance.
+7. [Technology procurement](docs/research/technology-procurement-2026-09.md) — selected deck.gl / Pydantic AI / SimPy / Cytoscape defaults.
+8. [Multi-timescale execution](docs/research/multi-timescale-execution-2026-09.md) — one canonical world timeline, independent mechanism cadences, duration-bearing activities, event-driven cognition.
+9. [Competitive landscape](docs/research/competitive-landscape-2026-09.md) — adjacent systems and the "own reality; borrow minds" strategy.
+10. [Core contract v0](docs/contracts/core-v0.md) — implemented transition substrate.
+11. [Action mechanic declaration v0](docs/contracts/action-mechanic-declaration-v0.md) — constrained live causal-authoring language.
 
 ## Where this stands
 
@@ -49,7 +50,7 @@ The product being demonstrated is **World Substrate**. **Waltzman Coordination L
 | Zero-review replay bootstrap/auto-layout | demonstrated across multiple real worlds |
 | Visual world authoring | implemented and deployed |
 | Fresh scripted/LLM graphical run | implemented and deployed |
-| Public stakeholder demo | promoted at `https://brianmills.dev/waltzman/`; temporary Mac origin remains pending approved shared Netcup VPS migration |
+| Public stakeholder demo | donor-backed promoted surface remains the regression/fallback target; native World Substrate replacement path is now the active product frontier |
 | Legacy standalone visualization | synthetic prototype still deployed at `world-substrate-visualization`; retained as design evidence, not the active promotion target |
 | Waltzman live read-only projection | implemented local first gate; exact snapshot/event reconstruction plus JSON/SSE observer seam |
 | First-class information/delivery v0 | implemented; asymmetric source/recipient/channel/visibility/delivery/provenance plus retained context evidence |
@@ -77,7 +78,7 @@ See [the live authoring audit](docs/audits/live-world-authoring.md).
 
 ## Current deliverable
 
-The current product proof is the **promoted Waltzman stakeholder experience** plus the retained canonical Waltzman reference world. The reference world demonstrates residents receiving asymmetric represented information, communicating through represented channels, acting under resource/process/institution constraints, and evolving on one canonical simulated timeline. The promoted outreach surface adds natural-language authoring and fresh retained execution through the bounded Cybernetic V3 donor path.
+The current product proof is the **promoted Waltzman stakeholder experience** plus the retained canonical Waltzman reference world. The reference world demonstrates residents receiving asymmetric represented information, communicating through represented channels, acting under resource/process/institution constraints, and evolving on one canonical simulated timeline. The promoted outreach surface adds natural-language authoring and fresh retained execution through the bounded Cybernetic V3 donor path; Decision 005 treats that route as a bridge/regression surface while the same experience converges onto native World Substrate authoring, execution, automatic presentation, and inspection.
 
 The integrated demo distinguishes world interaction, information lineage, cognition context/evidence, mechanic-declared hard causal ancestry, and analytic interpretation rather than collapsing them into a single narrative explanation. It also supports a represented intervention/fork and exposes consequential dependency assumptions plus explicit residual risk.
 
@@ -89,18 +90,19 @@ See the [roadmap](roadmap/README.md) and [Waltzman audit](docs/audits/waltzman-c
 
 ## Current next move
 
-The stakeholder demo is already promoted. The active work is now **operational migration plus post-demo authority/provenance hardening**, not another demo-construction loop.
+The active milestone is now **native Waltzman on World Substrate, end to end**. The existing promoted donor-backed surface remains a regression/fallback while this converges; it is no longer the desired permanent runtime path.
 
-Concretely:
+The critical path is:
 
-1. preserve the promoted `/waltzman/` experience and retained promotion evidence as the regression target;
-2. migrate the donor backend from the temporary Mac origin to the approved shared Netcup VPS, with health checks, route certification, retained-run access, and rollback verification before switching the public route;
-3. keep the Mac origin available as rollback until the VPS route is independently verified; and
-4. continue the already-scoped post-demo hardening: exact executable-law provenance, role-specific write authority, explicit affordance-space overflow, and reproducibility/locking.
+1. establish one configurable native coordination world and prove two materially different configurations use the same World Substrate mechanics/Engine path;
+2. connect those native retained runs to the automatic generic UI without a hand-authored scene file;
+3. verify minimum Waltzman inspection: what changed, what blocked, and which represented information was available to whom;
+4. put one-shot natural-language drafting in front of the same versioned authoring/mechanics approval artifact; and
+5. cut over only after the native path meets the stopping rule in [Decision 005](docs/decisions/005-native-waltzman-delivery.md).
 
-Do **not** port Cybernetic V3's simulator into World Substrate merely to change hosting or make the demo look more self-contained. World Builder remains the long-term World Substrate authoring product; the promoted stakeholder slice truthfully reuses Cybernetic V3 as an implementation donor behind a World Substrate-branded experience.
+Explicit current uncertainties are coordination-mechanics expressiveness, the adapter between the automatic replay and richer Waltzman presentation paths, intent-to-rule completeness, actor observation authority, and operational cutover. Do not hide these with model narration or UI inference.
 
-The retained `evidence/renders/waltzman-demo-v0.html` remains canonical reference/presentation evidence, not the outreach endpoint. Promotion evidence for the generated-run donor path is retained in `evidence/waltzman/public-promotion-2026-09-09.md`.
+Defer full conversational refinement, bespoke asset generation, generalized cognition/scheduling, a Cybernetic runtime merge, and broad benchmarking until a real Waltzman failure makes one necessary.
 
 ## Architectural thesis
 
@@ -121,7 +123,7 @@ The approved product posture is:
 
 The current product proof for that posture is the **Waltzman Coordination Lab demo**. Generality remains an architectural constraint and later validation target; it should not displace delivery of the current vertical.
 
-Waltzman is currently a **reviewed reference world**, not proof that the live Builder can conversationally generate its complete richer law. Generic authoring of information/activity/institution mechanics remains a later capability to earn from another concrete world rather than a prerequisite for publishing this demo.
+Waltzman remains a **reviewed reference world**, and the current Builder still does not prove conversational generation of its complete richer law. Decision 005 changes the sequence: Waltzman is now the product-driving vertical used to earn the smallest missing information/activity/institution authoring capabilities. The first native release may stay within a bounded family of coordination worlds and may use reusable reviewed coordination mechanics rather than pretending arbitrary prose can already generate arbitrary law.
 
 Keep project-owned:
 
