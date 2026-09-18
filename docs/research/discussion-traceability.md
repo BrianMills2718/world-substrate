@@ -47,6 +47,7 @@ This index maps the 2026-09-02 strategy discussion and donor reviews to their cu
 | Runtime installation or revision of world laws | **deferred** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Prospective installation, retroactive correction, branching, and technology-local invention remain future research |
 | One canonical simulated timeline with independently scheduled mechanism cadences | **accepted** | [Architecture](../architecture.md), [multi-timescale execution](multi-timescale-execution-2026-09.md) | Render time, cognition wake cadence, and analysis sampling are separate; current engine remains the integer-tick baseline |
 | Resident cognition should normally wake on meaningful events rather than every low-level simulation step | **accepted** | [Architecture](../architecture.md), [Decision 004](../decisions/004-product-and-adoption-strategy.md) | Pydantic AI remains behind `CognitionAdapter`; wake policy does not grant world authority |
+| Jev-style System-1/System-2 hybrid cognition behind `CognitionAdapter` | **deferred** | [Technology procurement](technology-procurement-2026-09.md) | Potential provider optimization for fast typed decisions with escalation to general reasoning; World Substrate does not own the cognitive architecture and this is not current roadmap work |
 
 ## Semantic and causal model
 
