@@ -3,15 +3,15 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-09-12
+reviewed_through: 2026-09-18
 ---
 
 # World Substrate living roadmap
 
-**Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), and [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md).  
-**Stage:** prototype substrate complete; deployed authoring/run alpha; Waltzman outreach funnel, generated-run living replay, certified fresh-run proof, and stakeholder promotion complete through the Cybernetic V3 donor path. Current phase is **post-demo hardening plus migration of the temporary Mac origin to the approved shared Netcup VPS**.
-**Current frontier:** preserve the promoted Waltzman experience and retained evidence while hardening provenance/authority boundaries and moving the donor backend off the Mac to the shared Netcup VPS. Do not reopen simulator architecture merely to change hosting.
-**Deployment boundary:** the 2026-09-09 human decision supersedes publishing the static replay as the finished demo. The sendable Waltzman experience requires natural-language generation, fresh execution, and living inspection. Reusing Cybernetic V3's existing public V2 authoring/run service for this demo is authorized as the fastest implementation path; Cybernetic Influence remains implementation/research lineage rather than public product identity. Provider spend and production hosting changes remain separately bounded by their existing controls.
+**Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md), and [Decision 005](../docs/decisions/005-native-waltzman-delivery.md).
+**Stage:** prototype substrate complete; deployed authoring/run alpha; promoted donor-backed Waltzman demo retained; active phase is **native Waltzman convergence: description -> editable World Substrate draft -> approved mechanics -> native Engine run -> automatic living UI -> bounded inspection/comparison**.
+**Current frontier:** establish the first configurable native coordination vertical and prove that two materially different coordination configurations run through the same World Substrate mechanics and automatic-view path. Preserve the promoted donor experience as regression/fallback while the native path is built; do not make donor hosting migration, conversational editing, bespoke assets, Jev optimization, or a repo merger part of this critical path.
+**Deployment boundary:** the 2026-09-09 donor-backed promotion remains valid evidence and a fallback surface. The 2026-09-18 product decision now targets World Substrate as the native substrate for the next Waltzman release. Public cutover waits until the native description-to-view path meets Decision 005's stopping rule; the existing donor route must not be silently presented as a fresh native run if generation fails.
 
 ## Outcome and success criteria
 
@@ -330,7 +330,9 @@ Draft/open work that is useful but not roadmap authority:
 
 | Priority | Risk / open need | Current stance |
 | --- | --- | --- |
-| P0 | promoted stakeholder demo still depends on a temporary Mac origin | migrate the unchanged donor backend to the approved shared Netcup VPS; cut over only after health, route-certification, retained-run, browser, and rollback checks |
+| P0 | native authoring may not express Waltzman-class information/activity/institution constraints | prove two configurable native coordination worlds first; if generic generation is too narrow, use a reviewed reusable coordination-mechanics package rather than narrated consequences |
+| P0 | the zero-review Automatic replay path and richer Waltzman Living Scene path may not compose directly | measure the smallest adapter/mapping from one actual native coordination run before redesigning either renderer |
+| P1 | promoted donor-backed stakeholder demo still depends on a temporary Mac origin | keep it stable as regression/fallback; migrate only as an operational-continuity task, not as a blocker for the native World Substrate vertical |
 | P1 | frozen profile does not yet fingerprint every executable determinant | add exact executable law + compiler/interpreter provenance |
 | P1 | action placeholder write authority is participant-bounded rather than role-specific | bind placeholders to exact action fields |
 | P1 | authored affordance discovery can hit a finite candidate cap | make overflow explicit/paged/refused rather than silent |
@@ -359,9 +361,10 @@ Draft/open work that is useful but not roadmap authority:
 | Current prototype/deliverable | answered — Waltzman Coordination Lab demo |
 | Integrated Waltzman first gate | answered — implemented/reviewed/landed |
 | Public Waltzman demo | **answered — interactive natural-language generation + fresh run + living inspection; static replay alone is insufficient** |
-| World Builder integration required for fastest Waltzman demo? | answered — no; reuse the existing Cybernetic V3 public V2 authoring/run path |
-| Cybernetic V3 role in the demo? | answered — implementation/research donor behind a World Substrate-branded surface, not a separate product identity |
-| Waltzman richer mechanics generated by current Builder? | answered — no; present Waltzman as reviewed reference world |
+| World Builder integration required for the fastest 2026-09-09 promotion? | answered — no; donor reuse was the fastest promotion path and remains valid historical evidence |
+| Cybernetic V3 role going forward? | answered — donor, analysis/UX source, and temporary regression/fallback implementation lineage; not the required runtime for the native World Substrate product |
+| Native World Substrate path for the next Waltzman release? | **answered 2026-09-18 — yes; World Substrate owns the draft/mechanics/Engine/history/UI path, with selected Cybernetic ideas promoted only when the Waltzman vertical needs them** |
+| Waltzman richer mechanics generated by the current Builder today? | answered — no; this is the first active uncertainty to resolve with a configurable native coordination vertical |
 | Adequacy needs full counterfactual machinery before demo? | answered — no; current mapped dependency inventory + residual risk is sufficient, stronger verification deferred |
 | Exact executable-law fingerprint required before Waltzman demo? | answered — no; important post-demo hardening for durable generated-law provenance |
 | Waltzman constructs in universal core state? | answered — no; Waltzman analytics detachable |
@@ -377,7 +380,9 @@ Draft/open work that is useful but not roadmap authority:
 
 Refresh this roadmap when:
 
-- the shared Netcup VPS migration completes or is materially blocked, including retained route-certification/rollback evidence;
+- the first configurable native coordination vertical lands or exposes a mechanics/viewer gap;
+- the native one-shot authoring flow first produces a fresh automatic-view run;
+- the shared Netcup VPS migration completes or is materially blocked, if that migration is still operationally relevant;
 - post-demo executable-law provenance/role-authority/affordance-overflow hardening lands;
 - Linguistic Core publishes or adopts a relation/role contract that materially changes how World Substrate semantic bindings are represented;
 - conversational authoring first produces richer information/activity/institution mechanics;
@@ -397,14 +402,16 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Keep the promoted Waltzman demo stable while hardening provenance/authority boundaries and migrating the temporary Mac origin to the approved shared Netcup VPS.**
+**Establish the first configurable native coordination vertical and prove it renders automatically.**
 
 Concretely:
 
-1. preserve the `65eb465a` stakeholder experience and retained promotion evidence as the regression target;
-2. provision the existing donor backend on the approved shared Netcup VPS without reviving the closed Cloudflare Container path;
-3. move the public route only after health, route-certification, retained-run access, and rollback checks pass against the VPS;
-4. retain the Mac origin as rollback until the VPS route has been independently verified; and
-5. resume the already-listed provenance/authority/repro hardening work without changing the promoted product contract merely for infrastructure reasons.
+1. preserve the promoted donor-backed `/waltzman/` experience and retained promotion evidence as regression/fallback; make no public-route change for this slice;
+2. run two materially different coordination configurations through the same native World Substrate state/mechanics/Engine path so this is not merely renamed template content;
+3. from those real runs, identify the smallest missing coordination-mechanics capability and the smallest adapter from retained history into the automatic generic UI;
+4. retain a deterministic/no-spend native run and inspect actual failed/satisfied checks plus information visibility before adding prose generation on top; and
+5. only after that native vertical is sound, connect one-shot natural-language drafting to the same versioned authoring artifact and approval path.
 
-Do **not** port the Cybernetic simulator into World Substrate, add durable storage, broaden the mechanics DSL, or bypass route certification merely to make the public demo green. The current filesystem-backed Container store is a bounded-session deployment surface, not durable saved-world storage.
+The acceptance target for the first vertical is narrower than the full product stopping rule: two different configurations execute natively, produce different consequential structure or parameters, and render through one generic automatic-view path without a hand-authored scene file.
+
+Do **not** start with full conversational editing, bespoke generated art, a Cybernetic runtime port, generalized cognition/scheduling, Jev benchmarking, or a broad arbitrary-world benchmark. Let an observed Waltzman-blocking failure choose any extension.
