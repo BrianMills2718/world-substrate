@@ -562,11 +562,7 @@ A bounded Jev maintenance-estimation probe now exists at:
 
 `scripts/run_jev_estimator_probe.py`
 
-It is intentionally a research script, not runtime architecture. It uses OpenRouter's current alpha Decisions endpoint:
-
-`POST https://openrouter.ai/api/alpha/decisions`
-
-with the pinned model `typesafe/jev-1.13`.
+It is intentionally a research script, not runtime architecture. It uses the shared `llm_client.call_decisions()` typed-estimator API with the pinned request model `openrouter/typesafe/jev-1.13`. World Substrate does not resolve provider credentials or know the Decisions HTTP endpoint.
 
 The probe contains five predeclared maintenance cases and asks three independent typed questions per case:
 
@@ -596,9 +592,13 @@ Run the full five-case live probe and retain evidence:
 python scripts/run_jev_estimator_probe.py --live --write
 ```
 
-The live path reuses `llm_client`'s account-aware OpenRouter credential resolution. It currently calls the Decisions HTTP endpoint directly because the shared client exposes chat/structured-generation transports but not OpenRouter's new Decisions API. That private-helper dependency is acceptable only for this exploratory script; any adopted capability should first earn a public shared-client Decisions transport.
+The live path now delegates provider adaptation, account-aware credentials, budget gates, and observability to `llm_client.call_decisions()`. This keeps the experiment at the intended abstraction boundary: World Substrate supplies represented evidence and typed questions, then receives typed probability-bearing answers.
 
-Neutral tests at `tests/test_jev_estimator_probe.py` verify request shape, pinned model, grading, and credential-free dry-run behavior. They do not perform network calls or spend.
+On 2026-09-18, the shared transport was live-certified before migration. OpenRouter resolved the pinned request to `typesafe/jev-1.13-20260917`. The first sensor-fault certification returned `sensor_fault` at 0.99 probability, shutdown probability 0.20, severity score 1.13, 532 input tokens, 97 output tokens, provider-reported cost $0.000022344, and about 426 ms transport latency. The certification also exposed a provider-usage naming mismatch (`input_tokens`/`output_tokens` versus llm_client's canonical observability names), which is being corrected in the shared client rather than papered over here.
+
+The subsequent five-case interface assay returned the expected bounded failure-mode label in all five fixtures and the expected shutdown side of the 0.5 threshold in all five fixtures. Mean transport latency was about 297 ms and total provider-reported cost was $0.00013608. These five hand-authored cases are interface/feasibility evidence, not an accuracy benchmark or calibration claim. Retained evidence is in `evidence/jev/maintenance-estimator-probe-v0.json`.
+
+Neutral tests at `tests/test_jev_estimator_probe.py` verify typed request shape, pinned model, shared-client result grading, and credential-free dry-run behavior. They do not perform network calls or spend.
 
 ## Current disposition
 
