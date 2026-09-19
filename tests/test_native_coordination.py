@@ -79,7 +79,16 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 self.assertEqual(evaluated["failed_check_ids"], [])
                 self.assertTrue(evaluated["checks"])
                 self.assertTrue(
-                    {"input", "compiler", "engine", "information_visibility", "projection", "renderer"}
+                    {
+                        "input",
+                        "compiler",
+                        "mechanic_check",
+                        "authority",
+                        "engine",
+                        "information_visibility",
+                        "projection",
+                        "renderer",
+                    }
                     .issubset({row["category"] for row in evaluated["checks"]})
                 )
 
@@ -98,6 +107,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 "summary.json",
                 "input-bundle.json",
                 "causal-model.json",
+                "acceptance-matrix.json",
                 "mechanics-review.json",
                 "initial-snapshot.json",
                 "commands.json",
