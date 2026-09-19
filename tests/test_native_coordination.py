@@ -14,6 +14,7 @@ from scripts.run_native_coordination import (
 )
 from scripts.scaffold_world import load_bundle
 from world_substrate.information import information_visible_in_material_world
+from world_substrate.living_scene import load_scene_contract
 
 REPO = Path(__file__).resolve().parents[1]
 FIXTURES = {
@@ -134,6 +135,11 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                     hashlib.sha256((output / name).read_bytes()).hexdigest(),
                     row["sha256"],
                 )
+            retained_profile = json.loads((output / "living-profile.json").read_text())
+            self.assertEqual(
+                load_scene_contract(output / "living-profile.json"),
+                retained_profile,
+            )
             events = json.loads((output / "events.json").read_text())
             blocked = next(
                 event for event in events if event["status"] == "precondition_failed"
