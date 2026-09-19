@@ -214,6 +214,8 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
             "blocked",
             "precondition_failed",
             "stale_revision",
+            "invalid_action",
+            "unsupported_action",
             "scope_violation",
         ):
             value = bundle()
@@ -230,6 +232,22 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
             effect = frame["presentation_effects"][0]
             self.assertEqual(effect["status"], status)
             self.assertEqual(effect["reasons"], [])
+
+    def test_feedback_degrades_unknown_status_to_unknown(self):
+        value = bundle()
+        value["events"] = [{
+            "event_id": "e-future-status",
+            "rule_id": "neutral.action.try",
+            "status": "future_unrecognized_status",
+            "tick": 0,
+            "world_revision": 0,
+            "checks": [],
+            "changes": [],
+        }]
+        frame = build_living_scene_frames(value, checked_profile())[1]
+        effect = frame["presentation_effects"][0]
+        self.assertEqual(effect["status"], "unknown")
+        self.assertEqual(effect["reasons"], [])
 
     def test_scrubbing_rebuild_has_no_stale_transmission_or_feedback(self):
         value = bundle()
