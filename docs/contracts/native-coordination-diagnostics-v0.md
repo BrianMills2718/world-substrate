@@ -1,6 +1,6 @@
 ---
 role: contract
-status: draft
+status: proposed
 reviewed_through: 2026-09-18
 ---
 
