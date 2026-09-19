@@ -37,6 +37,18 @@ STAGE_FAILURE_CATEGORY = {
     "renderer": "renderer",
     "acceptance": "acceptance",
 }
+FAILURE_CATEGORIES = frozenset({
+    "input",
+    "compiler",
+    "mechanic_check",
+    "authority",
+    "engine",
+    "information_visibility",
+    "projection",
+    "renderer",
+    "acceptance",
+    "environment",
+})
 
 
 def _write_json(path: Path, value: object) -> None:
@@ -189,7 +201,7 @@ def evaluate_acceptance(
             expected=True, observed=trace["summary"]["terminal_reached"],
         ),
         _check(
-            "engine.intentional_block", "engine",
+            "engine.intentional_block", "mechanic_check",
             blocked.get("status") == "precondition_failed"
             and expected["blocked_check"] in failed_labels,
             expected={
@@ -199,6 +211,21 @@ def evaluate_acceptance(
             observed={"status": blocked.get("status"), "failed_checks": failed_labels},
         ),
     ])
+
+    scope_violations = [
+        event["event_id"]
+        for event in events
+        if event.get("status") == "scope_violation"
+    ]
+    checks.append(
+        _check(
+            "authority.no_scope_violations",
+            "authority",
+            not scope_violations,
+            expected=[],
+            observed=scope_violations,
+        )
+    )
 
     intervention = [
         event for event in events
@@ -486,10 +513,7 @@ def run_diagnostic(
             )
             category = first["category"]
             failure_category = (
-                category
-                if category in STAGE_FAILURE_CATEGORY.values()
-                or category == "information_visibility"
-                else "acceptance"
+                category if category in FAILURE_CATEGORIES else "acceptance"
             )
             summary = _summary(
                 run_id=run_id,
