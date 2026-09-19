@@ -35,6 +35,18 @@ _FORBIDDEN_OPERATION_KEYS = {
     "changes", "after", "before", "causal_parent_event_ids",
     "information_context", "canonical_state", "world_state",
 }
+_ACTION_FEEDBACK_STATUSES = frozenset({
+    "accepted",
+    "precondition_failed",
+    "stale_revision",
+    "invalid_action",
+    "unsupported_action",
+    "scope_violation",
+    # Retained legacy presentation fixtures predate the core-v0 status names.
+    "rejected",
+    "refused",
+    "blocked",
+})
 
 
 def _point(value: object, label: str) -> list[float]:
@@ -368,7 +380,7 @@ def _information_transmissions(
 
 def _action_feedback(event: dict[str, Any], operation: dict[str, Any]) -> dict[str, Any]:
     status = event.get("status")
-    if not isinstance(status, str) or not status:
+    if status not in _ACTION_FEEDBACK_STATUSES:
         status = "unknown"
     reasons: list[str] = []
     for check in event.get("checks") or []:
