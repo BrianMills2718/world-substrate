@@ -219,8 +219,12 @@ The observation contains authorized state, received information, recent actor-vi
 material state. That state includes the engine ID, content ID, and rule-version
 map; commands and events are intentionally absent. `World.from_snapshot()`
 accepts only that version and reconstructs canonical state with empty history.
+It may also receive a world-local component-type map. Those types override same-
+named process-global component registrations for that load only, so runtime-
+authored worlds can replay without mutating or colliding with the global world-
+pack registry.
 
-`Engine.replay_commands(initial_snapshot, commands, registry) -> Engine`
+`Engine.replay_commands(initial_snapshot, commands, registry, component_types=None) -> Engine`
 starts from the loaded snapshot and re-applies recorded accepted, rejected,
 invalid, and advance commands without policy calls. The supplied executable
 registry must match the snapshot's rule-version map. A durable replay bundle
