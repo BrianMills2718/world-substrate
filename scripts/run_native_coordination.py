@@ -51,6 +51,15 @@ FAILURE_CATEGORIES = frozenset({
 })
 
 
+def _require_empty_output_dir(path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+    existing = sorted(row.name for row in path.iterdir())
+    if existing:
+        raise FileExistsError(
+            f"diagnostic output directory must be empty: {path} contains {existing}"
+        )
+
+
 def _write_json(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -534,7 +543,7 @@ def run_diagnostic(
     run_id: str | None = None,
 ) -> dict[str, Any]:
     run_id = run_id or f"native-coordination/{bundle['world']['id']}/{uuid.uuid4().hex}"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    _require_empty_output_dir(output_dir)
     stage = "input"
     result: dict[str, Any] | None = None
     acceptance_result: dict[str, Any] | None = None
@@ -1104,23 +1113,32 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.diagnostic_dir is not None:
-        args.diagnostic_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            _require_empty_output_dir(args.diagnostic_dir)
+        except FileExistsError as error:
+            print(json.dumps({
+                "status": "failed",
+                "stage": "environment",
+                "failure_category": "environment",
+                "error": {"type": type(error).__name__, "message": str(error)},
+            }, sort_keys=True))
+            return 2
         fallback_run_id = args.run_id or f"native-coordination/input/{uuid.uuid4().hex}"
         raw_inputs = {
             "input-bundle.raw": args.bundle,
             "causal-model.raw": args.causal_model,
             "acceptance-matrix.raw": args.acceptance,
         }
-        for name, source in raw_inputs.items():
-            try:
-                _write_text(args.diagnostic_dir / name, source.read_text())
-            except OSError:
-                pass
         try:
             bundle = load_bundle(args.bundle)
             causal_value = json.loads(args.causal_model.read_text())
             acceptance = load_acceptance(args.acceptance)
         except Exception as error:
+            for name, source in raw_inputs.items():
+                try:
+                    _write_text(args.diagnostic_dir / name, source.read_text())
+                except OSError:
+                    pass
             summary = {
                 "schema_version": DIAGNOSTIC_SCHEMA,
                 "run_id": fallback_run_id,
