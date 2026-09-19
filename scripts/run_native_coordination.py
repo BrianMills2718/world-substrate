@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
+import uuid
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -16,10 +18,519 @@ sys.path.insert(0, str(REPO / "src"))
 from scripts.render_composed_living_scene import render_html
 from scripts.run_authored_world import build_engine
 from scripts.scaffold_world import load_bundle
+from world_substrate.action_authoring import CausalModel
+from world_substrate.information import information_visible_in_material_world
 from world_substrate.living_scene import build_living_scene_frames
 from world_substrate.projection import build_live_projection
 
 DEFAULT_CAUSAL = REPO / "examples/native_coordination/coordination-causal-v0.json"
+DEFAULT_ACCEPTANCE = REPO / "examples/native_coordination/acceptance-v0.json"
+DIAGNOSTIC_SCHEMA = "world-substrate-native-coordination-diagnostic/v0"
+ACCEPTANCE_SCHEMA = "world-substrate-native-coordination-acceptance/v0"
+ACCEPTANCE_RESULT_SCHEMA = "world-substrate-native-coordination-acceptance-result/v0"
+MANIFEST_SCHEMA = "world-substrate-native-coordination-diagnostic-manifest/v0"
+STAGE_FAILURE_CATEGORY = {
+    "input": "input",
+    "compiler": "compiler",
+    "engine": "engine",
+    "projection": "projection",
+    "renderer": "renderer",
+    "acceptance": "acceptance",
+}
+
+
+def _write_json(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    )
+
+
+def _write_text(path: Path, value: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(value)
+
+
+def _file_hash(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _write_manifest(output_dir: Path, run_id: str) -> dict[str, Any]:
+    rows = {}
+    for path in sorted(output_dir.iterdir(), key=lambda row: row.name):
+        if not path.is_file() or path.name == "manifest.json":
+            continue
+        rows[path.name] = {
+            "sha256": _file_hash(path),
+            "bytes": path.stat().st_size,
+        }
+    value = {
+        "schema_version": MANIFEST_SCHEMA,
+        "run_id": run_id,
+        "artifacts": rows,
+    }
+    _write_json(output_dir / "manifest.json", value)
+    return value
+
+
+def load_acceptance(path: Path = DEFAULT_ACCEPTANCE) -> dict[str, Any]:
+    value = json.loads(path.read_text())
+    if value.get("schema_version") != ACCEPTANCE_SCHEMA:
+        raise ValueError(f"acceptance matrix must use {ACCEPTANCE_SCHEMA}")
+    if not isinstance(value.get("common"), dict):
+        raise ValueError("acceptance matrix common must be an object")
+    if not isinstance(value.get("worlds"), dict):
+        raise ValueError("acceptance matrix worlds must be an object")
+    return value
+
+
+def _acceptance_expectation(
+    acceptance: dict[str, Any], bundle: dict[str, Any]
+) -> dict[str, Any]:
+    world_id = bundle["world"]["id"]
+    row = acceptance["worlds"].get(world_id)
+    if not isinstance(row, dict) or not isinstance(row.get("expected"), dict):
+        raise ValueError(f"acceptance matrix has no expectations for {world_id!r}")
+    return row["expected"]
+
+
+def _check(
+    check_id: str,
+    category: str,
+    passed: bool,
+    *,
+    expected: object = None,
+    observed: object = None,
+) -> dict[str, Any]:
+    return {
+        "id": check_id,
+        "category": category,
+        "passed": bool(passed),
+        "expected": deepcopy(expected),
+        "observed": deepcopy(observed),
+    }
+
+
+def evaluate_acceptance(
+    bundle: dict[str, Any],
+    result: dict[str, Any],
+    acceptance: dict[str, Any],
+) -> dict[str, Any]:
+    expected = _acceptance_expectation(acceptance, bundle)
+    common = acceptance["common"]
+    checks: list[dict[str, Any]] = []
+    entities = bundle["entities"]
+    members = [row for row in entities if "member" in row.get("categories", [])]
+    resources = [row for row in entities if "resource" in row.get("categories", [])]
+    infos = [row for row in entities if "information" in row.get("categories", [])]
+    deliveries = {
+        row["components"]["delivery"]["info_id"]: row["components"]["delivery"]
+        for row in entities
+        if "delivery" in (row.get("components") or {})
+    }
+    gate_id = expected["gate_id"]
+    gate_row = next(row for row in entities if row["id"] == gate_id)
+    channels = sorted(
+        {row["components"]["information"]["channel_id"] for row in infos}
+    )
+    mechanics = sorted(m.action_kind for m in result["causal_model"].mechanics)
+
+    checks.extend([
+        _check(
+            "config.member_count", "input",
+            len(members) == expected["member_count"],
+            expected=expected["member_count"], observed=len(members),
+        ),
+        _check(
+            "config.resource_count", "input",
+            len(resources) == expected["resource_count"],
+            expected=expected["resource_count"], observed=len(resources),
+        ),
+        _check(
+            "config.report_count", "input",
+            len(infos) == expected["report_count"],
+            expected=expected["report_count"], observed=len(infos),
+        ),
+        _check(
+            "config.channels", "input",
+            channels == sorted(expected["channels"]),
+            expected=sorted(expected["channels"]), observed=channels,
+        ),
+        _check(
+            "config.required_approvals", "input",
+            gate_row["components"]["gate"]["required_approvals"] == expected["required_approvals"],
+            expected=expected["required_approvals"],
+            observed=gate_row["components"]["gate"]["required_approvals"],
+        ),
+        _check(
+            "compiler.action_kinds", "compiler",
+            mechanics == sorted(common["mechanic_action_kinds"]),
+            expected=sorted(common["mechanic_action_kinds"]), observed=mechanics,
+        ),
+    ])
+
+    trace = result["trace"]
+    projection = result["projection"]
+    events = projection["events"]
+    blocked_id = trace["summary"]["blocked_event_id"]
+    blocked = next(event for event in events if event["event_id"] == blocked_id)
+    failed_labels = sorted(
+        row["label"] for row in blocked.get("checks", []) if row.get("ok") is False
+    )
+    checks.extend([
+        _check(
+            "engine.zero_provider_spend", "engine",
+            trace["cost_usd"] == common["provider_spend_usd"],
+            expected=common["provider_spend_usd"], observed=trace["cost_usd"],
+        ),
+        _check(
+            "engine.terminal_reached", "engine",
+            trace["summary"]["terminal_reached"] is True,
+            expected=True, observed=trace["summary"]["terminal_reached"],
+        ),
+        _check(
+            "engine.intentional_block", "engine",
+            blocked.get("status") == "precondition_failed"
+            and expected["blocked_check"] in failed_labels,
+            expected={
+                "status": "precondition_failed",
+                "failed_check": expected["blocked_check"],
+            },
+            observed={"status": blocked.get("status"), "failed_checks": failed_labels},
+        ),
+    ])
+
+    intervention = [
+        event for event in events
+        if event.get("rule_id") == "coordination.action.intervene"
+        and event.get("status") == "accepted"
+    ]
+    intervention_actor = (
+        (intervention[-1].get("causal_bearer") or {}).get("id")
+        if intervention else None
+    )
+    intervention_changed = (
+        any(
+            change.get("path", "").startswith(
+                f"entities.{expected['restorable_resource']}."
+            )
+            for change in intervention[-1].get("changes", [])
+        )
+        if intervention else False
+    )
+    checks.append(
+        _check(
+            "engine.represented_intervention", "engine",
+            bool(intervention)
+            and intervention_actor == expected["intervention_actor"]
+            and intervention_changed,
+            expected={
+                "actor": expected["intervention_actor"],
+                "resource": expected["restorable_resource"],
+            },
+            observed={
+                "actor": intervention_actor,
+                "resource_changed": intervention_changed,
+            },
+        )
+    )
+
+    final_gate = result["engine"].world.entities[gate_id].component("gate")
+    checks.append(
+        _check(
+            "engine.final_gate", "engine",
+            final_gate.status == common["terminal_gate_status"]
+            and final_gate.approval_count >= final_gate.required_approvals,
+            expected={
+                "status": common["terminal_gate_status"],
+                "required_approvals": expected["required_approvals"],
+            },
+            observed={
+                "status": final_gate.status,
+                "approval_count": final_gate.approval_count,
+                "required_approvals": final_gate.required_approvals,
+            },
+        )
+    )
+
+    final_world = projection["projection_final"]
+    member_ids = [row["id"] for row in members]
+    visibility_failures: list[dict[str, Any]] = []
+    for info_row in infos:
+        info_id = info_row["id"]
+        info = info_row["components"]["information"]
+        delivery = deliveries[info_id]
+        source = info["source_id"]
+        recipient = delivery["recipient_id"]
+        recipient_visible = information_visible_in_material_world(
+            final_world, recipient, info_id
+        )
+        outsiders = [
+            actor for actor in member_ids if actor not in {source, recipient}
+        ]
+        leaked = [
+            actor for actor in outsiders
+            if information_visible_in_material_world(final_world, actor, info_id)
+        ]
+        if not recipient_visible or leaked:
+            visibility_failures.append({
+                "info_id": info_id,
+                "recipient": recipient,
+                "recipient_visible": recipient_visible,
+                "leaked_to": leaked,
+            })
+    checks.append(
+        _check(
+            "information.actor_scoped_visibility", "information_visibility",
+            not visibility_failures,
+            expected="recipient sees direct delivery; unrelated members do not",
+            observed=visibility_failures,
+        )
+    )
+
+    final_hash = events[-1]["hash_after"] if events else None
+    checks.extend([
+        _check(
+            "projection.final_hash", "projection",
+            projection.get("projection_final_hash") == final_hash,
+            expected=final_hash, observed=projection.get("projection_final_hash"),
+        ),
+        _check(
+            "projection.frame_count", "projection",
+            len(result["frames"]) == len(events) + 1,
+            expected=len(events) + 1, observed=len(result["frames"]),
+        ),
+    ])
+
+    html = result["html"]
+    final_frame = result["frames"][-1]
+    gate_view = final_frame["views"]["institutions"][gate_id]["bindings"]
+    transmissions = [
+        effect
+        for frame in result["frames"]
+        for effect in frame.get("presentation_effects", [])
+        if effect.get("kind") == "information_transmission"
+    ]
+    blocked_frame = next(
+        frame for frame in result["frames"]
+        if (frame.get("event") or {}).get("event_id") == blocked_id
+    )
+    feedback_rows = [
+        effect for effect in blocked_frame.get("presentation_effects", [])
+        if effect.get("kind") == "action_feedback"
+    ]
+    feedback_reasons = sorted(
+        {
+            reason
+            for effect in feedback_rows
+            for reason in effect.get("reasons", [])
+        }
+    )
+    checks.extend([
+        _check(
+            "renderer.generic_controls", "renderer",
+            "id='inspector'" in html and "id='scrub'" in html,
+            expected=["inspector", "canonical event scrubber"],
+            observed={
+                "inspector": "id='inspector'" in html,
+                "scrubber": "id='scrub'" in html,
+            },
+        ),
+        _check(
+            "renderer.final_gate", "renderer",
+            gate_view.get("status") == common["terminal_gate_status"]
+            and gate_view.get("support", 0) >= gate_view.get("required", 0),
+            expected=common["terminal_gate_status"], observed=gate_view,
+        ),
+        _check(
+            "renderer.information_movement", "renderer",
+            bool(transmissions),
+            expected="at least one represented transmission",
+            observed=len(transmissions),
+        ),
+        _check(
+            "renderer.private_content_hidden", "information_visibility",
+            bool(transmissions)
+            and all(effect.get("content_visible") is False for effect in transmissions),
+            expected=False,
+            observed=sorted({effect.get("content_visible") for effect in transmissions}),
+        ),
+        _check(
+            "renderer.failed_check_feedback", "renderer",
+            expected["blocked_check"] in feedback_reasons,
+            expected=expected["blocked_check"], observed=feedback_reasons,
+        ),
+    ])
+
+    failed = [row for row in checks if not row["passed"]]
+    return {
+        "schema_version": ACCEPTANCE_RESULT_SCHEMA,
+        "world_id": bundle["world"]["id"],
+        "passed": not failed,
+        "checks": checks,
+        "failed_check_ids": [row["id"] for row in failed],
+    }
+
+
+def _summary(
+    *,
+    run_id: str,
+    bundle: dict[str, Any],
+    stage: str,
+    status: str,
+    failure_category: str | None = None,
+    error: BaseException | None = None,
+    result: dict[str, Any] | None = None,
+    acceptance_result: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    trace = result.get("trace") if result else None
+    projection = result.get("projection") if result else None
+    value: dict[str, Any] = {
+        "schema_version": DIAGNOSTIC_SCHEMA,
+        "run_id": run_id,
+        "world_id": bundle["world"]["id"],
+        "stage": stage,
+        "status": status,
+        "failure_category": failure_category,
+        "provider_spend_usd": trace.get("cost_usd") if trace else None,
+        "mechanic_profile_id": trace.get("mechanic_profile_id") if trace else None,
+        "terminal_reached": (trace.get("summary") or {}).get("terminal_reached") if trace else None,
+        "event_count": len(projection.get("events", [])) if projection else None,
+        "projection_final_hash": projection.get("projection_final_hash") if projection else None,
+        "acceptance_passed": acceptance_result.get("passed") if acceptance_result else None,
+    }
+    if error is not None:
+        value["error"] = {
+            "type": type(error).__name__,
+            "message": str(error),
+        }
+    return value
+
+
+def run_diagnostic(
+    bundle: dict[str, Any],
+    causal_value: dict[str, Any],
+    *,
+    acceptance: dict[str, Any],
+    output_dir: Path,
+    run_id: str | None = None,
+) -> dict[str, Any]:
+    run_id = run_id or f"native-coordination/{bundle['world']['id']}/{uuid.uuid4().hex}"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    stage = "input"
+    result: dict[str, Any] | None = None
+    acceptance_result: dict[str, Any] | None = None
+    _write_json(output_dir / "input-bundle.json", bundle)
+    _write_json(output_dir / "causal-model.json", causal_value)
+    _write_json(
+        output_dir / "summary.json",
+        _summary(run_id=run_id, bundle=bundle, stage=stage, status="running"),
+    )
+
+    def checkpoint(name: str, payload: dict[str, Any]) -> None:
+        nonlocal stage
+        stage = name
+        engine = payload.get("engine")
+        causal_model = payload.get("causal_model")
+        if causal_model is not None:
+            _write_json(output_dir / "mechanics-review.json", causal_model.as_review())
+        if engine is not None:
+            _write_json(output_dir / "initial-snapshot.json", engine.initial_snapshot())
+            _write_json(output_dir / "commands.json", engine.world.commands)
+            _write_json(output_dir / "events.json", engine.world.events)
+        projection = payload.get("projection")
+        if projection is not None:
+            _write_json(output_dir / "projection.json", projection)
+        profile = payload.get("profile")
+        if profile is not None:
+            _write_json(output_dir / "living-profile.json", profile)
+        frames = payload.get("frames")
+        if frames is not None:
+            _write_json(output_dir / "living-frames.json", frames)
+        html = payload.get("html")
+        if isinstance(html, str):
+            _write_text(output_dir / "render.html", html)
+        _write_json(
+            output_dir / "summary.json",
+            _summary(run_id=run_id, bundle=bundle, stage=stage, status="running"),
+        )
+
+    try:
+        stage = "compiler"
+        declared = CausalModel.from_dict(causal_value, bundle=bundle)
+        _write_json(output_dir / "mechanics-review.json", declared.as_review())
+        _write_json(
+            output_dir / "summary.json",
+            _summary(run_id=run_id, bundle=bundle, stage=stage, status="running"),
+        )
+        result = run_native_coordination(
+            bundle, causal_value, stage_callback=checkpoint
+        )
+        _write_json(output_dir / "trace.json", result["trace"])
+        checkpoint("projection", {"projection": result["projection"]})
+        checkpoint(
+            "renderer",
+            {
+                "profile": result["profile"],
+                "frames": result["frames"],
+                "html": result["html"],
+            },
+        )
+        stage = "acceptance"
+        acceptance_result = evaluate_acceptance(bundle, result, acceptance)
+        _write_json(output_dir / "acceptance.json", acceptance_result)
+        if not acceptance_result["passed"]:
+            first = next(
+                row for row in acceptance_result["checks"] if not row["passed"]
+            )
+            category = first["category"]
+            failure_category = (
+                category
+                if category in STAGE_FAILURE_CATEGORY.values()
+                or category == "information_visibility"
+                else "acceptance"
+            )
+            summary = _summary(
+                run_id=run_id,
+                bundle=bundle,
+                stage=stage,
+                status="failed",
+                failure_category=failure_category,
+                result=result,
+                acceptance_result=acceptance_result,
+            )
+            _write_json(output_dir / "summary.json", summary)
+            _write_manifest(output_dir, run_id)
+            return summary
+
+        stage = "complete"
+        summary = _summary(
+            run_id=run_id,
+            bundle=bundle,
+            stage=stage,
+            status="passed",
+            result=result,
+            acceptance_result=acceptance_result,
+        )
+        _write_json(output_dir / "summary.json", summary)
+        _write_manifest(output_dir, run_id)
+        return summary
+    except Exception as error:
+        failure_category = STAGE_FAILURE_CATEGORY.get(stage, "environment")
+        summary = _summary(
+            run_id=run_id,
+            bundle=bundle,
+            stage=stage,
+            status="failed",
+            failure_category=failure_category,
+            error=error,
+            result=result,
+            acceptance_result=acceptance_result,
+        )
+        _write_json(output_dir / "summary.json", summary)
+        _write_manifest(output_dir, run_id)
+        return summary
+
 
 
 def _members(bundle: dict[str, Any]) -> list[str]:
@@ -313,8 +824,21 @@ def _living_ui(
 def run_native_coordination(
     bundle: dict[str, Any],
     causal_value: dict[str, Any],
+    *,
+    stage_callback: Any | None = None,
 ) -> dict[str, Any]:
+    def checkpoint(stage: str, **payload: Any) -> None:
+        if stage_callback is not None:
+            stage_callback(stage, payload)
+
+    checkpoint("compiler")
     engine, causal_model, profile_id = build_engine(bundle, causal_value)
+    checkpoint(
+        "engine",
+        engine=engine,
+        causal_model=causal_model,
+        mechanic_profile_id=profile_id,
+    )
     actors = _members(bundle)
     gate_id = _entity_with_category(bundle, "gate")
     prerequisites = {
@@ -338,6 +862,7 @@ def run_native_coordination(
             recipient=recipient,
         )
         transcript.append(_transcript_turn(turn, actors, source, action, outcome))
+        checkpoint("engine", engine=engine, causal_model=causal_model)
         turn += 1
 
     voters = [recipient for _, _, _, recipient in reports]
@@ -353,6 +878,7 @@ def run_native_coordination(
         **prerequisites,
     )
     transcript.append(_transcript_turn(turn, actors, voters[0], blocked_action, blocked))
+    checkpoint("engine", engine=engine, causal_model=causal_model)
     blocked_event_id = blocked["event"]["event_id"]
     turn += 1
 
@@ -366,6 +892,7 @@ def run_native_coordination(
     transcript.append(
         _transcript_turn(turn, actors, authorized, intervention_action, intervention)
     )
+    checkpoint("engine", engine=engine, causal_model=causal_model)
     turn += 1
 
     for actor in voters[: _required_approvals(bundle)]:
@@ -378,6 +905,7 @@ def run_native_coordination(
             **prerequisites,
         )
         transcript.append(_transcript_turn(turn, actors, actor, action, outcome))
+        checkpoint("engine", engine=engine, causal_model=causal_model)
         turn += 1
 
     finalize_action, finalized = _attempt(
@@ -389,6 +917,7 @@ def run_native_coordination(
         **prerequisites,
     )
     transcript.append(_transcript_turn(turn, actors, authorized, finalize_action, finalized))
+    checkpoint("engine", engine=engine, causal_model=causal_model)
 
     if causal_model.terminal is None or not causal_model.terminal.reached(engine.world):
         raise AssertionError("native coordination fixture did not reach its state-derived terminal")
@@ -413,6 +942,7 @@ def run_native_coordination(
         },
         "transcript": transcript,
     }
+    checkpoint("projection", engine=engine, causal_model=causal_model)
     projection = build_live_projection(
         initial_snapshot=engine.initial_snapshot(),
         events=engine.world.events,
@@ -422,7 +952,17 @@ def run_native_coordination(
         },
         branch_id=f"{bundle['world']['id']}-deterministic",
     )
+    checkpoint("projection", engine=engine, causal_model=causal_model, projection=projection)
+    checkpoint("renderer", projection=projection)
     profile, frames, html = _living_ui(bundle, projection)
+    checkpoint(
+        "renderer",
+        projection=projection,
+        profile=profile,
+        frames=frames,
+        html=html,
+    )
+    checkpoint("complete", engine=engine, causal_model=causal_model, projection=projection)
     return {
         "trace": trace,
         "projection": projection,
@@ -438,6 +978,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("bundle", type=Path)
     parser.add_argument("--causal-model", type=Path, default=DEFAULT_CAUSAL)
+    parser.add_argument("--acceptance", type=Path, default=DEFAULT_ACCEPTANCE)
+    parser.add_argument("--diagnostic-dir", type=Path)
+    parser.add_argument("--run-id")
     parser.add_argument("--trace-output", type=Path)
     parser.add_argument("--projection-output", type=Path)
     parser.add_argument("--profile-output", type=Path)
@@ -446,6 +989,18 @@ def main() -> int:
 
     bundle = load_bundle(args.bundle)
     causal_value = json.loads(args.causal_model.read_text())
+    acceptance = load_acceptance(args.acceptance)
+    if args.diagnostic_dir is not None:
+        summary = run_diagnostic(
+            bundle,
+            causal_value,
+            acceptance=acceptance,
+            output_dir=args.diagnostic_dir,
+            run_id=args.run_id,
+        )
+        print(json.dumps(summary, sort_keys=True))
+        return 0 if summary["status"] == "passed" else 2
+
     result = run_native_coordination(bundle, causal_value)
     outputs = [
         (args.trace_output, result["trace"]),
@@ -454,11 +1009,9 @@ def main() -> int:
     ]
     for path, value in outputs:
         if path is not None:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(json.dumps(value, indent=2) + "\n")
+            _write_json(path, value)
     if args.html_output is not None:
-        args.html_output.parent.mkdir(parents=True, exist_ok=True)
-        args.html_output.write_text(result["html"])
+        _write_text(args.html_output, result["html"])
     print(json.dumps(result["trace"]["summary"], sort_keys=True))
     return 0
 
