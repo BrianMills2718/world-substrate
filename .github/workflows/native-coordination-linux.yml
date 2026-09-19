@@ -1,0 +1,62 @@
+name: Native coordination Linux gate
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/native-coordination-linux.yml"
+      - "docs/contracts/core-v0.md"
+      - "docs/contracts/native-coordination-diagnostics-v0.md"
+      - "examples/native_coordination/**"
+      - "scripts/check_native_coordination.py"
+      - "scripts/run_native_coordination.py"
+      - "scripts/run_authored_world.py"
+      - "src/world_substrate/**"
+      - "tests/test_living_scene_information_feedback.py"
+      - "tests/test_native_coordination.py"
+      - "tests/test_native_coordination_matrix.py"
+      - "tests/test_runtime_component_replay.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Run native coordination acceptance matrix
+        run: |
+          python scripts/check_native_coordination.py \
+            --output-root /tmp/world-substrate-native-coordination
+
+      - name: Run focused native coordination tests
+        run: |
+          python -m pytest \
+            tests/test_native_coordination.py \
+            tests/test_native_coordination_matrix.py \
+            tests/test_runtime_component_replay.py
+
+      - name: Run project checker
+        run: python scripts/check_project.py
+
+      - name: Retain native coordination diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-coordination-linux-diagnostics
+          path: /tmp/world-substrate-native-coordination
+          if-no-files-found: warn
+          retention-days: 14
