@@ -422,6 +422,7 @@ def run_diagnostic(
     acceptance_result: dict[str, Any] | None = None
     _write_json(output_dir / "input-bundle.json", bundle)
     _write_json(output_dir / "causal-model.json", causal_value)
+    _write_json(output_dir / "acceptance-matrix.json", acceptance)
     _write_json(
         output_dir / "summary.json",
         _summary(run_id=run_id, bundle=bundle, stage=stage, status="running"),
@@ -987,10 +988,46 @@ def main() -> int:
     parser.add_argument("--html-output", type=Path)
     args = parser.parse_args()
 
-    bundle = load_bundle(args.bundle)
-    causal_value = json.loads(args.causal_model.read_text())
-    acceptance = load_acceptance(args.acceptance)
     if args.diagnostic_dir is not None:
+        args.diagnostic_dir.mkdir(parents=True, exist_ok=True)
+        fallback_run_id = args.run_id or f"native-coordination/input/{uuid.uuid4().hex}"
+        raw_inputs = {
+            "input-bundle.raw": args.bundle,
+            "causal-model.raw": args.causal_model,
+            "acceptance-matrix.raw": args.acceptance,
+        }
+        for name, source in raw_inputs.items():
+            try:
+                _write_text(args.diagnostic_dir / name, source.read_text())
+            except OSError:
+                pass
+        try:
+            bundle = load_bundle(args.bundle)
+            causal_value = json.loads(args.causal_model.read_text())
+            acceptance = load_acceptance(args.acceptance)
+        except Exception as error:
+            summary = {
+                "schema_version": DIAGNOSTIC_SCHEMA,
+                "run_id": fallback_run_id,
+                "world_id": None,
+                "stage": "input",
+                "status": "failed",
+                "failure_category": "input",
+                "provider_spend_usd": None,
+                "mechanic_profile_id": None,
+                "terminal_reached": None,
+                "event_count": None,
+                "projection_final_hash": None,
+                "acceptance_passed": None,
+                "error": {
+                    "type": type(error).__name__,
+                    "message": str(error),
+                },
+            }
+            _write_json(args.diagnostic_dir / "summary.json", summary)
+            _write_manifest(args.diagnostic_dir, fallback_run_id)
+            print(json.dumps(summary, sort_keys=True))
+            return 2
         summary = run_diagnostic(
             bundle,
             causal_value,
@@ -1001,6 +1038,8 @@ def main() -> int:
         print(json.dumps(summary, sort_keys=True))
         return 0 if summary["status"] == "passed" else 2
 
+    bundle = load_bundle(args.bundle)
+    causal_value = json.loads(args.causal_model.read_text())
     result = run_native_coordination(bundle, causal_value)
     outputs = [
         (args.trace_output, result["trace"]),
