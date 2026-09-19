@@ -207,7 +207,15 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
 
     def test_feedback_supports_retained_statuses_without_generating_reasons(self):
         cfg = checked_profile()
-        for status in ("accepted", "rejected", "refused", "blocked"):
+        for status in (
+            "accepted",
+            "rejected",
+            "refused",
+            "blocked",
+            "precondition_failed",
+            "stale_revision",
+            "scope_violation",
+        ):
             value = bundle()
             value["events"] = [{
                 "event_id": f"e-{status}",
