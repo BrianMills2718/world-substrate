@@ -195,6 +195,7 @@ def evaluate_acceptance(
     events = projection["events"]
     blocked_id = trace["summary"]["blocked_event_id"]
     blocked = next(event for event in events if event["event_id"] == blocked_id)
+    replay = result["engine"].replay()
     failed_labels = sorted(
         row["label"] for row in blocked.get("checks", []) if row.get("ok") is False
     )
@@ -203,6 +204,11 @@ def evaluate_acceptance(
             "engine.zero_provider_spend", "engine",
             trace["cost_usd"] == common["provider_spend_usd"],
             expected=common["provider_spend_usd"], observed=trace["cost_usd"],
+        ),
+        _check(
+            "engine.exact_replay", "engine",
+            replay.get("ok") is True and replay.get("event_match") is True,
+            expected={"ok": True, "event_match": True}, observed=replay,
         ),
         _check(
             "engine.terminal_reached", "engine",
