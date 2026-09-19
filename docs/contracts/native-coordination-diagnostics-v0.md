@@ -117,6 +117,17 @@ This is observability, not recovery authority. A diagnostic writer cannot edit c
 
 The matrix command therefore checks the milestone claim that materially different configurations use one reusable mechanics family; that claim is not inferred from similar source files.
 
+Canonical Linux verification command:
+
+```bash
+python scripts/check_native_coordination.py \
+  --output-root /tmp/world-substrate-native-coordination
+python -m pytest tests/test_native_coordination.py tests/test_native_coordination_matrix.py
+python scripts/check_project.py
+```
+
+The first command is expected to leave complete diagnostic evidence whether the matrix passes or a product boundary fails. The final two commands remain required before the implementation PR is ready to merge.
+
 ## Privacy and causal boundary
 
 Direct/private represented information may appear in canonical evidence where actor-authorized observations legitimately contain it. The public Living Scene render receives no observer identity by default, so private message content must remain hidden there even when the represented transmission line itself is visible.
