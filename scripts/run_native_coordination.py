@@ -791,21 +791,21 @@ def _living_profile(
         "coordination.action.communicate": {
             "label": "represented information delivered",
             "operations": [
-                {"op": "information.transmit", "delivery_from_changed_entities": True},
-                {"op": "action.feedback", "label": "communication attempt"},
+                {"op": "information.transmit", "delivery_from_changed_entities": True, "read_paths": {}},
+                {"op": "action.feedback", "read_paths": {}, "label": "communication attempt"},
             ],
         },
         "coordination.action.approve": {
             "label": "approval attempt",
-            "operations": [{"op": "action.feedback", "label": "approval attempt"}],
+            "operations": [{"op": "action.feedback", "read_paths": {}, "label": "approval attempt"}],
         },
         "coordination.action.intervene": {
             "label": "represented prerequisite restored",
-            "operations": [{"op": "action.feedback", "label": "intervention attempt"}],
+            "operations": [{"op": "action.feedback", "read_paths": {}, "label": "intervention attempt"}],
         },
         "coordination.action.finalize": {
             "label": "coordination gate evaluated",
-            "operations": [{"op": "action.feedback", "label": "finalization attempt"}],
+            "operations": [{"op": "action.feedback", "read_paths": {}, "label": "finalization attempt"}],
         },
     }
 
