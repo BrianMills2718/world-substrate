@@ -1,3 +1,4 @@
+# Push-trigger verification commit after workflow installation.
 name: Native coordination Linux gate
 
 on:
