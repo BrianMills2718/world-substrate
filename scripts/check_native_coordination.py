@@ -67,14 +67,8 @@ def run_matrix(
         value for value in profile_ids.values()
         if isinstance(value, str) and value
     }
-    shared_profile = (
-        len(nonempty_profiles) == 1
-        and len(nonempty_profiles) == len(set(profile_ids.values()))
-        and all(profile_ids.values())
-    )
-    # The expression above deliberately requires every world to report a
-    # concrete profile id; a failed world cannot pass the shared-mechanics gate
-    # merely because the other world has one valid id.
+    # Every world must report the same concrete profile id. A failed world
+    # cannot pass this gate merely because another world produced one valid id.
     shared_profile = bool(
         len(nonempty_profiles) == 1
         and all(isinstance(value, str) and value for value in profile_ids.values())
