@@ -48,6 +48,7 @@ A complete successful diagnostic directory contains:
 summary.json
 input-bundle.json
 causal-model.json
+acceptance-matrix.json
 mechanics-review.json
 initial-snapshot.json
 commands.json
@@ -62,6 +63,8 @@ manifest.json
 ```
 
 `summary.json` is an index, not the source of truth. It records run/world identity, current diagnostic stage, pass/fail state, failure category when present, mechanic profile id, provider spend, terminal state, event count, and projection final hash.
+
+`acceptance-matrix.json` is the exact machine-readable promise set used for this run.
 
 `mechanics-review.json` is compiler-derived authority review. It exposes the installed declarations' derived reads/writes, checks, effects, limits, tests, and terminal predicate.
 
@@ -79,7 +82,9 @@ The v0 diagnostic taxonomy is intentionally small:
 
 - `input` — structured bundle or acceptance expectation is invalid;
 - `compiler` — causal declaration cannot compile/install under current authority rules;
-- `engine` — deterministic execution, Engine commit/refusal, or terminal behavior is wrong;
+- `mechanic_check` — installed checks allow or block the wrong represented attempt;
+- `authority` — an installed rule crosses Engine/write-scope authority;
+- `engine` — deterministic execution or terminal behavior is otherwise wrong;
 - `information_visibility` — source/recipient/outsider authorization is wrong;
 - `projection` — retained projection does not match canonical history/state;
 - `renderer` — Living Scene profile/frame/render construction fails or omits required generic presentation;
@@ -105,6 +110,12 @@ input
 If an exception escapes, `summary.json` must still be written with the last entered stage, mapped failure category, exception type, and message. Successful artifacts already written before the failure are retained.
 
 This is observability, not recovery authority. A diagnostic writer cannot edit canonical history to make a failed run pass.
+
+## Matrix command
+
+`scripts/check_native_coordination.py` is the first-slice acceptance entry point. It runs every world declared in the acceptance matrix into its own diagnostic directory, writes `matrix-summary.json`, and requires every world to pass while reporting one identical frozen mechanic-profile id.
+
+The matrix command therefore checks the milestone claim that materially different configurations use one reusable mechanics family; that claim is not inferred from similar source files.
 
 ## Privacy and causal boundary
 
