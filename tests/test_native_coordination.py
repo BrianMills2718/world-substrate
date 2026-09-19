@@ -199,6 +199,9 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 trace = result["trace"]
                 self.assertEqual(trace["cost_usd"], 0.0)
                 self.assertTrue(trace["summary"]["terminal_reached"])
+                replay = result["engine"].replay()
+                self.assertTrue(replay["ok"])
+                self.assertTrue(replay["event_match"])
 
                 blocked_id = trace["summary"]["blocked_event_id"]
                 blocked = next(
