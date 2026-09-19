@@ -368,7 +368,7 @@ def _information_transmissions(
 
 def _action_feedback(event: dict[str, Any], operation: dict[str, Any]) -> dict[str, Any]:
     status = event.get("status")
-    if status not in {"accepted", "rejected", "refused", "blocked"}:
+    if not isinstance(status, str) or not status:
         status = "unknown"
     reasons: list[str] = []
     for check in event.get("checks") or []:
