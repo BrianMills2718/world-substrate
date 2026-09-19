@@ -1,0 +1,60 @@
+{
+  "schema_version": "world-substrate-native-coordination-acceptance/v0",
+  "purpose": "Executable acceptance matrix for the first configurable native Waltzman coordination vertical.",
+  "common": {
+    "provider_spend_usd": 0,
+    "mechanic_action_kinds": [
+      "communicate",
+      "approve",
+      "intervene",
+      "finalize"
+    ],
+    "required_ui": [
+      "actors",
+      "resources",
+      "gate",
+      "canonical_timeline",
+      "selection_inspection",
+      "information_movement",
+      "failed_check_feedback"
+    ],
+    "information_content_public_by_default": false,
+    "terminal_gate_status": "ready"
+  },
+  "worlds": {
+    "distributed-approval": {
+      "bundle": "examples/native_coordination/distributed-approval-v0.json",
+      "expected": {
+        "member_count": 6,
+        "resource_count": 4,
+        "report_count": 4,
+        "channels": [
+          "briefing",
+          "dashboard"
+        ],
+        "gate_id": "deployment-gate",
+        "required_approvals": 4,
+        "blocked_check": "Prerequisite A is healthy",
+        "restorable_resource": "validation",
+        "intervention_actor": "tess"
+      }
+    },
+    "constrained-handoff": {
+      "bundle": "examples/native_coordination/constrained-handoff-v0.json",
+      "expected": {
+        "member_count": 4,
+        "resource_count": 4,
+        "report_count": 2,
+        "channels": [
+          "ops-chat",
+          "radio"
+        ],
+        "gate_id": "handoff-gate",
+        "required_approvals": 2,
+        "blocked_check": "Prerequisite A is healthy",
+        "restorable_resource": "handoff-token",
+        "intervention_actor": "dev"
+      }
+    }
+  }
+}
