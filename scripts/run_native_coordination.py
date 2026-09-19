@@ -361,7 +361,30 @@ def evaluate_acceptance(
             for reason in effect.get("reasons", [])
         }
     )
+    observed_ui: set[str] = set()
+    if len(final_frame["views"]["actors"]) == expected["member_count"]:
+        observed_ui.add("actors")
+    if len(final_frame["views"]["entities"]) == expected["resource_count"]:
+        observed_ui.add("resources")
+    if gate_id in final_frame["views"]["institutions"]:
+        observed_ui.add("gate")
+    if "id='scrub'" in html:
+        observed_ui.add("canonical_timeline")
+    if "id='inspector'" in html:
+        observed_ui.add("selection_inspection")
+    if transmissions:
+        observed_ui.add("information_movement")
+    if feedback_rows and expected["blocked_check"] in feedback_reasons:
+        observed_ui.add("failed_check_feedback")
+    required_ui = set(common["required_ui"])
+
     checks.extend([
+        _check(
+            "renderer.required_ui", "renderer",
+            required_ui.issubset(observed_ui),
+            expected=sorted(required_ui),
+            observed=sorted(observed_ui),
+        ),
         _check(
             "renderer.generic_controls", "renderer",
             "id='inspector'" in html and "id='scrub'" in html,
@@ -386,8 +409,12 @@ def evaluate_acceptance(
         _check(
             "renderer.private_content_hidden", "information_visibility",
             bool(transmissions)
-            and all(effect.get("content_visible") is False for effect in transmissions),
-            expected=False,
+            and all(
+                effect.get("content_visible")
+                is common["information_content_public_by_default"]
+                for effect in transmissions
+            ),
+            expected=common["information_content_public_by_default"],
             observed=sorted({effect.get("content_visible") for effect in transmissions}),
         ),
         _check(
