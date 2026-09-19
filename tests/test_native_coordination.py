@@ -1,10 +1,17 @@
 from __future__ import annotations
 
+import hashlib
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.run_native_coordination import run_native_coordination
+from scripts.run_native_coordination import (
+    evaluate_acceptance,
+    load_acceptance,
+    run_diagnostic,
+    run_native_coordination,
+)
 from scripts.scaffold_world import load_bundle
 from world_substrate.information import information_visible_in_material_world
 
@@ -27,10 +34,11 @@ def _component_rows(bundle: dict, component: str) -> list[dict]:
 class NativeCoordinationVerticalTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        causal = json.loads(CAUSAL.read_text())
+        cls.causal = json.loads(CAUSAL.read_text())
+        cls.acceptance = load_acceptance()
         cls.bundles = {name: load_bundle(path) for name, path in FIXTURES.items()}
         cls.results = {
-            name: run_native_coordination(bundle, causal)
+            name: run_native_coordination(bundle, cls.causal)
             for name, bundle in cls.bundles.items()
         }
 
@@ -60,6 +68,94 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
             self.results["distributed"]["trace"]["mechanic_profile_id"],
             self.results["handoff"]["trace"]["mechanic_profile_id"],
         )
+
+    def test_executable_acceptance_matrix_passes_for_both_worlds(self):
+        for name, result in self.results.items():
+            with self.subTest(name=name):
+                evaluated = evaluate_acceptance(
+                    self.bundles[name], result, self.acceptance
+                )
+                self.assertTrue(evaluated["passed"], evaluated["failed_check_ids"])
+                self.assertEqual(evaluated["failed_check_ids"], [])
+                self.assertTrue(evaluated["checks"])
+                self.assertTrue(
+                    {"input", "compiler", "engine", "information_visibility", "projection", "renderer"}
+                    .issubset({row["category"] for row in evaluated["checks"]})
+                )
+
+    def test_diagnostic_bundle_retains_exact_artifacts_and_hash_manifest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "diagnostic"
+            summary = run_diagnostic(
+                self.bundles["distributed"],
+                self.causal,
+                acceptance=self.acceptance,
+                output_dir=output,
+                run_id="test/native-coordination/distributed",
+            )
+            self.assertEqual(summary["status"], "passed")
+            required = {
+                "summary.json",
+                "input-bundle.json",
+                "causal-model.json",
+                "mechanics-review.json",
+                "initial-snapshot.json",
+                "commands.json",
+                "events.json",
+                "trace.json",
+                "projection.json",
+                "living-profile.json",
+                "living-frames.json",
+                "render.html",
+                "acceptance.json",
+                "manifest.json",
+            }
+            self.assertTrue(required.issubset({path.name for path in output.iterdir()}))
+            manifest = json.loads((output / "manifest.json").read_text())
+            self.assertEqual(
+                manifest["schema_version"],
+                "world-substrate-native-coordination-diagnostic-manifest/v0",
+            )
+            self.assertEqual(
+                manifest["run_id"], "test/native-coordination/distributed"
+            )
+            for name, row in manifest["artifacts"].items():
+                self.assertEqual(
+                    hashlib.sha256((output / name).read_bytes()).hexdigest(),
+                    row["sha256"],
+                )
+            events = json.loads((output / "events.json").read_text())
+            blocked = next(
+                event for event in events if event["status"] == "precondition_failed"
+            )
+            self.assertIsNotNone(blocked["observation"])
+            self.assertIn(
+                "Prerequisite A is healthy",
+                {row["label"] for row in blocked["checks"] if not row["ok"]},
+            )
+
+    def test_compiler_failure_still_leaves_diagnostic_summary(self):
+        broken = json.loads(json.dumps(self.causal))
+        broken["mechanics"][0]["effects"][0]["path"] = (
+            "components.information.nonexistent"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "diagnostic"
+            summary = run_diagnostic(
+                self.bundles["distributed"],
+                broken,
+                acceptance=self.acceptance,
+                output_dir=output,
+                run_id="test/native-coordination/compiler-failure",
+            )
+            self.assertEqual(summary["status"], "failed")
+            self.assertEqual(summary["stage"], "compiler")
+            self.assertEqual(summary["failure_category"], "compiler")
+            self.assertEqual(summary["error"]["type"], "ActionDeclarationError")
+            self.assertTrue((output / "summary.json").exists())
+            self.assertTrue((output / "manifest.json").exists())
+            self.assertTrue((output / "input-bundle.json").exists())
+            self.assertTrue((output / "causal-model.json").exists())
 
     def test_each_run_retains_block_then_recovery_with_zero_provider_spend(self):
         for name, result in self.results.items():
