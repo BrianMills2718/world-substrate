@@ -315,6 +315,55 @@ def evaluate_acceptance(
         )
     )
 
+    blocked_actor = (blocked.get("causal_bearer") or {}).get("id")
+    blocked_observation = blocked.get("observation")
+    blocked_context = blocked.get("information_context") or []
+    unauthorized_context = []
+    if isinstance(blocked_actor, str) and isinstance(blocked_observation, dict):
+        for row in blocked_context:
+            info_id = row.get("info_id") if isinstance(row, dict) else None
+            if (
+                not isinstance(info_id, str)
+                or not information_visible_in_material_world(
+                    blocked_observation, blocked_actor, info_id
+                )
+            ):
+                unauthorized_context.append(info_id)
+    else:
+        unauthorized_context.append("missing actor observation")
+    checks.append(
+        _check(
+            "information.blocked_actor_context_authorized",
+            "information_visibility",
+            bool(blocked_context) and not unauthorized_context,
+            expected="nonempty actor-authorized information context",
+            observed={
+                "actor": blocked_actor,
+                "context_info_ids": [
+                    row.get("info_id") for row in blocked_context
+                    if isinstance(row, dict)
+                ],
+                "unauthorized": unauthorized_context,
+            },
+        )
+    )
+
+    communication_event_ids = {
+        event["event_id"]
+        for event in events
+        if event.get("rule_id") == "coordination.action.communicate"
+    }
+    blocked_parents = set(blocked.get("causal_parent_event_ids") or [])
+    checks.append(
+        _check(
+            "information.context_not_promoted_to_causal_ancestry",
+            "authority",
+            communication_event_ids.isdisjoint(blocked_parents),
+            expected="communication context remains separate from hard ancestry",
+            observed=sorted(blocked_parents & communication_event_ids),
+        )
+    )
+
     final_hash = events[-1]["hash_after"] if events else None
     checks.extend([
         _check(
