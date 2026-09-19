@@ -327,6 +327,14 @@ def evaluate_acceptance(
             len(result["frames"]) == len(events) + 1,
             expected=len(events) + 1, observed=len(result["frames"]),
         ),
+        _check(
+            "projection.matches_canonical_world", "projection",
+            projection.get("projection_final") == result["engine"].world.material_dict(),
+            expected="exact canonical material state",
+            observed="match"
+            if projection.get("projection_final") == result["engine"].world.material_dict()
+            else "mismatch",
+        ),
     ])
 
     html = result["html"]
