@@ -70,6 +70,8 @@ manifest.json
 
 `commands.json` and `events.json` are canonical Engine history. Rejected or failed attempts remain present. Actor observations and information context stay attached to their retained events according to the Engine contract.
 
+Acceptance also requires exact `Engine.replay()` agreement: replayed commands must reproduce the same final material hash and the same retained event sequence. Replay is checked from Engine-owned history; presentation artifacts never participate in that proof.
+
 `projection.json` is read-only canonical projection evidence. `living-profile.json`, `living-frames.json`, and `render.html` are downstream presentation evidence only.
 
 `acceptance.json` records each acceptance assertion independently, with a stable id, category, pass/fail value, and observed/expected values when useful.
