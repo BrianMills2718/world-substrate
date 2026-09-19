@@ -1,3 +1,4 @@
+# CI trigger branch: base already contains this workflow.
 name: Native coordination Linux gate
 
 on:
