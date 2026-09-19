@@ -2,6 +2,7 @@ name: Native coordination Linux gate
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - ".github/workflows/native-coordination-linux.yml"
       - "docs/contracts/core-v0.md"
