@@ -136,6 +136,8 @@ Information context and message delivery are not promoted into mechanic-declared
 
 ## Hashing and reproducibility
 
+A diagnostic output directory is one immutable run identity. The runner refuses a nonempty target rather than deleting, resetting, or mixing prior evidence. Reruns use a fresh directory.
+
 JSON artifacts are written deterministically with sorted keys and a terminal newline. The manifest hashes exact bytes on disk.
 
 The deterministic coordination runner should therefore allow a later investigator to answer, from one directory:
