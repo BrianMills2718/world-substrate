@@ -1,12 +1,7 @@
-# Push-trigger verification commit after workflow installation.
 name: Native coordination Linux gate
 
 on:
-  push:
-    branches:
-      - "feat/native-waltzman-coordination-vertical-20260918"
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - ".github/workflows/native-coordination-linux.yml"
       - "docs/contracts/core-v0.md"
