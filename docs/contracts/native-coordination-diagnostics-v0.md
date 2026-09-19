@@ -124,7 +124,10 @@ Canonical Linux verification command:
 ```bash
 python scripts/check_native_coordination.py \
   --output-root /tmp/world-substrate-native-coordination
-python -m pytest tests/test_native_coordination.py tests/test_native_coordination_matrix.py
+python -m pytest \
+  tests/test_native_coordination.py \
+  tests/test_native_coordination_matrix.py \
+  tests/test_runtime_component_replay.py
 python scripts/check_project.py
 ```
 
