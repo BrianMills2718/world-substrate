@@ -391,6 +391,13 @@ def evaluate_acceptance(
             observed=sorted({effect.get("content_visible") for effect in transmissions}),
         ),
         _check(
+            "renderer.failed_attempt_status", "renderer",
+            bool(feedback_rows)
+            and all(effect.get("status") == "precondition_failed" for effect in feedback_rows),
+            expected="precondition_failed",
+            observed=sorted({effect.get("status") for effect in feedback_rows}),
+        ),
+        _check(
             "renderer.failed_check_feedback", "renderer",
             expected["blocked_check"] in feedback_reasons,
             expected=expected["blocked_check"], observed=feedback_reasons,
