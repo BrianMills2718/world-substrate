@@ -150,6 +150,26 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 {row["label"] for row in blocked["checks"] if not row["ok"]},
             )
 
+    def test_diagnostic_refuses_nonempty_directory_without_discarding_it(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "diagnostic"
+            output.mkdir()
+            sentinel = output / "keep-me.txt"
+            sentinel.write_text("pre-existing evidence\n")
+            with self.assertRaises(FileExistsError):
+                run_diagnostic(
+                    self.bundles["distributed"],
+                    self.causal,
+                    acceptance=self.acceptance,
+                    output_dir=output,
+                    run_id="test/native-coordination/refuse-reuse",
+                )
+            self.assertEqual(sentinel.read_text(), "pre-existing evidence\n")
+            self.assertEqual(
+                {path.name for path in output.iterdir()},
+                {"keep-me.txt"},
+            )
+
     def test_compiler_failure_still_leaves_diagnostic_summary(self):
         broken = json.loads(json.dumps(self.causal))
         broken["mechanics"][0]["effects"][0]["path"] = (
