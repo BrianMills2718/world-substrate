@@ -19,6 +19,7 @@ on:
       - "scripts/render_world_builder.py"
       - "src/world_substrate/**"
       - "tests/test_living_scene_information_feedback.py"
+      - "tests/test_composed_living_scene_renderer.py"
       - "tests/test_native_coordination.py"
       - "tests/test_native_coordination_matrix.py"
       - "tests/test_runtime_component_replay.py"
@@ -58,7 +59,9 @@ jobs:
           python -m pytest \
             tests/test_native_coordination.py \
             tests/test_native_coordination_matrix.py \
-            tests/test_runtime_component_replay.py
+            tests/test_runtime_component_replay.py \
+            tests/test_living_scene_information_feedback.py \
+            tests/test_composed_living_scene_renderer.py
 
       - name: Run one-shot native authoring tests
         run: |
