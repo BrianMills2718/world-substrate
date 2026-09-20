@@ -8,6 +8,7 @@ on:
       - "docs/contracts/native-coordination-diagnostics-v0.md"
       - "docs/contracts/native-coordination-authoring-v0.md"
       - "docs/contracts/native-coordination-comparison-v0.md"
+      - "docs/audits/native-waltzman-release-static-readiness-2026-09-19.md"
       - "examples/native_coordination/**"
       - "scripts/check_native_coordination.py"
       - "scripts/run_native_coordination.py"
