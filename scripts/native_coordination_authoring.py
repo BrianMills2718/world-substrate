@@ -662,7 +662,8 @@ def generate_native_coordination_draft(
     max_budget: float = DEFAULT_BUDGET,
     reasoning_effort: str = "low",
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], Any]:
-    description = _nonempty(description, "description")
+    if not isinstance(description, str) or not description.strip():
+        raise ValueError("description must be a nonempty string")
     if len(description) > 8000:
         raise ValueError("description must be at most 8000 characters")
     from llm_client import call_llm, safe_json_loads
