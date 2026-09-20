@@ -16,6 +16,7 @@
       "canonical_timeline",
       "selection_inspection",
       "information_movement",
+      "information_visibility_inspection",
       "failed_check_feedback",
       "satisfied_check_feedback"
     ],
