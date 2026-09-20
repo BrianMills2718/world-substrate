@@ -21,11 +21,32 @@ def _gate(bundle: dict[str, Any]) -> dict[str, Any]:
 
 
 def _informed_recipient_count(bundle: dict[str, Any]) -> int:
-    recipients = {
-        row["components"]["delivery"]["recipient_id"]
-        for row in bundle["entities"]
-        if "delivery" in (row.get("components") or {})
+    member_ids = {
+        row["id"] for row in bundle["entities"]
+        if "member" in row.get("categories", [])
+        and "member" in (row.get("components") or {})
     }
+    information_ids = {
+        row["id"] for row in bundle["entities"]
+        if "information" in row.get("categories", [])
+        and "information" in (row.get("components") or {})
+    }
+    recipients: set[str] = set()
+    for row in bundle["entities"]:
+        delivery = (row.get("components") or {}).get("delivery")
+        if not isinstance(delivery, dict):
+            continue
+        recipient = delivery.get("recipient_id")
+        info_id = delivery.get("info_id")
+        if recipient not in member_ids:
+            raise ValueError(
+                f"comparison delivery {row['id']} recipient must be a represented member"
+            )
+        if info_id not in information_ids:
+            raise ValueError(
+                f"comparison delivery {row['id']} info_id must name represented information"
+            )
+        recipients.add(recipient)
     return len(recipients)
 
 
@@ -42,6 +63,10 @@ def with_approval_threshold(
     baseline_gate = _gate(baseline)
     before = baseline_gate["components"]["gate"]["required_approvals"]
     max_approvals = _informed_recipient_count(baseline)
+    if type(before) is not int or before < 1 or before > max_approvals:
+        raise ValueError(
+            f"baseline approval threshold must be between 1 and {max_approvals}"
+        )
     if max_approvals < 2:
         raise ValueError("comparison requires at least two represented informed recipients")
     if not 1 <= required_approvals <= max_approvals:
