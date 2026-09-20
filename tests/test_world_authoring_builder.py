@@ -103,6 +103,7 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("liveBusy=true; rerender()", source)
         self.assertNotIn("draftBusy=true;runResult=null", source)
         self.assertNotIn("liveBusy=true; runResult=null", source)
+        self.assertNotIn("mechanicsApproved=true;runResult=null", source)
         self.assertIn('execution_mode:executionMode', source)
         self.assertIn("Native coordination · deterministic Engine path · Living Scene · $0 provider spend", source)
         self.assertIn("causal_model:causalModel", source)
