@@ -341,7 +341,7 @@
     }
     editor.append(controls);
     if(runResult){
-      const summary=card("Fresh run result");const sm=runResult.summary||{};summary.append(el("div","receipt",`${sm.turns||0} turn(s) · ${sm.accepted_actions||0} accepted action(s) · terminal ${sm.terminal_reached?"reached":"not reached"} · ${Number(runResult.cost_usd||0).toFixed(6)}${runResult.trace_id?` · ${runResult.trace_id}`:""}`),button("Open full logs","secondary",openLogs));editor.append(summary);
+      const summary=card("Fresh run result");const sm=runResult.summary||{};summary.append(el("div","receipt",`${sm.turns||0} turn(s) · ${sm.accepted_actions||0} accepted action(s) · terminal ${sm.terminal_reached?"reached":"not reached"} · $${Number(runResult.cost_usd||0).toFixed(6)}${runResult.trace_id?` · ${runResult.trace_id}`:""}`),button("Open full logs","secondary",openLogs));editor.append(summary);
       const frame=document.createElement("iframe");frame.className="run-frame";frame.setAttribute("sandbox","allow-scripts");frame.srcdoc=runResult.replay_html||"";editor.append(frame);
       if(runExecutionMode==="native_coordination"&&runBundle){
         const gate=nativeGate(runBundle);const base=gate?.components?.gate?.required_approvals;const max=nativeInformedRecipientCount(runBundle);
