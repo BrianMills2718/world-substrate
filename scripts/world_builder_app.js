@@ -6,7 +6,7 @@
   let draftDescription = "", draftArtifact = null, draftReview = null, draftSource = null, draftGenerationMeta = null, draftBusy = false;
   let mechanicGuidance = "", generationMeta = null, runResult = null, liveBusy = false, liveLog = [];
   let logQuery = "", logKind = "all", logPath = "all";
-  let runPolicy = "scripted", runTurns = 12;
+  let runPolicy = "scripted", runTurns = 12, executionMode = "authored_world";
   const LIVE_MODEL = "openrouter/openai/gpt-5.6-luna";
   let active = new URLSearchParams(location.search).get("section") || "world";
   const sections = ["world", "components", "entities", "actions", "mechanics", "presentation", "run", "logs", "export"];
@@ -139,6 +139,8 @@
       causalReview=payload.review?.mechanics||null;
       mechanicsSource=bundleKey();
       mechanicsApproved=false;
+      executionMode="native_coordination";
+      runPolicy="scripted";
       generationMeta={model:"shared reviewed coordination family",cost_usd:0,trace_id:null};
     }catch(err){alert(`Draft generation failed: ${err.message}`);active="logs";}
     finally{draftBusy=false;rerender();}
@@ -226,6 +228,7 @@
     try{
       const payload=await api("/generate-mechanics",{bundle,model:LIVE_MODEL,guidance:mechanicGuidance});
       causalModel=payload.causal_model; causalReview=payload.review; mechanicsSource=bundleKey(); mechanicsApproved=false;
+      executionMode="authored_world";
       generationMeta={cost_usd:payload.cost_usd||0,daily_cost_usd:payload.daily_cost_usd,model:payload.model||LIVE_MODEL,trace_id:payload.trace_id||null};
     }catch(err){alert(`Mechanics generation failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
@@ -258,7 +261,7 @@
     if(!causalModel || mechanicsStale() || !mechanicsApproved){alert("Generate and approve current mechanics first.");return;}
     liveBusy=true;runResult=null;rerender();
     try{
-      runResult=await api("/run",{bundle,causal_model:causalModel,approved:true,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
+      runResult=await api("/run",{bundle,causal_model:causalModel,approved:true,execution_mode:executionMode,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
     }catch(err){alert(`Run failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
@@ -269,9 +272,14 @@
     else if(mechanicsStale()) editor.append(liveMessage("Mechanics are stale because the world changed. Regenerate them first.","warn"));
     else if(!mechanicsApproved) editor.append(liveMessage("Review and approve the generated mechanics before running.","warn"));
     const controls=card("Run controls");
-    controls.append(selectField("Policy",runPolicy,[["scripted","Scripted · deterministic first available · $0"],["llm","LLM · chooses among engine-offered actions"]],v=>{runPolicy=v;runResult=null;sync()}));
-    controls.append(field("Turn ceiling",runTurns,v=>{const n=Number(v);runTurns=Number.isInteger(n)?Math.max(1,Math.min(30,n)):12;},{type:"number"}));
-    if(runPolicy==="llm") controls.append(liveMessage(`LLM policy uses ${LIVE_MODEL}. The model selects action IDs only; installed mechanics compute consequences. Each public run is budget- and rate-limited.`));
+    if(executionMode==="native_coordination"){
+      controls.append(el("div","receipt","Native coordination · deterministic Engine path · Living Scene · $0 provider spend"));
+      controls.append(liveMessage("This one-shot draft runs through the same native coordination runner and shared mechanics family used by the retained acceptance vertical."));
+    }else{
+      controls.append(selectField("Policy",runPolicy,[["scripted","Scripted · deterministic first available · $0"],["llm","LLM · chooses among engine-offered actions"]],v=>{runPolicy=v;runResult=null;sync()}));
+      controls.append(field("Turn ceiling",runTurns,v=>{const n=Number(v);runTurns=Number.isInteger(n)?Math.max(1,Math.min(30,n)):12;},{type:"number"}));
+      if(runPolicy==="llm") controls.append(liveMessage(`LLM policy uses ${LIVE_MODEL}. The model selects action IDs only; installed mechanics compute consequences. Each public run is budget- and rate-limited.`));
+    }
     editor.append(controls);
     if(runResult){
       const summary=card("Fresh run result");const sm=runResult.summary||{};summary.append(el("div","receipt",`${sm.turns||0} turn(s) · ${sm.accepted_actions||0} accepted action(s) · terminal ${sm.terminal_reached?"reached":"not reached"} · $${Number(runResult.cost_usd||0).toFixed(6)}${runResult.trace_id?` · ${runResult.trace_id}`:""}`),button("Open full logs","secondary",openLogs));editor.append(summary);
@@ -310,8 +318,8 @@
   }
   document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>{active=b.dataset.section;history.replaceState(null,"",`?section=${active}`);rerender()}));
   document.getElementById("import-bundle").addEventListener("click",()=>document.getElementById("file-input").click());
-  document.getElementById("file-input").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const value=JSON.parse(await file.text());if(!value||typeof value!=="object")throw new Error("not an object");bundle=value;draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;runResult=null;active="world";rerender()}catch(err){alert(`Could not import JSON: ${err.message}`)}finally{e.target.value=""}});
-  document.getElementById("reset-example").addEventListener("click",()=>{if(confirm("Reset to the embedded Orchard example?")){bundle=core.clone(window.INITIAL_BUNDLE);draftDescription="";draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;runResult=null;active="world";rerender()}});
+  document.getElementById("file-input").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const value=JSON.parse(await file.text());if(!value||typeof value!=="object")throw new Error("not an object");bundle=value;draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;executionMode="authored_world";runResult=null;active="world";rerender()}catch(err){alert(`Could not import JSON: ${err.message}`)}finally{e.target.value=""}});
+  document.getElementById("reset-example").addEventListener("click",()=>{if(confirm("Reset to the embedded Orchard example?")){bundle=core.clone(window.INITIAL_BUNDLE);draftDescription="";draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;executionMode="authored_world";runResult=null;active="world";rerender()}});
   downloadBtn.addEventListener("click",()=>{const r=core.validateBundle(bundle);if(!r.ok)return;const blob=new Blob([JSON.stringify(bundle,null,2)+"\n"],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${bundle.world.id}-authoring-v0.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
   async function copyText(text) {
     try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return; } } catch {}
