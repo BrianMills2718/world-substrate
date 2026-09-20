@@ -77,6 +77,8 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("/run", source)
         self.assertIn("Generate bounded coordination draft", source)
         self.assertIn("Explicitly not simulated", source)
+        self.assertIn("coverage_limit", source)
+        self.assertIn("Extracted requirements → represented surfaces", source)
         self.assertIn("Approve mechanics for run", source)
         html_source = HTML.read_text()
         for label in ("World", "Components", "Entities", "Action signatures", "Causal mechanics", "Presentation", "Run", "Full logs", "Review & export"):
