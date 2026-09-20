@@ -333,7 +333,7 @@
     editor.append(sectionHead("World", "Describe a supported coordination situation in one shot, then inspect and edit the same World Substrate draft."));
     const author=card("Create from description");
     author.append(field("Coordination situation",draftDescription,v=>{draftDescription=v;},{textarea:true,placeholder:"Who is coordinating? What must be true? Who knows what? Who may intervene? What approval threshold matters?"}));
-    const generate=button(draftBusy?"Generating draft…":"Generate bounded coordination draft","primary",generateDraftFromDescription);generate.disabled=draftBusy||!draftDescription.trim();author.append(generate);
+    const generate=button(draftBusy?"Generating draft…":"Generate bounded coordination draft","primary",generateDraftFromDescription);generate.disabled=draftBusy;author.append(generate);
     author.append(liveMessage("Supported first-release family: 3–6 members, four represented prerequisites, one authorized restoration, direct information deliveries, an approval threshold, and finalization. Unsupported intent is shown explicitly rather than silently dropped."));
     editor.append(author);
     renderDraftReview();
