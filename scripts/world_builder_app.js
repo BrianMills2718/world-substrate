@@ -153,7 +153,8 @@
     if(draftGenerationMeta) receipt.append(el("div","receipt",`${draftGenerationMeta.model||"model"} · ${Number(draftGenerationMeta.cost_usd||0).toFixed(6)} · ${draftGenerationMeta.trace_id||"no trace id"}`));
     receipt.append(el("p","muted","The description produced configuration only. Executable law comes from the shared reviewed coordination mechanics shown in Causal mechanics."));
     editor.append(receipt);
-    editor.append(jsonRows("Supplied requirements → represented surfaces",draftReview.requirements));
+    editor.append(jsonRows("Extracted requirements → represented surfaces",draftReview.requirements));
+    if(draftReview.coverage_limit) editor.append(liveMessage(draftReview.coverage_limit,"warn"));
     const assumptions=card("Inferred assumptions");
     if((draftReview.assumptions||[]).length){const list=el("ul","steps");draftReview.assumptions.forEach(x=>list.append(el("li",null,x)));assumptions.append(list);}else assumptions.append(liveMessage("No additional assumptions were declared."));
     editor.append(assumptions);
