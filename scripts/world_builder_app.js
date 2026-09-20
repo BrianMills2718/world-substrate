@@ -80,7 +80,11 @@
   }
   function bundleKey() { return JSON.stringify(bundle); }
   function mechanicsStale() { return !!mechanicsSource && mechanicsSource !== bundleKey(); }
-  function draftReviewStale() { return !!draftSource && draftSource !== bundleKey(); }
+  function draftReviewStale() {
+    return !!draftArtifact && (
+      draftSource !== bundleKey() || draftArtifact.source_description !== draftDescription.trim()
+    );
+  }
   function recordLiveLog(direction, path, value, status=null) {
     const row={at:new Date().toISOString(),direction,path,value};
     if(status!==null) row.status=status;
@@ -153,6 +157,9 @@
     if(draftGenerationMeta) receipt.append(el("div","receipt",`${draftGenerationMeta.model||"model"} · ${Number(draftGenerationMeta.cost_usd||0).toFixed(6)} · ${draftGenerationMeta.trace_id||"no trace id"}`));
     receipt.append(el("p","muted","The description produced configuration only. Executable law comes from the shared reviewed coordination mechanics shown in Causal mechanics."));
     editor.append(receipt);
+    const source=card("Source description used for this draft");
+    source.append(el("p","muted",draftReview.source_description||draftArtifact?.source_description||""));
+    editor.append(source);
     editor.append(jsonRows("Extracted requirements → represented surfaces",draftReview.requirements));
     if(draftReview.coverage_limit) editor.append(liveMessage(draftReview.coverage_limit,"warn"));
     const assumptions=card("Inferred assumptions");
@@ -166,7 +173,14 @@
   function renderWorld() {
     editor.append(sectionHead("World", "Describe a supported coordination situation in one shot, then inspect and edit the same World Substrate draft."));
     const author=card("Create from description");
-    author.append(field("Coordination situation",draftDescription,v=>{draftDescription=v;},{textarea:true,placeholder:"Who is coordinating? What must be true? Who knows what? Who may intervene? What approval threshold matters?"}));
+    author.append(field("Coordination situation",draftDescription,v=>{
+      draftDescription=v;
+      if(draftArtifact && draftArtifact.source_description!==v.trim()){
+        mechanicsApproved=false;
+        runResult=null;
+      }
+      sync();
+    },{textarea:true,placeholder:"Who is coordinating? What must be true? Who knows what? Who may intervene? What approval threshold matters?"}));
     const generate=button(draftBusy?"Generating draft…":"Generate bounded coordination draft","primary",generateDraftFromDescription);generate.disabled=draftBusy;author.append(generate);
     author.append(liveMessage("Supported first-release family: 3–6 members, four represented prerequisites, one authorized restoration, direct information deliveries, an approval threshold, and finalization. Unsupported intent is shown explicitly rather than silently dropped."));
     editor.append(author);
@@ -241,8 +255,11 @@
     const boundary=el("div","boundary");boundary.append(el("strong",null,"LLM proposes; compiler governs."),document.createTextNode(" The model cannot write Python or declare its own write scope. State paths, participants, checks and effects must compile against the represented world. A rejected proposal never installs."));editor.append(boundary);
     const guide=card("Optional guidance"); guide.append(field("What should the mechanics mean?",mechanicGuidance,v=>{mechanicGuidance=v;},{textarea:true,placeholder:"Example: Picking a fruit should transfer ownership, but do not invent a new completion state unless the world represents one."}));editor.append(guide);
     if(!causalModel){editor.append(liveMessage(liveBusy?"Asking the bounded mechanics proposer and compiling its answer…":"No causal mechanics have been generated yet."));return;}
-    const stale=mechanicsStale();
-    if(stale) editor.append(liveMessage("World structure changed after these mechanics were generated. Regenerate before approving or running.","warn"));
+    const structureStale=mechanicsStale();
+    const intentStale=executionMode==="native_coordination" && draftReviewStale();
+    const stale=structureStale||intentStale;
+    if(structureStale) editor.append(liveMessage("World structure changed after these mechanics were generated. Regenerate before approving or running.","warn"));
+    else if(intentStale) editor.append(liveMessage("The description or editable draft changed after the one-shot intent review. Regenerate the bounded draft before approving or running.","warn"));
     if(generationMeta){const meta=card("Generation receipt");meta.append(el("div","receipt",`${generationMeta.model} · $${Number(generationMeta.cost_usd||0).toFixed(6)} this proposal${generationMeta.daily_cost_usd==null?"":` · $${Number(generationMeta.daily_cost_usd).toFixed(4)} World Builder today`}${generationMeta.trace_id?` · ${generationMeta.trace_id}`:""}`),button("Open full logs","secondary",openLogs));editor.append(meta);}
     (causalReview?.mechanics||[]).forEach(row=>{
       const c=card(`${row.action_kind} · ${row.mechanic_id}`); c.append(el("p","mechanic-rationale",row.rationale||""));
@@ -260,6 +277,10 @@
   }
   async function startFreshRun() {
     if(!causalModel || mechanicsStale() || !mechanicsApproved){alert("Generate and approve current mechanics first.");return;}
+    if(executionMode==="native_coordination" && draftReviewStale()){
+      alert("Regenerate the bounded draft so the intent review matches the current description and editable world.");
+      return;
+    }
     liveBusy=true;runResult=null;rerender();
     try{
       runResult=await api("/run",{bundle,causal_model:causalModel,approved:true,execution_mode:executionMode,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
@@ -268,9 +289,11 @@
   }
   function renderRun() {
     const head=sectionHead("Run this world","Start a fresh simulation from the current represented world and approved mechanics, then watch the resulting graphical replay here.");
-    const run=button(liveBusy?"Running…":"Run fresh simulation","primary",startFreshRun);run.disabled=liveBusy||!causalModel||mechanicsStale()||!mechanicsApproved;head.append(run);editor.append(head);
+    const intentStale=executionMode==="native_coordination" && draftReviewStale();
+    const run=button(liveBusy?"Running…":"Run fresh simulation","primary",startFreshRun);run.disabled=liveBusy||!causalModel||mechanicsStale()||intentStale||!mechanicsApproved;head.append(run);editor.append(head);
     if(!causalModel) editor.append(liveMessage("Generate causal mechanics first."));
     else if(mechanicsStale()) editor.append(liveMessage("Mechanics are stale because the world changed. Regenerate them first.","warn"));
+    else if(intentStale) editor.append(liveMessage("The one-shot intent review is stale. Regenerate the bounded draft before running.","warn"));
     else if(!mechanicsApproved) editor.append(liveMessage("Review and approve the generated mechanics before running.","warn"));
     const controls=card("Run controls");
     if(executionMode==="native_coordination"){
