@@ -270,6 +270,15 @@ def proposal_schema() -> dict[str, Any]:
     }
 
 
+def _exact_keys(value: dict[str, Any], required: set[str], label: str) -> None:
+    missing = sorted(required - set(value))
+    unknown = sorted(set(value) - required)
+    if missing:
+        raise ValueError(f"{label} is missing fields: {missing}")
+    if unknown:
+        raise ValueError(f"{label} has unknown fields: {unknown}")
+
+
 def _nonempty(value: object, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{label} must be a nonempty string")
@@ -290,16 +299,30 @@ def validate_native_coordination_draft(value: object) -> dict[str, Any]:
         raise ValueError(f"draft schema_version must be {DRAFT_SCHEMA_VERSION}")
     if value.get("family") != SUPPORTED_FAMILY:
         raise ValueError(f"draft family must be {SUPPORTED_FAMILY}")
+    _exact_keys(
+        value,
+        {"schema_version", "family", "draft_version", "source_description", "proposal"},
+        "draft",
+    )
     if value.get("draft_version") != 1:
         raise ValueError("draft_version must be 1")
     _nonempty(value.get("source_description"), "source_description")
     proposal = value.get("proposal")
     if not isinstance(proposal, dict) or proposal.get("schema_version") != PROPOSAL_SCHEMA_VERSION:
         raise ValueError("draft proposal has unsupported schema")
+    _exact_keys(
+        proposal,
+        {
+            "schema_version", "world", "members", "resources", "gate", "reports",
+            "requirement_coverage", "assumptions", "unsupported_requests",
+        },
+        "proposal",
+    )
 
     world = proposal.get("world")
     if not isinstance(world, dict):
         raise ValueError("proposal.world must be an object")
+    _exact_keys(world, {"id", "label", "summary", "location"}, "proposal.world")
     _slug(world.get("id"), "world.id")
     for key in ("label", "summary", "location"):
         _nonempty(world.get(key), f"world.{key}")
@@ -312,6 +335,7 @@ def validate_native_coordination_draft(value: object) -> dict[str, Any]:
     for index, row in enumerate(members):
         if not isinstance(row, dict):
             raise ValueError(f"members[{index}] must be an object")
+        _exact_keys(row, {"id", "label", "role", "authorized"}, f"members[{index}]")
         member_id = _slug(row.get("id"), f"members[{index}].id")
         if member_id in member_ids:
             raise ValueError(f"duplicate member id: {member_id}")
@@ -333,6 +357,11 @@ def validate_native_coordination_draft(value: object) -> dict[str, Any]:
     for index, row in enumerate(resources):
         if not isinstance(row, dict):
             raise ValueError(f"resources[{index}] must be an object")
+        _exact_keys(
+            row,
+            {"id", "label", "current", "required", "unit", "restorable"},
+            f"resources[{index}]",
+        )
         resource_id = _slug(row.get("id"), f"resources[{index}].id")
         if resource_id in resource_ids or resource_id in member_ids:
             raise ValueError(f"duplicate entity id: {resource_id}")
@@ -358,6 +387,7 @@ def validate_native_coordination_draft(value: object) -> dict[str, Any]:
     gate = proposal.get("gate")
     if not isinstance(gate, dict):
         raise ValueError("proposal.gate must be an object")
+    _exact_keys(gate, {"id", "label", "required_approvals"}, "proposal.gate")
     gate_id = _slug(gate.get("id"), "gate.id")
     if gate_id in member_ids or gate_id in resource_ids:
         raise ValueError(f"duplicate entity id: {gate_id}")
@@ -367,13 +397,18 @@ def validate_native_coordination_draft(value: object) -> dict[str, Any]:
         raise ValueError("gate.required_approvals must fit the member count")
 
     reports = proposal.get("reports")
-    if not isinstance(reports, list) or not reports:
-        raise ValueError("proposal requires at least one represented report")
+    if not isinstance(reports, list) or not 1 <= len(reports) <= 6:
+        raise ValueError("proposal requires 1-6 represented reports")
     report_ids: set[str] = set()
     recipients: list[str] = []
     for index, row in enumerate(reports):
         if not isinstance(row, dict):
             raise ValueError(f"reports[{index}] must be an object")
+        _exact_keys(
+            row,
+            {"id", "label", "source_id", "recipient_id", "channel_id", "topic", "content"},
+            f"reports[{index}]",
+        )
         report_id = _slug(row.get("id"), f"reports[{index}].id")
         if report_id in report_ids or report_id in member_ids or report_id in resource_ids or report_id == gate_id:
             raise ValueError(f"duplicate entity id: {report_id}")
@@ -390,21 +425,31 @@ def validate_native_coordination_draft(value: object) -> dict[str, Any]:
         raise ValueError("report recipients must be unique in this bounded family")
     if len(recipients) < threshold:
         raise ValueError("report recipients must cover the approval threshold")
+    occupied = set(member_ids) | set(resource_ids) | {gate_id} | set(report_ids)
+    delivery_ids = {f"delivery-{report_id}" for report_id in report_ids}
+    collisions = sorted(occupied & delivery_ids)
+    if collisions or len(delivery_ids) != len(report_ids):
+        raise ValueError(f"generated delivery ids would collide: {collisions}")
 
     coverage = proposal.get("requirement_coverage")
-    if not isinstance(coverage, list) or not coverage:
-        raise ValueError("requirement_coverage must be a nonempty list")
+    if not isinstance(coverage, list) or not 1 <= len(coverage) <= 20:
+        raise ValueError("requirement_coverage must contain 1-20 rows")
     for index, row in enumerate(coverage):
         if not isinstance(row, dict):
             raise ValueError(f"requirement_coverage[{index}] must be an object")
+        _exact_keys(row, {"text", "surface"}, f"requirement_coverage[{index}]")
         _nonempty(row.get("text"), f"requirement_coverage[{index}].text")
         if row.get("surface") not in SURFACES:
             raise ValueError(f"requirement_coverage[{index}].surface is unsupported")
 
     for key in ("assumptions", "unsupported_requests"):
         rows = proposal.get(key)
-        if not isinstance(rows, list) or any(not isinstance(row, str) or not row.strip() for row in rows):
-            raise ValueError(f"{key} must contain nonempty strings")
+        if (
+            not isinstance(rows, list)
+            or len(rows) > 12
+            or any(not isinstance(row, str) or not row.strip() for row in rows)
+        ):
+            raise ValueError(f"{key} must contain at most 12 nonempty strings")
 
     return deepcopy(value)
 
@@ -561,6 +606,10 @@ def draft_review(
         "unsupported_requests": explicitly_unsupported,
         "mechanics": compiled.as_review(),
         "narrowing_is_explicit": bool(explicitly_unsupported),
+        "coverage_limit": (
+            "Requirement coverage is model-extracted review evidence, not proof that every "
+            "material condition in the source description was captured."
+        ),
     }
 
 
