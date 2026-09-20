@@ -248,7 +248,7 @@
   function mechanicsStale() { return !!mechanicsSource && mechanicsSource !== bundleKey(); }
   function draftReviewStale() {
     return !!draftArtifact && (
-      draftSource !== bundleKey() || draftArtifact.source_description !== draftDescription.trim()
+      draftSource !== bundleKey() || draftArtifact.source_description !== draftDescription
     );
   }
   function recordLiveLog(direction, path, value, status=null) {
@@ -341,7 +341,7 @@
     const author=card("Create from description");
     author.append(field("Coordination situation",draftDescription,v=>{
       draftDescription=v;
-      if(draftArtifact && draftArtifact.source_description!==v.trim()){
+      if(draftArtifact && draftArtifact.source_description!==v){
         mechanicsApproved=false;
         runResult=null;
       }
