@@ -54,6 +54,32 @@ class NativeCoordinationComparisonTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "must be an integer"):
             with_approval_threshold(BASELINE, 1.5)
 
+    def test_comparison_refuses_baseline_threshold_above_informed_recipient_count(self):
+        baseline = deepcopy(BASELINE)
+        gate(baseline)["components"]["gate"]["required_approvals"] = 3
+        with self.assertRaisesRegex(ValueError, "baseline approval threshold must be between 1 and 2"):
+            with_approval_threshold(baseline, 1)
+
+    def test_comparison_refuses_delivery_recipient_that_is_not_a_member(self):
+        baseline = deepcopy(BASELINE)
+        delivery = next(
+            row for row in baseline["entities"]
+            if "delivery" in (row.get("components") or {})
+        )
+        delivery["components"]["delivery"]["recipient_id"] = "handoff-token"
+        with self.assertRaisesRegex(ValueError, "recipient must be a represented member"):
+            with_approval_threshold(baseline, 1)
+
+    def test_comparison_refuses_delivery_info_that_is_not_information(self):
+        baseline = deepcopy(BASELINE)
+        delivery = next(
+            row for row in baseline["entities"]
+            if "delivery" in (row.get("components") or {})
+        )
+        delivery["components"]["delivery"]["info_id"] = "mara"
+        with self.assertRaisesRegex(ValueError, "info_id must name represented information"):
+            with_approval_threshold(baseline, 1)
+
 
 if __name__ == "__main__":
     unittest.main()
