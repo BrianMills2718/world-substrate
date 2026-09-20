@@ -43,6 +43,11 @@ class ComposedLivingSceneRendererTests(unittest.TestCase):
         self.assertIn("position_by_state", self.html)
         self.assertIn("event-focus", self.html)
 
+    def test_composed_renderer_exposes_retained_passed_and_failed_check_labels(self) -> None:
+        self.assertIn("failed: ", self.html)
+        self.assertIn("passed: ", self.html)
+        self.assertIn("effect.checks", self.html)
+
     def test_generic_source_contains_no_waltzman_specific_ids(self) -> None:
         source = (REPO / "scripts/render_composed_living_scene.py").read_text().lower()
         for word in ("waltzman", "mara", "selene", "validation-capacity", "clinical-staff", "shared-reserve", "safeguard-record"):
