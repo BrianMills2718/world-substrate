@@ -56,6 +56,8 @@ The new threshold must:
 - be no greater than the number of represented informed report recipients; and
 - differ from the retained baseline threshold.
 
+The service counts an informed recipient only through a represented delivery whose `recipient_id` names a represented member and whose `info_id` names represented information. The retained baseline threshold must itself be within that supported informed-recipient count; malformed or impossible baselines are refused before the comparison run.
+
 The one-shot authoring family requires at least two distinct report recipients
 so every generated first-release world has at least one alternate valid
 threshold.
