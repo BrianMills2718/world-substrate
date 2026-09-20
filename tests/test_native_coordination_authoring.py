@@ -201,6 +201,18 @@ class NativeCoordinationAuthoringTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "recipients must be unique"):
             validate_native_coordination_draft(value)
 
+    def test_validation_refuses_unknown_model_fields(self):
+        value = draft()
+        value["proposal"]["members"][0]["secret_plan"] = "hidden"
+        with self.assertRaisesRegex(ValueError, "unknown fields"):
+            validate_native_coordination_draft(value)
+
+    def test_validation_refuses_generated_delivery_id_collision(self):
+        value = draft()
+        value["proposal"]["reports"][1]["id"] = "delivery-token-report"
+        with self.assertRaisesRegex(ValueError, "delivery ids would collide"):
+            validate_native_coordination_draft(value)
+
     def test_bundle_is_editable_without_mutating_the_draft(self):
         value = draft()
         frozen = deepcopy(value)
