@@ -292,6 +292,7 @@
     return base===1?2:base-1;
   }
   async function runNativeComparison() {
+    if(liveBusy){alert("Wait for the baseline run to finish first.");return;}
     if(!runResult||!runBundle||!runCausalModel||runExecutionMode!=="native_coordination"){alert("Run a native coordination baseline first.");return;}
     const gate=nativeGate(runBundle); const base=gate?.components?.gate?.required_approvals; const max=nativeInformedRecipientCount(runBundle); const next=Number(comparisonThreshold);
     if(!Number.isInteger(next)||next<1||next>max||next===base){alert(`Choose a different approval threshold from 1 to ${max}.`);return;}
@@ -303,6 +304,7 @@
     finally{comparisonBusy=false;rerender();}
   }
   async function startFreshRun() {
+    if(comparisonBusy){alert("Wait for the comparison run to finish first.");return;}
     if(!causalModel || mechanicsStale() || !mechanicsApproved){alert("Generate and approve current mechanics first.");return;}
     if(executionMode==="native_coordination" && draftReviewStale()){
       alert("Regenerate the bounded draft so the intent review matches the current description and editable world.");
@@ -320,7 +322,7 @@
   function renderRun() {
     const head=sectionHead("Run this world","Start a fresh simulation from the current represented world and approved mechanics, then watch the resulting graphical replay here.");
     const intentStale=executionMode==="native_coordination" && draftReviewStale();
-    const run=button(liveBusy?"Running…":"Run fresh simulation","primary",startFreshRun);run.disabled=liveBusy||!causalModel||mechanicsStale()||intentStale||!mechanicsApproved;head.append(run);editor.append(head);
+    const run=button(liveBusy?"Running…":"Run fresh simulation","primary",startFreshRun);run.disabled=liveBusy||comparisonBusy||!causalModel||mechanicsStale()||intentStale||!mechanicsApproved;head.append(run);editor.append(head);
     if(!causalModel) editor.append(liveMessage("Generate causal mechanics first."));
     else if(mechanicsStale()) editor.append(liveMessage("Mechanics are stale because the world changed. Regenerate them first.","warn"));
     else if(intentStale) editor.append(liveMessage("The one-shot intent review is stale. Regenerate the bounded draft before running.","warn"));
@@ -344,7 +346,7 @@
         compare.append(el("div","receipt",`Baseline approval threshold: ${base} · informed recipients: ${max}`));
         compare.append(field("Comparison approval threshold",comparisonThreshold??"",v=>{const n=Number(v);comparisonThreshold=Number.isInteger(n)?n:v;comparisonResult=null;comparisonBundle=null;},{type:"number"}));
         compare.append(liveMessage("The comparison clones the retained baseline initial world and changes only gate.required_approvals. It reuses the same explicitly approved shared mechanics and keeps the original run visible."));
-        const runCompare=button(comparisonBusy?"Running comparison…":"Run comparison","primary",runNativeComparison);runCompare.disabled=comparisonBusy;compare.append(runCompare);editor.append(compare);
+        const runCompare=button(comparisonBusy?"Running comparison…":"Run comparison","primary",runNativeComparison);runCompare.disabled=comparisonBusy||liveBusy;compare.append(runCompare);editor.append(compare);
         if(comparisonResult){
           const changed=nativeGate(comparisonBundle)?.components?.gate?.required_approvals;const cm=comparisonResult.summary||{};
           const grid=el("div","authority-grid");
