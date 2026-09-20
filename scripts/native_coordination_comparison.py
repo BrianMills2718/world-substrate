@@ -63,12 +63,12 @@ def with_approval_threshold(
     baseline_gate = _gate(baseline)
     before = baseline_gate["components"]["gate"]["required_approvals"]
     max_approvals = _informed_recipient_count(baseline)
+    if max_approvals < 2:
+        raise ValueError("comparison requires at least two represented informed recipients")
     if type(before) is not int or before < 1 or before > max_approvals:
         raise ValueError(
             f"baseline approval threshold must be between 1 and {max_approvals}"
         )
-    if max_approvals < 2:
-        raise ValueError("comparison requires at least two represented informed recipients")
     if not 1 <= required_approvals <= max_approvals:
         raise ValueError(
             f"required_approvals must be between 1 and {max_approvals}"
