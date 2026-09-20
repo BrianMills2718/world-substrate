@@ -2,6 +2,11 @@
 role: audit
 status: active
 reviewed_through: 2026-09-19
+authority_refs:
+  - ../decisions/005-native-waltzman-delivery.md
+  - ../contracts/native-coordination-diagnostics-v0.md
+  - ../contracts/native-coordination-authoring-v0.md
+  - ../contracts/native-coordination-comparison-v0.md
 ---
 
 # Native Waltzman first-release static readiness review
