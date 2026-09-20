@@ -4,12 +4,15 @@ import json
 import unittest
 from copy import deepcopy
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from scripts.native_coordination_authoring import (
     DRAFT_SCHEMA_VERSION,
     SUPPORTED_FAMILY,
     draft_review,
     draft_to_bundle,
+    generate_native_coordination_draft,
     validate_native_coordination_draft,
 )
 from scripts.run_authored_world import build_engine
@@ -130,6 +133,26 @@ def draft() -> dict:
 
 
 class NativeCoordinationAuthoringTests(unittest.TestCase):
+    def test_generator_retains_the_exact_source_description(self):
+        proposal = deepcopy(draft()["proposal"])
+        exact = "  " + draft()["source_description"] + "\n"
+        fake = SimpleNamespace(
+            content=json.dumps(proposal),
+            model="fake-model",
+            cost=0.0,
+        )
+        with patch("llm_client.call_llm", return_value=fake):
+            generated, bundle, review, result = generate_native_coordination_draft(
+                exact,
+                model="fake-model",
+                trace_id="test/native-coordination-draft",
+                max_budget=0.0,
+            )
+        self.assertEqual(generated["source_description"], exact)
+        self.assertEqual(review["source_description"], exact)
+        self.assertEqual(bundle["world"]["id"], "handoff-review")
+        self.assertEqual(result.model, "fake-model")
+
     def test_draft_compiles_to_existing_authoring_bundle_and_shared_mechanics(self):
         value = draft()
         checked = validate_native_coordination_draft(value)
