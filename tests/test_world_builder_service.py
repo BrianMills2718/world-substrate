@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 import scripts.native_coordination_authoring as coordination
 import scripts.world_builder_service as service
+from world_substrate.action_authoring import CausalModel
 
 REPO = Path(__file__).resolve().parents[1]
 BUNDLE = json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text())
@@ -122,6 +123,63 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(payload["summary"]["terminal_reached"])
         self.assertEqual(payload["cost_usd"], 0.0)
         self.assertIn("Scene replay", payload["replay_html"])
+
+    def test_native_coordination_run_uses_native_runner_and_living_scene(self):
+        shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
+        compiled = CausalModel.from_dict(shared, bundle=DRAFT_BUNDLE)
+        fake_trace = {
+            "schema_version": "world-substrate-contested-run/v3",
+            "summary": {
+                "turns": 7,
+                "terminal_reached": True,
+                "accepted_actions": 6,
+                "blocked_event_id": "e0003",
+            },
+            "cost_usd": 0.0,
+        }
+        with patch.object(
+            service,
+            "run_native_coordination",
+            return_value={
+                "trace": fake_trace,
+                "causal_model": compiled,
+                "html": "<html>Living Scene native coordination</html>",
+            },
+        ) as run_native:
+            status, payload = self.post(
+                "/run",
+                {
+                    "bundle": DRAFT_BUNDLE,
+                    "causal_model": shared,
+                    "approved": True,
+                    "execution_mode": "native_coordination",
+                    "policy": "scripted",
+                },
+            )
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["execution_mode"], "native_coordination")
+        self.assertEqual(payload["cost_usd"], 0.0)
+        self.assertIn("Living Scene native coordination", payload["replay_html"])
+        run_native.assert_called_once()
+
+    def test_native_coordination_run_refuses_modified_law(self):
+        shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
+        modified = json.loads(json.dumps(shared))
+        modified["mechanics"][0]["rationale"] += " Modified."
+        with patch.object(service, "run_native_coordination") as run_native:
+            status, payload = self.post(
+                "/run",
+                {
+                    "bundle": DRAFT_BUNDLE,
+                    "causal_model": modified,
+                    "approved": True,
+                    "execution_mode": "native_coordination",
+                    "policy": "scripted",
+                },
+            )
+        self.assertEqual(status, 422)
+        self.assertIn("shared coordination mechanics", payload["error"])
+        run_native.assert_not_called()
 
     def test_run_requires_explicit_mechanic_approval(self):
         status, payload = self.post(
