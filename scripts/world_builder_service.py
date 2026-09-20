@@ -26,6 +26,7 @@ from scripts.native_coordination_authoring import (
     generate_native_coordination_draft,
 )
 from scripts.run_authored_world import render_run, run_world
+from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
 
@@ -349,13 +350,29 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             raise ValueError("causal_model must be an object")
         # Compile before any policy/model call. This is the install authority gate.
         CausalModel.from_dict(causal, bundle=bundle)
+        execution_mode = str(body.get("execution_mode") or "authored_world")
+        if execution_mode not in {"authored_world", "native_coordination"}:
+            raise ValueError("execution_mode must be authored_world or native_coordination")
         policy = str(body.get("policy") or "scripted")
         turns = body.get("turns", 12)
         if type(turns) is not int:
             raise ValueError("turns must be an integer")
         model = str(body.get("model") or DEFAULT_MODEL)
         trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
-        if policy == "llm":
+        if execution_mode == "native_coordination":
+            shared_causal = json.loads(NATIVE_COORDINATION_CAUSAL.read_text())
+            if causal != shared_causal:
+                raise ValueError(
+                    "native_coordination execution requires the reviewed shared coordination mechanics"
+                )
+            if policy != "scripted":
+                raise ValueError("native_coordination execution is deterministic scripted-only in v0")
+            native = run_native_coordination(bundle, causal)
+            trace = native["trace"]
+            compiled = native["causal_model"]
+            replay = native["html"]
+            daily_cost = None
+        elif policy == "llm":
             with _LLM_LOCK:
                 budget = self._llm_budget(client, RUN_BUDGET)
                 if budget is None:
@@ -377,7 +394,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
             )
             daily_cost = None
-        replay = render_run(bundle, trace, compiled)
+        if execution_mode == "authored_world":
+            replay = render_run(bundle, trace, compiled)
         self._json(
             HTTPStatus.OK,
             {
@@ -388,6 +406,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "replay_html": replay,
                 "cost_usd": trace.get("cost_usd", 0.0),
                 "daily_cost_usd": daily_cost,
+                "execution_mode": execution_mode,
                 "trace_id": trace_id,
             },
         )
