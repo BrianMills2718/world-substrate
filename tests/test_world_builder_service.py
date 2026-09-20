@@ -89,6 +89,10 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(payload["draft"]["schema_version"], DRAFT["schema_version"])
         self.assertEqual(payload["bundle"]["world"]["id"], "handoff-review")
+        self.assertEqual(
+            [row["action_kind"] for row in payload["causal_model"]["mechanics"]],
+            ["communicate", "approve", "intervene", "finalize"],
+        )
         self.assertTrue(payload["review"]["narrowing_is_explicit"])
         self.assertIn("Use probabilistic delivery delays.", payload["review"]["unsupported_requests"])
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/draft/"))
