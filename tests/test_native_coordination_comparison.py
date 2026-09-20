@@ -7,12 +7,16 @@ from pathlib import Path
 
 from scripts.native_coordination_authoring import draft_to_bundle
 from scripts.native_coordination_comparison import with_approval_threshold
+from scripts.run_native_coordination import run_native_coordination
 
 REPO = Path(__file__).resolve().parents[1]
 DRAFT = json.loads(
     (REPO / "examples/native_coordination/one-shot-draft-v0.json").read_text()
 )
 BASELINE = draft_to_bundle(DRAFT)
+CAUSAL = json.loads(
+    (REPO / "examples/native_coordination/coordination-causal-v0.json").read_text()
+)
 
 
 def gate(bundle: dict) -> dict:
@@ -20,6 +24,38 @@ def gate(bundle: dict) -> dict:
 
 
 class NativeCoordinationComparisonTests(unittest.TestCase):
+    def test_comparison_is_a_second_fresh_native_run_with_same_mechanics(self):
+        baseline_bundle = deepcopy(BASELINE)
+        frozen = deepcopy(baseline_bundle)
+        comparison_bundle, change = with_approval_threshold(baseline_bundle, 1)
+
+        baseline = run_native_coordination(baseline_bundle, CAUSAL)
+        comparison = run_native_coordination(comparison_bundle, CAUSAL)
+
+        self.assertEqual(baseline_bundle, frozen)
+        self.assertEqual(change["before"], 2)
+        self.assertEqual(change["after"], 1)
+        self.assertTrue(baseline["trace"]["summary"]["terminal_reached"])
+        self.assertTrue(comparison["trace"]["summary"]["terminal_reached"])
+        self.assertEqual(baseline["trace"]["cost_usd"], 0.0)
+        self.assertEqual(comparison["trace"]["cost_usd"], 0.0)
+        self.assertEqual(
+            baseline["trace"]["mechanic_profile_id"],
+            comparison["trace"]["mechanic_profile_id"],
+        )
+        self.assertNotEqual(
+            baseline["trace"]["summary"]["turns"],
+            comparison["trace"]["summary"]["turns"],
+        )
+        self.assertNotEqual(
+            baseline["trace"]["summary"]["accepted_actions"],
+            comparison["trace"]["summary"]["accepted_actions"],
+        )
+        self.assertNotEqual(
+            baseline["projection"]["projection_final"],
+            comparison["projection"]["projection_final"],
+        )
+
     def test_comparison_changes_only_approval_threshold_and_preserves_baseline(self):
         baseline = deepcopy(BASELINE)
         frozen = deepcopy(baseline)
