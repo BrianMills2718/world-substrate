@@ -248,7 +248,7 @@ def proposal_schema() -> dict[str, Any]:
                 "additionalProperties": False,
             },
             "reports": {
-                "type": "array", "minItems": 1, "maxItems": 6, "items": report
+                "type": "array", "minItems": 2, "maxItems": 6, "items": report
             },
             "requirement_coverage": {
                 "type": "array", "minItems": 1, "maxItems": 20, "items": coverage
@@ -397,8 +397,8 @@ def validate_native_coordination_draft(value: object) -> dict[str, Any]:
         raise ValueError("gate.required_approvals must fit the member count")
 
     reports = proposal.get("reports")
-    if not isinstance(reports, list) or not 1 <= len(reports) <= 6:
-        raise ValueError("proposal requires 1-6 represented reports")
+    if not isinstance(reports, list) or not 2 <= len(reports) <= 6:
+        raise ValueError("proposal requires 2-6 represented reports")
     report_ids: set[str] = set()
     recipients: list[str] = []
     for index, row in enumerate(reports):
@@ -624,7 +624,7 @@ def _proposal_messages(description: str) -> list[dict[str, str]]:
                 "exactly four represented prerequisites/resources",
                 "exactly one uniquely authorized member",
                 "exactly one restorable prerequisite starts below requirement",
-                "direct represented reports with distinct recipients",
+                "at least two direct represented reports with distinct recipients",
                 "an approval threshold no larger than the number of informed recipients",
                 "shared executable rules: communicate, approve, intervene, finalize",
                 "no arbitrary scheduling, deception, probabilistic behavior, hidden cognition, or custom institutions",
