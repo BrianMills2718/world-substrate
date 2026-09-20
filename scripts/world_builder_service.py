@@ -21,7 +21,10 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
-from scripts.native_coordination_authoring import generate_native_coordination_draft
+from scripts.native_coordination_authoring import (
+    DEFAULT_CAUSAL as NATIVE_COORDINATION_CAUSAL,
+    generate_native_coordination_draft,
+)
 from scripts.run_authored_world import render_run, run_world
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
@@ -286,6 +289,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "ok": True,
                 "draft": draft,
                 "bundle": bundle,
+                "causal_model": json.loads(NATIVE_COORDINATION_CAUSAL.read_text()),
                 "review": review,
                 "model": getattr(result, "model", model),
                 "cost_usd": trace_cost,
