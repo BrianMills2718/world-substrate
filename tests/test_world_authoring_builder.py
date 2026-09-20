@@ -115,7 +115,7 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("runCompare.disabled=comparisonBusy||liveBusy", source)
         self.assertIn("Wait for the comparison run to finish first.", source)
         self.assertIn("Wait for the baseline run to finish first.", source)
-        self.assertIn('· ${Number(runResult.cost_usd||0).toFixed(6)}', source)
+        self.assertIn('· $${Number(runResult.cost_usd||0).toFixed(6)}', source)
         self.assertIn("Regenerate the bounded draft so the intent review matches", source)
         self.assertIn("draftBusy=true;rerender()", source)
         self.assertIn("liveBusy=true; rerender()", source)
