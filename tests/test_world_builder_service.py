@@ -10,11 +10,15 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
+import scripts.native_coordination_authoring as coordination
 import scripts.world_builder_service as service
 
 REPO = Path(__file__).resolve().parents[1]
 BUNDLE = json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text())
 CAUSAL = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
+DRAFT = json.loads((REPO / "examples/native_coordination/one-shot-draft-v0.json").read_text())
+DRAFT_BUNDLE = coordination.draft_to_bundle(DRAFT)
+DRAFT_REVIEW = coordination.draft_review(DRAFT)
 
 
 class FakeResult:
@@ -71,6 +75,33 @@ class WorldBuilderServiceTests(unittest.TestCase):
                 return response.status, json.loads(response.read())
         except urllib.error.HTTPError as error:
             return error.code, json.loads(error.read())
+
+    def test_generate_draft_returns_editable_bundle_and_explicit_review(self):
+        with patch.object(service, "_trace_cost", return_value=0.002), patch.object(
+            service,
+            "generate_native_coordination_draft",
+            return_value=(DRAFT, DRAFT_BUNDLE, DRAFT_REVIEW, FakeResult()),
+        ) as generate:
+            status, payload = self.post(
+                "/generate-draft",
+                {"description": DRAFT["source_description"]},
+            )
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["draft"]["schema_version"], DRAFT["schema_version"])
+        self.assertEqual(payload["bundle"]["world"]["id"], "handoff-review")
+        self.assertTrue(payload["review"]["narrowing_is_explicit"])
+        self.assertIn("Use probabilistic delivery delays.", payload["review"]["unsupported_requests"])
+        self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/draft/"))
+        self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], service.DRAFT_BUDGET)
+        self.assertAlmostEqual(payload["daily_cost_usd"], 0.002, places=6)
+
+    def test_generate_draft_rejects_empty_description_before_spend(self):
+        with patch.object(service, "generate_native_coordination_draft") as generate:
+            status, payload = self.post("/generate-draft", {"description": "  "})
+        self.assertEqual(status, 422)
+        self.assertIn("description", payload["error"])
+        generate.assert_not_called()
+        self.assertFalse(self.budget_path.exists())
 
     def test_scripted_fresh_run_returns_graphical_replay_without_llm(self):
         status, payload = self.post(
@@ -140,6 +171,20 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(payload["model"], "fake-model")
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/mechanics/"))
         self.assertAlmostEqual(payload["daily_cost_usd"], 0.001, places=6)
+
+    def test_failed_draft_request_charges_full_reservation_and_clears_reserved(self):
+        with patch.object(
+            service,
+            "generate_native_coordination_draft",
+            side_effect=RuntimeError("provider failed"),
+        ):
+            status, _ = self.post(
+                "/generate-draft", {"description": DRAFT["source_description"]}
+            )
+        self.assertEqual(status, 500)
+        state = json.loads(self.budget_path.read_text())
+        self.assertAlmostEqual(state["spent_usd"], service.DRAFT_BUDGET, places=6)
+        self.assertEqual(state["reserved_usd"], 0.0)
 
     def test_failed_llm_request_charges_full_reservation_and_clears_reserved(self):
         with patch.object(service, "generate_causal_model", side_effect=RuntimeError("provider failed")):
