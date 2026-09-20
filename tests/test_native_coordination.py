@@ -291,7 +291,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 self.assertIn("current", resource_view)
                 self.assertIn("required", resource_view)
 
-    def test_living_ui_projects_information_movement_and_failed_checks(self):
+    def test_living_ui_projects_information_movement_and_rule_checks(self):
         for name, result in self.results.items():
             with self.subTest(name=name):
                 transmissions = [
@@ -315,6 +315,18 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                     if effect.get("kind") == "action_feedback"
                 )
                 self.assertIn("Prerequisite A is healthy", feedback["reasons"])
+                self.assertIn(
+                    {"label": "Prerequisite A is healthy", "ok": False},
+                    feedback["checks"],
+                )
+                self.assertTrue(
+                    any(check["ok"] is True for check in feedback["checks"]),
+                    feedback["checks"],
+                )
+                self.assertIn(
+                    "Base revision is current",
+                    {check["label"] for check in feedback["checks"] if check["ok"] is True},
+                )
 
 
 if __name__ == "__main__":
