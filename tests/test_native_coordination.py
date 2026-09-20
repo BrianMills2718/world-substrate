@@ -275,6 +275,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 self.assertIn(self.bundles[name]["world"]["label"], html)
                 self.assertIn("id='inspector'", html)
                 self.assertIn("id='scrub'", html)
+                self.assertIn("Represented deliveries", html)
                 for member in _component_rows(self.bundles[name], "member"):
                     self.assertIn(member["label"], html)
                 for resource in _component_rows(self.bundles[name], "resource"):
