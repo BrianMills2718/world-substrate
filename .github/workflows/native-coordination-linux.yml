@@ -7,10 +7,12 @@ on:
       - "docs/contracts/core-v0.md"
       - "docs/contracts/native-coordination-diagnostics-v0.md"
       - "docs/contracts/native-coordination-authoring-v0.md"
+      - "docs/contracts/native-coordination-comparison-v0.md"
       - "examples/native_coordination/**"
       - "scripts/check_native_coordination.py"
       - "scripts/run_native_coordination.py"
       - "scripts/native_coordination_authoring.py"
+      - "scripts/native_coordination_comparison.py"
       - "scripts/run_authored_world.py"
       - "scripts/world_builder_service.py"
       - "scripts/world_builder_app.js"
@@ -21,6 +23,7 @@ on:
       - "tests/test_native_coordination_matrix.py"
       - "tests/test_runtime_component_replay.py"
       - "tests/test_native_coordination_authoring.py"
+      - "tests/test_native_coordination_comparison.py"
       - "tests/test_world_builder_service.py"
       - "tests/test_world_authoring_builder.py"
   workflow_dispatch:
@@ -61,6 +64,7 @@ jobs:
         run: |
           python -m pytest \
             tests/test_native_coordination_authoring.py \
+            tests/test_native_coordination_comparison.py \
             tests/test_world_builder_service.py \
             tests/test_world_authoring_builder.py
 
