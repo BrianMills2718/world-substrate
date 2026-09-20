@@ -433,7 +433,7 @@
       const grid=el("div","authority-grid");grid.append(codeList("Derived reads",row.reads),codeList("Derived writes",row.writes));c.append(grid,jsonRows("Checks",row.checks),jsonRows("Effects",row.effects),codeList("Limits",row.limits),codeList("Declared tests",row.tests));editor.append(c);
     });
     const terminal=card("Terminal condition"); terminal.append(causalReview?.terminal?el("pre","mini-json",JSON.stringify(causalReview.terminal,null,2)):liveMessage("No terminal condition was proposed. A run can still stop when no actions remain or at its turn ceiling."));editor.append(terminal);
-    const approve=button(mechanicsApproved?"✓ Mechanics approved":"Approve mechanics for run",mechanicsApproved?"secondary":"primary",()=>{if(!stale){mechanicsApproved=true;runResult=null;rerender();}});approve.disabled=stale||mechanicsApproved;editor.append(approve);
+    const approve=button(mechanicsApproved?"✓ Mechanics approved":"Approve mechanics for run",mechanicsApproved?"secondary":"primary",()=>{if(!stale){mechanicsApproved=true;rerender();}});approve.disabled=stale||mechanicsApproved;editor.append(approve);
   }
   function renderPresentation() {
     editor.append(sectionHead("Presentation", "Presentation suggests how the eventual Automatic replay should look. It never changes world truth."));
