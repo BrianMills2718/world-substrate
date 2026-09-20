@@ -80,6 +80,7 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("Inferred represented structure", source)
         self.assertIn("draftArtifact.source_description!==draftDescription", source)
         self.assertIn("The one-shot intent review is stale", source)
+        self.assertIn("The description or editable world has changed since this intent review was generated.", source)
         self.assertIn("Explicitly not simulated", source)
         self.assertIn("coverage_limit", source)
         self.assertIn("Extracted requirements → represented surfaces", source)
