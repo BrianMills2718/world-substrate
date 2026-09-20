@@ -297,7 +297,7 @@
   }
   async function generateDraftFromDescription() {
     if(!draftDescription.trim()){alert("Describe a coordination situation first.");return;}
-    draftBusy=true;runResult=null;rerender();
+    draftBusy=true;rerender();
     try{
       const payload=await api("/generate-draft",{description:draftDescription,model:LIVE_MODEL});
       bundle=payload.bundle;
@@ -312,6 +312,7 @@
       executionMode="native_coordination";
       runPolicy="scripted";
       generationMeta={model:"shared reviewed coordination family",cost_usd:0,trace_id:null};
+      runResult=null;
     }catch(err){alert(`Draft generation failed: ${err.message}`);active="logs";}
     finally{draftBusy=false;rerender();}
   }
@@ -343,7 +344,6 @@
       draftDescription=v;
       if(draftArtifact && draftArtifact.source_description!==v){
         mechanicsApproved=false;
-        runResult=null;
       }
       sync();
     },{textarea:true,placeholder:"Who is coordinating? What must be true? Who knows what? Who may intervene? What approval threshold matters?"}));
@@ -405,12 +405,13 @@
     const check=core.validateBundle(bundle);
     if(!check.ok){alert("Fix bundle validation issues before generating mechanics.");return;}
     if(!(bundle.actions||[]).length){alert("Add at least one action signature first.");return;}
-    liveBusy=true; runResult=null; rerender();
+    liveBusy=true; rerender();
     try{
       const payload=await api("/generate-mechanics",{bundle,model:LIVE_MODEL,guidance:mechanicGuidance});
       causalModel=payload.causal_model; causalReview=payload.review; mechanicsSource=bundleKey(); mechanicsApproved=false;
       executionMode="authored_world";
       generationMeta={cost_usd:payload.cost_usd||0,daily_cost_usd:payload.daily_cost_usd,model:payload.model||LIVE_MODEL,trace_id:payload.trace_id||null};
+      runResult=null;
     }catch(err){alert(`Mechanics generation failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
