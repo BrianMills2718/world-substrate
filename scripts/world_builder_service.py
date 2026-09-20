@@ -21,12 +21,14 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
+from scripts.native_coordination_authoring import generate_native_coordination_draft
 from scripts.run_authored_world import render_run, run_world
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
 
 API_PREFIX = "/world-builder/api"
 MAX_BODY_BYTES = 512_000
+DRAFT_BUDGET = 0.08
 MECHANICS_BUDGET = 0.12
 RUN_BUDGET = 0.12
 DAILY_LLM_BUDGET = 0.50
@@ -224,6 +226,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
         path = self._path()
         try:
+            if path == "/generate-draft":
+                self._generate_draft(client, body)
+                return
             if path == "/generate-mechanics":
                 self._generate(client, body)
                 return
@@ -250,6 +255,44 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             )
             return None
         return cap
+
+    def _generate_draft(self, client: str, body: dict[str, Any]) -> None:
+        description = body.get("description")
+        if not isinstance(description, str) or not description.strip():
+            raise ValueError("description must be a nonempty string")
+        if len(description) > 8000:
+            raise ValueError("description must be at most 8000 characters")
+        model = str(body.get("model") or DEFAULT_MODEL)
+        trace_id = f"{TRACE_ROOT}/draft/{uuid.uuid4().hex}"
+        with _LLM_LOCK:
+            budget = self._llm_budget(client, DRAFT_BUDGET)
+            if budget is None:
+                return
+            try:
+                draft, bundle, review, result = generate_native_coordination_draft(
+                    description,
+                    model=model,
+                    trace_id=trace_id,
+                    max_budget=budget,
+                )
+                trace_cost = _trace_cost(trace_id)
+            except Exception:
+                _settle_daily_budget(budget, None)
+                raise
+            daily_cost = _settle_daily_budget(budget, trace_cost)
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "draft": draft,
+                "bundle": bundle,
+                "review": review,
+                "model": getattr(result, "model", model),
+                "cost_usd": trace_cost,
+                "daily_cost_usd": daily_cost,
+                "trace_id": trace_id,
+            },
+        )
 
     def _generate(self, client: str, body: dict[str, Any]) -> None:
         bundle = validate_bundle(body.get("bundle"))
