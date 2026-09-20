@@ -329,6 +329,9 @@
     const source=card("Source description used for this draft");
     source.append(el("p","muted",draftReview.source_description||draftArtifact?.source_description||""));
     editor.append(source);
+    const structure=card("Inferred represented structure");
+    structure.append(el("pre","mini-json",JSON.stringify(draftReview.structure||{},null,2)));
+    editor.append(structure);
     editor.append(jsonRows("Extracted requirements → represented surfaces",draftReview.requirements));
     if(draftReview.coverage_limit) editor.append(liveMessage(draftReview.coverage_limit,"warn"));
     const assumptions=card("Inferred assumptions");
