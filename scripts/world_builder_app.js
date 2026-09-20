@@ -155,7 +155,7 @@
   function renderDraftReview() {
     if(!draftReview)return;
     const stale=draftReviewStale();
-    if(stale) editor.append(liveMessage("The editable world has changed since this intent review was generated. The original requirements/assumptions remain visible as provenance, but review the edits before approving mechanics.","warn"));
+    if(stale) editor.append(liveMessage("The description or editable world has changed since this intent review was generated. The original requirements/assumptions remain visible as provenance, but regenerate the bounded draft before approving or running.","warn"));
     const receipt=card("One-shot draft receipt");
     if(draftGenerationMeta) receipt.append(el("div","receipt",`${draftGenerationMeta.model||"model"} · ${Number(draftGenerationMeta.cost_usd||0).toFixed(6)} · ${draftGenerationMeta.trace_id||"no trace id"}`));
     receipt.append(el("p","muted","The description produced configuration only. Executable law comes from the shared reviewed coordination mechanics shown in Causal mechanics."));
