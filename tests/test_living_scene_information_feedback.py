@@ -190,6 +190,10 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         self.assertNotIn("actor-only observation secret", public_html)
         self.assertNotIn("private cognition context", public_html)
         self.assertNotIn("Private payload", public_html)
+        self.assertNotIn("private-revision-operand", public_html)
+        self.assertNotIn("private-slot-operand", public_html)
+        self.assertNotIn("private-revision-expectation", public_html)
+        self.assertNotIn("private-slot-expectation", public_html)
         recipient_html = living_renderer.render_html(
             value, cfg, REPO / "tests/fixtures/living_scene", observer_actor_id="actor-b"
         )
