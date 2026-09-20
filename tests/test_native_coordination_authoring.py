@@ -195,6 +195,12 @@ class NativeCoordinationAuthoringTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "only the one restorable"):
             validate_native_coordination_draft(value)
 
+    def test_validation_requires_two_reports_for_comparable_thresholds(self):
+        value = draft()
+        value["proposal"]["reports"] = value["proposal"]["reports"][:1]
+        with self.assertRaisesRegex(ValueError, "2-6 represented reports"):
+            validate_native_coordination_draft(value)
+
     def test_validation_refuses_duplicate_report_recipient_below_real_voter_count(self):
         value = draft()
         value["proposal"]["reports"][1]["recipient_id"] = "mara"
