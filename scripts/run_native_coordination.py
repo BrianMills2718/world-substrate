@@ -449,6 +449,8 @@ def evaluate_acceptance(
         observed_ui.add("selection_inspection")
     if transmissions:
         observed_ui.add("information_movement")
+    if transmissions and "Represented deliveries" in html:
+        observed_ui.add("information_visibility_inspection")
     if feedback_rows and expected["blocked_check"] in feedback_reasons:
         observed_ui.add("failed_check_feedback")
     if satisfied_check_labels:
@@ -482,6 +484,15 @@ def evaluate_acceptance(
             bool(transmissions),
             expected="at least one represented transmission",
             observed=len(transmissions),
+        ),
+        _check(
+            "renderer.information_visibility_inspection", "renderer",
+            bool(transmissions) and "Represented deliveries" in html,
+            expected="actor inspector exposes represented delivery history",
+            observed={
+                "transmissions": len(transmissions),
+                "actor_delivery_inspector": "Represented deliveries" in html,
+            },
         ),
         _check(
             "renderer.private_content_hidden", "information_visibility",
