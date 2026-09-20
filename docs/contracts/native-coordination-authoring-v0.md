@@ -80,8 +80,8 @@ The first release intentionally supports one bounded coordination family:
 - exactly four prerequisites/resources;
 - one unique intervention authority;
 - one restorable prerequisite initially below requirement;
-- direct source-to-recipient represented information delivery;
-- unique report recipients sufficient to cover the approval threshold;
+- at least two direct source-to-recipient represented information deliveries;
+- unique report recipients sufficient to cover the approval threshold and one alternate threshold;
 - member approval;
 - represented prerequisite restoration; and
 - gate finalization.
