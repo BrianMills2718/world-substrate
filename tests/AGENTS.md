@@ -1,6 +1,6 @@
 # Verification boundary
 
-The root `CLAUDE.md` applies.
+The root `AGENTS.md` applies.
 
 - Derived donor fixtures are immutable expected behavior and must retain revision/hash provenance.
 - Regenerate Castaway fixtures only through `scripts/extract_castaway_fixture.py`; never edit expected values by hand.
