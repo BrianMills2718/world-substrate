@@ -14,10 +14,10 @@ Canonical general world-substrate engine: typed state, registered deterministic 
 
 ## Read next
 
-- [Operating rules](../CLAUDE.md)
+- [Operating rules](../AGENTS.md)
 - [Project overview](../README.md)
 - [Roadmap](../roadmap/README.md)
-- [Documentation routing](../docs/CLAUDE.md)
+- [Documentation routing](../docs/AGENTS.md)
 
 ## Coverage and unknowns
 

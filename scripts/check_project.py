@@ -20,10 +20,9 @@ LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 SKIP = {".git", ".venv", ".company-planning", "work", "runs"}
 REQUIRED = (
-    "CLAUDE.md",
     "AGENTS.md",
     "README.md",
-    "docs/CLAUDE.md",
+    "docs/AGENTS.md",
     "docs/wiki/README.md",
     "docs/architecture.md",
     "docs/contracts/core-v0.md",
@@ -48,9 +47,9 @@ REQUIRED = (
     "docs/audits/m5-policy-consumer.md",
     "docs/audits/m6-second-world.md",
     "docs/audits/m7-authoring-rate.md",
-    "roadmap/CLAUDE.md",
+    "roadmap/AGENTS.md",
     "roadmap/README.md",
-    "reference_worlds/CLAUDE.md",
+    "reference_worlds/AGENTS.md",
     "reference_worlds/README.md",
     "reference_worlds/castaway/probe.py",
     "reference_worlds/workshop/probe.py",
@@ -80,7 +79,7 @@ REQUIRED = (
     "src/world_substrate/mechanisms/damage.py",
     "src/world_substrate/profile.py",
     "src/world_substrate/assay.py",
-    "tests/CLAUDE.md",
+    "tests/AGENTS.md",
     "tests/test_owner_ref.py",
     "tests/test_observability_fields.py",
     "tests/test_first_fill.py",
@@ -172,7 +171,7 @@ def markdown_files() -> list[Path]:
 # asserted that what it *says about itself* is still true, which is why
 # semantic-mechanical-binding-v0.md spent several commits claiming one binding
 # of seven while six were implemented, and claiming no binding reached an event
-# after they all did. A prose rule in docs/CLAUDE.md said to keep proposed
+# after they all did. A prose rule in docs/AGENTS.md said to keep proposed
 # contracts distinct from implemented behaviour, and nothing made it fire.
 #
 # A contract opts in by declaring the facts it depends on:
@@ -393,28 +392,34 @@ def main() -> int:
     failures.extend(check_contract_status(REPO))
 
     agents = REPO / "AGENTS.md"
-    if not agents.is_symlink() or agents.readlink() != Path("CLAUDE.md"):
-        failures.append("root AGENTS.md must be a symlink to CLAUDE.md")
+    if not agents.is_file() or agents.is_symlink():
+        failures.append("root AGENTS.md must be a regular authored file")
 
-    nested_agents = [
+    required_nested_agents = {
+        "docs/AGENTS.md",
+        "roadmap/AGENTS.md",
+        "reference_worlds/AGENTS.md",
+        "tests/AGENTS.md",
+    }
+    nested_agents = {
         display_path(path, REPO)
         for path in REPO.rglob("AGENTS.md")
         if path != agents and not SKIP.intersection(path.relative_to(REPO).parts)
-    ]
-    if nested_agents:
+    }
+    if nested_agents != required_nested_agents:
         failures.append(
-            "nested AGENTS.md files are forbidden: "
-            + ", ".join(map(str, nested_agents))
+            "nested AGENTS.md files differ from required instruction subtrees: "
+            + str(sorted(nested_agents ^ required_nested_agents))
         )
 
-    root = (REPO / "CLAUDE.md").read_text()
+    root = (REPO / "AGENTS.md").read_text()
     if len(root.splitlines()) > 45:
         failures.append(
-            f"root CLAUDE.md is {len(root.splitlines())} lines; reorganize instead of expanding it"
+            f"root AGENTS.md is {len(root.splitlines())} lines; reorganize instead of expanding it"
         )
     for route in ("docs/wiki/README.md", "roadmap/README.md"):
         if route not in root:
-            failures.append(f"root CLAUDE.md does not route to {route}")
+            failures.append(f"root AGENTS.md does not route to {route}")
         if route not in (REPO / "README.md").read_text():
             failures.append(f"root README.md does not route to {route}")
 
@@ -640,7 +645,7 @@ def main() -> int:
         return 1
 
     print("World Substrate project check passed.")
-    print("Reading path: CLAUDE.md -> docs/wiki/README.md -> task authority")
+    print("Reading path: AGENTS.md -> docs/wiki/README.md -> task authority")
     print("Planning path: README.md -> roadmap/README.md -> active slice")
     print(f"Pinned source records checked: {len(manifest['sources'])}")
     if args.with_donors:
