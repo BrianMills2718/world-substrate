@@ -55,6 +55,7 @@ class FillRule:
     write_paths: tuple[str, ...] = (
         "entities.<vessel>.liquid",
         "entities.<vessel>.thermal",
+        "entities.<vessel>.container.boiling_ticks",
         "entities.<vessel>.last_cause_event_id",
         "entities.<source>.liquid",
     )
@@ -407,6 +408,7 @@ class DrinkRule:
         "entities.<actor>.actor.hydration",
         "entities.<actor>.actor.alive",
         "entities.<vessel>.liquid",
+        "entities.<vessel>.thermal",
         "entities.<vessel>.last_cause_event_id",
         "physical_ledger.drunk",
     )
@@ -555,4 +557,8 @@ class DrinkRule:
         actor.actor.hydration = min(100, max(0, actor.actor.hydration + hydration))
         actor.actor.health = max(0, actor.actor.health - harm)
         actor.actor.alive = actor.actor.health > 0
+        if vessel.thermal is not None and vessel.liquid.volume_ml:
+            vessel.thermal.temperature_c = round(
+                vessel.liquid.heat_units / vessel.liquid.volume_ml, 2
+            )
         vessel.last_cause_event_id = event_id
