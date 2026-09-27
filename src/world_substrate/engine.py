@@ -773,9 +773,13 @@ class Engine:
                         lambda process=process: process.due(candidate),
                     )
                     if due:
-                        produced.append(
-                            self._apply_process(process, command_id, candidate, before)
+                        # A due process whose effect leaves material state
+                        # unchanged commits no event, so it reports none.
+                        event = self._apply_process(
+                            process, command_id, candidate, before
                         )
+                        if event is not None:
+                            produced.append(event)
             except Exception:
                 self.world = saved
                 raise
@@ -787,7 +791,7 @@ class Engine:
         command_id: str,
         candidate: World,
         before: dict[str, Any],
-    ) -> dict[str, Any]:
+    ) -> dict[str, Any] | None:
         event_id = _identifier("e", len(self.world.events) + 1)
         causal_parents = (
             list(
@@ -817,7 +821,7 @@ class Engine:
                 f"{authority_violations}"
             )
         if candidate.material_dict() == before:
-            return {}
+            return None
         candidate.revision += 1
         candidate.validate()
         after = candidate.material_dict()
