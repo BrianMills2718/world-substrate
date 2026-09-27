@@ -241,6 +241,7 @@
         "declared_write_paths": [
           "entities.<vessel>.liquid",
           "entities.<vessel>.thermal",
+          "entities.<vessel>.container.boiling_ticks",
           "entities.<vessel>.last_cause_event_id",
           "entities.<source>.liquid"
         ],

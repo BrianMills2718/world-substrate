@@ -320,6 +320,7 @@
         "declared_write_paths": [
           "entities.<vessel>.liquid",
           "entities.<vessel>.thermal",
+          "entities.<vessel>.container.boiling_ticks",
           "entities.<vessel>.last_cause_event_id",
           "entities.<source>.liquid"
         ],
@@ -849,7 +850,7 @@
     "retained_trace_matches": true,
     "semantic_checkpoint_matched": true,
     "trace_ref": "evidence/m1/transfer-v0.json",
-    "trace_sha256": "edeffa1e50ffaba196fe5d019c70d10174545d76a349c98f390bb14f9a5a22c5",
+    "trace_sha256": "37d951d1ae847334efbf8921b6f8cb12b118cb34313ad40074b96916e2b55526",
     "vessel_identity_preserved": true
   },
   "schema_version": "world-substrate-evidence/freshwater-v0"
