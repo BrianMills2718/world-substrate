@@ -137,7 +137,7 @@ def _choose(engine: Engine, actor_id: str, kind: str, **participants: str) -> di
 
 def _tick(engine: Engine, steps: int = 1) -> list[dict[str, Any]]:
     outcome = engine.advance(steps)
-    return [event for event in outcome["events"] if event]
+    return list(outcome["events"])
 
 
 def run_baseline(root: Path | None = None) -> Engine:
