@@ -40,6 +40,12 @@ The expected layer model is additive: base world, residents, information structu
 
 Conformance tests must prove that the harness cannot mutate canonical state, cannot see observer-only evidence, cannot select actions the Engine did not offer, keeps private memory actor-private, and fails without corrupting the World. Do not run model/harness architecture tournaments unless a future question is genuinely novel and material.
 
+### Deferred hybrid cognition adapters
+
+Specialized low-latency decision models such as Jev suggest a possible future `CognitionAdapter` implementation that composes a fast typed probabilistic decision layer with a slower general reasoning model. Routine affordance selection, routing, scoring, or escalation could be handled by the fast layer, while novel or deliberative situations escalate to the general model.
+
+This is a **deferred provider pattern, not a new World Substrate subsystem or roadmap commitment**. World Substrate does not own or need to define a System-1/System-2 cognitive architecture, train such models, or standardize their internal confidence/escalation policy. The owned boundary remains the same: cognition receives authorized observations and Engine-minted affordances and returns proposed intent; installed World Substrate mechanics alone determine canonical consequences. Any future hybrid adapter should be evaluated only for boundary conformance, cost/latency, and demonstrated product need.
+
 ## Scheduling
 
 SimPy may own simulated clock advancement, event ordering, timeouts, and waking process coroutines. It must not become a parallel source of resource truth or consequence authority. A SimPy wakeup produces a World Substrate process attempt; the installed process mechanic still checks canonical state and the Engine still commits or refuses the transition. The target is one canonical simulation timeline supporting independently timed processes and duration-bearing activities; render time, cognition cadence, and analysis cadence remain separate. See [multi-timescale execution](multi-timescale-execution-2026-09.md).
