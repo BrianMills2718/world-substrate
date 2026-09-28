@@ -1,0 +1,124 @@
+{
+  "schema_version": "world-substrate-native-coordination-draft/v0",
+  "family": "bounded-coordination-v0",
+  "draft_version": 1,
+  "source_description": "Mara, Ivo, Chen and Sol coordinate a handoff. Sol alone can restore a missing handoff token. Mara and Ivo receive private status reports, and two informed members must approve before the handoff can be finalized. I would also like probabilistic delivery delays.",
+  "proposal": {
+    "schema_version": "world-substrate-native-coordination-proposal/v0",
+    "world": {
+      "id": "handoff-review",
+      "label": "Handoff review",
+      "summary": "Four members coordinate a gated handoff with a missing token and private status reports.",
+      "location": "handoff-room"
+    },
+    "members": [
+      {
+        "id": "mara",
+        "label": "Mara",
+        "role": "lead",
+        "authorized": false
+      },
+      {
+        "id": "ivo",
+        "label": "Ivo",
+        "role": "receiver",
+        "authorized": false
+      },
+      {
+        "id": "chen",
+        "label": "Chen",
+        "role": "observer",
+        "authorized": false
+      },
+      {
+        "id": "sol",
+        "label": "Sol",
+        "role": "operator",
+        "authorized": true
+      }
+    ],
+    "resources": [
+      {
+        "id": "handoff-token",
+        "label": "Handoff token",
+        "current": 0,
+        "required": 1,
+        "unit": "token",
+        "restorable": true
+      },
+      {
+        "id": "capacity",
+        "label": "Queue capacity",
+        "current": 1,
+        "required": 1,
+        "unit": "slot",
+        "restorable": false
+      },
+      {
+        "id": "link",
+        "label": "Link health",
+        "current": 1,
+        "required": 1,
+        "unit": "state",
+        "restorable": false
+      },
+      {
+        "id": "window",
+        "label": "Safety window",
+        "current": 1,
+        "required": 1,
+        "unit": "state",
+        "restorable": false
+      }
+    ],
+    "gate": {
+      "id": "handoff-gate",
+      "label": "Handoff gate",
+      "required_approvals": 2
+    },
+    "reports": [
+      {
+        "id": "token-report",
+        "label": "Token report",
+        "source_id": "sol",
+        "recipient_id": "mara",
+        "channel_id": "ops-chat",
+        "topic": "token",
+        "content": "The handoff token is missing."
+      },
+      {
+        "id": "link-report",
+        "label": "Link report",
+        "source_id": "sol",
+        "recipient_id": "ivo",
+        "channel_id": "radio",
+        "topic": "link",
+        "content": "The represented link is healthy."
+      }
+    ],
+    "requirement_coverage": [
+      {
+        "text": "Sol alone can restore the missing handoff token.",
+        "surface": "authorization"
+      },
+      {
+        "text": "Two informed members must approve before finalization.",
+        "surface": "approval_threshold"
+      },
+      {
+        "text": "Private status reports go to Mara and Ivo.",
+        "surface": "information_delivery"
+      },
+      {
+        "text": "Use probabilistic delivery delays.",
+        "surface": "unsupported"
+      }
+    ],
+    "assumptions": [
+      "The handoff token is the only initially unhealthy prerequisite."
+    ],
+    "unsupported_requests": [
+      "Use probabilistic delivery delays."
+    ]
+  }
+}

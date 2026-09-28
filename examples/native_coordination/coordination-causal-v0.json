@@ -1,0 +1,632 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "coordination.action.communicate",
+      "version": "1",
+      "action_kind": "communicate",
+      "rationale": "A represented member may deliver one represented information item through its declared delivery record to its declared recipient.",
+      "actor_selector": {
+        "categories": [
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "participants": {
+        "information": {
+          "categories": [
+            "information"
+          ],
+          "components": [
+            "information"
+          ]
+        },
+        "delivery": {
+          "categories": [
+            "delivery"
+          ],
+          "components": [
+            "delivery"
+          ]
+        },
+        "recipient": {
+          "categories": [
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Actor is the represented information source",
+          "left": {
+            "participant": {
+              "name": "information",
+              "path": "components.information.source_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "Delivery names the represented information",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.info_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "information"
+          }
+        },
+        {
+          "label": "Delivery names the represented recipient",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.recipient_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "recipient"
+          }
+        },
+        {
+          "label": "Delivery channel agrees with information channel",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.channel_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "information",
+              "path": "components.information.channel_id"
+            }
+          }
+        },
+        {
+          "label": "Information is not active yet",
+          "left": {
+            "participant": {
+              "name": "information",
+              "path": "components.information.active"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Delivery is pending",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "pending"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "information",
+          "path": "components.information.active",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "participant": "delivery",
+          "path": "components.delivery.status",
+          "op": "set",
+          "value": {
+            "literal": "delivered"
+          }
+        },
+        {
+          "participant": "recipient",
+          "path": "components.member.aware",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        }
+      ],
+      "limits": [
+        "Delivery is represented, not a claim that the message caused a later decision."
+      ],
+      "tests": [
+        "only the declared source can deliver; recipient visibility remains actor-scoped"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "coordination.action.approve",
+      "version": "1",
+      "action_kind": "approve",
+      "rationale": "An informed member may add one approval only while all four represented prerequisites are healthy.",
+      "actor_selector": {
+        "categories": [
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "participants": {
+        "gate": {
+          "categories": [
+            "gate"
+          ],
+          "components": [
+            "gate"
+          ]
+        },
+        "prereq_a": {
+          "categories": [
+            "prereq-a"
+          ],
+          "components": [
+            "resource"
+          ]
+        },
+        "prereq_b": {
+          "categories": [
+            "prereq-b"
+          ],
+          "components": [
+            "resource"
+          ]
+        },
+        "prereq_c": {
+          "categories": [
+            "prereq-c"
+          ],
+          "components": [
+            "resource"
+          ]
+        },
+        "prereq_d": {
+          "categories": [
+            "prereq-d"
+          ],
+          "components": [
+            "resource"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Member received represented coordination information",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.member.aware"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "Member has not already approved",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.member.approved"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Gate remains blocked",
+          "left": {
+            "participant": {
+              "name": "gate",
+              "path": "components.gate.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "blocked"
+          }
+        },
+        {
+          "label": "Approval threshold has not already been met",
+          "left": {
+            "participant": {
+              "name": "gate",
+              "path": "components.gate.approval_count"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "gate",
+              "path": "components.gate.required_approvals"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite A is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_a",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_a",
+              "path": "components.resource.required"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite B is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_b",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_b",
+              "path": "components.resource.required"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite C is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_c",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_c",
+              "path": "components.resource.required"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite D is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_d",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_d",
+              "path": "components.resource.required"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "components.member.approved",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "participant": "gate",
+          "path": "components.gate.approval_count",
+          "op": "add",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Approval counting is bounded to one approval per represented member in this v0 family."
+      ],
+      "tests": [
+        "unaware or repeat members are refused; unhealthy prerequisites block approval"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "coordination.action.intervene",
+      "version": "1",
+      "action_kind": "intervene",
+      "rationale": "A uniquely authorized represented member may restore the configured restorable prerequisite to its required level.",
+      "actor_selector": {
+        "categories": [
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "participants": {
+        "resource": {
+          "categories": [
+            "restorable"
+          ],
+          "components": [
+            "resource"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Member holds represented intervention authorization",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.member.authorized"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "Restorable resource is below requirement",
+          "left": {
+            "participant": {
+              "name": "resource",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "resource",
+              "path": "components.resource.required"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "resource",
+          "path": "components.resource.current",
+          "op": "set",
+          "value": {
+            "participant": {
+              "name": "resource",
+              "path": "components.resource.required"
+            }
+          }
+        }
+      ],
+      "limits": [
+        "The intervention only restores the represented resource named by the action."
+      ],
+      "tests": [
+        "unauthorized members are refused; restoration cannot exceed the represented requirement"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "coordination.action.finalize",
+      "version": "1",
+      "action_kind": "finalize",
+      "rationale": "A member may mark the represented gate ready only after its configured approval threshold is met and all represented prerequisites are healthy.",
+      "actor_selector": {
+        "categories": [
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "participants": {
+        "gate": {
+          "categories": [
+            "gate"
+          ],
+          "components": [
+            "gate"
+          ]
+        },
+        "prereq_a": {
+          "categories": [
+            "prereq-a"
+          ],
+          "components": [
+            "resource"
+          ]
+        },
+        "prereq_b": {
+          "categories": [
+            "prereq-b"
+          ],
+          "components": [
+            "resource"
+          ]
+        },
+        "prereq_c": {
+          "categories": [
+            "prereq-c"
+          ],
+          "components": [
+            "resource"
+          ]
+        },
+        "prereq_d": {
+          "categories": [
+            "prereq-d"
+          ],
+          "components": [
+            "resource"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Gate remains blocked",
+          "left": {
+            "participant": {
+              "name": "gate",
+              "path": "components.gate.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "blocked"
+          }
+        },
+        {
+          "label": "Approval threshold is met",
+          "left": {
+            "participant": {
+              "name": "gate",
+              "path": "components.gate.approval_count"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "gate",
+              "path": "components.gate.required_approvals"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite A is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_a",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_a",
+              "path": "components.resource.required"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite B is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_b",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_b",
+              "path": "components.resource.required"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite C is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_c",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_c",
+              "path": "components.resource.required"
+            }
+          }
+        },
+        {
+          "label": "Prerequisite D is healthy",
+          "left": {
+            "participant": {
+              "name": "prereq_d",
+              "path": "components.resource.current"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "prereq_d",
+              "path": "components.resource.required"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "gate",
+          "path": "components.gate.status",
+          "op": "set",
+          "value": {
+            "literal": "ready"
+          }
+        }
+      ],
+      "limits": [
+        "Finalization changes only represented gate status; it does not fabricate additional approvals."
+      ],
+      "tests": [
+        "insufficient approvals or unhealthy prerequisites refuse finalization"
+      ],
+      "semantic_bindings": []
+    }
+  ],
+  "terminal": {
+    "mode": "all",
+    "selector": {
+      "categories": [
+        "gate"
+      ],
+      "components": [
+        "gate"
+      ]
+    },
+    "checks": [
+      {
+        "path": "components.gate.status",
+        "op": "eq",
+        "value": "ready"
+      }
+    ]
+  }
+}
