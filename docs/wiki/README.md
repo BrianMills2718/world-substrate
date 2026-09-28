@@ -56,6 +56,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
 | Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) · [Living Scene v1](../contracts/living-scene-v1.md) |
+| Native coordination acceptance / diagnostic evidence | [Native coordination diagnostic bundle v0](../contracts/native-coordination-diagnostics-v0.md) |
 | Cross-repo donor roles | [Source dispositions](../source-dispositions.md) |
 | Nontrivial live-authoring evidence | [Repair Bay live proof](../audits/repair-bay-live-preflight.md) |
 
