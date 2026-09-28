@@ -53,6 +53,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | Off-the-shelf candidates to evaluate (not decisions) | [Off-the-shelf candidates 2026-09-25](../research/off-the-shelf-candidates-2026-09-25.md) |
 | Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
+| CVS analytical-model structural import | [CVS Situation IR structural import v0](../contracts/cvs-situation-import-v0.md) |
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
 | Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) · [Living Scene v1](../contracts/living-scene-v1.md) |
