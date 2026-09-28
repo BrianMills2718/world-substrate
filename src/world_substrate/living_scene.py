@@ -35,6 +35,18 @@ _FORBIDDEN_OPERATION_KEYS = {
     "changes", "after", "before", "causal_parent_event_ids",
     "information_context", "canonical_state", "world_state",
 }
+_ACTION_FEEDBACK_STATUSES = frozenset({
+    "accepted",
+    "precondition_failed",
+    "stale_revision",
+    "invalid_action",
+    "unsupported_action",
+    "scope_violation",
+    # Retained legacy presentation fixtures predate the core-v0 status names.
+    "rejected",
+    "refused",
+    "blocked",
+})
 
 
 def _point(value: object, label: str) -> list[float]:
@@ -368,19 +380,29 @@ def _information_transmissions(
 
 def _action_feedback(event: dict[str, Any], operation: dict[str, Any]) -> dict[str, Any]:
     status = event.get("status")
-    if status not in {"accepted", "rejected", "refused", "blocked"}:
+    if status not in _ACTION_FEEDBACK_STATUSES:
         status = "unknown"
+    checks: list[dict[str, Any]] = []
     reasons: list[str] = []
     for check in event.get("checks") or []:
-        if isinstance(check, dict) and check.get("ok") is False:
-            label = check.get("label")
-            if isinstance(label, str) and label:
-                reasons.append(label)
+        if not isinstance(check, dict):
+            continue
+        label = check.get("label")
+        ok = check.get("ok")
+        if not isinstance(label, str) or not label or type(ok) is not bool:
+            continue
+        # Presentation may expose the rule/check identity and verdict, but not
+        # retained actual/expected operands, which can contain actor-scoped or
+        # otherwise non-public evidence.
+        checks.append({"label": label, "ok": ok})
+        if ok is False:
+            reasons.append(label)
     return {
         "kind": "action_feedback",
         "status": status,
         "label": operation.get("label"),
         "reasons": reasons,
+        "checks": checks,
     }
 
 

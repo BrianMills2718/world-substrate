@@ -1,0 +1,543 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "distributed-approval",
+    "label": "Distributed approval",
+    "summary": "Six participants coordinate a deployment requiring four healthy prerequisites, asymmetric reports, and four approvals.",
+    "location": "coordination-room",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "member",
+      "fields": [
+        {
+          "name": "role",
+          "type": "string",
+          "default": "participant"
+        },
+        {
+          "name": "authorized",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "approved",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "aware",
+          "type": "boolean",
+          "default": false
+        }
+      ]
+    },
+    {
+      "name": "resource",
+      "fields": [
+        {
+          "name": "current",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "required",
+          "type": "integer",
+          "default": 1
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "default": "unit"
+        }
+      ]
+    },
+    {
+      "name": "gate",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "default": "blocked"
+        },
+        {
+          "name": "approval_count",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "required_approvals",
+          "type": "integer",
+          "default": 1
+        }
+      ]
+    },
+    {
+      "name": "information",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string",
+          "default": "report"
+        },
+        {
+          "name": "source_id",
+          "type": "entity_ref",
+          "default": "placeholder"
+        },
+        {
+          "name": "channel_id",
+          "type": "string",
+          "default": "brief"
+        },
+        {
+          "name": "visibility",
+          "type": "string",
+          "default": "direct"
+        },
+        {
+          "name": "topic",
+          "type": "string",
+          "default": "coordination"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "default": false
+        }
+      ]
+    },
+    {
+      "name": "delivery",
+      "fields": [
+        {
+          "name": "info_id",
+          "type": "entity_ref",
+          "default": "placeholder"
+        },
+        {
+          "name": "recipient_id",
+          "type": "entity_ref",
+          "default": "placeholder"
+        },
+        {
+          "name": "channel_id",
+          "type": "string",
+          "default": "brief"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "default": "pending"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "rhea",
+      "label": "Rhea",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "field lead",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "omar",
+      "label": "Omar",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "logistics",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "lian",
+      "label": "Lian",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "clinical",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "davi",
+      "label": "Davi",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "safeguards",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "suri",
+      "label": "Suri",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "finance",
+          "authorized": false,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "tess",
+      "label": "Tess",
+      "categories": [
+        "member"
+      ],
+      "components": {
+        "member": {
+          "role": "deployment coordinator",
+          "authorized": true,
+          "approved": false,
+          "aware": false
+        }
+      }
+    },
+    {
+      "id": "validation",
+      "label": "Validation capacity",
+      "categories": [
+        "resource",
+        "prereq-a",
+        "restorable"
+      ],
+      "components": {
+        "resource": {
+          "current": 2,
+          "required": 3,
+          "unit": "teams"
+        }
+      }
+    },
+    {
+      "id": "staffing",
+      "label": "Clinical staffing",
+      "categories": [
+        "resource",
+        "prereq-b"
+      ],
+      "components": {
+        "resource": {
+          "current": 20,
+          "required": 20,
+          "unit": "staff"
+        }
+      }
+    },
+    {
+      "id": "reserve",
+      "label": "Shared reserve",
+      "categories": [
+        "resource",
+        "prereq-c"
+      ],
+      "components": {
+        "resource": {
+          "current": 80,
+          "required": 75,
+          "unit": "units"
+        }
+      }
+    },
+    {
+      "id": "safeguard",
+      "label": "Safeguard readiness",
+      "categories": [
+        "resource",
+        "prereq-d"
+      ],
+      "components": {
+        "resource": {
+          "current": 1,
+          "required": 1,
+          "unit": "clearance"
+        }
+      }
+    },
+    {
+      "id": "deployment-gate",
+      "label": "Deployment approval gate",
+      "categories": [
+        "gate"
+      ],
+      "components": {
+        "gate": {
+          "status": "blocked",
+          "approval_count": 0,
+          "required_approvals": 4
+        }
+      }
+    },
+    {
+      "id": "report-validation",
+      "label": "Validation shortfall report",
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "Validation capacity is below the deployment requirement.",
+          "source_id": "tess",
+          "channel_id": "briefing",
+          "visibility": "direct",
+          "topic": "validation",
+          "active": false
+        }
+      }
+    },
+    {
+      "id": "delivery-report-validation",
+      "label": "Delivery: Validation shortfall report",
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "report-validation",
+          "recipient_id": "rhea",
+          "channel_id": "briefing",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "id": "report-staffing",
+      "label": "Staffing readiness report",
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "Clinical staffing is at the represented requirement.",
+          "source_id": "tess",
+          "channel_id": "dashboard",
+          "visibility": "direct",
+          "topic": "staffing",
+          "active": false
+        }
+      }
+    },
+    {
+      "id": "delivery-report-staffing",
+      "label": "Delivery: Staffing readiness report",
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "report-staffing",
+          "recipient_id": "omar",
+          "channel_id": "dashboard",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "id": "report-reserve",
+      "label": "Reserve status report",
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "Shared reserve is above the represented minimum.",
+          "source_id": "tess",
+          "channel_id": "briefing",
+          "visibility": "direct",
+          "topic": "reserve",
+          "active": false
+        }
+      }
+    },
+    {
+      "id": "delivery-report-reserve",
+      "label": "Delivery: Reserve status report",
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "report-reserve",
+          "recipient_id": "lian",
+          "channel_id": "briefing",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "id": "report-safeguard",
+      "label": "Safeguard status report",
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "content": "Safeguard readiness is represented as clear.",
+          "source_id": "tess",
+          "channel_id": "dashboard",
+          "visibility": "direct",
+          "topic": "safeguard",
+          "active": false
+        }
+      }
+    },
+    {
+      "id": "delivery-report-safeguard",
+      "label": "Delivery: Safeguard status report",
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "info_id": "report-safeguard",
+          "recipient_id": "davi",
+          "channel_id": "dashboard",
+          "status": "pending"
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "communicate",
+      "description": "Deliver one represented information item to its declared recipient.",
+      "fields": [
+        {
+          "name": "information",
+          "type": "entity_ref"
+        },
+        {
+          "name": "delivery",
+          "type": "entity_ref"
+        },
+        {
+          "name": "recipient",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "approve",
+      "description": "Add one informed member approval when all represented prerequisites are healthy.",
+      "fields": [
+        {
+          "name": "gate",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_a",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_b",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_c",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_d",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "intervene",
+      "description": "Restore the one represented restorable prerequisite when authorized.",
+      "fields": [
+        {
+          "name": "resource",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "finalize",
+      "description": "Mark the represented gate ready after threshold and prerequisite checks pass.",
+      "fields": [
+        {
+          "name": "gate",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_a",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_b",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_c",
+          "type": "entity_ref"
+        },
+        {
+          "name": "prereq_d",
+          "type": "entity_ref"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "participant": {
+        "kind": "emoji",
+        "value": "👤"
+      },
+      "resource": {
+        "kind": "emoji",
+        "value": "📦"
+      },
+      "information": {
+        "kind": "emoji",
+        "value": "✉️"
+      },
+      "delivery": {
+        "kind": "text",
+        "value": "→"
+      }
+    },
+    "category_assets": {
+      "member": "participant",
+      "resource": "resource",
+      "information": "information",
+      "delivery": "delivery"
+    },
+    "station_roles": {
+      "gate": "goal"
+    }
+  }
+}

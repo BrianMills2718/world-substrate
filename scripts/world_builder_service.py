@@ -21,12 +21,19 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
+from scripts.native_coordination_authoring import (
+    DEFAULT_CAUSAL as NATIVE_COORDINATION_CAUSAL,
+    generate_native_coordination_draft,
+)
+from scripts.native_coordination_comparison import with_approval_threshold
 from scripts.run_authored_world import render_run, run_world
+from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
 
 API_PREFIX = "/world-builder/api"
 MAX_BODY_BYTES = 512_000
+DRAFT_BUDGET = 0.08
 MECHANICS_BUDGET = 0.12
 RUN_BUDGET = 0.12
 DAILY_LLM_BUDGET = 0.50
@@ -224,8 +231,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
         path = self._path()
         try:
+            if path == "/generate-draft":
+                self._generate_draft(client, body)
+                return
             if path == "/generate-mechanics":
                 self._generate(client, body)
+                return
+            if path == "/compare-native-coordination":
+                self._compare_native_coordination(client, body)
                 return
             if path == "/run":
                 self._run(client, body)
@@ -250,6 +263,45 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             )
             return None
         return cap
+
+    def _generate_draft(self, client: str, body: dict[str, Any]) -> None:
+        description = body.get("description")
+        if not isinstance(description, str) or not description.strip():
+            raise ValueError("description must be a nonempty string")
+        if len(description) > 8000:
+            raise ValueError("description must be at most 8000 characters")
+        model = str(body.get("model") or DEFAULT_MODEL)
+        trace_id = f"{TRACE_ROOT}/draft/{uuid.uuid4().hex}"
+        with _LLM_LOCK:
+            budget = self._llm_budget(client, DRAFT_BUDGET)
+            if budget is None:
+                return
+            try:
+                draft, bundle, review, result = generate_native_coordination_draft(
+                    description,
+                    model=model,
+                    trace_id=trace_id,
+                    max_budget=budget,
+                )
+                trace_cost = _trace_cost(trace_id)
+            except Exception:
+                _settle_daily_budget(budget, None)
+                raise
+            daily_cost = _settle_daily_budget(budget, trace_cost)
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "draft": draft,
+                "bundle": bundle,
+                "causal_model": json.loads(NATIVE_COORDINATION_CAUSAL.read_text()),
+                "review": review,
+                "model": getattr(result, "model", model),
+                "cost_usd": trace_cost,
+                "daily_cost_usd": daily_cost,
+                "trace_id": trace_id,
+            },
+        )
 
     def _generate(self, client: str, body: dict[str, Any]) -> None:
         bundle = validate_bundle(body.get("bundle"))
@@ -292,6 +344,47 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             },
         )
 
+    def _compare_native_coordination(self, client: str, body: dict[str, Any]) -> None:
+        if body.get("approved") is not True:
+            self._error(
+                HTTPStatus.CONFLICT,
+                "mechanics must be explicitly approved before a comparison",
+            )
+            return
+        baseline = validate_bundle(body.get("baseline_bundle"))
+        causal = body.get("causal_model")
+        if not isinstance(causal, dict):
+            raise ValueError("causal_model must be an object")
+        CausalModel.from_dict(causal, bundle=baseline)
+        shared_causal = json.loads(NATIVE_COORDINATION_CAUSAL.read_text())
+        if causal != shared_causal:
+            raise ValueError(
+                "native coordination comparison requires the reviewed shared coordination mechanics"
+            )
+        required = body.get("required_approvals")
+        comparison_bundle, change = with_approval_threshold(baseline, required)
+        CausalModel.from_dict(causal, bundle=comparison_bundle)
+        trace_id = f"{TRACE_ROOT}/comparison/{uuid.uuid4().hex}"
+        native = run_native_coordination(comparison_bundle, causal)
+        trace = native["trace"]
+        compiled = native["causal_model"]
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "summary": trace["summary"],
+                "trace": trace,
+                "causal_review": compiled.as_review(),
+                "replay_html": native["html"],
+                "comparison_bundle": comparison_bundle,
+                "change": change,
+                "cost_usd": 0.0,
+                "daily_cost_usd": None,
+                "execution_mode": "native_coordination_comparison",
+                "trace_id": trace_id,
+            },
+        )
+
     def _run(self, client: str, body: dict[str, Any]) -> None:
         if body.get("approved") is not True:
             self._error(HTTPStatus.CONFLICT, "mechanics must be explicitly approved before a run")
@@ -302,13 +395,29 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             raise ValueError("causal_model must be an object")
         # Compile before any policy/model call. This is the install authority gate.
         CausalModel.from_dict(causal, bundle=bundle)
+        execution_mode = str(body.get("execution_mode") or "authored_world")
+        if execution_mode not in {"authored_world", "native_coordination"}:
+            raise ValueError("execution_mode must be authored_world or native_coordination")
         policy = str(body.get("policy") or "scripted")
         turns = body.get("turns", 12)
         if type(turns) is not int:
             raise ValueError("turns must be an integer")
         model = str(body.get("model") or DEFAULT_MODEL)
         trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
-        if policy == "llm":
+        if execution_mode == "native_coordination":
+            shared_causal = json.loads(NATIVE_COORDINATION_CAUSAL.read_text())
+            if causal != shared_causal:
+                raise ValueError(
+                    "native_coordination execution requires the reviewed shared coordination mechanics"
+                )
+            if policy != "scripted":
+                raise ValueError("native_coordination execution is deterministic scripted-only in v0")
+            native = run_native_coordination(bundle, causal)
+            trace = native["trace"]
+            compiled = native["causal_model"]
+            replay = native["html"]
+            daily_cost = None
+        elif policy == "llm":
             with _LLM_LOCK:
                 budget = self._llm_budget(client, RUN_BUDGET)
                 if budget is None:
@@ -330,7 +439,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
             )
             daily_cost = None
-        replay = render_run(bundle, trace, compiled)
+        if execution_mode == "authored_world":
+            replay = render_run(bundle, trace, compiled)
         self._json(
             HTTPStatus.OK,
             {
@@ -341,6 +451,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "replay_html": replay,
                 "cost_usd": trace.get("cost_usd", 0.0),
                 "daily_cost_usd": daily_cost,
+                "execution_mode": execution_mode,
                 "trace_id": trace_id,
             },
         )

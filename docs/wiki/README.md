@@ -3,7 +3,7 @@ schema_version: project-wiki/v1
 type: ProjectWiki
 role: derived-navigation
 status: active
-reviewed_through: 2026-09-18
+reviewed_through: 2026-09-19
 authority_refs:
   - ../../README.md
   - ../../roadmap/README.md
@@ -57,6 +57,8 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
 | Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) · [Living Scene v1](../contracts/living-scene-v1.md) |
+| Native coordination acceptance / diagnostic evidence | [Native coordination diagnostic bundle v0](../contracts/native-coordination-diagnostics-v0.md) |
+| Native first-release static readiness (execution still pending) | [Native Waltzman static readiness review](../audits/native-waltzman-release-static-readiness-2026-09-19.md) |
 | Cross-repo donor roles | [Source dispositions](../source-dispositions.md) |
 | Nontrivial live-authoring evidence | [Repair Bay live proof](../audits/repair-bay-live-preflight.md) |
 
@@ -217,6 +219,7 @@ Use these first:
 - `evidence/renders/waltzman-demo-v0.html` — implemented self-contained canonical Waltzman reference/regression client.
 - `prototypes/living-world-overlay-v0.html` — retained synthetic design prototype.
 - [Waltzman Coordination Lab v0 audit](../audits/waltzman-coordination-lab-v0.md) — integrated reference-world evidence and claim boundaries.
+- [Native Waltzman static readiness review](../audits/native-waltzman-release-static-readiness-2026-09-19.md) — six-item Decision 005 implementation map; static only, with Linux/provider/browser execution still pending.
 - [Living-world projection](../research/living-world-projection-2026-09.md) — overlay semantics and accepted integration path.
 - [Technology procurement](../research/technology-procurement-2026-09.md) — selected external stack and boundaries.
 - [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) — canonical simulation-time / independent-cadence target and current integer-tick limitation.
