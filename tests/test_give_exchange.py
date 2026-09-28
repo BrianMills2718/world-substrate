@@ -24,7 +24,7 @@ from world_substrate.engine import Engine
 from world_substrate.exchange import find_exchanges
 from world_substrate.model import World
 from world_substrate.rules import GiveAction
-from world_substrate.semantic import GIVE_BINDING, SEMANTIC_BINDINGS
+from world_substrate.semantic import GIVE_BINDING, SEMANTIC_BINDINGS, SemanticBinding
 
 
 def _select_give(engine: Engine, actor_id: str, vessel: str, target: str) -> GiveAction:
@@ -60,9 +60,38 @@ def test_give_binding_cites_pinned_sense_and_roles() -> None:
         "transferred_object": "lc.role.theme",
         "recipient": "lc.role.recipient",
     }
+    assert GIVE_BINDING.role_definition_ids == {
+        "giver": "lc.roledef.give_transfer.giver",
+        "transferred_object": "lc.roledef.give_transfer.transferred_object",
+        "recipient": "lc.roledef.give_transfer.recipient",
+    }
+    assert "role_definition_ids" not in GIVE_BINDING.as_dict()
     assert GIVE_BINDING.mechanic_id == "mechanism.ownership.give"
     assert GIVE_BINDING.causal_bearer == "giver"
     assert SEMANTIC_BINDINGS["give"] is GIVE_BINDING
+
+
+def test_role_definition_metadata_cannot_change_role_shape_or_namespace() -> None:
+    base = {
+        "binding_id": "binding.test.v0",
+        "sense_id": "lc:give_transfer",
+        "roles": {"giver": "lc.role.donor"},
+        "causal_class": "primitive_intentional_action",
+        "interpretation_limits": (),
+    }
+    try:
+        SemanticBinding(**base, role_definition_ids={"recipient": "lc.roledef.give_transfer.recipient"})
+    except ValueError as exc:
+        assert "match roles exactly" in str(exc)
+    else:
+        raise AssertionError("mismatched local role-definition keys must fail")
+
+    try:
+        SemanticBinding(**base, role_definition_ids={"giver": "mechanism.ownership.give"})
+    except ValueError as exc:
+        assert "lc.roledef" in str(exc)
+    else:
+        raise AssertionError("mechanic ids must not enter role-definition metadata")
 
 
 def test_give_binding_names_no_exchange_mechanic() -> None:

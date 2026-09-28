@@ -2,6 +2,7 @@
 
 **Status:** accepted  
 **Date:** 2026-09-07  
+**Updated:** 2026-09-08
 **Related:** [Decision 001](001-project-scope.md), [Decision 002](002-observability-and-replay.md), [Decision 003](003-semantic-mechanical-boundary.md)
 
 ## Context
@@ -26,24 +27,38 @@ The following remain project-owned because they define the product's causal trus
 - causal event/trace semantics; and
 - declarative scene semantics that map world truth to presentation.
 
-Commodity capabilities should be adopted or integrated rather than reimplemented when they preserve those boundaries. Current evaluation candidates are:
+Commodity capabilities should be selected from current external evidence and integrated behind replaceable boundaries rather than reimplemented. The 2026-09-08 procurement review in [technology procurement](../research/technology-procurement-2026-09.md) selects these defaults:
 
-- **Phaser** for browser 2D scene execution/animation (`https://phaser.io/`);
-- **Concordia** and/or **LangGraph** for resident-agent cognition, memory, planning, reflection, and durable agent execution (`https://github.com/google-deepmind/concordia`, `https://docs.langchain.com/oss/python/langgraph/overview`);
-- **PettingZoo** as a multi-agent interoperability/evaluation adapter, not as the world authority (`https://pettingzoo.farama.org/`);
-- standard persistence/auth infrastructure for saved worlds, runs, and access control; and
-- **SimPy** only if a real world demonstrates a need for richer asynchronous discrete-event scheduling (`https://simpy.readthedocs.io/`).
+- **deck.gl 9.4.x** as the default living-world projector, using `OrthographicView` for schematic/non-geographic worlds and MapLibre integration when real geography is required;
+- **Pydantic AI 2.41.x** as the default resident-cognition harness behind a thin `CognitionAdapter`; LangGraph and Concordia remain alternatives, not required comparison arms;
+- **SimPy 4.1.2** only for simulated-time/event scheduling. Its clock, event queue, timeouts, and process wakeups may schedule opportunities, but SimPy resources or processes do not become canonical world authority;
+- **Cytoscape.js 3.34.x** for an expanded causal/institutional graph inspector when a non-spatial graph surface is needed; Sigma.js is deferred until graph-scale pressure makes its large-graph rendering advantage material;
+- **PettingZoo** as a future interoperability/evaluation adapter, never as alternate world authority; and
+- standard persistence/auth infrastructure for saved worlds, runs, and access control.
 
-No candidate becomes a foundational dependency merely because this decision names it. Adoption requires a bounded consumer-path spike that demonstrates useful leverage without moving canonical consequence authority out of World Substrate.
+Version families above record the procurement snapshot, not a floating-dependency policy. Implementation lockfiles should pin exact versions and upgrade deliberately.
+
+### Decision rule for uncertainty
+
+Use three categories so experiments are reserved for questions that are actually ours:
+
+- **Novel uncertainty** — the field has no mature external answer and the result can materially change World Substrate architecture. **Experiment.** Generative causal closure is the primary example.
+- **Commodity uncertainty** — benchmarks, research, production experience, and mature libraries already answer the question well enough. **Research → reason → select.** Model, renderer, agent harness, graph library, persistence, and auth selection normally belong here.
+- **Integration uncertainty** — the architectural principle is already known, but a chosen dependency must prove it respects the World Substrate boundary. **Run a bounded conformance test**, not a comparative bake-off.
+
+A commodity dependency is accepted when external evidence supports the choice and its adapter preserves the causal authority boundary. Local testing should prove conformance: authorized observations only, engine-minted actions only, no canonical mutation, private cognition isolation, bounded failure behavior, stable identity/provenance, and read-only presentation/analysis.
 
 ## Delivery order
 
-1. Stabilize current project truth, deployment records, failure observability, and CI.
-2. Author one meaningfully less-trivial world through the deployed Builder and record concrete expressiveness/review failures.
-3. Close the semantic loop so newly authored actions bind a reviewed Linguistic Core sense and participant roles before causal approval.
-4. Compare a lightweight resident-cognition implementation with Concordia/LangGraph-backed adapters using the same World Substrate policy seam.
-5. Move graphical execution toward Phaser only if it materially improves the live-world experience while retaining scene-profile semantics.
-6. Add saved worlds/runs and access control after the authoring/run loop proves useful enough to persist.
+The living roadmap remains authoritative for which product experiment runs next. This decision changes how commodity technology is chosen and how selected dependencies enter the system:
+
+1. Preserve current project truth and full-log observability while running the roadmap-selected world/product experiment.
+2. Extend owned world semantics only from concrete expressiveness, closure, or observability failures.
+3. When live graphical execution is the selected slice, integrate deck.gl behind the existing scene/projection boundary and test read-only conformance rather than renderer alternatives.
+4. When durable resident cognition is needed, integrate Pydantic AI behind `CognitionAdapter` and test observation/action/privacy/failure boundaries rather than agent-harness alternatives.
+5. When richer simulated scheduling is needed, use SimPy for clock/event scheduling only; when a full non-spatial graph inspector is needed, use Cytoscape.js.
+6. Keep generative causal closure—dependency inventory, enforcement mapping, counterexamples, residual risk—as owned experimental work.
+7. Add saved worlds/runs and access control once the authoring/run loop proves persistence value.
 
 ## Consequences
 
@@ -51,4 +66,6 @@ No candidate becomes a foundational dependency merely because this decision name
 - LLM cognition frameworks may decide what an agent wants to do but may not determine what the world says happened.
 - Renderer/game-engine code is not strategic IP; scene semantics and causal trace alignment are.
 - Interoperability layers are adapters around the engine, not alternate state authorities.
-- Future framework work must be justified by a real world or product failure, not by feature completeness.
+- Future framework integration must be justified by a real world or product need, not by feature completeness.
+- Do not spend local experiments rediscovering mature model/harness/renderer/library selection results; reserve experiments for World Substrate-specific uncertainty.
+- Selected commodity dependencies remain replaceable adapters; selection does not move canonical consequence authority out of World Substrate.

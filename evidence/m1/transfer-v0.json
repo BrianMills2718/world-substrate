@@ -434,6 +434,7 @@
         "declared_write_paths": [
           "entities.<vessel>.liquid",
           "entities.<vessel>.thermal",
+          "entities.<vessel>.container.boiling_ticks",
           "entities.<vessel>.last_cause_event_id",
           "entities.<source>.liquid"
         ],
@@ -3758,6 +3759,7 @@
           "entities.<actor>.actor.hydration",
           "entities.<actor>.actor.alive",
           "entities.<vessel>.liquid",
+          "entities.<vessel>.thermal",
           "entities.<vessel>.last_cause_event_id",
           "physical_ledger.drunk"
         ],

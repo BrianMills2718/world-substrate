@@ -10,14 +10,18 @@ from typing import Any
 from .model import World, differences
 from .rules import (
     Check,
+    DeclaresCausalParents,
     DeclaresConsequences,
+    DeclaresProcessCausalParents,
     DescribesEffects,
     ProcessRule,
+    ReceivesProcessEventId,
     ReportsProgress,
     RuleRegistry,
     TypedAction,
     UnsupportedAction,
 )
+from .information import entity_visible_to_actor, observation_information_context
 from .semantic import SEMANTIC_BINDINGS
 
 ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
@@ -31,6 +35,30 @@ ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
 
 class ScopeViolation(RuntimeError):
     """A registered rule exceeded its authority over the world."""
+
+
+class CausalParentViolation(RuntimeError):
+    """A rule declared hard ancestry outside retained canonical history."""
+
+
+def _validate_causal_parent_ids(
+    parent_ids: list[str],
+    events: list[dict[str, Any]],
+    rule_id: str,
+) -> list[str]:
+    """Require hard parents to be stable IDs already present in history."""
+
+    if any(not isinstance(parent_id, str) or not parent_id for parent_id in parent_ids):
+        raise CausalParentViolation(
+            f"rule {rule_id} declared a causal parent that is not a nonempty event id"
+        )
+    known_ids = {event.get("event_id") for event in events}
+    unknown = sorted(set(parent_ids) - known_ids)
+    if unknown:
+        raise CausalParentViolation(
+            f"rule {rule_id} declared causal parents outside retained history: {unknown}"
+        )
+    return sorted(set(parent_ids))
 
 
 # The engine's own envelope metadata. `kind` names the action and `controller`
@@ -198,7 +226,10 @@ class Engine:
         local = {}
         for entity_id, entity in self.world.entities.items():
             entity_location = entity.location.location_id if entity.location else None
-            if entity_id == actor_id or entity_location == actor.location.location_id:
+            if (
+                (entity_id == actor_id or entity_location == actor.location.location_id)
+                and entity_visible_to_actor(self.world, actor_id, entity)
+            ):
                 projected = entity.as_dict()
                 if entity.actor is not None and entity_id != actor_id:
                     projected["actor"] = {
@@ -470,6 +501,7 @@ class Engine:
         bearer: dict[str, Any] | None = None,
         binding: dict[str, Any] | None = None,
         observation: dict[str, Any] | None = None,
+        causal_parent_event_ids: list[str] | None = None,
     ) -> dict[str, Any]:
         # Decision 002 requires eight things be inspectable per transition.
         # bearer, binding and observation are the three that were computed
@@ -478,7 +510,7 @@ class Engine:
         # what they had been shown. Emitted explicitly as null rather than
         # omitted, so "there was no observer" is distinguishable from "not
         # recorded" -- a process has no observation and says so.
-        return {
+        event = {
             "event_id": event_id,
             "causal_bearer": bearer,
             "semantic_binding": binding,
@@ -496,6 +528,15 @@ class Engine:
             "hash_before": _material_hash(before),
             "hash_after": _material_hash(after),
         }
+        # Keep existing event wire output byte-compatible for rules that do not
+        # opt into hard ancestry. Information present in the observation is
+        # separately summarized as context evidence only when it exists.
+        if causal_parent_event_ids is not None:
+            event["causal_parent_event_ids"] = sorted(set(causal_parent_event_ids))
+        information_context = observation_information_context(observation)
+        if information_context:
+            event["information_context"] = information_context
+        return event
 
     def apply(self, action: TypedAction) -> dict[str, Any]:
         rule = self.registry.action(action.kind)
@@ -566,6 +607,23 @@ class Engine:
                 observation,
             )
 
+        causal_parents = (
+            list(
+                self._readonly_call(
+                    candidate,
+                    before,
+                    rule.rule_id,
+                    "causal_parents",
+                    lambda: rule.causal_parents(candidate, action),
+                )
+            )
+            if isinstance(rule, DeclaresCausalParents)
+            else None
+        )
+        if causal_parents is not None:
+            causal_parents = _validate_causal_parent_ids(
+                causal_parents, self.world.events, rule.rule_id
+            )
         rule.apply(candidate, action, event_id)
         authority_violations = _engine_owned_mutations(before, candidate)
         if authority_violations:
@@ -631,6 +689,7 @@ class Engine:
             bearer=self._bearer_of(action),
             binding=self._binding_of(action),
             observation=observation,
+            causal_parent_event_ids=causal_parents,
         )
         candidate.commands = list(self.world.commands)
         candidate.events = list(self.world.events)
@@ -714,9 +773,13 @@ class Engine:
                         lambda process=process: process.due(candidate),
                     )
                     if due:
-                        produced.append(
-                            self._apply_process(process, command_id, candidate, before)
+                        # A due process whose effect leaves material state
+                        # unchanged commits no event, so it reports none.
+                        event = self._apply_process(
+                            process, command_id, candidate, before
                         )
+                        if event is not None:
+                            produced.append(event)
             except Exception:
                 self.world = saved
                 raise
@@ -728,8 +791,29 @@ class Engine:
         command_id: str,
         candidate: World,
         before: dict[str, Any],
-    ) -> dict[str, Any]:
-        process.apply(candidate)
+    ) -> dict[str, Any] | None:
+        event_id = _identifier("e", len(self.world.events) + 1)
+        causal_parents = (
+            list(
+                self._readonly_call(
+                    candidate,
+                    before,
+                    process.rule_id,
+                    "causal_parents",
+                    lambda: process.causal_parents(candidate),
+                )
+            )
+            if isinstance(process, DeclaresProcessCausalParents)
+            else None
+        )
+        if causal_parents is not None:
+            causal_parents = _validate_causal_parent_ids(
+                causal_parents, self.world.events, process.rule_id
+            )
+        if isinstance(process, ReceivesProcessEventId):
+            process.apply_with_event_id(candidate, event_id)
+        else:
+            process.apply(candidate)
         authority_violations = _engine_owned_mutations(before, candidate)
         if authority_violations:
             raise ScopeViolation(
@@ -737,7 +821,7 @@ class Engine:
                 f"{authority_violations}"
             )
         if candidate.material_dict() == before:
-            return {}
+            return None
         candidate.revision += 1
         candidate.validate()
         after = candidate.material_dict()
@@ -752,7 +836,6 @@ class Engine:
                 f"process {process.rule_id} wrote outside its declared scope: "
                 f"{violations} (declared {list(process.write_paths)})"
             )
-        event_id = _identifier("e", len(self.world.events) + 1)
         event = self._event(
             event_id=event_id,
             rule_id=process.rule_id,
@@ -767,6 +850,7 @@ class Engine:
             bearer={"kind": "process", "id": process.rule_id, "controller": None},
             binding=None,
             observation=None,
+            causal_parent_event_ids=causal_parents,
         )
         candidate.commands = list(self.world.commands)
         candidate.events = list(self.world.events)

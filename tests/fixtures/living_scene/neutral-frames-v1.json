@@ -1,0 +1,272 @@
+[
+  {
+    "boundary_index": -1,
+    "branch_id": "baseline",
+    "event": null,
+    "event_visual": null,
+    "presentation_effects": [],
+    "revision": 0,
+    "scene_id": "neutral-lab-v1",
+    "schema_version": "world-substrate-living-scene/v1",
+    "tick": 0,
+    "views": {
+      "activities": {
+        "activity-a": {
+          "anchor": [
+            50.0,
+            40.0
+          ],
+          "bindings": {
+            "end_tick": null,
+            "started_tick": null,
+            "status": "pending"
+          },
+          "entity": "activity-a"
+        }
+      },
+      "actors": {
+        "actor-a": {
+          "bindings": {
+            "stance": "support"
+          },
+          "entity": "actor-a",
+          "home": [
+            20.0,
+            50.0
+          ]
+        }
+      },
+      "entities": {
+        "resource-a": {
+          "bindings": {
+            "current": 10,
+            "required": 8
+          },
+          "entity": "resource-a",
+          "home": [
+            80.0,
+            30.0
+          ]
+        }
+      },
+      "institutions": {
+        "institution-a": {
+          "anchor": [
+            50.0,
+            75.0
+          ],
+          "bindings": {
+            "status": "ready"
+          },
+          "entity": "institution-a"
+        }
+      },
+      "zones": {
+        "room": {
+          "anchor": [
+            50.0,
+            50.0
+          ],
+          "label": "Room",
+          "rect": [
+            0.0,
+            0.0,
+            100.0,
+            100.0
+          ]
+        }
+      }
+    },
+    "world_id": "neutral-lab"
+  },
+  {
+    "boundary_index": 0,
+    "branch_id": "baseline",
+    "event": {
+      "event_id": "e1",
+      "rule_id": "neutral.resource.drop",
+      "status": "accepted",
+      "tick": 1,
+      "world_revision": 1
+    },
+    "event_visual": {
+      "kind": "declared",
+      "label": "resource changed",
+      "operations": [
+        {
+          "animation_ms": 500,
+          "op": "event.emphasize",
+          "read_paths": {
+            "current": "components.resource.current"
+          },
+          "target": "resource-a"
+        }
+      ],
+      "rule_id": "neutral.resource.drop"
+    },
+    "presentation_effects": [],
+    "revision": 1,
+    "scene_id": "neutral-lab-v1",
+    "schema_version": "world-substrate-living-scene/v1",
+    "tick": 1,
+    "views": {
+      "activities": {
+        "activity-a": {
+          "anchor": [
+            50.0,
+            40.0
+          ],
+          "bindings": {
+            "end_tick": null,
+            "started_tick": null,
+            "status": "pending"
+          },
+          "entity": "activity-a"
+        }
+      },
+      "actors": {
+        "actor-a": {
+          "bindings": {
+            "stance": "support"
+          },
+          "entity": "actor-a",
+          "home": [
+            20.0,
+            50.0
+          ]
+        }
+      },
+      "entities": {
+        "resource-a": {
+          "bindings": {
+            "current": 6,
+            "required": 8
+          },
+          "entity": "resource-a",
+          "home": [
+            80.0,
+            30.0
+          ]
+        }
+      },
+      "institutions": {
+        "institution-a": {
+          "anchor": [
+            50.0,
+            75.0
+          ],
+          "bindings": {
+            "status": "ready"
+          },
+          "entity": "institution-a"
+        }
+      },
+      "zones": {
+        "room": {
+          "anchor": [
+            50.0,
+            50.0
+          ],
+          "label": "Room",
+          "rect": [
+            0.0,
+            0.0,
+            100.0,
+            100.0
+          ]
+        }
+      }
+    },
+    "world_id": "neutral-lab"
+  },
+  {
+    "boundary_index": 1,
+    "branch_id": "baseline",
+    "event": {
+      "event_id": "e2",
+      "rule_id": "neutral.activity.start",
+      "status": "accepted",
+      "tick": 2,
+      "world_revision": 2
+    },
+    "event_visual": {
+      "kind": "generic_event",
+      "operations": [],
+      "rule_id": "neutral.activity.start"
+    },
+    "presentation_effects": [],
+    "revision": 2,
+    "scene_id": "neutral-lab-v1",
+    "schema_version": "world-substrate-living-scene/v1",
+    "tick": 2,
+    "views": {
+      "activities": {
+        "activity-a": {
+          "anchor": [
+            50.0,
+            40.0
+          ],
+          "bindings": {
+            "end_tick": 4,
+            "started_tick": 2,
+            "status": "active"
+          },
+          "entity": "activity-a"
+        }
+      },
+      "actors": {
+        "actor-a": {
+          "bindings": {
+            "stance": "support"
+          },
+          "entity": "actor-a",
+          "home": [
+            20.0,
+            50.0
+          ]
+        }
+      },
+      "entities": {
+        "resource-a": {
+          "bindings": {
+            "current": 6,
+            "required": 8
+          },
+          "entity": "resource-a",
+          "home": [
+            80.0,
+            30.0
+          ]
+        }
+      },
+      "institutions": {
+        "institution-a": {
+          "anchor": [
+            50.0,
+            75.0
+          ],
+          "bindings": {
+            "status": "ready"
+          },
+          "entity": "institution-a"
+        }
+      },
+      "zones": {
+        "room": {
+          "anchor": [
+            50.0,
+            50.0
+          ],
+          "label": "Room",
+          "rect": [
+            0.0,
+            0.0,
+            100.0,
+            100.0
+          ]
+        }
+      }
+    },
+    "world_id": "neutral-lab"
+  }
+]

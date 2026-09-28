@@ -1,0 +1,524 @@
+{
+  "activities": {
+    "coordination-meeting": {
+      "anchor": [
+        50,
+        51
+      ],
+      "bindings": {
+        "duration_ticks": "components.activity.duration_ticks",
+        "end_tick": "components.activity.end_tick",
+        "label": "label",
+        "started_tick": "components.activity.started_tick",
+        "status": "components.activity.status"
+      },
+      "label": "Coordination meeting",
+      "mobile_anchor": [
+        50,
+        43
+      ],
+      "participants": [
+        "mara",
+        "ari",
+        "selene",
+        "tomas",
+        "nira",
+        "idris"
+      ],
+      "render": {
+        "status_binding": "status"
+      }
+    }
+  },
+  "actors": {
+    "ari": {
+      "asset": "resident-a",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        28,
+        26
+      ],
+      "mobile_home": [
+        50,
+        17
+      ],
+      "render": {
+        "state_binding": "stance"
+      }
+    },
+    "idris": {
+      "asset": "resident-i",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        87,
+        26
+      ],
+      "mobile_home": [
+        82,
+        31
+      ],
+      "render": {
+        "state_binding": "stance"
+      }
+    },
+    "mara": {
+      "asset": "resident-m",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        13,
+        26
+      ],
+      "mobile_home": [
+        18,
+        17
+      ],
+      "render": {
+        "state_binding": "stance"
+      }
+    },
+    "nira": {
+      "asset": "resident-n",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        72,
+        26
+      ],
+      "mobile_home": [
+        50,
+        31
+      ],
+      "render": {
+        "state_binding": "stance"
+      }
+    },
+    "selene": {
+      "asset": "resident-s",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        43,
+        26
+      ],
+      "mobile_home": [
+        82,
+        17
+      ],
+      "render": {
+        "state_binding": "stance"
+      }
+    },
+    "tomas": {
+      "asset": "resident-t",
+      "bindings": {
+        "label": "label",
+        "organization": "components.resident.organization",
+        "role": "components.resident.role",
+        "stance": "components.commitment.stance"
+      },
+      "home": [
+        57,
+        26
+      ],
+      "mobile_home": [
+        18,
+        31
+      ],
+      "render": {
+        "state_binding": "stance"
+      }
+    }
+  },
+  "assets": {
+    "package": {
+      "kind": "text",
+      "value": "PKG"
+    },
+    "reserve": {
+      "kind": "text",
+      "value": "%"
+    },
+    "resident-a": {
+      "kind": "text",
+      "value": "A"
+    },
+    "resident-i": {
+      "kind": "text",
+      "value": "I"
+    },
+    "resident-m": {
+      "kind": "text",
+      "value": "M"
+    },
+    "resident-n": {
+      "kind": "text",
+      "value": "N"
+    },
+    "resident-s": {
+      "kind": "text",
+      "value": "S"
+    },
+    "resident-t": {
+      "kind": "text",
+      "value": "T"
+    },
+    "safeguard": {
+      "kind": "text",
+      "value": "SAFE"
+    },
+    "staff": {
+      "kind": "text",
+      "value": "MED"
+    },
+    "validation": {
+      "kind": "text",
+      "value": "LAB"
+    }
+  },
+  "entities": {
+    "clinical-staff": {
+      "asset": "staff",
+      "bindings": {
+        "current": "components.resource.current",
+        "label": "label",
+        "required": "components.resource.required",
+        "unit": "components.resource.unit"
+      },
+      "home": [
+        87,
+        48
+      ],
+      "mobile_home": [
+        80,
+        76
+      ],
+      "render": {
+        "current_binding": "current",
+        "kind": "resource",
+        "required_binding": "required",
+        "unit_binding": "unit"
+      }
+    },
+    "safeguard-record": {
+      "asset": "safeguard",
+      "bindings": {
+        "label": "label",
+        "required_state": "components.constraint.required_status",
+        "state": "components.constraint.status"
+      },
+      "home": [
+        87,
+        85
+      ],
+      "mobile_home": [
+        80,
+        89
+      ],
+      "render": {
+        "kind": "constraint",
+        "state_binding": "state"
+      }
+    },
+    "shared-reserve": {
+      "asset": "reserve",
+      "bindings": {
+        "current": "components.resource.current",
+        "label": "label",
+        "required": "components.resource.required",
+        "unit": "components.resource.unit"
+      },
+      "home": [
+        13,
+        85
+      ],
+      "mobile_home": [
+        20,
+        89
+      ],
+      "render": {
+        "current_binding": "current",
+        "kind": "resource",
+        "required_binding": "required",
+        "unit_binding": "unit"
+      }
+    },
+    "stabilization-package": {
+      "asset": "package",
+      "bindings": {
+        "label": "label",
+        "state": "components.package.status"
+      },
+      "home": [
+        50,
+        87
+      ],
+      "mobile_home": [
+        50,
+        68
+      ],
+      "render": {
+        "kind": "package",
+        "state_binding": "state"
+      }
+    },
+    "validation-capacity": {
+      "asset": "validation",
+      "bindings": {
+        "current": "components.resource.current",
+        "label": "label",
+        "required": "components.resource.required",
+        "unit": "components.resource.unit"
+      },
+      "home": [
+        13,
+        48
+      ],
+      "mobile_home": [
+        20,
+        76
+      ],
+      "render": {
+        "current_binding": "current",
+        "kind": "resource",
+        "required_binding": "required",
+        "unit_binding": "unit"
+      }
+    }
+  },
+  "event_visuals": {
+    "system.clock.advance": {
+      "label": "World time advances",
+      "operations": []
+    },
+    "waltzman.activity.start-meeting": {
+      "label": "Coordination meeting begins",
+      "operations": [
+        {
+          "label": "meeting started",
+          "op": "action.feedback"
+        }
+      ]
+    },
+    "waltzman.commitment.reassess": {
+      "label": "A resident reassesses a commitment",
+      "operations": []
+    },
+    "waltzman.information.communicate": {
+      "label": "A resident shares represented information",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        }
+      ]
+    },
+    "waltzman.institution.coalition-gate": {
+      "label": "Coalition decision gate evaluates",
+      "operations": []
+    },
+    "waltzman.intervention.deliver-package": {
+      "label": "Stabilization package applied",
+      "operations": [
+        {
+          "label": "stabilization package applied",
+          "op": "action.feedback"
+        }
+      ]
+    },
+    "waltzman.process.meeting-completion": {
+      "label": "Coordination meeting completes",
+      "operations": []
+    },
+    "waltzman.process.reserve-conflict": {
+      "label": "Shared reserve tightens",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        }
+      ]
+    },
+    "waltzman.process.safeguard-gap": {
+      "label": "Safeguard record becomes pending",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        }
+      ]
+    },
+    "waltzman.process.staffing-shortfall": {
+      "label": "Clinical staffing falls",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        }
+      ]
+    },
+    "waltzman.process.validation-failure": {
+      "label": "Validation capacity drops",
+      "operations": [
+        {
+          "delivery_from_changed_entities": true,
+          "op": "information.transmit"
+        }
+      ]
+    }
+  },
+  "institutions": {
+    "coalition-hub": {
+      "anchor": [
+        50,
+        73
+      ],
+      "bindings": {
+        "conditional": "components.institution.conditional_count",
+        "label": "label",
+        "required": "components.institution.required_support",
+        "status": "components.institution.status",
+        "support": "components.institution.support_count"
+      },
+      "label": "Coalition decision gate",
+      "mobile_anchor": [
+        50,
+        56
+      ],
+      "render": {
+        "conditional_binding": "conditional",
+        "required_binding": "required",
+        "status_binding": "status",
+        "support_binding": "support"
+      }
+    }
+  },
+  "presentation": {
+    "geometry_authority": "illustrative-only",
+    "reference": "Kitchen/cooking-game interaction model"
+  },
+  "scene": {
+    "aspect_ratio": "16 / 9",
+    "autoplay_ms": 1150,
+    "background": "#d9e4df",
+    "mobile_min_height": 700,
+    "shell_background": "#101820"
+  },
+  "scene_id": "waltzman-coordination-lab-living-v1",
+  "schema_version": "world-substrate-living-scene/v1",
+  "state_styles": {
+    "active": "warning",
+    "available": "neutral",
+    "blocked": "danger",
+    "clear": "positive",
+    "completed": "positive",
+    "conditional": "warning",
+    "delivered": "positive",
+    "pending": "warning",
+    "ready": "positive",
+    "support": "positive"
+  },
+  "subtitle": "A living World Substrate coordination world: partial information, binding constraints, a meeting, and a retained intervention fork.",
+  "title": "Waltzman Coordination Lab",
+  "world": "waltzman-coordination-lab-v0",
+  "zones": {
+    "briefing-ring": {
+      "anchor": [
+        50,
+        24
+      ],
+      "label": "Residents and briefings",
+      "mobile_rect": [
+        7,
+        9,
+        86,
+        28
+      ],
+      "rect": [
+        7,
+        11,
+        86,
+        25
+      ]
+    },
+    "coalition-chamber": {
+      "anchor": [
+        50,
+        55
+      ],
+      "label": "Coalition chamber",
+      "mobile_rect": [
+        7,
+        38,
+        86,
+        25
+      ],
+      "rect": [
+        25,
+        37,
+        50,
+        42
+      ]
+    },
+    "constraint-band": {
+      "anchor": [
+        50,
+        85
+      ],
+      "label": "Consequential prerequisites",
+      "mobile_rect": [
+        7,
+        71,
+        86,
+        23
+      ],
+      "rect": [
+        7,
+        78,
+        86,
+        14
+      ]
+    },
+    "coordination-hall": {
+      "anchor": [
+        50,
+        51
+      ],
+      "label": "Coordination Hall",
+      "mobile_rect": [
+        3,
+        5,
+        94,
+        91
+      ],
+      "rect": [
+        3,
+        7,
+        94,
+        88
+      ]
+    }
+  }
+}

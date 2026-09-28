@@ -1,6 +1,6 @@
 # Documentation boundary
 
-The root `CLAUDE.md` applies. The wiki is derived navigation; architecture, contracts, roadmap, decisions, research synthesis, and source manifests retain their narrower roles.
+The root `AGENTS.md` applies. The wiki is derived navigation; architecture, contracts, roadmap, decisions, research synthesis, and source manifests retain their narrower roles.
 
 - Keep what exists, target architecture, gaps, and plans distinct.
 - Cite donor revision or content hash for non-obvious imported claims.

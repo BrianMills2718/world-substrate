@@ -354,6 +354,35 @@ class DescribesEffects(Protocol):
 
 
 @runtime_checkable
+class DeclaresCausalParents(Protocol):
+    """A rule that can name mechanically supported parent event ids.
+
+    This is deliberately opt-in. Temporal precedence, prompt inclusion, or an
+    information delivery is not enough to become hard causal ancestry.
+    """
+
+    def causal_parents(self, world: World, action: TypedAction) -> list[str]: ...
+
+
+@runtime_checkable
+class DeclaresProcessCausalParents(Protocol):
+    """A process that can name mechanically consumed parent events."""
+
+    def causal_parents(self, world: World) -> list[str]: ...
+
+
+@runtime_checkable
+class ReceivesProcessEventId(Protocol):
+    """A process that needs its coordinator-minted event id while applying.
+
+    The engine still owns event creation. This hook only lets a process stamp
+    affected entities with that already-reserved id, matching action rules.
+    """
+
+    def apply_with_event_id(self, world: World, event_id: str) -> None: ...
+
+
+@runtime_checkable
 class ReportsProgress(Protocol):
     """A process that accumulates toward a threshold and can report how far.
 

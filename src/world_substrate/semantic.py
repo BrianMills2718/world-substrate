@@ -21,9 +21,18 @@ class SemanticBinding:
     causal_bearer: str | None = None
     mechanic_id: str | None = None
     specialization: str | None = None
+    role_definition_ids: dict[str, str] | None = None
+
+    def __post_init__(self) -> None:
+        if self.role_definition_ids is None:
+            return
+        if set(self.role_definition_ids) != set(self.roles):
+            raise ValueError("semantic binding role_definition_ids must match roles exactly")
+        if any(not value.startswith("lc.roledef.") for value in self.role_definition_ids.values()):
+            raise ValueError("semantic binding role_definition_ids must use lc.roledef.* ids")
 
     def as_dict(self) -> dict[str, object]:
-        return {
+        value: dict[str, object] = {
             "binding_id": self.binding_id,
             "sense_id": self.sense_id,
             "roles": dict(self.roles),
@@ -33,6 +42,7 @@ class SemanticBinding:
             "mechanic_id": self.mechanic_id,
             "interpretation_limits": list(self.interpretation_limits),
         }
+        return value
 
 
 GIVE_BINDING = SemanticBinding(
@@ -48,6 +58,11 @@ GIVE_BINDING = SemanticBinding(
         "giver": "lc.role.donor",
         "transferred_object": "lc.role.theme",
         "recipient": "lc.role.recipient",
+    },
+    role_definition_ids={
+        "giver": "lc.roledef.give_transfer.giver",
+        "transferred_object": "lc.roledef.give_transfer.transferred_object",
+        "recipient": "lc.roledef.give_transfer.recipient",
     },
     causal_class="primitive_intentional_action",
     causal_bearer="giver",

@@ -1,0 +1,109 @@
+{
+  "agent_visual_precheck": {
+    "basis": [
+      "waltzman-living-v1-information-desktop.png",
+      "waltzman-living-v1-meeting-desktop.png",
+      "waltzman-living-v1-blocked-desktop.png",
+      "waltzman-living-v1-intervention-desktop.png",
+      "waltzman-living-v1-ready-desktop.png",
+      "waltzman-living-v1-blocked-mobile.png",
+      "waltzman-living-v1-ready-mobile.png"
+    ],
+    "note": "Non-human precheck only; does not satisfy the Company Planning human artifact-review gate.",
+    "status": "pass"
+  },
+  "automated": {
+    "browser": {
+      "baseline": {
+        "branch": "baseline",
+        "counts": "support 2 / 6 \u00b7 conditional 4",
+        "hud": "tick 6 \u00b7 rev 21 \u00b7 Coalition decision gate evaluates",
+        "scrub": "21",
+        "state": "blocked"
+      },
+      "console_messages": [],
+      "critical_visible": {
+        "clinical-staff": {
+          "text": "MED\nClinical staffing\n42 clinicians / need 42 clinicians",
+          "visible": true
+        },
+        "coalition-hub": {
+          "text": "Coalition decision gate\nready\nsupport 6 / 6 \u00b7 conditional 0",
+          "visible": true
+        },
+        "safeguard-record": {
+          "text": "SAFE\nEmergency safeguard record\nclear",
+          "visible": true
+        },
+        "shared-reserve": {
+          "text": "%\nShared reserve\n90 percent / need 80 percent",
+          "visible": true
+        },
+        "stabilization-package": {
+          "text": "PKG\nCross-domain stabilization package\ndelivered",
+          "visible": true
+        },
+        "validation-capacity": {
+          "text": "LAB\nCross-lab validation capacity\n4 labs / need 3 labs",
+          "visible": true
+        }
+      },
+      "desktop_horizontal_overflow": {
+        "inner": false,
+        "outer": false
+      },
+      "external_network_request_count": 0,
+      "intervention": {
+        "branch": "intervention",
+        "counts": "support 6 / 6 \u00b7 conditional 0",
+        "hud": "tick 7 \u00b7 rev 28 \u00b7 Coalition decision gate evaluates",
+        "max": "28",
+        "scrub": "28",
+        "state": "ready"
+      },
+      "mobile_horizontal_overflow": {
+        "inner": false,
+        "outer": false
+      },
+      "page_errors": [],
+      "scrubbed_to_initial": {
+        "hud": "tick 0 \u00b7 rev 0 \u00b7 initial state",
+        "scrub": "0",
+        "state": "ready"
+      }
+    },
+    "deterministic_rebuild": {
+      "artifact_sha256": "d25aabfc23128791b48aa1fe15bef7627edd9c211b44475146c009b750470b0e",
+      "byte_stable_after_regeneration": true,
+      "manifest_sha256": "4402e3bc61fb53ada5119b89af5a96ec1ae6e654df6360a7339a9454c86b9dcd",
+      "status": "passed"
+    },
+    "full_repository_tests": {
+      "count": 365,
+      "status": "passed"
+    },
+    "git_diff_check": "passed",
+    "living_replay_check": "passed",
+    "portability": {
+      "castaway": {
+        "byte_equal": true,
+        "generated_sha256": "cd6941e4eb8cad377cd6a22b86249e1cc3fa381ec05b27a46b5a2df74a33c922",
+        "retained_sha256": "cd6941e4eb8cad377cd6a22b86249e1cc3fa381ec05b27a46b5a2df74a33c922"
+      },
+      "kitchen": {
+        "byte_equal": true,
+        "generated_sha256": "c1130ddfef9a08967ebb8c709303c40fe14ca41d6071bc37e1909162b718d619",
+        "retained_sha256": "c1130ddfef9a08967ebb8c709303c40fe14ca41d6071bc37e1909162b718d619"
+      }
+    },
+    "project_check": "passed"
+  },
+  "human_review": {
+    "artifact": "evidence/renders/waltzman-living-v1.html",
+    "question": "If every graph, table, trace ID, and analysis panel is hidden, does this still clearly look and behave like a living simulated world, and can I understand at a high level why the coalition becomes blocked and what changes to make it ready?",
+    "status": "pending"
+  },
+  "schema_version": "world-substrate-m1-acceptance/v1",
+  "status": "pending_human_world_only_review",
+  "tested_revision": "27164359bd63e5f6c1cd193f0d970c8847ddc9cb"
+}

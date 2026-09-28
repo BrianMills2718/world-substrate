@@ -1,13 +1,14 @@
 ---
 role: research-traceability
 status: active
-reviewed_through: 2026-09-02
+reviewed_through: 2026-09-08
 authority_refs:
   - ../../roadmap/README.md
   - ../architecture.md
   - ../decisions/001-project-scope.md
   - ../decisions/002-observability-and-replay.md
   - ../decisions/003-semantic-mechanical-boundary.md
+  - ../decisions/004-product-and-adoption-strategy.md
 ---
 
 # World Substrate discussion traceability
@@ -44,6 +45,9 @@ This index maps the 2026-09-02 strategy discussion and donor reviews to their cu
 | Accounting and conservation are goal-relative | **accepted** | [Decision 002](../decisions/002-observability-and-replay.md), [mechanic profile proposal](../contracts/mechanic-profile-v0.md) | No universal mass/energy requirement |
 | Pre-run mechanics-agent authoring is the initial extensibility hypothesis | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md), [Roadmap](../../roadmap/README.md) | Installer review and a frozen profile precede a run |
 | Runtime installation or revision of world laws | **deferred** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Prospective installation, retroactive correction, branching, and technology-local invention remain future research |
+| One canonical simulated timeline with independently scheduled mechanism cadences | **accepted** | [Architecture](../architecture.md), [multi-timescale execution](multi-timescale-execution-2026-09.md) | Render time, cognition wake cadence, and analysis sampling are separate; current engine remains the integer-tick baseline |
+| Resident cognition should normally wake on meaningful events rather than every low-level simulation step | **accepted** | [Architecture](../architecture.md), [Decision 004](../decisions/004-product-and-adoption-strategy.md) | Pydantic AI remains behind `CognitionAdapter`; wake policy does not grant world authority |
+| Jev-style System-1/System-2 hybrid cognition behind `CognitionAdapter` | **deferred** | [Technology procurement](technology-procurement-2026-09.md) | Potential provider optimization for fast typed decisions with escalation to general reasoning; World Substrate does not own the cognitive architecture and this is not current roadmap work |
 
 ## Semantic and causal model
 
@@ -76,28 +80,33 @@ This index maps the 2026-09-02 strategy discussion and donor reviews to their cu
 | Causal closure should be an assay with residual-risk reporting | **proposed** | [Roadmap M4](../../roadmap/README.md) | Combine semantic inspection, dependency comparison, write-overlap analysis, and adversarial interactions |
 | Interaction complexity is potentially combinatorial rather than one mechanic per predicate | **accepted motivation** | [Strategy ledger](world-substrate-strategy-session.md), [Research synthesis](synthesis.md) | The empirical question is whether agent teams can grow coherent coverage faster than integration risk grows |
 | The sealed-pot interaction is the reference physical coherence example | **research example** | [Architecture](../architecture.md), [Strategy ledger](world-substrate-strategy-session.md) | Heat, pressure, strength, damage, containment, and flow can be locally valid yet globally inconsistent |
+| Duration-bearing activities should remain represented when elapsed time/interruption matters | **proposed** | [Architecture](../architecture.md), [multi-timescale execution](multi-timescale-execution-2026-09.md) | Completion must recheck current canonical state; exact activity schema waits for a concrete target-world need |
+| Cadence/timescale and fidelity are independent modeling dimensions | **accepted** | [Architecture](../architecture.md), [multi-timescale execution](multi-timescale-execution-2026-09.md) | Small timesteps do not imply higher validity or realism |
 
 ## Roadmap traceability
 
 | Candidate work | Current disposition | Reason |
 | --- | --- | --- |
-| Audit M1 against semantic and causal boundaries | **active within M2** | Reuse existing evidence before broadening |
-| Hand-bind `give`; derive exchange; demonstrate reneging | **active M2** | Establish one trusted semantic/transition reference |
-| Genuine LLM policy consumer | **conditional enabling experiment** | Does not test the principal mechanics-authoring uncertainty; still requires model-call authority and spend cap |
-| First offline agent-authored adjacent mechanic | **conditional M3** | Begins only after binding, authority, commit, and observability work together |
-| Causal-coherence assay | **conditional M4** | Immediately stress the hand-built and agent-authored mechanics |
-| Rights decomposition and installed escrow institution | **conditional M5 area** | Ordering may change after M2/M3 evidence |
-| Non-agent autonomous process | **conditional M6 area** | Required to avoid an agent-only causal model |
-| Second materially different world | **human decision later** | Must test actual reuse rather than cosmetic content variation |
-| Runtime law changes | **deferred** | Not required to test the central pre-run authoring hypothesis |
-| Scale and dynamical evaluation | **deferred** | Activate only when measurements can change an architecture decision |
+| M0–M7b substrate/generative-mechanics sequence | **complete historical foundation** | Persistent governed world, semantic/mechanical separation, authoring/compiler/policy seams are established |
+| Repair Bay nontrivial authoring proof | **complete first gate** | Retained real run is now the preferred live-projection fixture |
+| Warehouse Rush | **retained/deferred evidence** | Valuable law/representation failure evidence; not the current roadmap |
+| Live read-only projection | **active** | Feed a real retained run into the living-world client before adding more world breadth |
+| First-class information/conversation semantics | **next after projection** | Needed for visible agent interaction, provenance, observation boundaries, and Coordination Lab |
+| Multi-timescale processes and duration-bearing activities | **queued after information, when target world earns it** | Move beyond integer tick to one canonical timeline with independent cadences; SimPy schedules opportunities only |
+| Institutions/meetings/deadlines | **queued from Coordination-Lab pressure** | Use the same timeline and consequence-authority model as other world mechanics |
+| Bounded generative causal closure | **core research frontier** | Dependency inventory, enforcement mapping, counterexamples, residual-risk reporting |
+| Pydantic AI cognition adapter | **selected dependency; integrate when earned** | Resident cognition should wake on meaningful events without becoming consequence authority |
+| Coordination Environment Lab / Waltzman vertical | **target application** | Forces generic information/process/institution/analysis capabilities while keeping Waltzman constructs detachable |
+| Saved worlds/runs + auth | **later** | Add after the authoring/run/living-world workflow earns persistence |
+| Runtime law changes / massive scale / predictive calibration | **deferred** | Not required for the present generative-world/causal-closure thesis |
 
-The roadmap remains authoritative for ordering. Earlier slice sequences in the strategy ledger are alternatives considered during discussion, not accepted plans.
+The roadmap remains authoritative for ordering. Earlier slice sequences in the strategy ledger are historical alternatives, not accepted current plans.
 
 ## Donor traceability
 
 | Donor | Preserved research record | Principal retained lesson | Code adopted? |
 | --- | --- | --- | --- |
+| Dwarf Fortress research report | [Research synthesis](synthesis.md), [source dispositions](../source-dispositions.md) | Shared persistent objects/processes, content composition, mixed simulation resolution/cadence | No |
 | Castaway | [Research synthesis](synthesis.md) and M1 evidence | Persistent shared objects and composed physical mechanics | Bounded M1 path only |
 | Linguistic Core | [Strategy ledger](world-substrate-strategy-session.md), [Research synthesis](synthesis.md) | Semantic senses and roles need explicit mechanical binding | Pinned semantic subset, not inferred mechanics |
 | Agent Ecology 2 | [Targeted review](agent-ecology2-review.md) | Rights distinctions, installed institutions, premature-effect failure, singular commit | No |

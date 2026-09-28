@@ -17,6 +17,8 @@ The reusable lesson is narrower:
 - content composes only inside implemented mechanisms; and
 - simulation resolution can be deliberately mixed.
 
+The mixed-resolution lesson is architectural, not cosmetic: persistent systems do not need one shared cadence. Cheap world processes can continue at their natural rates while slower institutions and expensive resident cognition wake only when relevant. World Substrate should therefore target one canonical simulated timeline with independently scheduled mechanisms, while keeping render time, cognition cadence, and analysis cadence separate. See [multi-timescale execution](multi-timescale-execution-2026-09.md).
+
 World Substrate adopts this compositional pattern without claiming comparable breadth.
 
 ## Castaway findings
