@@ -1,0 +1,876 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "warehouse.action.move",
+      "version": "1",
+      "action_kind": "move",
+      "rationale": "A worker can walk between the three represented warehouse locations at an energy cost.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": [
+          "worker"
+        ]
+      },
+      "participants": {},
+      "parameters": {
+        "location": [
+          "staging",
+          "dock-a",
+          "dock-b"
+        ]
+      },
+      "checks": [
+        {
+          "label": "actor has free hands",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.worker.hands_free"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "location differs from current location",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "action_field": "location"
+          }
+        },
+        {
+          "label": "actor has energy",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.worker.energy"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "location"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.worker.energy",
+          "op": "subtract",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Movement does not move unowned cargo or equipment."
+      ],
+      "tests": [
+        "worker changes location and loses one energy"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "warehouse.action.claim-forklift",
+      "version": "1",
+      "action_kind": "claim-forklift",
+      "rationale": "A free-handed worker can claim an available portable forklift at the same location.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": [
+          "worker"
+        ]
+      },
+      "participants": {
+        "forklift": {
+          "categories": [
+            "forklift"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "actor has free hands",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.worker.hands_free"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "forklift is shared",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "place:warehouse"
+          }
+        },
+        {
+          "label": "forklift is colocated",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "forklift is portable",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "portable.portable"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "forklift",
+          "path": "ownership.owner_ref",
+          "op": "set",
+          "value": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.worker.hands_free",
+          "op": "set",
+          "value": {
+            "literal": false
+          }
+        }
+      ],
+      "limits": [
+        "One worker can hold one forklift through the represented hands-free flag."
+      ],
+      "tests": [
+        "free-handed colocated worker can claim a shared forklift"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "warehouse.action.release-forklift",
+      "version": "1",
+      "action_kind": "release-forklift",
+      "rationale": "A worker can leave a held forklift at the worker current location.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": [
+          "worker"
+        ]
+      },
+      "participants": {
+        "forklift": {
+          "categories": [
+            "forklift"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "forklift is held by actor",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "forklift",
+          "path": "ownership.owner_ref",
+          "op": "set",
+          "value": {
+            "literal": "place:warehouse"
+          }
+        },
+        {
+          "participant": "forklift",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.worker.hands_free",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        }
+      ],
+      "limits": [
+        "Release records the forklift at the actor location."
+      ],
+      "tests": [
+        "held forklift becomes shared at current location"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "warehouse.action.drive-forklift",
+      "version": "1",
+      "action_kind": "drive-forklift",
+      "rationale": "A worker holding a colocated forklift can drive it empty between represented warehouse locations at an energy cost.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": [
+          "worker"
+        ]
+      },
+      "participants": {
+        "forklift": {
+          "categories": [
+            "forklift"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {
+        "location": [
+          "staging",
+          "dock-a",
+          "dock-b"
+        ]
+      },
+      "checks": [
+        {
+          "label": "forklift is held by actor",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "forklift is colocated",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "location differs from current location",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "action_field": "location"
+          }
+        },
+        {
+          "label": "actor has energy",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.worker.energy"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "location"
+          }
+        },
+        {
+          "participant": "forklift",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "location"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.worker.energy",
+          "op": "subtract",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Drive-forklift carries no cargo; transport-cargo is the cargo-moving action."
+      ],
+      "tests": [
+        "held colocated forklift and worker move together and consume one energy"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "warehouse.action.transport-cargo",
+      "version": "2",
+      "action_kind": "transport-cargo",
+      "rationale": "A worker holding a forklift can carry one staged cargo unit from staging only to its represented target physical dock.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": [
+          "worker"
+        ]
+      },
+      "participants": {
+        "cargo": {
+          "categories": [
+            "cargo"
+          ],
+          "components": [
+            "cargo"
+          ]
+        },
+        "forklift": {
+          "categories": [
+            "forklift"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {
+        "dock": [
+          "dock-a",
+          "dock-b"
+        ]
+      },
+      "checks": [
+        {
+          "label": "forklift is held by actor",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "cargo is staged",
+          "left": {
+            "participant": {
+              "name": "cargo",
+              "path": "components.cargo.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "staged"
+          }
+        },
+        {
+          "label": "dock matches cargo target",
+          "left": {
+            "participant": {
+              "name": "cargo",
+              "path": "components.cargo.target_dock"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "action_field": "dock"
+          }
+        },
+        {
+          "label": "forklift is colocated",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "cargo is colocated",
+          "left": {
+            "participant": {
+              "name": "cargo",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "actor starts in staging",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "staging"
+          }
+        },
+        {
+          "label": "actor has energy",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.worker.energy"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "cargo",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "dock"
+          }
+        },
+        {
+          "participant": "forklift",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "dock"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "dock"
+          }
+        },
+        {
+          "participant": "actor",
+          "path": "components.worker.energy",
+          "op": "subtract",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Transport refuses a physical dock other than cargo.target_dock.",
+        "Transport does not itself load cargo into a truck."
+      ],
+      "tests": [
+        "staged cargo reaches its represented target dock",
+        "wrong-dock transport is refused"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "warehouse.action.load-cargo",
+      "version": "1",
+      "action_kind": "load-cargo",
+      "rationale": "A worker holding a forklift can load matching staged cargo into a colocated loading truck with remaining capacity.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": [
+          "worker"
+        ]
+      },
+      "participants": {
+        "cargo": {
+          "categories": [
+            "cargo"
+          ],
+          "components": [
+            "cargo"
+          ]
+        },
+        "truck": {
+          "categories": [
+            "truck"
+          ],
+          "components": [
+            "truck"
+          ]
+        },
+        "forklift": {
+          "categories": [
+            "forklift"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "forklift is held by actor",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "forklift is colocated",
+          "left": {
+            "participant": {
+              "name": "forklift",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "cargo is staged",
+          "left": {
+            "participant": {
+              "name": "cargo",
+              "path": "components.cargo.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "staged"
+          }
+        },
+        {
+          "label": "cargo is colocated",
+          "left": {
+            "participant": {
+              "name": "cargo",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "truck is colocated",
+          "left": {
+            "participant": {
+              "name": "truck",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "cargo route matches truck route",
+          "left": {
+            "participant": {
+              "name": "cargo",
+              "path": "components.cargo.route"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "truck",
+              "path": "components.truck.route"
+            }
+          }
+        },
+        {
+          "label": "truck is loading",
+          "left": {
+            "participant": {
+              "name": "truck",
+              "path": "components.truck.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "loading"
+          }
+        },
+        {
+          "label": "truck has capacity",
+          "left": {
+            "participant": {
+              "name": "truck",
+              "path": "components.truck.loaded"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "truck",
+              "path": "components.truck.capacity"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "cargo",
+          "path": "components.cargo.status",
+          "op": "set",
+          "value": {
+            "literal": "loaded"
+          }
+        },
+        {
+          "participant": "cargo",
+          "path": "components.cargo.assigned_truck",
+          "op": "set",
+          "value": {
+            "entity_id": "truck"
+          }
+        },
+        {
+          "participant": "truck",
+          "path": "components.truck.loaded",
+          "op": "add",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Cargo remains represented after loading; assigned_truck records the relation."
+      ],
+      "tests": [
+        "matching cargo increments truck load and records assignment"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "warehouse.action.dispatch-truck",
+      "version": "1",
+      "action_kind": "dispatch-truck",
+      "rationale": "A worker at a truck dock can dispatch the truck only when it is full.",
+      "actor_selector": {
+        "categories": [
+          "worker"
+        ],
+        "components": [
+          "worker"
+        ]
+      },
+      "participants": {
+        "truck": {
+          "categories": [
+            "truck"
+          ],
+          "components": [
+            "truck"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "truck is loading",
+          "left": {
+            "participant": {
+              "name": "truck",
+              "path": "components.truck.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "loading"
+          }
+        },
+        {
+          "label": "truck is full",
+          "left": {
+            "participant": {
+              "name": "truck",
+              "path": "components.truck.loaded"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "truck",
+              "path": "components.truck.capacity"
+            }
+          }
+        },
+        {
+          "label": "actor is at truck dock",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "truck",
+              "path": "location.location_id"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "truck",
+          "path": "components.truck.status",
+          "op": "set",
+          "value": {
+            "literal": "dispatched"
+          }
+        }
+      ],
+      "limits": [
+        "Dispatch does not remove cargo or truck state."
+      ],
+      "tests": [
+        "full truck at actor location becomes dispatched"
+      ],
+      "semantic_bindings": []
+    }
+  ],
+  "terminal": {
+    "mode": "all",
+    "selector": {
+      "categories": [
+        "truck"
+      ],
+      "components": [
+        "truck"
+      ]
+    },
+    "checks": [
+      {
+        "path": "components.truck.status",
+        "op": "eq",
+        "value": "dispatched"
+      }
+    ]
+  }
+}

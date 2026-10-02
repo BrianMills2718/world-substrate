@@ -1,0 +1,404 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "warehouse-rush",
+    "label": "Warehouse Rush",
+    "summary": "Four workers share two forklifts to route six destination-matched cargo units from staging to two trucks at separate docks before dispatch. Each cargo unit explicitly records its target physical dock.",
+    "location": "staging",
+    "content_version": 2
+  },
+  "components": [
+    {
+      "name": "worker",
+      "fields": [
+        {
+          "name": "hands_free",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "name": "energy",
+          "type": "integer",
+          "default": 6
+        }
+      ]
+    },
+    {
+      "name": "cargo",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "default": "staged"
+        },
+        {
+          "name": "route",
+          "type": "string",
+          "default": "east"
+        },
+        {
+          "name": "target_dock",
+          "type": "string",
+          "default": "dock-a"
+        },
+        {
+          "name": "assigned_truck",
+          "type": "entity_ref_or_null",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "truck",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "default": "loading"
+        },
+        {
+          "name": "route",
+          "type": "string",
+          "default": "east"
+        },
+        {
+          "name": "capacity",
+          "type": "integer",
+          "default": 3
+        },
+        {
+          "name": "loaded",
+          "type": "integer",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "worker-a",
+      "label": "Worker A",
+      "categories": [
+        "worker"
+      ],
+      "components": {
+        "worker": {
+          "hands_free": true,
+          "energy": 6
+        }
+      }
+    },
+    {
+      "id": "worker-b",
+      "label": "Worker B",
+      "categories": [
+        "worker"
+      ],
+      "components": {
+        "worker": {
+          "hands_free": true,
+          "energy": 6
+        }
+      }
+    },
+    {
+      "id": "worker-c",
+      "label": "Worker C",
+      "categories": [
+        "worker"
+      ],
+      "components": {
+        "worker": {
+          "hands_free": true,
+          "energy": 6
+        }
+      }
+    },
+    {
+      "id": "worker-d",
+      "label": "Worker D",
+      "categories": [
+        "worker"
+      ],
+      "components": {
+        "worker": {
+          "hands_free": true,
+          "energy": 6
+        }
+      }
+    },
+    {
+      "id": "forklift-red",
+      "label": "Red Forklift",
+      "categories": [
+        "forklift",
+        "equipment"
+      ],
+      "location": "staging",
+      "portable": true,
+      "owner_ref": "place:warehouse",
+      "components": {}
+    },
+    {
+      "id": "forklift-blue",
+      "label": "Blue Forklift",
+      "categories": [
+        "forklift",
+        "equipment"
+      ],
+      "location": "staging",
+      "portable": true,
+      "owner_ref": "place:warehouse",
+      "components": {}
+    },
+    {
+      "id": "cargo-east-1",
+      "label": "East Cargo 1",
+      "categories": [
+        "cargo"
+      ],
+      "location": "staging",
+      "components": {
+        "cargo": {
+          "status": "staged",
+          "assigned_truck": null,
+          "route": "east",
+          "target_dock": "dock-a"
+        }
+      }
+    },
+    {
+      "id": "cargo-east-2",
+      "label": "East Cargo 2",
+      "categories": [
+        "cargo"
+      ],
+      "location": "staging",
+      "components": {
+        "cargo": {
+          "status": "staged",
+          "assigned_truck": null,
+          "route": "east",
+          "target_dock": "dock-a"
+        }
+      }
+    },
+    {
+      "id": "cargo-east-3",
+      "label": "East Cargo 3",
+      "categories": [
+        "cargo"
+      ],
+      "location": "staging",
+      "components": {
+        "cargo": {
+          "status": "staged",
+          "assigned_truck": null,
+          "route": "east",
+          "target_dock": "dock-a"
+        }
+      }
+    },
+    {
+      "id": "cargo-west-1",
+      "label": "West Cargo 1",
+      "categories": [
+        "cargo"
+      ],
+      "location": "staging",
+      "components": {
+        "cargo": {
+          "status": "staged",
+          "assigned_truck": null,
+          "route": "west",
+          "target_dock": "dock-b"
+        }
+      }
+    },
+    {
+      "id": "cargo-west-2",
+      "label": "West Cargo 2",
+      "categories": [
+        "cargo"
+      ],
+      "location": "staging",
+      "components": {
+        "cargo": {
+          "status": "staged",
+          "assigned_truck": null,
+          "route": "west",
+          "target_dock": "dock-b"
+        }
+      }
+    },
+    {
+      "id": "cargo-west-3",
+      "label": "West Cargo 3",
+      "categories": [
+        "cargo"
+      ],
+      "location": "staging",
+      "components": {
+        "cargo": {
+          "status": "staged",
+          "assigned_truck": null,
+          "route": "west",
+          "target_dock": "dock-b"
+        }
+      }
+    },
+    {
+      "id": "truck-east",
+      "label": "East Truck",
+      "categories": [
+        "truck"
+      ],
+      "location": "dock-a",
+      "components": {
+        "truck": {
+          "status": "loading",
+          "capacity": 3,
+          "loaded": 0,
+          "route": "east"
+        }
+      }
+    },
+    {
+      "id": "truck-west",
+      "label": "West Truck",
+      "categories": [
+        "truck"
+      ],
+      "location": "dock-b",
+      "components": {
+        "truck": {
+          "status": "loading",
+          "capacity": 3,
+          "loaded": 0,
+          "route": "west"
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "move",
+      "description": "Walk empty-handed to one represented warehouse location: staging, dock-a, or dock-b.",
+      "fields": [
+        {
+          "name": "location",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "kind": "claim-forklift",
+      "description": "Take one available forklift at the worker location when the worker has free hands.",
+      "fields": [
+        {
+          "name": "forklift",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "release-forklift",
+      "description": "Leave a held forklift at the worker current location and free the worker hands.",
+      "fields": [
+        {
+          "name": "forklift",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "drive-forklift",
+      "description": "Drive a held colocated forklift without cargo to one represented warehouse location: staging, dock-a, or dock-b; worker and forklift arrive together.",
+      "fields": [
+        {
+          "name": "forklift",
+          "type": "entity_ref"
+        },
+        {
+          "name": "location",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "kind": "transport-cargo",
+      "description": "Drive a held forklift with one staged cargo unit from staging only to that cargo unit's represented target_dock; worker, forklift, and cargo arrive together.",
+      "fields": [
+        {
+          "name": "cargo",
+          "type": "entity_ref"
+        },
+        {
+          "name": "forklift",
+          "type": "entity_ref"
+        },
+        {
+          "name": "dock",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "kind": "load-cargo",
+      "description": "Load staged cargo into a colocated truck using a held forklift when cargo.route equals truck.route and capacity remains.",
+      "fields": [
+        {
+          "name": "cargo",
+          "type": "entity_ref"
+        },
+        {
+          "name": "truck",
+          "type": "entity_ref"
+        },
+        {
+          "name": "forklift",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "dispatch-truck",
+      "description": "Dispatch a full truck from its dock.",
+      "fields": [
+        {
+          "name": "truck",
+          "type": "entity_ref"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "worker": {
+        "kind": "emoji",
+        "value": "\ud83e\uddd1\u200d\ud83c\udfed"
+      },
+      "cargo": {
+        "kind": "emoji",
+        "value": "\ud83d\udce6"
+      },
+      "forklift": {
+        "kind": "emoji",
+        "value": "\ud83c\udfd7\ufe0f"
+      },
+      "truck": {
+        "kind": "emoji",
+        "value": "\ud83d\ude9a"
+      }
+    },
+    "category_assets": {
+      "worker": "worker",
+      "cargo": "cargo",
+      "forklift": "forklift",
+      "truck": "truck"
+    },
+    "station_roles": {
+      "truck": "goal"
+    }
+  }
+}
