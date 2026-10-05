@@ -8,7 +8,7 @@ reviewed_through: 2026-09-18
 
 # World Substrate living roadmap
 
-**Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md), and [Decision 005](../docs/decisions/005-native-waltzman-delivery.md).
+**Authority:** [Decision 006](../docs/decisions/006-governed-rules-layer-scope.md) (current scope), [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md), and [Decision 005](../docs/decisions/005-native-waltzman-delivery.md).
 **Stage:** prototype substrate complete; deployed authoring/run alpha; promoted donor-backed Waltzman demo retained; native Waltzman convergence path (description -> editable draft -> approved mechanics -> native Engine run -> automatic living UI -> comparison) landed on main 2026-10-05; the replacement-first gate (recorded 2026-10-05) limits World Substrate to its governed-rules layer.
 **Current frontier (2026-10-05):** the first configurable native coordination vertical, one-shot authoring, and run comparison have landed (#75, #79, #80): two materially different coordination worlds run through one shared mechanics profile, pass replay acceptance, and render through the automatic view. The replacement-first gate (Brian's 2026-10-01 rule) is recorded: Concordia, Mesa and a PDDL toolchain each compose with World Substrate's governed-rules layer and none replaces it, so World Substrate keeps that layer and stops growing its own runtime extras. Preserve the promoted donor experience as regression/fallback while the native path is built; do not make donor hosting migration, conversational editing, bespoke assets, Jev optimization, or a repo merger part of this critical path.
 **Deployment boundary:** the 2026-09-09 donor-backed promotion remains valid evidence and a fallback surface. The 2026-09-18 product decision now targets World Substrate as the native substrate for the next Waltzman release. Public cutover waits until the native description-to-view path meets Decision 005's stopping rule; the existing donor route must not be silently presented as a fresh native run if generation fails.
@@ -190,7 +190,7 @@ Hard constraints:
 
 ### Active slice — hold at the governed-rules layer
 
-The replacement-first gate is recorded: Concordia, Mesa and PDDL each **compose** with the governed-rules layer and none replaces it (see "Replacement-first gate disposition"). The active slice holds World Substrate at that layer, pending Brian's direction choice; eligible work is in [Exact next action](#exact-next-action).
+The replacement-first gate is recorded: Concordia, Mesa and PDDL each **compose** with the governed-rules layer and none replaces it (see "Replacement-first gate disposition"). Brian approved holding World Substrate at that layer ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md)); eligible work is in [Exact next action](#exact-next-action).
 
 ### Previous slice — donor hosting migration (complete) and post-demo authority hardening
 
@@ -391,6 +391,7 @@ Open PRs: none as of 2026-10-05 (#37 closed with its experiment landed in #86; #
 | Waltzman constructs in universal core state? | answered — no; Waltzman analytics detachable |
 | Behavioral predictive validity current goal? | answered — no |
 | Commodity selection method | answered — research/reason/select, not local bake-offs |
+| Shrink onto runtimes, keep native, or freeze? | **answered 2026-10-05 — narrow governed-rules layer; no native runtime growth; Builder backend restored** ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md)) |
 | Living renderer | answered — deck.gl 9.4.x |
 | Resident cognition harness | answered — Pydantic AI behind adapter when earned |
 | Scheduler | answered — SimPy for scheduling only when earned |
@@ -403,7 +404,7 @@ Refresh this roadmap when:
 
 - the first configurable native coordination vertical lands or exposes a mechanics/viewer gap;
 - the native one-shot authoring flow first produces a fresh automatic-view run;
-- any replacement-gate wrong-when condition fires, or Brian chooses between shrink / continue / freeze;
+- any Decision 006 wrong-when condition fires;
 - post-demo executable-law provenance/role-authority/affordance-overflow hardening lands;
 - Linguistic Core publishes or adopts a relation/role contract that materially changes how World Substrate semantic bindings are represented;
 - conversational authoring first produces richer information/activity/institution mechanics;
@@ -425,10 +426,10 @@ Replan rather than extend blindly if:
 
 **The replacement-first gate is recorded (see "Replacement-first gate disposition"); do not add native runtime capability.**
 
-Every candidate came out as compose, not adopt, so World Substrate's scope is now the governed-rules layer plus its authoring/approval path. Brian has not yet chosen between shrinking onto a runtime, continuing native work, or freezing. Until he chooses, eligible work is limited to:
+Every candidate came out as compose, not adopt. Brian approved the narrow governed-rules-layer direction on 2026-10-05 ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md)). Eligible work is limited to:
 
 1. hardening that protects existing behaviour (the queue above: executable-law fingerprint, role-specific write scopes, explicit affordance overflow, mechanic exceptions as recorded refusals);
-2. restoring the public World Builder backend as a VPS app behind a `/world-builder/api` route if the Builder is kept (project-meta issue #2377 tracks the hosting gap);
+2. restoring the public World Builder backend as a VPS app behind a `/world-builder/api` route (approved in Decision 006; image recipe `deploy/vps/Dockerfile`; project-meta issue #2377 tracks the hosting gap);
 3. when a world first needs LLM residents or spatial/sweep structure, hosting it on Concordia or Mesa per the disposition instead of extending the native loop.
 
 Do not add engine, scheduler, renderer or cognition capability of World Substrate's own.
