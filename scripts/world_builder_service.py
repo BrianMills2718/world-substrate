@@ -138,6 +138,22 @@ def _settle_daily_budget(reserved_cap: float, actual_cost: float | None) -> floa
     return float(state["spent_usd"] + state["reserved_usd"])
 
 
+def _settle_failed_call(reserved_cap: float, trace_id: str) -> float:
+    """Settle a reservation whose request failed after (possibly) spending.
+
+    A generation that fails validation has usually completed paid calls whose
+    cost is recorded; charging the whole reservation for it let two or three
+    rejected descriptions exhaust the public daily budget. Charge the recorded
+    cost when there is one. When nothing is recorded (the provider call itself
+    failed, or the cost lookup did), stay fail-closed and charge the whole cap.
+    """
+    try:
+        recorded = _trace_cost(trace_id)
+    except Exception:
+        recorded = 0.0
+    return _settle_daily_budget(reserved_cap, recorded if recorded > 0 else None)
+
+
 def _trace_cost(trace_id: str) -> float:
     from llm_client import get_cost
 
@@ -167,6 +183,19 @@ def _strip_review(value: dict[str, Any]) -> dict[str, Any]:
     out = json.loads(json.dumps(value))
     out.pop("review", None)
     return out
+
+
+def _requested_model(body: dict[str, Any]) -> str:
+    """Public callers may only name the service's approved model.
+
+    A free-form model id would let any visitor choose an arbitrary (and
+    arbitrarily priced) route; the shared client also refuses non-default
+    models without a justification, which surfaced as a 500.
+    """
+    requested = body.get("model")
+    if requested in (None, "", DEFAULT_MODEL):
+        return DEFAULT_MODEL
+    raise ValueError(f"model must be {DEFAULT_MODEL} (or omitted)")
 
 
 def _initial_refusals(bundle: dict[str, Any], causal: dict[str, Any], limit: int = 6) -> list[str]:
@@ -296,7 +325,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         description = body.get("description")
         if not isinstance(description, str) or not description.strip():
             raise ValueError("description must be a nonempty string")
-        model = str(body.get("model") or DEFAULT_MODEL)
+        model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/world/{uuid.uuid4().hex}"
         with _LLM_LOCK:
             budget = self._llm_budget(client, WORLD_BUDGET)
@@ -361,7 +390,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 _, causal, compiled, best_row = best
                 trace_cost = _trace_cost(trace_id)
             except Exception:
-                _settle_daily_budget(budget, None)
+                _settle_failed_call(budget, trace_id)
                 raise
             daily_cost = _settle_daily_budget(budget, trace_cost)
         self._json(
@@ -387,7 +416,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             raise ValueError("description must be a nonempty string")
         if len(description) > 8000:
             raise ValueError("description must be at most 8000 characters")
-        model = str(body.get("model") or DEFAULT_MODEL)
+        model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/draft/{uuid.uuid4().hex}"
         with _LLM_LOCK:
             budget = self._llm_budget(client, DRAFT_BUDGET)
@@ -402,7 +431,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 )
                 trace_cost = _trace_cost(trace_id)
             except Exception:
-                _settle_daily_budget(budget, None)
+                _settle_failed_call(budget, trace_id)
                 raise
             daily_cost = _settle_daily_budget(budget, trace_cost)
         self._json(
@@ -422,7 +451,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
     def _generate(self, client: str, body: dict[str, Any]) -> None:
         bundle = validate_bundle(body.get("bundle"))
-        model = str(body.get("model") or DEFAULT_MODEL)
+        model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/mechanics/{uuid.uuid4().hex}"
         guidance = body.get("guidance") or ""
         if not isinstance(guidance, str):
@@ -445,7 +474,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 compiled = CausalModel.from_dict(causal, bundle=bundle)
                 trace_cost = _trace_cost(trace_id)
             except Exception:
-                _settle_daily_budget(budget, None)
+                _settle_failed_call(budget, trace_id)
                 raise
             daily_cost = _settle_daily_budget(budget, trace_cost)
         self._json(
@@ -519,7 +548,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         turns = body.get("turns", 12)
         if type(turns) is not int:
             raise ValueError("turns must be an integer")
-        model = str(body.get("model") or DEFAULT_MODEL)
+        model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
         if execution_mode == "native_coordination":
             shared_causal = json.loads(NATIVE_COORDINATION_CAUSAL.read_text())
@@ -546,7 +575,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
-                    _settle_daily_budget(budget, None)
+                    _settle_failed_call(budget, trace_id)
                     raise
                 daily_cost = _settle_daily_budget(budget, trace_cost)
                 trace["cost_usd"] = trace_cost

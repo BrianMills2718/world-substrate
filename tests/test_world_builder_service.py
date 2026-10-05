@@ -197,6 +197,30 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertFalse(payload["dry_run"]["ok"])
         self.assertIn("no actions", payload["dry_run"]["error"])
 
+    def test_failed_generation_charges_recorded_cost_not_whole_reservation(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", side_effect=ValueError("world proposal remained invalid after 2 repairs: x"),
+        ):
+            status, payload = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 422)
+        self.assertAlmostEqual(service._daily_cost(), 0.004, places=6)
+
+    def test_failed_generation_with_no_recorded_cost_stays_fail_closed(self):
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(
+            service, "generate_world_bundle", side_effect=ValueError("provider failed"),
+        ):
+            status, _ = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 422)
+        self.assertAlmostEqual(service._daily_cost(), service.WORLD_BUDGET, places=6)
+
+    def test_unapproved_model_is_refused_before_spend(self):
+        with patch.object(service, "generate_world_bundle") as world:
+            status, payload = self.post("/generate-world", {"description": "orchard", "model": "openrouter/some/expensive-model"})
+        self.assertEqual(status, 422)
+        self.assertIn("model must be", payload["error"])
+        world.assert_not_called()
+        self.assertFalse(self.budget_path.exists())
+
     def test_generate_world_rejects_empty_description_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:
             status, payload = self.post("/generate-world", {"description": "   "})
