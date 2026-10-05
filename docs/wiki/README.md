@@ -145,7 +145,7 @@ Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter
 | Causal generation | constrained JSON proposal + local compiler + explicit approval + frozen declaration profile |
 | Live policies | scripted/LLM; LLM selects only Engine-minted action IDs |
 | Replay | portable read-only scene-profile renderer across multiple worlds |
-| World Builder | authoring + mechanics review/approval + fresh scripted/LLM runs implemented; public generation/runs offline since the Mac origin went away (page says so) |
+| World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs; backend on the personal VPS since 2026-10-05 |
 | Full logs | deployed; complete request/response/compiler/operator/causal traces available |
 | Living-world UI | generated-run living replay stakeholder-promoted on `65eb465a`; live simulator on the personal Netcup VPS since 2026-09-16; canonical Waltzman reference client remains retained evidence |
 | Live projection | implemented local first gate: exact initial-snapshot + retained-event/delta reconstruction, self-contained HTML, JSON, and one-way SSE |
@@ -165,7 +165,7 @@ Open work at the handoff point:
 
 The roadmap owns ordering. Current unresolved work is split into the **active replacement-first gate**, **post-demo hardening**, and **later capabilities**.
 
-1. **Replacement-first gate — recorded 2026-10-05:** Concordia, Mesa and PDDL each compose with the governed-rules layer and none replaces it; World Substrate holds at that layer (roadmap disposition). The donor hosting migration is complete (2026-09-16); the World Builder backend was not migrated and is offline.
+1. **Replacement-first gate — recorded 2026-10-05:** Concordia, Mesa and PDDL each compose with the governed-rules layer and none replaces it; World Substrate holds at that layer (roadmap disposition). The donor hosting migration is complete (2026-09-16); the World Builder backend moved to the VPS on 2026-10-05.
 2. **First-two-minute UX — promoted regression target:** preserve the configure-first local-information-to-collective-action experience; do not reopen it as unfinished acquisition work unless evidence regresses.
 3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version.
 4. **Local-authority correctness — post-demo hardening:** bind write-scope placeholders to exact action roles and make authored affordance-cap overflow explicit rather than silently truncating valid actions.
