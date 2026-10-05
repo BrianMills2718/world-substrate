@@ -62,6 +62,12 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
 @media (max-width:640px){h1{font-size:22px}.lede,.stepnote{display:none}main{padding-top:16px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
+.chat{display:flex;flex-direction:column;gap:10px;margin:14px 0;max-height:420px;overflow:auto}
+.bubble{border-radius:10px;padding:10px 12px;max-width:85%;font-size:15px}
+.bubble.ai{background:#121a20;border:1px solid var(--line);align-self:flex-start}
+.bubble.me{background:#1d2529;align-self:flex-end}
+.bubble .q{margin-top:8px;font-weight:600}
+.so-far{width:100%;min-height:80px;background:#0b1013;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -94,7 +100,24 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <div class="chips" id="examples"></div>
     <div class="row">
       <button class="primary" id="build-btn" type="button">Build my world</button>
+      <button class="secondary" id="lucky-btn" type="button" title="The AI invents a small world, builds it and runs it without stopping for review">I’m feeling lucky</button>
+      <button class="secondary" id="talk-btn" type="button">Help me describe it</button>
       <span class="muted small" id="build-hint">Takes about 20–60 seconds.</span>
+    </div>
+    <div id="dialogue" hidden>
+      <h3>Let’s work it out together</h3>
+      <p class="small muted">Answer the questions (click a suggestion or type your own). The description below updates as you go; edit it any time, then build.</p>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <div class="row">
+        <textarea id="talk-input" rows="2" maxlength="2000" style="flex:1;min-height:56px" placeholder="Your answer…"></textarea>
+        <button class="secondary" id="send-btn" type="button">Send</button>
+      </div>
+      <h3>Description so far</h3>
+      <textarea class="so-far" id="so-far" maxlength="2000"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="primary" id="use-btn" type="button" disabled>Use this description and build</button>
+        <button class="secondary" id="talk-close" type="button">Close</button>
+      </div>
     </div>
     <div class="status" id="service-status">Checking the builder…</div>
   </section>
@@ -127,12 +150,14 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
     <h2 id="run-h">Your world ran</h2>
+    <div id="lucky-note"></div>
     <p class="outcome" id="outcome"></p>
     <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
     <div class="strip" id="strip" aria-label="Every attempt, in order. Select one to see why."></div>
     <p class="detail" id="detail"></p>
     <iframe class="replay" id="replay" title="Graphical replay of the run" sandbox="allow-scripts"></iframe>
     <div class="row" style="margin-top:14px">
+      <button class="secondary" type="button" id="rules-btn">See the rules</button>
       <button class="secondary" type="button" id="again-btn">Run it again</button>
       <button class="secondary" type="button" id="new-btn">Build another world</button>
       <button class="secondary" type="button" id="download-btn">Download this world</button>
@@ -300,7 +325,8 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     show("review");
   }
 
-  async function build() {
+  async function build(options) {
+    const auto = Boolean(options && options.auto);
     const description = $("desc").value.trim() || $("desc").placeholder;
     $("desc").value = description;
     show("working");
@@ -314,6 +340,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     try {
       const data = await api("/generate-world", { description });
       renderReview(data);
+      if (auto && data.dry_run.ok) await runWorld({ lucky: true });
     } catch (err) {
       show("describe");
       const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
@@ -363,20 +390,91 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     show("run");
   }
 
-  async function runWorld() {
+  async function runWorld(options) {
     if (!world) return;
+    const lucky = Boolean(options && options.lucky);
     const ai = $("ai-moves").checked;
     $("approve-btn").disabled = true; $("approve-btn").textContent = ai ? "Running (AI is choosing moves)…" : "Running…";
     try {
       const run = await api("/run", { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "llm" : "scripted", turns: 12 });
       renderRun(run);
+      const note = $("lucky-note"); note.innerHTML = "";
+      if (lucky) {
+        const n = document.createElement("div"); n.className = "notice info";
+        n.textContent = "Surprise world: “" + world.description + "” Built and run without stopping for review; use See the rules to read exactly what decided every attempt.";
+        note.append(n);
+      }
     } catch (err) {
       const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
       $("dry-notice").innerHTML = ""; $("dry-notice").append(n);
     } finally { $("approve-btn").disabled = false; $("approve-btn").textContent = "Approve rules and run"; }
   }
 
-  $("build-btn").addEventListener("click", build);
+  $("build-btn").addEventListener("click", () => build());
+
+  // I'm feeling lucky: the AI invents a world, then it is built and run in one go.
+  $("lucky-btn").addEventListener("click", async () => {
+    show("working"); $("working-line").textContent = "Inventing a surprise world…";
+    try {
+      const s = await api("/surprise", {});
+      $("desc").value = s.description;
+    } catch (err) {
+      show("describe");
+      const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
+      $("service-status").innerHTML = ""; $("service-status").append(n);
+      return;
+    }
+    await build({ auto: true });
+  });
+
+  // Dialogue: the AI asks clarifying questions and keeps a description draft.
+  let talk = [];
+  function bubble(role, text, questions) {
+    const b = document.createElement("div"); b.className = "bubble " + (role === "user" ? "me" : "ai");
+    const p = document.createElement("div"); p.textContent = text; b.append(p);
+    (questions || []).forEach((q) => {
+      const h = document.createElement("div"); h.className = "q"; h.textContent = q.question; b.append(h);
+      const row = document.createElement("div"); row.className = "chips"; row.style.margin = "6px 0 0";
+      q.options.forEach((o) => {
+        const c = document.createElement("button"); c.type = "button"; c.className = "chip"; c.textContent = o;
+        c.addEventListener("click", () => {
+          const cur = $("talk-input").value.trim();
+          $("talk-input").value = (cur ? cur + "; " : "") + q.question.replace(/\?$/, "") + ": " + o;
+          $("talk-input").focus();
+        });
+        row.append(c);
+      });
+      b.append(row);
+    });
+    $("chat").append(b); $("chat").scrollTop = $("chat").scrollHeight;
+  }
+  async function sendTurn(text) {
+    if (!text.trim()) return;
+    talk.push({ role: "user", content: text.trim() });
+    bubble("user", text.trim());
+    $("talk-input").value = ""; $("send-btn").disabled = true; $("send-btn").textContent = "Thinking…";
+    try {
+      const r = await api("/clarify", { messages: talk });
+      const asked = r.reply + (r.questions.length ? " " + r.questions.map((q) => q.question).join(" ") : "");
+      talk.push({ role: "assistant", content: asked + " Draft: " + r.description });
+      bubble("assistant", r.reply + (r.ready ? " This is ready to build whenever you are." : ""), r.questions);
+      $("so-far").value = r.description; $("use-btn").disabled = false;
+    } catch (err) {
+      talk.pop();
+      bubble("assistant", plainError(err));
+    } finally { $("send-btn").disabled = false; $("send-btn").textContent = "Send"; }
+  }
+  $("talk-btn").addEventListener("click", () => {
+    $("dialogue").hidden = false; talk = []; $("chat").innerHTML = "";
+    const start = $("desc").value.trim();
+    if (start) sendTurn(start);
+    else { bubble("assistant", "Tell me roughly what should happen: who is involved, what they share or use, and what they are trying to get done."); $("talk-input").focus(); }
+  });
+  $("send-btn").addEventListener("click", () => sendTurn($("talk-input").value));
+  $("talk-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTurn($("talk-input").value); } });
+  $("talk-close").addEventListener("click", () => { $("dialogue").hidden = true; });
+  $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); $("dialogue").hidden = true; build(); });
+  $("rules-btn").addEventListener("click", () => show("review"));
   $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
   $("change-btn").addEventListener("click", () => show("describe"));
   $("approve-btn").addEventListener("click", runWorld);

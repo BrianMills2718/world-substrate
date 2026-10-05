@@ -43,6 +43,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
     def setUp(self):
         service._REQUESTS.clear()
         service._LLM_REQUESTS.clear()
+        service._DIALOGUE_REQUESTS.clear()
         self.state_tmp = tempfile.TemporaryDirectory()
         self.budget_path = Path(self.state_tmp.name) / "budget.json"
         self.path_patch = patch.object(service, "BUDGET_STATE_PATH", self.budget_path)
@@ -240,6 +241,36 @@ class WorldBuilderServiceTests(unittest.TestCase):
             status, _ = self.post("/generate-world", {"description": "orchard"})
         self.assertEqual(status, 422)
         self.assertAlmostEqual(service._daily_cost(), service.WORLD_BUDGET, places=6)
+
+    def test_clarify_returns_one_dialogue_turn_and_charges_the_ledger(self):
+        reply = {"reply": "ok", "questions": [{"question": "How many?", "options": ["2", "3"]}],
+                 "description": "Ava picks two apples.", "ready": False}
+        with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
+            service, "clarify", return_value=(reply, FakeResult()),
+        ) as call:
+            status, payload = self.post("/clarify", {"messages": [{"role": "user", "content": "an orchard"}]})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["questions"][0]["options"], ["2", "3"])
+        self.assertEqual(payload["description"], "Ava picks two apples.")
+        self.assertAlmostEqual(call.call_args.kwargs["max_budget"], service.DIALOGUE_BUDGET)
+        self.assertAlmostEqual(payload["daily_cost_usd"], 0.001, places=6)
+        self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/clarify/"))
+
+    def test_clarify_rejects_a_bad_conversation_before_spend(self):
+        with patch.object(service, "clarify") as call:
+            status, _ = self.post("/clarify", {"messages": [{"role": "assistant", "content": "hi"}]})
+        self.assertEqual(status, 422)
+        call.assert_not_called()
+        self.assertFalse(self.budget_path.exists())
+
+    def test_dialogue_has_its_own_allowance(self):
+        service._LLM_REQUESTS["127.0.0.1"].extend([__import__("time").time()] * service.LLM_REQUESTS_PER_HOUR)
+        with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
+            service, "surprise_description", return_value=({"theme": "t", "description": "d"}, FakeResult()),
+        ):
+            status, payload = self.post("/surprise", {})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["description"], "d")
 
     def test_unapproved_model_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:

@@ -18,9 +18,11 @@ Living record of critiques of World Builder pages. Owner critiques become rules 
 | Parts of a description the simulator cannot represent are listed, not dropped silently. | Cold first-visit review, 2026-10-05 ("before noon" disappeared) | `not_modeled` from `scripts/generate_world_bundle.py` | none (project-specific) |
 | A run shows what the rules refused and why, grouped one square per person per round. | Cold first-visit review, 2026-10-05 (headline promised refusals; none visible); 39 squares judged noisy | `blocked_by_rules` in `scripts/run_authored_world.py`; landing page strip | existing: `density-budget`, `every-mark-opens-its-subject` |
 | Rule checks read as plain English with the things' names, never jargon. | Cold first-visit review, 2026-10-05 ("ownership context", "Actor is available") | label rule in `scripts/generate_causal_model.py` | existing: `every-label-explains-itself` |
+| Offer "I'm feeling lucky" (one click to a surprise world, built and run) and a dialogue where the AI helps flesh out and clarify the idea. | Brian, 2026-10-05: "there should be an \"im feeling lucky\" option as well as a dialogue option where the ai helps flesh out and clarify" | `/surprise`, `/clarify` (`scripts/world_dialogue.py`); landing page buttons | `describe-first-creation-surface` (extend) |
 | Every secondary page links back to the landing page. | Cold first-visit review, 2026-10-05 | home links in Play and the advanced editor | existing: `navigation-holds-only-live-views` |
 | Never red against green; allowed is solid blue, refused is orange dashed with a word. | Brian's standing preference (red-green colorblind) | landing page palette; `tests/test_world_builder_home.py` | existing |
 
 ## Log
 
 - 2026-10-05: Brian asked for a landing page with a tutorial and natural-language building. Built and deployed (world-substrate #92, machine-coordination #84). A cold first-visit review found five problems; fixed in #93–#95 and machine-coordination #85.
+- 2026-10-05: Brian asked for an "I'm feeling lucky" option and a clarifying dialogue. Built (this PR). He also asked for continuous worlds: "my conception is that this is like continuous worlds we should be building ... a do a task world. or an open world and i dont know what is in between". Next increment.

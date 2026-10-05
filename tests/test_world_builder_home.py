@@ -18,6 +18,14 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # The run request is only sent from the approval handler.
         self.assertEqual(self.page.count('api("/run"'), 1)
 
+    def test_feeling_lucky_and_dialogue_paths_are_wired(self):
+        self.assertIn("I’m feeling lucky", self.page)
+        self.assertIn('api("/surprise"', self.page)
+        self.assertIn("without stopping for review", self.page)
+        self.assertIn("Help me describe it", self.page)
+        self.assertIn('api("/clarify", { messages: talk })', self.page)
+        self.assertIn("Use this description and build", self.page)
+
     def test_tutorial_steps_and_escape_hatches_are_present(self):
         for step in ("Describe", "Check the rules", "Watch it run"):
             self.assertIn(step, self.page)
