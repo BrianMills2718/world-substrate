@@ -38,10 +38,14 @@ async function buildAndRun(p, kind, log) {
   }
 }
 
+// Agent and CI runs use the owner password (WORLD_BUILDER_OWNER_PASSWORD) so tests
+// never spend the shared public visitor budget.
+const OWNER = process.env.WORLD_BUILDER_OWNER_PASSWORD || '';
 const browser = await chromium.launch();
 let passed = 0, failed = 0;
 for (const flow of flows.length ? flows : ['task']) {
   const p = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  if (OWNER) await p.addInitScript((k) => { try { localStorage.setItem('wb-owner', k); } catch (e) {} }, OWNER);
   const errors = []; p.on('pageerror', (e) => errors.push(String(e)));
   const log = (step, text) => console.log(`${flow.padEnd(8)} ${step}: ${String(text).replace(/\s+/g, ' ').slice(0, 300)}`);
   try {

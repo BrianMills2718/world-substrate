@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 import urllib.error
@@ -33,6 +34,9 @@ DESCRIPTIONS = [
 # Cloudflare rejects urllib's default user agent; the live site needs a browser-like one.
 HEADERS = {"Content-Type": "application/json", "Origin": "https://brianmills.dev",
            "User-Agent": "Mozilla/5.0 world-builder-measurement"}
+# Measurement spends from the owner allowance, never the shared visitor budget.
+if os.environ.get("WORLD_BUILDER_OWNER_PASSWORD"):
+    HEADERS["X-World-Builder-Owner"] = os.environ["WORLD_BUILDER_OWNER_PASSWORD"]
 
 
 def _request(url: str, body: dict | None = None) -> tuple[int, dict]:
