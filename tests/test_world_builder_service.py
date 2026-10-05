@@ -109,6 +109,68 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], service.DRAFT_BUDGET)
         self.assertAlmostEqual(payload["daily_cost_usd"], 0.002, places=6)
 
+    def test_generate_world_returns_structure_mechanics_and_passing_dry_run(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, FakeResult()),
+        ) as world, patch.object(
+            service, "generate_causal_model", return_value=(CAUSAL, FakeResult()),
+        ) as mechanics:
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["bundle"]["world"]["id"], "orchard")
+        self.assertEqual([m["action_kind"] for m in payload["review"]["mechanics"]], ["pick"])
+        self.assertTrue(payload["dry_run"]["ok"])
+        self.assertGreater(payload["dry_run"]["accepted_actions"], 0)
+        self.assertEqual(mechanics.call_count, 1)
+        self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/world/"))
+        self.assertAlmostEqual(world.call_args.kwargs["max_budget"], service.WORLD_BUDGET)
+        self.assertAlmostEqual(payload["daily_cost_usd"], 0.004, places=6)
+        # Generation alone never runs a world for real: /run still requires approval.
+        status, refused = self.post("/run", {"bundle": payload["bundle"], "causal_model": payload["causal_model"]})
+        self.assertEqual(status, 409)
+
+    def test_generate_world_retries_mechanics_once_when_dry_run_has_no_actions(self):
+        impossible = json.loads(json.dumps(CAUSAL))
+        impossible["mechanics"][0]["checks"].append(
+            {"label": "Fruit is rotten", "left": {"participant": {"name": "fruit", "path": "components.fruit.stage"}},
+             "op": "eq", "right": {"literal": "rotten"}}
+        )
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", side_effect=[(impossible, FakeResult()), (CAUSAL, FakeResult())],
+        ) as mechanics:
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertIn("dry run", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertEqual([a["ok"] for a in payload["dry_run_attempts"]], [False, True])
+        self.assertTrue(payload["dry_run"]["ok"])
+
+    def test_generate_world_reports_failed_dry_run_plainly_after_one_retry(self):
+        impossible = json.loads(json.dumps(CAUSAL))
+        impossible["mechanics"][0]["checks"].append(
+            {"label": "Fruit is rotten", "left": {"participant": {"name": "fruit", "path": "components.fruit.stage"}},
+             "op": "eq", "right": {"literal": "rotten"}}
+        )
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(impossible, FakeResult()),
+        ) as mechanics:
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertFalse(payload["dry_run"]["ok"])
+        self.assertIn("no actions", payload["dry_run"]["error"])
+
+    def test_generate_world_rejects_empty_description_before_spend(self):
+        with patch.object(service, "generate_world_bundle") as world:
+            status, payload = self.post("/generate-world", {"description": "   "})
+        self.assertEqual(status, 422)
+        world.assert_not_called()
+        self.assertFalse(self.budget_path.exists())
+
     def test_generate_draft_rejects_empty_description_before_spend(self):
         with patch.object(service, "generate_native_coordination_draft") as generate:
             status, payload = self.post("/generate-draft", {"description": "  "})
