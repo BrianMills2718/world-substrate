@@ -52,6 +52,9 @@ RULES_RETRY_JUSTIFICATION = (
     "reach its finish line; the stronger model measured 6/6 vs 11/24 on the same descriptions."
 )
 DRY_RUN_TURNS = 12
+WORLD_KINDS = ("task", "ongoing", "open")
+# Keep going is bounded: a visitor can continue one world for this many rounds.
+MAX_CONTINUED_TURNS = 300
 LLM_REQUESTS_PER_HOUR = 8
 GENERAL_REQUESTS_PER_MINUTE = 30
 ALLOWED_ORIGINS = {"https://brianmills.dev", "https://www.brianmills.dev"}
@@ -387,6 +390,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if not isinstance(description, str) or not description.strip():
             raise ValueError("description must be a nonempty string")
         model = _requested_model(body)
+        world_kind = body.get("world_kind") or "task"
+        if world_kind not in WORLD_KINDS:
+            raise ValueError(f"world_kind must be one of {list(WORLD_KINDS)}")
         trace_id = f"{TRACE_ROOT}/world/{uuid.uuid4().hex}"
         with _LLM_LOCK:
             budget = self._llm_budget(client, WORLD_BUDGET)
@@ -394,7 +400,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 return
             try:
                 bundle, not_modeled, _ = generate_world_bundle(
-                    description, model=model, trace_id=trace_id, max_budget=budget,
+                    description, model=model, trace_id=trace_id, max_budget=budget, world_kind=world_kind,
                 )
                 guidance = ""
                 attempts: list[dict[str, Any]] = []
@@ -410,6 +416,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             max_budget=budget,
                             guidance=guidance,
                             model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
+                            world_kind=world_kind,
                         )
                         candidate = _strip_review(generated)
                         candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
@@ -433,9 +440,28 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             trace_id=f"{trace_id}/dry-run-{attempt}",
                         )
                         result_row = {"ok": True, **dry["summary"]}
-                        finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
-                        score = 2 if finishes else 1
-                        if finishes:
+                        if world_kind != "task":
+                            # Ongoing/open worlds succeed by staying alive, not by finishing.
+                            alive = (
+                                candidate_compiled.terminal is None
+                                and bool(candidate_compiled.processes)
+                                and dry["summary"]["active_at_end"]
+                            )
+                            score = 2 if alive else 1
+                            guidance = "" if alive else (
+                                f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
+                                f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
+                                f"{len(candidate_compiled.processes)} processes, active in the last rounds: "
+                                f"{dry['summary']['active_at_end']}. Set terminal to null and add processes so state "
+                                "keeps changing and the actors keep having useful actions in every round."
+                            )
+                            finishes = None
+                        else:
+                            finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
+                            score = 2 if finishes else 1
+                        if finishes is None:
+                            pass
+                        elif finishes:
                             guidance = ""
                         elif candidate_compiled.terminal is None:
                             guidance = (
@@ -479,6 +505,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             {
                 "ok": True,
                 "description": description,
+                "world_kind": world_kind,
                 "not_modeled": not_modeled,
                 "bundle": bundle,
                 "causal_model": causal,
@@ -629,6 +656,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         turns = body.get("turns", 12)
         if type(turns) is not int:
             raise ValueError("turns must be an integer")
+        continue_from = body.get("continue_from")
+        if continue_from is not None and not isinstance(continue_from, dict):
+            raise ValueError("continue_from must be a snapshot object")
+        turn_offset = body.get("turn_offset", 0)
+        if type(turn_offset) is not int or not 0 <= turn_offset <= MAX_CONTINUED_TURNS:
+            raise ValueError(f"turn_offset must be an integer between 0 and {MAX_CONTINUED_TURNS}")
         model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
         if execution_mode == "native_coordination":
@@ -653,6 +686,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     trace, _, compiled = run_world(
                         bundle, causal, policy=policy, model_name=model,
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
+                        start_snapshot=continue_from, turn_offset=turn_offset,
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
@@ -664,6 +698,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             trace, _, compiled = run_world(
                 bundle, causal, policy=policy, model_name=model,
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
+                start_snapshot=continue_from, turn_offset=turn_offset,
             )
             daily_cost = None
         if execution_mode == "authored_world":

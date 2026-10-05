@@ -35,7 +35,7 @@ SIZE_RULES = [
     "At least one entity is an actor that can act (give it a component such as worker/person and a clear category).",
     "Every action must be something an actor in this world could plausibly do repeatedly until the situation resolves.",
     "Represent the state the actions change (e.g. stage, count, location) as component fields with typed defaults.",
-    "Make the situation able to finish: there must be represented state from which 'done' can be read (e.g. all orders served).",
+    "Follow world_kind_rule: a task world must be able to finish (represented state from which 'done' can be read); ongoing and open worlds must have state that keeps changing.",
 ]
 
 
@@ -69,7 +69,23 @@ def _contract() -> dict[str, Any]:
     }
 
 
-def _messages(description: str) -> list[dict[str, str]]:
+WORLD_KINDS = ("task", "ongoing", "open")
+KIND_RULES = {
+    "task": "World kind: task. There is a job to finish; make sure 'done' can be read from represented state.",
+    "ongoing": (
+        "World kind: ongoing. Work keeps arriving and nothing is ever finally done. Represent the state that "
+        "lets work recur (for example an order's stage that can return to waiting, a plant's thirst counter, a "
+        "count of waiting items) so the world can keep generating things to do."
+    ),
+    "open": (
+        "World kind: open. No goal is imposed; residents live in the world. Give actors needs or resources "
+        "that change over time (for example hunger, energy, supplies, growth) as component fields, and several "
+        "actions they can take to look after them."
+    ),
+}
+
+
+def _messages(description: str, world_kind: str = "task") -> list[dict[str, str]]:
     return [
         {
             "role": "system",
@@ -85,6 +101,8 @@ def _messages(description: str) -> list[dict[str, str]]:
             "content": json.dumps(
                 {
                     "description": description,
+                    "world_kind": world_kind,
+                    "world_kind_rule": KIND_RULES[world_kind],
                     "contract": _contract(),
                     "example_bundle": json.loads(EXAMPLE.read_text()),
                 },
@@ -104,6 +122,7 @@ def generate_world_bundle(
     trace_id: str | None = None,
     max_budget: float = DEFAULT_BUDGET,
     reasoning_effort: str = "low",
+    world_kind: str = "task",
 ) -> tuple[dict[str, Any], list[str], Any]:
     """Return (validated bundle, parts of the description not represented, last LLM result)."""
     if not isinstance(description, str) or not description.strip():
@@ -113,7 +132,9 @@ def generate_world_bundle(
     from llm_client import call_llm, safe_json_loads
 
     trace_id = trace_id or f"world-builder-bundle-{uuid.uuid4().hex}"
-    messages = _messages(description.strip())
+    if world_kind not in WORLD_KINDS:
+        raise ValueError(f"world_kind must be one of {WORLD_KINDS}")
+    messages = _messages(description.strip(), world_kind)
     last_error: Exception | None = None
     for attempt in range(MAX_REPAIRS + 1):
         result = call_llm(

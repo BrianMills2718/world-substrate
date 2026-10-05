@@ -50,6 +50,36 @@ class AuthoredWorldRunTests(unittest.TestCase):
             self.assertLessEqual(len(keys), 3)
         self.assertTrue(all(b["reason"] for b in refusals))
 
+    def test_processes_keep_an_ongoing_world_going_and_runs_continue(self):
+        causal = json.loads(json.dumps(self.causal))
+        causal["terminal"] = None
+        causal["processes"] = [{
+            "process_id": "regrow", "rationale": "Picked fruit grows back.",
+            "selector": {"categories": ["fruit"], "components": ["fruit"]},
+            "checks": [{"label": "the fruit has been picked",
+                        "left": {"participant": {"name": "it", "path": "components.fruit.stage"}},
+                        "op": "eq", "right": {"literal": "picked"}}],
+            "effects": [{"participant": "it", "path": "components.fruit.stage", "op": "set", "value": {"literal": "ripe"}},
+                        {"participant": "it", "path": "ownership.owner_ref", "op": "set", "value": {"literal": "place:orchard"}}],
+        }]
+        first, _, model = run_world(self.bundle, causal, policy="scripted", max_turns=4)
+        self.assertEqual(len(model.processes), 1)
+        self.assertEqual(first["summary"]["accepted_actions"], 4)
+        self.assertEqual(first["summary"]["world_changes"], 4)
+        self.assertEqual([t["world_changes"] for t in first["transcript"]], [["regrow"]] * 4)
+        self.assertTrue(first["summary"]["active_at_end"])
+        second, engine, _ = run_world(
+            self.bundle, causal, policy="scripted", max_turns=4,
+            start_snapshot=first["final_snapshot"], turn_offset=first["summary"]["last_turn"],
+        )
+        self.assertEqual([t["turn"] for t in second["transcript"]], [5, 6, 7, 8])
+        self.assertEqual(engine.world.revision, 16)
+        # A snapshot from a different rule set is refused.
+        other = json.loads(json.dumps(first["final_snapshot"]))
+        other["world"]["rule_versions"] = {"someone.else": "1"}
+        with self.assertRaises(ValueError):
+            run_world(self.bundle, causal, policy="scripted", max_turns=2, start_snapshot=other)
+
     def test_compiled_profile_is_frozen_before_run(self):
         engine, _, profile_id = build_engine(self.bundle, self.causal)
         self.assertTrue(profile_id)
@@ -99,7 +129,10 @@ class RepairBayLiveProofTests(unittest.TestCase):
         )
         self.assertEqual(
             trace["summary"],
-            {"turns": 5, "terminal_reached": True, "accepted_actions": 10},
+            {
+                "turns": 5, "terminal_reached": True, "accepted_actions": 10,
+                "world_changes": 0, "active_at_end": True, "first_turn": 1, "last_turn": 5,
+            },
         )
         accepted_kinds = [
             row["did"]["kind"]

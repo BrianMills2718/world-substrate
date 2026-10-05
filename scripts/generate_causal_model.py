@@ -226,6 +226,72 @@ def _mechanic_schema(action: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+WORLD_KINDS = ("task", "ongoing", "open")
+WORLD_KIND_RULES = {
+    "task": (
+        "World kind: task. Propose a terminal condition derived from represented state; the run "
+        "stops when it is reached. Processes are optional: only for things the description says "
+        "happen by themselves."
+    ),
+    "ongoing": (
+        "World kind: ongoing. terminal must be null. Add 1-3 processes so new work keeps arriving "
+        "or finished things become unfinished again (for example a served order becomes a new "
+        "waiting order, a watered plant dries out when a counter rises), so the actors always "
+        "have something useful to do round after round."
+    ),
+    "open": (
+        "World kind: open. terminal must be null. Add 1-3 processes that change needs or "
+        "resources every round (for example hunger rises, plants grow, supplies run down) so the "
+        "residents keep acting on their own needs indefinitely, with no goal imposed."
+    ),
+}
+
+
+def _process_schema() -> dict[str, Any]:
+    expr = _expr_schema(["it"], [])
+    return {
+        "type": "object",
+        "properties": {
+            "process_id": {"type": "string", "minLength": 1},
+            "rationale": {"type": "string", "minLength": 1},
+            "selector": _selector_schema(),
+            "checks": {
+                "type": "array",
+                "maxItems": 6,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "label": {"type": "string", "minLength": 1},
+                        "left": expr,
+                        "op": {"enum": ["eq", "ne", "lt", "lte", "gt", "gte", "contains"]},
+                        "right": expr,
+                    },
+                    "required": ["label", "left", "op", "right"],
+                    "additionalProperties": False,
+                },
+            },
+            "effects": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 6,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "participant": {"const": "it"},
+                        "path": {"type": "string", "minLength": 1},
+                        "op": {"enum": ["set", "add", "subtract"]},
+                        "value": expr,
+                    },
+                    "required": ["participant", "path", "op", "value"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+        "required": ["process_id", "rationale", "selector", "checks", "effects"],
+        "additionalProperties": False,
+    }
+
+
 def causal_model_schema(bundle: dict[str, Any]) -> dict[str, Any]:
     actions = bundle.get("actions") or []
     return {
@@ -237,6 +303,15 @@ def causal_model_schema(bundle: dict[str, Any]) -> dict[str, Any]:
                 "minItems": len(actions),
                 "maxItems": len(actions),
                 "items": {"anyOf": [_mechanic_schema(action) for action in actions]},
+            },
+            "processes": {
+                "description": (
+                    "Things the world does by itself once per round, with no actor: every entity "
+                    "matching the selector whose checks hold (participant 'it') gets the effects."
+                ),
+                "type": "array",
+                "maxItems": 6,
+                "items": _process_schema(),
             },
             "terminal": {
                 "anyOf": [
@@ -337,8 +412,11 @@ def generate_causal_model(
     reasoning_effort: str = "low",
     guidance: str = "",
     model_justification: str | None = None,
+    world_kind: str = "task",
 ) -> tuple[dict[str, Any], Any]:
     bundle = validate_bundle(bundle)
+    if world_kind not in WORLD_KINDS:
+        raise ValueError(f"world_kind must be one of {WORLD_KINDS}")
     if not bundle.get("actions"):
         raise ValueError("bundle has no action signatures to generate mechanics for")
     # Do not depend on provider-native JSON Schema here. Some routes accept the
@@ -350,6 +428,8 @@ def generate_causal_model(
     trace_id = trace_id or f"world-builder-mechanics-{uuid.uuid4().hex}"
     context = _context(bundle)
     context["response_contract"] = causal_model_schema(bundle)
+    context["world_kind"] = world_kind
+    context["authority_rules"] = [*context["authority_rules"], WORLD_KIND_RULES[world_kind]]
     if guidance.strip():
         context["author_guidance"] = guidance.strip()[:4000]
     messages = [

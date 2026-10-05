@@ -272,6 +272,67 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertEqual(payload["description"], "d")
 
+    def _ongoing_causal(self):
+        causal = json.loads(json.dumps(CAUSAL))
+        causal["terminal"] = None
+        causal["processes"] = [{
+            "process_id": "regrow", "rationale": "Picked fruit grows back.",
+            "selector": {"categories": ["fruit"], "components": ["fruit"]},
+            "checks": [{"label": "the fruit has been picked",
+                        "left": {"participant": {"name": "it", "path": "components.fruit.stage"}},
+                        "op": "eq", "right": {"literal": "picked"}}],
+            "effects": [{"participant": "it", "path": "components.fruit.stage", "op": "set", "value": {"literal": "ripe"}},
+                        {"participant": "it", "path": "ownership.owner_ref", "op": "set", "value": {"literal": "place:orchard"}}],
+        }]
+        return causal
+
+    def test_ongoing_world_is_scored_by_staying_alive_not_finishing(self):
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ) as world, patch.object(
+            service, "generate_causal_model", return_value=(self._ongoing_causal(), FakeResult()),
+        ) as mechanics:
+            status, payload = self.post("/generate-world", {"description": "orchard", "world_kind": "ongoing"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["world_kind"], "ongoing")
+        self.assertEqual(world.call_args.kwargs["world_kind"], "ongoing")
+        self.assertEqual(mechanics.call_args.kwargs["world_kind"], "ongoing")
+        self.assertEqual(mechanics.call_count, 1)
+        self.assertTrue(payload["dry_run"]["active_at_end"])
+        self.assertEqual([p["process_id"] for p in payload["review"]["processes"]], ["regrow"])
+
+    def test_ongoing_world_without_processes_gets_a_guided_retry(self):
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", side_effect=[(CAUSAL, FakeResult()), (self._ongoing_causal(), FakeResult())],
+        ) as mechanics:
+            status, payload = self.post("/generate-world", {"description": "orchard", "world_kind": "open"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertIn("add processes", mechanics.call_args_list[1].kwargs["guidance"])
+
+    def test_unknown_world_kind_is_refused_before_spend(self):
+        with patch.object(service, "generate_world_bundle") as world:
+            status, _ = self.post("/generate-world", {"description": "orchard", "world_kind": "endless"})
+        self.assertEqual(status, 422)
+        world.assert_not_called()
+
+    def test_keep_going_continues_from_the_final_snapshot(self):
+        causal = self._ongoing_causal()
+        status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 4})
+        self.assertEqual(status, 200, first)
+        status, second = self.post("/run", {
+            "bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 4,
+            "continue_from": first["trace"]["final_snapshot"], "turn_offset": first["summary"]["last_turn"],
+        })
+        self.assertEqual(status, 200, second)
+        self.assertEqual(second["summary"]["first_turn"], 5)
+        self.assertEqual(second["summary"]["last_turn"], 8)
+        status, _ = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 2,
+                                       "continue_from": "not a snapshot"})
+        self.assertEqual(status, 422)
+
     def test_unapproved_model_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:
             status, payload = self.post("/generate-world", {"description": "orchard", "model": "openrouter/some/expensive-model"})
