@@ -145,8 +145,40 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertEqual(mechanics.call_count, 2)
         self.assertIn("dry run", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertIn("Fruit is rotten", mechanics.call_args_list[1].kwargs["guidance"])
         self.assertEqual([a["ok"] for a in payload["dry_run_attempts"]], [False, True])
         self.assertTrue(payload["dry_run"]["ok"])
+
+    def test_generate_world_retries_when_dry_run_never_finishes_and_keeps_best(self):
+        stuck = {"summary": {"turns": 12, "terminal_reached": False, "accepted_actions": 24}}
+        done = {"summary": {"turns": 1, "terminal_reached": True, "accepted_actions": 1}}
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(CAUSAL, FakeResult()),
+        ) as mechanics, patch.object(
+            service, "run_world", side_effect=[(stuck, None, None), (done, None, None)],
+        ):
+            status, payload = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertIn("never reached the terminal", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertTrue(payload["dry_run"]["terminal_reached"])
+
+    def test_generate_world_keeps_first_attempt_when_retry_is_worse(self):
+        stuck = {"summary": {"turns": 12, "terminal_reached": False, "accepted_actions": 24}}
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(CAUSAL, FakeResult()),
+        ), patch.object(
+            service, "run_world", side_effect=[(stuck, None, None), ValueError("run produced no actions")],
+        ):
+            status, payload = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 200, payload)
+        self.assertTrue(payload["dry_run"]["ok"])
+        self.assertFalse(payload["dry_run"]["terminal_reached"])
+        self.assertEqual([a["ok"] for a in payload["dry_run_attempts"]], [True, False])
 
     def test_generate_world_reports_failed_dry_run_plainly_after_one_retry(self):
         impossible = json.loads(json.dumps(CAUSAL))
