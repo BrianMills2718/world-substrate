@@ -28,7 +28,7 @@ from scripts.native_coordination_authoring import (
     generate_native_coordination_draft,
 )
 from scripts.native_coordination_comparison import with_approval_threshold
-from scripts.run_authored_world import render_run, run_world
+from scripts.run_authored_world import actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
@@ -169,6 +169,18 @@ def _strip_review(value: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+def _initial_refusals(bundle: dict[str, Any], causal: dict[str, Any], limit: int = 6) -> list[str]:
+    """Distinct 'action: failed checks' lines for every actor in the starting state."""
+    engine, model, _ = build_engine(bundle, causal)
+    seen: list[str] = []
+    for actor in actor_ids(engine, model):
+        for row in engine.discover(actor)["blocked"]:
+            line = f"{row['action'].get('kind')}: {row.get('reason', '')}"
+            if line not in seen:
+                seen.append(line)
+    return seen[:limit]
+
+
 class WorldBuilderHandler(BaseHTTPRequestHandler):
     server_version = "WorldBuilderService/0.1"
 
@@ -291,34 +303,62 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if budget is None:
                 return
             try:
-                bundle, _ = generate_world_bundle(
+                bundle, not_modeled, _ = generate_world_bundle(
                     description, model=model, trace_id=trace_id, max_budget=budget,
                 )
                 guidance = ""
                 attempts: list[dict[str, Any]] = []
+                # Keep the best attempt: reaching the finish line beats merely
+                # allowing actions, which beats allowing nothing.
+                best: tuple[int, dict[str, Any], CausalModel, dict[str, Any]] | None = None
                 for attempt in range(2):
                     generated, _ = generate_causal_model(
                         bundle, model=model, trace_id=trace_id, max_budget=budget, guidance=guidance,
                     )
-                    causal = _strip_review(generated)
-                    compiled = CausalModel.from_dict(causal, bundle=bundle)
+                    candidate = _strip_review(generated)
+                    candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
                     try:
                         dry, _, _ = run_world(
-                            bundle, causal, policy="scripted", max_turns=DRY_RUN_TURNS,
+                            bundle, candidate, policy="scripted", max_turns=DRY_RUN_TURNS,
                             trace_id=f"{trace_id}/dry-run-{attempt}",
                         )
-                        attempts.append({"ok": True, **dry["summary"]})
-                        break
+                        result_row = {"ok": True, **dry["summary"]}
+                        finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
+                        score = 2 if finishes else 1
+                        if finishes:
+                            guidance = ""
+                        elif candidate_compiled.terminal is None:
+                            guidance = (
+                                "Your previous mechanics had terminal: null. The description has a goal; propose a "
+                                "terminal condition derived from represented state (e.g. every order's stage is "
+                                "served), and make the effects move state toward it."
+                            )
+                        else:
+                            guidance = (
+                                f"A deterministic dry run of your previous mechanics allowed "
+                                f"{dry['summary']['accepted_actions']} actions over {DRY_RUN_TURNS} rounds but never "
+                                "reached the terminal condition. Make the effects move represented state toward "
+                                "the terminal condition (and keep checks from allowing the same useless action forever)."
+                            )
                     except ValueError as error:
-                        attempts.append({"ok": False, "error": str(error)[:300]})
-                        if attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
-                            break
+                        result_row = {"ok": False, "error": str(error)[:300]}
+                        score = 0
+                        refusals = _initial_refusals(bundle, candidate)
                         guidance = (
                             "A deterministic dry run of your previous mechanics from the initial state "
-                            f"failed: {error}. Make every action's checks satisfiable from the represented "
-                            "initial state for at least one actor, and keep effects consistent with the "
+                            f"failed: {error}. In the starting state every action was refused because these "
+                            "checks were false: " + "; ".join(refusals) + ". Remove or correct checks that "
+                            "contradict the initial state (see initial_builtin_state and entity component "
+                            "values) so at least one actor can act, keeping effects consistent with the "
                             "action descriptions."
                         )
+                    attempts.append(result_row)
+                    if best is None or score > best[0]:
+                        best = (score, candidate, candidate_compiled, result_row)
+                    if score == 2 or attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
+                        break
+                assert best is not None
+                _, causal, compiled, best_row = best
                 trace_cost = _trace_cost(trace_id)
             except Exception:
                 _settle_daily_budget(budget, None)
@@ -329,10 +369,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             {
                 "ok": True,
                 "description": description,
+                "not_modeled": not_modeled,
                 "bundle": bundle,
                 "causal_model": causal,
                 "review": compiled.as_review(),
-                "dry_run": attempts[-1],
+                "dry_run": best_row,
                 "dry_run_attempts": attempts,
                 "cost_usd": trace_cost,
                 "daily_cost_usd": daily_cost,

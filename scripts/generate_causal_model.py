@@ -289,14 +289,31 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
     for comp in bundle.get("components") or []:
         for field in comp.get("fields") or []:
             paths.append(f"components.{comp['name']}.{field['name']}")
+    # Built-in state is not written in the bundle's component values, so state
+    # it exactly as build_engine will initialise it. Without this a proposer
+    # guesses (e.g. "the can is in the garden" when every entity starts at the
+    # world location) and every action is refused from the first round.
+    initial_builtin_state = {
+        row["id"]: {
+            "location.location_id": row.get("location") or bundle["world"]["location"],
+            "ownership.owner_ref": row.get("owner_ref"),
+            "portable.portable": row.get("portable"),
+        }
+        for row in bundle.get("entities", [])
+    }
     return {
         "world": bundle["world"],
         "components": bundle.get("components", []),
         "entities": bundle.get("entities", []),
+        "initial_builtin_state": initial_builtin_state,
         "actions": bundle.get("actions", []),
         "allowed_state_paths": paths,
         "authority_rules": [
             "Use only action participants as effect targets.",
+            "Checks on location/ownership/portable paths must agree with initial_builtin_state "
+            "(null means unset), so that at least one action is possible from the starting state.",
+            "Never check ownership.owner_ref or portable.portable on an entity whose initial_builtin_state "
+            "value is null, unless one of your own effects sets that value first; use component fields instead.",
             "A participant's selector must list in `components` every component whose fields that participant's checks or effects read or write.",
             "Checks and effects must use only allowed_state_paths.",
             "Do not invent source code, hidden state, or new entities.",
@@ -304,6 +321,9 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "Use owner_ref expressions for actor ownership rather than hard-coded actor ids.",
             "Terminal, if present, must be derivable from represented state and must not duplicate a completion flag.",
             "Limits and tests must name omissions and refusal/boundary cases honestly.",
+            "Every check label is a short plain-English condition a visitor understands, using entity labels "
+            "(e.g. \"the watering can is free\", \"Ava is holding the knife\"); never jargon such as actor, "
+            "owner_ref, context, entity, component or participant.",
         ],
     }
 

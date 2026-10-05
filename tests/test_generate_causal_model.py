@@ -32,6 +32,22 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         self.assertEqual(parameters["required"], ["count"])
         self.assertEqual(parameters["properties"]["count"]["items"]["type"], "integer")
 
+    def test_context_states_builtin_initial_values_exactly_as_the_engine_builds_them(self):
+        from scripts.generate_causal_model import _context
+        from scripts.run_authored_world import build_engine
+
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
+        stated = _context(bundle)["initial_builtin_state"]
+        engine, _, _ = build_engine(bundle, causal)
+        for entity_id, entity in engine.world.entities.items():
+            actual = {
+                "location.location_id": entity.location.location_id if entity.location else None,
+                "ownership.owner_ref": entity.ownership.owner_ref if entity.ownership else None,
+                "portable.portable": entity.portable.portable if entity.portable else None,
+            }
+            self.assertEqual(stated[entity_id], actual, entity_id)
+
     def test_generation_caps_provider_output_tokens(self):
         bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
         causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
