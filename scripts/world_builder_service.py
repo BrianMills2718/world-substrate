@@ -23,6 +23,7 @@ sys.path.insert(0, str(REPO / "src"))
 
 from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
 from scripts.generate_world_bundle import generate_world_bundle
+from scripts.world_dialogue import clarify, surprise_description
 from scripts.native_coordination_authoring import (
     DEFAULT_CAUSAL as NATIVE_COORDINATION_CAUSAL,
     generate_native_coordination_draft,
@@ -60,6 +61,11 @@ BUDGET_STATE_SCHEMA = "world-builder-llm-budget/v1"
 
 _REQUESTS: dict[str, deque[float]] = defaultdict(deque)
 _LLM_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
+# Dialogue turns are small and frequent; they get their own per-visitor
+# allowance so a conversation does not use up the build allowance.
+_DIALOGUE_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
+DIALOGUE_REQUESTS_PER_HOUR = 30
+DIALOGUE_BUDGET = 0.02
 _LLM_LOCK = threading.Lock()
 
 
@@ -69,10 +75,13 @@ def _prune(queue: deque[float], window: float) -> None:
         queue.popleft()
 
 
-def _rate_ok(client: str, *, llm: bool) -> bool:
-    queue = _LLM_REQUESTS[client] if llm else _REQUESTS[client]
-    window = 3600.0 if llm else 60.0
-    limit = LLM_REQUESTS_PER_HOUR if llm else GENERAL_REQUESTS_PER_MINUTE
+def _rate_ok(client: str, *, llm: bool, dialogue: bool = False) -> bool:
+    if dialogue:
+        queue, window, limit = _DIALOGUE_REQUESTS[client], 3600.0, DIALOGUE_REQUESTS_PER_HOUR
+    else:
+        queue = _LLM_REQUESTS[client] if llm else _REQUESTS[client]
+        window = 3600.0 if llm else 60.0
+        limit = LLM_REQUESTS_PER_HOUR if llm else GENERAL_REQUESTS_PER_MINUTE
     _prune(queue, window)
     if len(queue) >= limit:
         return False
@@ -290,6 +299,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if path == "/generate-draft":
                 self._generate_draft(client, body)
                 return
+            if path == "/clarify":
+                self._clarify(client, body)
+                return
+            if path == "/surprise":
+                self._surprise(client, body)
+                return
             if path == "/generate-world":
                 self._generate_world(client, body)
                 return
@@ -309,8 +324,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             self.log_message("internal error: %s: %s", type(error).__name__, str(error)[:300])
             self._error(HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")
 
-    def _llm_budget(self, client: str, requested_cap: float) -> float | None:
-        if not _rate_ok(client, llm=True):
+    def _llm_budget(self, client: str, requested_cap: float, *, dialogue: bool = False) -> float | None:
+        if not _rate_ok(client, llm=True, dialogue=dialogue):
             self._error(HTTPStatus.TOO_MANY_REQUESTS, "LLM rate limit reached")
             return None
         cap = _reserve_daily_budget(requested_cap)
@@ -322,6 +337,43 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             )
             return None
         return cap
+
+    def _dialogue_call(self, client: str, kind: str, call: Any) -> None:
+        """Run one budgeted dialogue-sized model call and return its payload."""
+        trace_id = f"{TRACE_ROOT}/{kind}/{uuid.uuid4().hex}"
+        with _LLM_LOCK:
+            budget = self._llm_budget(client, DIALOGUE_BUDGET, dialogue=True)
+            if budget is None:
+                return
+            try:
+                payload, _ = call(trace_id, budget)
+                trace_cost = _trace_cost(trace_id)
+            except Exception:
+                _settle_failed_call(budget, trace_id)
+                raise
+            daily_cost = _settle_daily_budget(budget, trace_cost)
+        self._json(
+            HTTPStatus.OK,
+            {"ok": True, **payload, "cost_usd": trace_cost, "daily_cost_usd": daily_cost, "trace_id": trace_id},
+        )
+
+    def _clarify(self, client: str, body: dict[str, Any]) -> None:
+        model = _requested_model(body)
+        messages = body.get("messages")
+        # Validate before reserving any budget.
+        from scripts.world_dialogue import _validate_turns
+        _validate_turns(messages)
+        self._dialogue_call(
+            client, "clarify",
+            lambda trace_id, budget: clarify(messages, model=model, trace_id=trace_id, max_budget=budget),
+        )
+
+    def _surprise(self, client: str, body: dict[str, Any]) -> None:
+        model = _requested_model(body)
+        self._dialogue_call(
+            client, "surprise",
+            lambda trace_id, budget: surprise_description(model=model, trace_id=trace_id, max_budget=budget),
+        )
 
     def _generate_world(self, client: str, body: dict[str, Any]) -> None:
         """Plain-English description -> reviewed structure + compiled mechanics.
