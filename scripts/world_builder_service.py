@@ -219,6 +219,44 @@ def _requested_model(body: dict[str, Any]) -> str:
     raise ValueError(f"model must be {DEFAULT_MODEL} (or omitted)")
 
 
+# --- Background jobs -------------------------------------------------------
+#
+# Cloudflare closes a proxied request after 100 seconds, and a build with a
+# stronger-model retry, or a run with AI-chosen moves, can take longer. Those
+# endpoints accept {"async": true}: the request returns a job id at once and
+# the page polls GET /jobs/<id>. The work and its result are identical to the
+# synchronous path; only delivery changes.
+JOB_TTL_SECONDS = 3600
+MAX_JOBS = 200
+_JOBS: dict[str, dict[str, Any]] = {}
+_JOBS_LOCK = threading.Lock()
+ASYNC_PATHS = ("/generate-world", "/run")
+
+
+def _prune_jobs() -> None:
+    cutoff = time.time() - JOB_TTL_SECONDS
+    for job_id in [k for k, v in _JOBS.items() if v["created"] < cutoff]:
+        del _JOBS[job_id]
+    while len(_JOBS) > MAX_JOBS:
+        del _JOBS[min(_JOBS, key=lambda k: _JOBS[k]["created"])]
+
+
+class _JobResponder:
+    """Stands in for the HTTP handler inside a job: captures the one response."""
+
+    def __init__(self, job_id: str) -> None:
+        self.job_id = job_id
+
+    def _json(self, status: int, value: dict[str, Any]) -> None:
+        with _JOBS_LOCK:
+            job = _JOBS.get(self.job_id)
+            if job is not None:
+                job.update(status="done", http_status=int(status), payload=value)
+
+    def _error(self, status: int, message: str) -> None:
+        self._json(status, {"ok": False, "error": message})
+
+
 def _initial_refusals(bundle: dict[str, Any], causal: dict[str, Any], limit: int = 6) -> list[str]:
     """Distinct 'action: failed checks' lines for every actor in the starting state."""
     engine, model, _ = build_engine(bundle, causal)
@@ -270,7 +308,47 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 },
             )
             return
+        path = self._path()
+        if path.startswith("/jobs/"):
+            job_id = path[len("/jobs/"):]
+            with _JOBS_LOCK:
+                job = _JOBS.get(job_id)
+                snapshot = None if job is None else dict(job)
+            if snapshot is None:
+                self._error(HTTPStatus.NOT_FOUND, "unknown or expired job")
+            elif snapshot["status"] == "running":
+                self._json(HTTPStatus.OK, {"ok": True, "status": "running", "job_id": job_id})
+            else:
+                self._json(snapshot["http_status"], snapshot["payload"])
+            return
         self._error(HTTPStatus.NOT_FOUND, "not found")
+
+    def _start_job(self, client: str, path: str, body: dict[str, Any]) -> None:
+        job_id = uuid.uuid4().hex
+        with _JOBS_LOCK:
+            _prune_jobs()
+            _JOBS[job_id] = {"status": "running", "created": time.time()}
+        responder = _JobResponder(job_id)
+        # The handler methods only use _json/_error/_llm_budget on self, so a
+        # job runs the exact same code with the responder standing in.
+        responder._llm_budget = WorldBuilderHandler._llm_budget.__get__(responder)
+        target = {"/generate-world": WorldBuilderHandler._generate_world, "/run": WorldBuilderHandler._run}[path]
+
+        def work() -> None:
+            try:
+                target(responder, client, body)
+            except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
+                responder._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
+            except Exception as error:  # pragma: no cover - final job boundary
+                print(f"world-builder-api: job {job_id} error: {type(error).__name__}: {str(error)[:300]}", flush=True)
+                responder._error(HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")
+            with _JOBS_LOCK:
+                job = _JOBS.get(job_id)
+                if job is not None and job["status"] == "running":
+                    job.update(status="done", http_status=500, payload={"ok": False, "error": "job ended without a result"})
+
+        threading.Thread(target=work, daemon=True).start()
+        self._json(HTTPStatus.ACCEPTED, {"ok": True, "status": "running", "job_id": job_id})
 
     def do_POST(self) -> None:
         client = _client_ip(self)
@@ -298,6 +376,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             return
 
         path = self._path()
+        if body.get("async") is True and path in ASYNC_PATHS:
+            self._start_job(client, path, body)
+            return
         try:
             if path == "/generate-draft":
                 self._generate_draft(client, body)
@@ -364,18 +445,25 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         model = _requested_model(body)
         messages = body.get("messages")
         # Validate before reserving any budget.
-        from scripts.world_dialogue import _validate_turns
+        from scripts.world_dialogue import _kind, _validate_turns
         _validate_turns(messages)
+        _kind(body.get("world_kind"))
         self._dialogue_call(
             client, "clarify",
-            lambda trace_id, budget: clarify(messages, model=model, trace_id=trace_id, max_budget=budget),
+            lambda trace_id, budget: clarify(
+                messages, model=model, trace_id=trace_id, max_budget=budget, world_kind=body.get("world_kind") or "task",
+            ),
         )
 
     def _surprise(self, client: str, body: dict[str, Any]) -> None:
         model = _requested_model(body)
+        from scripts.world_dialogue import _kind
+        _kind(body.get("world_kind"))
         self._dialogue_call(
             client, "surprise",
-            lambda trace_id, budget: surprise_description(model=model, trace_id=trace_id, max_budget=budget),
+            lambda trace_id, budget: surprise_description(
+                model=model, trace_id=trace_id, max_budget=budget, world_kind=body.get("world_kind") or "task",
+            ),
         )
 
     def _generate_world(self, client: str, body: dict[str, Any]) -> None:

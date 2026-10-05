@@ -32,6 +32,21 @@ SCOPE = (
     "represent clocks or deadlines, probabilities, money, distances or feelings."
 )
 
+WORLD_KINDS = ("task", "ongoing", "open")
+KIND_HINTS = {
+    "task": "The visitor wants a task world: a job with a clear finish line.",
+    "ongoing": "The visitor wants an ongoing world: work keeps arriving or things keep needing attention, with no final finish line.",
+    "open": "The visitor wants an open world: no goal, residents with needs that keep changing, living on indefinitely.",
+}
+
+
+def _kind(world_kind: Any) -> str:
+    kind = world_kind or "task"
+    if kind not in WORLD_KINDS:
+        raise ValueError(f"world_kind must be one of {list(WORLD_KINDS)}")
+    return kind
+
+
 THEMES = [
     "a harbour unloading a ship", "a school science fair", "a community garden", "a hospital ward night shift",
     "a pizza kitchen rush", "a bike repair shop", "a library returns desk", "a small farm at harvest",
@@ -104,18 +119,22 @@ def clarify(
     model: str = DEFAULT_MODEL,
     trace_id: str | None = None,
     max_budget: float = DEFAULT_BUDGET,
+    world_kind: str = "task",
 ) -> tuple[dict[str, Any], Any]:
     conversation = _validate_turns(turns)
+    kind = _kind(world_kind)
     system = (
         "You help a visitor describe a small world for a rule-based simulator, in plain friendly English. "
         + SCOPE
+        + " " + KIND_HINTS[kind]
         + " Each turn: briefly reflect what you understood, then ask at most three short questions that would "
         "most change the simulation (who acts, what they share or use, what blocks what, what counts as "
         "finished), each with two to four short suggested answers the visitor can click; every suggested answer "
         "must be something the simulator can represent (no money, clocks, chance or distances). Do not ask about "
         "things the simulator cannot represent; if the visitor mentions them, say plainly they will be left out. "
         "Always also write the best complete description so far (two to four sentences, concrete names and "
-        "counts). Set ready true when the description has actors, the things they use, and a finish line. "
+        "counts). Set ready true when the description has actors, the things they use, and (for a task world) a "
+        "finish line or (for ongoing and open worlds) what keeps changing by itself. "
         'Return only JSON: {"reply": str, "questions": [{"question": str, "options": [str]}], '
         '"description": str, "ready": bool}.'
     )
@@ -135,12 +154,15 @@ def surprise_description(
     trace_id: str | None = None,
     max_budget: float = DEFAULT_BUDGET,
     rng: random.Random | None = None,
+    world_kind: str = "task",
 ) -> tuple[dict[str, str], Any]:
+    kind = _kind(world_kind)
     theme = (rng or random).choice(THEMES)
     system = (
         "Invent one small, concrete situation for a rule-based simulator. " + SCOPE + " Use the given theme, "
         "give the people or machines names, include one thing they must share or take turns with so that some "
-        "attempts get refused, and end with a clear finish line. Two to three sentences. "
+        "attempts get refused. " + KIND_HINTS[kind] + " For a task world end with a clear finish line; for "
+        "ongoing and open worlds say what keeps changing by itself. Two to three sentences. "
         'Return only JSON: {"description": str}.'
     )
     parsed, result = _call(

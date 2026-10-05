@@ -68,6 +68,13 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 .bubble.me{background:#1d2529;align-self:flex-end}
 .bubble .q{margin-top:8px;font-weight:600}
 .so-far{width:100%;min-height:80px;background:#0b1013;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
+.kinds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 16px}
+.kind{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;display:block}
+.kind input{margin-right:6px}
+.kind strong{font-size:15px}
+.kind span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.kind:has(input:checked){border-color:var(--accent);background:#1a2024}
+@media (max-width:640px){.kinds{grid-template-columns:1fr}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -95,6 +102,14 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   <section class="panel" id="stage-describe" aria-labelledby="describe-h">
     <h2 id="describe-h">What should happen in your world?</h2>
     <p class="muted small">A few people or machines, a few things they share or use, and something they are trying to finish. Pick an example or write your own.</p>
+    <fieldset style="border:0;padding:0;margin:0">
+      <legend class="muted small">What kind of world?</legend>
+      <div class="kinds">
+        <label class="kind"><input type="radio" name="kind" value="task" checked><strong>A task to finish</strong><span>A job with a finish line. The run stops when it is done.</span></label>
+        <label class="kind"><input type="radio" name="kind" value="ongoing"><strong>Ongoing work</strong><span>Work keeps coming (new orders, plants dry out again). It keeps going; you see how much gets done.</span></label>
+        <label class="kind"><input type="radio" name="kind" value="open"><strong>An open world</strong><span>No goal. People live by their own needs while the world changes around them. Keep going as long as you like.</span></label>
+      </div>
+    </fieldset>
     <label class="muted small" for="desc">Your description</label>
     <textarea id="desc" maxlength="2000" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
     <div class="chips" id="examples"></div>
@@ -139,6 +154,10 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <h3>The rules the AI proposed</h3>
     <p class="small muted">Each action is allowed only when every check in grey holds at that moment. Anything not written here does not happen.</p>
     <table class="rules"><tbody id="rules"></tbody></table>
+    <div id="processes-wrap">
+      <h3>What happens by itself each round</h3>
+      <table class="rules"><tbody id="processes"></tbody></table>
+    </div>
     <h3>When is it finished?</h3>
     <p id="goal"></p>
     <details><summary>Technical details (the exact rule data)</summary><pre id="raw"></pre></details>
@@ -158,6 +177,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <iframe class="replay" id="replay" title="Graphical replay of the run" sandbox="allow-scripts"></iframe>
     <div class="row" style="margin-top:14px">
       <button class="secondary" type="button" id="rules-btn">See the rules</button>
+      <button class="primary" type="button" id="keep-btn" hidden>Keep going (12 more rounds)</button>
       <button class="secondary" type="button" id="again-btn">Run it again</button>
       <button class="secondary" type="button" id="new-btn">Build another world</button>
       <button class="secondary" type="button" id="download-btn">Download this world</button>
@@ -217,6 +237,27 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     }
     return data;
   }
+
+  // Long requests (builds, runs) go through a background job so they are not
+  // cut off by the 100-second proxy limit; the page checks back every 2 seconds.
+  async function apiJob(path, body) {
+    const started = await api(path, { ...body, async: true });
+    if (!started.job_id) return started;
+    for (;;) {
+      await new Promise((r) => setTimeout(r, 2000));
+      const res = await fetch(API + "/jobs/" + started.job_id);
+      let data = null;
+      try { data = await res.json(); } catch (e) { data = null; }
+      if (res.ok && data && data.status === "running") continue;
+      if (!res.ok || !data || data.ok === false) {
+        const err = new Error((data && data.error) || ("The builder answered with status " + res.status + "."));
+        err.status = res.status;
+        throw err;
+      }
+      return data;
+    }
+  }
+  const kind = () => (document.querySelector('input[name="kind"]:checked') || {}).value || "task";
 
   function plainError(err) {
     const msg = String(err.message || err);
@@ -299,8 +340,25 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       td.append(then);
       tr.append(k, td); rules.append(tr);
     });
+    const procs = data.review.processes || [];
+    $("processes-wrap").hidden = !procs.length;
+    const pt = $("processes"); pt.innerHTML = "";
+    procs.forEach((pr) => {
+      const tr = document.createElement("tr");
+      const k = document.createElement("td"); k.className = "k"; k.textContent = words(pr.process_id);
+      const td = document.createElement("td");
+      const what = document.createElement("div"); what.textContent = pr.rationale; td.append(what);
+      const who = document.createElement("div"); who.className = "small";
+      who.append(`Every round, for each ${words((pr.selector.categories || [])[0] || "thing")}` + ((pr.checks || []).length ? " where: " : ""));
+      (pr.checks || []).forEach((c) => who.append(chip(c.label)));
+      td.append(who);
+      const then = document.createElement("div"); then.className = "small muted";
+      then.textContent = "Then: " + (pr.effects || []).map((e) => effectText({ ...e, participant: (pr.selector.categories || [])[0] || "it" })).join("; ");
+      td.append(then);
+      tr.append(k, td); pt.append(tr);
+    });
     const t = data.review.terminal;
-    $("goal").textContent = t ? `Finished when ${t.mode === "all" ? "every" : "any"} ${words((t.selector.categories || [])[0] || "item")} has ` + t.checks.map((c) => `“${field(c.path)}” ${OPS[c.op] || c.op} ${c.value}`).join(" and ") + "." : "No finish line was proposed, so the run simply stops after 12 rounds.";
+    $("goal").textContent = t ? `Finished when ${t.mode === "all" ? "every" : "any"} ${words((t.selector.categories || [])[0] || "item")} has ` + t.checks.map((c) => `“${field(c.path)}” ${OPS[c.op] || c.op} ${c.value}`).join(" and ") + "." : (data.world_kind && data.world_kind !== "task" ? "Never: this world keeps going. Each run shows 12 rounds, and Keep going continues the same world." : "No finish line was proposed, so the run simply stops after 12 rounds.");
     const nm = $("not-modeled"); nm.innerHTML = "";
     if ((data.not_modeled || []).length) {
       const box = document.createElement("div"); box.className = "notice";
@@ -338,7 +396,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       $("working-line").textContent = lines[Math.min(lines.length - 1, Math.floor(s / 15))];
     }, 500);
     try {
-      const data = await api("/generate-world", { description });
+      const data = await apiJob("/generate-world", { description, world_kind: kind() });
       renderReview(data);
       if (auto && data.dry_run.ok) await runWorld({ lucky: true });
     } catch (err) {
@@ -359,7 +417,14 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     }));
     const ruleRefusals = attempts.filter((a) => a.blocked).reduce((n, a) => n + a.blocked.length, 0);
     const lost = attempts.filter((a) => a.row && a.row.status !== "accepted" && a.row.wanted).length;
-    $("outcome").textContent = `${s.accepted_actions} allowed, ${ruleRefusals} refused by the rules${lost ? `, ${lost} lost to someone faster` : ""}. ${s.terminal_reached ? "Finish line reached" : "Finish line not reached"} after ${s.turns} round${s.turns === 1 ? "" : "s"}.`;
+    const continuing = world && world.world_kind && world.world_kind !== "task";
+    if (continuing) {
+      const changes = s.world_changes ? `, ${s.world_changes} change${s.world_changes === 1 ? "" : "s"} the world made by itself` : "";
+      $("outcome").textContent = `Rounds ${s.first_turn}–${s.last_turn}: ${s.accepted_actions} allowed, ${ruleRefusals} refused by the rules${changes}. ` + (s.active_at_end ? "Still going." : "Things have gone quiet: nothing is happening any more.");
+    } else {
+      $("outcome").textContent = `${s.accepted_actions} allowed, ${ruleRefusals} refused by the rules${lost ? `, ${lost} lost to someone faster` : ""}. ${s.terminal_reached ? "Finish line reached" : "Finish line not reached"} after ${s.turns} round${s.turns === 1 ? "" : "s"}.`;
+    }
+    $("keep-btn").hidden = !(continuing || !s.terminal_reached) || (s.last_turn || 0) >= 300;
     $("detail").textContent = ruleRefusals ? "Select an attempt above to see what happened and why. Dashed orange squares are things the rules refused." : "Nothing was refused: in every round, each move someone could think of was already allowed by the rules. Select an attempt to see what happened.";
     const strip = $("strip"); strip.innerHTML = "";
     attempts.forEach((a) => {
@@ -393,10 +458,13 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   async function runWorld(options) {
     if (!world) return;
     const lucky = Boolean(options && options.lucky);
+    const resume = Boolean(options && options.resume && lastRun);
     const ai = $("ai-moves").checked;
     $("approve-btn").disabled = true; $("approve-btn").textContent = ai ? "Running (AI is choosing moves)…" : "Running…";
     try {
-      const run = await api("/run", { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "llm" : "scripted", turns: 12 });
+      const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "llm" : "scripted", turns: 12 };
+      if (resume) { request.continue_from = lastRun.trace.final_snapshot; request.turn_offset = lastRun.summary.last_turn; }
+      const run = await apiJob("/run", request);
       renderRun(run);
       const note = $("lucky-note"); note.innerHTML = "";
       if (lucky) {
@@ -416,7 +484,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   $("lucky-btn").addEventListener("click", async () => {
     show("working"); $("working-line").textContent = "Inventing a surprise world…";
     try {
-      const s = await api("/surprise", {});
+      const s = await api("/surprise", { world_kind: kind() });
       $("desc").value = s.description;
     } catch (err) {
       show("describe");
@@ -454,7 +522,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     bubble("user", text.trim());
     $("talk-input").value = ""; $("send-btn").disabled = true; $("send-btn").textContent = "Thinking…";
     try {
-      const r = await api("/clarify", { messages: talk });
+      const r = await api("/clarify", { messages: talk, world_kind: kind() });
       const asked = r.reply + (r.questions.length ? " " + r.questions.map((q) => q.question).join(" ") : "");
       talk.push({ role: "assistant", content: asked + " Draft: " + r.description });
       bubble("assistant", r.reply + (r.ready ? " This is ready to build whenever you are." : ""), r.questions);
@@ -475,6 +543,10 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   $("talk-close").addEventListener("click", () => { $("dialogue").hidden = true; });
   $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); $("dialogue").hidden = true; build(); });
   $("rules-btn").addEventListener("click", () => show("review"));
+  $("keep-btn").addEventListener("click", async () => {
+    $("keep-btn").disabled = true; $("keep-btn").textContent = "Running the next rounds…";
+    try { await runWorld({ resume: true }); } finally { $("keep-btn").disabled = false; $("keep-btn").textContent = "Keep going (12 more rounds)"; }
+  });
   $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
   $("change-btn").addEventListener("click", () => show("describe"));
   $("approve-btn").addEventListener("click", runWorld);

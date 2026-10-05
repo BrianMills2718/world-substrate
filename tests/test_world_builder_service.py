@@ -44,6 +44,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         service._REQUESTS.clear()
         service._LLM_REQUESTS.clear()
         service._DIALOGUE_REQUESTS.clear()
+        service._JOBS.clear()
         self.state_tmp = tempfile.TemporaryDirectory()
         self.budget_path = Path(self.state_tmp.name) / "budget.json"
         self.path_patch = patch.object(service, "BUDGET_STATE_PATH", self.budget_path)
@@ -332,6 +333,50 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, _ = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 2,
                                        "continue_from": "not a snapshot"})
         self.assertEqual(status, 422)
+
+    def get(self, path: str):
+        try:
+            with urllib.request.urlopen(self.base + path, timeout=5) as response:
+                return response.status, json.loads(response.read())
+        except urllib.error.HTTPError as error:
+            return error.code, json.loads(error.read())
+
+    def wait_for_job(self, job_id: str):
+        import time
+        for _ in range(200):
+            status, payload = self.get(f"/jobs/{job_id}")
+            if payload.get("status") != "running":
+                return status, payload
+            time.sleep(0.05)
+        self.fail("job did not finish")
+
+    def test_async_build_returns_a_job_with_the_same_result(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, started = self.post("/generate-world", {"description": "orchard", "async": True})
+            self.assertEqual(status, 202, started)
+            status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["bundle"]["world"]["id"], "orchard")
+        self.assertTrue(payload["dry_run"]["ok"])
+
+    def test_async_job_reports_validation_errors_and_unknown_jobs_404(self):
+        status, started = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                             "turns": 2, "async": True, "continue_from": "nope"})
+        self.assertEqual(status, 202)
+        status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 422)
+        self.assertIn("continue_from", payload["error"])
+        status, _ = self.get("/jobs/does-not-exist")
+        self.assertEqual(status, 404)
+
+    def test_async_run_completes(self):
+        status, started = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 3, "async": True})
+        self.assertEqual(status, 202)
+        status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 200, payload)
+        self.assertTrue(payload["summary"]["terminal_reached"])
 
     def test_unapproved_model_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:
