@@ -302,9 +302,9 @@ class Entity:
         ):
             raise ValueError("snapshot category_ids must be nonempty strings")
 
-        component_types: dict[str, type[Any]] = dict(BUILTIN_COMPONENT_TYPES)
+        builtin_types: dict[str, type[Any]] = dict(BUILTIN_COMPONENT_TYPES)
         components: dict[str, Any] = {}
-        for name, component_type in component_types.items():
+        for name, component_type in builtin_types.items():
             record = value.get(name)
             if record is None:
                 components[name] = None
@@ -350,7 +350,7 @@ class Entity:
             "label",
             "category_ids",
             "components",
-            *component_types,
+            *builtin_types,
             *optional_identities,
         }
         unknown = sorted(set(value) - allowed)

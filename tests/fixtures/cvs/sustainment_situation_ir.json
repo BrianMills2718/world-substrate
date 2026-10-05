@@ -1,0 +1,330 @@
+{
+  "id": "sustainment_two_depot_v1",
+  "name": "Two-depot sustainment architecture (declared form)",
+  "metadata": {
+    "decider": "regional_hq",
+    "question": "Why can demand go unserved no matter how well HQ allocates, and what is the cheapest change that fixes it?",
+    "note": "Re-expression of the original hand-coded case. Used as the regression test that the generic engine is faithful."
+  },
+  "evidence": [
+    {
+      "id": "ev_doctrine",
+      "source": "two-depot sustainment case (doc 92 / v0.25.7)",
+      "locator": "",
+      "confidence": 1.0,
+      "status": "synthetic",
+      "note": "Re-expression of the original hand-coded case as a declared situation."
+    }
+  ],
+  "entities": [
+    {
+      "id": "regional_hq",
+      "kind": "role",
+      "name": "Regional HQ",
+      "attributes": {},
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "stock_a",
+      "kind": "pool",
+      "name": "Depot A stock",
+      "attributes": {
+        "unit": "units"
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "stock_b",
+      "kind": "pool",
+      "name": "Depot B stock",
+      "attributes": {
+        "unit": "units"
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "cap_observe_distribution",
+      "kind": "capability",
+      "name": "See stock at each depot, not just the total",
+      "attributes": {
+        "capability_kind": "observation",
+        "cost": 1.0
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "cap_transfer_authority",
+      "kind": "capability",
+      "name": "Order stock moved between depots",
+      "attributes": {
+        "capability_kind": "authority",
+        "cost": 1.5
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "cap_override_reserve",
+      "kind": "capability",
+      "name": "Override the local protected reserve",
+      "attributes": {
+        "capability_kind": "rule_override",
+        "cost": 1.5,
+        "overrides": "rule_protected_reserve"
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "cap_extra_a_1",
+      "kind": "capability",
+      "name": "One more unit of baseline stock at depot A (#1)",
+      "attributes": {
+        "capability_kind": "capacity",
+        "cost": 2.0,
+        "target": "stock_a",
+        "amount": 1
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "cap_extra_a_2",
+      "kind": "capability",
+      "name": "One more unit of baseline stock at depot A (#2)",
+      "attributes": {
+        "capability_kind": "capacity",
+        "cost": 2.0,
+        "target": "stock_a",
+        "amount": 1
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "cap_extra_b_1",
+      "kind": "capability",
+      "name": "One more unit of baseline stock at depot B (#1)",
+      "attributes": {
+        "capability_kind": "capacity",
+        "cost": 2.0,
+        "target": "stock_b",
+        "amount": 1
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "cap_extra_b_2",
+      "kind": "capability",
+      "name": "One more unit of baseline stock at depot B (#2)",
+      "attributes": {
+        "capability_kind": "capacity",
+        "cost": 2.0,
+        "target": "stock_b",
+        "amount": 1
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "act_move_a_to_b",
+      "kind": "action",
+      "name": "Move stock A to B",
+      "attributes": {
+        "action_kind": "transfer",
+        "source": "stock_a",
+        "target": "stock_b",
+        "max_amount": 6,
+        "requires": [
+          "cap_observe_distribution",
+          "cap_transfer_authority"
+        ]
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "act_move_b_to_a",
+      "kind": "action",
+      "name": "Move stock B to A",
+      "attributes": {
+        "action_kind": "transfer",
+        "source": "stock_b",
+        "target": "stock_a",
+        "max_amount": 6,
+        "requires": [
+          "cap_observe_distribution",
+          "cap_transfer_authority"
+        ]
+      },
+      "evidence": [
+        "ev_doctrine"
+      ]
+    }
+  ],
+  "relations": [],
+  "rules": [
+    {
+      "id": "rule_protected_reserve",
+      "kind": "protected_reserve",
+      "parameters": {
+        "quantity": 1,
+        "waived_in_regimes": [
+          "theater_priority"
+        ]
+      },
+      "applies_to": [
+        "stock_a",
+        "stock_b"
+      ],
+      "evidence": [
+        "ev_doctrine"
+      ]
+    }
+  ],
+  "measures": [],
+  "scenarios": [
+    {
+      "id": "sc_1",
+      "name": "surge 1 (local_priority)",
+      "state": {
+        "supply": {
+          "stock_a": 4,
+          "stock_b": 1
+        },
+        "demand": {
+          "stock_a": 1,
+          "stock_b": 3
+        },
+        "regime": "local_priority"
+      },
+      "tags": [
+        "local_priority"
+      ],
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "sc_2",
+      "name": "surge 2 (local_priority)",
+      "state": {
+        "supply": {
+          "stock_a": 1,
+          "stock_b": 4
+        },
+        "demand": {
+          "stock_a": 3,
+          "stock_b": 1
+        },
+        "regime": "local_priority"
+      },
+      "tags": [
+        "local_priority"
+      ],
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "sc_3",
+      "name": "surge 3 (local_priority)",
+      "state": {
+        "supply": {
+          "stock_a": 3,
+          "stock_b": 2
+        },
+        "demand": {
+          "stock_a": 2,
+          "stock_b": 2
+        },
+        "regime": "local_priority"
+      },
+      "tags": [
+        "local_priority"
+      ],
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "sc_4",
+      "name": "surge 4 (local_priority)",
+      "state": {
+        "supply": {
+          "stock_a": 2,
+          "stock_b": 3
+        },
+        "demand": {
+          "stock_a": 2,
+          "stock_b": 2
+        },
+        "regime": "local_priority"
+      },
+      "tags": [
+        "local_priority"
+      ],
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "sc_5",
+      "name": "surge 5 (theater_priority)",
+      "state": {
+        "supply": {
+          "stock_a": 4,
+          "stock_b": 1
+        },
+        "demand": {
+          "stock_a": 1,
+          "stock_b": 3
+        },
+        "regime": "theater_priority"
+      },
+      "tags": [
+        "theater_priority"
+      ],
+      "evidence": [
+        "ev_doctrine"
+      ]
+    },
+    {
+      "id": "sc_6",
+      "name": "surge 6 (theater_priority)",
+      "state": {
+        "supply": {
+          "stock_a": 1,
+          "stock_b": 4
+        },
+        "demand": {
+          "stock_a": 3,
+          "stock_b": 1
+        },
+        "regime": "theater_priority"
+      },
+      "tags": [
+        "theater_priority"
+      ],
+      "evidence": [
+        "ev_doctrine"
+      ]
+    }
+  ]
+}

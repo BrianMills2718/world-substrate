@@ -1,6 +1,6 @@
 """Declared write scopes are enforced, not merely recorded.
 
-Root CLAUDE.md, docs/architecture.md, and docs/contracts/transition-envelope-v0.md
+Root AGENTS.md, docs/architecture.md, and docs/contracts/transition-envelope-v0.md
 all state that a mechanic may write only within its declared state-path scope.
 Before this slice the engine copied `write_paths` onto the event as
 `declared_write_paths` and never compared it to what changed, so the invariant

@@ -202,6 +202,12 @@ Compiler/installer acceptance proves **declared enforcement coverage**, not comp
 
 The current `MechanicProfile.freeze()` gives the reviewed package set a stable declaration identity before a run. For future durable generated-law provenance, approval/run identity should be strengthened to fingerprint the exact executable law plus the compiler/interpreter version that gives the declaration meaning. That hardening matters before persistent long-lived user law is treated as cryptographically reproducible; it is not a blocker for publishing the current hand-authored Waltzman reference demo.
 
+### External analytical-model structural imports
+
+An upstream analytical or architecture model may seed **represented structure** through a bounded adapter without acquiring causal authority. The first exercised path is [CVS Situation IR structural import v0](contracts/cvs-situation-import-v0.md): a CVS role/pool/capability/action/rule/scenario slice becomes a `world-substrate-authoring-bundle/v0`, with source identity retained explicitly and unsupported semantics rejected. The imported bundle still enters the same separate causal-model/compiler/review/approval path shown above.
+
+Do not generalize this into a universal architecture schema. Add another import distinction only when an authentic producer/consumer case demonstrates that the current projection loses decision-relevant meaning.
+
 ## Observability, replay, and presentation
 
 Every attempted transition should expose enough evidence to reconstruct the causal story: delivered observation when applicable, bearer, semantic binding when available, selected mechanic, checks, declared authority, committed changes, failure status, and resulting state identity.

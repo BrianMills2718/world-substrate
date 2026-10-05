@@ -1,6 +1,6 @@
 # Reference-world boundary
 
-The root `CLAUDE.md` applies.
+The root `AGENTS.md` applies.
 
 - A reference world must exercise the shared substrate rather than introduce a private engine.
 - World-specific content may define objects, parameters, starting state, and recipes.
