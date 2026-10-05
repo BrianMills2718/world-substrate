@@ -102,7 +102,7 @@ State, not milestone narrative:
 - Every live Builder diagnosis starts from complete request/response logs and retained causal traces; summaries/replay are orientation surfaces only.
 - Repair Bay proved nontrivial generated law can compile and a bounded LLM policy can reach terminal without a heavier cognition framework.
 - Warehouse Rush v0 exposed a real law/representation omission (`route` did not enforce physical dock); v1 represents `target_dock`. Its experiment record landed in #86 (PR #37 is closed); its provider retry is deferred.
-- The World Builder is at `https://brianmills.dev/world-builder/`; its generate/run backend was a Mac mini service that was not moved during the September 2026 Netcup migration, so since about 2026-09-15 live mechanics generation and fresh runs are offline; the page says so (machine-coordination PR #82). Play, authoring, and download still work. Restoring it means a VPS app plus a `/world-builder/api` proxy route; it is not in the hosting inventory.
+- The World Builder is at `https://brianmills.dev/world-builder/`; its generate/run backend runs on the personal VPS since 2026-10-05 (personal-vps `apps/world-builder`, image `deploy/vps/Dockerfile`, Worker `world-builder-api`); it was offline from about 2026-09-15 to 2026-10-05 after the Mac mini origin went away. Verified 2026-10-05 by a browser generate -> approve -> run fresh simulation, an unapproved run refused with 409, and the spend ledger surviving a container restart.
 - The promoted stakeholder surface is `https://brianmills.dev/waltzman/`, served through the Cybernetic V3 donor path; its live simulator moved to the personal Netcup VPS on 2026-09-16 (cybernetic_influence_v3 ADR-016, PR #34) and `api/runs` answers.
 - The standalone visualization URL still serves the synthetic prototype. It is retained as a legacy/public design surface rather than the exact next product action.
 - `evidence/renders/waltzman-demo-v0.html` remains a self-contained canonical reference client with embedded baseline/intervention projection bundles; it is regression/reference evidence, not the outreach endpoint.
@@ -181,7 +181,7 @@ Hard constraints:
 | Waltzman outreach authoring/run path | existing donor capability | Cybernetic V3 public V2 path supports prose -> editable configuration -> approval -> fresh run -> retained evidence |
 | Waltzman outreach + living replay | implemented donor integration | Cybernetic V3 Plans 37–38 provide the first-two-minute funnel and read-only living replay over retained general-run summaries |
 | Waltzman stakeholder demo | **promoted 2026-09-09** | `65eb465a` public donor build; separated Sol authoring/execution certification; approved fresh `general_world_v2` run `run_0e488a37157f`; desktop/mobile living replay verified |
-| Shared Netcup VPS migration (donor) | complete 2026-09-16 | Waltzman live simulator on the personal VPS (cybernetic_influence_v3 ADR-016); World Builder backend was not migrated and is offline |
+| Shared Netcup VPS migration (donor) | complete 2026-09-16 | Waltzman live simulator on the personal VPS (cybernetic_influence_v3 ADR-016); World Builder backend moved to the VPS on 2026-10-05 |
 | Native coordination vertical | **landed 2026-10-05** | #75 vertical, #79 one-shot authoring, #80 run comparison; replay acceptance passes |
 | Replacement-first gate | **recorded 2026-10-05** | Concordia, Mesa, PDDL all compose with the governed-rules layer; none replaces it; native runtime growth stops |
 | Provenance/authority/repro hardening | queued post-demo | exact law fingerprint, role-specific scopes, visible action-space overflow, appropriate CI/locking |
@@ -327,7 +327,7 @@ A reviewer should ultimately be able to approve human-readable law and have that
 
 Primary current artifacts:
 
-- `https://brianmills.dev/world-builder/` — authoring/run alpha; Play and authoring work, generation/runs offline since the Mac origin went away (page says so);
+- `https://brianmills.dev/world-builder/` — deployed authoring/run alpha (backend on the personal VPS since 2026-10-05);
 - `https://brianmills.dev/waltzman/` — promoted stakeholder surface using the bounded Cybernetic V3 donor path;
 - `https://brianmills.dev/world-substrate-visualization/` — legacy synthetic standalone surface; retained design evidence rather than active promotion target;
 - `evidence/renders/waltzman-demo-v0.html` — self-contained canonical Waltzman reference client and regression fixture;
@@ -353,7 +353,6 @@ Open PRs: none as of 2026-10-05 (#37 closed with its experiment landed in #86; #
 | P0 | native authoring may not express Waltzman-class information/activity/institution constraints | prove two configurable native coordination worlds first; if generic generation is too narrow, use a reviewed reusable coordination-mechanics package rather than narrated consequences |
 | P0 | the zero-review Automatic replay path and richer Waltzman Living Scene path may not compose directly | measure the smallest adapter/mapping from one actual native coordination run before redesigning either renderer |
 | P0 | further native engine/runtime work may duplicate mature off-the-shelf runtimes | gate recorded: no native runtime growth; host loops on Concordia/Mesa when needed |
-| P1 | public World Builder generation/runs offline since the Mac origin went away | page states it; restore as a VPS app + `/world-builder/api` route when the replacement gate settles what the Builder runs on |
 | P1 | frozen profile does not yet fingerprint every executable determinant | add exact executable law + compiler/interpreter provenance |
 | P1 | action placeholder write authority is participant-bounded rather than role-specific | bind placeholders to exact action fields |
 | P1 | authored affordance discovery can hit a finite candidate cap | make overflow explicit/paged/refused rather than silent |
@@ -429,7 +428,7 @@ Replan rather than extend blindly if:
 Every candidate came out as compose, not adopt. Brian approved the narrow governed-rules-layer direction on 2026-10-05 ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md)). Eligible work is limited to:
 
 1. hardening that protects existing behaviour (the queue above: executable-law fingerprint, role-specific write scopes, explicit affordance overflow, mechanic exceptions as recorded refusals);
-2. restoring the public World Builder backend as a VPS app behind a `/world-builder/api` route (approved in Decision 006; image recipe `deploy/vps/Dockerfile`; project-meta issue #2377 tracks the hosting gap);
+2. keeping the public World Builder backend healthy on the VPS (restored 2026-10-05; deploy with personal-vps `apps/world-builder/deploy.sh`);
 3. when a world first needs LLM residents or spatial/sweep structure, hosting it on Concordia or Mesa per the disposition instead of extending the native loop.
 
 Do not add engine, scheduler, renderer or cognition capability of World Substrate's own.
