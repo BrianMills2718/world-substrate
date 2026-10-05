@@ -1,0 +1,7 @@
+{
+  "name": "world-builder-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser walkthroughs of the World Builder landing page (see README.md)",
+  "dependencies": { "playwright": "^1" }
+}
