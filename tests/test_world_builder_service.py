@@ -378,6 +378,70 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertTrue(payload["summary"]["terminal_reached"])
 
+    def _owner_env(self):
+        return patch.dict(service.os.environ, {"WORLD_BUILDER_OWNER_PASSWORD": "correct horse"})
+
+    def test_owner_password_overrides_an_exhausted_visitor_budget(self):
+        self.write_budget(spent=service.DAILY_LLM_BUDGET)
+        with self._owner_env(), patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, refused = self.post("/generate-world", {"description": "orchard"})
+            status_owner, payload = self.post(
+                "/generate-world", {"description": "orchard"},
+                extra_headers={service.OWNER_HEADER: "correct horse"},
+            )
+        self.assertEqual(status, 429)
+        self.assertIn("budget", refused["error"])
+        self.assertEqual(status_owner, 200, payload)
+        owner_ledger = json.loads(self.budget_path.with_name("llm-owner-budget-v1.json").read_text())
+        self.assertAlmostEqual(owner_ledger["spent_usd"], 0.004, places=6)
+        visitor_ledger = json.loads(self.budget_path.read_text())
+        self.assertAlmostEqual(visitor_ledger["spent_usd"], service.DAILY_LLM_BUDGET, places=6)
+
+    def test_wrong_owner_password_is_refused_before_spend(self):
+        with self._owner_env(), patch.object(service, "generate_world_bundle") as world:
+            status, payload = self.post("/generate-world", {"description": "orchard"},
+                                        extra_headers={service.OWNER_HEADER: "wrong"})
+        self.assertEqual(status, 403)
+        self.assertIn("owner password", payload["error"])
+        world.assert_not_called()
+
+    def test_owner_override_is_off_without_a_configured_password(self):
+        with patch.dict(service.os.environ, {"WORLD_BUILDER_OWNER_PASSWORD": ""}), patch.object(
+            service, "generate_world_bundle",
+        ) as world:
+            status, _ = self.post("/generate-world", {"description": "orchard"},
+                                  extra_headers={service.OWNER_HEADER: "anything"})
+        self.assertEqual(status, 403)
+        world.assert_not_called()
+
+    def test_health_reports_owner_mode_and_owner_allowance(self):
+        with self._owner_env():
+            request = urllib.request.Request(self.base + "/health", headers={service.OWNER_HEADER: "correct horse"})
+            with urllib.request.urlopen(request, timeout=5) as response:
+                owner = json.loads(response.read())
+            request = urllib.request.Request(self.base + "/health", headers={service.OWNER_HEADER: "nope"})
+            with urllib.request.urlopen(request, timeout=5) as response:
+                wrong = json.loads(response.read())
+        self.assertTrue(owner["owner"])
+        self.assertEqual(owner["owner_daily_budget_usd"], service.OWNER_DAILY_BUDGET)
+        self.assertFalse(wrong["owner"])
+        self.assertIn("not right", wrong["owner_error"])
+
+    def test_owner_skips_per_visitor_rate_limits_and_async_jobs_keep_owner_ledger(self):
+        import time
+        service._LLM_REQUESTS["127.0.0.1"].extend([time.time()] * service.LLM_REQUESTS_PER_HOUR)
+        self.write_budget(spent=service.DAILY_LLM_BUDGET)
+        with self._owner_env(), patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, started = self.post("/generate-world", {"description": "orchard", "async": True},
+                                        extra_headers={service.OWNER_HEADER: "correct horse"})
+            self.assertEqual(status, 202, started)
+            status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 200, payload)
+
     def test_unapproved_model_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:
             status, payload = self.post("/generate-world", {"description": "orchard", "model": "openrouter/some/expensive-model"})

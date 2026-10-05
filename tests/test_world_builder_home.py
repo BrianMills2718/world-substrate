@@ -37,7 +37,13 @@ class WorldBuilderHomeTests(unittest.TestCase):
                       "What happens by itself each round"):
             self.assertIn(label, self.page)
         self.assertIn("request.continue_from = lastRun.trace.final_snapshot", self.page)
-        self.assertIn('fetch(API + "/jobs/" + started.job_id)', self.page)
+        self.assertIn('fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() })', self.page)
+
+    def test_owner_access_sends_the_password_on_every_request(self):
+        self.assertIn("Owner access", self.page)
+        self.assertIn('h["X-World-Builder-Owner"] = k', self.page)
+        self.assertIn("headers: authHeaders(", self.page)
+        self.assertIn('fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() })', self.page)
 
     def test_failure_states_are_written_in_plain_words(self):
         self.assertIn("These rules let nobody act", self.page)
