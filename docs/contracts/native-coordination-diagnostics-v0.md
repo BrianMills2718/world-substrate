@@ -74,8 +74,11 @@ Acceptance also requires exact `Engine.replay()` agreement: replayed commands mu
 
 `projection.json` is read-only canonical projection evidence. `living-profile.json`, `living-frames.json`, and `render.html` are downstream presentation evidence only.
 
+<<<<<<< HEAD
 For action feedback, Living Scene may project each retained check's public rule label and boolean verdict so a visitor can inspect both satisfied and failed checks. It must not copy retained `actual`/`expected` operands into the public presentation payload; those remain evidence-layer data because they may contain actor-scoped or otherwise non-public values.
 
+=======
+>>>>>>> origin/main
 `acceptance.json` records each acceptance assertion independently, with a stable id, category, pass/fail value, and observed/expected values when useful.
 
 `manifest.json` records SHA-256 for every other retained artifact in the directory. It is generated last and does not hash itself.

@@ -16,9 +16,13 @@
       "canonical_timeline",
       "selection_inspection",
       "information_movement",
+<<<<<<< HEAD
       "information_visibility_inspection",
       "failed_check_feedback",
       "satisfied_check_feedback"
+=======
+      "failed_check_feedback"
+>>>>>>> origin/main
     ],
     "information_content_public_by_default": false,
     "terminal_gate_status": "ready"

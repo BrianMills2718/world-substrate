@@ -181,6 +181,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("shared coordination mechanics", payload["error"])
         run_native.assert_not_called()
 
+<<<<<<< HEAD
     def test_native_comparison_endpoint_changes_one_condition_and_runs_native(self):
         shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
         comparison_bundle = json.loads(json.dumps(DRAFT_BUNDLE))
@@ -261,6 +262,8 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("shared coordination mechanics", payload["error"])
         run_native.assert_not_called()
 
+=======
+>>>>>>> origin/main
     def test_run_requires_explicit_mechanic_approval(self):
         status, payload = self.post(
             "/run",

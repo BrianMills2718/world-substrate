@@ -77,10 +77,15 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("/run", source)
         self.assertIn("Generate bounded coordination draft", source)
         self.assertIn("Source description used for this draft", source)
+<<<<<<< HEAD
         self.assertIn("Inferred represented structure", source)
         self.assertIn("draftArtifact.source_description!==draftDescription", source)
         self.assertIn("The one-shot intent review is stale", source)
         self.assertIn("The description or editable world has changed since this intent review was generated.", source)
+=======
+        self.assertRegex(source, r"draftArtifact\.source_description\s*!==\s*draftDescription")
+        self.assertIn("The one-shot intent review is stale", source)
+>>>>>>> origin/main
         self.assertIn("Explicitly not simulated", source)
         self.assertIn("coverage_limit", source)
         self.assertIn("Extracted requirements → represented surfaces", source)
@@ -100,6 +105,7 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("causalModel=payload.causal_model", source)
         self.assertIn("causalReview=payload.review?.mechanics||null", source)
         self.assertIn('executionMode="native_coordination"', source)
+<<<<<<< HEAD
         self.assertIn("runBundle = null", source)
         self.assertIn("runCausalModel = null", source)
         self.assertIn("comparisonResult = null", source)
@@ -117,6 +123,8 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("Wait for the comparison run to finish first.", source)
         self.assertIn("Wait for the baseline run to finish first.", source)
         self.assertIn('· $${Number(runResult.cost_usd||0).toFixed(6)}', source)
+=======
+>>>>>>> origin/main
         self.assertIn("Regenerate the bounded draft so the intent review matches", source)
         self.assertIn("draftBusy=true;rerender()", source)
         self.assertIn("liveBusy=true; rerender()", source)

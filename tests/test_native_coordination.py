@@ -275,7 +275,10 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 self.assertIn(self.bundles[name]["world"]["label"], html)
                 self.assertIn("id='inspector'", html)
                 self.assertIn("id='scrub'", html)
+<<<<<<< HEAD
                 self.assertIn("Represented deliveries", html)
+=======
+>>>>>>> origin/main
                 for member in _component_rows(self.bundles[name], "member"):
                     self.assertIn(member["label"], html)
                 for resource in _component_rows(self.bundles[name], "resource"):
@@ -292,7 +295,11 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 self.assertIn("current", resource_view)
                 self.assertIn("required", resource_view)
 
+<<<<<<< HEAD
     def test_living_ui_projects_information_movement_and_rule_checks(self):
+=======
+    def test_living_ui_projects_information_movement_and_failed_checks(self):
+>>>>>>> origin/main
         for name, result in self.results.items():
             with self.subTest(name=name):
                 transmissions = [
@@ -316,6 +323,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                     if effect.get("kind") == "action_feedback"
                 )
                 self.assertIn("Prerequisite A is healthy", feedback["reasons"])
+<<<<<<< HEAD
                 self.assertIn(
                     {"label": "Prerequisite A is healthy", "ok": False},
                     feedback["checks"],
@@ -328,6 +336,8 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                     "Base revision is current",
                     {check["label"] for check in feedback["checks"] if check["ok"] is True},
                 )
+=======
+>>>>>>> origin/main
 
 
 if __name__ == "__main__":

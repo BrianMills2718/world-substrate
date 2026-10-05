@@ -17,6 +17,7 @@ This page prevents related projects from becoming competing authorities. Exact r
 | Dynamical Laboratory specification | Trajectories, perturbations, recurrence, recovery, and representation comparison | **Research input** | A later evaluation uses a named method and reports its limits | Not the runtime architecture |
 | Dwarf Fortress research report | Materials, reactions, shared objects, ongoing processes, persistence, and scale | **Research input** | Claims remain traceable to the preserved report | Not executable code or proof of a universal ontology |
 | Shared `llm_client` | Authenticated model invocation and usage evidence | **Conditional policy dependency** | One explicitly authorized traced consumer call | No provider client in the consequence engine |
+| Compositional Viable Systems (CVS) | Declared strategic/organizational Situation IR and candidate structural interventions | **Bounded structural input** | One explicit adapter preserves source identity, rejects unsupported semantics, and enters the ordinary causal-review path | CVS structure/interventions do not define installed mechanics or canonical simulated consequences |
 | Project Meta policies | Progressive disclosure, one-copy authority, root/subtree instruction surfaces | **Governance dependency** | Repository navigation and structural checks | Does not define simulation behavior |
 
 ## Adopted versus learned

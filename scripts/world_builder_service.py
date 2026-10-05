@@ -25,7 +25,10 @@ from scripts.native_coordination_authoring import (
     DEFAULT_CAUSAL as NATIVE_COORDINATION_CAUSAL,
     generate_native_coordination_draft,
 )
+<<<<<<< HEAD
 from scripts.native_coordination_comparison import with_approval_threshold
+=======
+>>>>>>> origin/main
 from scripts.run_authored_world import render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle

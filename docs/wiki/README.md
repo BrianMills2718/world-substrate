@@ -50,13 +50,18 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | Selected commodity defaults | [Technology procurement](../research/technology-procurement-2026-09.md) |
 | Multi-timescale time/process model | [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) |
 | Competitive / adjacent systems | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
+| Off-the-shelf candidates to evaluate (not decisions) | [Off-the-shelf candidates 2026-09-25](../research/off-the-shelf-candidates-2026-09-25.md) |
 | Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
+| CVS analytical-model structural import | [CVS Situation IR structural import v0](../contracts/cvs-situation-import-v0.md) |
 | Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
 | Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
 | Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) · [Living Scene v1](../contracts/living-scene-v1.md) |
 | Native coordination acceptance / diagnostic evidence | [Native coordination diagnostic bundle v0](../contracts/native-coordination-diagnostics-v0.md) |
+<<<<<<< HEAD
 | Native first-release static readiness (execution still pending) | [Native Waltzman static readiness review](../audits/native-waltzman-release-static-readiness-2026-09-19.md) |
+=======
+>>>>>>> origin/main
 | Cross-repo donor roles | [Source dispositions](../source-dispositions.md) |
 | Nontrivial live-authoring evidence | [Repair Bay live proof](../audits/repair-bay-live-preflight.md) |
 
@@ -221,6 +226,7 @@ Use these first:
 - [Living-world projection](../research/living-world-projection-2026-09.md) — overlay semantics and accepted integration path.
 - [Technology procurement](../research/technology-procurement-2026-09.md) — selected external stack and boundaries.
 - [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) — canonical simulation-time / independent-cadence target and current integer-tick limitation.
+- [Off-the-shelf candidates](../research/off-the-shelf-candidates-2026-09-25.md) — unevaluated standards/theory/implementation candidates from a cross-repo review.
 - `evidence/renders/kitchen-spatial-replay-v1.html` — polished flagship replay.
 - `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic presentation proof.
 - [Repair Bay live proof](../audits/repair-bay-live-preflight.md) — nontrivial authoring/run evidence.
