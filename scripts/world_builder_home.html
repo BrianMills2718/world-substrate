@@ -326,10 +326,11 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     const s = run.summary;
     const attempts = [];
     (run.trace.transcript || []).forEach((turn) => Object.entries(turn.actors || {}).forEach(([actor, row]) => {
-      (row.blocked_by_rules || []).forEach((b) => attempts.push({ turn: turn.turn, actor, blocked: b }));
+      // One square per person per round for everything the rules refused them.
+      if ((row.blocked_by_rules || []).length) attempts.push({ turn: turn.turn, actor, blocked: row.blocked_by_rules });
       attempts.push({ turn: turn.turn, actor, row });
     }));
-    const ruleRefusals = attempts.filter((a) => a.blocked).length;
+    const ruleRefusals = attempts.filter((a) => a.blocked).reduce((n, a) => n + a.blocked.length, 0);
     const lost = attempts.filter((a) => a.row && a.row.status !== "accepted" && a.row.wanted).length;
     $("outcome").textContent = `${s.accepted_actions} allowed, ${ruleRefusals} refused by the rules${lost ? `, ${lost} lost to someone faster` : ""}. ${s.terminal_reached ? "Finish line reached" : "Finish line not reached"} after ${s.turns} round${s.turns === 1 ? "" : "s"}.`;
     $("detail").textContent = ruleRefusals ? "Select an attempt above to see what happened and why. Dashed orange squares are things the rules refused." : "Nothing was refused: in every round, each move someone could think of was already allowed by the rules. Select an attempt to see what happened.";
@@ -337,8 +338,11 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     attempts.forEach((a) => {
       const t = document.createElement("button"); t.type = "button";
       if (a.blocked) {
-        const target = Object.entries(a.blocked.action).filter(([k]) => !["actor", "kind", "base_revision", "controller"].includes(k)).map(([, v]) => labelFor(v)).join(", ");
-        const text = `Round ${a.turn}: the rules would not let ${labelFor(a.actor)} ${words(a.blocked.action.kind)}${target ? " (" + target + ")" : ""}, because this was not true: ${a.blocked.reason || "a required check"}.`;
+        const parts = a.blocked.map((b) => {
+          const target = Object.entries(b.action).filter(([k]) => !["actor", "kind", "base_revision", "controller"].includes(k)).map(([, v]) => labelFor(v)).join(", ");
+          return `${words(b.action.kind)}${target ? " (" + target + ")" : ""}, because this was not true: ${b.reason || "a required check"}`;
+        });
+        const text = `Round ${a.turn}: the rules would not let ${labelFor(a.actor)} ` + parts.join("; nor ") + ".";
         t.className = "tick refused"; t.setAttribute("aria-label", text); t.title = text;
         t.addEventListener("click", () => { $("detail").textContent = text; });
         strip.append(t); return;

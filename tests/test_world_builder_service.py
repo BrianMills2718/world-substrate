@@ -163,6 +163,10 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertEqual(mechanics.call_count, 2)
         self.assertIn("never reached the terminal", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertEqual(mechanics.call_args_list[0].kwargs["model"], service.DEFAULT_MODEL)
+        self.assertIsNone(mechanics.call_args_list[0].kwargs["model_justification"])
+        self.assertEqual(mechanics.call_args_list[1].kwargs["model"], service.RULES_RETRY_MODEL)
+        self.assertTrue(mechanics.call_args_list[1].kwargs["model_justification"])
         self.assertTrue(payload["dry_run"]["terminal_reached"])
 
     def test_generate_world_keeps_first_attempt_when_retry_is_worse(self):

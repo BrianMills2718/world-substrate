@@ -62,6 +62,7 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         self.assertIs(result, fake)
         self.assertEqual(MAX_MECHANICS_OUTPUT_TOKENS, 8192)
         self.assertEqual(call.call_args.kwargs["max_tokens"], MAX_MECHANICS_OUTPUT_TOKENS)
+        self.assertNotIn("model_justification", call.call_args.kwargs)
 
 
 if __name__ == "__main__":

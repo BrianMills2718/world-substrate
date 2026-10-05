@@ -41,6 +41,15 @@ RUN_BUDGET = 0.12
 DAILY_LLM_BUDGET = 0.50
 # Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
 WORLD_BUDGET = 0.20
+# Rules-step retry escalates to a stronger model. Measured 2026-10-05 on six
+# descriptions: default model finished 11/24 builds, this model 6/6, at about
+# $0.037 vs $0.003 per rules call, so it is used only when the cheap attempt
+# does not reach its finish line.
+RULES_RETRY_MODEL = "openrouter/openai/gpt-5.6-sol"
+RULES_RETRY_JUSTIFICATION = (
+    "World Builder rules retry: the default model's rules did not let the described world "
+    "reach its finish line; the stronger model measured 6/6 vs 11/24 on the same descriptions."
+)
 DRY_RUN_TURNS = 12
 LLM_REQUESTS_PER_HOUR = 8
 GENERAL_REQUESTS_PER_MINUTE = 30
@@ -342,7 +351,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 best: tuple[int, dict[str, Any], CausalModel, dict[str, Any]] | None = None
                 for attempt in range(2):
                     generated, _ = generate_causal_model(
-                        bundle, model=model, trace_id=trace_id, max_budget=budget, guidance=guidance,
+                        bundle,
+                        model=model if attempt == 0 else RULES_RETRY_MODEL,
+                        trace_id=trace_id,
+                        max_budget=budget,
+                        guidance=guidance,
+                        model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
                     )
                     candidate = _strip_review(generated)
                     candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
