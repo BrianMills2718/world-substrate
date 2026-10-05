@@ -382,17 +382,27 @@ def _action_feedback(event: dict[str, Any], operation: dict[str, Any]) -> dict[s
     status = event.get("status")
     if status not in _ACTION_FEEDBACK_STATUSES:
         status = "unknown"
+    checks: list[dict[str, Any]] = []
     reasons: list[str] = []
     for check in event.get("checks") or []:
-        if isinstance(check, dict) and check.get("ok") is False:
-            label = check.get("label")
-            if isinstance(label, str) and label:
-                reasons.append(label)
+        if not isinstance(check, dict):
+            continue
+        label = check.get("label")
+        ok = check.get("ok")
+        if not isinstance(label, str) or not label or type(ok) is not bool:
+            continue
+        # Presentation may expose the rule/check identity and verdict, but not
+        # retained actual/expected operands, which can contain actor-scoped or
+        # otherwise non-public evidence.
+        checks.append({"label": label, "ok": ok})
+        if ok is False:
+            reasons.append(label)
     return {
         "kind": "action_feedback",
         "status": status,
         "label": operation.get("label"),
         "reasons": reasons,
+        "checks": checks,
     }
 
 

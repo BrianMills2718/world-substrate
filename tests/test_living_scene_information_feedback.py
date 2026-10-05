@@ -118,8 +118,18 @@ def bundle() -> dict:
             "tick": 1,
             "world_revision": 1,
             "checks": [
-                {"label": "Base revision is current", "ok": True},
-                {"label": "Required slot is available", "ok": False},
+                {
+                    "label": "Base revision is current",
+                    "ok": True,
+                    "actual": "private-revision-operand",
+                    "expected": "private-revision-expectation",
+                },
+                {
+                    "label": "Required slot is available",
+                    "ok": False,
+                    "actual": "private-slot-operand",
+                    "expected": "private-slot-expectation",
+                },
             ],
             "changes": [],
         },
@@ -180,6 +190,10 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         self.assertNotIn("actor-only observation secret", public_html)
         self.assertNotIn("private cognition context", public_html)
         self.assertNotIn("Private payload", public_html)
+        self.assertNotIn("private-revision-operand", public_html)
+        self.assertNotIn("private-slot-operand", public_html)
+        self.assertNotIn("private-revision-expectation", public_html)
+        self.assertNotIn("private-slot-expectation", public_html)
         recipient_html = living_renderer.render_html(
             value, cfg, REPO / "tests/fixtures/living_scene", observer_actor_id="actor-b"
         )
@@ -203,7 +217,16 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
             "status": "rejected",
             "label": "resource transfer",
             "reasons": ["Required slot is available"],
+            "checks": [
+                {"label": "Base revision is current", "ok": True},
+                {"label": "Required slot is available", "ok": False},
+            ],
         }])
+        encoded = json.dumps(frame["presentation_effects"], sort_keys=True)
+        self.assertNotIn("private-revision-operand", encoded)
+        self.assertNotIn("private-slot-operand", encoded)
+        self.assertNotIn("private-revision-expectation", encoded)
+        self.assertNotIn("private-slot-expectation", encoded)
 
     def test_feedback_supports_retained_statuses_without_generating_reasons(self):
         cfg = checked_profile()
@@ -232,6 +255,7 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
             effect = frame["presentation_effects"][0]
             self.assertEqual(effect["status"], status)
             self.assertEqual(effect["reasons"], [])
+            self.assertEqual(effect["checks"], [])
 
     def test_feedback_degrades_unknown_status_to_unknown(self):
         value = bundle()
@@ -248,6 +272,16 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         effect = frame["presentation_effects"][0]
         self.assertEqual(effect["status"], "unknown")
         self.assertEqual(effect["reasons"], [])
+        self.assertEqual(effect["checks"], [])
+
+    def test_renderers_expose_satisfied_and_failed_check_labels(self):
+        value = bundle()
+        cfg = checked_profile()
+        html = living_renderer.render_html(
+            value, cfg, REPO / "tests/fixtures/living_scene"
+        )
+        self.assertIn("failed: ", html)
+        self.assertIn("passed: ", html)
 
     def test_scrubbing_rebuild_has_no_stale_transmission_or_feedback(self):
         value = bundle()

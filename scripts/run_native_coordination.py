@@ -425,6 +425,17 @@ def evaluate_acceptance(
             for reason in effect.get("reasons", [])
         }
     )
+    feedback_checks = [
+        check
+        for effect in feedback_rows
+        for check in effect.get("checks", [])
+        if isinstance(check, dict)
+    ]
+    satisfied_check_labels = sorted({
+        check.get("label")
+        for check in feedback_checks
+        if check.get("ok") is True and isinstance(check.get("label"), str)
+    })
     observed_ui: set[str] = set()
     if len(final_frame["views"]["actors"]) == expected["member_count"]:
         observed_ui.add("actors")
@@ -438,8 +449,12 @@ def evaluate_acceptance(
         observed_ui.add("selection_inspection")
     if transmissions:
         observed_ui.add("information_movement")
+    if transmissions and "Represented deliveries" in html:
+        observed_ui.add("information_visibility_inspection")
     if feedback_rows and expected["blocked_check"] in feedback_reasons:
         observed_ui.add("failed_check_feedback")
+    if satisfied_check_labels:
+        observed_ui.add("satisfied_check_feedback")
     required_ui = set(common["required_ui"])
 
     checks.extend([
@@ -471,6 +486,15 @@ def evaluate_acceptance(
             observed=len(transmissions),
         ),
         _check(
+            "renderer.information_visibility_inspection", "renderer",
+            bool(transmissions) and "Represented deliveries" in html,
+            expected="actor inspector exposes represented delivery history",
+            observed={
+                "transmissions": len(transmissions),
+                "actor_delivery_inspector": "Represented deliveries" in html,
+            },
+        ),
+        _check(
             "renderer.private_content_hidden", "information_visibility",
             bool(transmissions)
             and all(
@@ -492,6 +516,12 @@ def evaluate_acceptance(
             "renderer.failed_check_feedback", "renderer",
             expected["blocked_check"] in feedback_reasons,
             expected=expected["blocked_check"], observed=feedback_reasons,
+        ),
+        _check(
+            "renderer.satisfied_check_feedback", "renderer",
+            bool(satisfied_check_labels),
+            expected="at least one retained satisfied check label",
+            observed=satisfied_check_labels,
         ),
     ])
 

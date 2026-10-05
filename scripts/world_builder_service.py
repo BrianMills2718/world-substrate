@@ -25,6 +25,7 @@ from scripts.native_coordination_authoring import (
     DEFAULT_CAUSAL as NATIVE_COORDINATION_CAUSAL,
     generate_native_coordination_draft,
 )
+from scripts.native_coordination_comparison import with_approval_threshold
 from scripts.run_authored_world import render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -236,6 +237,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if path == "/generate-mechanics":
                 self._generate(client, body)
                 return
+            if path == "/compare-native-coordination":
+                self._compare_native_coordination(client, body)
+                return
             if path == "/run":
                 self._run(client, body)
                 return
@@ -336,6 +340,47 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "model": getattr(result, "model", model),
                 "cost_usd": trace_cost,
                 "daily_cost_usd": daily_cost,
+                "trace_id": trace_id,
+            },
+        )
+
+    def _compare_native_coordination(self, client: str, body: dict[str, Any]) -> None:
+        if body.get("approved") is not True:
+            self._error(
+                HTTPStatus.CONFLICT,
+                "mechanics must be explicitly approved before a comparison",
+            )
+            return
+        baseline = validate_bundle(body.get("baseline_bundle"))
+        causal = body.get("causal_model")
+        if not isinstance(causal, dict):
+            raise ValueError("causal_model must be an object")
+        CausalModel.from_dict(causal, bundle=baseline)
+        shared_causal = json.loads(NATIVE_COORDINATION_CAUSAL.read_text())
+        if causal != shared_causal:
+            raise ValueError(
+                "native coordination comparison requires the reviewed shared coordination mechanics"
+            )
+        required = body.get("required_approvals")
+        comparison_bundle, change = with_approval_threshold(baseline, required)
+        CausalModel.from_dict(causal, bundle=comparison_bundle)
+        trace_id = f"{TRACE_ROOT}/comparison/{uuid.uuid4().hex}"
+        native = run_native_coordination(comparison_bundle, causal)
+        trace = native["trace"]
+        compiled = native["causal_model"]
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "summary": trace["summary"],
+                "trace": trace,
+                "causal_review": compiled.as_review(),
+                "replay_html": native["html"],
+                "comparison_bundle": comparison_bundle,
+                "change": change,
+                "cost_usd": 0.0,
+                "daily_cost_usd": None,
+                "execution_mode": "native_coordination_comparison",
                 "trace_id": trace_id,
             },
         )

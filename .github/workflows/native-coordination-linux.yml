@@ -7,20 +7,25 @@ on:
       - "docs/contracts/core-v0.md"
       - "docs/contracts/native-coordination-diagnostics-v0.md"
       - "docs/contracts/native-coordination-authoring-v0.md"
+      - "docs/contracts/native-coordination-comparison-v0.md"
+      - "docs/audits/native-waltzman-release-static-readiness-2026-09-19.md"
       - "examples/native_coordination/**"
       - "scripts/check_native_coordination.py"
       - "scripts/run_native_coordination.py"
       - "scripts/native_coordination_authoring.py"
+      - "scripts/native_coordination_comparison.py"
       - "scripts/run_authored_world.py"
       - "scripts/world_builder_service.py"
       - "scripts/world_builder_app.js"
       - "scripts/render_world_builder.py"
       - "src/world_substrate/**"
       - "tests/test_living_scene_information_feedback.py"
+      - "tests/test_composed_living_scene_renderer.py"
       - "tests/test_native_coordination.py"
       - "tests/test_native_coordination_matrix.py"
       - "tests/test_runtime_component_replay.py"
       - "tests/test_native_coordination_authoring.py"
+      - "tests/test_native_coordination_comparison.py"
       - "tests/test_world_builder_service.py"
       - "tests/test_world_authoring_builder.py"
   workflow_dispatch:
@@ -55,12 +60,15 @@ jobs:
           python -m pytest \
             tests/test_native_coordination.py \
             tests/test_native_coordination_matrix.py \
-            tests/test_runtime_component_replay.py
+            tests/test_runtime_component_replay.py \
+            tests/test_living_scene_information_feedback.py \
+            tests/test_composed_living_scene_renderer.py
 
       - name: Run one-shot native authoring tests
         run: |
           python -m pytest \
             tests/test_native_coordination_authoring.py \
+            tests/test_native_coordination_comparison.py \
             tests/test_world_builder_service.py \
             tests/test_world_authoring_builder.py
 

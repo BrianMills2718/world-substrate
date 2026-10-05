@@ -181,6 +181,86 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("shared coordination mechanics", payload["error"])
         run_native.assert_not_called()
 
+    def test_native_comparison_endpoint_changes_one_condition_and_runs_native(self):
+        shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
+        comparison_bundle = json.loads(json.dumps(DRAFT_BUNDLE))
+        gate = next(row for row in comparison_bundle["entities"] if "gate" in row["categories"])
+        gate["components"]["gate"]["required_approvals"] = 1
+        compiled = CausalModel.from_dict(shared, bundle=comparison_bundle)
+        fake_trace = {
+            "schema_version": "world-substrate-contested-run/v3",
+            "summary": {
+                "turns": 6,
+                "terminal_reached": True,
+                "accepted_actions": 5,
+                "blocked_event_id": "e0003",
+            },
+            "cost_usd": 0.0,
+        }
+        with patch.object(
+            service,
+            "run_native_coordination",
+            return_value={
+                "trace": fake_trace,
+                "causal_model": compiled,
+                "html": "<html>Comparison Living Scene</html>",
+            },
+        ) as run_native:
+            status, payload = self.post(
+                "/compare-native-coordination",
+                {
+                    "baseline_bundle": DRAFT_BUNDLE,
+                    "causal_model": shared,
+                    "approved": True,
+                    "required_approvals": 1,
+                },
+            )
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["execution_mode"], "native_coordination_comparison")
+        self.assertEqual(payload["change"]["before"], 2)
+        self.assertEqual(payload["change"]["after"], 1)
+        self.assertEqual(payload["cost_usd"], 0.0)
+        self.assertIn("Comparison Living Scene", payload["replay_html"])
+        returned_gate = next(
+            row for row in payload["comparison_bundle"]["entities"]
+            if "gate" in row["categories"]
+        )
+        self.assertEqual(returned_gate["components"]["gate"]["required_approvals"], 1)
+        run_native.assert_called_once()
+
+    def test_native_comparison_requires_explicit_mechanics_approval(self):
+        shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
+        with patch.object(service, "run_native_coordination") as run_native:
+            status, payload = self.post(
+                "/compare-native-coordination",
+                {
+                    "baseline_bundle": DRAFT_BUNDLE,
+                    "causal_model": shared,
+                    "required_approvals": 1,
+                },
+            )
+        self.assertEqual(status, 409)
+        self.assertIn("approved", payload["error"])
+        run_native.assert_not_called()
+
+    def test_native_comparison_refuses_modified_law(self):
+        shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
+        modified = json.loads(json.dumps(shared))
+        modified["mechanics"][0]["rationale"] += " Modified."
+        with patch.object(service, "run_native_coordination") as run_native:
+            status, payload = self.post(
+                "/compare-native-coordination",
+                {
+                    "baseline_bundle": DRAFT_BUNDLE,
+                    "causal_model": modified,
+                    "approved": True,
+                    "required_approvals": 1,
+                },
+            )
+        self.assertEqual(status, 422)
+        self.assertIn("shared coordination mechanics", payload["error"])
+        run_native.assert_not_called()
+
     def test_run_requires_explicit_mechanic_approval(self):
         status, payload = self.post(
             "/run",

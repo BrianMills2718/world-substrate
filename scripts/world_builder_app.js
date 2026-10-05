@@ -7,6 +7,8 @@
   let mechanicGuidance = "", generationMeta = null, runResult = null, liveBusy = false, liveLog = [];
   let logQuery = "", logKind = "all", logPath = "all";
   let runPolicy = "scripted", runTurns = 12, executionMode = "authored_world";
+  let runBundle = null, runCausalModel = null, runExecutionMode = null;
+  let comparisonResult = null, comparisonBundle = null, comparisonThreshold = null, comparisonBusy = false;
   const LIVE_MODEL = "openrouter/openai/gpt-5.6-luna";
   let active = new URLSearchParams(location.search).get("section") || "world";
   const sections = ["world", "components", "entities", "actions", "mechanics", "presentation", "run", "logs", "export"];
@@ -146,14 +148,14 @@
       executionMode="native_coordination";
       runPolicy="scripted";
       generationMeta={model:"shared reviewed coordination family",cost_usd:0,trace_id:null};
-      runResult=null;
+      runResult=null;runBundle=null;runCausalModel=null;runExecutionMode=null;comparisonResult=null;comparisonBundle=null;comparisonThreshold=null;
     }catch(err){alert(`Draft generation failed: ${err.message}`);active="logs";}
     finally{draftBusy=false;rerender();}
   }
   function renderDraftReview() {
     if(!draftReview)return;
     const stale=draftReviewStale();
-    if(stale) editor.append(liveMessage("The editable world has changed since this intent review was generated. The original requirements/assumptions remain visible as provenance, but review the edits before approving mechanics.","warn"));
+    if(stale) editor.append(liveMessage("The description or editable world has changed since this intent review was generated. The original requirements/assumptions remain visible as provenance, but regenerate the bounded draft before approving or running.","warn"));
     const receipt=card("One-shot draft receipt");
     if(draftGenerationMeta) receipt.append(el("div","receipt",`${draftGenerationMeta.model||"model"} · ${Number(draftGenerationMeta.cost_usd||0).toFixed(6)} · ${draftGenerationMeta.trace_id||"no trace id"}`));
     receipt.append(el("p","muted","The description produced configuration only. Executable law comes from the shared reviewed coordination mechanics shown in Causal mechanics."));
@@ -161,6 +163,9 @@
     const source=card("Source description used for this draft");
     source.append(el("p","muted",draftReview.source_description||draftArtifact?.source_description||""));
     editor.append(source);
+    const structure=card("Inferred represented structure");
+    structure.append(el("pre","mini-json",JSON.stringify(draftReview.structure||{},null,2)));
+    editor.append(structure);
     editor.append(jsonRows("Extracted requirements → represented surfaces",draftReview.requirements));
     if(draftReview.coverage_limit) editor.append(liveMessage(draftReview.coverage_limit,"warn"));
     const assumptions=card("Inferred assumptions");
@@ -245,7 +250,7 @@
       causalModel=payload.causal_model; causalReview=payload.review; mechanicsSource=bundleKey(); mechanicsApproved=false;
       executionMode="authored_world";
       generationMeta={cost_usd:payload.cost_usd||0,daily_cost_usd:payload.daily_cost_usd,model:payload.model||LIVE_MODEL,trace_id:payload.trace_id||null};
-      runResult=null;
+      runResult=null;runBundle=null;runCausalModel=null;runExecutionMode=null;comparisonResult=null;comparisonBundle=null;comparisonThreshold=null;
     }catch(err){alert(`Mechanics generation failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
@@ -276,22 +281,51 @@
     c=card("Category → asset");c.append(objectRows(p.category_assets,"category",()=>Object.keys(p.assets).map(x=>[x,x])),button("+ Binding","secondary",()=>{let n=1;while(p.category_assets[`category_${n}`])n++;p.category_assets[`category_${n}`]=Object.keys(p.assets)[0]||"";rerender()}));editor.append(c);
     c=card("Station roles");c.append(objectRows(p.station_roles,"role",()=>[["source","source"],["workstation","workstation"],["surface","surface"],["goal","goal"]]),button("+ Station role","secondary",()=>{let n=1;while(p.station_roles[`station_${n}`])n++;p.station_roles[`station_${n}`]="surface";rerender()}));editor.append(c);
   }
+  function nativeGate(value) {
+    return (value?.entities||[]).find(row=>(row.categories||[]).includes("gate"))||null;
+  }
+  function nativeInformedRecipientCount(value) {
+    const recipients=new Set();
+    (value?.entities||[]).forEach(row=>{const delivery=row.components?.delivery;if(delivery?.recipient_id)recipients.add(delivery.recipient_id);});
+    return recipients.size;
+  }
+  function defaultComparisonThreshold(value) {
+    const gate=nativeGate(value); const base=gate?.components?.gate?.required_approvals; const max=nativeInformedRecipientCount(value);
+    if(!Number.isInteger(base)||max<2)return null;
+    return base===1?2:base-1;
+  }
+  async function runNativeComparison() {
+    if(liveBusy){alert("Wait for the baseline run to finish first.");return;}
+    if(!runResult||!runBundle||!runCausalModel||runExecutionMode!=="native_coordination"){alert("Run a native coordination baseline first.");return;}
+    const gate=nativeGate(runBundle); const base=gate?.components?.gate?.required_approvals; const max=nativeInformedRecipientCount(runBundle); const next=Number(comparisonThreshold);
+    if(!Number.isInteger(next)||next<1||next>max||next===base){alert(`Choose a different approval threshold from 1 to ${max}.`);return;}
+    comparisonBusy=true;rerender();
+    try{
+      const payload=await api("/compare-native-coordination",{baseline_bundle:runBundle,causal_model:runCausalModel,approved:true,required_approvals:next});
+      comparisonResult=payload;comparisonBundle=payload.comparison_bundle;
+    }catch(err){alert(`Comparison run failed: ${err.message}`);active="logs";}
+    finally{comparisonBusy=false;rerender();}
+  }
   async function startFreshRun() {
+    if(comparisonBusy){alert("Wait for the comparison run to finish first.");return;}
     if(!causalModel || mechanicsStale() || !mechanicsApproved){alert("Generate and approve current mechanics first.");return;}
     if(executionMode==="native_coordination" && draftReviewStale()){
       alert("Regenerate the bounded draft so the intent review matches the current description and editable world.");
       return;
     }
-    liveBusy=true;runResult=null;rerender();
+    const requestedBundle=core.clone(bundle), requestedCausal=core.clone(causalModel), requestedMode=executionMode;
+    liveBusy=true;rerender();
     try{
-      runResult=await api("/run",{bundle,causal_model:causalModel,approved:true,execution_mode:executionMode,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
+      const payload=await api("/run",{bundle,causal_model:causalModel,approved:true,execution_mode:executionMode,policy:runPolicy,turns:runTurns,model:LIVE_MODEL});
+      runResult=payload;runBundle=requestedBundle;runCausalModel=requestedCausal;runExecutionMode=requestedMode;
+      comparisonResult=null;comparisonBundle=null;comparisonThreshold=requestedMode==="native_coordination"?defaultComparisonThreshold(requestedBundle):null;
     }catch(err){alert(`Run failed: ${err.message}`);active="logs";}
     finally{liveBusy=false;rerender();}
   }
   function renderRun() {
     const head=sectionHead("Run this world","Start a fresh simulation from the current represented world and approved mechanics, then watch the resulting graphical replay here.");
     const intentStale=executionMode==="native_coordination" && draftReviewStale();
-    const run=button(liveBusy?"Running…":"Run fresh simulation","primary",startFreshRun);run.disabled=liveBusy||!causalModel||mechanicsStale()||intentStale||!mechanicsApproved;head.append(run);editor.append(head);
+    const run=button(liveBusy?"Running…":"Run fresh simulation","primary",startFreshRun);run.disabled=liveBusy||comparisonBusy||!causalModel||mechanicsStale()||intentStale||!mechanicsApproved;head.append(run);editor.append(head);
     if(!causalModel) editor.append(liveMessage("Generate causal mechanics first."));
     else if(mechanicsStale()) editor.append(liveMessage("Mechanics are stale because the world changed. Regenerate them first.","warn"));
     else if(intentStale) editor.append(liveMessage("The one-shot intent review is stale. Regenerate the bounded draft before running.","warn"));
@@ -309,6 +343,22 @@
     if(runResult){
       const summary=card("Fresh run result");const sm=runResult.summary||{};summary.append(el("div","receipt",`${sm.turns||0} turn(s) · ${sm.accepted_actions||0} accepted action(s) · terminal ${sm.terminal_reached?"reached":"not reached"} · $${Number(runResult.cost_usd||0).toFixed(6)}${runResult.trace_id?` · ${runResult.trace_id}`:""}`),button("Open full logs","secondary",openLogs));editor.append(summary);
       const frame=document.createElement("iframe");frame.className="run-frame";frame.setAttribute("sandbox","allow-scripts");frame.srcdoc=runResult.replay_html||"";editor.append(frame);
+      if(runExecutionMode==="native_coordination"&&runBundle){
+        const gate=nativeGate(runBundle);const base=gate?.components?.gate?.required_approvals;const max=nativeInformedRecipientCount(runBundle);
+        const compare=card("Compare one supported condition");
+        compare.append(el("div","receipt",`Baseline approval threshold: ${base} · informed recipients: ${max}`));
+        compare.append(field("Comparison approval threshold",comparisonThreshold??"",v=>{const n=Number(v);comparisonThreshold=Number.isInteger(n)?n:v;comparisonResult=null;comparisonBundle=null;},{type:"number"}));
+        compare.append(liveMessage("The comparison clones the retained baseline initial world and changes only gate.required_approvals. It reuses the same explicitly approved shared mechanics and keeps the original run visible."));
+        const runCompare=button(comparisonBusy?"Running comparison…":"Run comparison","primary",runNativeComparison);runCompare.disabled=comparisonBusy||liveBusy;compare.append(runCompare);editor.append(compare);
+        if(comparisonResult){
+          const changed=nativeGate(comparisonBundle)?.components?.gate?.required_approvals;const cm=comparisonResult.summary||{};
+          const grid=el("div","authority-grid");
+          const left=card("Baseline retained");left.append(el("div","receipt",`threshold ${base} · ${sm.turns||0} turns · ${sm.accepted_actions||0} accepted · terminal ${sm.terminal_reached?"reached":"not reached"}`));
+          const right=card("Comparison retained");right.append(el("div","receipt",`threshold ${changed} · ${cm.turns||0} turns · ${cm.accepted_actions||0} accepted · terminal ${cm.terminal_reached?"reached":"not reached"}`));
+          grid.append(left,right);editor.append(grid);
+          const compareFrame=document.createElement("iframe");compareFrame.className="run-frame";compareFrame.setAttribute("sandbox","allow-scripts");compareFrame.srcdoc=comparisonResult.replay_html||"";editor.append(compareFrame);
+        }
+      }
     }
   }
   function renderLogs() {
@@ -319,7 +369,7 @@
     const controls=card("Log controls");
     const query=el("input","input");query.type="search";query.placeholder="Search logs · actor, action, refusal, trace id, field…";query.value=logQuery;
     const kind=el("select","input");[["all","All records"],["request","Requests only"],["response","Responses only"],["error","Errors only"]].forEach(([v,t])=>{const o=el("option",null,t);o.value=v;if(v===logKind)o.selected=true;kind.append(o);});
-    const path=el("select","input");[["all","All endpoints"],["/generate-draft","One-shot draft"],["/generate-mechanics","Mechanics generation"],["/run","Runs"]].forEach(([v,t])=>{const o=el("option",null,t);o.value=v;if(v===logPath)o.selected=true;path.append(o);});
+    const path=el("select","input");[["all","All endpoints"],["/generate-draft","One-shot draft"],["/generate-mechanics","Mechanics generation"],["/run","Runs"],["/compare-native-coordination","Comparisons"]].forEach(([v,t])=>{const o=el("option",null,t);o.value=v;if(v===logPath)o.selected=true;path.append(o);});
     const count=el("div","receipt");
     const actions=el("div","authority-grid");
     actions.append(button("Copy filtered logs","secondary",async()=>{await copyText(liveLogText(false,filteredLiveLog())+"\n");}),button("Clear logs","secondary",()=>{if(confirm("Clear this browser session's logs?")){liveLog=[];rerender();}}));
@@ -343,8 +393,8 @@
   }
   document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>{active=b.dataset.section;history.replaceState(null,"",`?section=${active}`);rerender()}));
   document.getElementById("import-bundle").addEventListener("click",()=>document.getElementById("file-input").click());
-  document.getElementById("file-input").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const value=JSON.parse(await file.text());if(!value||typeof value!=="object")throw new Error("not an object");bundle=value;draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;executionMode="authored_world";runResult=null;active="world";rerender()}catch(err){alert(`Could not import JSON: ${err.message}`)}finally{e.target.value=""}});
-  document.getElementById("reset-example").addEventListener("click",()=>{if(confirm("Reset to the embedded Orchard example?")){bundle=core.clone(window.INITIAL_BUNDLE);draftDescription="";draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;executionMode="authored_world";runResult=null;active="world";rerender()}});
+  document.getElementById("file-input").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const value=JSON.parse(await file.text());if(!value||typeof value!=="object")throw new Error("not an object");bundle=value;draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;executionMode="authored_world";runResult=null;runBundle=null;runCausalModel=null;runExecutionMode=null;comparisonResult=null;comparisonBundle=null;comparisonThreshold=null;active="world";rerender()}catch(err){alert(`Could not import JSON: ${err.message}`)}finally{e.target.value=""}});
+  document.getElementById("reset-example").addEventListener("click",()=>{if(confirm("Reset to the embedded Orchard example?")){bundle=core.clone(window.INITIAL_BUNDLE);draftDescription="";draftArtifact=null;draftReview=null;draftSource=null;draftGenerationMeta=null;causalModel=null;causalReview=null;mechanicsSource=null;mechanicsApproved=false;executionMode="authored_world";runResult=null;runBundle=null;runCausalModel=null;runExecutionMode=null;comparisonResult=null;comparisonBundle=null;comparisonThreshold=null;active="world";rerender()}});
   downloadBtn.addEventListener("click",()=>{const r=core.validateBundle(bundle);if(!r.ok)return;const blob=new Blob([JSON.stringify(bundle,null,2)+"\n"],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${bundle.world.id}-authoring-v0.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
   async function copyText(text) {
     try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return; } } catch {}
