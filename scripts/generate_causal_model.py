@@ -336,6 +336,7 @@ def generate_causal_model(
     max_budget: float = DEFAULT_BUDGET,
     reasoning_effort: str = "low",
     guidance: str = "",
+    model_justification: str | None = None,
 ) -> tuple[dict[str, Any], Any]:
     bundle = validate_bundle(bundle)
     if not bundle.get("actions"):
@@ -384,6 +385,8 @@ def generate_causal_model(
             max_tokens=MAX_MECHANICS_OUTPUT_TOKENS,
             reasoning_effort=reasoning_effort,
             num_retries=1,
+            # The shared client requires a stated reason for any non-default route.
+            **({"model_justification": model_justification} if model_justification else {}),
         )
         try:
             parsed = safe_json_loads(result.content)

@@ -9,7 +9,7 @@
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body{min-height:100vh}button{font:inherit}.app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
 .sidebar{border-right:1px solid var(--line);background:#11161a;padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto}
-.brand{padding:0 8px 18px}.brand h1{font-size:21px;letter-spacing:-.03em;margin:0 0 5px}.brand p{color:var(--muted);margin:0;font-size:12px}
+.home-link{display:inline-block;color:var(--muted);font-size:12px;margin:0 8px 12px;text-decoration:none}.home-link:hover{color:var(--text)}.brand{padding:0 8px 18px}.brand h1{font-size:21px;letter-spacing:-.03em;margin:0 0 5px}.brand p{color:var(--muted);margin:0;font-size:12px}
 .world-list{display:grid;gap:8px}.world-card{width:100%;text-align:left;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--text);padding:12px;cursor:pointer}
 .world-card:hover{background:#ffffff08}.world-card.active{background:var(--panel2);border-color:#3a464e}.world-name{display:block;font-weight:800;font-size:15px;margin-bottom:3px}.world-summary{display:block;color:var(--muted);font-size:11px;line-height:1.35}
 .sidebar-foot{margin:22px 8px 0;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}
@@ -25,6 +25,7 @@ body{min-height:100vh}button{font:inherit}.app{display:grid;grid-template-column
 <body>
 <div class='app'>
 <aside class='sidebar'>
+  <a class='home-link' href='../'>← World Builder home</a>
   <div class='brand'><h1>World Replay Studio</h1><p>Watch retained worlds. Compare automatic generation with optional polished presentation.</p></div>
   <div class='world-list' id='world-list'></div>
   <div class='sidebar-foot'>Automatic is the declaration-driven authoring baseline. Polished variants are optional presentation layers over retained behavior.</div>

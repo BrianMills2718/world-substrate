@@ -41,6 +41,15 @@ RUN_BUDGET = 0.12
 DAILY_LLM_BUDGET = 0.50
 # Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
 WORLD_BUDGET = 0.20
+# Rules-step retry escalates to a stronger model. Measured 2026-10-05 on six
+# descriptions: default model finished 11/24 builds, this model 6/6, at about
+# $0.037 vs $0.003 per rules call, so it is used only when the cheap attempt
+# does not reach its finish line.
+RULES_RETRY_MODEL = "openrouter/openai/gpt-5.6-sol"
+RULES_RETRY_JUSTIFICATION = (
+    "World Builder rules retry: the default model's rules did not let the described world "
+    "reach its finish line; the stronger model measured 6/6 vs 11/24 on the same descriptions."
+)
 DRY_RUN_TURNS = 12
 LLM_REQUESTS_PER_HOUR = 8
 GENERAL_REQUESTS_PER_MINUTE = 30
@@ -341,11 +350,31 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 # allowing actions, which beats allowing nothing.
                 best: tuple[int, dict[str, Any], CausalModel, dict[str, Any]] | None = None
                 for attempt in range(2):
-                    generated, _ = generate_causal_model(
-                        bundle, model=model, trace_id=trace_id, max_budget=budget, guidance=guidance,
-                    )
-                    candidate = _strip_review(generated)
-                    candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
+                    try:
+                        generated, _ = generate_causal_model(
+                            bundle,
+                            model=model if attempt == 0 else RULES_RETRY_MODEL,
+                            trace_id=trace_id,
+                            max_budget=budget,
+                            guidance=guidance,
+                            model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
+                        )
+                        candidate = _strip_review(generated)
+                        candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
+                    except (ActionDeclarationError, ValueError, TypeError, KeyError) as error:
+                        # A rule set the compiler rejects is the cheapest failure to
+                        # recover from: hand it to the stronger retry instead of
+                        # ending the whole request.
+                        attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})
+                        if attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
+                            if best is None:
+                                raise
+                            break
+                        guidance = (
+                            "Your previous proposal was rejected by the local causal compiler: "
+                            f"{type(error).__name__}: {error}. Return a corrected proposal."
+                        )
+                        continue
                     try:
                         dry, _, _ = run_world(
                             bundle, candidate, policy="scripted", max_turns=DRY_RUN_TURNS,
