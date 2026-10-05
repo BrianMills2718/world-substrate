@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sys
 import threading
 import time
@@ -197,6 +198,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 {
                     "ok": True,
                     "service": "world-builder",
+                    "build_commit": os.environ.get("WORLD_SUBSTRATE_BUILD_COMMIT"),
                     "llm_daily_budget_usd": DAILY_LLM_BUDGET,
                     "llm_daily_committed_usd": _daily_cost(),
                 },

@@ -4,7 +4,7 @@ Build a persistent, observable world substrate in which LLM or human policies ex
 
 ## Start here
 
-Read [the project wiki](docs/wiki/README.md) for orientation and [the roadmap](roadmap/README.md) for current direction. Use [architecture](docs/architecture.md) for durable boundaries and [accepted decisions](docs/decisions/) for human-set doctrine.
+Read [the project wiki](docs/wiki/README.md) for orientation and [the roadmap](roadmap/README.md) for current direction. Use [architecture](docs/architecture.md) for durable boundaries and [accepted decisions](docs/decisions/) for human-set doctrine; [Decision 006](docs/decisions/006-governed-rules-layer-scope.md) sets the current scope (governed-rules layer only, hosted on commodity runtimes).
 
 Before editing a scoped subtree, read its local `AGENTS.md`:
 - documentation/contracts: `docs/AGENTS.md`

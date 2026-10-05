@@ -77,6 +77,15 @@ class WorldBuilderServiceTests(unittest.TestCase):
         except urllib.error.HTTPError as error:
             return error.code, json.loads(error.read())
 
+    def test_health_reports_build_commit_and_persistent_budget(self):
+        self.write_budget(spent=0.125)
+        with patch.dict(service.os.environ, {"WORLD_SUBSTRATE_BUILD_COMMIT": "abc123"}):
+            with urllib.request.urlopen(self.base + "/health", timeout=5) as response:
+                payload = json.loads(response.read())
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["build_commit"], "abc123")
+        self.assertEqual(payload["llm_daily_committed_usd"], 0.125)
+
     def test_generate_draft_returns_editable_bundle_and_explicit_review(self):
         with patch.object(service, "_trace_cost", return_value=0.002), patch.object(
             service,
