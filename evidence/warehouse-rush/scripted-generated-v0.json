@@ -1,0 +1,2424 @@
+{
+  "schema_version": "world-substrate-contested-run/v3",
+  "world": "warehouse-rush",
+  "actors": [
+    "worker-a",
+    "worker-b",
+    "worker-c",
+    "worker-d"
+  ],
+  "model": "scripted-first-available",
+  "cost_usd": 0.0,
+  "mechanic_profile_id": "ea4027013c625d61",
+  "summary": {
+    "turns": 30,
+    "terminal_reached": false,
+    "accepted_actions": 72
+  },
+  "transcript": [
+    {
+      "turn": 1,
+      "revision_when_decided": 0,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 0,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 0,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 0,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 1,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 0,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 2,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 0,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 3,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 2,
+      "revision_when_decided": 4,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 4,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 4,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 4,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 5,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 4,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 6,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 4,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 7,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 3,
+      "revision_when_decided": 8,
+      "committed_first": "worker-c",
+      "actors": {
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 8,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 8,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 8,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 9,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 8,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 10,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 8,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 11,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 4,
+      "revision_when_decided": 12,
+      "committed_first": "worker-d",
+      "actors": {
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 12,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 12,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 12,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 13,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 12,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 14,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 12,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 15,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 5,
+      "revision_when_decided": 16,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 16,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 16,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 16,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 17,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 16,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 18,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 16,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 19,
+            "controller": "unselected",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 6,
+      "revision_when_decided": 20,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 20,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 20,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 20,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "move",
+            "base_revision": 21,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 20,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "move",
+            "base_revision": 22,
+            "controller": "unselected",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 20,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "dock-a"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 23,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "dock-a"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 7,
+      "revision_when_decided": 24,
+      "committed_first": "worker-c",
+      "actors": {
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 24,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "drive-forklift",
+            "base_revision": 24,
+            "controller": "unselected",
+            "forklift": "forklift-blue",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 24,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "staging"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "drive-forklift",
+            "base_revision": 25,
+            "controller": "unselected",
+            "forklift": "forklift-red",
+            "location": "staging"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 8,
+      "revision_when_decided": 26,
+      "committed_first": "worker-d",
+      "actors": {
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 26,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 26,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 26,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 27,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 9,
+      "revision_when_decided": 28,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 28,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 28,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 28,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 29,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 28,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 28,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 10,
+      "revision_when_decided": 30,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 30,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 30,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 30,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 31,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 11,
+      "revision_when_decided": 32,
+      "committed_first": "worker-c",
+      "actors": {
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 32,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 32,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 32,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 33,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 32,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 32,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 12,
+      "revision_when_decided": 34,
+      "committed_first": "worker-d",
+      "actors": {
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 34,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 34,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 34,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 35,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 13,
+      "revision_when_decided": 36,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 36,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 36,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 36,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 37,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 36,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 36,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 14,
+      "revision_when_decided": 38,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 38,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 38,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 38,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 39,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 15,
+      "revision_when_decided": 40,
+      "committed_first": "worker-c",
+      "actors": {
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 40,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 40,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 40,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 41,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 40,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 40,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 16,
+      "revision_when_decided": 42,
+      "committed_first": "worker-d",
+      "actors": {
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 42,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 42,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 42,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 43,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 17,
+      "revision_when_decided": 44,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 44,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 44,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 44,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 45,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 44,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 44,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 18,
+      "revision_when_decided": 46,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 46,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 46,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 46,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 47,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 19,
+      "revision_when_decided": 48,
+      "committed_first": "worker-c",
+      "actors": {
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 48,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 48,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 48,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 49,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 48,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 48,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 20,
+      "revision_when_decided": 50,
+      "committed_first": "worker-d",
+      "actors": {
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 50,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 50,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 50,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 51,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 21,
+      "revision_when_decided": 52,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 52,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 52,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 52,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 53,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 52,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 52,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 22,
+      "revision_when_decided": 54,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 54,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 54,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 54,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 55,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 23,
+      "revision_when_decided": 56,
+      "committed_first": "worker-c",
+      "actors": {
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 56,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 56,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 56,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 57,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 56,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 56,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 24,
+      "revision_when_decided": 58,
+      "committed_first": "worker-d",
+      "actors": {
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 58,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 58,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 58,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 59,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 25,
+      "revision_when_decided": 60,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 60,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 60,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 60,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 61,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 60,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 60,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 26,
+      "revision_when_decided": 62,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 62,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 62,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 62,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 63,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 27,
+      "revision_when_decided": 64,
+      "committed_first": "worker-c",
+      "actors": {
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 64,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 64,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 64,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 65,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 64,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 64,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 28,
+      "revision_when_decided": 66,
+      "committed_first": "worker-d",
+      "actors": {
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 66,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-d",
+            "kind": "release-forklift",
+            "base_revision": 66,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 66,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-c",
+            "kind": "release-forklift",
+            "base_revision": 67,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 29,
+      "revision_when_decided": 68,
+      "committed_first": "worker-a",
+      "actors": {
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 68,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "claim-forklift",
+            "base_revision": 68,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 68,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "claim-forklift",
+            "base_revision": 69,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        },
+        "worker-c": {
+          "wanted": {
+            "actor": "worker-c",
+            "kind": "claim-forklift",
+            "base_revision": 68,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        },
+        "worker-d": {
+          "wanted": {
+            "actor": "worker-d",
+            "kind": "claim-forklift",
+            "base_revision": 68,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": null,
+          "status": "nothing_left",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "wait: no offered action"
+        }
+      },
+      "progress": {}
+    },
+    {
+      "turn": 30,
+      "revision_when_decided": 70,
+      "committed_first": "worker-b",
+      "actors": {
+        "worker-b": {
+          "wanted": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 70,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "did": {
+            "actor": "worker-b",
+            "kind": "release-forklift",
+            "base_revision": 70,
+            "controller": "unselected",
+            "forklift": "forklift-red"
+          },
+          "status": "accepted",
+          "retried": false,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-c": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-d": {
+          "wanted": null,
+          "did": null,
+          "status": "no_action",
+          "retried": false,
+          "said": "wait: no offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": false
+        },
+        "worker-a": {
+          "wanted": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 70,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "did": {
+            "actor": "worker-a",
+            "kind": "release-forklift",
+            "base_revision": 71,
+            "controller": "unselected",
+            "forklift": "forklift-blue"
+          },
+          "status": "accepted",
+          "retried": true,
+          "said": "first available offered action",
+          "refused_because": [],
+          "lost_what_it_wanted": true,
+          "said_on_retry": "first available offered action"
+        }
+      },
+      "progress": {}
+    }
+  ]
+}

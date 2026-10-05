@@ -1,0 +1,8 @@
+{
+  "source_repository": "BrianMills2718/compositional-viable-systems",
+  "source_revision": "5cb9933f2551ca3e0e75590814f7e686f50d8edb",
+  "source_path": "applications/sustainment/sustainment_situation_ir.json",
+  "sha256": "e357e25db6c4c7979e1f235fba1fceeb61b36e1c1448816845973bca3a68894b",
+  "status": "synthetic integration fixture",
+  "purpose": "Exercise a CVS Situation IR -> World Substrate structural authoring projection without granting causal authority."
+}

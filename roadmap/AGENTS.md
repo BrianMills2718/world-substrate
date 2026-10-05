@@ -1,6 +1,6 @@
 # Roadmap boundary
 
-The root `CLAUDE.md` applies. `README.md` is the canonical planning authority.
+The root `AGENTS.md` applies. `README.md` is the canonical planning authority.
 
 - Preserve the user-approved semantic/mechanical consequence boundary and observability requirement.
 - Treat exact replay and deterministic execution as M1 properties or optional techniques, not universal goals.

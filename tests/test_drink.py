@@ -190,5 +190,49 @@ class DrinkCheckpointTests(unittest.TestCase):
         self.assertTrue(evidence["replay"]["ok"])
 
 
+class LiquidRuleScopeAndThermalTests(unittest.TestCase):
+    def test_fill_of_boiling_vessel_is_accepted_and_resets_boiling(self) -> None:
+        engine = build_drink_engine(REPO)
+        engine.apply(
+            select_action(
+                engine, "fill", vessel="clay-pot", source="unsafe-pool", volume_ml=250
+            )
+        )
+        engine.apply(select_action(engine, "heat", vessel="clay-pot", target="fire-camp"))
+        engine.advance(8)
+        pot = engine.world.entities["clay-pot"]
+        assert pot.container is not None
+        self.assertGreater(pot.container.boiling_ticks, 0)
+
+        result = engine.apply(
+            select_action(
+                engine, "fill", vessel="clay-pot", source="unsafe-pool", volume_ml=250
+            )
+        )
+
+        self.assertEqual(result["status"], "accepted")
+        self.assertEqual(engine.world.entities["clay-pot"].container.boiling_ticks, 0)
+
+    def test_drink_resyncs_vessel_temperature_with_remaining_heat(self) -> None:
+        engine = build_drink_engine(REPO)
+        reach_pour_checkpoint(engine)
+        row = select_action(engine, "drink", vessel="cup-robinson", volume_ml=250)
+        # 250 ml / 8970 heat; drinking 67 ml leaves 183 ml / 6567 heat (35.89 C),
+        # because the floored portion leaves the remainder heat in the vessel.
+        action = DrinkAction.from_dict(
+            {**row.as_dict(), "volume_ml": 67, "controller": "verification_script"}
+        )
+
+        result = engine.apply(action)
+
+        cup = engine.world.entities["cup-robinson"]
+        assert cup.liquid and cup.thermal
+        self.assertEqual(result["status"], "accepted")
+        self.assertEqual(
+            (cup.liquid.volume_ml, cup.liquid.heat_units), (183, 6567)
+        )
+        self.assertEqual(cup.thermal.temperature_c, 35.89)
+
+
 if __name__ == "__main__":
     unittest.main()
