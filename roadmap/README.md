@@ -9,8 +9,8 @@ reviewed_through: 2026-09-18
 # World Substrate living roadmap
 
 **Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md), and [Decision 005](../docs/decisions/005-native-waltzman-delivery.md).
-**Stage:** prototype substrate complete; deployed authoring/run alpha; promoted donor-backed Waltzman demo retained; native Waltzman convergence path (description -> editable draft -> approved mechanics -> native Engine run -> automatic living UI -> comparison) landed on main 2026-10-05; active phase is the **replacement-first gate** for the engine underneath it.
-**Current frontier (2026-10-05):** the first configurable native coordination vertical, one-shot authoring, and run comparison have landed (#75, #79, #80): two materially different coordination worlds run through one shared mechanics profile, pass replay acceptance, and render through the automatic view. Before any further native engine/runtime work, run the **replacement-first gate** (see Exact next action): test whether World Substrate's governed-rules layer can sit on an off-the-shelf runtime (Concordia, Mesa, a PDDL toolchain) instead of growing its own, per Brian's 2026-10-01 rule that building ourselves is presumed bad. Preserve the promoted donor experience as regression/fallback while the native path is built; do not make donor hosting migration, conversational editing, bespoke assets, Jev optimization, or a repo merger part of this critical path.
+**Stage:** prototype substrate complete; deployed authoring/run alpha; promoted donor-backed Waltzman demo retained; native Waltzman convergence path (description -> editable draft -> approved mechanics -> native Engine run -> automatic living UI -> comparison) landed on main 2026-10-05; the replacement-first gate (recorded 2026-10-05) limits World Substrate to its governed-rules layer.
+**Current frontier (2026-10-05):** the first configurable native coordination vertical, one-shot authoring, and run comparison have landed (#75, #79, #80): two materially different coordination worlds run through one shared mechanics profile, pass replay acceptance, and render through the automatic view. The replacement-first gate (Brian's 2026-10-01 rule) is recorded: Concordia, Mesa and a PDDL toolchain each compose with World Substrate's governed-rules layer and none replaces it, so World Substrate keeps that layer and stops growing its own runtime extras. Preserve the promoted donor experience as regression/fallback while the native path is built; do not make donor hosting migration, conversational editing, bespoke assets, Jev optimization, or a repo merger part of this critical path.
 **Deployment boundary:** the 2026-09-09 donor-backed promotion remains valid evidence and a fallback surface. The 2026-09-18 product decision now targets World Substrate as the native substrate for the next Waltzman release. Public cutover waits until the native description-to-view path meets Decision 005's stopping rule; the existing donor route must not be silently presented as a fresh native run if generation fails.
 
 ## Outcome and success criteria
@@ -183,14 +183,14 @@ Hard constraints:
 | Waltzman stakeholder demo | **promoted 2026-09-09** | `65eb465a` public donor build; separated Sol authoring/execution certification; approved fresh `general_world_v2` run `run_0e488a37157f`; desktop/mobile living replay verified |
 | Shared Netcup VPS migration (donor) | complete 2026-09-16 | Waltzman live simulator on the personal VPS (cybernetic_influence_v3 ADR-016); World Builder backend was not migrated and is offline |
 | Native coordination vertical | **landed 2026-10-05** | #75 vertical, #79 one-shot authoring, #80 run comparison; replay acceptance passes |
-| Replacement-first gate | **active** | Concordia / Mesa / PDDL spikes hosting the governed-rules layer; adopt / compose / keep disposition |
+| Replacement-first gate | **recorded 2026-10-05** | Concordia, Mesa, PDDL all compose with the governed-rules layer; none replaces it; native runtime growth stops |
 | Provenance/authority/repro hardening | queued post-demo | exact law fingerprint, role-specific scopes, visible action-space overflow, appropriate CI/locking |
 | Semantic binding alignment | later / when earned | consume richer LC role/relation representation without moving mechanics or effects into LC; close real vocabulary gaps rather than minting local `lc:` senses |
 | Persistence / second-domain proof | later | durable user worlds/runs and proof beyond Waltzman |
 
-### Active slice — replacement-first gate
+### Active slice — hold at the governed-rules layer
 
-Spike Concordia, Mesa, and a PDDL toolchain as hosts for World Substrate's governed-rules layer on the constrained-handoff world and record an adopt / compose / keep disposition per candidate. Steps and stopping rule: [Exact next action](#exact-next-action).
+The replacement-first gate is recorded: Concordia, Mesa and PDDL each **compose** with the governed-rules layer and none replaces it (see "Replacement-first gate disposition"). The active slice holds World Substrate at that layer, pending Brian's direction choice; eligible work is in [Exact next action](#exact-next-action).
 
 ### Previous slice — donor hosting migration (complete) and post-demo authority hardening
 
@@ -250,6 +250,22 @@ None of these requires reopening the product architecture.
 Promote one only when a concrete product/evidence need earns it.
 
 ## Decisions and assumptions
+
+### Replacement-first gate disposition (recorded 2026-10-05)
+
+Three executed spikes hosted the governed-rules layer on the constrained-handoff world (`spikes/replacement-2026-10/`; each `run_spike.py` exits nonzero on failure, zero provider spend). Re-run independently before recording: all three exit 0.
+
+| Candidate | What it was asked to replace | Evidence | Disposition |
+| --- | --- | --- | --- |
+| Concordia (`gdm-concordia` 2.4.0) | agent/game-master loop | its game master drives the run while resolution calls only `Engine.discover`/`submit`: 7 events, world-state sha256 identical to the native run, 11/11 checks. A native Concordia rewrite of the rules is 51 lines of our own code (Concordia ships no rule, check, authority or atomic-commit primitive) and lacks staleness checks, write scopes and compiler validation. | **compose**: use as the resident loop when LLM residents are needed; keep the Engine as sole authority |
+| Mesa 3.5.1 | model/agent loop, scheduling, data collection | Mesa loop over the Engine gives the same hash, same events and `Engine.replay()` ok (70 glue lines). A rules-in-Mesa rewrite loses, demonstrated by code: atomic commit (partial write persisted), write-scope enforcement (out-of-scope write went through), recorded cause, rules-as-checkable-data, replay from a recorded log. | **compose** when a world needs grids/networks, stochastic activation or parameter sweeps; not adopt |
+| PDDL (unified-planning 1.3.0 + ENHSP) | declaration language / validation / planning | rules translated programmatically to PDDL (4 actions, 30 fluents). The validator accepts the reference plan and rejects the refused approval on the same precondition the Engine refused ("Prerequisite A is healthy"). ENHSP found a different 6-step plan, and the Engine accepted all 6 steps and reached `ready`. Cannot express information visibility, write scopes, causal records, refused-attempt history, open worlds. | **compose**: an export for offline validation and "is the goal reachable" checks; not the runtime or declaration language |
+
+**Result:** no candidate replaces the governed-rules layer, and each can host or check it. World Substrate therefore keeps exactly that layer (rules as data -> compiler-derived authority -> explicit approval -> atomic commit/refusal with recorded cause) and **stops growing its own runtime extras**. Outer loops, resident cognition, scheduling, spatial structure and sweeps come from Concordia or Mesa when a world first needs them; formal validation and planning come from a PDDL export.
+
+**Wrong when:** the first LLM-resident run through Concordia needs a game-master component that writes state outside `Engine.submit`, or more glue than the `CognitionAdapter` path; a Mesa (or other) release ships transactional state with write scopes and per-change history; the PDDL translator needs hand edits for distributed-approval, or the validator and `engine.submit` disagree on any step of a recorded run. Any one of these means re-running the gate for that candidate.
+
+Spike-noted defects to fix in World Substrate itself: a mechanic that raises mid-rule surfaces as an exception rather than a recorded refusal event (already listed as P2 below); the PDDL export's constant order varies with the hash seed (cosmetic, from the library's writer).
 
 ### Product/adoption strategy
 
@@ -336,7 +352,7 @@ Open PRs: none as of 2026-10-05 (#37 closed with its experiment landed in #86; #
 | --- | --- | --- |
 | P0 | native authoring may not express Waltzman-class information/activity/institution constraints | prove two configurable native coordination worlds first; if generic generation is too narrow, use a reviewed reusable coordination-mechanics package rather than narrated consequences |
 | P0 | the zero-review Automatic replay path and richer Waltzman Living Scene path may not compose directly | measure the smallest adapter/mapping from one actual native coordination run before redesigning either renderer |
-| P0 | further native engine/runtime work may duplicate mature off-the-shelf runtimes | run the replacement-first gate before adding engine, scheduler, or renderer capability |
+| P0 | further native engine/runtime work may duplicate mature off-the-shelf runtimes | gate recorded: no native runtime growth; host loops on Concordia/Mesa when needed |
 | P1 | public World Builder generation/runs offline since the Mac origin went away | page states it; restore as a VPS app + `/world-builder/api` route when the replacement gate settles what the Builder runs on |
 | P1 | frozen profile does not yet fingerprint every executable determinant | add exact executable law + compiler/interpreter provenance |
 | P1 | action placeholder write authority is participant-bounded rather than role-specific | bind placeholders to exact action fields |
@@ -387,7 +403,7 @@ Refresh this roadmap when:
 
 - the first configurable native coordination vertical lands or exposes a mechanics/viewer gap;
 - the native one-shot authoring flow first produces a fresh automatic-view run;
-- the replacement-first gate records its adopt / compose / keep disposition;
+- any replacement-gate wrong-when condition fires, or Brian chooses between shrink / continue / freeze;
 - post-demo executable-law provenance/role-authority/affordance-overflow hardening lands;
 - Linguistic Core publishes or adopts a relation/role contract that materially changes how World Substrate semantic bindings are represented;
 - conversational authoring first produces richer information/activity/institution mechanics;
@@ -407,14 +423,12 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Run the replacement-first gate before any further native engine work.**
+**The replacement-first gate is recorded (see "Replacement-first gate disposition"); do not add native runtime capability.**
 
-The native coordination vertical landed on 2026-10-05 (#75, #79, #80), meeting the previous next action's acceptance target. Brian's 2026-10-01 workspace rule presumes building ourselves is bad, and the sibling `cybernetic_influence_v3` adopted the same gate (ADR-017). World Substrate's genuinely differentiated piece is the governed-rules layer: rules as data -> compiler-derived authority -> explicit approval -> enforced atomic commit with recorded cause. Engine stepping, scheduling, and rendering are commodity.
+Every candidate came out as compose, not adopt, so World Substrate's scope is now the governed-rules layer plus its authoring/approval path. Brian has not yet chosen between shrinking onto a runtime, continuing native work, or freezing. Until he chooses, eligible work is limited to:
 
-Concretely:
+1. hardening that protects existing behaviour (the queue above: executable-law fingerprint, role-specific write scopes, explicit affordance overflow, mechanic exceptions as recorded refusals);
+2. restoring the public World Builder backend as a VPS app behind a `/world-builder/api` route if the Builder is kept (project-meta issue #2377 tracks the hosting gap);
+3. when a world first needs LLM residents or spatial/sweep structure, hosting it on Concordia or Mesa per the disposition instead of extending the native loop.
 
-1. for each of Concordia, Mesa, and a PDDL toolchain, run one executed spike that hosts the governed-rules layer on that runtime for the constrained-handoff world (or record a concrete blocker);
-2. record an adopt / compose / keep disposition per candidate, with the spike evidence, in the decisions/roadmap;
-3. if a runtime wins, shrink World Substrate to the governed-rules layer over it rather than growing its own runtime; if none does, keep the native engine with the named gap as the reason.
-
-Do not add new engine, scheduler, renderer, or cognition capability until the gate is recorded. Hardening items above remain eligible when they protect existing behavior.
+Do not add engine, scheduler, renderer or cognition capability of World Substrate's own.

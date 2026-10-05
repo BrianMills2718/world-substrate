@@ -165,7 +165,7 @@ Open work at the handoff point:
 
 The roadmap owns ordering. Current unresolved work is split into the **active replacement-first gate**, **post-demo hardening**, and **later capabilities**.
 
-1. **Replacement-first gate — active:** spike Concordia, Mesa, and a PDDL toolchain as hosts for the governed-rules layer and record adopt / compose / keep before further native engine work. The donor hosting migration is complete (2026-09-16); the World Builder backend was not migrated and is offline.
+1. **Replacement-first gate — recorded 2026-10-05:** Concordia, Mesa and PDDL each compose with the governed-rules layer and none replaces it; World Substrate holds at that layer (roadmap disposition). The donor hosting migration is complete (2026-09-16); the World Builder backend was not migrated and is offline.
 2. **First-two-minute UX — promoted regression target:** preserve the configure-first local-information-to-collective-action experience; do not reopen it as unfinished acquisition work unless evidence regresses.
 3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version.
 4. **Local-authority correctness — post-demo hardening:** bind write-scope placeholders to exact action roles and make authored affordance-cap overflow explicit rather than silently truncating valid actions.
