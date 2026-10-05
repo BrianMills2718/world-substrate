@@ -22,6 +22,7 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
+from scripts.generate_world_bundle import generate_world_bundle
 from scripts.native_coordination_authoring import (
     DEFAULT_CAUSAL as NATIVE_COORDINATION_CAUSAL,
     generate_native_coordination_draft,
@@ -38,6 +39,9 @@ DRAFT_BUDGET = 0.08
 MECHANICS_BUDGET = 0.12
 RUN_BUDGET = 0.12
 DAILY_LLM_BUDGET = 0.50
+# Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
+WORLD_BUDGET = 0.20
+DRY_RUN_TURNS = 12
 LLM_REQUESTS_PER_HOUR = 8
 GENERAL_REQUESTS_PER_MINUTE = 30
 ALLOWED_ORIGINS = {"https://brianmills.dev", "https://www.brianmills.dev"}
@@ -236,6 +240,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if path == "/generate-draft":
                 self._generate_draft(client, body)
                 return
+            if path == "/generate-world":
+                self._generate_world(client, body)
+                return
             if path == "/generate-mechanics":
                 self._generate(client, body)
                 return
@@ -265,6 +272,73 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             )
             return None
         return cap
+
+    def _generate_world(self, client: str, body: dict[str, Any]) -> None:
+        """Plain-English description -> reviewed structure + compiled mechanics.
+
+        Nothing here runs a world for real. A deterministic, zero-cost dry run
+        checks that the proposed mechanics let anything happen at all; if not,
+        mechanics are regenerated once with that failure as guidance. The
+        visitor still has to approve the mechanics before /run will execute.
+        """
+        description = body.get("description")
+        if not isinstance(description, str) or not description.strip():
+            raise ValueError("description must be a nonempty string")
+        model = str(body.get("model") or DEFAULT_MODEL)
+        trace_id = f"{TRACE_ROOT}/world/{uuid.uuid4().hex}"
+        with _LLM_LOCK:
+            budget = self._llm_budget(client, WORLD_BUDGET)
+            if budget is None:
+                return
+            try:
+                bundle, _ = generate_world_bundle(
+                    description, model=model, trace_id=trace_id, max_budget=budget,
+                )
+                guidance = ""
+                attempts: list[dict[str, Any]] = []
+                for attempt in range(2):
+                    generated, _ = generate_causal_model(
+                        bundle, model=model, trace_id=trace_id, max_budget=budget, guidance=guidance,
+                    )
+                    causal = _strip_review(generated)
+                    compiled = CausalModel.from_dict(causal, bundle=bundle)
+                    try:
+                        dry, _, _ = run_world(
+                            bundle, causal, policy="scripted", max_turns=DRY_RUN_TURNS,
+                            trace_id=f"{trace_id}/dry-run-{attempt}",
+                        )
+                        attempts.append({"ok": True, **dry["summary"]})
+                        break
+                    except ValueError as error:
+                        attempts.append({"ok": False, "error": str(error)[:300]})
+                        if attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
+                            break
+                        guidance = (
+                            "A deterministic dry run of your previous mechanics from the initial state "
+                            f"failed: {error}. Make every action's checks satisfiable from the represented "
+                            "initial state for at least one actor, and keep effects consistent with the "
+                            "action descriptions."
+                        )
+                trace_cost = _trace_cost(trace_id)
+            except Exception:
+                _settle_daily_budget(budget, None)
+                raise
+            daily_cost = _settle_daily_budget(budget, trace_cost)
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "description": description,
+                "bundle": bundle,
+                "causal_model": causal,
+                "review": compiled.as_review(),
+                "dry_run": attempts[-1],
+                "dry_run_attempts": attempts,
+                "cost_usd": trace_cost,
+                "daily_cost_usd": daily_cost,
+                "trace_id": trace_id,
+            },
+        )
 
     def _generate_draft(self, client: str, body: dict[str, Any]) -> None:
         description = body.get("description")

@@ -297,6 +297,7 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
         "allowed_state_paths": paths,
         "authority_rules": [
             "Use only action participants as effect targets.",
+            "A participant's selector must list in `components` every component whose fields that participant's checks or effects read or write.",
             "Checks and effects must use only allowed_state_paths.",
             "Do not invent source code, hidden state, or new entities.",
             "An action should change only state causally implied by its description and represented world.",
