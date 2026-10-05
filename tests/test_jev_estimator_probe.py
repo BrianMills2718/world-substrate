@@ -7,6 +7,12 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts" / "run_jev_estimator_probe.py"
 
+# The probe builds its typed Decisions questions from llm_client at import time,
+# so these tests genuinely need the shared client. Skip the module visibly
+# (reported in the skipped count) instead of halting whole-suite collection.
+if importlib.util.find_spec("llm_client") is None:
+    raise unittest.SkipTest("llm_client is not installed; Jev probe tests need it")
+
 spec = importlib.util.spec_from_file_location("run_jev_estimator_probe", SCRIPT)
 probe = importlib.util.module_from_spec(spec)
 assert spec and spec.loader

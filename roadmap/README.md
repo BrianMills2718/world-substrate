@@ -9,8 +9,8 @@ reviewed_through: 2026-09-18
 # World Substrate living roadmap
 
 **Authority:** [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md), and [Decision 005](../docs/decisions/005-native-waltzman-delivery.md).
-**Stage:** prototype substrate complete; deployed authoring/run alpha; promoted donor-backed Waltzman demo retained; active phase is **native Waltzman convergence: description -> editable World Substrate draft -> approved mechanics -> native Engine run -> automatic living UI -> bounded inspection/comparison**.
-**Current frontier:** establish the first configurable native coordination vertical and prove that two materially different coordination configurations run through the same World Substrate mechanics and automatic-view path. Preserve the promoted donor experience as regression/fallback while the native path is built; do not make donor hosting migration, conversational editing, bespoke assets, Jev optimization, or a repo merger part of this critical path.
+**Stage:** prototype substrate complete; deployed authoring/run alpha; promoted donor-backed Waltzman demo retained; native Waltzman convergence path (description -> editable draft -> approved mechanics -> native Engine run -> automatic living UI -> comparison) landed on main 2026-10-05; active phase is the **replacement-first gate** for the engine underneath it.
+**Current frontier (2026-10-05):** the first configurable native coordination vertical, one-shot authoring, and run comparison have landed (#75, #79, #80): two materially different coordination worlds run through one shared mechanics profile, pass replay acceptance, and render through the automatic view. Before any further native engine/runtime work, run the **replacement-first gate** (see Exact next action): test whether World Substrate's governed-rules layer can sit on an off-the-shelf runtime (Concordia, Mesa, a PDDL toolchain) instead of growing its own, per Brian's 2026-10-01 rule that building ourselves is presumed bad. Preserve the promoted donor experience as regression/fallback while the native path is built; do not make donor hosting migration, conversational editing, bespoke assets, Jev optimization, or a repo merger part of this critical path.
 **Deployment boundary:** the 2026-09-09 donor-backed promotion remains valid evidence and a fallback surface. The 2026-09-18 product decision now targets World Substrate as the native substrate for the next Waltzman release. Public cutover waits until the native description-to-view path meets Decision 005's stopping rule; the existing donor route must not be silently presented as a fresh native run if generation fails.
 
 ## Outcome and success criteria
@@ -101,9 +101,9 @@ State, not milestone narrative:
 - `MechanicProfile.freeze()` gives the package/declaration set a stable ID; future durable generated-law provenance should additionally fingerprint the exact executable law plus compiler/interpreter version.
 - Every live Builder diagnosis starts from complete request/response logs and retained causal traces; summaries/replay are orientation surfaces only.
 - Repair Bay proved nontrivial generated law can compile and a bounded LLM policy can reach terminal without a heavier cognition framework.
-- Warehouse Rush v0 exposed a real law/representation omission (`route` did not enforce physical dock); v1 represents `target_dock`. Draft PR #37 retains the experiment; its provider retry is deferred.
-- The deployed World Builder is `https://brianmills.dev/world-builder/`.
-- The promoted stakeholder surface is `https://brianmills.dev/waltzman/`, served through the Cybernetic V3 donor path with a temporary Mac origin pending approved shared Netcup VPS migration.
+- Warehouse Rush v0 exposed a real law/representation omission (`route` did not enforce physical dock); v1 represents `target_dock`. Its experiment record landed in #86 (PR #37 is closed); its provider retry is deferred.
+- The World Builder is at `https://brianmills.dev/world-builder/`; its generate/run backend was a Mac mini service that was not moved during the September 2026 Netcup migration, so since about 2026-09-15 live mechanics generation and fresh runs are offline; the page says so (machine-coordination PR #82). Play, authoring, and download still work. Restoring it means a VPS app plus a `/world-builder/api` proxy route; it is not in the hosting inventory.
+- The promoted stakeholder surface is `https://brianmills.dev/waltzman/`, served through the Cybernetic V3 donor path; its live simulator moved to the personal Netcup VPS on 2026-09-16 (cybernetic_influence_v3 ADR-016, PR #34) and `api/runs` answers.
 - The standalone visualization URL still serves the synthetic prototype. It is retained as a legacy/public design surface rather than the exact next product action.
 - `evidence/renders/waltzman-demo-v0.html` remains a self-contained canonical reference client with embedded baseline/intervention projection bundles; it is regression/reference evidence, not the outreach endpoint.
 - `scripts/waltzman_demo_service.py` additionally exposes the same projection over JSON/SSE and remains an optional observer/live seam.
@@ -113,7 +113,8 @@ State, not milestone narrative:
 - The Waltzman bounded dependency report maps eight declared consequential assumptions to represented/enforcement surfaces and retains explicit residual risk; automatic counterfactual/mutation proof is not implemented or required for the demo.
 - The core time/process runtime remains integer-tick `Engine.advance()` + `due(world)`. Generic SimPy future-event scheduling is not implemented because the current scenario does not require it.
 - Persistent resident memory/planning, generic rich process/institution authoring, saved user worlds/runs, and conversational generation of Waltzman's richer mechanics remain later work.
-- Open PR #43 (CVS sustainment seam) is a separate integration track and does not define this roadmap.
+- The CVS sustainment seam (#43) is merged as a separate integration track and does not define this roadmap.
+- The native coordination vertical is on main: `scripts/check_native_coordination.py` passes for constrained-handoff (2 approvals) and distributed-approval (4 approvals) on shared profile `8856da622ab4813a`, with automatic `render.html` for each and no provider spend.
 
 ## Applicable context
 
@@ -180,14 +181,20 @@ Hard constraints:
 | Waltzman outreach authoring/run path | existing donor capability | Cybernetic V3 public V2 path supports prose -> editable configuration -> approval -> fresh run -> retained evidence |
 | Waltzman outreach + living replay | implemented donor integration | Cybernetic V3 Plans 37–38 provide the first-two-minute funnel and read-only living replay over retained general-run summaries |
 | Waltzman stakeholder demo | **promoted 2026-09-09** | `65eb465a` public donor build; separated Sol authoring/execution certification; approved fresh `general_world_v2` run `run_0e488a37157f`; desktop/mobile living replay verified |
-| Shared Netcup VPS migration | **active** | move the donor backend off the temporary Mac origin without changing the promoted product contract; preserve the Mac as rollback |
+| Shared Netcup VPS migration (donor) | complete 2026-09-16 | Waltzman live simulator on the personal VPS (cybernetic_influence_v3 ADR-016); World Builder backend was not migrated and is offline |
+| Native coordination vertical | **landed 2026-10-05** | #75 vertical, #79 one-shot authoring, #80 run comparison; replay acceptance passes |
+| Replacement-first gate | **active** | Concordia / Mesa / PDDL spikes hosting the governed-rules layer; adopt / compose / keep disposition |
 | Provenance/authority/repro hardening | queued post-demo | exact law fingerprint, role-specific scopes, visible action-space overflow, appropriate CI/locking |
 | Semantic binding alignment | later / when earned | consume richer LC role/relation representation without moving mechanics or effects into LC; close real vocabulary gaps rather than minting local `lc:` senses |
 | Persistence / second-domain proof | later | durable user worlds/runs and proof beyond Waltzman |
 
-### Active slice — Netcup migration and post-demo authority hardening
+### Active slice — replacement-first gate
 
-The stakeholder demo is already promoted. The active slice is to preserve that product contract while removing the temporary Mac-origin dependency and then continue the bounded hardening queue.
+Spike Concordia, Mesa, and a PDDL toolchain as hosts for World Substrate's governed-rules layer on the constrained-handoff world and record an adopt / compose / keep disposition per candidate. Steps and stopping rule: [Exact next action](#exact-next-action).
+
+### Previous slice — donor hosting migration (complete) and post-demo authority hardening
+
+The stakeholder demo is already promoted, and the donor backend left the Mac on 2026-09-16. The section below is kept as the record of that slice; the active slice is the replacement-first gate in Exact next action.
 
 The promoted regression target is:
 
@@ -304,7 +311,7 @@ A reviewer should ultimately be able to approve human-readable law and have that
 
 Primary current artifacts:
 
-- `https://brianmills.dev/world-builder/` — deployed authoring/run alpha;
+- `https://brianmills.dev/world-builder/` — authoring/run alpha; Play and authoring work, generation/runs offline since the Mac origin went away (page says so);
 - `https://brianmills.dev/waltzman/` — promoted stakeholder surface using the bounded Cybernetic V3 donor path;
 - `https://brianmills.dev/world-substrate-visualization/` — legacy synthetic standalone surface; retained design evidence rather than active promotion target;
 - `evidence/renders/waltzman-demo-v0.html` — self-contained canonical Waltzman reference client and regression fixture;
@@ -321,10 +328,7 @@ Primary current artifacts:
 - [World authoring bundle v0](../docs/contracts/world-authoring-bundle-v0.md); and
 - [Action mechanic declaration v0](../docs/contracts/action-mechanic-declaration-v0.md).
 
-Draft/open work that is useful but not roadmap authority:
-
-- PR #37 — Warehouse Rush experiment; retained evidence and provider retry deliberately deferred behind the public demo.
-- PR #43 — bounded CVS sustainment integration from a separate track; rebase/review before any merge decision.
+Open PRs: none as of 2026-10-05 (#37 closed with its experiment landed in #86; #43, #75, #79, #80 merged).
 
 ## Risks and needs resolution
 
@@ -332,7 +336,8 @@ Draft/open work that is useful but not roadmap authority:
 | --- | --- | --- |
 | P0 | native authoring may not express Waltzman-class information/activity/institution constraints | prove two configurable native coordination worlds first; if generic generation is too narrow, use a reviewed reusable coordination-mechanics package rather than narrated consequences |
 | P0 | the zero-review Automatic replay path and richer Waltzman Living Scene path may not compose directly | measure the smallest adapter/mapping from one actual native coordination run before redesigning either renderer |
-| P1 | promoted donor-backed stakeholder demo still depends on a temporary Mac origin | keep it stable as regression/fallback; migrate only as an operational-continuity task, not as a blocker for the native World Substrate vertical |
+| P0 | further native engine/runtime work may duplicate mature off-the-shelf runtimes | run the replacement-first gate before adding engine, scheduler, or renderer capability |
+| P1 | public World Builder generation/runs offline since the Mac origin went away | page states it; restore as a VPS app + `/world-builder/api` route when the replacement gate settles what the Builder runs on |
 | P1 | frozen profile does not yet fingerprint every executable determinant | add exact executable law + compiler/interpreter provenance |
 | P1 | action placeholder write authority is participant-bounded rather than role-specific | bind placeholders to exact action fields |
 | P1 | authored affordance discovery can hit a finite candidate cap | make overflow explicit/paged/refused rather than silent |
@@ -382,7 +387,7 @@ Refresh this roadmap when:
 
 - the first configurable native coordination vertical lands or exposes a mechanics/viewer gap;
 - the native one-shot authoring flow first produces a fresh automatic-view run;
-- the shared Netcup VPS migration completes or is materially blocked, if that migration is still operationally relevant;
+- the replacement-first gate records its adopt / compose / keep disposition;
 - post-demo executable-law provenance/role-authority/affordance-overflow hardening lands;
 - Linguistic Core publishes or adopts a relation/role contract that materially changes how World Substrate semantic bindings are represented;
 - conversational authoring first produces richer information/activity/institution mechanics;
@@ -402,16 +407,14 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-**Establish the first configurable native coordination vertical and prove it renders automatically.**
+**Run the replacement-first gate before any further native engine work.**
+
+The native coordination vertical landed on 2026-10-05 (#75, #79, #80), meeting the previous next action's acceptance target. Brian's 2026-10-01 workspace rule presumes building ourselves is bad, and the sibling `cybernetic_influence_v3` adopted the same gate (ADR-017). World Substrate's genuinely differentiated piece is the governed-rules layer: rules as data -> compiler-derived authority -> explicit approval -> enforced atomic commit with recorded cause. Engine stepping, scheduling, and rendering are commodity.
 
 Concretely:
 
-1. preserve the promoted donor-backed `/waltzman/` experience and retained promotion evidence as regression/fallback; make no public-route change for this slice;
-2. run two materially different coordination configurations through the same native World Substrate state/mechanics/Engine path so this is not merely renamed template content;
-3. from those real runs, identify the smallest missing coordination-mechanics capability and the smallest adapter from retained history into the automatic generic UI;
-4. retain a deterministic/no-spend native run and inspect actual failed/satisfied checks plus information visibility before adding prose generation on top; and
-5. only after that native vertical is sound, connect one-shot natural-language drafting to the same versioned authoring artifact and approval path.
+1. for each of Concordia, Mesa, and a PDDL toolchain, run one executed spike that hosts the governed-rules layer on that runtime for the constrained-handoff world (or record a concrete blocker);
+2. record an adopt / compose / keep disposition per candidate, with the spike evidence, in the decisions/roadmap;
+3. if a runtime wins, shrink World Substrate to the governed-rules layer over it rather than growing its own runtime; if none does, keep the native engine with the named gap as the reason.
 
-The acceptance target for the first vertical is narrower than the full product stopping rule: two different configurations execute natively, produce different consequential structure or parameters, and render through one generic automatic-view path without a hand-authored scene file.
-
-Do **not** start with full conversational editing, bespoke generated art, a Cybernetic runtime port, generalized cognition/scheduling, Jev benchmarking, or a broad arbitrary-world benchmark. Let an observed Waltzman-blocking failure choose any extension.
+Do not add new engine, scheduler, renderer, or cognition capability until the gate is recorded. Hardening items above remain eligible when they protect existing behavior.
