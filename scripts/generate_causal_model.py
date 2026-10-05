@@ -304,6 +304,9 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "Use owner_ref expressions for actor ownership rather than hard-coded actor ids.",
             "Terminal, if present, must be derivable from represented state and must not duplicate a completion flag.",
             "Limits and tests must name omissions and refusal/boundary cases honestly.",
+            "Every check label is a short plain-English condition a visitor understands, using entity labels "
+            "(e.g. \"the watering can is free\", \"Ava is holding the knife\"); never jargon such as actor, "
+            "owner_ref, context, entity, component or participant.",
         ],
     }
 

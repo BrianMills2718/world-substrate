@@ -291,7 +291,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if budget is None:
                 return
             try:
-                bundle, _ = generate_world_bundle(
+                bundle, not_modeled, _ = generate_world_bundle(
                     description, model=model, trace_id=trace_id, max_budget=budget,
                 )
                 guidance = ""
@@ -329,6 +329,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             {
                 "ok": True,
                 "description": description,
+                "not_modeled": not_modeled,
                 "bundle": bundle,
                 "causal_model": causal,
                 "review": compiled.as_review(),

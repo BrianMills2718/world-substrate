@@ -6,7 +6,7 @@ model proposes *represented structure only* (components, entities, action
 signatures, presentation hints). It does not author consequences: executable
 law still comes from `generate_causal_model`, is compiled locally, and must be
 explicitly approved before any run. `validate_bundle` is the authority gate
-here; one validator-guided repair is allowed, as in mechanics generation.
+here; up to two validator-guided repairs are allowed.
 """
 from __future__ import annotations
 
@@ -55,9 +55,15 @@ def _contract() -> dict[str, Any]:
             "{assets: {asset_id: {kind: 'emoji', value}}, category_assets: {category: asset_id},"
             " station_roles: {category: one of source|workstation|surface|goal}} (station_roles may be {})"
         ),
+        "not_modeled": (
+            "Top-level list of short plain-English strings naming every part of the description you could NOT "
+            "represent with this format (for example deadlines, clocks, probabilities, money, distances). "
+            "Use [] only if everything was represented."
+        ),
         "rules": [
             "Every entity component object must list exactly the component's declared fields, with values of the declared type.",
             "entity_ref values must name an entity id that exists in this bundle.",
+            "Labels and descriptions are plain English a visitor would use (\"Ava\", \"watering can\"), never internal jargon.",
             *SIZE_RULES,
         ],
     }
@@ -88,6 +94,9 @@ def _messages(description: str) -> list[dict[str, str]]:
     ]
 
 
+MAX_REPAIRS = 2
+
+
 def generate_world_bundle(
     description: str,
     *,
@@ -95,7 +104,8 @@ def generate_world_bundle(
     trace_id: str | None = None,
     max_budget: float = DEFAULT_BUDGET,
     reasoning_effort: str = "low",
-) -> tuple[dict[str, Any], Any]:
+) -> tuple[dict[str, Any], list[str], Any]:
+    """Return (validated bundle, parts of the description not represented, last LLM result)."""
     if not isinstance(description, str) or not description.strip():
         raise ValueError("description must be a nonempty string")
     if len(description) > MAX_DESCRIPTION_CHARS:
@@ -105,7 +115,7 @@ def generate_world_bundle(
     trace_id = trace_id or f"world-builder-bundle-{uuid.uuid4().hex}"
     messages = _messages(description.strip())
     last_error: Exception | None = None
-    for attempt in range(2):
+    for attempt in range(MAX_REPAIRS + 1):
         result = call_llm(
             model,
             messages,
@@ -120,13 +130,16 @@ def generate_world_bundle(
             parsed = safe_json_loads(result.content)
             if not isinstance(parsed, dict):
                 raise BundleError("model returned a non-object bundle")
+            not_modeled = parsed.pop("not_modeled", [])
+            if not isinstance(not_modeled, list) or not all(isinstance(x, str) for x in not_modeled):
+                raise BundleError("not_modeled must be a list of strings")
             bundle = validate_bundle(parsed)
             if not bundle["actions"]:
                 raise BundleError("bundle must declare at least one action")
-            return bundle, result
+            return bundle, [x.strip() for x in not_modeled if x.strip()][:8], result
         except (BundleError, ValueError, TypeError, KeyError) as error:
             last_error = error
-            if attempt == 1:
+            if attempt == MAX_REPAIRS:
                 break
             messages = [
                 *messages,
@@ -141,7 +154,7 @@ def generate_world_bundle(
                 },
             ]
     assert last_error is not None
-    raise ValueError(f"world proposal remained invalid after one repair: {last_error}") from last_error
+    raise ValueError(f"world proposal remained invalid after {MAX_REPAIRS} repairs: {last_error}") from last_error
 
 
 def main() -> int:
@@ -151,8 +164,10 @@ def main() -> int:
     parser.add_argument("--max-budget", type=float, default=DEFAULT_BUDGET)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    bundle, result = generate_world_bundle(args.description, model=args.model, max_budget=args.max_budget)
+    bundle, not_modeled, result = generate_world_bundle(args.description, model=args.model, max_budget=args.max_budget)
     rendered = json.dumps(bundle, indent=2) + "\n"
+    if not_modeled:
+        print("not modeled: " + "; ".join(not_modeled), file=sys.stderr)
     if args.output:
         args.output.write_text(rendered)
     else:

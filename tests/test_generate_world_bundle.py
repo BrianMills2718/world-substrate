@@ -25,7 +25,7 @@ class GenerateWorldBundleTests(unittest.TestCase):
     def test_valid_proposal_is_returned_validated(self):
         module, call = fake_llm(json.dumps(ORCHARD))
         with patch.dict(sys.modules, {"llm_client": module}):
-            bundle, _ = generate_world_bundle("One worker picks a ripe apple.", trace_id="t", max_budget=0.01)
+            bundle, _, _ = generate_world_bundle("One worker picks a ripe apple.", trace_id="t", max_budget=0.01)
         self.assertEqual(bundle["world"]["id"], "orchard")
         self.assertEqual(call.call_count, 1)
         sent = json.loads(call.call_args.args[1][1]["content"])
@@ -34,22 +34,25 @@ class GenerateWorldBundleTests(unittest.TestCase):
     def test_validator_error_drives_exactly_one_repair(self):
         broken = json.loads(json.dumps(ORCHARD))
         broken["entities"][2]["components"]["fruit"]["tree_id"] = "no-such-tree"
-        module, call = fake_llm(json.dumps(broken), json.dumps(ORCHARD))
+        good = dict(ORCHARD, not_modeled=["the deadline before noon"])
+        module, call = fake_llm(json.dumps(broken), json.dumps(good))
         with patch.dict(sys.modules, {"llm_client": module}):
-            bundle, _ = generate_world_bundle("orchard", trace_id="t", max_budget=0.01)
+            bundle, not_modeled, _ = generate_world_bundle("orchard", trace_id="t", max_budget=0.01)
+        self.assertEqual(not_modeled, ["the deadline before noon"])
+        self.assertNotIn("not_modeled", bundle)
         self.assertEqual(call.call_count, 2)
         repair = call.call_args_list[1].args[1][-1]["content"]
         self.assertIn("no-such-tree", repair)
         self.assertEqual(bundle["world"]["id"], "orchard")
 
-    def test_invalid_after_repair_fails_loudly(self):
+    def test_invalid_after_repairs_fails_loudly_naming_the_reason(self):
         no_actions = json.loads(json.dumps(ORCHARD))
         no_actions["actions"] = []
-        module, call = fake_llm(json.dumps(no_actions), json.dumps(no_actions))
+        module, call = fake_llm(*[json.dumps(no_actions)] * 3)
         with patch.dict(sys.modules, {"llm_client": module}):
-            with self.assertRaisesRegex(ValueError, "invalid after one repair"):
+            with self.assertRaisesRegex(ValueError, "invalid after 2 repairs: .*at least one action"):
                 generate_world_bundle("orchard", trace_id="t", max_budget=0.01)
-        self.assertEqual(call.call_count, 2)
+        self.assertEqual(call.call_count, 3)
 
     def test_empty_or_oversized_description_is_rejected_before_any_call(self):
         module, call = fake_llm()

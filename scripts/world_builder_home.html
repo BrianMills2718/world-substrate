@@ -61,7 +61,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:-2px;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
-@media (max-width:640px){h1{font-size:24px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
+@media (max-width:640px){h1{font-size:22px}.lede,.stepnote{display:none}main{padding-top:16px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -110,6 +110,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <p class="muted" id="review-summary"></p>
     <p class="small muted">From your description: “<span id="review-desc"></span>” · <button class="secondary small" type="button" id="change-btn">Change description</button></p>
     <div id="dry-notice"></div>
+    <div id="not-modeled"></div>
     <h3>What exists</h3>
     <div class="things" id="things"></div>
     <h3>The rules the AI proposed</h3>
@@ -127,9 +128,9 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
     <h2 id="run-h">Your world ran</h2>
     <p class="outcome" id="outcome"></p>
-    <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused or lost to someone faster</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
+    <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
     <div class="strip" id="strip" aria-label="Every attempt, in order. Select one to see why."></div>
-    <p class="detail" id="detail">Select an attempt above to see what happened and why.</p>
+    <p class="detail" id="detail"></p>
     <iframe class="replay" id="replay" title="Graphical replay of the run" sandbox="allow-scripts"></iframe>
     <div class="row" style="margin-top:14px">
       <button class="secondary" type="button" id="again-btn">Run it again</button>
@@ -197,7 +198,10 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     if (err.status === 429 && /budget/i.test(msg)) return "Today’s AI budget for this public demo is used up; it resets at midnight UTC. You can still watch an example run.";
     if (err.status === 429) return "Too many requests from you in a short time. Wait a minute and try again.";
     if (err.status === 503 || /unavailable|could not be reached/i.test(msg)) return "The builder service is not reachable right now. You can still watch an example run.";
-    if (/remained invalid/i.test(msg)) return "The AI could not turn that description into a valid world, even after one correction. Try describing fewer things, or start from an example.";
+    if (/remained invalid/i.test(msg)) {
+      const why = msg.split(/repairs?: /).pop().replace(/^(BundleError|ValueError|TypeError|KeyError): /, "");
+      return "The AI could not turn that description into a world it can simulate, even after correcting itself. What went wrong: “" + why + "”. Try saying it more simply (who, what they share or use, and what counts as finished), or start from an example.";
+    }
     return msg;
   }
 
@@ -272,6 +276,13 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     });
     const t = data.review.terminal;
     $("goal").textContent = t ? `Finished when ${t.mode === "all" ? "every" : "any"} ${words((t.selector.categories || [])[0] || "item")} has ` + t.checks.map((c) => `“${field(c.path)}” ${OPS[c.op] || c.op} ${c.value}`).join(" and ") + "." : "No finish line was proposed, so the run simply stops after 12 rounds.";
+    const nm = $("not-modeled"); nm.innerHTML = "";
+    if ((data.not_modeled || []).length) {
+      const box = document.createElement("div"); box.className = "notice";
+      box.append("Not included from your description (this simulator can’t represent it yet): ");
+      box.append(data.not_modeled.join("; ") + ".");
+      nm.append(box);
+    }
     $("raw").textContent = JSON.stringify({ world: b, rules: data.causal_model }, null, 2);
     const dn = $("dry-notice"); dn.innerHTML = "";
     const d = data.dry_run;
@@ -314,12 +325,24 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     lastRun = run;
     const s = run.summary;
     const attempts = [];
-    (run.trace.transcript || []).forEach((turn) => Object.entries(turn.actors || {}).forEach(([actor, row]) => attempts.push({ turn: turn.turn, actor, row })));
-    const refused = attempts.filter((a) => a.row.status !== "accepted" && a.row.wanted).length;
-    $("outcome").textContent = `${s.accepted_actions} allowed, ${refused} refused or lost. ${s.terminal_reached ? "Finish line reached" : "Finish line not reached"} after ${s.turns} round${s.turns === 1 ? "" : "s"}.`;
+    (run.trace.transcript || []).forEach((turn) => Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+      (row.blocked_by_rules || []).forEach((b) => attempts.push({ turn: turn.turn, actor, blocked: b }));
+      attempts.push({ turn: turn.turn, actor, row });
+    }));
+    const ruleRefusals = attempts.filter((a) => a.blocked).length;
+    const lost = attempts.filter((a) => a.row && a.row.status !== "accepted" && a.row.wanted).length;
+    $("outcome").textContent = `${s.accepted_actions} allowed, ${ruleRefusals} refused by the rules${lost ? `, ${lost} lost to someone faster` : ""}. ${s.terminal_reached ? "Finish line reached" : "Finish line not reached"} after ${s.turns} round${s.turns === 1 ? "" : "s"}.`;
+    $("detail").textContent = ruleRefusals ? "Select an attempt above to see what happened and why. Dashed orange squares are things the rules refused." : "Nothing was refused: in every round, each move someone could think of was already allowed by the rules. Select an attempt to see what happened.";
     const strip = $("strip"); strip.innerHTML = "";
     attempts.forEach((a) => {
       const t = document.createElement("button"); t.type = "button";
+      if (a.blocked) {
+        const target = Object.entries(a.blocked.action).filter(([k]) => !["actor", "kind", "base_revision", "controller"].includes(k)).map(([, v]) => labelFor(v)).join(", ");
+        const text = `Round ${a.turn}: the rules would not let ${labelFor(a.actor)} ${words(a.blocked.action.kind)}${target ? " (" + target + ")" : ""}, because this was not true: ${a.blocked.reason || "a required check"}.`;
+        t.className = "tick refused"; t.setAttribute("aria-label", text); t.title = text;
+        t.addEventListener("click", () => { $("detail").textContent = text; });
+        strip.append(t); return;
+      }
       const kind = a.row.status === "accepted" ? "accepted" : a.row.wanted ? "refused" : "waited";
       t.className = "tick " + kind;
       const who = labelFor(a.actor), act = a.row.wanted ? words(a.row.wanted.kind) : "";

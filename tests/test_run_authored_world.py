@@ -36,6 +36,20 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertEqual(engine.world.entities["apple-1"].component("fruit").stage, "picked")
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
 
+    def test_run_records_distinct_rule_refusals_with_their_failed_checks(self):
+        bundle = load_bundle(REPAIR_BUNDLE_PATH)
+        causal = json.loads(REPAIR_CAUSAL_PATH.read_text())
+        trace, _, _ = run_world(bundle, causal, policy="scripted", max_turns=5)
+        rows = [row for turn in trace["transcript"] for row in turn["actors"].values()]
+        self.assertTrue(all("blocked_by_rules" in row for row in rows))
+        refusals = [b for row in rows for b in row["blocked_by_rules"]]
+        self.assertTrue(refusals, "Repair Bay should show at least one refused action")
+        for row in rows:
+            keys = [(b["action"]["kind"], b["reason"]) for b in row["blocked_by_rules"]]
+            self.assertEqual(len(keys), len(set(keys)))
+            self.assertLessEqual(len(keys), 3)
+        self.assertTrue(all(b["reason"] for b in refusals))
+
     def test_compiled_profile_is_frozen_before_run(self):
         engine, _, profile_id = build_engine(self.bundle, self.causal)
         self.assertTrue(profile_id)

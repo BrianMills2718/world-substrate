@@ -111,7 +111,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
 
     def test_generate_world_returns_structure_mechanics_and_passing_dry_run(self):
         with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
-            service, "generate_world_bundle", return_value=(BUNDLE, FakeResult()),
+            service, "generate_world_bundle", return_value=(BUNDLE, ["a deadline"], FakeResult()),
         ) as world, patch.object(
             service, "generate_causal_model", return_value=(CAUSAL, FakeResult()),
         ) as mechanics:
@@ -121,6 +121,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual([m["action_kind"] for m in payload["review"]["mechanics"]], ["pick"])
         self.assertTrue(payload["dry_run"]["ok"])
         self.assertGreater(payload["dry_run"]["accepted_actions"], 0)
+        self.assertEqual(payload["not_modeled"], ["a deadline"])
         self.assertEqual(mechanics.call_count, 1)
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/world/"))
         self.assertAlmostEqual(world.call_args.kwargs["max_budget"], service.WORLD_BUDGET)
@@ -136,7 +137,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
              "op": "eq", "right": {"literal": "rotten"}}
         )
         with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
-            service, "generate_world_bundle", return_value=(BUNDLE, FakeResult()),
+            service, "generate_world_bundle", return_value=(BUNDLE, ["a deadline"], FakeResult()),
         ), patch.object(
             service, "generate_causal_model", side_effect=[(impossible, FakeResult()), (CAUSAL, FakeResult())],
         ) as mechanics:
@@ -154,7 +155,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
              "op": "eq", "right": {"literal": "rotten"}}
         )
         with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
-            service, "generate_world_bundle", return_value=(BUNDLE, FakeResult()),
+            service, "generate_world_bundle", return_value=(BUNDLE, ["a deadline"], FakeResult()),
         ), patch.object(
             service, "generate_causal_model", return_value=(impossible, FakeResult()),
         ) as mechanics:

@@ -28,6 +28,7 @@ from world_substrate.rules import RuleRegistry
 DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
 DEFAULT_POLICY_BUDGET = 0.12
 MAX_TURNS = 30
+MAX_BLOCKED_RECORDED = 3
 MAX_ACTORS = 6
 
 
@@ -123,9 +124,9 @@ def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
 
 def _scripted_choice(page: dict[str, Any]) -> tuple[dict[str, Any] | None, str]:
     if not page.get("available"):
-        return None, "wait: no offered action"
+        return None, "waited: the rules allowed nothing right now"
     row = page["available"][0]
-    return dict(row["action"]), "first available offered action"
+    return dict(row["action"]), "chose the first action the rules allowed"
 
 
 def _llm_choice(
@@ -198,8 +199,20 @@ def run_world(
         revision = engine.world.revision
         intents: dict[str, dict[str, Any] | None] = {}
         reasons: dict[str, str] = {}
+        blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
         for actor in actors:
             page = engine.discover(actor)
+            # What the installed rules refused this actor at this moment, and why.
+            # Recorded for every policy so a viewer can see refusals even when the
+            # policy itself only ever picks allowed actions.
+            # One example per distinct (action kind, reason), so many targets
+            # refused for the same reason read as one refusal, not a flood.
+            distinct: dict[tuple[str, str], dict[str, Any]] = {}
+            for row in page.get("blocked") or []:
+                key = (row["action"].get("kind", ""), row.get("reason", ""))
+                if key not in distinct and len(distinct) < MAX_BLOCKED_RECORDED:
+                    distinct[key] = {"action": dict(row["action"]), "reason": row.get("reason", "")}
+            blocked_by_rules[actor] = list(distinct.values())
             if policy == "scripted":
                 intents[actor], reasons[actor] = _scripted_choice(page)
             else:
@@ -232,6 +245,7 @@ def run_world(
                     "said": reasons[actor],
                     "refused_because": [],
                     "lost_what_it_wanted": False,
+                    "blocked_by_rules": blocked_by_rules.get(actor, []),
                 }
                 continue
             outcome = engine.submit({**wanted, "controller": f"live:{policy}"})
@@ -273,6 +287,7 @@ def run_world(
                     if not c.get("ok") and c.get("label") != "Base revision is current"
                 ],
                 "lost_what_it_wanted": bool(retried and did != wanted),
+                "blocked_by_rules": blocked_by_rules.get(actor, []),
             }
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
