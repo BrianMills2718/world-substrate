@@ -77,7 +77,7 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("/run", source)
         self.assertIn("Generate bounded coordination draft", source)
         self.assertIn("Source description used for this draft", source)
-        self.assertIn("draftArtifact.source_description!==draftDescription", source)
+        self.assertRegex(source, r"draftArtifact\.source_description\s*!==\s*draftDescription")
         self.assertIn("The one-shot intent review is stale", source)
         self.assertIn("Explicitly not simulated", source)
         self.assertIn("coverage_limit", source)

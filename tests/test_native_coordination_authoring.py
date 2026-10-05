@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
+import sys
 import unittest
 from copy import deepcopy
 from pathlib import Path
-from types import SimpleNamespace
-from unittest.mock import patch
+from types import ModuleType, SimpleNamespace
+from unittest.mock import MagicMock, patch
 
 from scripts.native_coordination_authoring import (
     DRAFT_SCHEMA_VERSION,
@@ -141,7 +142,10 @@ class NativeCoordinationAuthoringTests(unittest.TestCase):
             model="fake-model",
             cost=0.0,
         )
-        with patch("llm_client.call_llm", return_value=fake):
+        fake_module = ModuleType("llm_client")
+        fake_module.call_llm = MagicMock(return_value=fake)
+        fake_module.safe_json_loads = json.loads
+        with patch.dict(sys.modules, {"llm_client": fake_module}):
             generated, bundle, review, result = generate_native_coordination_draft(
                 exact,
                 model="fake-model",
