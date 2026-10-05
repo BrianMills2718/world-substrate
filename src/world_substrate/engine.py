@@ -179,6 +179,22 @@ def _action_id(action: TypedAction) -> str:
     return hashlib.sha256(encoded).hexdigest()[:12]
 
 
+def _world_component_types(world: World) -> dict[str, type]:
+    """Component classes actually carried by one world, keyed by component name."""
+    result: dict[str, type] = {}
+    for entity in world.entities.values():
+        for name, component in entity.components.items():
+            component_type = type(component)
+            existing = result.get(name)
+            if existing is not None and existing is not component_type:
+                raise ValueError(
+                    f"world carries multiple component classes for {name!r}: "
+                    f"{existing} and {component_type}"
+                )
+            result[name] = component_type
+    return result
+
+
 class Engine:
     def _bearer_of(self, action: TypedAction) -> dict[str, Any]:
         record = action.as_dict()
@@ -209,6 +225,7 @@ class Engine:
             raise ValueError("world rule versions do not match the executable registry")
         self.world = world
         self.registry = registry
+        self._component_types = _world_component_types(world)
         self._initial_snapshot = world.snapshot()
 
     def initial_snapshot(self) -> dict[str, Any]:
@@ -865,11 +882,15 @@ class Engine:
         initial_snapshot: object,
         commands: object,
         registry: RuleRegistry,
+        component_types: dict[str, type] | None = None,
     ) -> Engine:
         """Rebuild an engine using only a loaded snapshot, commands, and registry."""
         if not isinstance(commands, list):
             raise TypeError("replay commands must be an array")
-        replayed = cls(World.from_snapshot(initial_snapshot), registry)
+        replayed = cls(
+            World.from_snapshot(initial_snapshot, component_types=component_types),
+            registry,
+        )
         for index, command in enumerate(commands, start=1):
             if not isinstance(command, dict):
                 raise TypeError(f"replay command {index} must be an object")
@@ -898,6 +919,7 @@ class Engine:
             initial_snapshot=self.initial_snapshot(),
             commands=recorded,
             registry=self.registry,
+            component_types=self._component_types,
         )
         expected = self.world.material_hash()
         actual = replayed.world.material_hash()

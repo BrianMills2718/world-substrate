@@ -282,7 +282,12 @@ class Entity:
         return result
 
     @classmethod
-    def from_dict(cls, value: object) -> Entity:
+    def from_dict(
+        cls,
+        value: object,
+        *,
+        component_types: dict[str, type] | None = None,
+    ) -> Entity:
         if not isinstance(value, dict):
             raise TypeError("snapshot entity must be an object")
         entity_id = value.get("entity_id")
@@ -297,9 +302,9 @@ class Entity:
         ):
             raise ValueError("snapshot category_ids must be nonempty strings")
 
-        component_types: dict[str, type[Any]] = dict(BUILTIN_COMPONENT_TYPES)
+        builtin_types: dict[str, type[Any]] = dict(BUILTIN_COMPONENT_TYPES)
         components: dict[str, Any] = {}
-        for name, component_type in component_types.items():
+        for name, component_type in builtin_types.items():
             record = value.get(name)
             if record is None:
                 components[name] = None
@@ -317,13 +322,20 @@ class Entity:
             if item is not None and (not isinstance(item, str) or not item):
                 raise ValueError(f"snapshot {name} must be a nonempty string or null")
             optional_identities[name] = item
+        registered_types = dict(COMPONENT_TYPES)
+        if component_types is not None:
+            # A replaying world may carry runtime-authored component classes whose
+            # names overlap globally registered world-pack components. The local
+            # map is authoritative for this snapshot only; it does not mutate the
+            # process-global registry.
+            registered_types.update(component_types)
         registered: dict[str, Any] = {}
         record = value.get("components")
         if record is not None:
             if not isinstance(record, dict):
                 raise TypeError("snapshot components must be an object")
             for name, fields in sorted(record.items()):
-                component_type = COMPONENT_TYPES.get(name)
+                component_type = registered_types.get(name)
                 if component_type is None:
                     raise ValueError(f"unregistered component: {name!r}")
                 if not isinstance(fields, dict):
@@ -338,7 +350,7 @@ class Entity:
             "label",
             "category_ids",
             "components",
-            *component_types,
+            *builtin_types,
             *optional_identities,
         }
         unknown = sorted(set(value) - allowed)
@@ -409,8 +421,13 @@ class World:
         }
 
     @classmethod
-    def from_snapshot(cls, snapshot: object) -> World:
-        """Load canonical state from a versioned snapshot without command history."""
+    def from_snapshot(
+        cls,
+        snapshot: object,
+        *,
+        component_types: dict[str, type] | None = None,
+    ) -> World:
+        """Load canonical state, optionally with world-local component classes."""
         if not isinstance(snapshot, dict):
             raise TypeError("snapshot must be an object")
         if set(snapshot) != {"schema_version", "world"}:
@@ -447,7 +464,7 @@ class World:
         if not isinstance(entities_record, dict):
             raise TypeError("snapshot entities must be an object")
         entities = {
-            entity_id: Entity.from_dict(record)
+            entity_id: Entity.from_dict(record, component_types=component_types)
             for entity_id, record in entities_record.items()
         }
         versions = value["rule_versions"]
