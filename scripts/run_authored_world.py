@@ -18,7 +18,7 @@ sys.path.insert(0, str(REPO / "src"))
 from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
 from scripts.scaffold_world import _render_model, load_bundle, validate_bundle
-from world_substrate.action_authoring import CausalModel, CompiledActionMechanic
+from world_substrate.action_authoring import CausalModel, CompiledActionMechanic, CompiledProcessMechanic
 from world_substrate.engine import Engine
 from world_substrate.model import Entity, LocationState, OwnershipState, PortableState, World
 from world_substrate.policy import CHOICE_SCHEMA, WAIT, present, resolve_choice
@@ -53,6 +53,13 @@ def build_engine(bundle: dict[str, Any], causal_value: dict[str, Any]) -> tuple[
         if rejects:
             raise ValueError(f"mechanic installer rejected {declared.mechanic_id}: {rejects[0].code}")
         registry.register_action(compiled)
+    for order, declared_process in enumerate(model.processes, start=1):
+        compiled_process = CompiledProcessMechanic(declared_process, order)
+        findings = profile.install(declared_process.package(), compiled_process)
+        rejects = [f for f in findings if f.severity == "reject"]
+        if rejects:
+            raise ValueError(f"mechanic installer rejected {declared_process.process_id}: {rejects[0].code}")
+        registry.register_process(compiled_process)
     profile_id = profile.freeze()
 
     types = _component_types(bundle)
@@ -181,12 +188,26 @@ def run_world(
     max_turns: int = 12,
     max_budget: float = DEFAULT_POLICY_BUDGET,
     trace_id: str | None = None,
+    start_snapshot: dict[str, Any] | None = None,
+    turn_offset: int = 0,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm"}:
         raise ValueError("policy must be scripted or llm")
     if type(max_turns) is not int or not 1 <= max_turns <= MAX_TURNS:
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     engine, causal_model, profile_id = build_engine(bundle, causal_value)
+    if start_snapshot is not None:
+        # Keep going: the same approved law over the world state a previous run
+        # ended in. Identity and rule versions must match, so a continuation
+        # can never swap in different law.
+        fresh = engine.world
+        resumed = World.from_snapshot(start_snapshot, component_types=_component_types(bundle))
+        for name in ("world_id", "content_id", "rule_versions", "engine_id"):
+            if getattr(resumed, name) != getattr(fresh, name):
+                raise ValueError(f"continue_from does not belong to this world and rule set ({name} differs)")
+        engine = Engine(resumed, engine.registry)
+    if type(turn_offset) is not int or turn_offset < 0:
+        raise ValueError("turn_offset must be a nonnegative integer")
     actors = actor_ids(engine, causal_model)
     trace_id = trace_id or f"world-builder-live-run-{uuid.uuid4().hex}"
     transcript: list[dict[str, Any]] = []
@@ -229,7 +250,7 @@ def run_world(
                 intents[actor], reasons[actor] = intent, reason
                 cost += call_cost
 
-        if not any(intents.values()):
+        if not any(intents.values()) and not causal_model.processes:
             break
         shift = (turn - 1) % len(actors)
         order = actors[shift:] + actors[:shift]
@@ -292,10 +313,12 @@ def run_world(
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
             rows[actor] = row
-        engine.advance(1)
+        advanced = engine.advance(1)
         transcript.append(
             {
-                "turn": turn,
+                "turn": turn + turn_offset,
+                # Changes the world made by itself this round (installed processes).
+                "world_changes": [event["rule_id"] for event in advanced.get("events", [])],
                 "revision_when_decided": revision,
                 "committed_first": order[0],
                 "actors": rows,
@@ -324,8 +347,19 @@ def run_world(
                 for row in t["actors"].values()
                 if row.get("status") == "accepted"
             ),
+            "world_changes": sum(len(t["world_changes"]) for t in transcript),
+            # Whether the world is still alive at the end: anything accepted or
+            # changed in the last third of the rounds.
+            "active_at_end": any(
+                t["world_changes"] or any(row.get("status") == "accepted" for row in t["actors"].values())
+                for t in transcript[-max(1, len(transcript) // 3):]
+            ),
+            "first_turn": turn_offset + 1,
+            "last_turn": turn_offset + len(transcript),
         },
         "transcript": transcript,
+        # Where a "keep going" continuation resumes.
+        "final_snapshot": engine.world.snapshot(),
     }
     return trace, engine, causal_model
 

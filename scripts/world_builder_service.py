@@ -52,6 +52,9 @@ RULES_RETRY_JUSTIFICATION = (
     "reach its finish line; the stronger model measured 6/6 vs 11/24 on the same descriptions."
 )
 DRY_RUN_TURNS = 12
+WORLD_KINDS = ("task", "ongoing", "open")
+# Keep going is bounded: a visitor can continue one world for this many rounds.
+MAX_CONTINUED_TURNS = 300
 LLM_REQUESTS_PER_HOUR = 8
 GENERAL_REQUESTS_PER_MINUTE = 30
 ALLOWED_ORIGINS = {"https://brianmills.dev", "https://www.brianmills.dev"}
@@ -216,6 +219,44 @@ def _requested_model(body: dict[str, Any]) -> str:
     raise ValueError(f"model must be {DEFAULT_MODEL} (or omitted)")
 
 
+# --- Background jobs -------------------------------------------------------
+#
+# Cloudflare closes a proxied request after 100 seconds, and a build with a
+# stronger-model retry, or a run with AI-chosen moves, can take longer. Those
+# endpoints accept {"async": true}: the request returns a job id at once and
+# the page polls GET /jobs/<id>. The work and its result are identical to the
+# synchronous path; only delivery changes.
+JOB_TTL_SECONDS = 3600
+MAX_JOBS = 200
+_JOBS: dict[str, dict[str, Any]] = {}
+_JOBS_LOCK = threading.Lock()
+ASYNC_PATHS = ("/generate-world", "/run")
+
+
+def _prune_jobs() -> None:
+    cutoff = time.time() - JOB_TTL_SECONDS
+    for job_id in [k for k, v in _JOBS.items() if v["created"] < cutoff]:
+        del _JOBS[job_id]
+    while len(_JOBS) > MAX_JOBS:
+        del _JOBS[min(_JOBS, key=lambda k: _JOBS[k]["created"])]
+
+
+class _JobResponder:
+    """Stands in for the HTTP handler inside a job: captures the one response."""
+
+    def __init__(self, job_id: str) -> None:
+        self.job_id = job_id
+
+    def _json(self, status: int, value: dict[str, Any]) -> None:
+        with _JOBS_LOCK:
+            job = _JOBS.get(self.job_id)
+            if job is not None:
+                job.update(status="done", http_status=int(status), payload=value)
+
+    def _error(self, status: int, message: str) -> None:
+        self._json(status, {"ok": False, "error": message})
+
+
 def _initial_refusals(bundle: dict[str, Any], causal: dict[str, Any], limit: int = 6) -> list[str]:
     """Distinct 'action: failed checks' lines for every actor in the starting state."""
     engine, model, _ = build_engine(bundle, causal)
@@ -267,7 +308,47 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 },
             )
             return
+        path = self._path()
+        if path.startswith("/jobs/"):
+            job_id = path[len("/jobs/"):]
+            with _JOBS_LOCK:
+                job = _JOBS.get(job_id)
+                snapshot = None if job is None else dict(job)
+            if snapshot is None:
+                self._error(HTTPStatus.NOT_FOUND, "unknown or expired job")
+            elif snapshot["status"] == "running":
+                self._json(HTTPStatus.OK, {"ok": True, "status": "running", "job_id": job_id})
+            else:
+                self._json(snapshot["http_status"], snapshot["payload"])
+            return
         self._error(HTTPStatus.NOT_FOUND, "not found")
+
+    def _start_job(self, client: str, path: str, body: dict[str, Any]) -> None:
+        job_id = uuid.uuid4().hex
+        with _JOBS_LOCK:
+            _prune_jobs()
+            _JOBS[job_id] = {"status": "running", "created": time.time()}
+        responder = _JobResponder(job_id)
+        # The handler methods only use _json/_error/_llm_budget on self, so a
+        # job runs the exact same code with the responder standing in.
+        responder._llm_budget = WorldBuilderHandler._llm_budget.__get__(responder)
+        target = {"/generate-world": WorldBuilderHandler._generate_world, "/run": WorldBuilderHandler._run}[path]
+
+        def work() -> None:
+            try:
+                target(responder, client, body)
+            except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
+                responder._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
+            except Exception as error:  # pragma: no cover - final job boundary
+                print(f"world-builder-api: job {job_id} error: {type(error).__name__}: {str(error)[:300]}", flush=True)
+                responder._error(HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")
+            with _JOBS_LOCK:
+                job = _JOBS.get(job_id)
+                if job is not None and job["status"] == "running":
+                    job.update(status="done", http_status=500, payload={"ok": False, "error": "job ended without a result"})
+
+        threading.Thread(target=work, daemon=True).start()
+        self._json(HTTPStatus.ACCEPTED, {"ok": True, "status": "running", "job_id": job_id})
 
     def do_POST(self) -> None:
         client = _client_ip(self)
@@ -295,6 +376,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             return
 
         path = self._path()
+        if body.get("async") is True and path in ASYNC_PATHS:
+            self._start_job(client, path, body)
+            return
         try:
             if path == "/generate-draft":
                 self._generate_draft(client, body)
@@ -361,18 +445,25 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         model = _requested_model(body)
         messages = body.get("messages")
         # Validate before reserving any budget.
-        from scripts.world_dialogue import _validate_turns
+        from scripts.world_dialogue import _kind, _validate_turns
         _validate_turns(messages)
+        _kind(body.get("world_kind"))
         self._dialogue_call(
             client, "clarify",
-            lambda trace_id, budget: clarify(messages, model=model, trace_id=trace_id, max_budget=budget),
+            lambda trace_id, budget: clarify(
+                messages, model=model, trace_id=trace_id, max_budget=budget, world_kind=body.get("world_kind") or "task",
+            ),
         )
 
     def _surprise(self, client: str, body: dict[str, Any]) -> None:
         model = _requested_model(body)
+        from scripts.world_dialogue import _kind
+        _kind(body.get("world_kind"))
         self._dialogue_call(
             client, "surprise",
-            lambda trace_id, budget: surprise_description(model=model, trace_id=trace_id, max_budget=budget),
+            lambda trace_id, budget: surprise_description(
+                model=model, trace_id=trace_id, max_budget=budget, world_kind=body.get("world_kind") or "task",
+            ),
         )
 
     def _generate_world(self, client: str, body: dict[str, Any]) -> None:
@@ -387,6 +478,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if not isinstance(description, str) or not description.strip():
             raise ValueError("description must be a nonempty string")
         model = _requested_model(body)
+        world_kind = body.get("world_kind") or "task"
+        if world_kind not in WORLD_KINDS:
+            raise ValueError(f"world_kind must be one of {list(WORLD_KINDS)}")
         trace_id = f"{TRACE_ROOT}/world/{uuid.uuid4().hex}"
         with _LLM_LOCK:
             budget = self._llm_budget(client, WORLD_BUDGET)
@@ -394,7 +488,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 return
             try:
                 bundle, not_modeled, _ = generate_world_bundle(
-                    description, model=model, trace_id=trace_id, max_budget=budget,
+                    description, model=model, trace_id=trace_id, max_budget=budget, world_kind=world_kind,
                 )
                 guidance = ""
                 attempts: list[dict[str, Any]] = []
@@ -410,6 +504,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             max_budget=budget,
                             guidance=guidance,
                             model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
+                            world_kind=world_kind,
                         )
                         candidate = _strip_review(generated)
                         candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
@@ -433,9 +528,28 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             trace_id=f"{trace_id}/dry-run-{attempt}",
                         )
                         result_row = {"ok": True, **dry["summary"]}
-                        finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
-                        score = 2 if finishes else 1
-                        if finishes:
+                        if world_kind != "task":
+                            # Ongoing/open worlds succeed by staying alive, not by finishing.
+                            alive = (
+                                candidate_compiled.terminal is None
+                                and bool(candidate_compiled.processes)
+                                and dry["summary"]["active_at_end"]
+                            )
+                            score = 2 if alive else 1
+                            guidance = "" if alive else (
+                                f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
+                                f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
+                                f"{len(candidate_compiled.processes)} processes, active in the last rounds: "
+                                f"{dry['summary']['active_at_end']}. Set terminal to null and add processes so state "
+                                "keeps changing and the actors keep having useful actions in every round."
+                            )
+                            finishes = None
+                        else:
+                            finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
+                            score = 2 if finishes else 1
+                        if finishes is None:
+                            pass
+                        elif finishes:
                             guidance = ""
                         elif candidate_compiled.terminal is None:
                             guidance = (
@@ -479,6 +593,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             {
                 "ok": True,
                 "description": description,
+                "world_kind": world_kind,
                 "not_modeled": not_modeled,
                 "bundle": bundle,
                 "causal_model": causal,
@@ -629,6 +744,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         turns = body.get("turns", 12)
         if type(turns) is not int:
             raise ValueError("turns must be an integer")
+        continue_from = body.get("continue_from")
+        if continue_from is not None and not isinstance(continue_from, dict):
+            raise ValueError("continue_from must be a snapshot object")
+        turn_offset = body.get("turn_offset", 0)
+        if type(turn_offset) is not int or not 0 <= turn_offset <= MAX_CONTINUED_TURNS:
+            raise ValueError(f"turn_offset must be an integer between 0 and {MAX_CONTINUED_TURNS}")
         model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
         if execution_mode == "native_coordination":
@@ -653,6 +774,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     trace, _, compiled = run_world(
                         bundle, causal, policy=policy, model_name=model,
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
+                        start_snapshot=continue_from, turn_offset=turn_offset,
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
@@ -664,6 +786,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             trace, _, compiled = run_world(
                 bundle, causal, policy=policy, model_name=model,
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
+                start_snapshot=continue_from, turn_offset=turn_offset,
             )
             daily_cost = None
         if execution_mode == "authored_world":

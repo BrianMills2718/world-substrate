@@ -23,6 +23,8 @@ from .rules import Check, TypedAction
 
 CAUSAL_MODEL_SCHEMA_VERSION = "world-substrate-causal-model/v0"
 ACTION_MECHANIC_SCHEMA_VERSION = "world-substrate-action-mechanic/v0"
+PROCESS_SCHEMA_VERSION = "world-substrate-process-mechanic/v0"
+MAX_PROCESSES = 6
 MAX_DISCOVERED_ACTIONS = 256
 
 OPS = {
@@ -238,9 +240,128 @@ class DeclaredTerminal:
 
 
 @dataclass(frozen=True)
+class DeclaredProcess:
+    """Something the world does by itself every round, with no actor.
+
+    It uses the same selector/check/effect language as actions, with a single
+    participant named ``it``: every entity matching the selector whose checks
+    hold has the effects applied, once per round. This is what lets a world
+    keep going (plants dry out again, new orders arrive) instead of stopping
+    once its actors have done everything once.
+    """
+
+    process_id: str
+    version: str
+    rationale: str
+    selector: dict[str, Any]
+    checks: tuple[dict[str, Any], ...]
+    effects: tuple[dict[str, Any], ...]
+    limits: tuple[str, ...]
+    read_paths: tuple[str, ...]
+    write_paths: tuple[str, ...]
+
+    def package(self) -> MechanicPackage:
+        return MechanicPackage(
+            mechanic_id=self.process_id,
+            version=self.version,
+            causal_bearer="autonomous process (authored declaration)",
+            representation="deterministic",
+            reads=self.read_paths,
+            writes=self.write_paths,
+            effects=(self.rationale,),
+            limits=self.limits,
+            tests=("applies once per round to every matching entity whose checks hold",),
+            semantic_bindings=(),
+            trace_contract="Process event per round with state-path changes on matching entities.",
+        )
+
+    @classmethod
+    def from_dict(cls, value: object, *, bundle: dict[str, Any]) -> "DeclaredProcess":
+        if not isinstance(value, dict):
+            raise ActionDeclarationError("process must be an object")
+        required = {"process_id", "rationale", "selector", "checks", "effects"}
+        missing = sorted(required - set(value))
+        if missing:
+            raise ActionDeclarationError(f"process is missing: {missing}")
+        unknown = sorted(set(value) - required - {"schema_version", "version", "limits"})
+        if unknown:
+            raise ActionDeclarationError(f"unknown process keys: {unknown}")
+        process_id = _nonempty(value["process_id"], "process_id")
+        selector = _selector(value["selector"], bundle, f"process {process_id} selector")
+        signature: dict[str, Any] = {"fields": []}
+        selectors = {"it": selector}
+        # A process may run on every matching entity unconditionally.
+        checks = _checks(value["checks"], bundle, signature, selectors) if value["checks"] else ()
+        effects = _effects(value["effects"], bundle, signature, selectors)
+        return cls(
+            process_id=process_id,
+            version=str(value.get("version", "1")),
+            rationale=_nonempty(value["rationale"], f"process {process_id} rationale"),
+            selector=selector,
+            checks=checks,
+            effects=effects,
+            limits=_string_list(value.get("limits", []), "limits", nonempty=False),
+            # _derived_reads names the selector's entity `<actor>`; a process's
+            # only participant is `it`.
+            read_paths=tuple(sorted(p.replace("<actor>", "<it>") for p in _derived_reads(selector, {}, checks, effects))),
+            write_paths=_derived_writes(effects),
+        )
+
+
+class CompiledProcessMechanic:
+    """A ProcessRule interpreted entirely from a validated declaration."""
+
+    def __init__(self, declared: DeclaredProcess, order: int) -> None:
+        self.declared = declared
+        self.rule_id = declared.process_id
+        self.version = declared.version
+        self.order = order
+        self.read_paths = declared.read_paths
+        self.write_paths = declared.write_paths
+
+    def _matching(self, world: World) -> list[str]:
+        out = []
+        for entity_id in sorted(world.entities):
+            entity = world.entities[entity_id]
+            if not _selector_matches(entity, self.declared.selector):
+                continue
+            participants = {"it": entity_id}
+            ok = True
+            for row in self.declared.checks:
+                try:
+                    left = _resolve_expr(row["left"], world, {}, participants, None)
+                    right = _resolve_expr(row["right"], world, {}, participants, None)
+                    ok = _compare(left, row["op"], right)
+                except (KeyError, TypeError, ValueError, ActionDeclarationError):
+                    ok = False
+                if not ok:
+                    break
+            if ok:
+                out.append(entity_id)
+        return out
+
+    def due(self, world: World) -> bool:
+        return bool(self._matching(world))
+
+    def apply_with_event_id(self, world: World, event_id: str | None) -> None:
+        for entity_id in self._matching(world):
+            participants = {"it": entity_id}
+            entity = world.entities[entity_id]
+            for effect in self.declared.effects:
+                value = _resolve_expr(effect["value"], world, {}, participants, event_id)
+                _assign_entity_value(entity, effect["path"], effect["op"], value)
+            if event_id is not None:
+                entity.last_cause_event_id = event_id
+
+    def apply(self, world: World) -> None:
+        self.apply_with_event_id(world, None)
+
+
+@dataclass(frozen=True)
 class CausalModel:
     mechanics: tuple[DeclaredActionMechanic, ...]
     terminal: DeclaredTerminal | None
+    processes: tuple[DeclaredProcess, ...] = ()
 
     @classmethod
     def from_dict(cls, value: object, *, bundle: dict[str, Any]) -> "CausalModel":
@@ -269,7 +390,14 @@ class CausalModel:
                 f"expected {sorted(expected_kinds)}, got {sorted(kinds)}"
             )
         terminal = DeclaredTerminal.from_dict(value.get("terminal"), bundle=bundle)
-        return cls(mechanics=mechanics, terminal=terminal)
+        raw_processes = value.get("processes") or []
+        if not isinstance(raw_processes, list) or len(raw_processes) > MAX_PROCESSES:
+            raise ActionDeclarationError(f"processes must be a list of at most {MAX_PROCESSES}")
+        processes = tuple(DeclaredProcess.from_dict(row, bundle=bundle) for row in raw_processes)
+        ids = [p.process_id for p in processes] + [m.mechanic_id for m in mechanics]
+        if len(ids) != len(set(ids)):
+            raise ActionDeclarationError("process and mechanic ids must be unique")
+        return cls(mechanics=mechanics, terminal=terminal, processes=processes)
 
     def as_review(self) -> dict[str, Any]:
         """Authority-oriented summary suitable for a human review surface."""
@@ -288,6 +416,17 @@ class CausalModel:
                     "tests": list(m.tests),
                 }
                 for m in self.mechanics
+            ],
+            "processes": [
+                {
+                    "process_id": p.process_id,
+                    "rationale": p.rationale,
+                    "selector": deepcopy(p.selector),
+                    "checks": deepcopy(list(p.checks)),
+                    "effects": deepcopy(list(p.effects)),
+                    "writes": list(p.write_paths),
+                }
+                for p in self.processes
             ],
             "terminal": None
             if self.terminal is None

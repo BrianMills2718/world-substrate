@@ -12,18 +12,18 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.page = HOME.read_text()
 
     def test_natural_language_flow_uses_generation_then_explicit_approval(self):
-        self.assertIn('api("/generate-world"', self.page)
+        self.assertIn('apiJob("/generate-world"', self.page)
         self.assertIn("Approve rules and run", self.page)
         self.assertIn("approved: true", self.page)
         # The run request is only sent from the approval handler.
-        self.assertEqual(self.page.count('api("/run"'), 1)
+        self.assertEqual(self.page.count('apiJob("/run"'), 1)
 
     def test_feeling_lucky_and_dialogue_paths_are_wired(self):
         self.assertIn("I’m feeling lucky", self.page)
         self.assertIn('api("/surprise"', self.page)
         self.assertIn("without stopping for review", self.page)
         self.assertIn("Help me describe it", self.page)
-        self.assertIn('api("/clarify", { messages: talk })', self.page)
+        self.assertIn('api("/clarify", { messages: talk, world_kind: kind() })', self.page)
         self.assertIn("Use this description and build", self.page)
 
     def test_tutorial_steps_and_escape_hatches_are_present(self):
@@ -31,6 +31,13 @@ class WorldBuilderHomeTests(unittest.TestCase):
             self.assertIn(step, self.page)
         self.assertIn('href="play/"', self.page)
         self.assertIn('href="build/"', self.page)
+
+    def test_world_kinds_and_keep_going_are_offered(self):
+        for label in ("A task to finish", "Ongoing work", "An open world", "Keep going (12 more rounds)",
+                      "What happens by itself each round"):
+            self.assertIn(label, self.page)
+        self.assertIn("request.continue_from = lastRun.trace.final_snapshot", self.page)
+        self.assertIn('fetch(API + "/jobs/" + started.job_id)', self.page)
 
     def test_failure_states_are_written_in_plain_words(self):
         self.assertIn("These rules let nobody act", self.page)
