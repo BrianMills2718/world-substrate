@@ -372,7 +372,12 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     const n = document.createElement("div");
     if (d.ok) {
       n.className = "notice info";
-      n.textContent = `Quick test with simple moves: ${d.accepted_actions} action${d.accepted_actions === 1 ? "" : "s"} allowed in ${d.turns} round${d.turns === 1 ? "" : "s"}; ${d.terminal_reached ? "it reaches the finish line" : "it does not reach the finish line on its own"}.`;
+      const keepsGoing = data.world_kind && data.world_kind !== "task";
+      const outcome = keepsGoing
+        ? (d.active_at_end ? "the world is still active at the end, so it can keep going" : "the world goes quiet by the end")
+        : (d.terminal_reached ? "it reaches the finish line" : "it does not reach the finish line on its own");
+      const changes = keepsGoing && d.world_changes ? `, ${d.world_changes} change${d.world_changes === 1 ? "" : "s"} by the world itself` : "";
+      n.textContent = `Quick test with simple moves: ${d.accepted_actions} action${d.accepted_actions === 1 ? "" : "s"} allowed in ${d.turns} round${d.turns === 1 ? "" : "s"}${changes}; ${outcome}.`;
     } else {
       n.className = "notice";
       n.textContent = "These rules let nobody act: in a quick test from the starting state, every action needed something that was never true. You can still read them below, but running would show nothing. Try rewording your description or start from an example.";
