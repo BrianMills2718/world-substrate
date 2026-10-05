@@ -184,6 +184,30 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertFalse(payload["dry_run"]["terminal_reached"])
         self.assertEqual([a["ok"] for a in payload["dry_run_attempts"]], [True, False])
 
+    def test_compiler_rejection_goes_to_the_stronger_retry(self):
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model",
+            side_effect=[ValueError("causal model selects no actors in this world"), (CAUSAL, FakeResult())],
+        ) as mechanics:
+            status, payload = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_args_list[1].kwargs["model"], service.RULES_RETRY_MODEL)
+        self.assertIn("selects no actors", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertEqual([a["ok"] for a in payload["dry_run_attempts"]], [False, True])
+        self.assertTrue(payload["dry_run"]["terminal_reached"])
+
+    def test_two_compiler_rejections_fail_with_the_reason(self):
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", side_effect=ValueError("causal model selects no actors in this world"),
+        ):
+            status, payload = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 422)
+        self.assertIn("selects no actors", payload["error"])
+
     def test_generate_world_reports_failed_dry_run_plainly_after_one_retry(self):
         impossible = json.loads(json.dumps(CAUSAL))
         impossible["mechanics"][0]["checks"].append(
