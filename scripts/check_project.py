@@ -18,7 +18,7 @@ from scripts._display import display_path
 
 LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
-SKIP = {".git", ".venv", ".company-planning", "work", "runs"}
+SKIP = {".git", ".venv", ".company-planning", "work", "runs", "node_modules"}
 REQUIRED = (
     "AGENTS.md",
     "README.md",
