@@ -1,0 +1,60 @@
+(define (domain constrained_handoff-domain)
+ (:requirements :strips :typing :negative-preconditions :numeric-fluents)
+ (:types
+    entity symbol - object
+    member delivery information gate resource - entity
+ )
+ (:constants
+   s_pending s_ready s_blocked s_delivered - symbol
+ )
+ (:predicates 
+             (information_source_id ?e - entity ?v - entity)
+             (delivery_info_id ?e - entity ?v - entity)
+             (delivery_recipient_id ?e - entity ?v - entity)
+             (delivery_channel_id ?e - entity ?v_0 - symbol)
+             (information_active ?e - entity)
+             (delivery_status ?e - entity ?v_0 - symbol)
+             (member_aware ?e - entity)
+             (member_approved ?e - entity)
+             (gate_status ?e - entity ?v_0 - symbol)
+             (member_authorized ?e - entity)
+             (information_channel_id ?e - entity ?v_0 - symbol)
+             (cat_member ?e - entity)
+             (cat_delivery ?e - entity)
+             (cat_information ?e - entity)
+             (cat_gate ?e - entity)
+             (cat_prereq_a ?e - entity)
+             (cat_prereq_b ?e - entity)
+             (cat_prereq_c ?e - entity)
+             (cat_prereq_d ?e - entity)
+             (cat_restorable ?e - entity)
+             (has_member ?e - entity)
+             (has_delivery ?e - entity)
+             (has_information ?e - entity)
+             (has_gate ?e - entity)
+             (has_resource ?e - entity)
+             (same_delivery_channel_id__information_channel_id ?a - entity ?b - entity)
+ )
+ (:functions 
+             (gate_approval_count ?e - entity)
+             (gate_required_approvals ?e - entity)
+             (resource_current ?e - entity)
+             (resource_required ?e - entity)
+ )
+ (:action communicate
+  :parameters ( ?actor - member ?delivery - delivery ?information - information ?recipient - member)
+  :precondition (and (cat_member ?actor) (has_member ?actor) (cat_delivery ?delivery) (has_delivery ?delivery) (cat_information ?information) (has_information ?information) (cat_member ?recipient) (has_member ?recipient) (information_source_id ?information ?actor) (delivery_info_id ?delivery ?information) (delivery_recipient_id ?delivery ?recipient) (same_delivery_channel_id__information_channel_id ?delivery ?information) (not (information_active ?information)) (delivery_status ?delivery s_pending))
+  :effect (and (information_active ?information) (delivery_status ?delivery s_delivered) (not (delivery_status ?delivery s_pending)) (member_aware ?recipient)))
+ (:action approve
+  :parameters ( ?actor - member ?gate - gate ?prereq_a - resource ?prereq_b - resource ?prereq_c - resource ?prereq_d - resource)
+  :precondition (and (cat_member ?actor) (has_member ?actor) (cat_gate ?gate) (has_gate ?gate) (cat_prereq_a ?prereq_a) (has_resource ?prereq_a) (cat_prereq_b ?prereq_b) (has_resource ?prereq_b) (cat_prereq_c ?prereq_c) (has_resource ?prereq_c) (cat_prereq_d ?prereq_d) (has_resource ?prereq_d) (member_aware ?actor) (not (member_approved ?actor)) (gate_status ?gate s_blocked) (< (gate_approval_count ?gate) (gate_required_approvals ?gate)) (<= (resource_required ?prereq_a) (resource_current ?prereq_a)) (<= (resource_required ?prereq_b) (resource_current ?prereq_b)) (<= (resource_required ?prereq_c) (resource_current ?prereq_c)) (<= (resource_required ?prereq_d) (resource_current ?prereq_d)))
+  :effect (and (member_approved ?actor) (increase (gate_approval_count ?gate) 1)))
+ (:action intervene
+  :parameters ( ?actor - member ?resource - resource)
+  :precondition (and (cat_member ?actor) (has_member ?actor) (cat_restorable ?resource) (has_resource ?resource) (member_authorized ?actor) (< (resource_current ?resource) (resource_required ?resource)))
+  :effect (and (assign (resource_current ?resource) (resource_required ?resource))))
+ (:action finalize
+  :parameters ( ?actor - member ?gate - gate ?prereq_a - resource ?prereq_b - resource ?prereq_c - resource ?prereq_d - resource)
+  :precondition (and (cat_member ?actor) (has_member ?actor) (cat_gate ?gate) (has_gate ?gate) (cat_prereq_a ?prereq_a) (has_resource ?prereq_a) (cat_prereq_b ?prereq_b) (has_resource ?prereq_b) (cat_prereq_c ?prereq_c) (has_resource ?prereq_c) (cat_prereq_d ?prereq_d) (has_resource ?prereq_d) (gate_status ?gate s_blocked) (<= (gate_required_approvals ?gate) (gate_approval_count ?gate)) (<= (resource_required ?prereq_a) (resource_current ?prereq_a)) (<= (resource_required ?prereq_b) (resource_current ?prereq_b)) (<= (resource_required ?prereq_c) (resource_current ?prereq_c)) (<= (resource_required ?prereq_d) (resource_current ?prereq_d)))
+  :effect (and (not (gate_status ?gate s_blocked)) (gate_status ?gate s_ready)))
+)
