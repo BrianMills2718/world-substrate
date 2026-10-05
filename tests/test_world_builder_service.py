@@ -10,11 +10,16 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
+import scripts.native_coordination_authoring as coordination
 import scripts.world_builder_service as service
+from world_substrate.action_authoring import CausalModel
 
 REPO = Path(__file__).resolve().parents[1]
 BUNDLE = json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text())
 CAUSAL = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
+DRAFT = json.loads((REPO / "examples/native_coordination/one-shot-draft-v0.json").read_text())
+DRAFT_BUNDLE = coordination.draft_to_bundle(DRAFT)
+DRAFT_REVIEW = coordination.draft_review(DRAFT)
 
 
 class FakeResult:
@@ -72,6 +77,37 @@ class WorldBuilderServiceTests(unittest.TestCase):
         except urllib.error.HTTPError as error:
             return error.code, json.loads(error.read())
 
+    def test_generate_draft_returns_editable_bundle_and_explicit_review(self):
+        with patch.object(service, "_trace_cost", return_value=0.002), patch.object(
+            service,
+            "generate_native_coordination_draft",
+            return_value=(DRAFT, DRAFT_BUNDLE, DRAFT_REVIEW, FakeResult()),
+        ) as generate:
+            status, payload = self.post(
+                "/generate-draft",
+                {"description": DRAFT["source_description"]},
+            )
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["draft"]["schema_version"], DRAFT["schema_version"])
+        self.assertEqual(payload["bundle"]["world"]["id"], "handoff-review")
+        self.assertEqual(
+            [row["action_kind"] for row in payload["causal_model"]["mechanics"]],
+            ["communicate", "approve", "intervene", "finalize"],
+        )
+        self.assertTrue(payload["review"]["narrowing_is_explicit"])
+        self.assertIn("Use probabilistic delivery delays.", payload["review"]["unsupported_requests"])
+        self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/draft/"))
+        self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], service.DRAFT_BUDGET)
+        self.assertAlmostEqual(payload["daily_cost_usd"], 0.002, places=6)
+
+    def test_generate_draft_rejects_empty_description_before_spend(self):
+        with patch.object(service, "generate_native_coordination_draft") as generate:
+            status, payload = self.post("/generate-draft", {"description": "  "})
+        self.assertEqual(status, 422)
+        self.assertIn("description", payload["error"])
+        generate.assert_not_called()
+        self.assertFalse(self.budget_path.exists())
+
     def test_scripted_fresh_run_returns_graphical_replay_without_llm(self):
         status, payload = self.post(
             "/run",
@@ -87,6 +123,63 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(payload["summary"]["terminal_reached"])
         self.assertEqual(payload["cost_usd"], 0.0)
         self.assertIn("Scene replay", payload["replay_html"])
+
+    def test_native_coordination_run_uses_native_runner_and_living_scene(self):
+        shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
+        compiled = CausalModel.from_dict(shared, bundle=DRAFT_BUNDLE)
+        fake_trace = {
+            "schema_version": "world-substrate-contested-run/v3",
+            "summary": {
+                "turns": 7,
+                "terminal_reached": True,
+                "accepted_actions": 6,
+                "blocked_event_id": "e0003",
+            },
+            "cost_usd": 0.0,
+        }
+        with patch.object(
+            service,
+            "run_native_coordination",
+            return_value={
+                "trace": fake_trace,
+                "causal_model": compiled,
+                "html": "<html>Living Scene native coordination</html>",
+            },
+        ) as run_native:
+            status, payload = self.post(
+                "/run",
+                {
+                    "bundle": DRAFT_BUNDLE,
+                    "causal_model": shared,
+                    "approved": True,
+                    "execution_mode": "native_coordination",
+                    "policy": "scripted",
+                },
+            )
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["execution_mode"], "native_coordination")
+        self.assertEqual(payload["cost_usd"], 0.0)
+        self.assertIn("Living Scene native coordination", payload["replay_html"])
+        run_native.assert_called_once()
+
+    def test_native_coordination_run_refuses_modified_law(self):
+        shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
+        modified = json.loads(json.dumps(shared))
+        modified["mechanics"][0]["rationale"] += " Modified."
+        with patch.object(service, "run_native_coordination") as run_native:
+            status, payload = self.post(
+                "/run",
+                {
+                    "bundle": DRAFT_BUNDLE,
+                    "causal_model": modified,
+                    "approved": True,
+                    "execution_mode": "native_coordination",
+                    "policy": "scripted",
+                },
+            )
+        self.assertEqual(status, 422)
+        self.assertIn("shared coordination mechanics", payload["error"])
+        run_native.assert_not_called()
 
     def test_run_requires_explicit_mechanic_approval(self):
         status, payload = self.post(
@@ -140,6 +233,20 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(payload["model"], "fake-model")
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/mechanics/"))
         self.assertAlmostEqual(payload["daily_cost_usd"], 0.001, places=6)
+
+    def test_failed_draft_request_charges_full_reservation_and_clears_reserved(self):
+        with patch.object(
+            service,
+            "generate_native_coordination_draft",
+            side_effect=RuntimeError("provider failed"),
+        ):
+            status, _ = self.post(
+                "/generate-draft", {"description": DRAFT["source_description"]}
+            )
+        self.assertEqual(status, 500)
+        state = json.loads(self.budget_path.read_text())
+        self.assertAlmostEqual(state["spent_usd"], service.DRAFT_BUDGET, places=6)
+        self.assertEqual(state["reserved_usd"], 0.0)
 
     def test_failed_llm_request_charges_full_reservation_and_clears_reserved(self):
         with patch.object(service, "generate_causal_model", side_effect=RuntimeError("provider failed")):
