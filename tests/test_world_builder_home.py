@@ -38,7 +38,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
 
     def test_world_kinds_and_live_play_are_offered(self):
         for label in ("A task to finish", "Keeps running", "⏸ Pause", "▶ Play",
-                      "What happens by itself each round", "What just happened"):
+                      "By itself, every round", "Why things were refused"):
             self.assertIn(label, self.page)
         # Each round continues from exactly where the last one ended.
         self.assertIn("request.continue_from = live.snapshot; request.turn_offset = live.lastTurn;", self.page)
