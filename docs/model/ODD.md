@@ -35,7 +35,7 @@ Each pattern is something a check or a person could observe. VIEW_COVERAGE.md re
 | P6 | A continued round uses the same law: world identity and rule versions match. | `scripts/run_authored_world.py:233-242` |
 | P7 | Every logged request leaves one run-log line; LLM spend never exceeds the day's cap. | `runs_<date>.jsonl`; budget ledger (`world_builder_service.py:183-220`) |
 | P8 | Presentation never writes canonical state; two renders of the same projection give the same logical frames. | `living_scene.py` frame builder; renderers read-only |
-| P9 | Counts a view prints equal counts of the model element they name (allowed = accepted events; refused = refused attempts). | home outcome line; broken today, see G2 |
+| P9 | Counts a view prints equal counts of the model element they name (allowed = accepted events; refused = refused attempts). | home outcome line (refused = submitted attempts that did not go through; held back by the rules counted separately; fixed 2026-10-06, see G2) |
 
 ## 3. Boundary
 
@@ -162,4 +162,4 @@ Each rule below is enforced by the cited code.
 
 ## 9. Issue #106 and this model
 
-Issue #106 (actors that move to the same place stack on one point) **does show up as a coverage gap**: G9 in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The frame data holds every actor; the renderers draw several of them on one pixel, so a view hides an element the model says is present. It was reproduced in both renderers with a copy of the neutral render fixture. This PR does not fix it; #106 carries the approved fix.
+Issue #106 (actors that move to the same place stack on one point) **does show up as a coverage gap**: G9 in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The frame data holds every actor; the renderers draw several of them on one pixel, so a view hides an element the model says is present. It was reproduced in both renderers with a copy of the neutral render fixture. Fixed 2026-10-06 under #106 (see G9).

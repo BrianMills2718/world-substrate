@@ -201,6 +201,14 @@ transmission, show retained action feedback, apply responsive presentation
 overrides, and scrub exact event boundaries. The generic multi-branch wrapper
 selects among retained branch documents without rewriting history.
 
+Actor placement is one presentation rule shared by both renderers
+(`src/world_substrate/living_scene_layout.py`, settled 2026-10-06): an actor stays
+where its last `actor.move_to` put it; an active activity gathers its declared
+participants on a ring around its anchor; a `move_to` in the current frame wins;
+and actors left on one identical point are spread on a ring around it in actor-id
+order (radius `render.gather_radius`, default 11), while a single actor keeps the
+exact point.
+
 Waltzman composition is declarative reference-world data. Deeper inspection and
 public funnel integration remain downstream work; the generic runtime remains
 free of Waltzman entity/action branches.

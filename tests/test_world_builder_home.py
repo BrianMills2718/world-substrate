@@ -89,6 +89,33 @@ class WorldBuilderHomeTests(unittest.TestCase):
         result = subprocess.run([node, "--check", handle.name], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_headline_counts_refused_attempts_not_held_back_moves(self):
+        # G2: the headline added every blocked_by_rules entry (one per action kind
+        # and reason the rules held back) and called the total "refused".
+        import json, shutil, subprocess
+        node = shutil.which("node")
+        if node is None:
+            self.skipTest("node is not installed")
+        match = re.search(r"^  function countRound\(turn\) \{.*?^  \}$", self.page, re.S | re.M)
+        self.assertIsNotNone(match, "the page needs one countRound used by the headline and the squares")
+        turn = {"turn": 3, "actors": {
+            "ana": {"status": "accepted", "did": {"kind": "fix"}},
+            "ben": {"status": "no_action", "blocked_by_rules": [
+                {"action": {"kind": "fix"}, "reason": "a"}, {"action": {"kind": "fetch"}, "reason": "b"},
+                {"action": {"kind": "fetch"}, "reason": "c"}]},
+            "cal": {"status": "refused", "wanted": {"kind": "fix"}, "refused_because": ["tool free"],
+                    "blocked_by_rules": [{"action": {"kind": "rest"}, "reason": "d"}]},
+            "dee": {"status": "nothing_left", "wanted": {"kind": "fetch"}},
+        }}
+        script = match.group(0) + "\nconsole.log(JSON.stringify(countRound(" + json.dumps(turn) + ")));"
+        result = subprocess.run([node, "-e", script], capture_output=True, text=True, check=True)
+        self.assertEqual(json.loads(result.stdout), {"allowed": 1, "refused": 2, "held": 2})
+        # Headline and squares both count through it, in plain words.
+        self.assertIn("const c = countRound(turn);", self.page)
+        self.assertIn("held back by the rules", self.page)
+        self.assertNotIn("live.totals.refused += (row.blocked_by_rules || []).length", self.page)
+        self.assertIn('t.className = "tick held";', self.page)
+
     def test_tooltips_are_visible_bubbles_not_only_native_titles(self):
         self.assertIn('id="tip-bubble"', self.page)
         self.assertIn('document.addEventListener("mouseover"', self.page)

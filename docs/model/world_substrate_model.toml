@@ -126,7 +126,7 @@ state = ["draft (native-coordination-draft/v0)", "draft review (native-coordinat
 name = "RunLogEntry"
 what = "One JSONL line per logged World Builder request (one file per UTC day): who, what was asked, a result summary, cost, errors."
 source = "scripts/world_builder_service.py:376"
-state = ["ts, path, status, who, allowance, client (salted fingerprint), job_id, trace_id, cost_usd", "request summary (for /run: bundle, causal_model, approved, world_fingerprint when not continued)", "result summary (full artifacts only for /generate-world and /run; key names only for other logged paths)"]
+state = ["ts, path, status, who, allowance, client (salted fingerprint), job_id, trace_id, cost_usd", "request summary (for /run: bundle, causal_model, approved, world_fingerprint when not continued)", "result summary (full artifacts only for /generate-world and /run; key names only for other logged paths)", "for /run: mechanic_profile_id (frozen rules identity)"]
 
 [[entities]]
 name = "BudgetLedger"
@@ -670,12 +670,12 @@ source = "scripts/run_authored_world.py:517 (render_run) -> scripts/render_scene
 [[views]]
 name = "living_scene"
 what = "Living Scene v1 renderer over a LiveProjection."
-source = "scripts/render_living_scene.py"
+source = "scripts/render_living_scene.py (actor placement: src/world_substrate/living_scene_layout.py, shared)"
 
 [[views]]
 name = "composed_living_scene"
 what = "Composed living-scene renderer with inspector; used for native-coordination runs/comparisons in /build and by agent_ecology3's Living view."
-source = "scripts/render_composed_living_scene.py"
+source = "scripts/render_composed_living_scene.py (actor placement: src/world_substrate/living_scene_layout.py, shared)"
 
 [[views]]
 name = "owner_run_log"
@@ -700,7 +700,7 @@ views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a
 
 [[coverage]]
 element = "MechanicProfile"
-views = { home = "missing", build = "missing", play = "missing", round_replay = "missing", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "missing" }
+views = { home = "missing", build = "missing", play = "missing", round_replay = "missing", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
 
 [[coverage]]
 element = "Approval"
@@ -769,58 +769,70 @@ views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a
 # --------------------------------------------------------------------- gaps --
 # Each is described with file:line evidence and reproduction status in
 # VIEW_COVERAGE.md. reproduced: yes = observed by running code or a page here.
+# status: open | fixed (fixed ones say how in VIEW_COVERAGE.md).
 
 [[gaps]]
 id = "G1"
 title = "Authored-world runs keep no engine event records"
 reproduced = "yes"
+status = "open"
 
 [[gaps]]
 id = "G2"
 title = "Home 'refused' counter counts blocked offers, not refused attempts"
 reproduced = "yes"
+status = "fixed"
 
 [[gaps]]
 id = "G3"
 title = "/build approval screen hides installed processes"
 reproduced = "yes"
+status = "open"
 
 [[gaps]]
 id = "G4"
 title = "Run log keeps only key names for generate-mechanics, generate-draft and compare"
 reproduced = "yes"
+status = "open"
 
 [[gaps]]
 id = "G5"
 title = "Home approval screen shows no derived read/write authority or limits"
 reproduced = "yes"
+status = "open"
 
 [[gaps]]
 id = "G6"
 title = "Approval is a request flag, not a record"
 reproduced = "partly"
+status = "open"
 
 [[gaps]]
 id = "G7"
 title = "Frozen mechanic profile id is shown nowhere and not logged"
 reproduced = "yes"
+status = "fixed"
 
 [[gaps]]
 id = "G8"
 title = "Round replay carries no trace of process-made changes"
 reproduced = "partly"
+status = "open"
 
 [[gaps]]
 id = "G9"
 title = "Actors moved to the same place stack on one point (issue #106)"
 reproduced = "yes"
+status = "fixed"
 
 [[gaps]]
 id = "G10"
 title = "The two living-scene renderers place the same actor differently"
 reproduced = "yes"
+status = "fixed"
 
 [[gaps]]
 id = "G11"
 title = "Continued live rounds trust client-held world state"
 reproduced = "no"
+status = "open"

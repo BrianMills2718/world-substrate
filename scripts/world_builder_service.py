@@ -362,6 +362,9 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
         return {
             "summary": value.get("summary"),
             "mover": trace.get("model"),
+            # The frozen rules identity (MechanicProfile.freeze()): same id, same
+            # installed law. Gap G7 (docs/model/VIEW_COVERAGE.md): it was dropped.
+            "mechanic_profile_id": trace.get("mechanic_profile_id"),
             "transcript": trace.get("transcript"),
             # Where the world ended up, so the next live round (or a later replay) starts from it.
             "final_snapshot": trace.get("final_snapshot"),

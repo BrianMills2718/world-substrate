@@ -60,6 +60,7 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .tick.accepted{background:var(--ok)}
 .tick.refused{background:transparent;border:2px dashed var(--warn)}
 .tick.waited{background:transparent;border:2px solid var(--grey)}
+.tick.held{background:repeating-linear-gradient(45deg,var(--warn) 0 3px,transparent 3px 7px);border:2px solid var(--warn)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
 .legend .tick{cursor:default;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:4px}
 .detail{min-height:24px;font-size:14px;margin:6px 0 12px}
@@ -182,13 +183,13 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     </div>
     <p class="small muted" id="live-status" role="status"></p>
     <div id="stuck-note"></div>
-    <p class="outcome" id="outcome"></p>
+    <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
     <details class="picture" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
     <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
     </details>
     <ol class="feed" id="feed" aria-label="What just happened, newest round first"></ol>
-    <details class="picture" id="attempts"><summary title="Every attempt in the last 10 rounds as a square: allowed, refused by the rules, or waited. Select one to see why.">Why things were refused</summary>
-    <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
+    <details class="picture" id="attempts"><summary title="Every person in the last 10 rounds as squares: allowed, refused, held back by the rules (not allowed to try), or waited. Select one to see why.">Why things were refused</summary>
+    <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick held"></span>held back by the rules (not allowed to try)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
     <div class="strip" id="strip" aria-label="Every attempt in the last 10 rounds, in order. Select one to see why."></div>
     <p class="detail" id="detail"></p>
     </details>
@@ -500,7 +501,7 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
         return `${words(b.action.kind)}${target ? " (" + target + ")" : ""}, because this was not true: ${b.reason || "a required check"}`;
       });
       text = `Round ${a.turn}: the rules would not let ${labelFor(a.actor)} ` + parts.join("; nor ") + ".";
-      t.className = "tick refused";
+      t.className = "tick held";
     } else {
       const kind = a.row.status === "accepted" ? "accepted" : a.row.wanted ? "refused" : "waited";
       t.className = "tick " + kind;
@@ -515,15 +516,36 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     return t;
   }
 
+  // What one round adds to the counts. The headline and the squares both use
+  // this, so they always count the same things (gap G2, 2026-10-06: the headline
+  // added up every move the rules held back, one per kind and reason, and called
+  // that "refused"; a five-round run said "60 refused" with no attempt refused).
+  //   allowed:  a person's move went through.
+  //   refused:  a person tried a move and it did not go through.
+  //   held:     the rules held back one or more moves from a person that round
+  //             (they were never allowed to try them); one per person per round.
+  function countRound(turn) {
+    const c = { allowed: 0, refused: 0, held: 0 };
+    Object.values(turn.actors || {}).forEach((row) => {
+      if (row.status === "accepted") c.allowed++;
+      else if (row.wanted) c.refused++;
+      if ((row.blocked_by_rules || []).length) c.held++;
+    });
+    return c;
+  }
+
   function renderStrip(rounds) {
     const strip = $("strip"); strip.innerHTML = "";
-    let refused = 0;
-    rounds.forEach((turn) => Object.entries(turn.actors || {}).forEach(([actor, row]) => {
-      // One square per person per round for everything the rules refused them.
-      if ((row.blocked_by_rules || []).length) { refused++; strip.append(attemptButton({ turn: turn.turn, actor, blocked: row.blocked_by_rules })); }
-      strip.append(attemptButton({ turn: turn.turn, actor, row }));
-    }));
-    if (!$("detail").dataset.touched) $("detail").textContent = refused ? "Select a square to see why." : "Nothing was refused.";
+    let notAllowed = 0;
+    rounds.forEach((turn) => {
+      const c = countRound(turn); notAllowed += c.refused + c.held;
+      Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+        // One square per person per round for everything the rules held back from them.
+        if ((row.blocked_by_rules || []).length) strip.append(attemptButton({ turn: turn.turn, actor, blocked: row.blocked_by_rules }));
+        strip.append(attemptButton({ turn: turn.turn, actor, row }));
+      });
+    });
+    if (!$("detail").dataset.touched) $("detail").textContent = notAllowed ? "Select a square to see why." : "Nothing was refused or held back.";
   }
 
   // Live play: the world runs one round at a time while you watch, until you
@@ -558,7 +580,7 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     const last = n ? live.rounds[n - 1].turn : 0;
     $("run-h").textContent = live.playing ? "Your world is running" : live.finished ? "Your world reached its finish line" : "Your world is paused";
     $("outcome").textContent = n
-      ? `Round ${last} · ${t.allowed} allowed · ${t.refused} refused${t.byItself ? ` · ${t.byItself} by itself` : ""}`
+      ? `Round ${last} · ${t.allowed} allowed · ${t.refused} refused${t.held ? ` · ${t.held} held back by the rules` : ""}${t.byItself ? ` · ${t.byItself} by itself` : ""}`
       : "Starting the first round…";
     $("live-status").textContent = live.why;
     const btn = $("play-btn");
@@ -627,10 +649,8 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
       }
       const turn = live.buffer.shift();
       live.rounds.push(turn); if (live.rounds.length > 500) live.rounds.shift();
-      Object.values(turn.actors || {}).forEach((row) => {
-        if (row.status === "accepted") live.totals.allowed++;
-        live.totals.refused += (row.blocked_by_rules || []).length;
-      });
+      const c = countRound(turn);
+      live.totals.allowed += c.allowed; live.totals.refused += c.refused; live.totals.held += c.held;
       live.totals.byItself += (turn.world_changes || []).length;
       const happened = Object.values(turn.actors || {}).some((r) => r.status === "accepted") || (turn.world_changes || []).length > 0;
       live.quiet = happened ? 0 : live.quiet + 1;
@@ -669,7 +689,7 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
   function startLive(options) {
     if (!world) return;
     live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
-             totals: { allowed: 0, refused: 0, byItself: 0 }, finished: false, endsAt: null, why: "",
+             totals: { allowed: 0, refused: 0, held: 0, byItself: 0 }, finished: false, endsAt: null, why: "",
              sincePlay: 0, lastChanged: {} };
     $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
     $("ai-live").checked = $("ai-moves").checked;

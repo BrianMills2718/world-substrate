@@ -645,6 +645,9 @@ def main() -> int:
         return 1
 
     print("World Substrate project check passed.")
+    # State the test outcome, not just its absence of failure.
+    summary = [line for line in first_fill_tests.stderr.splitlines() if line.startswith(("Ran ", "OK", "FAILED"))]
+    print("Neutral runtime tests: " + " · ".join(summary))
     print("Reading path: AGENTS.md -> docs/wiki/README.md -> task authority")
     print("Planning path: README.md -> roadmap/README.md -> active slice")
     print(f"Pinned source records checked: {len(manifest['sources'])}")
