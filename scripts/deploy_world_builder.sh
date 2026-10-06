@@ -33,7 +33,10 @@ pages="$stage/deploy/cloudflare/world-builder"
 (cd "$pages" && npm install --silent >/dev/null 2>&1 && ./build.sh)
 set -a; . "$HOME/.secrets/api_keys.env"; set +a
 export CLOUDFLARE_API_KEY CLOUDFLARE_EMAIL
-(cd "$pages" && node_modules/.bin/wrangler deploy 2>&1 | grep -E "Current Version|rror")
+wlog=$(mktemp)
+(cd "$pages" && node_modules/.bin/wrangler deploy >"$wlog" 2>&1) \
+  || { echo "pages deploy FAILED:" >&2; tail -25 "$wlog" >&2; exit 1; }
+grep -E "Current Version" "$wlog" || tail -5 "$wlog"
 echo "== verify"
 want=$(sha256sum < "$pages/dist/world-builder/index.html" | cut -c1-16)
 for _ in $(seq 1 20); do
