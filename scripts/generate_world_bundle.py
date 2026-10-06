@@ -81,27 +81,25 @@ SIZE_BY_KIND = {
         "as a chain or web of specialists: several actors, each with their own role who can only do their own "
         "step (for a supply chain: raw-material producers, processors, makers of parts, assembly, transport, "
         "shops, customers), with intermediate goods passed between them as counted stock (integer quantity "
-        "fields), so goods flow from one specialist to the next."
-    ),
-    "open": (
-        "A whole living system, typically 10 to 30 entities with at most 12 that can act, up to 8 components and 3 to 8 actions: several "
-        "residents or businesses with their own roles, needs and stocks, and the resources they depend on, "
-        "represented as counted quantities that can be produced, traded or consumed."
+        "fields), so goods flow from one specialist to the next. If the description is about people living "
+        "rather than producing, model several residents with their own needs and stocks and the resources "
+        "they depend on, as counted quantities that can be produced, traded or consumed."
     ),
 }
 KIND_RULES = {
     "task": "World kind: task. There is a job to finish; make sure 'done' can be read from represented state.",
     "ongoing": (
-        "World kind: ongoing. Work keeps arriving and nothing is ever finally done. Represent the state that "
+        "World kind: keeps running. Nothing is ever finally done: work keeps arriving, or people keep living. Represent the state that "
         "lets work recur (for example an order's stage that can return to waiting, a plant's thirst counter, a "
-        "count of waiting items) so the world can keep generating things to do."
-    ),
-    "open": (
-        "World kind: open. No goal is imposed; residents live in the world. Give actors needs or resources "
-        "that change over time (for example hunger, energy, supplies, growth) as component fields, and several "
-        "actions they can take to look after them."
+        "count of waiting items) so the world can keep generating things to do. If it is about people living "
+        "rather than working, give them needs or resources that change over time (hunger, energy, supplies, "
+        "growth) as component fields, and several actions to look after them."
     ),
 }
+# 'open' is an older name for the same kind (merged 2026-10-06: Brian asked whether they
+# really needed to be different; nothing but this advice ever differed).
+SIZE_BY_KIND["open"] = SIZE_BY_KIND["ongoing"]
+KIND_RULES["open"] = KIND_RULES["ongoing"]
 
 
 def _messages(description: str, world_kind: str = "task") -> list[dict[str, str]]:

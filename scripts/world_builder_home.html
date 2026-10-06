@@ -74,7 +74,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 .bubble.me{background:#1d2529;align-self:flex-end}
 .bubble .q{margin-top:8px;font-weight:600}
 .so-far{width:100%;min-height:80px;background:#0b1013;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
-.kinds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 16px}
+.kinds{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 16px}
 .kind{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;display:block}
 .kind input{margin-right:6px}
 .kind strong{font-size:15px}
@@ -118,8 +118,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       <legend class="muted small">What kind of world?</legend>
       <div class="kinds">
         <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task"><strong>A task to finish</strong><span>A job with a finish line. The run stops when it is done.</span></label>
-        <label class="kind" title="Work keeps arriving; there is no finish line and you can keep it going"><input type="radio" name="kind" value="ongoing" checked><strong>Ongoing work</strong><span>Work keeps coming (new orders, plants dry out again). It keeps going; you see how much gets done.</span></label>
-        <label class="kind" title="No goal; people live by their own needs while the world changes; keep it going as long as you like"><input type="radio" name="kind" value="open"><strong>An open world</strong><span>No goal. People live by their own needs while the world changes around them. Keep going as long as you like.</span></label>
+        <label class="kind" title="No finish line; the world plays round by round until you pause it"><input type="radio" name="kind" value="ongoing" checked><strong>Keeps running</strong><span>No finish line. Work keeps arriving, or people live by their own needs, whatever you describe. It plays until you pause it.</span></label>
       </div>
     </fieldset>
     <label class="muted small" for="desc">Your description</label>

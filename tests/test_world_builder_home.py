@@ -35,12 +35,14 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('href="build/"', self.page)
 
     def test_world_kinds_and_live_play_are_offered(self):
-        for label in ("A task to finish", "Ongoing work", "An open world", "⏸ Pause", "▶ Play",
+        for label in ("A task to finish", "Keeps running", "⏸ Pause", "▶ Play",
                       "What happens by itself each round", "What just happened"):
             self.assertIn(label, self.page)
         # Each round continues from exactly where the last one ended.
         self.assertIn("request.continue_from = live.snapshot; request.turn_offset = live.lastTurn;", self.page)
         self.assertIn("QUIET_ROUNDS_TO_PAUSE", self.page)
+        # "Ongoing work" and "An open world" were one kind in all but name (merged 2026-10-06).
+        self.assertNotIn('value="open"', self.page)
         self.assertIn('fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() })', self.page)
 
     def test_owner_access_sends_the_password_on_every_request(self):
@@ -56,7 +58,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         missing = [t for t in tags if "title=" not in t]
         self.assertEqual(missing, [], "every control needs a tooltip (title)")
         kinds = re.findall(r'<label class="kind"[^>]*>', self.page)
-        self.assertEqual(len(kinds), 3)
+        self.assertEqual(len(kinds), 2)
         self.assertTrue(all("title=" in k for k in kinds))
         self.assertTrue(controls)
         # Controls created at runtime get tooltips too, and phones get them on long press.

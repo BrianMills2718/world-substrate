@@ -234,20 +234,19 @@ WORLD_KIND_RULES = {
         "happen by themselves."
     ),
     "ongoing": (
-        "World kind: ongoing. terminal must be null. Add 1-4 processes that keep inputs replenishing and "
-        "demand arriving (raw materials regrow or are mined each round, customers want more, a served "
+        "World kind: keeps running. terminal must be null. Add 1-4 processes so the world never runs down. "
+        "If the description is about work or production: keep inputs replenishing and demand arriving (raw materials regrow or are mined each round, customers want more, a served "
         "order becomes a new waiting order), so goods keep flowing through the chain and every actor "
         "role has something useful to do in most rounds, forever. Each actor's actions should be limited "
         "to its own step by checks on its role, and moving goods should add to the next holder's stock "
-        "and subtract from the previous one's."
-    ),
-    "open": (
-        "World kind: open. terminal must be null. Add 1-4 processes that change needs or resources "
-        "every round in a cycle (for example hunger rises AND food regrows, supplies run down AND are "
-        "restocked), never only decay, so the residents keep acting on their own needs indefinitely, "
-        "with no goal imposed."
+        "and subtract from the previous one's. If it is about people living their lives: change needs and "
+        "resources every round in a cycle (for example hunger rises AND food regrows, supplies run down AND "
+        "are restocked), never only decay, so they keep acting on their own needs with no goal imposed."
     ),
 }
+# 'open' is an older name for the same kind (merged 2026-10-06: Brian asked whether they
+# really needed to be different; nothing but this advice ever differed).
+WORLD_KIND_RULES["open"] = WORLD_KIND_RULES["ongoing"]
 
 
 def _process_schema() -> dict[str, Any]:

@@ -74,10 +74,10 @@ for (const flow of flows.length ? flows : ['task']) {
   try {
     await p.goto(base + '/world-builder/', { waitUntil: 'networkidle' });
     if (flow in DESCRIPTIONS) {
-      await p.check(`input[name="kind"][value="${flow === 'pencil' ? 'ongoing' : flow}"]`);
+      await p.check(`input[name="kind"][value="${flow === 'task' ? 'task' : 'ongoing'}"]`);
       await p.fill('#desc', DESCRIPTIONS[flow]);
       await p.getByRole('button', { name: 'Build what I wrote', exact: true }).click();
-      await buildAndRun(p, flow === 'pencil' ? 'ongoing' : flow, log);
+      await buildAndRun(p, flow === 'task' ? 'task' : 'ongoing', log);
     } else if (flow === 'tooltips') {
       // Costs nothing: hover every visible control and require a visible tooltip bubble.
       const controls = p.locator('button:visible, a:visible, textarea:visible, label.kind:visible, summary:visible');
