@@ -354,6 +354,7 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
         "path": request["path"],
         "status": int(status),
         "who": request["who"],
+        "allowance": request.get("allowance"),
         "client": request["client"],
         "job_id": request.get("job_id"),
         "trace_id": value.get("trace_id"),
@@ -567,7 +568,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         agent = (self.headers.get(CLIENT_HEADER) or "").strip()[:40]
         _REQUEST.set({
             "path": path,
-            "who": "owner" if _is_owner() else (f"agent:{agent}" if agent else "visitor"),
+            # Who acted, separately from whose allowance paid: a test agent using the
+            # owner password must not look like the owner's own run.
+            "who": f"agent:{agent}" if agent else ("owner" if _is_owner() else "visitor"),
+            "allowance": "owner" if _is_owner() else "visitor",
             "client": _fingerprint(client),
             "summary": _request_summary(path, body),
         })
