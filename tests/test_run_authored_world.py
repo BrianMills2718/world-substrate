@@ -56,6 +56,21 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertIn("'Round '+f.turn", html)
         self.assertNotIn("'Turn '+f.turn+' / '", html)
 
+    def test_moves_that_change_nothing_are_never_chosen(self):
+        # 2026-10-06: two cooks "recorded" an already-waiting order every round
+        # and the world was reported busy. A move whose only effect leaves state
+        # as it was must not be offered or counted.
+        causal = json.loads(json.dumps(self.causal))
+        causal["mechanics"][0]["effects"] = [
+            {"participant": "fruit", "path": "components.fruit.stage", "op": "set", "value": {"literal": "ripe"}},
+        ]
+        with self.assertRaisesRegex(ValueError, "no actions"):
+            run_world(self.bundle, causal, policy="scripted", max_turns=3)
+        # The same world with a real effect still acts, and the move is marked as a change.
+        trace, _, _ = run_world(self.bundle, self.causal, policy="scripted", max_turns=1)
+        rows = [r for t in trace["transcript"] for r in t["actors"].values() if r["status"] == "accepted"]
+        self.assertTrue(rows and all(r["changed"] for r in rows))
+
     def test_world_where_only_processes_run_is_not_active(self):
         # The 2026-10-06 pencil world: drains ran every round but no actor could
         # ever act, and it was reported as still alive.

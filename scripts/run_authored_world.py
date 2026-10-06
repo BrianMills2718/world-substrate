@@ -21,7 +21,7 @@ from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
 from scripts.scaffold_world import _render_model, load_bundle, validate_bundle
 from world_substrate.action_authoring import CausalModel, CompiledActionMechanic, CompiledProcessMechanic
-from world_substrate.engine import Engine
+from world_substrate.engine import ENGINE_OWNED_PATHS, Engine
 from world_substrate.model import Entity, LocationState, OwnershipState, PortableState, World
 from world_substrate.policy import CHOICE_SCHEMA, WAIT, present, resolve_choice
 from world_substrate.profile import MechanicProfile
@@ -133,6 +133,35 @@ def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
     return lines[-6:]
 
 
+def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
+    """An event's changes minus the engine's own bookkeeping (revision, cause stamps)."""
+    return [
+        c for c in event.get("changes") or []
+        if c.get("path") not in ENGINE_OWNED_PATHS and not str(c.get("path", "")).endswith(".last_cause_event_id")
+    ]
+
+
+def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool) -> dict[str, Any]:
+    """Drop allowed actions that would change nothing right now.
+
+    A rule can allow a move whose effects leave the world exactly as it was (for
+    example "set the order to waiting" on an order that is already waiting).
+    Choosing it forever looked like a busy world (2026-10-06: two cooks did
+    nothing but "record salad order" every round). Each candidate is tried on a
+    scratch copy of the world; only moves that change something stay on offer.
+    With first_only, stop at the first useful move (simple moves take the first).
+    """
+    useful = []
+    for row in page.get("available") or []:
+        scratch = Engine(deepcopy(engine.world, {id(engine.world.commands): [], id(engine.world.events): []}), engine.registry)
+        outcome = scratch.submit({**row["action"], "controller": "preview"})
+        if outcome.get("status") == "accepted" and _state_changes(outcome["event"]):
+            useful.append(row)
+            if first_only:
+                break
+    return {**page, "available": useful}
+
+
 def _scripted_choice(page: dict[str, Any]) -> tuple[dict[str, Any] | None, str]:
     if not page.get("available"):
         return None, "waited: the rules allowed nothing right now"
@@ -228,7 +257,7 @@ def run_world(
         blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
         pages: dict[str, dict[str, Any]] = {}
         for actor in actors:
-            page = engine.discover(actor)
+            page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted")
             # What the installed rules refused this actor at this moment, and why.
             # Recorded for every policy so a viewer can see refusals even when the
             # policy itself only ever picks allowed actions.
@@ -315,7 +344,7 @@ def run_world(
             said_retry = None
             if outcome["status"] == "stale_revision":
                 retried = True
-                page = engine.discover(actor)
+                page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted")
                 if policy == "scripted":
                     again, said_retry = _scripted_choice(page)
                 else:
@@ -348,6 +377,8 @@ def run_world(
                     if not c.get("ok") and c.get("label") != "Base revision is current"
                 ],
                 "lost_what_it_wanted": bool(retried and did != wanted),
+                # Whether the accepted move actually changed the world.
+                "changed": bool(outcome.get("status") == "accepted" and _state_changes(outcome.get("event") or {})),
                 "blocked_by_rules": blocked_by_rules.get(actor, []),
             }
             if said_retry is not None:
@@ -392,8 +423,9 @@ def run_world(
             # Changes the world makes by itself do not count: a world where only
             # decay processes run (energy drains, stock runs out) and nobody can
             # act is dead, and was wrongly reported as alive (2026-10-06).
+            # Moves that changed nothing do not count either.
             "active_at_end": any(
-                any(row.get("status") == "accepted" for row in t["actors"].values())
+                any(row.get("changed") for row in t["actors"].values())
                 for t in transcript[-max(1, len(transcript) // 3):]
             ),
             # Actors who never managed a single action: in a system world they
@@ -401,7 +433,7 @@ def run_world(
             "idle_actors": sorted(
                 actor for actor in actors
                 if not any(
-                    (t["actors"].get(actor) or {}).get("status") == "accepted" for t in transcript
+                    (t["actors"].get(actor) or {}).get("changed") for t in transcript
                 )
             ),
             "first_turn": turn_offset + 1,
