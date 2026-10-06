@@ -436,6 +436,22 @@ def run_world(
                     (t["actors"].get(actor) or {}).get("changed") for t in transcript
                 )
             ),
+            # Busy but stuck (2026-10-06 toy workshop: Mira held the glue pot with
+            # no rule to put it down; the only move left was re-accepting the
+            # same recurring order). Who made no real change in the last third,
+            # and which moves were still happening there.
+            "stalled_actors": sorted(
+                actor for actor in actors
+                if not any(
+                    (t["actors"].get(actor) or {}).get("changed")
+                    for t in transcript[-max(1, len(transcript) // 3):]
+                )
+            ),
+            "moves_at_end": sorted({
+                str((row.get("did") or {}).get("kind"))
+                for t in transcript[-max(1, len(transcript) // 3):]
+                for row in t["actors"].values() if row.get("changed")
+            }),
             "first_turn": turn_offset + 1,
             "last_turn": turn_offset + len(transcript),
         },

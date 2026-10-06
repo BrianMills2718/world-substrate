@@ -71,6 +71,22 @@ class AuthoredWorldRunTests(unittest.TestCase):
         rows = [r for t in trace["transcript"] for r in t["actors"].values() if r["status"] == "accepted"]
         self.assertTrue(rows and all(r["changed"] for r in rows))
 
+    def test_busy_but_stuck_world_reports_stalled_people_and_its_one_remaining_move(self):
+        # Ongoing orchard: the only move left is picking the fruit that regrows.
+        causal = json.loads(json.dumps(self.causal)); causal["terminal"] = None
+        causal["processes"] = [{
+            "process_id": "regrow", "rationale": "Picked fruit grows back.",
+            "selector": {"categories": ["fruit"], "components": ["fruit"]},
+            "checks": [{"label": "the fruit has been picked",
+                        "left": {"participant": {"name": "it", "path": "components.fruit.stage"}},
+                        "op": "eq", "right": {"literal": "picked"}}],
+            "effects": [{"participant": "it", "path": "components.fruit.stage", "op": "set", "value": {"literal": "ripe"}},
+                        {"participant": "it", "path": "ownership.owner_ref", "op": "set", "value": {"literal": "place:orchard"}}],
+        }]
+        trace, _, _ = run_world(self.bundle, causal, policy="scripted", max_turns=6)
+        self.assertEqual(trace["summary"]["moves_at_end"], ["pick"])
+        self.assertEqual(trace["summary"]["stalled_actors"], [])
+
     def test_world_where_only_processes_run_is_not_active(self):
         # The 2026-10-06 pencil world: drains ran every round but no actor could
         # ever act, and it was reported as still alive.
@@ -175,6 +191,7 @@ class RepairBayLiveProofTests(unittest.TestCase):
             {
                 "turns": 5, "terminal_reached": True, "accepted_actions": 10,
                 "world_changes": 0, "active_at_end": True, "idle_actors": ["dee"],
+                "stalled_actors": ["ava", "dee"], "moves_at_end": ["handoff-tool", "repair"],
                 "first_turn": 1, "last_turn": 5,
             },
         )

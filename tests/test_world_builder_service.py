@@ -875,4 +875,4 @@ class IdleActorGuidanceTests(unittest.TestCase):
         text = _idle_guidance(dry, ["courier"], 24)
         self.assertIn("courier (refused: deliver-pencils: The carrier has enough pencils)", text)
         self.assertEqual(text.count("deliver-pencils"), 1)
-        self.assertIn("24 rounds", text)
+        self.assertIn("24-round test", text)

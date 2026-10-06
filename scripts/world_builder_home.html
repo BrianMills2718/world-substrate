@@ -65,7 +65,7 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .detail{min-height:24px;font-size:14px;margin:6px 0 12px}
 details.picture{margin-top:10px}
 details.picture>summary{cursor:pointer;font-weight:600;padding:6px 0}
-iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius:10px;background:#fff}
+iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius:10px;background:#fff}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:-2px;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
@@ -181,16 +181,18 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
       <label class="small muted" title="On: an AI chooses each person\u2019s move (a few seconds per round, costs a little). Off: each person takes the first move the rules allow (instant, free). You can switch while it plays."><input type="checkbox" id="ai-live"> AI chooses each move</label>
     </div>
     <p class="small muted" id="live-status" role="status"></p>
+    <div id="stuck-note"></div>
     <p class="outcome" id="outcome"></p>
+    <details class="picture" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
+    <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
+    </details>
     <ol class="feed" id="feed" aria-label="What just happened, newest round first"></ol>
     <details class="picture" id="attempts"><summary title="Every attempt in the last 10 rounds as a square: allowed, refused by the rules, or waited. Select one to see why.">Why things were refused</summary>
     <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
     <div class="strip" id="strip" aria-label="Every attempt in the last 10 rounds, in order. Select one to see why."></div>
     <p class="detail" id="detail"></p>
     </details>
-    <details class="picture"><summary title="Show a picture of the places, people and moves in the round you just read">Picture</summary>
-    <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
-    </details>
+
     <div class="row" style="margin-top:14px">
       <button class="secondary" type="button" id="rules-btn" title="Read the rules that decide every attempt (the world stays paused while you read)">See the rules</button>
       <button class="secondary" type="button" id="again-btn" title="Throw away this run and start the same world over from round 1 with the same rules">Start over</button>
@@ -442,15 +444,18 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
       const changes = keepsGoing && d.world_changes ? `, ${d.world_changes} by itself` : "";
       n.title = "A quick automatic test run with simple first-available moves, before you approve";
       n.textContent = `Quick test: ${d.accepted_actions} action${d.accepted_actions === 1 ? "" : "s"} in ${d.turns} round${d.turns === 1 ? "" : "s"}${changes}; ${outcome}.`;
-      const idle = d.idle_actors || [];
-      if (keepsGoing && (idle.length || !d.active_at_end)) {
+      const idle = [...new Set([...(d.idle_actors || []), ...(d.stalled_actors || [])])];
+      const circling = (data.review.mechanics || []).length >= 3 && (d.moves_at_end || []).length <= 1;
+      if (keepsGoing && (idle.length || !d.active_at_end || circling)) {
         // Say it plainly before they press play (2026-10-06: a pencil chain where
         // six of eight businesses could never act was handed over silently).
         warning = document.createElement("div"); warning.className = "notice";
         const who = idle.map(labelFor).join(", ");
-        warning.textContent = !d.active_at_end
+        warning.textContent = circling && d.active_at_end
+          ? `Warning: by the end of the quick test only “${words((d.moves_at_end || ["nothing"])[0])}” was still happening, so the work gets stuck. Build it again for a fresh attempt, or play it anyway to see where it gets stuck.`
+          : !d.active_at_end
           ? `Warning: in the quick test this world went quiet${who ? ` (${who} never managed to do anything)` : ""}. It will probably stall. Build it again for a fresh attempt, or play it anyway to see where it gets stuck.`
-          : `Note: in the quick test, ${who} never managed to do anything; everyone else kept going.`;
+          : `Note: in the quick test, ${who} stopped being able to do anything; everyone else kept going.`;
       }
     } else {
       n.className = "notice";
@@ -525,7 +530,10 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
   // pause it, it reaches its finish line, or nothing has happened for a while.
   // Brian, 2026-10-06: "i want to be able to play or pause my world in real
   // time not just come into a 12 turn thing that is already done".
-  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 12, ROUND_PAUSE_MS = 1500;
+  // Brian, 2026-10-06: "we should probably have some 'are you still there after
+  // 100 moves' that pauses and the user can unpause".
+  const CHECK_IN_ROUNDS = 100, STUCK_ROUNDS = 15;
+  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, ROUND_PAUSE_MS = 1500;
   let live = null;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   function setTip(el, text) {
@@ -566,6 +574,15 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
       li.append(b, roundSentence(turn)); feed.append(li);
     });
     renderStrip(live.rounds.slice(-STRIP_ROUNDS));
+    // Busy but stuck: name anyone who has not changed anything for a while.
+    const stuck = Object.entries(live.lastChanged).filter(([, at]) => last - at >= STUCK_ROUNDS);
+    const note = $("stuck-note"); note.innerHTML = "";
+    if (stuck.length) {
+      const n = document.createElement("div"); n.className = "notice";
+      n.textContent = stuck.map(([actor, at]) => `${labelFor(actor)} hasn’t been able to do anything for ${last - at} rounds`).join("; ")
+        + ". Open “Why things were refused” to see what is blocking them.";
+      note.append(n);
+    }
   }
 
   function recentMoves() {
@@ -617,11 +634,19 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
       live.totals.byItself += (turn.world_changes || []).length;
       const happened = Object.values(turn.actors || {}).some((r) => r.status === "accepted") || (turn.world_changes || []).length > 0;
       live.quiet = happened ? 0 : live.quiet + 1;
+      live.sincePlay++;
+      Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+        if (!(actor in live.lastChanged)) live.lastChanged[actor] = turn.turn - 1;
+        if (row.changed || (row.changed === undefined && row.status === "accepted")) live.lastChanged[actor] = turn.turn;
+      });
       if (live.endsAt && turn.turn >= live.endsAt) {
         live.finished = true; live.playing = false; live.why = "Finished: the finish line was reached.";
       } else if (live.quiet >= QUIET_ROUNDS_TO_PAUSE) {
         live.playing = false; live.quiet = 0;
         live.why = `Paused by itself: nothing happened for ${QUIET_ROUNDS_TO_PAUSE} rounds. Open “Why things were refused” to see what is blocking everyone.`;
+      } else if (live.sincePlay >= CHECK_IN_ROUNDS) {
+        live.playing = false;
+        live.why = `Paused after ${CHECK_IN_ROUNDS} rounds. Still watching? Press Play to carry on.`;
       }
       renderLive();
       // Simple moves are instant; pause so each round can be read. AI rounds take long enough already.
@@ -631,7 +656,7 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
 
   function play() {
     if (!live || live.finished) return;
-    live.gen++; live.playing = true;
+    live.gen++; live.playing = true; live.sincePlay = 0;
     live.why = $("ai-moves").checked ? "An AI is choosing each move, so each round takes a few seconds." : "";
     renderLive(); playLoop();
   }
@@ -644,7 +669,8 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
   function startLive(options) {
     if (!world) return;
     live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
-             totals: { allowed: 0, refused: 0, byItself: 0 }, finished: false, endsAt: null, why: "" };
+             totals: { allowed: 0, refused: 0, byItself: 0 }, finished: false, endsAt: null, why: "",
+             sincePlay: 0, lastChanged: {} };
     $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
     $("ai-live").checked = $("ai-moves").checked;
     const note = $("lucky-note"); note.innerHTML = "";
