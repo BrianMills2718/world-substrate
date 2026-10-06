@@ -44,6 +44,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         service._REQUESTS.clear()
         service._LLM_REQUESTS.clear()
         service._DIALOGUE_REQUESTS.clear()
+        service._AI_RUN_REQUESTS.clear()
         service._JOBS.clear()
         self.state_tmp = tempfile.TemporaryDirectory()
         self.budget_path = Path(self.state_tmp.name) / "budget.json"
@@ -472,6 +473,57 @@ class WorldBuilderServiceTests(unittest.TestCase):
         for path in sorted(self.run_log_dir.glob("runs_*.jsonl")):
             rows += [json.loads(line) for line in path.read_text().splitlines()]
         return rows
+
+    def test_live_ai_rounds_use_their_own_allowance_not_the_build_allowance(self):
+        import time
+        import scripts.run_authored_world as runner
+        service._LLM_REQUESTS["127.0.0.1"].extend([time.time()] * service.LLM_REQUESTS_PER_HOUR)
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(
+            runner, "_llm_choice", return_value=(None, "wait", 0.0),
+        ):
+            status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                                 "policy": "llm", "turns": 1})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(len(service._AI_RUN_REQUESTS["127.0.0.1"]), 1)
+
+    def test_recent_moves_are_validated_and_reach_the_ai(self):
+        status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                             "turns": 1, "recent": [{"actor": "ava"}]})
+        self.assertEqual(status, 422, payload)
+        import scripts.run_authored_world as runner
+        seen = []
+        def choose(engine, actor, page, **kwargs):
+            seen.append((actor, kwargs["recent"]))
+            return None, "wait", 0.0
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(runner, "_llm_choice", side_effect=choose):
+            status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                                 "policy": "llm", "turns": 1,
+                                                 "recent": [{"actor": "ava", "action": "pick"}]})
+        self.assertEqual(status, 200, payload)
+        self.assertIn(("ava", ["you: pick"]), seen)
+
+    def test_continued_rounds_log_the_fingerprint_not_the_whole_world_again(self):
+        causal = self._ongoing_causal()
+        status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
+        self.assertEqual(status, 200, first)
+        status, second = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
+                                            "continue_from": first["trace"]["final_snapshot"],
+                                            "turn_offset": first["summary"]["last_turn"]})
+        self.assertEqual(status, 200, second)
+        opening, continued = self.run_log()
+        self.assertIn("bundle", opening["request"])
+        self.assertNotIn("bundle", continued["request"])
+        self.assertEqual(continued["request"]["world_fingerprint"], opening["request"]["world_fingerprint"])
+        self.assertIsNotNone(opening["result"]["final_snapshot"])
+
+    def test_continuing_a_finished_world_returns_no_rounds_instead_of_an_error(self):
+        status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1})
+        self.assertTrue(first["summary"]["terminal_reached"])
+        status, after = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1,
+                                           "continue_from": first["trace"]["final_snapshot"], "turn_offset": 1})
+        self.assertEqual(status, 200, after)
+        self.assertEqual(after["trace"]["transcript"], [])
+        self.assertTrue(after["summary"]["terminal_reached"])
 
     def test_every_build_and_run_leaves_a_durable_record(self):
         with patch.object(service, "_trace_cost", return_value=0.004), patch.object(

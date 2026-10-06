@@ -194,6 +194,7 @@ def run_world(
     trace_id: str | None = None,
     start_snapshot: dict[str, Any] | None = None,
     turn_offset: int = 0,
+    prior_recent: list[dict[str, str]] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm"}:
         raise ValueError("policy must be scripted or llm")
@@ -237,7 +238,17 @@ def run_world(
             for row in page.get("blocked") or []:
                 key = (row["action"].get("kind", ""), row.get("reason", ""))
                 if key not in distinct and len(distinct) < MAX_BLOCKED_RECORDED:
-                    distinct[key] = {"action": dict(row["action"]), "reason": row.get("reason", "")}
+                    distinct[key] = {
+                        "action": dict(row["action"]),
+                        "reason": row.get("reason", ""),
+                        # The failed checks with the values the rules saw, so a
+                        # viewer or a repair can see exactly why (2026-10-06:
+                        # "belongs to the worker" hid actor:clay-stock vs actor:clay-producer).
+                        "failed": [
+                            {"check": c.get("label"), "actual": c.get("actual"), "required": c.get("required")}
+                            for c in row.get("checks") or [] if c.get("ok") is False
+                        ][:3],
+                    }
             blocked_by_rules[actor] = list(distinct.values())
             pages[actor] = page
             if policy == "scripted":
@@ -248,6 +259,13 @@ def run_world(
             # 7-business pencil chain took ~7 minutes for 12 rounds asked one
             # at a time (2026-10-06).
             recents = {actor: _recent_for(engine, actor, seen) for actor in actors}
+            if turn == 1 and prior_recent:
+                # Moves from before this request (live play sends the last few).
+                for actor in actors:
+                    earlier = [
+                        f"{'you' if m['actor'] == actor else m['actor']}: {m['action']}" for m in prior_recent
+                    ]
+                    recents[actor] = (earlier + recents[actor])[-6:]
             with ThreadPoolExecutor(max_workers=len(actors)) as pool:
                 futures = {
                     actor: pool.submit(
@@ -269,7 +287,10 @@ def run_world(
                     intents[actor], reasons[actor] = intent, reason
                     cost += call_cost
 
-        if not any(intents.values()) and not causal_model.processes:
+        # Simple moves are deterministic: if nobody can act and nothing changes by
+        # itself, every later round would be identical, so stop. AI moves may
+        # differ next round, and live play needs every round recorded.
+        if policy == "scripted" and not any(intents.values()) and not causal_model.processes:
             break
         shift = (turn - 1) % len(actors)
         order = actors[shift:] + actors[:shift]
@@ -348,7 +369,7 @@ def run_world(
     terminal_reached = bool(
         causal_model.terminal is not None and causal_model.terminal.reached(engine.world)
     )
-    if not transcript:
+    if not transcript and start_snapshot is None:
         raise ValueError("run produced no actions; review actor selectors, checks, and parameter choices")
     trace = {
         "schema_version": "world-substrate-contested-run/v3",
@@ -482,7 +503,13 @@ def render_run(
         actor.setdefault("carry_offset", [5, 3])
         actor.setdefault("carry_spacing", [0, 5])
     by_id = {row["entity_id"]: row for row in model["entities"]}
-    return render_html(trace, profile, by_id, REPO)
+    html = render_html(trace, profile, by_id, REPO)
+    # Live play renders one round at a time, where "Turn 7 / 1" reads as broken;
+    # label by round number instead. Saved evidence replays keep the old label.
+    return html.replace(
+        "'Turn '+f.turn+' / '+FRAMES.length",
+        "'Round '+f.turn+(FRAMES.length>1?' ('+(idx+1)+' of '+FRAMES.length+')':'')",
+    )
 
 
 def main() -> int:

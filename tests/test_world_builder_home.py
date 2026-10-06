@@ -13,10 +13,12 @@ class WorldBuilderHomeTests(unittest.TestCase):
 
     def test_natural_language_flow_uses_generation_then_explicit_approval(self):
         self.assertIn('apiJob("/generate-world"', self.page)
-        self.assertIn("Approve rules and run", self.page)
+        self.assertIn("Approve rules and play", self.page)
         self.assertIn("approved: true", self.page)
-        # The run request is only sent from the approval handler.
+        # Runs are requested only by the live-play loop, after approval.
         self.assertEqual(self.page.count('apiJob("/run"'), 1)
+        self.assertEqual(self.page.count('api("/run"'), 1)
+        self.assertIn('$("approve-btn").addEventListener("click", () => startLive());', self.page)
 
     def test_feeling_lucky_and_dialogue_paths_are_wired(self):
         self.assertIn(">Make one up for me</button>", self.page)
@@ -32,11 +34,13 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('href="play/"', self.page)
         self.assertIn('href="build/"', self.page)
 
-    def test_world_kinds_and_keep_going_are_offered(self):
-        for label in ("A task to finish", "Ongoing work", "An open world", "Keep going (12 more rounds)",
-                      "What happens by itself each round"):
+    def test_world_kinds_and_live_play_are_offered(self):
+        for label in ("A task to finish", "Ongoing work", "An open world", "⏸ Pause", "▶ Play",
+                      "What happens by itself each round", "What just happened"):
             self.assertIn(label, self.page)
-        self.assertIn("request.continue_from = lastRun.trace.final_snapshot", self.page)
+        # Each round continues from exactly where the last one ended.
+        self.assertIn("request.continue_from = live.snapshot; request.turn_offset = live.lastTurn;", self.page)
+        self.assertIn("QUIET_ROUNDS_TO_PAUSE", self.page)
         self.assertIn('fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() })', self.page)
 
     def test_owner_access_sends_the_password_on_every_request(self):

@@ -50,6 +50,12 @@ class AuthoredWorldRunTests(unittest.TestCase):
             self.assertLessEqual(len(keys), 3)
         self.assertTrue(all(b["reason"] for b in refusals))
 
+    def test_world_builder_replay_labels_rounds_not_turn_of_total(self):
+        trace, _, model = run_world(self.bundle, self.causal, policy="scripted", max_turns=1)
+        html = render_run(self.bundle, trace, model)
+        self.assertIn("'Round '+f.turn", html)
+        self.assertNotIn("'Turn '+f.turn+' / '", html)
+
     def test_world_where_only_processes_run_is_not_active(self):
         # The 2026-10-06 pencil world: drains ran every round but no actor could
         # ever act, and it was reported as still alive.

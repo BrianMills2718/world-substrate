@@ -84,10 +84,16 @@ DRY_RUN_TURNS = 12
 # village was busy for 12 rounds and then went quiet, so test twice as long.
 DRY_RUN_TURNS_CONTINUING = 24
 WORLD_KINDS = ("task", "ongoing", "open")
-# Keep going is bounded: a visitor can continue one world for this many rounds.
-MAX_CONTINUED_TURNS = 300
+# Live play continues a world one round at a time for as long as the viewer
+# likes; the daily budget, not a round count, is the limit.
+MAX_CONTINUED_TURNS = 100_000
+MAX_RECENT_MOVES = 12
 LLM_REQUESTS_PER_HOUR = 8
-GENERAL_REQUESTS_PER_MINUTE = 30
+# Live play asks for AI moves one round at a time, so AI rounds get their own
+# hourly allowance (the daily dollar budget still caps spend).
+AI_RUN_REQUESTS_PER_HOUR = 360
+# Live play with simple moves asks for one free round every ~1.5 s.
+GENERAL_REQUESTS_PER_MINUTE = 60
 ALLOWED_ORIGINS = {"https://brianmills.dev", "https://www.brianmills.dev"}
 TRACE_ROOT = "world-builder-live"
 BUDGET_STATE_PATH = Path.home() / ".local/state/world-builder/llm-budget-v1.json"
@@ -98,6 +104,7 @@ _LLM_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
 # Dialogue turns are small and frequent; they get their own per-visitor
 # allowance so a conversation does not use up the build allowance.
 _DIALOGUE_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
+_AI_RUN_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
 DIALOGUE_REQUESTS_PER_HOUR = 30
 DIALOGUE_BUDGET = 0.02
 _LLM_LOCK = threading.Lock()
@@ -109,10 +116,12 @@ def _prune(queue: deque[float], window: float) -> None:
         queue.popleft()
 
 
-def _rate_ok(client: str, *, llm: bool, dialogue: bool = False) -> bool:
+def _rate_ok(client: str, *, llm: bool, dialogue: bool = False, ai_run: bool = False) -> bool:
     if _is_owner():
         return True
-    if dialogue:
+    if ai_run:
+        queue, window, limit = _AI_RUN_REQUESTS[client], 3600.0, AI_RUN_REQUESTS_PER_HOUR
+    elif dialogue:
         queue, window, limit = _DIALOGUE_REQUESTS[client], 3600.0, DIALOGUE_REQUESTS_PER_HOUR
     else:
         queue = _LLM_REQUESTS[client] if llm else _REQUESTS[client]
@@ -319,9 +328,12 @@ def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
         # The exact world and rules this run used (they can be edited after the
         # build), so any logged run can be matched to its build and re-run.
         out["world_fingerprint"] = _world_fingerprint(body["bundle"], body.get("causal_model"))
-        out["bundle"] = body["bundle"]
-        out["causal_model"] = body.get("causal_model")
-        out["continue_from"] = body.get("continue_from")
+        if body.get("continue_from") is None:
+            # A continued round's world is the previous round's final_snapshot
+            # (logged there) under the same fingerprint, so live play does not
+            # re-log the whole world every round.
+            out["bundle"] = body["bundle"]
+            out["causal_model"] = body.get("causal_model")
     return out
 
 
@@ -351,7 +363,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "summary": value.get("summary"),
             "mover": trace.get("model"),
             "transcript": trace.get("transcript"),
-            # Where the world ended up, so a Keep going continuation is reconstructable.
+            # Where the world ended up, so the next live round (or a later replay) starts from it.
             "final_snapshot": trace.get("final_snapshot"),
         }
     if path == "/clarify":
@@ -427,7 +439,11 @@ def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
     for turn in dry.get("transcript") or []:
         for actor in idle:
             for blocked in (turn["actors"].get(actor) or {}).get("blocked_by_rules") or []:
-                line = f"{blocked['action'].get('kind', '?')}: {blocked.get('reason', '')}"
+                values = "; ".join(
+                    f"{f.get('check')}: was {f.get('actual')!r}, needed {f.get('required')!r}"
+                    for f in blocked.get("failed") or []
+                )
+                line = f"{blocked['action'].get('kind', '?')}: {values or blocked.get('reason', '')}"
                 if line not in reasons.setdefault(actor, []) and len(reasons[actor]) < 3:
                     reasons[actor].append(line)
     detail = "; ".join(
@@ -648,8 +664,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             self.log_message("internal error: %s: %s", type(error).__name__, str(error)[:300])
             self._error(HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")
 
-    def _llm_budget(self, client: str, requested_cap: float, *, dialogue: bool = False) -> float | None:
-        if not _rate_ok(client, llm=True, dialogue=dialogue):
+    def _llm_budget(self, client: str, requested_cap: float, *, dialogue: bool = False, ai_run: bool = False) -> float | None:
+        if not _rate_ok(client, llm=True, dialogue=dialogue, ai_run=ai_run):
             self._error(HTTPStatus.TOO_MANY_REQUESTS, "LLM rate limit reached")
             return None
         cap = _reserve_daily_budget(requested_cap)
@@ -999,6 +1015,15 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         turn_offset = body.get("turn_offset", 0)
         if type(turn_offset) is not int or not 0 <= turn_offset <= MAX_CONTINUED_TURNS:
             raise ValueError(f"turn_offset must be an integer between 0 and {MAX_CONTINUED_TURNS}")
+        # The last few moves before this round, so AI characters remember what
+        # just happened when live play continues one round at a time.
+        recent = body.get("recent") or []
+        if (
+            not isinstance(recent, list) or len(recent) > MAX_RECENT_MOVES
+            or not all(isinstance(m, dict) and set(m) == {"actor", "action"}
+                       and all(isinstance(v, str) and 0 < len(v) <= 80 for v in m.values()) for m in recent)
+        ):
+            raise ValueError(f"recent must be up to {MAX_RECENT_MOVES} {{actor, action}} moves")
         model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
         if execution_mode == "native_coordination":
@@ -1016,14 +1041,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             daily_cost = None
         elif policy == "llm":
             with _LLM_LOCK:
-                budget = self._llm_budget(client, RUN_BUDGET)
+                budget = self._llm_budget(client, RUN_BUDGET, ai_run=True)
                 if budget is None:
                     return
                 try:
                     trace, _, compiled = run_world(
                         bundle, causal, policy=policy, model_name=model,
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
-                        start_snapshot=continue_from, turn_offset=turn_offset,
+                        start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
@@ -1035,7 +1060,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             trace, _, compiled = run_world(
                 bundle, causal, policy=policy, model_name=model,
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
-                start_snapshot=continue_from, turn_offset=turn_offset,
+                start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
             )
             daily_cost = None
         if execution_mode == "authored_world":
