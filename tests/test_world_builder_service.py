@@ -517,6 +517,33 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(continued["request"]["world_fingerprint"], opening["request"]["world_fingerprint"])
         self.assertIsNotNone(opening["result"]["final_snapshot"])
 
+    def test_run_log_reader_shows_the_rules_identity_once_per_run(self):
+        import contextlib, importlib, io
+        runs_cli = importlib.import_module("scripts.world_builder_runs")
+        row = {"ts": "2026-10-06T00:00:00Z", "who": "owner", "client": "x", "path": "/run", "status": 200,
+               "cost_usd": 0, "request": {"world": "W", "turns": 1},
+               "result": {"summary": {"first_turn": 1, "last_turn": 1}, "mechanic_profile_id": "0123456789abcdef"}}
+        body = io.BytesIO(json.dumps({"runs": [row]}).encode())
+        out = io.StringIO()
+        with patch.dict(runs_cli.os.environ, {"WORLD_BUILDER_OWNER_PASSWORD": "x"}), \
+                patch.object(runs_cli.urllib.request, "urlopen", return_value=contextlib.nullcontext(body)), \
+                patch.object(runs_cli.sys, "argv", ["world_builder_runs.py"]), contextlib.redirect_stdout(out):
+            self.assertEqual(runs_cli.main(), 0)
+        self.assertEqual(out.getvalue().count("rules-id=0123456789abcdef"), 1)
+
+    def test_every_run_logs_its_frozen_rules_identity(self):
+        # G7: the trace carried mechanic_profile_id but the run log dropped it.
+        causal = self._ongoing_causal()
+        status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
+        self.assertEqual(status, 200, first)
+        status, second = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
+                                            "continue_from": first["trace"]["final_snapshot"],
+                                            "turn_offset": first["summary"]["last_turn"]})
+        self.assertEqual(status, 200, second)
+        expected = first["trace"]["mechanic_profile_id"]
+        self.assertRegex(expected, r"^[0-9a-f]{16}$")
+        self.assertEqual([row["result"]["mechanic_profile_id"] for row in self.run_log()], [expected, expected])
+
     def test_continuing_a_finished_world_returns_no_rounds_instead_of_an_error(self):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1})
         self.assertTrue(first["summary"]["terminal_reached"])
