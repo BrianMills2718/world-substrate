@@ -12,11 +12,15 @@ REV=${1:-origin/main}
 repo=$(cd "$(dirname "$0")/.." && pwd)
 git -C "$repo" fetch -q origin
 commit=$(git -C "$repo" rev-parse "$REV")
-stage=$(mktemp -d)
-trap 'rm -rf "$stage"' EXIT
-git -C "$repo" archive "$commit" | tar -C "$stage" -xf -
+# A real checkout (some tests read git metadata), detached at the exact revision.
+stage="$repo/worktrees/deploy-${commit:0:12}"
+git -C "$repo" worktree add -q --detach "$stage" "$commit"
+trap 'git -C "$repo" worktree remove "$stage" >/dev/null 2>&1 || true' EXIT
 echo "== gate at ${commit:0:12}"
-(cd "$stage" && PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 python scripts/check_project.py >/dev/null && echo "check_project ok")
+log=$(mktemp)
+(cd "$stage" && PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 python scripts/check_project.py >"$log" 2>&1) \
+  || { echo "check_project FAILED:" >&2; tail -25 "$log" >&2; exit 1; }
+echo "check_project ok"
 (cd "$stage" && PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pytest python -m pytest tests -p no:cacheprovider -q 2>&1 | tail -1)
 echo "== backend"
 vps=$(mktemp -d)
