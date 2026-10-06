@@ -316,6 +316,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         ) as mechanics:
             status, payload = self.post("/generate-world", {"description": "orchard", "world_kind": "open"})
         self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["world_kind"], "ongoing")  # "open" is the older name for the same kind
         self.assertEqual(mechanics.call_count, 2)
         self.assertIn("add processes", mechanics.call_args_list[1].kwargs["guidance"])
 

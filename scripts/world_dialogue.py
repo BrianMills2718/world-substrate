@@ -35,9 +35,9 @@ SCOPE = (
 WORLD_KINDS = ("task", "ongoing", "open")
 KIND_HINTS = {
     "task": "The visitor wants a task world: a job with a clear finish line.",
-    "ongoing": "The visitor wants an ongoing world: work keeps arriving or things keep needing attention, with no final finish line.",
-    "open": "The visitor wants an open world: no goal, residents with needs that keep changing, living on indefinitely.",
+    "ongoing": "The visitor wants a world that keeps running with no finish line: work keeps arriving, or people keep living by their own needs; follow what they describe.",
 }
+KIND_HINTS["open"] = KIND_HINTS["ongoing"]  # older name for the same kind
 
 
 def _kind(world_kind: Any) -> str:

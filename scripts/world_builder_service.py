@@ -737,6 +737,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         world_kind = body.get("world_kind") or "task"
         if world_kind not in WORLD_KINDS:
             raise ValueError(f"world_kind must be one of {list(WORLD_KINDS)}")
+        if world_kind == "open":
+            world_kind = "ongoing"  # older name for the same kind
         trace_id = f"{TRACE_ROOT}/world/{uuid.uuid4().hex}"
         with _LLM_LOCK:
             budget = self._llm_budget(client, WORLD_BUDGET)
