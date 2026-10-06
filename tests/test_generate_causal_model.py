@@ -60,7 +60,7 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
             generated, result = generate_causal_model(bundle, model="fake-model", trace_id="test-output-cap")
         self.assertEqual(generated["schema_version"], "world-substrate-causal-model/v0")
         self.assertIs(result, fake)
-        self.assertEqual(MAX_MECHANICS_OUTPUT_TOKENS, 8192)
+        self.assertEqual(MAX_MECHANICS_OUTPUT_TOKENS, 16000)
         self.assertEqual(call.call_args.kwargs["max_tokens"], MAX_MECHANICS_OUTPUT_TOKENS)
         self.assertNotIn("model_justification", call.call_args.kwargs)
 

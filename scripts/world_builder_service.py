@@ -403,6 +403,26 @@ class _JobResponder:
         self._json(status, {"ok": False, "error": message})
 
 
+def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
+    """Tell the rules model which actors never acted in the dry run, and why."""
+    reasons: dict[str, list[str]] = {}
+    for turn in dry.get("transcript") or []:
+        for actor in idle:
+            for blocked in (turn["actors"].get(actor) or {}).get("blocked_by_rules") or []:
+                line = f"{blocked['action'].get('kind', '?')}: {blocked.get('reason', '')}"
+                if line not in reasons.setdefault(actor, []) and len(reasons[actor]) < 3:
+                    reasons[actor].append(line)
+    detail = "; ".join(
+        f"{actor} (refused: {', '.join(reasons.get(actor) or ['it was never offered an action'])})" for actor in idle
+    )
+    return (
+        f" In {turns} rounds these actors never managed a single action: {detail}. Every actor role must be able "
+        "to act regularly: make sure some other actor's action or a process produces what each one's action "
+        "needs (for example, if a carrier must hold goods before delivering, give another actor an action "
+        "that loads goods onto the carrier, or let the carrier pick them up itself)."
+    )
+
+
 def _initial_refusals(bundle: dict[str, Any], causal: dict[str, Any], limit: int = 6) -> list[str]:
     """Distinct 'action: failed checks' lines for every actor in the starting state."""
     engine, model, _ = build_engine(bundle, causal)
@@ -693,7 +713,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 attempts: list[dict[str, Any]] = []
                 # Keep the best attempt: reaching the finish line beats merely
                 # allowing actions, which beats allowing nothing.
-                best: tuple[int, dict[str, Any], CausalModel, dict[str, Any]] | None = None
+                best: tuple[tuple[int, int], dict[str, Any], CausalModel, dict[str, Any]] | None = None
                 for attempt in range(2):
                     try:
                         generated, _ = generate_causal_model(
@@ -735,7 +755,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 and bool(candidate_compiled.processes)
                                 and dry["summary"]["active_at_end"]
                             )
-                            score = 2 if alive else 1
+                            idle = list(dry["summary"].get("idle_actors") or [])
+                            # Best: alive with every actor taking part; then alive; then not.
+                            score = (3 if not idle else 2) if alive else 1
                             guidance = "" if alive else (
                                 f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                 f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -745,6 +767,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 "round indefinitely: needs and resources must keep cycling (for example hunger rises, "
                                 "eating lowers it, food regrows), never just run down to a stop."
                             )
+                            if idle:
+                                guidance += _idle_guidance(dry, idle, dry_turns)
                             finishes = None
                         else:
                             finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
@@ -779,9 +803,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             "action descriptions."
                         )
                     attempts.append(result_row)
-                    if best is None or score > best[0]:
-                        best = (score, candidate, candidate_compiled, result_row)
-                    if score == 2 or attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
+                    # Ties go to the attempt with fewer actors who never acted.
+                    rank = (score, -len(result_row.get("idle_actors") or []))
+                    if best is None or rank > best[0]:
+                        best = (rank, candidate, candidate_compiled, result_row)
+                    if score >= (2 if world_kind == "task" else 3) or attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
                         break
                 assert best is not None
                 _, causal, compiled, best_row = best

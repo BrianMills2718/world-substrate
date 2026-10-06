@@ -111,8 +111,8 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <fieldset style="border:0;padding:0;margin:0">
       <legend class="muted small">What kind of world?</legend>
       <div class="kinds">
-        <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task" checked><strong>A task to finish</strong><span>A job with a finish line. The run stops when it is done.</span></label>
-        <label class="kind" title="Work keeps arriving; there is no finish line and you can keep it going"><input type="radio" name="kind" value="ongoing"><strong>Ongoing work</strong><span>Work keeps coming (new orders, plants dry out again). It keeps going; you see how much gets done.</span></label>
+        <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task"><strong>A task to finish</strong><span>A job with a finish line. The run stops when it is done.</span></label>
+        <label class="kind" title="Work keeps arriving; there is no finish line and you can keep it going"><input type="radio" name="kind" value="ongoing" checked><strong>Ongoing work</strong><span>Work keeps coming (new orders, plants dry out again). It keeps going; you see how much gets done.</span></label>
         <label class="kind" title="No goal; people live by their own needs while the world changes; keep it going as long as you like"><input type="radio" name="kind" value="open"><strong>An open world</strong><span>No goal. People live by their own needs while the world changes around them. Keep going as long as you like.</span></label>
       </div>
     </fieldset>
@@ -284,7 +284,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       return data;
     }
   }
-  const kind = () => (document.querySelector('input[name="kind"]:checked') || {}).value || "task";
+  const kind = () => (document.querySelector('input[name="kind"]:checked') || {}).value || "ongoing";
 
   function plainError(err) {
     const msg = String(err.message || err);

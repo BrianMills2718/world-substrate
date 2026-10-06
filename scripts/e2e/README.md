@@ -5,7 +5,7 @@ Kept in git so they survive WSL restarts (session scratch folders under `/tmp` d
 | Tool | What it checks | Run |
 | --- | --- | --- |
 | `world_builder_e2e.mjs` | The landing page as a visitor uses it: `task`, `ongoing`, `open` (build, approve, run, Keep going), `lucky`, `dialogue` | `npm install && npx playwright install chromium && node world_builder_e2e.mjs https://brianmills.dev task open` |
-| `../measure_world_builder.py` | How often generated worlds are runnable and finish (task) or stay active (ongoing/open) | `uv run --no-project --python 3.12 python scripts/measure_world_builder.py --base http://127.0.0.1:8899 --kinds task,open` |
+| `../measure_world_builder.py` | How often generated worlds are runnable and finish (task) or stay active (ongoing/open) | `uv run --no-project --python 3.12 python scripts/measure_world_builder.py --base http://127.0.0.1:8899 --kinds task,open` (add `--description "..."` to build your own text instead of the built-in set) |
 | `../world_builder_runs.py` | Who built and ran what on the live site (owner only) | `WORLD_BUILDER_OWNER_PASSWORD=... python3 scripts/world_builder_runs.py --limit 20` |
 | `../dev_world_builder.py` | Serves the landing page against a local API for these checks | `python3 scripts/dev_world_builder.py` after starting `scripts/world_builder_service.py --port 8899` |
 

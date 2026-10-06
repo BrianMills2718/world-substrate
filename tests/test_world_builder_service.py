@@ -318,6 +318,26 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(mechanics.call_count, 2)
         self.assertIn("add processes", mechanics.call_args_list[1].kwargs["guidance"])
 
+    def test_ongoing_world_with_idle_actor_retries_and_keeps_fewer_idle(self):
+        def alive(idle):
+            return {"summary": {"turns": 24, "terminal_reached": False, "accepted_actions": 40,
+                                "active_at_end": True, "idle_actors": idle},
+                    "transcript": [{"actors": {a: {"status": "no_action", "blocked_by_rules": [
+                        {"action": {"kind": "deliver"}, "reason": "The carrier has pencils"}]} for a in idle}}]}
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(self._ongoing_causal(), FakeResult()),
+        ) as mechanics, patch.object(
+            service, "run_world", side_effect=[(alive(["carrier", "shop"]), None, None), (alive(["shop"]), None, None)],
+        ):
+            status, payload = self.post("/generate-world", {"description": "pencils", "world_kind": "ongoing"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        guidance = mechanics.call_args_list[1].kwargs["guidance"]
+        self.assertIn("carrier (refused: deliver: The carrier has pencils)", guidance)
+        self.assertEqual(payload["dry_run"]["idle_actors"], ["shop"])
+
     def test_unknown_world_kind_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:
             status, _ = self.post("/generate-world", {"description": "orchard", "world_kind": "endless"})
@@ -783,3 +803,14 @@ class WorldBuilderServiceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class IdleActorGuidanceTests(unittest.TestCase):
+    def test_guidance_names_idle_actor_and_its_refusal(self):
+        from scripts.world_builder_service import _idle_guidance
+        dry = {"transcript": [{"actors": {"courier": {"status": "no_action", "blocked_by_rules": [
+            {"action": {"kind": "deliver-pencils"}, "reason": "The carrier has enough pencils"}]}}}] * 3}
+        text = _idle_guidance(dry, ["courier"], 24)
+        self.assertIn("courier (refused: deliver-pencils: The carrier has enough pencils)", text)
+        self.assertEqual(text.count("deliver-pencils"), 1)
+        self.assertIn("24 rounds", text)
