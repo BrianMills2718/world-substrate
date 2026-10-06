@@ -1,6 +1,6 @@
 # View coverage: what each World Substrate view shows of the system model
 
-Status: observed evidence, 2026-10-06, at commit `2dd1503` (the deployed pages at `https://brianmills.dev/world-builder/`, `play/` and `build/` were byte-identical to this commit's sources that day, and the API reported `build_commit 2dd1503`).
+Status: observed evidence, 2026-10-06. Probes ran at commit `2dd1503`; line numbers are updated to `d18ead6` (#117, which drops no-op moves from the offer), and G1, G2 and G7 were re-checked on `d18ead6` with the same results (the deployed pages at `https://brianmills.dev/world-builder/`, `play/` and `build/` were byte-identical to this commit's sources that day, and the API reported `build_commit 2dd1503`).
 
 The model is [ODD.md](ODD.md) and [world_substrate_model.toml](world_substrate_model.toml). This page asks one question per model element: can a person looking at each view see it? Values: **shown**, **partial**, **hidden** (on purpose, with the reason), **missing**, **n/a** (that view is not about this element). The same table is in the model file's `coverage` rows; `tests/test_system_model.py` checks that every row names a declared element and gives every view.
 
@@ -11,7 +11,7 @@ The model is [ODD.md](ODD.md) and [world_substrate_model.toml](world_substrate_m
 | `home` | World Builder landing page: describe, check the rules, approve, watch it run live one round per request | `scripts/world_builder_home.html` | `https://brianmills.dev/world-builder/` |
 | `build` | World Authoring Studio: edit every bundle section, generate mechanics, approve, run, native-coordination comparison, full request logs | `scripts/world_builder_app.js` via `scripts/render_world_builder.py` | `https://brianmills.dev/world-builder/build/` |
 | `play` | Replay Studio: gallery of retained evidence replays | `scripts/render_replay_studio.py` | `https://brianmills.dev/world-builder/play/` |
-| `round_replay` | The picture of a run inside `home` and `build` (iframe `replay_html`) | `scripts/run_authored_world.py:485` -> `scripts/render_scene_replay.py:442` | inside home/build |
+| `round_replay` | The picture of a run inside `home` and `build` (iframe `replay_html`) | `scripts/run_authored_world.py:517` -> `scripts/render_scene_replay.py:442` | inside home/build |
 | `living_scene` | Living Scene v1 renderer over a live projection | `scripts/render_living_scene.py` | offline HTML |
 | `composed_living_scene` | Composed living-scene renderer with inspector; native-coordination runs and comparisons in `build`; agent_ecology3's Living view | `scripts/render_composed_living_scene.py` | inside build; offline HTML |
 | `owner_run_log` | Owner-only run-log reader | `GET /runs` (`scripts/world_builder_service.py:532`), `scripts/world_builder_runs.py` | owner password |
@@ -45,7 +45,7 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 
 Notes on the rows:
 
-- **Refusal events, all views.** The living-scene renderers accept every engine status (`src/world_substrate/living_scene.py:38`) but show feedback only when the scene profile declares a visual for that rule (`living_scene.py:415`), and only check labels and verdicts, never operands (on purpose: operands can be actor-scoped evidence, `living_scene.py:394`). Authored-world views see refusals only through the transcript's `refused_because` check labels (`scripts/run_authored_world.py:346`), never the event itself (G1). Hence "partial".
+- **Refusal events, all views.** The living-scene renderers accept every engine status (`src/world_substrate/living_scene.py:38`) but show feedback only when the scene profile declares a visual for that rule (`living_scene.py:415`), and only check labels and verdicts, never operands (on purpose: operands can be actor-scoped evidence, `living_scene.py:394`). Authored-world views see refusals only through the transcript's `refused_because` check labels (`scripts/run_authored_world.py:375`), never the event itself (G1). Hence "partial".
 - **RunLogEntry is hidden from visitors on purpose**: it holds other visitors' worlds and salted client fingerprints; only the owner reads it (`world_builder_service.py:499`).
 - **BudgetLedger** reaches visitors only as an error message when the day's budget is used up (`world_builder_home.html:288`) and as cost receipts in `build`.
 
@@ -56,13 +56,13 @@ Each gap names what the model says, what the view does instead, the evidence, an
 ### G1. Authored-world runs keep no engine event records
 
 - **Model:** every attempt writes one Engine event (`src/world_substrate/engine.py:505`): bearer, binding, observation, checks, declared read/write paths, `changes`, `hash_before`/`hash_after`. Root `AGENTS.md` tells investigators to read "the retained causal trace".
-- **Code:** the authored-world run trace (`scripts/run_authored_world.py:374-411`) keeps `summary`, `transcript` and `final_snapshot`; `World.snapshot()` drops commands and events (`src/world_substrate/model.py:416`). The run log keeps the same (`scripts/world_builder_service.py:360-367`). The native-coordination path does keep them (`scripts/run_native_coordination.py:604`, `:1107`), so the two run paths differ.
+- **Code:** the authored-world run trace (`scripts/run_authored_world.py:405-446`) keeps `summary`, `transcript` and `final_snapshot`; `World.snapshot()` drops commands and events (`src/world_substrate/model.py:416`). The run log keeps the same (`scripts/world_builder_service.py:360-367`). The native-coordination path does keep them (`scripts/run_native_coordination.py:604`, `:1107`), so the two run paths differ.
 - **Effect:** no view, and no retained file, can say which state paths an action changed or show the world hash chain for a Builder run; the engine's `stale_revision` event behind a `nothing_left` row is lost.
 - **Reproduced: yes.** `run_authored_world.py` on `examples/world_authoring/repair-bay-v0.json` produced a trace with keys `actors, cost_usd, final_snapshot, mechanic_profile_id, model, schema_version, summary, transcript, world`, with no events. A local service run of the same world wrote run-log `/run` results with keys `final_snapshot, mover, summary, transcript`.
 
 ### G2. Home "refused" counter counts blocked offers, not refused attempts
 
-- **Model:** a refusal is an Engine event with a non-`accepted` status for an attempt that was submitted. `blocked_by_rules` is something else: the offers `Engine.discover` withheld from an actor that round, one example per distinct (action kind, reason) (`scripts/run_authored_world.py:232-252`).
+- **Model:** a refusal is an Engine event with a non-`accepted` status for an attempt that was submitted. `blocked_by_rules` is something else: the offers `Engine.discover` withheld from an actor that round, one example per distinct (action kind, reason) (`scripts/run_authored_world.py:261-281`).
 - **View:** the run headline `Round N · A allowed · R refused` adds up `blocked_by_rules` entries (`scripts/world_builder_home.html:615`, printed at `:553`), while the squares underneath ("Why things were refused") draw one refused square per actor per round (`:518`). Step 3's tooltip says "Every attempt is allowed or refused by your approved rules" (`:111`).
 - **Reproduced: yes,** in a browser (Playwright) against a local API with the Repair Bay fixture world: the page said **"Round 5 · 10 allowed · 60 refused"** and drew 20 refused squares. The run log for the same run: 10 `accepted`, 9 `no_action`, 1 `nothing_left`, zero submitted attempts refused by a rule check. The number 60 measures neither attempts nor squares.
 
@@ -92,7 +92,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G7. Frozen mechanic profile id is shown nowhere and not logged
 
-- **Model:** `MechanicProfile.freeze()` gives the installed law a stable identity before the run (`src/world_substrate/profile.py:266`); the trace carries it as `mechanic_profile_id` (`run_authored_world.py:380`).
+- **Model:** `MechanicProfile.freeze()` gives the installed law a stable identity before the run (`src/world_substrate/profile.py:266`); the trace carries it as `mechanic_profile_id` (`run_authored_world.py:411`).
 - **Views:** no page reads `mechanic_profile_id` (`grep` over `world_builder_home.html`, `world_builder_app.js`, `render_scene_replay.py`, `render_replay_studio.py`: 0 matches), and the run log's `/run` result drops it (`world_builder_service.py:360-367`).
 - **Reproduced: yes** (trace key present in the G1 run; absent from the G2 run-log result keys; grep counts above).
 
@@ -117,7 +117,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 ### G11. Continued live rounds trust client-held world state
 
 - **Model:** "one canonical persistent world owns material truth" (root `AGENTS.md`).
-- **Code:** live play asks for one round at a time; between rounds the world state lives in the browser and comes back as `continue_from` (`world_builder_home.html:582`). The server checks that the snapshot's `world_id`, `content_id`, `rule_versions` and `engine_id` match the bundle (`run_authored_world.py:204-213`) but not that the entity state equals the previous round's `final_snapshot` (which the run log retains, `world_builder_service.py:366`).
+- **Code:** live play asks for one round at a time; between rounds the world state lives in the browser and comes back as `continue_from` (`world_builder_home.html:582`). The server checks that the snapshot's `world_id`, `content_id`, `rule_versions` and `engine_id` match the bundle (`run_authored_world.py:233-242`) but not that the entity state equals the previous round's `final_snapshot` (which the run log retains, `world_builder_service.py:366`).
 - **Reproduced: no.** Read from code only; no edited snapshot was sent. This is a boundary finding, not a view gap: a visitor can only change their own world, but a logged run is not proof that round N+1 started where round N ended.
 
 ## Not verified

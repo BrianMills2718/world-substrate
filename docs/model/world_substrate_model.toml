@@ -11,12 +11,12 @@
 #     same writer file + function;
 #   - World Builder API routes and run-log paths equal the ones declared here;
 #   - processes, records, coverage rows and gaps refer only to declared names.
-# Line numbers are as of commit 2dd1503 (2026-10-06). The test enforces file and
+# Line numbers are as of commit d18ead6 (2026-10-06). The test enforces file and
 # function, not line, so a drifted line is a documentation fix, not a failure.
 
 schema = "world-substrate-system-model/v1"
 system = "World Substrate (governed-rules layer + World Builder authoring/review/run path)"
-as_of_commit = "2dd1503"
+as_of_commit = "d18ead6"
 
 # scope of a record:
 #   product   - written on the public World Builder path (Decision 006 scope)
@@ -87,9 +87,9 @@ state = ["schema_version", "world (material dict)"]
 [[entities]]
 name = "Run"
 what = "One execution of an approved CausalModel over a bundle (or over a continued snapshot) for N rounds: the contested-run trace."
-source = "scripts/run_authored_world.py:374"
+source = "scripts/run_authored_world.py:405"
 schema = "world-substrate-contested-run/v3"
-state = ["mechanic_profile_id", "model (policy name)", "cost_usd", "summary {turns, terminal_reached, accepted_actions, world_changes, active_at_end, idle_actors, first_turn, last_turn}", "transcript[] (per round: actors{wanted, did, status, retried, said, refused_because, lost_what_it_wanted, blocked_by_rules}, world_changes, revision_when_decided, committed_first)", "final_snapshot"]
+state = ["mechanic_profile_id", "model (policy name)", "cost_usd", "summary {turns, terminal_reached, accepted_actions, world_changes, active_at_end, idle_actors, first_turn, last_turn}", "transcript[] (per round: actors{wanted, did, status, retried, said, refused_because, lost_what_it_wanted, changed, blocked_by_rules}, world_changes, revision_when_decided, committed_first)", "final_snapshot"]
 
 [[entities]]
 name = "LiveProjection"
@@ -209,7 +209,7 @@ schedule = "at the start of every run"
 [[processes]]
 name = "run"
 what = "Fresh or continued run: builds the Engine, then per round each actor (rotating order) discovers offered actions, a policy (scripted first-available, or LLM) picks one, Engine.submit commits or refuses; a lost race retries once; then Engine.advance(1) runs due processes."
-source = "scripts/run_authored_world.py:186"
+source = "scripts/run_authored_world.py:215"
 routes = ["POST /run"]
 changes = ["World", "Entity", "Run", "Snapshot"]
 writes = ["world-substrate-contested-run/v3", "no_action", "nothing_left"]
@@ -245,7 +245,7 @@ schedule = "native-coordination runs and reference-world builds; not on the auth
 [[processes]]
 name = "render"
 what = "Presentation only. Authored-world runs: bootstrap a scene profile from the trace and render the round replay (render_scene_replay). Projections: build LivingSceneFrames and render them (render_living_scene, render_composed_living_scene)."
-source = "scripts/run_authored_world.py:485"
+source = "scripts/run_authored_world.py:517"
 routes = []
 changes = ["SceneProfile", "LivingSceneFrame"]
 writes = ["world-substrate-scene-profile/v0", "world-substrate-scene-profile-bootstrap/v0", "world-substrate-scene-asset-catalog/v0", "world-substrate-scene-catalog-extension/v0", "world-substrate-living-scene/v1", "world-substrate-replay-studio/v0", "world-substrate-reference-world/v0"]
@@ -371,13 +371,13 @@ writers = [{ file = "src/world_substrate/engine.py", function = "advance", line 
 name = "no_action"
 meaning = "The policy chose nothing (scripted: nothing offered; LLM: declined). No submit, no engine event."
 written_by = ["run"]
-writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 304 }]
+writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 333 }]
 
 [[run_row_statuses]]
 name = "nothing_left"
 meaning = "The first attempt lost a race (engine wrote stale_revision) and on retry nothing was offered. The stale_revision event exists in World.events but not in the trace."
 written_by = ["run"]
-writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 335 }]
+writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 364 }]
 
 # ------------------------------------------------------------ record schemas --
 # Every `world-substrate-*/vN` (and world-builder-*/vN) identifier the code
@@ -422,7 +422,7 @@ name = "world-substrate-contested-run/v3"
 scope = "product"
 written_by = ["run", "reference_tooling"]
 writers = [
-  { file = "scripts/run_authored_world.py", function = "run_world", line = 375 },
+  { file = "scripts/run_authored_world.py", function = "run_world", line = 406 },
   { file = "scripts/run_contested_world.py", function = "contested_run", line = 356 },
   { file = "scripts/run_greenhouse_fixture.py", function = "retained_run", line = 119 },
   { file = "scripts/run_native_coordination.py", function = "run_native_coordination", line = 1087 },
@@ -665,7 +665,7 @@ url = "https://brianmills.dev/world-builder/play/"
 [[views]]
 name = "round_replay"
 what = "The picture of a run embedded in home and build (iframe replay_html): bootstrapped scene profile + render_scene_replay."
-source = "scripts/run_authored_world.py:485 (render_run) -> scripts/render_scene_replay.py:442"
+source = "scripts/run_authored_world.py:517 (render_run) -> scripts/render_scene_replay.py:442"
 
 [[views]]
 name = "living_scene"
