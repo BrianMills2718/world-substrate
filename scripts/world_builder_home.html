@@ -78,6 +78,9 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 .choices{margin:10px 0 0;padding-left:18px}
 .choices li{margin:2px 0}
 .tip-toast{position:fixed;left:12px;right:12px;bottom:16px;z-index:50;background:#1d2529;color:var(--text);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
+.tip-bubble{position:fixed;z-index:60;max-width:300px;background:#1d2529;color:var(--text);border:1px solid var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.4;box-shadow:0 6px 18px #0008;pointer-events:none}
+.info{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--muted);background:transparent;color:var(--muted);font:600 12px/1 system-ui,sans-serif;cursor:help;padding:0;margin-left:4px;vertical-align:middle}
+.info:hover,.info:focus-visible{border-color:var(--accent);color:var(--accent)}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -117,9 +120,9 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <textarea id="desc" maxlength="2000" title="Describe who is involved, what they share or use, and what they are trying to do" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
     <div class="chips" id="examples"></div>
     <div class="row">
-      <button class="primary" id="build-btn" type="button" title="Build the world from the description above right now. You will check its rules before anything runs.">Build it now</button>
-      <button class="secondary" id="talk-btn" type="button" title="Not sure what to write? The AI asks a few questions and writes the description with you; you build when it looks right.">Talk it through first</button>
-      <button class="secondary" id="lucky-btn" type="button" title="The AI invents a small world of the kind you picked, builds it and runs it straight away, without stopping for you to check the rules.">Surprise me</button>
+      <span style="white-space:nowrap"><button class="primary" id="build-btn" type="button" title="Build the world from the description above right now. You will check its rules before anything runs.">Build it now</button><button type="button" class="info" data-tip-for="build-btn" aria-label="What does Build it now do?" title="What does Build it now do?">i</button></span>
+      <span style="white-space:nowrap"><button class="secondary" id="talk-btn" type="button" title="Not sure what to write? The AI asks a few questions and writes the description with you; you build when it looks right.">Talk it through first</button><button type="button" class="info" data-tip-for="talk-btn" aria-label="What does Talk it through first do?" title="What does Talk it through first do?">i</button></span>
+      <span style="white-space:nowrap"><button class="secondary" id="lucky-btn" type="button" title="The AI invents a small world of the kind you picked, builds it and runs it straight away, without stopping for you to check the rules.">Surprise me</button><button type="button" class="info" data-tip-for="lucky-btn" aria-label="What does Surprise me do?" title="What does Surprise me do?">i</button></span>
       <span class="muted small" id="build-hint">Building takes about 20–60 seconds.</span>
     </div>
     <ul class="choices small muted">
@@ -197,6 +200,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   </p>
 </main>
 <div class="tip-toast" id="tip-toast" role="status" hidden></div>
+<div class="tip-bubble" id="tip-bubble" role="tooltip" hidden></div>
 <script>
 (function () {
   "use strict";
@@ -606,14 +610,44 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     const k = window.prompt("Owner password (overrides the public budget):");
     if (k && k.trim()) { setOwnerKey(k.trim()); checkService(); }
   });
+  // Visible tooltips. The browser's own title tooltip appears only after a long,
+  // still hover and never on phones, so it does not count: every [title] is
+  // shown in a styled bubble within 150 ms of hover or keyboard focus, ⓘ
+  // buttons show their neighbour's tip on tap, and a long press works anywhere.
+  const tipBubble = $("tip-bubble");
+  let tipTimer = null;
+  function tipText(el) {
+    if (el.dataset.tipFor) { const t = document.getElementById(el.dataset.tipFor); return t ? (t.dataset.tip || t.getAttribute("title") || "") : ""; }
+    if (el.hasAttribute("title")) { el.dataset.tip = el.getAttribute("title"); el.setAttribute("aria-description", el.dataset.tip); el.removeAttribute("title"); }
+    return el.dataset.tip || "";
+  }
+  let tipEl = null;
+  function showTip(el) {
+    const text = tipText(el);
+    if (!text) return;
+    tipEl = el;
+    tipBubble.textContent = text; tipBubble.hidden = false;
+    const r = el.getBoundingClientRect(), b = tipBubble.getBoundingClientRect();
+    let top = r.bottom + 8; if (top + b.height > window.innerHeight - 8) top = r.top - b.height - 8;
+    const left = Math.max(8, Math.min(window.innerWidth - b.width - 8, r.left + r.width / 2 - b.width / 2));
+    tipBubble.style.top = top + "px"; tipBubble.style.left = left + "px";
+  }
+  function hideTip() { clearTimeout(tipTimer); tipBubble.hidden = true; tipEl = null; }
+  const tipTarget = (node) => node && node.closest && node.closest("[title], [data-tip], [data-tip-for]");
+  document.addEventListener("mouseover", (e) => { const el = tipTarget(e.target); clearTimeout(tipTimer); if (el) tipTimer = setTimeout(() => showTip(el), 150); else hideTip(); });
+  document.addEventListener("focusin", (e) => { const el = tipTarget(e.target); if (el) showTip(el); });
+  document.addEventListener("focusout", hideTip);
+  // Scrolling moves the bubble with its control instead of hiding it.
+  window.addEventListener("scroll", () => { if (!tipBubble.hidden && tipEl) showTip(tipEl); }, { passive: true });
+  document.addEventListener("click", (e) => { const el = e.target.closest(".info"); if (el) { e.preventDefault(); showTip(el); setTimeout(hideTip, 5000); } });
   // Phones cannot hover: a long press on anything with a tooltip shows the same text.
   let pressTimer = null;
   document.addEventListener("touchstart", (e) => {
-    const el = e.target.closest("[title]");
+    const el = tipTarget(e.target);
     if (!el) return;
     clearTimeout(pressTimer);
     pressTimer = setTimeout(() => {
-      $("tip-toast").textContent = el.getAttribute("title");
+      $("tip-toast").textContent = tipText(el);
       $("tip-toast").hidden = false;
       setTimeout(() => { $("tip-toast").hidden = true; }, 4000);
     }, 450);
