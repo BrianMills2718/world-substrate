@@ -482,12 +482,15 @@ class WorldBuilderServiceTests(unittest.TestCase):
                                         extra_headers={service.OWNER_HEADER: "pw"})
             self.assertEqual(status, 202)
             self.wait_for_job(started["job_id"])
+            self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 2},
+                      extra_headers={service.CLIENT_HEADER: "e2e", service.OWNER_HEADER: "pw"})
         self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 2},
-                  extra_headers={service.CLIENT_HEADER: "e2e"})
-        owner, agent = self.run_log()
-        self.assertEqual((owner["who"], owner["job_id"]), ("owner", started["job_id"]))
+                  extra_headers={service.CLIENT_HEADER: "measure"})
+        owner, agent_on_owner, agent = self.run_log()
+        self.assertEqual((owner["who"], owner["allowance"], owner["job_id"]), ("owner", "owner", started["job_id"]))
         self.assertEqual(owner["status"], 200)
-        self.assertEqual(agent["who"], "agent:e2e")
+        self.assertEqual((agent_on_owner["who"], agent_on_owner["allowance"]), ("agent:e2e", "owner"))
+        self.assertEqual((agent["who"], agent["allowance"]), ("agent:measure", "visitor"))
 
     def test_run_log_endpoint_is_owner_only_and_light_by_default(self):
         self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 2})
