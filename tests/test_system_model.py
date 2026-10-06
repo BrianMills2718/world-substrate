@@ -261,6 +261,10 @@ class SystemModelMatchesCode(unittest.TestCase):
         text = COVERAGE_PATH.read_text(encoding="utf-8")
         for gap in self.model["gaps"]:
             self.assertIn(gap["id"], text, f"gap {gap['id']} is not described in VIEW_COVERAGE.md")
+            self.assertIn(gap.get("status"), {"open", "fixed"}, f"gap {gap['id']} needs status open or fixed")
+            section = text.split(f"### {gap['id']}.", 1)[1].split("\n### ", 1)[0].split("\n## ", 1)[0]
+            self.assertEqual("**Fixed " in section, gap["status"] == "fixed",
+                             f"gap {gap['id']}: model status and VIEW_COVERAGE.md disagree")
 
 
 if __name__ == "__main__":
