@@ -434,9 +434,9 @@ class _JobResponder:
 
 
 def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
-    """Tell the rules model which actors never acted in the dry run, and why."""
+    """Tell the rules model which actors stopped acting in the dry run, and why (latest reasons first)."""
     reasons: dict[str, list[str]] = {}
-    for turn in dry.get("transcript") or []:
+    for turn in reversed(dry.get("transcript") or []):
         for actor in idle:
             for blocked in (turn["actors"].get(actor) or {}).get("blocked_by_rules") or []:
                 values = "; ".join(
@@ -450,7 +450,7 @@ def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
         f"{actor} (refused: {', '.join(reasons.get(actor) or ['it was never offered an action'])})" for actor in idle
     )
     return (
-        f" In {turns} rounds these actors never managed a single action: {detail}. Every actor role must be able "
+        f" In the {turns}-round test these actors stopped being able to do anything (or never could): {detail}. Every actor role must be able "
         "to act regularly: make sure some other actor's action or a process produces what each one's action "
         "needs (for example, if a carrier must hold goods before delivering, give another actor an action "
         "that loads goods onto the carrier, or let the carrier pick them up itself)."
@@ -794,9 +794,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 and bool(candidate_compiled.processes)
                                 and dry["summary"]["active_at_end"]
                             )
-                            idle = list(dry["summary"].get("idle_actors") or [])
-                            # Best: alive with every actor taking part; then alive; then not.
-                            score = (3 if not idle else 2) if alive else 1
+                            summary = dry["summary"]
+                            idle = sorted(set(summary.get("idle_actors") or []) | set(summary.get("stalled_actors") or []))
+                            # Going in circles: one kind of move is all that still happens
+                            # although the rules offer several.
+                            circling = len(candidate_compiled.mechanics) >= 3 and len(summary.get("moves_at_end") or []) <= 1
+                            # Best: alive with every actor still taking part and the work moving; then alive; then not.
+                            score = (3 if not idle and not circling else 2) if alive else 1
                             guidance = "" if alive else (
                                 f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                 f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -808,6 +812,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             )
                             if idle:
                                 guidance += _idle_guidance(dry, idle, dry_turns)
+                            if circling:
+                                guidance += (
+                                    f" By the end of the {dry_turns}-round test the only move still happening was "
+                                    f"{', '.join(summary.get('moves_at_end') or ['nothing'])}: the work stopped progressing. "
+                                    "Make sure everything that can be taken or held can also be released or used up "
+                                    "(for example a rule to put a shared tool back), and that each step's output is "
+                                    "what the next step's checks need."
+                                )
+                            result_row["stalled_actors"] = summary.get("stalled_actors") or []
+                            result_row["circling"] = circling
                             finishes = None
                         else:
                             finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
@@ -843,7 +857,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         )
                     attempts.append(result_row)
                     # Ties go to the attempt with fewer actors who never acted.
-                    rank = (score, -len(result_row.get("idle_actors") or []))
+                    rank = (score, -len(set(result_row.get("idle_actors") or []) | set(result_row.get("stalled_actors") or [])))
                     if best is None or rank > best[0]:
                         best = (rank, candidate, candidate_compiled, result_row)
                     if score >= (2 if world_kind == "task" else 3) or attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
