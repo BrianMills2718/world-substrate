@@ -1,0 +1,826 @@
+# Machine-readable model of World Substrate as a SOFTWARE SYSTEM.
+#
+# Level note: World Substrate hosts world models (Kitchen, Orchard, Waltzman ...).
+# This file does not model any of those worlds. It models the system that holds
+# them: what it stores, the processes that change what it stores, and the records
+# each process writes. Prose: docs/model/ODD.md. Views: docs/model/VIEW_COVERAGE.md.
+#
+# Enforced by tests/test_system_model.py (no model calls, no network):
+#   - engine event statuses, engine command ops, run-row statuses and record
+#     schemas found in code equal the ones declared here, both ways, with the
+#     same writer file + function;
+#   - World Builder API routes and run-log paths equal the ones declared here;
+#   - processes, records, coverage rows and gaps refer only to declared names.
+# Line numbers are as of commit d18ead6 (2026-10-06). The test enforces file and
+# function, not line, so a drifted line is a documentation fix, not a failure.
+
+schema = "world-substrate-system-model/v1"
+system = "World Substrate (governed-rules layer + World Builder authoring/review/run path)"
+as_of_commit = "d18ead6"
+
+# scope of a record:
+#   product   - written on the public World Builder path (Decision 006 scope)
+#   reference - written by reference-world / native-coordination tooling kept
+#               and maintained, not extended (Decision 006 item 3)
+#   probe     - written by a historical milestone probe or experiment script
+scopes = ["product", "reference", "probe"]
+
+# ---------------------------------------------------------------- entities ---
+
+[[entities]]
+name = "Description"
+what = "Plain-English text a person writes (or co-writes with the dialogue helper) saying what should happen in a world."
+source = "scripts/world_builder_service.py:725"
+state = ["description text (<=2000 chars in the page)", "world_kind: task | ongoing (open is an alias)", "dialogue messages (last 6 logged)"]
+
+[[entities]]
+name = "AuthoringBundle"
+what = "Represented structure of one world: world header, components and fields, entities with starting values, action signatures, presentation hints. Not causal law."
+source = "scripts/scaffold_world.py:45"
+schema = "world-substrate-authoring-bundle/v0"
+state = ["world {id, label, summary, location}", "components[] {name, fields[]}", "entities[] {id, label, categories, components, location}", "actions[] {kind, fields}", "presentation"]
+
+[[entities]]
+name = "CausalModel"
+what = "Proposed executable law for one bundle: action mechanics (checks, effects), optional processes (changes the world makes by itself), optional terminal (finish line)."
+source = "src/world_substrate/action_authoring.py:361"
+schema = "world-substrate-causal-model/v0"
+state = ["mechanics[] (one per bundle action kind, exactly)", "processes[] (at most 6)", "terminal | null"]
+
+[[entities]]
+name = "CausalReview"
+what = "Compiler-derived authority summary of a CausalModel shown for approval: derived reads and writes, checks, effects, limits, declared tests, processes, terminal."
+source = "src/world_substrate/action_authoring.py:402"
+state = ["mechanics[].reads", "mechanics[].writes", "mechanics[].checks/effects/limits/tests", "processes[].selector/checks/effects/writes", "terminal"]
+
+[[entities]]
+name = "MechanicProfile"
+what = "The validated set of installed mechanic packages for one run, frozen to a 16-hex identity before the run starts."
+source = "src/world_substrate/profile.py:249"
+state = ["packages{mechanic_id: package}", "findings[] (reject findings stop install)", "frozen_id (sha256 of packages+findings, 16 hex)"]
+
+[[entities]]
+name = "Approval"
+what = "A person's acceptance of one CausalModel for running. Exists only as page state plus the boolean `approved` in the /run or /compare request; no approval record is stored."
+source = "scripts/world_builder_service.py:998"
+state = ["approved: bool in request body", "page flag mechanicsApproved (/build) or the Approve click (home)"]
+
+[[entities]]
+name = "World"
+what = "The one canonical world instance the Engine owns during a run: material state plus the command and event history."
+source = "src/world_substrate/model.py:382"
+state = ["world_id, content_id, engine_id, rule_versions (identity)", "tick, revision", "entities{}", "commands[] (replayable inputs)", "events[] (one per attempted transition)"]
+
+[[entities]]
+name = "Entity"
+what = "One represented thing or actor inside a World, with typed components."
+source = "src/world_substrate/model.py:223"
+state = ["entity_id, label, category_ids", "typed components (built-in or world-local)", "location", "last_cause_event_id"]
+
+[[entities]]
+name = "Snapshot"
+what = "Versioned copy of a World's material state (no commands or events). Used as a run's final state and as the start of a continued live round."
+source = "src/world_substrate/model.py:416"
+schema = "world-substrate-snapshot/v1"
+state = ["schema_version", "world (material dict)"]
+
+[[entities]]
+name = "Run"
+what = "One execution of an approved CausalModel over a bundle (or over a continued snapshot) for N rounds: the contested-run trace."
+source = "scripts/run_authored_world.py:405"
+schema = "world-substrate-contested-run/v3"
+state = ["mechanic_profile_id", "model (policy name)", "cost_usd", "summary {turns, terminal_reached, accepted_actions, world_changes, active_at_end, idle_actors, first_turn, last_turn}", "transcript[] (per round: actors{wanted, did, status, retried, said, refused_because, lost_what_it_wanted, changed, blocked_by_rules}, world_changes, revision_when_decided, committed_first)", "final_snapshot"]
+
+[[entities]]
+name = "LiveProjection"
+what = "Read-only bundle of an initial snapshot plus the canonical event list for one branch, replayed and hash-checked; the input to living-scene renderers."
+source = "src/world_substrate/projection.py:44"
+schema = "world-substrate-live-projection/v0"
+state = ["branch_id, world_id", "initial_snapshot", "events[]", "scene, annotations, analysis, adequacy", "projection_final, projection_final_hash"]
+
+[[entities]]
+name = "SceneProfile"
+what = "Presentation declaration: zones, actors, entities, activities, institutions, event visuals (operations such as actor.move_to). Never canonical state."
+source = "src/world_substrate/living_scene.py:19"
+state = ["zones{rect, anchor}", "actors{home, bindings}", "event_visuals{rule_id: operations[]}", "activities/institutions render bindings"]
+
+[[entities]]
+name = "LivingSceneFrame"
+what = "One deterministic logical frame per event boundary computed from a LiveProjection and a SceneProfile."
+source = "src/world_substrate/living_scene.py:532"
+state = ["boundary_index, tick, revision", "event (presentation subset)", "event_visual", "presentation_effects (action_feedback: status, reasons, check labels only)", "views{zones, actors, entities, activities, institutions}"]
+
+[[entities]]
+name = "Comparison"
+what = "Native-coordination what-if: the retained baseline bundle cloned with one changed parameter (gate.required_approvals) and run under the same approved shared mechanics."
+source = "scripts/native_coordination_comparison.py:53"
+state = ["baseline run", "comparison bundle", "change record (comparison-change/v0)", "comparison run"]
+
+[[entities]]
+name = "Draft"
+what = "Native-coordination one-shot draft: bounded intent review of a description, then a bundle derived from it."
+source = "scripts/native_coordination_authoring.py:559"
+state = ["draft (native-coordination-draft/v0)", "draft review (native-coordination-draft-review/v0)", "derived bundle"]
+
+[[entities]]
+name = "RunLogEntry"
+what = "One JSONL line per logged World Builder request (one file per UTC day): who, what was asked, a result summary, cost, errors."
+source = "scripts/world_builder_service.py:376"
+state = ["ts, path, status, who, allowance, client (salted fingerprint), job_id, trace_id, cost_usd", "request summary (for /run: bundle, causal_model, approved, world_fingerprint when not continued)", "result summary (full artifacts only for /generate-world and /run; key names only for other logged paths)"]
+
+[[entities]]
+name = "BudgetLedger"
+what = "Per-day spent and reserved LLM dollars for the public service; fails closed."
+source = "scripts/world_builder_service.py:137"
+schema = "world-builder-llm-budget/v1"
+state = ["date", "spent_usd", "reserved_usd", "cap: $0.50 visitors, $5.00 owner"]
+
+[[entities]]
+name = "Job"
+what = "In-memory background job for long requests (build, AI run) so the page can poll past the 100-second proxy limit. Lost on restart."
+source = "scripts/world_builder_service.py:564"
+state = ["job_id", "created", "status running | done", "captured response"]
+
+# --------------------------------------------------------------- processes ---
+
+[[processes]]
+name = "describe"
+what = "Dialogue helper asks questions and co-writes a description, or invents one (Surprise me)."
+source = "scripts/world_dialogue.py:116"
+routes = ["POST /clarify", "POST /surprise"]
+changes = ["Description"]
+writes = []
+schedule = "on request; LLM; budget-reserved"
+
+[[processes]]
+name = "generate_world"
+what = "Description -> AuthoringBundle -> CausalModel (up to 2 attempts, second on a fallback model) -> zero-cost scripted dry run scores each attempt -> best kept."
+source = "scripts/world_builder_service.py:725"
+routes = ["POST /generate-world"]
+changes = ["AuthoringBundle", "CausalModel", "CausalReview"]
+writes = ["world-substrate-authoring-bundle/v0"]
+schedule = "on request; background job; LLM; budget-reserved"
+
+[[processes]]
+name = "generate_draft"
+what = "Native-coordination one-shot text -> bounded draft + draft review -> bundle."
+source = "scripts/world_builder_service.py:876"
+routes = ["POST /generate-draft"]
+changes = ["Draft", "AuthoringBundle"]
+writes = ["world-substrate-native-coordination-draft/v0", "world-substrate-native-coordination-draft-review/v0", "world-substrate-native-coordination-proposal/v0", "world-substrate-authoring-bundle/v0"]
+schedule = "on request; LLM"
+
+[[processes]]
+name = "generate_mechanics"
+what = "Edited bundle (+ optional guidance) -> new CausalModel proposal, compiled for review. Used by /build."
+source = "scripts/world_builder_service.py:915"
+routes = ["POST /generate-mechanics"]
+changes = ["CausalModel", "CausalReview"]
+writes = []
+schedule = "on request; LLM; budget-reserved"
+
+[[processes]]
+name = "compile"
+what = "CausalModel.from_dict validates the proposal against the bundle: schema, action kinds equal bundle kinds, typed paths, selectors, operators, at most 6 processes, unique ids; derives reads/writes. Model-written source is never executed."
+source = "src/world_substrate/action_authoring.py:367"
+routes = []
+changes = ["CausalReview"]
+writes = ["world-substrate-causal-model/v0", "world-substrate-action-mechanic/v0", "world-substrate-process-mechanic/v0"]
+schedule = "inside generate_world, generate_mechanics, run and compare (every /run recompiles before any policy call)"
+
+[[processes]]
+name = "approve"
+what = "A person accepts the reviewed CausalModel. Client-side only: the page sets a flag and sends approved:true; the server refuses /run and /compare without it (HTTP 409)."
+source = "scripts/world_builder_service.py:997"
+routes = []
+changes = ["Approval"]
+writes = []
+schedule = "human click; invalidated in /build when the bundle changes (world_builder_app.js:51)"
+
+[[processes]]
+name = "install_freeze"
+what = "Each compiled mechanic and process is installed into a MechanicProfile (reject findings stop the run), then the profile is frozen to an identity."
+source = "scripts/run_authored_world.py:48"
+routes = []
+changes = ["MechanicProfile"]
+writes = []
+schedule = "at the start of every run"
+
+[[processes]]
+name = "run"
+what = "Fresh or continued run: builds the Engine, then per round each actor (rotating order) discovers offered actions, a policy (scripted first-available, or LLM) picks one, Engine.submit commits or refuses; a lost race retries once; then Engine.advance(1) runs due processes."
+source = "scripts/run_authored_world.py:215"
+routes = ["POST /run"]
+changes = ["World", "Entity", "Run", "Snapshot"]
+writes = ["world-substrate-contested-run/v3", "no_action", "nothing_left"]
+schedule = "on request; scripted runs synchronous, AI runs as a job; live play asks for 1 round at a time with continue_from"
+
+[[processes]]
+name = "act"
+what = "Engine.submit/apply: validate envelope -> look up rule -> revision check + rule checks on a detached candidate -> apply -> refuse on engine-owned or out-of-scope writes -> commit (revision+1) or refuse. One event and one command per attempt."
+source = "src/world_substrate/engine.py:409"
+routes = []
+changes = ["World", "Entity"]
+writes = ["accepted", "invalid_action", "unsupported_action", "stale_revision", "precondition_failed", "scope_violation", "action", "invalid_action_command"]
+schedule = "once per submitted attempt"
+
+[[processes]]
+name = "advance"
+what = "Engine.advance: tick+1, then every due process (in declared order) applies on a detached candidate; an out-of-scope process write raises and restores the pre-tick world (no event is written)."
+source = "src/world_substrate/engine.py:762"
+routes = []
+changes = ["World", "Entity"]
+writes = ["accepted", "advance"]
+schedule = "once per round, after all actors"
+
+[[processes]]
+name = "project"
+what = "build_live_projection packages an initial snapshot and the canonical event list, re-applies every change and checks event ids; SSE encoding streams it."
+source = "src/world_substrate/projection.py:44"
+routes = []
+changes = ["LiveProjection"]
+writes = ["world-substrate-live-projection/v0", "world-substrate-snapshot/v1"]
+schedule = "native-coordination runs and reference-world builds; not on the authored-world /run path"
+
+[[processes]]
+name = "render"
+what = "Presentation only. Authored-world runs: bootstrap a scene profile from the trace and render the round replay (render_scene_replay). Projections: build LivingSceneFrames and render them (render_living_scene, render_composed_living_scene)."
+source = "scripts/run_authored_world.py:517"
+routes = []
+changes = ["SceneProfile", "LivingSceneFrame"]
+writes = ["world-substrate-scene-profile/v0", "world-substrate-scene-profile-bootstrap/v0", "world-substrate-scene-asset-catalog/v0", "world-substrate-scene-catalog-extension/v0", "world-substrate-living-scene/v1", "world-substrate-replay-studio/v0", "world-substrate-reference-world/v0"]
+schedule = "after each run; offline for evidence pages"
+
+[[processes]]
+name = "compare"
+what = "Native-coordination what-if: requires approval and exactly the reviewed shared coordination mechanics, changes only gate.required_approvals, runs the comparison."
+source = "scripts/world_builder_service.py:956"
+routes = ["POST /compare-native-coordination"]
+changes = ["Comparison"]
+writes = ["world-substrate-native-coordination-comparison-change/v0"]
+schedule = "on request; deterministic; no LLM"
+
+[[processes]]
+name = "observe"
+what = "Service observability: health, owner-only run-log reader, job polling, the per-request run log and the budget ledger."
+source = "scripts/world_builder_service.py:512"
+routes = ["GET /health", "GET /runs", "GET /jobs/*"]
+changes = ["RunLogEntry", "BudgetLedger", "Job"]
+writes = ["world-builder-llm-budget/v1"]
+schedule = "every logged request appends one RunLogEntry; every LLM call reserves then settles budget"
+
+[[processes]]
+name = "reference_tooling"
+what = "Maintained, not extended (Decision 006 item 3): native-coordination acceptance/diagnostics, Waltzman reference demo and replays, contested Kitchen/Greenhouse runs, CVS import and simulation."
+source = "scripts/run_native_coordination.py:985"
+routes = []
+changes = ["Run", "LiveProjection"]
+writes = ["world-substrate-native-coordination-diagnostic/v0", "world-substrate-native-coordination-acceptance/v0", "world-substrate-native-coordination-acceptance-result/v0", "world-substrate-native-coordination-diagnostic-manifest/v0", "world-substrate-native-coordination-matrix-summary/v0", "world-substrate-waltzman-demo-summary/v0", "world-substrate-waltzman-analysis/v0", "world-substrate-causal-adequacy-report/v0", "world-substrate-living-replay-manifest/v1", "world-substrate-living-replay-manifest/v2", "world-substrate-cvs-sustainment-simulation/v0", "world-substrate-authoring-bundle/v0", "world-substrate-contested-run/v3", "world-substrate-living-scene/v1", "world-substrate-reference-fixture/v0"]
+schedule = "offline, by hand or by tests"
+
+[[processes]]
+name = "probes"
+what = "Historical milestone probes and experiments (M3 overheat, M4 spill, transfer replay, policy runs, authoring experiment, JEV estimator)."
+source = "scripts/run_llm_policy.py:106"
+routes = []
+changes = ["Run"]
+writes = ["world-substrate-m3-authoring/v0", "world-substrate-m4-spill/v0", "world-substrate-replay-receipt/v1", "world-substrate-policy-run/v0", "world-substrate-policy-comparison/v0", "world-substrate-authoring-experiment/v0", "world-substrate-jev-estimator-probe/v0"]
+schedule = "offline, by hand"
+
+# ------------------------------------------------- engine event statuses -----
+# Every attempted transition writes one event dict into World.events
+# (engine.py:505 builds it): event_id, causal_bearer, semantic_binding,
+# observation, tick, world_revision, rule_id, rule_version, cause, status,
+# checks, declared_read_paths, declared_write_paths, changes, hash_before,
+# hash_after, plus causal_parent_event_ids / information_context when present.
+
+[[engine_events]]
+name = "accepted"
+meaning = "An action or a due process committed; revision advanced."
+written_by = ["act", "advance"]
+writers = [
+  { file = "src/world_substrate/engine.py", function = "apply", line = 695 },
+  { file = "src/world_substrate/engine.py", function = "_apply_process", line = 856 },
+]
+
+[[engine_events]]
+name = "invalid_action"
+meaning = "Envelope malformed (not an object, missing actor/kind/controller/base_revision, or payload rejected by the rule); claimed actor recorded."
+written_by = ["act"]
+writers = [{ file = "src/world_substrate/engine.py", function = "_reject_invalid", line = 477 }]
+
+[[engine_events]]
+name = "unsupported_action"
+meaning = "No installed rule for this action kind."
+written_by = ["act"]
+writers = [{ file = "src/world_substrate/engine.py", function = "apply", line = 577 }]
+
+[[engine_events]]
+name = "stale_revision"
+meaning = "The attempt was decided against an older world revision (someone acted first)."
+written_by = ["act"]
+writers = [{ file = "src/world_substrate/engine.py", function = "apply", line = 613 }]
+
+[[engine_events]]
+name = "precondition_failed"
+meaning = "At least one rule check was false; nothing committed."
+written_by = ["act"]
+writers = [{ file = "src/world_substrate/engine.py", function = "apply", line = 617 }]
+
+[[engine_events]]
+name = "scope_violation"
+meaning = "The rule is defective: its checks mutated state, it wrote engine-owned state, or it wrote outside its declared write paths. Candidate discarded."
+written_by = ["act"]
+writers = [
+  { file = "src/world_substrate/engine.py", function = "apply", line = 595 },
+  { file = "src/world_substrate/engine.py", function = "apply", line = 647 },
+  { file = "src/world_substrate/engine.py", function = "apply", line = 678 },
+]
+
+# ---------------------------------------------------- engine command ops -----
+# World.commands holds the replayable inputs; Engine.replay_commands (engine.py:879)
+# re-executes them and requires identical statuses.
+
+[[engine_commands]]
+name = "action"
+meaning = "A typed action attempt (accepted or refused)."
+written_by = ["act"]
+writers = [
+  { file = "src/world_substrate/engine.py", function = "apply", line = 716 },
+  { file = "src/world_substrate/engine.py", function = "_reject", line = 754 },
+]
+
+[[engine_commands]]
+name = "invalid_action_command"
+code_name = "invalid_action"
+meaning = "A malformed envelope, kept verbatim so replay reproduces the refusal. (Code op string is 'invalid_action'; renamed here only to keep names unique across tables.)"
+written_by = ["act"]
+writers = [{ file = "src/world_substrate/engine.py", function = "_reject_invalid", line = 497 }]
+
+[[engine_commands]]
+name = "advance"
+meaning = "One tick of process time."
+written_by = ["advance"]
+writers = [{ file = "src/world_substrate/engine.py", function = "advance", line = 773 }]
+
+# ------------------------------------- run-row statuses (not Engine events) --
+# A transcript row's status is normally an engine event status. The run loop
+# writes two of its own that have NO engine event behind them.
+
+[[run_row_statuses]]
+name = "no_action"
+meaning = "The policy chose nothing (scripted: nothing offered; LLM: declined). No submit, no engine event."
+written_by = ["run"]
+writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 333 }]
+
+[[run_row_statuses]]
+name = "nothing_left"
+meaning = "The first attempt lost a race (engine wrote stale_revision) and on retry nothing was offered. The stale_revision event exists in World.events but not in the trace."
+written_by = ["run"]
+writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 364 }]
+
+# ------------------------------------------------------------ record schemas --
+# Every `world-substrate-*/vN` (and world-builder-*/vN) identifier the code
+# writes or pins as a constant. Comparisons-only (readers) are not counted.
+
+[[records]]
+name = "world-substrate-authoring-bundle/v0"
+scope = "product"
+written_by = ["generate_world", "generate_draft", "reference_tooling"]
+writers = [
+  { file = "scripts/scaffold_world.py", function = "<module>", line = 13 },
+  { file = "scripts/import_cvs_situation.py", function = "<module>", line = 18 },
+  { file = "scripts/native_coordination_authoring.py", function = "draft_to_bundle", line = 546 },
+]
+
+[[records]]
+name = "world-substrate-causal-model/v0"
+scope = "product"
+written_by = ["compile"]
+writers = [{ file = "src/world_substrate/action_authoring.py", function = "<module>", line = 24 }]
+
+[[records]]
+name = "world-substrate-action-mechanic/v0"
+scope = "product"
+written_by = ["compile"]
+writers = [{ file = "src/world_substrate/action_authoring.py", function = "<module>", line = 25 }]
+
+[[records]]
+name = "world-substrate-process-mechanic/v0"
+scope = "product"
+written_by = ["compile"]
+writers = [{ file = "src/world_substrate/action_authoring.py", function = "<module>", line = 26 }]
+
+[[records]]
+name = "world-substrate-snapshot/v1"
+scope = "product"
+written_by = ["project"]
+writers = [{ file = "src/world_substrate/model.py", function = "<module>", line = 65 }]
+
+[[records]]
+name = "world-substrate-contested-run/v3"
+scope = "product"
+written_by = ["run", "reference_tooling"]
+writers = [
+  { file = "scripts/run_authored_world.py", function = "run_world", line = 406 },
+  { file = "scripts/run_contested_world.py", function = "contested_run", line = 356 },
+  { file = "scripts/run_greenhouse_fixture.py", function = "retained_run", line = 119 },
+  { file = "scripts/run_native_coordination.py", function = "run_native_coordination", line = 1087 },
+  { file = "scripts/render_scene_replay.py", function = "<module>", line = 21 },
+  { file = "scripts/bootstrap_scene_profile.py", function = "<module>", line = 21 },
+]
+
+[[records]]
+name = "world-builder-llm-budget/v1"
+scope = "product"
+written_by = ["observe"]
+writers = [{ file = "scripts/world_builder_service.py", function = "<module>", line = 100 }]
+
+[[records]]
+name = "world-substrate-live-projection/v0"
+scope = "product"
+written_by = ["project"]
+writers = [{ file = "src/world_substrate/projection.py", function = "<module>", line = 9 }]
+
+[[records]]
+name = "world-substrate-living-scene/v1"
+scope = "product"
+written_by = ["render", "reference_tooling"]
+writers = [
+  { file = "src/world_substrate/living_scene.py", function = "<module>", line = 19 },
+  { file = "scripts/run_native_coordination.py", function = "_living_profile", line = 941 },
+]
+
+[[records]]
+name = "world-substrate-scene-profile/v0"
+scope = "product"
+written_by = ["render"]
+writers = [
+  { file = "src/world_substrate/living_scene.py", function = "<module>", line = 20 },
+  { file = "scripts/bootstrap_scene_profile.py", function = "<module>", line = 19 },
+  { file = "scripts/render_scene_replay.py", function = "<module>", line = 20 },
+]
+
+[[records]]
+name = "world-substrate-scene-profile-bootstrap/v0"
+scope = "product"
+written_by = ["render"]
+writers = [{ file = "scripts/bootstrap_scene_profile.py", function = "bootstrap_profile", line = 526 }]
+
+[[records]]
+name = "world-substrate-scene-asset-catalog/v0"
+scope = "product"
+written_by = ["render"]
+writers = [{ file = "scripts/bootstrap_scene_profile.py", function = "<module>", line = 20 }]
+
+[[records]]
+name = "world-substrate-scene-catalog-extension/v0"
+scope = "product"
+written_by = ["render"]
+writers = [{ file = "scripts/scaffold_world.py", function = "_render_presentation", line = 213 }]
+
+[[records]]
+name = "world-substrate-reference-world/v0"
+scope = "product"
+written_by = ["render"]
+writers = [{ file = "scripts/scaffold_world.py", function = "_render_model", line = 196 }]
+
+[[records]]
+name = "world-substrate-replay-studio/v0"
+scope = "product"
+written_by = ["render"]
+writers = [{ file = "scripts/render_replay_studio.py", function = "<module>", line = 18 }]
+
+[[records]]
+name = "world-substrate-native-coordination-draft/v0"
+scope = "product"
+written_by = ["generate_draft"]
+writers = [{ file = "scripts/native_coordination_authoring.py", function = "<module>", line = 27 }]
+
+[[records]]
+name = "world-substrate-native-coordination-proposal/v0"
+scope = "product"
+written_by = ["generate_draft"]
+writers = [{ file = "scripts/native_coordination_authoring.py", function = "<module>", line = 28 }]
+
+[[records]]
+name = "world-substrate-native-coordination-draft-review/v0"
+scope = "product"
+written_by = ["generate_draft"]
+writers = [{ file = "scripts/native_coordination_authoring.py", function = "draft_review", line = 582 }]
+
+[[records]]
+name = "world-substrate-native-coordination-comparison-change/v0"
+scope = "product"
+written_by = ["compare"]
+writers = [{ file = "scripts/native_coordination_comparison.py", function = "with_approval_threshold", line = 85 }]
+
+[[records]]
+name = "world-substrate-native-coordination-diagnostic/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/run_native_coordination.py", function = "<module>", line = 28 }]
+
+[[records]]
+name = "world-substrate-native-coordination-acceptance/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/run_native_coordination.py", function = "<module>", line = 29 }]
+
+[[records]]
+name = "world-substrate-native-coordination-acceptance-result/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/run_native_coordination.py", function = "<module>", line = 30 }]
+
+[[records]]
+name = "world-substrate-native-coordination-diagnostic-manifest/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/run_native_coordination.py", function = "<module>", line = 31 }]
+
+[[records]]
+name = "world-substrate-native-coordination-matrix-summary/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/check_native_coordination.py", function = "<module>", line = 23 }]
+
+[[records]]
+name = "world-substrate-waltzman-demo-summary/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/run_waltzman_demo.py", function = "summary", line = 86 }]
+
+[[records]]
+name = "world-substrate-waltzman-analysis/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "reference_worlds/waltzman/analysis.py", function = "<module>", line = 14 }]
+
+[[records]]
+name = "world-substrate-causal-adequacy-report/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "reference_worlds/waltzman/adequacy.py", function = "<module>", line = 9 }]
+
+[[records]]
+name = "world-substrate-living-replay-manifest/v1"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/build_waltzman_living_replay.py", function = "verify", line = 84 }]
+
+[[records]]
+name = "world-substrate-living-replay-manifest/v2"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/build_waltzman_living_replay_v2.py", function = "verify", line = 74 }]
+
+[[records]]
+name = "world-substrate-cvs-sustainment-simulation/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "reference_worlds/cvs_sustainment/simulate.py", function = "run_scenario", line = 393 }]
+
+[[records]]
+name = "world-substrate-reference-fixture/v0"
+scope = "reference"
+written_by = ["reference_tooling"]
+writers = [{ file = "scripts/extract_castaway_fixture.py", function = "stable_payload", line = 83 }]
+
+[[records]]
+name = "world-substrate-m3-authoring/v0"
+scope = "probe"
+written_by = ["probes"]
+writers = [{ file = "scripts/run_overheat_assay_probe.py", function = "run_overheat_assay_probe", line = 100 }]
+
+[[records]]
+name = "world-substrate-m4-spill/v0"
+scope = "probe"
+written_by = ["probes"]
+writers = [{ file = "scripts/run_spill_assay_probe.py", function = "run_spill_assay_probe", line = 121 }]
+
+[[records]]
+name = "world-substrate-replay-receipt/v1"
+scope = "probe"
+written_by = ["probes"]
+writers = [{ file = "scripts/replay_transfer_evidence.py", function = "replay_trace", line = 93 }]
+
+[[records]]
+name = "world-substrate-policy-run/v0"
+scope = "probe"
+written_by = ["probes"]
+writers = [{ file = "scripts/run_llm_policy.py", function = "run", line = 106 }]
+
+[[records]]
+name = "world-substrate-policy-comparison/v0"
+scope = "probe"
+written_by = ["probes"]
+writers = [{ file = "scripts/run_llm_policy.py", function = "main", line = 153 }]
+
+[[records]]
+name = "world-substrate-authoring-experiment/v0"
+scope = "probe"
+written_by = ["probes"]
+writers = [{ file = "scripts/run_authoring_experiment.py", function = "main", line = 345 }]
+
+[[records]]
+name = "world-substrate-jev-estimator-probe/v0"
+scope = "probe"
+written_by = ["probes"]
+writers = [
+  { file = "scripts/run_jev_estimator_probe.py", function = "run_live", line = 243 },
+  { file = "scripts/run_jev_estimator_probe.py", function = "dry_run", line = 267 },
+]
+
+# ------------------------------------------------------------------ run log --
+
+[run_log]
+writer = "scripts/world_builder_service.py:376 (_record_response)"
+file = "<WORLD_BUILDER_RUN_LOG_DIR or ~/.local/state/world-builder/runs>/runs_<UTC date>.jsonl"
+logged_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/generate-draft", "/generate-mechanics", "/compare-native-coordination"]
+# Paths whose result keeps a real summary. The other logged paths keep only the
+# sorted response key names (world_builder_service.py:374): see gap G4.
+summarised_paths = ["/generate-world", "/run", "/clarify", "/surprise"]
+
+# -------------------------------------------------------------------- views --
+
+[[views]]
+name = "home"
+what = "World Builder landing page: describe -> check the rules -> approve -> watch it run live, one round per request."
+source = "scripts/world_builder_home.html"
+url = "https://brianmills.dev/world-builder/"
+
+[[views]]
+name = "build"
+what = "World Authoring Studio: edit bundle sections, generate mechanics, approve, run, native-coordination comparison, full logs."
+source = "scripts/world_builder_app.js (rendered by scripts/render_world_builder.py into evidence/renders/world-builder-v0.html)"
+url = "https://brianmills.dev/world-builder/build/"
+
+[[views]]
+name = "play"
+what = "Replay Studio: gallery of retained evidence replays (Kitchen, Castaway, Workshop, Greenhouse ...)."
+source = "scripts/render_replay_studio.py -> evidence/renders/world-replay-studio-v0.html"
+url = "https://brianmills.dev/world-builder/play/"
+
+[[views]]
+name = "round_replay"
+what = "The picture of a run embedded in home and build (iframe replay_html): bootstrapped scene profile + render_scene_replay."
+source = "scripts/run_authored_world.py:517 (render_run) -> scripts/render_scene_replay.py:442"
+
+[[views]]
+name = "living_scene"
+what = "Living Scene v1 renderer over a LiveProjection."
+source = "scripts/render_living_scene.py"
+
+[[views]]
+name = "composed_living_scene"
+what = "Composed living-scene renderer with inspector; used for native-coordination runs/comparisons in /build and by agent_ecology3's Living view."
+source = "scripts/render_composed_living_scene.py"
+
+[[views]]
+name = "owner_run_log"
+what = "Owner-only reader of the run log (GET /runs, scripts/world_builder_runs.py)."
+source = "scripts/world_builder_service.py:532"
+
+# Coverage: shown | partial | hidden (deliberately, reason in VIEW_COVERAGE.md) |
+# missing | n/a (the view is not about this element). Detail and evidence per
+# row live in VIEW_COVERAGE.md.
+
+[[coverage]]
+element = "Description"
+views = { home = "shown", build = "shown", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+
+[[coverage]]
+element = "AuthoringBundle"
+views = { home = "partial", build = "shown", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+
+[[coverage]]
+element = "CausalReview"
+views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+
+[[coverage]]
+element = "MechanicProfile"
+views = { home = "missing", build = "missing", play = "missing", round_replay = "missing", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "missing" }
+
+[[coverage]]
+element = "Approval"
+views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+
+[[coverage]]
+element = "Run"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+
+[[coverage]]
+element = "accepted"
+views = { home = "shown", build = "partial", play = "shown", round_replay = "shown", living_scene = "shown", composed_living_scene = "shown", owner_run_log = "partial" }
+
+[[coverage]]
+element = "precondition_failed"
+views = { home = "shown", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+
+[[coverage]]
+element = "stale_revision"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+
+[[coverage]]
+element = "scope_violation"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+
+[[coverage]]
+element = "invalid_action"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+
+[[coverage]]
+element = "unsupported_action"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+
+[[coverage]]
+element = "advance"
+views = { home = "shown", build = "partial", play = "partial", round_replay = "missing", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+
+[[coverage]]
+element = "no_action"
+views = { home = "shown", build = "partial", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+
+[[coverage]]
+element = "nothing_left"
+views = { home = "shown", build = "partial", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+
+[[coverage]]
+element = "World"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "shown", composed_living_scene = "shown", owner_run_log = "partial" }
+
+[[coverage]]
+element = "LivingSceneFrame"
+views = { home = "n/a", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "n/a" }
+
+[[coverage]]
+element = "Comparison"
+views = { home = "n/a", build = "shown", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "partial", owner_run_log = "missing" }
+
+[[coverage]]
+element = "RunLogEntry"
+views = { home = "hidden", build = "hidden", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+
+[[coverage]]
+element = "BudgetLedger"
+views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+
+# --------------------------------------------------------------------- gaps --
+# Each is described with file:line evidence and reproduction status in
+# VIEW_COVERAGE.md. reproduced: yes = observed by running code or a page here.
+
+[[gaps]]
+id = "G1"
+title = "Authored-world runs keep no engine event records"
+reproduced = "yes"
+
+[[gaps]]
+id = "G2"
+title = "Home 'refused' counter counts blocked offers, not refused attempts"
+reproduced = "yes"
+
+[[gaps]]
+id = "G3"
+title = "/build approval screen hides installed processes"
+reproduced = "yes"
+
+[[gaps]]
+id = "G4"
+title = "Run log keeps only key names for generate-mechanics, generate-draft and compare"
+reproduced = "yes"
+
+[[gaps]]
+id = "G5"
+title = "Home approval screen shows no derived read/write authority or limits"
+reproduced = "yes"
+
+[[gaps]]
+id = "G6"
+title = "Approval is a request flag, not a record"
+reproduced = "partly"
+
+[[gaps]]
+id = "G7"
+title = "Frozen mechanic profile id is shown nowhere and not logged"
+reproduced = "yes"
+
+[[gaps]]
+id = "G8"
+title = "Round replay carries no trace of process-made changes"
+reproduced = "partly"
+
+[[gaps]]
+id = "G9"
+title = "Actors moved to the same place stack on one point (issue #106)"
+reproduced = "yes"
+
+[[gaps]]
+id = "G10"
+title = "The two living-scene renderers place the same actor differently"
+reproduced = "yes"
+
+[[gaps]]
+id = "G11"
+title = "Continued live rounds trust client-held world state"
+reproduced = "no"
