@@ -183,6 +183,10 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       <button class="secondary" type="button" id="download-btn">Download this world</button>
     </div>
   </section>
+  <p class="small muted" style="margin-top:28px">
+    <button type="button" class="secondary small" id="owner-btn">Owner access</button>
+    <span id="owner-state"></span>
+  </p>
 </main>
 <script>
 (function () {
@@ -222,10 +226,20 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     $("examples").append(chip);
   });
 
+  // Owner override: the owner password, if entered, rides on every request and
+  // spends from a separate owner allowance instead of the shared visitor budget.
+  function ownerKey() { try { return localStorage.getItem("wb-owner") || ""; } catch (e) { return ""; } }
+  function setOwnerKey(v) { try { if (v) localStorage.setItem("wb-owner", v); else localStorage.removeItem("wb-owner"); } catch (e) { /* storage unavailable */ } }
+  function authHeaders(extra) {
+    const h = { ...(extra || {}) };
+    const k = ownerKey(); if (k) h["X-World-Builder-Owner"] = k;
+    return h;
+  }
+
   async function api(path, body) {
     const res = await fetch(API + path, {
       method: body ? "POST" : "GET",
-      headers: body ? { "Content-Type": "application/json" } : {},
+      headers: authHeaders(body ? { "Content-Type": "application/json" } : {}),
       body: body ? JSON.stringify(body) : undefined,
     });
     let data = null;
@@ -245,7 +259,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     if (!started.job_id) return started;
     for (;;) {
       await new Promise((r) => setTimeout(r, 2000));
-      const res = await fetch(API + "/jobs/" + started.job_id);
+      const res = await fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() });
       let data = null;
       try { data = await res.json(); } catch (e) { data = null; }
       if (res.ok && data && data.status === "running") continue;
@@ -261,7 +275,8 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 
   function plainError(err) {
     const msg = String(err.message || err);
-    if (err.status === 429 && /budget/i.test(msg)) return "Today’s AI budget for this public demo is used up; it resets at midnight UTC. You can still watch an example run.";
+    if (err.status === 429 && /budget/i.test(msg)) return "Today’s AI budget for this public demo is used up; it resets at midnight UTC. You can still watch an example run. (Owner? Use Owner access at the bottom of the page.)";
+    if (err.status === 403 && /owner password/i.test(msg)) { setOwnerKey(""); return msg + " Owner access has been turned off; try again."; }
     if (err.status === 429) return "Too many requests from you in a short time. Wait a minute and try again.";
     if (err.status === 503 || /unavailable|could not be reached/i.test(msg)) return "The builder service is not reachable right now. You can still watch an example run.";
     if (/remained invalid/i.test(msg)) {
@@ -274,6 +289,16 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   async function checkService() {
     try {
       const h = await api("/health");
+      if (h.owner_error) { setOwnerKey(""); }
+      $("owner-state").textContent = h.owner
+        ? `Owner mode: $${Math.max(0, h.owner_daily_budget_usd - h.owner_daily_committed_usd).toFixed(2)} of $${h.owner_daily_budget_usd.toFixed(2)} owner allowance left today.`
+        : (h.owner_error ? h.owner_error : "");
+      $("owner-btn").textContent = h.owner ? "Leave owner mode" : "Owner access";
+      if (h.owner) {
+        $("service-status").textContent = "Builder is up. Owner mode is on, so the public visitor budget does not apply to you.";
+        $("build-btn").disabled = false; $("build-hint").textContent = "Takes about 20–60 seconds.";
+        return;
+      }
       const left = Math.max(0, h.llm_daily_budget_usd - h.llm_daily_committed_usd);
       $("service-status").textContent = "Builder is up. Today’s shared AI budget left: $" + left.toFixed(2) + " of $" + h.llm_daily_budget_usd.toFixed(2) + ". Each world costs about 1–5 cents.";
       if (left < 0.02) { $("build-btn").disabled = true; $("build-hint").textContent = "Today’s AI budget is used up; it resets at midnight UTC."; }
@@ -561,6 +586,11 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     if (!world) return;
     const blob = new Blob([JSON.stringify({ description: world.description, bundle: world.bundle, causal_model: world.causal_model }, null, 2)], { type: "application/json" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = world.bundle.world.id + "-world.json"; a.click();
+  });
+  $("owner-btn").addEventListener("click", () => {
+    if (ownerKey()) { setOwnerKey(""); checkService(); return; }
+    const k = window.prompt("Owner password (overrides the public budget):");
+    if (k && k.trim()) { setOwnerKey(k.trim()); checkService(); }
   });
   setStep(1);
   checkService();

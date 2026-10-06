@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import contextvars
+import hmac
 import json
 import math
 import os
@@ -40,6 +42,31 @@ DRAFT_BUDGET = 0.08
 MECHANICS_BUDGET = 0.12
 RUN_BUDGET = 0.12
 DAILY_LLM_BUDGET = 0.50
+# Owner override (Brian, 2026-10-05: "i always want to be able to put in a
+# password to override the budget"). A request carrying the owner password in
+# X-World-Builder-Owner skips the shared visitor allowance and per-visitor rate
+# limits and spends from a separate owner ledger instead. Unset password: off.
+OWNER_HEADER = "X-World-Builder-Owner"
+OWNER_DAILY_BUDGET = 5.00
+_LEDGER: contextvars.ContextVar[str] = contextvars.ContextVar("world_builder_ledger", default="visitor")
+
+
+def _owner_password() -> str | None:
+    return os.environ.get("WORLD_BUILDER_OWNER_PASSWORD") or None
+
+
+def _is_owner() -> bool:
+    return _LEDGER.get() == "owner"
+
+
+def _ledger_path() -> Path:
+    if _is_owner():
+        return BUDGET_STATE_PATH.with_name("llm-owner-budget-v1.json")
+    return BUDGET_STATE_PATH
+
+
+def _ledger_cap() -> float:
+    return OWNER_DAILY_BUDGET if _is_owner() else DAILY_LLM_BUDGET
 # Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
 WORLD_BUDGET = 0.20
 # Rules-step retry escalates to a stronger model. Measured 2026-10-05 on six
@@ -79,6 +106,8 @@ def _prune(queue: deque[float], window: float) -> None:
 
 
 def _rate_ok(client: str, *, llm: bool, dialogue: bool = False) -> bool:
+    if _is_owner():
+        return True
     if dialogue:
         queue, window, limit = _DIALOGUE_REQUESTS[client], 3600.0, DIALOGUE_REQUESTS_PER_HOUR
     else:
@@ -102,10 +131,11 @@ def _empty_budget_state() -> dict[str, Any]:
 
 
 def _load_budget_state() -> dict[str, Any]:
-    if not BUDGET_STATE_PATH.exists():
+    path = _ledger_path()
+    if not path.exists():
         return _empty_budget_state()
     try:
-        value = json.loads(BUDGET_STATE_PATH.read_text())
+        value = json.loads(path.read_text())
     except Exception as error:
         raise RuntimeError("World Builder budget ledger is unreadable; refusing LLM spend") from error
     if not isinstance(value, dict) or value.get("schema_version") != BUDGET_STATE_SCHEMA:
@@ -125,10 +155,11 @@ def _load_budget_state() -> dict[str, Any]:
 
 
 def _write_budget_state(state: dict[str, Any]) -> None:
-    BUDGET_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    temp = BUDGET_STATE_PATH.with_name(BUDGET_STATE_PATH.name + ".tmp")
+    path = _ledger_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + ".tmp")
     temp.write_text(json.dumps(state, sort_keys=True, separators=(",", ":")) + "\n")
-    temp.replace(BUDGET_STATE_PATH)
+    temp.replace(path)
 
 
 def _daily_cost() -> float:
@@ -139,7 +170,7 @@ def _daily_cost() -> float:
 def _reserve_daily_budget(requested_cap: float) -> float | None:
     state = _load_budget_state()
     committed = float(state["spent_usd"] + state["reserved_usd"])
-    remaining = max(0.0, DAILY_LLM_BUDGET - committed)
+    remaining = max(0.0, _ledger_cap() - committed)
     if remaining <= 0.0001:
         return None
     cap = min(float(requested_cap), remaining)
@@ -295,18 +326,37 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             path = path[len(API_PREFIX) :]
         return path or "/"
 
+    def _owner_check(self) -> bool | None:
+        """True: owner ledger selected. False: no owner password sent.
+        None: a password was sent and it is wrong (caller must refuse)."""
+        _LEDGER.set("visitor")
+        supplied = self.headers.get(OWNER_HEADER)
+        if not supplied:
+            return False
+        expected = _owner_password()
+        if not expected or not hmac.compare_digest(supplied.encode(), expected.encode()):
+            return None
+        _LEDGER.set("owner")
+        return True
+
     def do_GET(self) -> None:
         if self._path() == "/health":
-            self._json(
-                HTTPStatus.OK,
-                {
-                    "ok": True,
-                    "service": "world-builder",
-                    "build_commit": os.environ.get("WORLD_SUBSTRATE_BUILD_COMMIT"),
-                    "llm_daily_budget_usd": DAILY_LLM_BUDGET,
-                    "llm_daily_committed_usd": _daily_cost(),
-                },
-            )
+            owner = self._owner_check()
+            payload = {
+                "ok": True,
+                "service": "world-builder",
+                "build_commit": os.environ.get("WORLD_SUBSTRATE_BUILD_COMMIT"),
+                "owner": bool(owner),
+            }
+            if owner is None:
+                payload["owner_error"] = "That owner password is not right."
+            if owner:
+                payload["owner_daily_budget_usd"] = OWNER_DAILY_BUDGET
+                payload["owner_daily_committed_usd"] = _daily_cost()
+            _LEDGER.set("visitor")
+            payload["llm_daily_budget_usd"] = DAILY_LLM_BUDGET
+            payload["llm_daily_committed_usd"] = _daily_cost()
+            self._json(HTTPStatus.OK, payload)
             return
         path = self._path()
         if path.startswith("/jobs/"):
@@ -334,7 +384,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         responder._llm_budget = WorldBuilderHandler._llm_budget.__get__(responder)
         target = {"/generate-world": WorldBuilderHandler._generate_world, "/run": WorldBuilderHandler._run}[path]
 
+        ledger = _LEDGER.get()
+
         def work() -> None:
+            _LEDGER.set(ledger)
             try:
                 target(responder, client, body)
             except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
@@ -354,6 +407,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         client = _client_ip(self)
         if not _origin_allowed(self):
             self._error(HTTPStatus.FORBIDDEN, "same-origin browser request required")
+            return
+        if self._owner_check() is None:
+            self._error(HTTPStatus.FORBIDDEN, "That owner password is not right.")
             return
         if not _rate_ok(client, llm=False):
             self._error(HTTPStatus.TOO_MANY_REQUESTS, "request rate limit reached")
@@ -417,7 +473,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             spent = _daily_cost()
             self._error(
                 HTTPStatus.TOO_MANY_REQUESTS,
-                f"daily World Builder LLM budget reached (${spent:.3f}/${DAILY_LLM_BUDGET:.2f})",
+                f"daily World Builder LLM budget reached (${spent:.3f}/${_ledger_cap():.2f})",
             )
             return None
         return cap
