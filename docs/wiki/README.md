@@ -41,6 +41,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | --- | --- |
 | Current direction / exact next action | [Roadmap](../../roadmap/README.md) |
 | Durable system boundaries | [Architecture](../architecture.md) |
+| The system itself as a checked model (entities, processes, records, view coverage gaps) | [System model](../model/ODD.md) · [View coverage](../model/VIEW_COVERAGE.md) |
 | Product + procurement doctrine | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
 | Native Waltzman delivery / donor boundary / stopping rule | [Decision 005](../decisions/005-native-waltzman-delivery.md) |
 | Living-world overlay semantics | [Living-world projection](../research/living-world-projection-2026-09.md) |

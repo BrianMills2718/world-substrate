@@ -1,0 +1,165 @@
+# World Substrate as a software system: an ODD-style model
+
+Status: implemented-system description at commit `2dd1503` (2026-10-06). It describes what the code does, not target architecture. Machine-readable twin: [world_substrate_model.toml](world_substrate_model.toml), checked against the code by `tests/test_system_model.py`. What each view shows of this model: [VIEW_COVERAGE.md](VIEW_COVERAGE.md).
+
+**Two levels, kept apart.** World Substrate *hosts* world models: Kitchen, Orchard, Repair Bay, Waltzman, each with its own entities, rules and outcomes. This document is **not** about any of those worlds. It models the *software system that holds them*: what it stores (worlds, rule proposals, approvals, runs, logs), the processes that change what it stores, and the records each process writes. A "rule" below is a stored object the system compiles and enforces; what a particular rule means inside a particular world is out of scope.
+
+The format follows ODD (Overview, Design concepts, Details), the standard protocol for describing agent-based models, applied here to the system rather than to a simulated world.
+
+## 1. Purpose and the questions the system answers
+
+**Purpose.** Let a person describe a small world in plain words, get a proposed set of executable rules, check and approve them, and then watch a fresh simulation in which only those approved rules decide what happens, with a recorded reason for every outcome. Decision 006 narrows the product to this **governed-rules layer**: rules as data -> compiler-derived authority -> explicit human approval -> atomic commit or refusal with recorded cause, plus the authoring and review path that produces those rules.
+
+Questions the system is built to answer, for a person or an investigating agent:
+
+1. What exists in this world, and what may each actor try? (bundle, offered actions)
+2. Exactly which rules will run, what may each one read and write, and what limits does it carry? (causal review)
+3. Did a person approve these rules before they ran? (approval gate)
+4. For any attempt: was it allowed or refused, and which check decided it? (engine event status and checks)
+5. What changed in the world, and what changed by itself (processes) rather than by an actor? (event changes, `world_changes`)
+6. Which exact law ran? (frozen mechanic profile id, world fingerprint)
+7. What happened in a visitor's session, what did it cost, and what failed? (run log, budget ledger)
+8. What changes if one parameter changes? (native-coordination comparison)
+
+## 2. Expected observable patterns (if the system works)
+
+Each pattern is something a check or a person could observe. VIEW_COVERAGE.md records where a view breaks one.
+
+| # | Pattern | Where it is observable |
+| --- | --- | --- |
+| P1 | Every submitted attempt produces exactly one Engine event and one command; commands replay to identical statuses. | `World.events`, `World.commands`, `Engine.replay_commands` (`src/world_substrate/engine.py:879`) |
+| P2 | A refused attempt leaves `hash_before == hash_after` and the revision unchanged. | event `changes` empty; `hash_*` (`engine.py:505-545`) |
+| P3 | `revision` rises by exactly one per committed event; `tick` rises by one per round. | `engine.py:667`, `:842`, `advance` |
+| P4 | No `/run` or `/compare-native-coordination` executes without `approved: true`; every `/run` recompiles the causal model before any policy or model call. | HTTP 409 (`scripts/world_builder_service.py:998-1000`); compile at `:1006` |
+| P5 | Causal-model action kinds equal the bundle's action kinds, exactly. | `src/world_substrate/action_authoring.py:383-391` |
+| P6 | A continued round uses the same law: world identity and rule versions match. | `scripts/run_authored_world.py:204-213` |
+| P7 | Every logged request leaves one run-log line; LLM spend never exceeds the day's cap. | `runs_<date>.jsonl`; budget ledger (`world_builder_service.py:183-220`) |
+| P8 | Presentation never writes canonical state; two renders of the same projection give the same logical frames. | `living_scene.py` frame builder; renderers read-only |
+| P9 | Counts a view prints equal counts of the model element they name (allowed = accepted events; refused = refused attempts). | home outcome line; broken today, see G2 |
+
+## 3. Boundary
+
+**Inside World Substrate** (Decision 006):
+
+- Authoring structure: description, dialogue helper, authoring bundle, native-coordination draft.
+- Rule proposals as data (`world-substrate-causal-model/v0`), the local compiler, the installer and the frozen mechanic profile.
+- The approval gate.
+- The Engine: one canonical world per run, atomic commit or refusal, declared write scopes enforced, read scopes recorded, causal events.
+- The run loop that offers actions, takes one choice per actor per round and advances processes; the read-only projections and existing renderers; the World Builder pages and API; run log and budget ledger.
+
+**Outside** (hosted on commodity runtimes, or simply not ours):
+
+- LLM providers, reached only through the shared `llm_client` (proposal and move selection only, never state).
+- Any new engine, scheduler, renderer or resident-cognition capability: Decision 006 routes those to Concordia (LLM residents), Mesa (grids, sweeps) or a PDDL export (validation). Existing native pieces (integer-tick loop, Living Scene renderer, replay) are maintained, not extended.
+- Hosting: Cloudflare serves the pages; the personal VPS runs the API.
+- Donor systems (Cybernetic Influence, the `/waltzman/` donor surface) and consumers (agent_ecology3 pins this repo for its Living view).
+- What any hosted world *means*: whether its rules are true of the real world (root `AGENTS.md`, causal claim boundary).
+
+## 4. Entities and their state
+
+Full field lists with sources are in the model file's `[[entities]]`. In plain words:
+
+| Entity | What it is | State that matters |
+| --- | --- | --- |
+| Description | the words a person writes | text, world kind (task / ongoing) |
+| AuthoringBundle | what exists: world, components, entities, action signatures, presentation | represented structure only, no law |
+| CausalModel | proposed law: one mechanic per action kind, up to 6 processes, optional finish line | checks, effects, selectors, terminal |
+| CausalReview | what the compiler says that law may touch | derived reads, writes, limits, tests |
+| MechanicProfile | the installed, validated set of rules for one run | packages, findings, frozen id |
+| Approval | a person's yes | a boolean in page state and in the request; not stored as a record |
+| World | the one canonical world during a run | identity, tick, revision, entities, commands, events |
+| Entity | a thing or actor inside a World | typed components, location, last cause event |
+| Snapshot | a copy of a World's material state | no commands, no events |
+| Run | one execution: the contested-run trace | profile id, summary, per-round transcript, final snapshot |
+| LiveProjection | initial snapshot + canonical events for one branch | replay-checked final state and hash |
+| SceneProfile / LivingSceneFrame | presentation declaration and the frames computed from it | zones, anchors, event visuals; per-boundary views |
+| Comparison | a native-coordination what-if | baseline, one changed parameter, comparison run |
+| Draft | native-coordination one-shot draft and its review | bounded intent review |
+| RunLogEntry | one line per logged request | who, what, result summary, cost, errors |
+| BudgetLedger | spent and reserved LLM dollars today | fails closed when unreadable |
+| Job | an in-memory background request | lost on restart |
+
+## 5. Processes and scheduling
+
+There is no global clock in the service: everything is request-driven. Inside a run, time is an integer tick and a round is the unit of scheduling.
+
+| Process | Trigger | Changes | Writes |
+| --- | --- | --- | --- |
+| describe | POST `/clarify`, `/surprise` | Description | nothing durable except the run-log line |
+| generate_world | POST `/generate-world` (job) | Bundle, CausalModel, Review | dry-run summary inside the response |
+| generate_draft | POST `/generate-draft` | Draft, Bundle | draft, draft review, proposal |
+| generate_mechanics | POST `/generate-mechanics` | CausalModel, Review | response only (run log keeps key names, G4) |
+| compile | inside every generate, run and compare | CausalReview | causal-model, action-mechanic, process-mechanic declarations |
+| approve | a click in the page | Approval | the request flag only (G6) |
+| install_freeze | start of every run | MechanicProfile | frozen id into the trace |
+| run | POST `/run` | World, Entity, Run, Snapshot | contested-run trace; run rows `no_action`, `nothing_left` |
+| act | each submitted attempt | World, Entity | one event (`accepted` or a refusal status) + one command |
+| advance | once per round after all actors | World, Entity | one `advance` command; one `accepted` event per due process |
+| project | native runs, reference builds | LiveProjection | live-projection bundle |
+| render | after each run; offline | SceneProfile, Frames | HTML only |
+| compare | POST `/compare-native-coordination` | Comparison | comparison-change record |
+| observe | every logged request; GET `/health`, `/runs`, `/jobs/*` | RunLogEntry, BudgetLedger, Job | run-log line, ledger |
+
+**Round order inside `run`** (`scripts/run_authored_world.py:186-370`): each actor in a rotating order (`:295-296`) is shown its offered actions (`Engine.discover`), the policy picks one (scripted: the first offered, `:136-140`; LLM: chosen by the model, in parallel), then the picks are submitted in order. A pick that lost to an earlier actor (`stale_revision`) is re-decided once against the new state (`:316-339`). After all actors, `Engine.advance(1)` runs due processes (`:356`). The run stops at the turn limit or when the finish line holds.
+
+## 6. Design concepts
+
+- **Proposal versus authority.** The LLM proposes structure and law as data; the compiler derives what each rule may read and write; the Engine enforces writes. Model-written source never executes.
+- **Approval before execution.** Nothing runs until a person approves; every run recompiles first.
+- **Atomic commit or refusal.** Each attempt is applied to a detached copy; it commits as one transition or leaves the world untouched with a recorded reason.
+- **Observation versus truth.** Actors see bounded observations and offered actions; views and analyses are read-only projections. Presentation coordinates are never world state.
+- **Stochasticity.** Scripted runs are deterministic (first offered action, rotating order). LLM proposals and LLM moves are not; their traces live in `llm_client`.
+- **Emergence the system watches for:** a world that lets nobody act (dry run, `world_builder_service.py:785-834`), a world that runs down (`active_at_end`, `run_authored_world.py:395-398`), actors who never act (`idle_actors`, `:401-406`).
+- **Fail closed.** Budget ledger unreadable -> refuse spend; a defective process write -> the tick raises and the world is restored (`engine.py:801`).
+
+## 7. Inputs
+
+- Plain-English descriptions and dialogue answers from a visitor or the owner.
+- Edited bundles and guidance text (`build`), imported JSON bundles.
+- The approval flag and run settings (policy, turns, `continue_from`, recent moves).
+- LLM responses via `llm_client` (proposals, moves, dialogue), billed against the ledger.
+- Reference inputs kept in git: `examples/`, `reference_worlds/`, `tests/fixtures/`, `reference_worlds/scene-asset-catalog-v0.json`.
+- Environment: owner password, run-log directory, build commit.
+
+## 8. Submodels: the exact rules
+
+Each rule below is enforced by the cited code.
+
+**8.1 Envelope validation** (`src/world_substrate/engine.py:409-433`). An attempt must be an object with string keys, nonempty `actor`, `kind`, `controller`, and an integer `base_revision`; otherwise one `invalid_action` event and command are written with the claimed actor (`:464-503`). An unknown kind becomes `unsupported_action` (`:577`); a payload the rule cannot parse is `invalid_action`.
+
+**8.2 Transition** (`engine.py:558-723`), in order:
+1. revision check: `base_revision` must equal the world's revision (`:566`); false -> `stale_revision` (`:613`);
+2. rule checks run on a detached candidate; if checks mutated it -> `scope_violation` (`:595`); any failed check -> `precondition_failed` (`:617`);
+3. the rule applies to the candidate; a write to engine-owned state -> `scope_violation` (`:647`);
+4. revision += 1 (`:667`); the diff must fall inside the rule's declared `write_paths` for the entities named by the attempt (`:669-674`) -> else `scope_violation` (`:678`);
+5. commit: the candidate replaces the world (`:722`), one `accepted` event (`:695`) and one `action` command (`:716`).
+
+**8.3 Process tick** (`engine.py:762-877`). `advance(n)` writes one `advance` command per tick (`:773`), increments the tick, and applies each due process in declared order on a candidate; each commit writes an `accepted` event (`:856`). An out-of-scope process write raises `ScopeViolation`; `advance` restores the pre-tick world (`:801`) and re-raises, so **no event records the defective process**: the failure surfaces as a request error instead.
+
+**8.4 Event record** (`engine.py:505-556`). Fields: `event_id, causal_bearer, semantic_binding, observation, tick, world_revision, rule_id, rule_version, cause, status, checks, declared_read_paths, declared_write_paths, changes, hash_before, hash_after`, plus `causal_parent_event_ids` when a rule declares hard ancestry and `information_context` when the observation carried information.
+
+**8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 6 processes (`MAX_PROCESSES`, `:27`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer.
+
+**8.6 Installer and freeze** (`scripts/run_authored_world.py:48-67`, `src/world_substrate/profile.py:110-279`). Each mechanic and process package is validated; any `reject` finding aborts the run. `freeze()` hashes packages + findings (sha256, first 16 hex) and forbids further installs.
+
+**8.7 Approval gate** (`scripts/world_builder_service.py:997-1006`, `:956-962`). `approved` must be the boolean `true` (else HTTP 409); the bundle is validated and the causal model compiled before any policy or model call. Native-coordination runs and comparisons additionally require the causal model to equal the reviewed shared coordination mechanics, and comparisons change only `gate.required_approvals`.
+
+**8.8 Continuation** (`scripts/run_authored_world.py:204-215`). `continue_from` must be a `world-substrate-snapshot/v1` whose `world_id`, `content_id`, `rule_versions` and `engine_id` equal a freshly built engine's; entity state is taken from the snapshot as given (see G11).
+
+**8.9 Run rows** (`scripts/run_authored_world.py:298-358`). Each actor gets one row per round: `wanted`, `did`, `status` (an engine status, or `no_action` when nothing was chosen, or `nothing_left` when a lost race left nothing), `retried`, `said`, `refused_because` (labels of failed checks, excluding the revision check), `lost_what_it_wanted`, `blocked_by_rules` (withheld offers, one per distinct action kind and reason, `:232-252`).
+
+**8.10 Run summary** (`scripts/run_authored_world.py:381-407`). `accepted_actions` counts accepted rows; `world_changes` counts process events; `active_at_end` is true when some actor action was accepted in the last third of rounds (process changes do not count); `idle_actors` lists actors with no accepted action.
+
+**8.11 Dry run scoring** (`scripts/world_builder_service.py:783-849`). Up to two mechanic attempts; each is run scripted for a fixed number of rounds. Task worlds score 2 if the finish line is reached, else 1; ongoing worlds score 3 (alive, everyone acted), 2 (alive), 1; a run error scores 0. Ties prefer fewer idle actors. The best attempt is returned.
+
+**8.12 Budget** (`scripts/world_builder_service.py:137-220`). Cap $0.50/day for visitors, $5.00 for the owner. Each LLM request reserves up to its own cap (world $0.20, mechanics $0.12, run $0.12) from what remains, then settles to the recorded trace cost; an unreadable cost charges the whole reservation; an unreadable ledger refuses spend.
+
+**8.13 Run log** (`scripts/world_builder_service.py:290-402`). One JSON line per response to a logged path, except a `202 Accepted` job start (the job's final response is logged instead). Full artifacts are kept for `/generate-world` (bundle, causal model, dry run) and `/run` (summary, transcript, final snapshot; and the request's bundle and causal model when not continued); `/clarify` and `/surprise` keep their text; other logged paths keep only response key names (G4). A failed write only prints to stdout (`:401-402`).
+
+**8.14 Live projection** (`src/world_substrate/projection.py:44-77`). Every event must carry a unique nonempty `event_id`; the projection replays all `changes` onto the initial snapshot and stores the result and the last `hash_after`.
+
+**8.15 Living-scene frames** (`src/world_substrate/living_scene.py:38-49`, `:380-405`, `:532`). Feedback accepts every engine status (plus three legacy names) and exposes check labels and verdicts only, never operands; a frame shows effects only for events whose rule has a declared visual. Renderer placement: an actor's latest `actor.move_to` sets its point; actors with the same target share one point (`scripts/render_living_scene.py:129`, `scripts/render_composed_living_scene.py:106`; issue #106, G9).
+
+## 9. Issue #106 and this model
+
+Issue #106 (actors that move to the same place stack on one point) **does show up as a coverage gap**: G9 in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The frame data holds every actor; the renderers draw several of them on one pixel, so a view hides an element the model says is present. It was reproduced in both renderers with a copy of the neutral render fixture. This PR does not fix it; #106 carries the approved fix.
