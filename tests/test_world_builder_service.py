@@ -49,8 +49,12 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.budget_path = Path(self.state_tmp.name) / "budget.json"
         self.path_patch = patch.object(service, "BUDGET_STATE_PATH", self.budget_path)
         self.path_patch.start()
+        self.run_log_dir = Path(self.state_tmp.name) / "runs"
+        self.log_patch = patch.dict(service.os.environ, {"WORLD_BUILDER_RUN_LOG_DIR": str(self.run_log_dir)})
+        self.log_patch.start()
 
     def tearDown(self):
+        self.log_patch.stop()
         self.path_patch.stop()
         self.state_tmp.cleanup()
 
@@ -442,6 +446,63 @@ class WorldBuilderServiceTests(unittest.TestCase):
             self.assertEqual(status, 202, started)
             status, payload = self.wait_for_job(started["job_id"])
         self.assertEqual(status, 200, payload)
+
+    def run_log(self):
+        rows = []
+        for path in sorted(self.run_log_dir.glob("runs_*.jsonl")):
+            rows += [json.loads(line) for line in path.read_text().splitlines()]
+        return rows
+
+    def test_every_build_and_run_leaves_a_durable_record(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, ["a deadline"], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, built = self.post("/generate-world", {"description": "One worker picks a ripe apple.", "world_kind": "task"})
+        self.assertEqual(status, 200)
+        status, ran = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 3})
+        self.assertEqual(status, 200)
+        status, _ = self.post("/generate-world", {"description": "   "})
+        self.assertEqual(status, 422)
+        build, run, refused = self.run_log()
+        self.assertEqual((build["path"], build["who"], build["status"]), ("/generate-world", "visitor", 200))
+        self.assertEqual(build["request"]["description"], "One worker picks a ripe apple.")
+        self.assertEqual(build["result"]["world"], "Orchard")
+        self.assertEqual(build["result"]["rules"], ["pick"])
+        self.assertEqual(build["result"]["not_modeled"], ["a deadline"])
+        self.assertEqual(build["result"]["bundle"]["world"]["id"], "orchard")
+        self.assertEqual(len(build["client"]), 12)
+        self.assertNotIn("127.0.0.1", json.dumps(build))
+        self.assertEqual(run["result"]["summary"]["terminal_reached"], ran["summary"]["terminal_reached"])
+        self.assertEqual(run["request"]["world"], "Orchard")
+        self.assertIn("description", refused["result"]["error"])
+
+    def test_owner_and_agent_runs_are_labelled_and_jobs_record_their_final_result(self):
+        with patch.dict(service.os.environ, {"WORLD_BUILDER_OWNER_PASSWORD": "pw"}):
+            status, started = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 2, "async": True},
+                                        extra_headers={service.OWNER_HEADER: "pw"})
+            self.assertEqual(status, 202)
+            self.wait_for_job(started["job_id"])
+        self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 2},
+                  extra_headers={service.CLIENT_HEADER: "e2e"})
+        owner, agent = self.run_log()
+        self.assertEqual((owner["who"], owner["job_id"]), ("owner", started["job_id"]))
+        self.assertEqual(owner["status"], 200)
+        self.assertEqual(agent["who"], "agent:e2e")
+
+    def test_run_log_endpoint_is_owner_only_and_light_by_default(self):
+        self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 2})
+        status, _ = self.get("/runs")
+        self.assertEqual(status, 403)
+        with patch.dict(service.os.environ, {"WORLD_BUILDER_OWNER_PASSWORD": "pw"}):
+            def owner_get(path):
+                request = urllib.request.Request(self.base + path, headers={service.OWNER_HEADER: "pw"})
+                with urllib.request.urlopen(request, timeout=5) as response:
+                    return json.loads(response.read())
+            light = owner_get("/runs?limit=5")
+            full = owner_get("/runs?limit=5&full=1")
+        self.assertEqual(len(light["runs"]), 1)
+        self.assertNotIn("transcript", light["runs"][0]["result"])
+        self.assertIn("transcript", full["runs"][0]["result"])
 
     def test_unapproved_model_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:
