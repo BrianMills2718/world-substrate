@@ -58,13 +58,32 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # Controls created at runtime get tooltips too, and phones get them on long press.
         self.assertIn("c.title = bad ?", self.page)
         self.assertIn("c.title = \"Use this answer", self.page)
-        self.assertIn('e.target.closest("[title]")', self.page)
+        self.assertIn("const tipTarget = (node) => node && node.closest", self.page)
 
     def test_start_choices_are_explained_in_plain_words(self):
         for line in ("Build it now</strong>: you already know what you want",
                      "Talk it through first</strong>: not sure yet",
                      "Surprise me</strong>: the AI invents a world"):
             self.assertIn(line, self.page)
+
+    def test_page_script_is_valid_javascript(self):
+        # A syntax error stops every handler on the page; the gate must catch it.
+        import re, shutil, subprocess, tempfile
+        node = shutil.which("node")
+        if node is None:
+            self.skipTest("node is not installed")
+        scripts = re.findall(r"<script>(.*?)</script>", self.page, re.S)
+        self.assertEqual(len(scripts), 1)
+        with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as handle:
+            handle.write(scripts[0])
+        result = subprocess.run([node, "--check", handle.name], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_tooltips_are_visible_bubbles_not_only_native_titles(self):
+        self.assertIn('id="tip-bubble"', self.page)
+        self.assertIn('document.addEventListener("mouseover"', self.page)
+        self.assertIn('document.addEventListener("focusin"', self.page)
+        self.assertEqual(self.page.count('class="info" data-tip-for='), 3)
 
     def test_failure_states_are_written_in_plain_words(self):
         self.assertIn("These rules let nobody act", self.page)

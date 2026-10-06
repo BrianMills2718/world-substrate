@@ -3,7 +3,7 @@
 //   cd scripts/e2e && npm install && npx playwright install chromium
 //   node world_builder_e2e.mjs <base> <flow...>      e.g. node world_builder_e2e.mjs https://brianmills.dev task open
 //
-// Flows: task | ongoing | open (build, approve, run; ongoing/open also press Keep going),
+// Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open (build, approve, run; ongoing/open also press Keep going),
 // lucky (Surprise me), dialogue (Talk it through first, two turns, then build).
 // Screenshots go to $E2E_OUT (default ./out). Spends real model money on the target.
 // Prints one line per step and `RESULT passed=N failed=M`; exits 1 if any flow failed.
@@ -57,6 +57,26 @@ for (const flow of flows.length ? flows : ['task']) {
       await p.fill('#desc', DESCRIPTIONS[flow]);
       await p.getByRole('button', { name: 'Build it now' }).click();
       await buildAndRun(p, flow, log);
+    } else if (flow === 'tooltips') {
+      // Costs nothing: hover every visible control and require a visible tooltip bubble.
+      const controls = p.locator('button:visible, a:visible, textarea:visible, label.kind:visible, summary:visible');
+      const n = await controls.count();
+      const missing = [];
+      for (let i = 0; i < n; i++) {
+        const c = controls.nth(i);
+        const name = ((await c.innerText().catch(() => '')) || (await c.getAttribute('id')) || `#${i}`).trim().slice(0, 40);
+        await p.mouse.move(0, 0); await p.waitForTimeout(80);
+        await c.hover();
+        await p.waitForTimeout(400);
+        const shown = await p.locator('#tip-bubble').isVisible() && (await p.textContent('#tip-bubble')).trim().length > 10;
+        if (!shown) missing.push(name);
+      }
+      log('hovered', `${n} controls, ${n - missing.length} showed a tooltip`);
+      if (missing.length) throw new Error('no visible tooltip on: ' + missing.join(' | '));
+      await p.locator('.info[data-tip-for="talk-btn"]').click();
+      const tapped = (await p.textContent('#tip-bubble')).trim();
+      log('tap info', tapped);
+      if (!/questions/.test(tapped)) throw new Error('info button did not show the Talk it through first tip');
     } else if (flow === 'lucky') {
       await p.getByRole('button', { name: 'Surprise me' }).click();
       await p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG });
