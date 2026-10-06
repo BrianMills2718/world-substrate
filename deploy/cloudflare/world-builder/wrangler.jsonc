@@ -1,0 +1,14 @@
+{
+  // Public World Builder pages at brianmills.dev/world-builder/, owned by world-substrate.
+  // The more specific route brianmills.dev/world-builder/api* stays on the separate
+  // world-builder-api Worker (machine-coordination), which proxies to the VPS backend.
+  "name": "world-builder-pages",
+  "account_id": "8edd43859e873330b3b07bada17d183b",
+  "compatibility_date": "2026-10-06",
+  "workers_dev": false,
+  "assets": { "directory": "./dist", "html_handling": "auto-trailing-slash" },
+  "routes": [
+    { "pattern": "brianmills.dev/world-builder", "zone_name": "brianmills.dev" },
+    { "pattern": "brianmills.dev/world-builder/*", "zone_name": "brianmills.dev" }
+  ]
+}
