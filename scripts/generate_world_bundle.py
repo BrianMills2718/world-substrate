@@ -50,6 +50,8 @@ def _contract() -> dict[str, Any]:
         "entities": (
             "[{id (lowercase-slug), label, categories: [nonempty strings], components: {component: {every declared field}},"
             " optional portable: bool, optional owner_ref: 'actor:<id>'|'place:<id>'|'entity:<id>'|'unowned'}]"
+            " (owner_ref: use 'actor:<id>' when the owner is a person or business that acts; 'entity:<id>' only for"
+            " a thing held inside another thing)"
         ),
         "actions": "[{kind (lowercase-slug), description, fields: [{name, type in string|integer|number|boolean|entity_ref}]}]",
         "reserved_action_field_names": ["actor", "kind", "base_revision", "controller"],

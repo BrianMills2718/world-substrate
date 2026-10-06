@@ -49,6 +49,10 @@ pre{white-space:pre-wrap;word-break:break-word;background:#0b1013;border:1px sol
 .notice{border-left:3px solid var(--warn);padding:10px 14px;background:#1b1712;border-radius:6px;margin:12px 0}
 .notice.info{border-left-color:var(--ok);background:#121a20}
 .outcome{font-size:18px;font-weight:700;margin:0 0 10px}
+.feed{margin:6px 0 14px;padding-left:0;list-style:none;font-size:14px;line-height:1.45}
+.feed li{padding:6px 0;border-bottom:1px solid var(--line)}
+.feed li:first-child{font-weight:600}
+.live-controls{align-items:center;gap:14px}
 .strip{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0 4px}
 .tick{width:26px;height:26px;border-radius:5px;border:2px solid transparent;cursor:pointer;padding:0}
 .tick.accepted{background:var(--ok)}
@@ -57,6 +61,8 @@ pre{white-space:pre-wrap;word-break:break-word;background:#0b1013;border:1px sol
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
 .legend .tick{cursor:default;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:4px}
 .detail{min-height:24px;font-size:14px;margin:6px 0 12px}
+details.picture{margin-top:10px}
+details.picture>summary{cursor:pointer;font-weight:600;padding:6px 0}
 iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius:10px;background:#fff}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:-2px;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -173,23 +179,32 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <p id="goal"></p>
     <details><summary title="The exact rule data the simulator runs, for experts">Technical details (the exact rule data)</summary><pre id="raw"></pre></details>
     <div class="row" style="margin-top:18px">
-      <button class="primary" id="approve-btn" type="button" title="You accept these rules; a fresh simulation runs where only they decide what happens">Approve rules and run</button>
+      <button class="primary" id="approve-btn" type="button" title="You accept these rules; the world starts playing round by round, and only these rules decide what happens. Pause it any time.">Approve rules and play</button>
       <label class="small muted" title="Instead of simple first-available moves, an AI picks each person\u2019s move; slower and costs a few cents"><input type="checkbox" id="ai-moves"> Let AI choose each move (slower, costs a few cents)</label>
     </div>
   </section>
 
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
-    <h2 id="run-h">Your world ran</h2>
+    <h2 id="run-h">Your world is running</h2>
     <div id="lucky-note"></div>
+    <div class="row live-controls">
+      <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
+      <label class="small muted" title="On: an AI chooses each person\u2019s move (a few seconds per round, costs a little). Off: each person takes the first move the rules allow (instant, free). You can switch while it plays."><input type="checkbox" id="ai-live"> AI chooses each move</label>
+    </div>
+    <p class="small muted" id="live-status" role="status"></p>
     <p class="outcome" id="outcome"></p>
+    <h3>What just happened</h3>
+    <ol class="feed" id="feed" aria-label="The latest rounds, newest first"></ol>
+    <h3>Every attempt in the last 10 rounds</h3>
     <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
-    <div class="strip" id="strip" aria-label="Every attempt, in order. Select one to see why."></div>
+    <div class="strip" id="strip" aria-label="Every attempt in the last 10 rounds, in order. Select one to see why."></div>
     <p class="detail" id="detail"></p>
-    <iframe class="replay" id="replay" title="Graphical replay of the run" sandbox="allow-scripts"></iframe>
+    <details class="picture"><summary title="Show a picture of the places, people and moves in the round you just read">Picture of the latest round</summary>
+    <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
+    </details>
     <div class="row" style="margin-top:14px">
-      <button class="secondary" type="button" id="rules-btn" title="Read the rules that decided every attempt in this run">See the rules</button>
-      <button class="primary" type="button" id="keep-btn" hidden title="Continue this same world for 12 more rounds from exactly where it stopped">Keep going (12 more rounds)</button>
-      <button class="secondary" type="button" id="again-btn" title="Start this world over from the beginning with the same rules">Run it again</button>
+      <button class="secondary" type="button" id="rules-btn" title="Read the rules that decide every attempt (the world stays paused while you read)">See the rules</button>
+      <button class="secondary" type="button" id="again-btn" title="Throw away this run and start the same world over from round 1 with the same rules">Start over</button>
       <button class="secondary" type="button" id="new-btn" title="Go back to the start and describe a different world">Build another world</button>
       <button class="secondary" type="button" id="download-btn" title="Save this world and its rules as a JSON file you can load in the advanced editor">Download this world</button>
     </div>
@@ -217,7 +232,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     3: "A fresh simulation runs. Every attempt is allowed or refused by your approved rules alone, and you can see why.",
   };
   const $ = (id) => document.getElementById(id);
-  let world = null, lastRun = null, timer = null;
+  let world = null, timer = null;
 
   function setStep(n) {
     document.querySelectorAll(".steps button").forEach((b) => {
@@ -267,11 +282,11 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 
   // Long requests (builds, runs) go through a background job so they are not
   // cut off by the 100-second proxy limit; the page checks back every 2 seconds.
-  async function apiJob(path, body) {
+  async function apiJob(path, body, pollMs = 2000) {
     const started = await api(path, { ...body, async: true });
     if (!started.job_id) return started;
     for (;;) {
-      await new Promise((r) => setTimeout(r, 2000));
+      await new Promise((r) => setTimeout(r, pollMs));
       const res = await fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() });
       let data = null;
       try { data = await res.json(); } catch (e) { data = null; }
@@ -409,7 +424,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       tr.append(k, td); pt.append(tr);
     });
     const t = data.review.terminal;
-    $("goal").textContent = t ? `Finished when ${t.mode === "all" ? "every" : "any"} ${words((t.selector.categories || [])[0] || "item")} has ` + t.checks.map((c) => `“${field(c.path)}” ${OPS[c.op] || c.op} ${c.value}`).join(" and ") + "." : (data.world_kind && data.world_kind !== "task" ? "Never: this world keeps going. Each run shows 12 rounds, and Keep going continues the same world." : "No finish line was proposed, so the run simply stops after 12 rounds.");
+    $("goal").textContent = t ? `Finished when ${t.mode === "all" ? "every" : "any"} ${words((t.selector.categories || [])[0] || "item")} has ` + t.checks.map((c) => `“${field(c.path)}” ${OPS[c.op] || c.op} ${c.value}`).join(" and ") + "." : (data.world_kind && data.world_kind !== "task" ? "Never: this world keeps going. It plays round by round until you pause it." : "No finish line was proposed, so it plays until you pause it or nothing more can happen.");
     const nm = $("not-modeled"); nm.innerHTML = "";
     if ((data.not_modeled || []).length) {
       const box = document.createElement("div"); box.className = "notice";
@@ -421,6 +436,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     const dn = $("dry-notice"); dn.innerHTML = "";
     const d = data.dry_run;
     const n = document.createElement("div");
+    let warning = null;
     if (d.ok) {
       n.className = "notice info";
       const keepsGoing = data.world_kind && data.world_kind !== "task";
@@ -429,12 +445,23 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
         : (d.terminal_reached ? "it reaches the finish line" : "it does not reach the finish line on its own");
       const changes = keepsGoing && d.world_changes ? `, ${d.world_changes} change${d.world_changes === 1 ? "" : "s"} by the world itself` : "";
       n.textContent = `Quick test with simple moves: ${d.accepted_actions} action${d.accepted_actions === 1 ? "" : "s"} allowed in ${d.turns} round${d.turns === 1 ? "" : "s"}${changes}; ${outcome}.`;
+      const idle = d.idle_actors || [];
+      if (keepsGoing && (idle.length || !d.active_at_end)) {
+        // Say it plainly before they press play (2026-10-06: a pencil chain where
+        // six of eight businesses could never act was handed over silently).
+        warning = document.createElement("div"); warning.className = "notice";
+        const who = idle.map(labelFor).join(", ");
+        warning.textContent = !d.active_at_end
+          ? `Warning: in the quick test this world went quiet${who ? ` (${who} never managed to do anything)` : ""}. It will probably stall. Build it again for a fresh attempt, or play it anyway to see where it gets stuck.`
+          : `Note: in the quick test, ${who} never managed to do anything; everyone else kept going.`;
+      }
     } else {
       n.className = "notice";
       n.textContent = "These rules let nobody act: in a quick test from the starting state, every action needed something that was never true. You can still read them below, but running would show nothing. Try rewording your description or start from an example.";
       $("approve-btn").disabled = true;
     }
     dn.append(n);
+    if (warning) dn.append(warning);
     if (d.ok) $("approve-btn").disabled = false;
     show("review");
   }
@@ -454,7 +481,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     try {
       const data = await apiJob("/generate-world", { description, world_kind: kind() });
       renderReview(data);
-      if (auto && data.dry_run.ok) await runWorld({ lucky: true });
+      if (auto && data.dry_run.ok) startLive({ lucky: true });
     } catch (err) {
       show("describe");
       const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
@@ -462,76 +489,175 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     } finally { clearInterval(timer); }
   }
 
-  function renderRun(run) {
-    lastRun = run;
-    const s = run.summary;
-    const attempts = [];
-    (run.trace.transcript || []).forEach((turn) => Object.entries(turn.actors || {}).forEach(([actor, row]) => {
-      // One square per person per round for everything the rules refused them.
-      if ((row.blocked_by_rules || []).length) attempts.push({ turn: turn.turn, actor, blocked: row.blocked_by_rules });
-      attempts.push({ turn: turn.turn, actor, row });
-    }));
-    const ruleRefusals = attempts.filter((a) => a.blocked).reduce((n, a) => n + a.blocked.length, 0);
-    const lost = attempts.filter((a) => a.row && a.row.status !== "accepted" && a.row.wanted).length;
-    const continuing = world && world.world_kind && world.world_kind !== "task";
-    if (continuing) {
-      const changes = s.world_changes ? `, ${s.world_changes} change${s.world_changes === 1 ? "" : "s"} the world made by itself` : "";
-      $("outcome").textContent = `Rounds ${s.first_turn}–${s.last_turn}: ${s.accepted_actions} allowed, ${ruleRefusals} refused by the rules${changes}. ` + (s.active_at_end ? "Still going." : "Things have gone quiet: nothing is happening any more.");
+  function attemptButton(a) {
+    const t = document.createElement("button"); t.type = "button";
+    let text;
+    if (a.blocked) {
+      const parts = a.blocked.map((b) => {
+        const target = Object.entries(b.action).filter(([k]) => !["actor", "kind", "base_revision", "controller"].includes(k)).map(([, v]) => labelFor(v)).join(", ");
+        return `${words(b.action.kind)}${target ? " (" + target + ")" : ""}, because this was not true: ${b.reason || "a required check"}`;
+      });
+      text = `Round ${a.turn}: the rules would not let ${labelFor(a.actor)} ` + parts.join("; nor ") + ".";
+      t.className = "tick refused";
     } else {
-      $("outcome").textContent = `${s.accepted_actions} allowed, ${ruleRefusals} refused by the rules${lost ? `, ${lost} lost to someone faster` : ""}. ${s.terminal_reached ? "Finish line reached" : "Finish line not reached"} after ${s.turns} round${s.turns === 1 ? "" : "s"}.`;
-    }
-    $("keep-btn").hidden = !(continuing || !s.terminal_reached) || (s.last_turn || 0) >= 300;
-    $("detail").textContent = ruleRefusals ? "Select an attempt above to see what happened and why. Dashed orange squares are things the rules refused." : "Nothing was refused: in every round, each move someone could think of was already allowed by the rules. Select an attempt to see what happened.";
-    const strip = $("strip"); strip.innerHTML = "";
-    attempts.forEach((a) => {
-      const t = document.createElement("button"); t.type = "button";
-      if (a.blocked) {
-        const parts = a.blocked.map((b) => {
-          const target = Object.entries(b.action).filter(([k]) => !["actor", "kind", "base_revision", "controller"].includes(k)).map(([, v]) => labelFor(v)).join(", ");
-          return `${words(b.action.kind)}${target ? " (" + target + ")" : ""}, because this was not true: ${b.reason || "a required check"}`;
-        });
-        const text = `Round ${a.turn}: the rules would not let ${labelFor(a.actor)} ` + parts.join("; nor ") + ".";
-        t.className = "tick refused"; t.setAttribute("aria-label", text); t.title = text;
-        t.addEventListener("click", () => { $("detail").textContent = text; });
-        strip.append(t); return;
-      }
       const kind = a.row.status === "accepted" ? "accepted" : a.row.wanted ? "refused" : "waited";
       t.className = "tick " + kind;
       const who = labelFor(a.actor), act = a.row.wanted ? words(a.row.wanted.kind) : "";
-      let text;
       if (kind === "accepted") text = `Round ${a.turn}: ${who} — ${act}. Allowed: every check held.`;
       else if (kind === "waited") text = `Round ${a.turn}: ${who} waited — none of the rules allowed anything for them right then.`;
       else if ((a.row.refused_because || []).length) text = `Round ${a.turn}: ${who} tried to ${act}. Refused, because this check was false: ` + a.row.refused_because.map((r) => typeof r === "string" ? r : r.label || JSON.stringify(r)).join("; ");
       else text = `Round ${a.turn}: ${who} wanted to ${act}, but someone else acted first in the same round and it was no longer possible.`;
-      t.setAttribute("aria-label", text); t.title = text;
-      t.addEventListener("click", () => { $("detail").textContent = text; });
-      strip.append(t);
-    });
-    $("replay").srcdoc = run.replay_html || "<p style='font-family:sans-serif;padding:20px'>No graphical replay was produced for this run.</p>";
-    show("run");
+    }
+    t.setAttribute("aria-label", text); t.title = text;
+    t.addEventListener("click", () => { $("detail").textContent = text; });
+    return t;
   }
 
-  async function runWorld(options) {
-    if (!world) return;
-    const lucky = Boolean(options && options.lucky);
-    const resume = Boolean(options && options.resume && lastRun);
+  function renderStrip(rounds) {
+    const strip = $("strip"); strip.innerHTML = "";
+    let refused = 0;
+    rounds.forEach((turn) => Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+      // One square per person per round for everything the rules refused them.
+      if ((row.blocked_by_rules || []).length) { refused++; strip.append(attemptButton({ turn: turn.turn, actor, blocked: row.blocked_by_rules })); }
+      strip.append(attemptButton({ turn: turn.turn, actor, row }));
+    }));
+    if (!$("detail").dataset.touched) $("detail").textContent = refused ? "Select an attempt above to see what happened and why. Dashed orange squares are things the rules refused." : "Select an attempt to see what happened.";
+  }
+
+  // Live play: the world runs one round at a time while you watch, until you
+  // pause it, it reaches its finish line, or nothing has happened for a while.
+  // Brian, 2026-10-06: "i want to be able to play or pause my world in real
+  // time not just come into a 12 turn thing that is already done".
+  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 12, ROUND_PAUSE_MS = 1500;
+  let live = null;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  function setTip(el, text) {
+    el.dataset.tip = text; el.removeAttribute("title"); el.setAttribute("aria-description", text);
+    // A bubble already showing for this control must change with it (Play/Pause swap under the pointer).
+    if (tipEl === el) tipBubble.textContent = text;
+  }
+
+  function roundSentence(turn) {
+    const parts = [];
+    Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+      if (row.status === "accepted" && row.did) parts.push(`${labelFor(actor)}: ${words(row.did.kind)}`);
+    });
+    const by = (turn.world_changes || []).map(words);
+    let text = parts.length ? parts.join(" · ") : "Nobody could do anything.";
+    if (by.length) text += ` · By itself: ${by.join(", ")}`;
+    return text;
+  }
+
+  function renderLive() {
+    const t = live.totals, n = live.rounds.length;
+    const last = n ? live.rounds[n - 1].turn : 0;
+    $("run-h").textContent = live.playing ? "Your world is running" : live.finished ? "Your world reached its finish line" : "Your world is paused";
+    $("outcome").textContent = n
+      ? `Round ${last}: ${t.allowed} allowed, ${t.refused} refused by the rules${t.byItself ? `, ${t.byItself} change${t.byItself === 1 ? "" : "s"} the world made by itself` : ""} so far.`
+      : "Starting the first round…";
+    $("live-status").textContent = live.why;
+    const btn = $("play-btn");
+    btn.textContent = live.playing ? "⏸ Pause" : "▶ Play";
+    btn.disabled = live.finished;
+    setTip(btn, live.playing
+      ? "Stop after the current round; the world waits exactly where it is until you press Play"
+      : live.finished ? "This world reached its finish line; use Start over to run it again" : "Carry on from exactly where it stopped, one round at a time");
+    const feed = $("feed"); feed.innerHTML = "";
+    live.rounds.slice(-FEED_ROUNDS).reverse().forEach((turn) => {
+      const li = document.createElement("li");
+      const b = document.createElement("strong"); b.textContent = `Round ${turn.turn}: `;
+      li.append(b, roundSentence(turn)); feed.append(li);
+    });
+    renderStrip(live.rounds.slice(-STRIP_ROUNDS));
+  }
+
+  function recentMoves() {
+    const moves = [];
+    live.rounds.slice(-3).forEach((turn) => Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+      if (row.status === "accepted" && row.did) moves.push({ actor, action: String(row.did.kind).slice(0, 80) });
+    }));
+    return moves.slice(-12);
+  }
+
+  async function fetchRounds() {
     const ai = $("ai-moves").checked;
-    $("approve-btn").disabled = true; $("approve-btn").textContent = ai ? "Running (AI is choosing moves)…" : "Running…";
-    try {
-      const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "llm" : "scripted", turns: 12 };
-      if (resume) { request.continue_from = lastRun.trace.final_snapshot; request.turn_offset = lastRun.summary.last_turn; }
-      const run = await apiJob("/run", request);
-      renderRun(run);
-      const note = $("lucky-note"); note.innerHTML = "";
-      if (lucky) {
-        const n = document.createElement("div"); n.className = "notice info";
-        n.textContent = "Surprise world: “" + world.description + "” Built and run without stopping for review; use See the rules to read exactly what decided every attempt.";
-        note.append(n);
+    const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "llm" : "scripted", turns: 1 };
+    if (live.snapshot) { request.continue_from = live.snapshot; request.turn_offset = live.lastTurn; request.recent = recentMoves(); }
+    // Simple moves are instant, so ask directly; AI rounds take a few seconds and go through a job.
+    return ai ? apiJob("/run", request, 1000) : api("/run", request);
+  }
+
+  async function playLoop() {
+    const gen = live.gen;
+    const current = () => live && live.gen === gen;
+    while (current() && live.playing) {
+      if (!live.buffer.length) {
+        let run;
+        try { run = await fetchRounds(); }
+        catch (err) {
+          if (!current()) return;
+          live.playing = false; live.why = "Paused: " + plainError(err); renderLive(); return;
+        }
+        if (!current()) return;
+        const rounds = run.trace.transcript || [];
+        live.snapshot = run.trace.final_snapshot; live.lastTurn = run.summary.last_turn;
+        if (run.replay_html) $("replay").srcdoc = run.replay_html;
+        if (!rounds.length) {
+          live.playing = false;
+          if (run.summary.terminal_reached) { live.finished = true; live.why = "Finished: the finish line was reached."; }
+          else live.why = "Paused by itself: nobody can do anything and nothing changes by itself any more.";
+          renderLive(); return;
+        }
+        live.buffer.push(...rounds);
+        if (run.summary.terminal_reached) live.endsAt = run.summary.last_turn;
       }
-    } catch (err) {
-      const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
-      $("dry-notice").innerHTML = ""; $("dry-notice").append(n);
-    } finally { $("approve-btn").disabled = false; $("approve-btn").textContent = "Approve rules and run"; }
+      const turn = live.buffer.shift();
+      live.rounds.push(turn); if (live.rounds.length > 500) live.rounds.shift();
+      Object.values(turn.actors || {}).forEach((row) => {
+        if (row.status === "accepted") live.totals.allowed++;
+        live.totals.refused += (row.blocked_by_rules || []).length;
+      });
+      live.totals.byItself += (turn.world_changes || []).length;
+      const happened = Object.values(turn.actors || {}).some((r) => r.status === "accepted") || (turn.world_changes || []).length > 0;
+      live.quiet = happened ? 0 : live.quiet + 1;
+      if (live.endsAt && turn.turn >= live.endsAt) {
+        live.finished = true; live.playing = false; live.why = "Finished: the finish line was reached.";
+      } else if (live.quiet >= QUIET_ROUNDS_TO_PAUSE) {
+        live.playing = false; live.quiet = 0;
+        live.why = `Paused by itself: nothing has happened for ${QUIET_ROUNDS_TO_PAUSE} rounds. The rules may not let anyone act any more; select an orange square to see why, or press Play to try more rounds.`;
+      }
+      renderLive();
+      // Simple moves are instant; pause so each round can be read. AI rounds take long enough already.
+      if (live.playing && !$("ai-moves").checked) await sleep(ROUND_PAUSE_MS);
+    }
+  }
+
+  function play() {
+    if (!live || live.finished) return;
+    live.gen++; live.playing = true;
+    live.why = $("ai-moves").checked ? "Playing. An AI is choosing each person’s move, so each round takes a few seconds." : "Playing.";
+    renderLive(); playLoop();
+  }
+  function pause() {
+    if (!live) return;
+    live.gen++; live.playing = false; live.why = "Paused. Press Play to carry on from exactly here.";
+    renderLive();
+  }
+
+  function startLive(options) {
+    if (!world) return;
+    live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
+             totals: { allowed: 0, refused: 0, byItself: 0 }, finished: false, endsAt: null, why: "" };
+    $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
+    $("ai-live").checked = $("ai-moves").checked;
+    const note = $("lucky-note"); note.innerHTML = "";
+    if (options && options.lucky) {
+      const n = document.createElement("div"); n.className = "notice info";
+      n.textContent = "Surprise world: “" + world.description + "” Built and started without stopping for review; use See the rules to read exactly what decides every attempt.";
+      note.append(n);
+    }
+    show("run");
+    play();
   }
 
   $("build-btn").addEventListener("click", () => build());
@@ -599,16 +725,15 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   $("talk-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTurn($("talk-input").value); } });
   $("talk-close").addEventListener("click", () => { $("dialogue").hidden = true; });
   $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); refreshBuild(); $("dialogue").hidden = true; build(); });
-  $("rules-btn").addEventListener("click", () => show("review"));
-  $("keep-btn").addEventListener("click", async () => {
-    $("keep-btn").disabled = true; $("keep-btn").textContent = "Running the next rounds…";
-    try { await runWorld({ resume: true }); } finally { $("keep-btn").disabled = false; $("keep-btn").textContent = "Keep going (12 more rounds)"; }
-  });
+  $("rules-btn").addEventListener("click", () => { pause(); show("review"); });
+  $("play-btn").addEventListener("click", () => { if (live && live.playing) pause(); else play(); });
+  $("ai-live").addEventListener("change", () => { $("ai-moves").checked = $("ai-live").checked; if (live && live.playing) live.why = $("ai-live").checked ? "Playing. An AI now chooses each move from the next round." : "Playing with simple moves from the next round."; });
+  $("strip").addEventListener("click", () => { $("detail").dataset.touched = "1"; });
   $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
   $("change-btn").addEventListener("click", () => show("describe"));
-  $("approve-btn").addEventListener("click", runWorld);
-  $("again-btn").addEventListener("click", () => { show("review"); runWorld(); });
-  $("new-btn").addEventListener("click", () => { world = null; show("describe"); });
+  $("approve-btn").addEventListener("click", () => startLive());
+  $("again-btn").addEventListener("click", () => startLive());
+  $("new-btn").addEventListener("click", () => { if (live) pause(); world = null; show("describe"); });
   $("download-btn").addEventListener("click", () => {
     if (!world) return;
     const blob = new Blob([JSON.stringify({ description: world.description, bundle: world.bundle, causal_model: world.causal_model }, null, 2)], { type: "application/json" });

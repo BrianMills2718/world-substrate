@@ -396,7 +396,11 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "Checks and effects must use only allowed_state_paths.",
             "Do not invent source code, hidden state, or new entities.",
             "An action should change only state causally implied by its description and represented world.",
-            "Use owner_ref expressions for actor ownership rather than hard-coded actor ids.",
+            "Use owner_ref expressions for actor ownership rather than hard-coded actor ids. "
+            "{owner_ref: P} is the string 'actor:<id of P>', meaning 'owned by P'; it is NOT the owner of P. "
+            "To require that thing X belongs to the acting actor, compare "
+            "{participant: {name: X, path: ownership.owner_ref}} with {owner_ref: actor}. Never put "
+            "{owner_ref: X} for a thing X on the left of a check (that would ask whether X owns itself).",
             "Terminal, if present, must be derivable from represented state and must not duplicate a completion flag.",
             "Limits and tests must name omissions and refusal/boundary cases honestly.",
             "Every check label is a short plain-English condition a visitor understands, using entity labels "

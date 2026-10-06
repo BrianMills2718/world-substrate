@@ -3,8 +3,9 @@
 //   cd scripts/e2e && npm install && npx playwright install chromium
 //   node world_builder_e2e.mjs <base> <flow...>      e.g. node world_builder_e2e.mjs https://brianmills.dev task open
 //
-// Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open (build, approve, run; ongoing/open also press Keep going),
+// Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open | pencil (build, approve, watch it play live; continuing worlds are also paused, checked to stay still, and resumed),
 // lucky (Make one up for me), dialogue (Help me write it, two turns, then build).
+// E2E_AI=1 also switches a playing continuing world to AI moves for two rounds (costs a few cents).
 // Screenshots go to $E2E_OUT (default ./out). Spends real model money on the target.
 // Prints one line per step and `RESULT passed=N failed=M`; exits 1 if any flow failed.
 import { chromium } from 'playwright';
@@ -16,6 +17,7 @@ fs.mkdirSync(out, { recursive: true });
 const DESCRIPTIONS = {
   task: 'Two cooks share one knife and must finish three salad orders before closing.',
   ongoing: 'Two cooks share one knife in a busy diner where new salad orders keep coming in.',
+  pencil: 'a pencil manufacturing/logistics/supply/sales/business system',
   open: 'A small village where two neighbours, Rosa and Tom, keep a shared vegetable garden and a well; they get hungry and the plants need water.',
 };
 const LONG = 600000;
@@ -24,17 +26,36 @@ async function buildAndRun(p, kind, log) {
   await Promise.race([p.locator('#stage-review').waitFor({ state: 'visible', timeout: LONG }), p.locator('#stage-describe .notice').waitFor({ timeout: LONG })]);
   if (!(await p.locator('#stage-review').isVisible())) throw new Error('build failed: ' + (await p.textContent('#service-status')));
   log('review', (await p.textContent('#dry-notice')).trim());
-  if (!(await p.getByRole('button', { name: 'Approve rules and run' }).isEnabled())) throw new Error('approve disabled');
-  await p.getByRole('button', { name: 'Approve rules and run' }).click();
+  if (!(await p.getByRole('button', { name: 'Approve rules and play' }).isEnabled())) throw new Error('approve disabled');
+  await p.getByRole('button', { name: 'Approve rules and play' }).click();
   await p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG });
-  log('run', (await p.textContent('#outcome')).trim());
+  // Live play: rounds appear one by one while you watch.
+  const round = async () => Number(((await p.textContent('#outcome')).match(/^Round (\d+)/) || [0, 0])[1]);
+  const heading = async () => (await p.textContent('#run-h')).trim();
+  await p.waitForFunction(() => /^Round [3-9]|^Round \d\d/.test(document.querySelector('#outcome').textContent)
+    || !/running/.test(document.querySelector('#run-h').textContent), null, { timeout: LONG });
+  log('playing', `${await heading()} | ${(await p.textContent('#outcome')).trim()} | ${(await p.textContent('#live-status')).trim()}`);
+  log('latest', (await p.textContent('#feed li')).trim());
   if (kind !== 'task') {
-    if (await p.locator('#keep-btn').isHidden()) throw new Error('Keep going is hidden for a ' + kind + ' world');
-    await p.getByRole('button', { name: /Keep going/ }).click();
-    await p.waitForFunction(() => !document.querySelector('#keep-btn').disabled, null, { timeout: LONG });
-    const outcome = (await p.textContent('#outcome')).trim();
-    log('keep going', outcome);
-    if (!/^Rounds 13/.test(outcome)) throw new Error('Keep going did not continue from round 13');
+    if (!/running/.test(await heading())) throw new Error('a ' + kind + ' world stopped by itself: ' + (await p.textContent('#live-status')));
+    await p.getByRole('button', { name: /Pause/ }).click();
+    await p.waitForTimeout(400);
+    const at = await round();
+    await p.waitForTimeout(5000);
+    if ((await round()) !== at) throw new Error(`still advancing after Pause (${at} -> ${await round()})`);
+    if (!/paused/.test(await heading())) throw new Error('heading does not say paused: ' + (await heading()));
+    log('paused', `stayed at round ${at} for 5 s`);
+    await p.getByRole('button', { name: /Play/ }).click();
+    await p.waitForFunction((n) => Number((document.querySelector('#outcome').textContent.match(/^Round (\d+)/) || [0, 0])[1]) > n, at, { timeout: LONG });
+    log('resumed', (await p.textContent('#outcome')).trim());
+    if (process.env.E2E_AI) {
+      // Switch to AI moves mid-play: the next rounds are chosen by the AI.
+      const before = await round();
+      await p.check('#ai-live');
+      await p.waitForFunction((n) => Number((document.querySelector('#outcome').textContent.match(/^Round (\d+)/) || [0, 0])[1]) >= n + 2, before, { timeout: LONG });
+      log('ai rounds', `${(await p.textContent('#outcome')).trim()} | ${(await p.textContent('#feed li')).trim()}`);
+    }
+    await p.getByRole('button', { name: /Pause/ }).click();
   }
 }
 
@@ -53,10 +74,10 @@ for (const flow of flows.length ? flows : ['task']) {
   try {
     await p.goto(base + '/world-builder/', { waitUntil: 'networkidle' });
     if (flow in DESCRIPTIONS) {
-      await p.check(`input[name="kind"][value="${flow}"]`);
+      await p.check(`input[name="kind"][value="${flow === 'pencil' ? 'ongoing' : flow}"]`);
       await p.fill('#desc', DESCRIPTIONS[flow]);
-      await p.getByRole('button', { name: 'Build what I wrote' }).click();
-      await buildAndRun(p, flow, log);
+      await p.getByRole('button', { name: 'Build what I wrote', exact: true }).click();
+      await buildAndRun(p, flow === 'pencil' ? 'ongoing' : flow, log);
     } else if (flow === 'tooltips') {
       // Costs nothing: hover every visible control and require a visible tooltip bubble.
       const controls = p.locator('button:visible, a:visible, textarea:visible, label.kind:visible, summary:visible');
@@ -78,13 +99,13 @@ for (const flow of flows.length ? flows : ['task']) {
       log('tap info', tapped);
       if (!/questions/.test(tapped)) throw new Error('info button did not show the Help me write it tip');
     } else if (flow === 'lucky') {
-      await p.getByRole('button', { name: 'Make one up for me' }).click();
+      await p.getByRole('button', { name: 'Make one up for me', exact: true }).click();
       await p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG });
       log('surprise', await p.textContent('#lucky-note'));
       log('run', await p.textContent('#outcome'));
     } else if (flow === 'dialogue') {
       await p.fill('#desc', 'some kids and a lemonade stand');
-      await p.getByRole('button', { name: 'Help me write it' }).click();
+      await p.getByRole('button', { name: 'Help me write it', exact: true }).click();
       await p.locator('#chat .bubble.ai').first().waitFor({ timeout: LONG });
       log('ai', await p.locator('#chat .bubble.ai').first().innerText());
       const chip = p.locator('#chat .bubble.ai .chip').first();
