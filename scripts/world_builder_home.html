@@ -120,15 +120,15 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <textarea id="desc" maxlength="2000" title="Describe who is involved, what they share or use, and what they are trying to do" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
     <div class="chips" id="examples"></div>
     <div class="row">
-      <span style="white-space:nowrap"><button class="primary" id="build-btn" type="button" title="Build the world from the description above right now. You will check its rules before anything runs.">Build it now</button><button type="button" class="info" data-tip-for="build-btn" aria-label="What does Build it now do?" title="What does Build it now do?">i</button></span>
-      <span style="white-space:nowrap"><button class="secondary" id="talk-btn" type="button" title="Not sure what to write? The AI asks a few questions and writes the description with you; you build when it looks right.">Talk it through first</button><button type="button" class="info" data-tip-for="talk-btn" aria-label="What does Talk it through first do?" title="What does Talk it through first do?">i</button></span>
-      <span style="white-space:nowrap"><button class="secondary" id="lucky-btn" type="button" title="The AI invents a small world of the kind you picked, builds it and runs it straight away, without stopping for you to check the rules.">Surprise me</button><button type="button" class="info" data-tip-for="lucky-btn" aria-label="What does Surprise me do?" title="What does Surprise me do?">i</button></span>
+      <span style="white-space:nowrap"><button class="primary" id="build-btn" type="button" title="Builds the world you typed in the box above (or the example you picked). You check its rules before anything runs.">Build what I wrote</button><button type="button" class="info" data-tip-for="build-btn" aria-label="What does Build what I wrote do?" title="What does Build what I wrote do?">i</button></span>
+      <span style="white-space:nowrap"><button class="secondary" id="talk-btn" type="button" title="Not sure what to write? The AI asks a few questions and writes the description with you; you build when it looks right.">Help me write it</button><button type="button" class="info" data-tip-for="talk-btn" aria-label="What does Help me write it do?" title="What does Help me write it do?">i</button></span>
+      <span style="white-space:nowrap"><button class="secondary" id="lucky-btn" type="button" title="Ignores the box: the AI makes up its own world of the kind you picked, builds it and runs it straight away.">Make one up for me</button><button type="button" class="info" data-tip-for="lucky-btn" aria-label="What does Make one up for me do?" title="What does Make one up for me do?">i</button></span>
       <span class="muted small" id="build-hint">Building takes about 20–60 seconds.</span>
     </div>
     <ul class="choices small muted">
-      <li><strong>Build it now</strong>: you already know what you want; build from your description.</li>
-      <li><strong>Talk it through first</strong>: not sure yet; the AI asks questions and writes the description with you.</li>
-      <li><strong>Surprise me</strong>: the AI invents a world and runs it.</li>
+      <li><strong>Build what I wrote</strong>: <em>you</em> write the story in the box; the AI builds that world and you check its rules before it runs.</li>
+      <li><strong>Help me write it</strong>: you and the AI write the story together, question by question; then it builds.</li>
+      <li><strong>Make one up for me</strong>: the <em>AI</em> writes the story (the box is ignored), builds it and runs it straight away.</li>
     </ul>
     <div id="dialogue" hidden>
       <h3>Let’s work it out together</h3>
@@ -235,7 +235,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   EXAMPLES.forEach((text) => {
     const chip = document.createElement("button");
     chip.type = "button"; chip.className = "chip"; chip.textContent = text.length > 60 ? text.slice(0, 57) + "…" : text; chip.title = text;
-    chip.addEventListener("click", () => { $("desc").value = text; $("desc").focus(); });
+    chip.addEventListener("click", () => { $("desc").value = text; refreshBuild(); $("desc").focus(); });
     $("examples").append(chip);
   });
 
@@ -299,6 +299,15 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     return msg;
   }
 
+  // Build what I wrote needs a working service AND something written in the box;
+  // it never silently builds the grey example text.
+  let serviceBlock = "";
+  function refreshBuild() {
+    const has = $("desc").value.trim().length > 0;
+    $("build-btn").disabled = Boolean(serviceBlock) || !has;
+    $("build-hint").textContent = serviceBlock || (has ? "Building takes about 20–60 seconds." : "Type what should happen in the box, or click an example, to enable this.");
+  }
+
   async function checkService() {
     try {
       const h = await api("/health");
@@ -309,15 +318,15 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       $("owner-btn").textContent = h.owner ? "Leave owner mode" : "Owner access";
       if (h.owner) {
         $("service-status").textContent = "Builder is up. Owner mode is on, so the public visitor budget does not apply to you.";
-        $("build-btn").disabled = false; $("build-hint").textContent = "Takes about 20–60 seconds.";
+        serviceBlock = ""; refreshBuild();
         return;
       }
       const left = Math.max(0, h.llm_daily_budget_usd - h.llm_daily_committed_usd);
       $("service-status").textContent = "Builder is up. Today’s shared AI budget left: $" + left.toFixed(2) + " of $" + h.llm_daily_budget_usd.toFixed(2) + ". Each world costs about 1–5 cents.";
-      if (left < 0.02) { $("build-btn").disabled = true; $("build-hint").textContent = "Today’s AI budget is used up; it resets at midnight UTC."; }
+      serviceBlock = left < 0.02 ? "Today’s AI budget is used up; it resets at midnight UTC." : "";
+      refreshBuild();
     } catch (err) {
-      $("build-btn").disabled = true;
-      $("build-hint").textContent = "";
+      serviceBlock = "Building is unavailable right now."; refreshBuild();
       $("service-status").innerHTML = "";
       const n = document.createElement("div"); n.className = "notice"; n.textContent = "Building is unavailable right now (" + plainError(err) + ") You can still watch an example run.";
       $("service-status").append(n);
@@ -432,8 +441,8 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 
   async function build(options) {
     const auto = Boolean(options && options.auto);
-    const description = $("desc").value.trim() || $("desc").placeholder;
-    $("desc").value = description;
+    const description = $("desc").value.trim();
+    if (!description) { $("desc").focus(); return; }
     show("working");
     const started = Date.now();
     const lines = ["Writing down what exists in your world…", "Proposing the rules for what can happen…", "Testing that the rules let something happen…"];
@@ -532,7 +541,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     show("working"); $("working-line").textContent = "Inventing a surprise world…";
     try {
       const s = await api("/surprise", { world_kind: kind() });
-      $("desc").value = s.description;
+      $("desc").value = s.description; refreshBuild();
     } catch (err) {
       show("describe");
       const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
@@ -589,7 +598,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   $("send-btn").addEventListener("click", () => sendTurn($("talk-input").value));
   $("talk-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTurn($("talk-input").value); } });
   $("talk-close").addEventListener("click", () => { $("dialogue").hidden = true; });
-  $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); $("dialogue").hidden = true; build(); });
+  $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); refreshBuild(); $("dialogue").hidden = true; build(); });
   $("rules-btn").addEventListener("click", () => show("review"));
   $("keep-btn").addEventListener("click", async () => {
     $("keep-btn").disabled = true; $("keep-btn").textContent = "Running the next rounds…";
@@ -653,7 +662,9 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     }, 450);
   }, { passive: true });
   ["touchend", "touchmove", "touchcancel"].forEach((t) => document.addEventListener(t, () => clearTimeout(pressTimer), { passive: true }));
+  $("desc").addEventListener("input", refreshBuild);
   setStep(1);
+  refreshBuild();
   checkService();
 })();
 </script>
