@@ -301,6 +301,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(mechanics.call_count, 1)
         self.assertTrue(payload["dry_run"]["active_at_end"])
         self.assertEqual([p["process_id"] for p in payload["review"]["processes"]], ["regrow"])
+        self.assertEqual(payload["dry_run"]["turns"], service.DRY_RUN_TURNS_CONTINUING)
 
     def test_ongoing_world_without_processes_gets_a_guided_retry(self):
         with patch.object(service, "_trace_cost", return_value=0.006), patch.object(

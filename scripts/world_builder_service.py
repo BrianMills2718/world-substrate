@@ -79,6 +79,9 @@ RULES_RETRY_JUSTIFICATION = (
     "reach its finish line; the stronger model measured 6/6 vs 11/24 on the same descriptions."
 )
 DRY_RUN_TURNS = 12
+# Ongoing/open worlds must stay alive past the first visible run: live, an open
+# village was busy for 12 rounds and then went quiet, so test twice as long.
+DRY_RUN_TURNS_CONTINUING = 24
 WORLD_KINDS = ("task", "ongoing", "open")
 # Keep going is bounded: a visitor can continue one world for this many rounds.
 MAX_CONTINUED_TURNS = 300
@@ -579,8 +582,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         )
                         continue
                     try:
+                        dry_turns = DRY_RUN_TURNS if world_kind == "task" else DRY_RUN_TURNS_CONTINUING
                         dry, _, _ = run_world(
-                            bundle, candidate, policy="scripted", max_turns=DRY_RUN_TURNS,
+                            bundle, candidate, policy="scripted", max_turns=dry_turns,
                             trace_id=f"{trace_id}/dry-run-{attempt}",
                         )
                         result_row = {"ok": True, **dry["summary"]}
@@ -596,8 +600,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                 f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
                                 f"{len(candidate_compiled.processes)} processes, active in the last rounds: "
-                                f"{dry['summary']['active_at_end']}. Set terminal to null and add processes so state "
-                                "keeps changing and the actors keep having useful actions in every round."
+                                f"{dry['summary']['active_at_end']} (over {dry_turns} rounds). Set terminal to null and add "
+                                "processes so state keeps changing and the actors keep having useful actions in every "
+                                "round indefinitely: needs and resources must keep cycling (for example hunger rises, "
+                                "eating lowers it, food regrows), never just run down to a stop."
                             )
                             finishes = None
                         else:
