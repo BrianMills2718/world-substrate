@@ -25,13 +25,15 @@ from scripts.scaffold_world import FIELD_TYPES, SCHEMA_VERSION, BundleError, val
 
 DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
 DEFAULT_BUDGET = 0.08
-MAX_BUNDLE_OUTPUT_TOKENS = 6144
+MAX_BUNDLE_OUTPUT_TOKENS = 16000
 MAX_DESCRIPTION_CHARS = 2000
 EXAMPLE = REPO / "examples/world_authoring/orchard-v0.json"
 
-# Small worlds keep generated law reviewable and runs short enough to watch.
+# Task worlds stay small enough to watch finish; ongoing and open worlds may be
+# whole systems (Brian, 2026-10-06, testing the "I, Pencil" supply chain: "i want
+# to see a full kind of continually running system").
 SIZE_RULES = [
-    "2 to 10 entities; 1 to 4 components; 1 to 4 actions.",
+    "Size: follow world_size_rule.",
     "At least one entity is an actor that can act (give it a component such as worker/person and a clear category).",
     "Every action must be something an actor in this world could plausibly do repeatedly until the situation resolves.",
     "Represent the state the actions change (e.g. stage, count, location) as component fields with typed defaults.",
@@ -70,6 +72,21 @@ def _contract() -> dict[str, Any]:
 
 
 WORLD_KINDS = ("task", "ongoing", "open")
+SIZE_BY_KIND = {
+    "task": "2 to 10 entities; 1 to 4 components; 1 to 4 actions.",
+    "ongoing": (
+        "A whole working system, typically 10 to 30 entities with at most 12 that can act, up to 8 components and 3 to 8 actions. Model it "
+        "as a chain or web of specialists: several actors, each with their own role who can only do their own "
+        "step (for a supply chain: raw-material producers, processors, makers of parts, assembly, transport, "
+        "shops, customers), with intermediate goods passed between them as counted stock (integer quantity "
+        "fields), so goods flow from one specialist to the next."
+    ),
+    "open": (
+        "A whole living system, typically 10 to 30 entities with at most 12 that can act, up to 8 components and 3 to 8 actions: several "
+        "residents or businesses with their own roles, needs and stocks, and the resources they depend on, "
+        "represented as counted quantities that can be produced, traded or consumed."
+    ),
+}
 KIND_RULES = {
     "task": "World kind: task. There is a job to finish; make sure 'done' can be read from represented state.",
     "ongoing": (
@@ -103,6 +120,7 @@ def _messages(description: str, world_kind: str = "task") -> list[dict[str, str]
                     "description": description,
                     "world_kind": world_kind,
                     "world_kind_rule": KIND_RULES[world_kind],
+                    "world_size_rule": SIZE_BY_KIND[world_kind],
                     "contract": _contract(),
                     "example_bundle": json.loads(EXAMPLE.read_text()),
                 },

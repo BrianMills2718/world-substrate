@@ -27,7 +27,7 @@ from world_substrate.action_authoring import (
 
 DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
 DEFAULT_BUDGET = 0.12
-MAX_MECHANICS_OUTPUT_TOKENS = 8192
+MAX_MECHANICS_OUTPUT_TOKENS = 16000
 
 
 def _primitive_schema(kind: str) -> dict[str, Any]:
@@ -234,15 +234,18 @@ WORLD_KIND_RULES = {
         "happen by themselves."
     ),
     "ongoing": (
-        "World kind: ongoing. terminal must be null. Add 1-3 processes so new work keeps arriving "
-        "or finished things become unfinished again (for example a served order becomes a new "
-        "waiting order, a watered plant dries out when a counter rises), so the actors always "
-        "have something useful to do round after round."
+        "World kind: ongoing. terminal must be null. Add 1-4 processes that keep inputs replenishing and "
+        "demand arriving (raw materials regrow or are mined each round, customers want more, a served "
+        "order becomes a new waiting order), so goods keep flowing through the chain and every actor "
+        "role has something useful to do in most rounds, forever. Each actor's actions should be limited "
+        "to its own step by checks on its role, and moving goods should add to the next holder's stock "
+        "and subtract from the previous one's."
     ),
     "open": (
-        "World kind: open. terminal must be null. Add 1-3 processes that change needs or "
-        "resources every round (for example hunger rises, plants grow, supplies run down) so the "
-        "residents keep acting on their own needs indefinitely, with no goal imposed."
+        "World kind: open. terminal must be null. Add 1-4 processes that change needs or resources "
+        "every round in a cycle (for example hunger rises AND food regrows, supplies run down AND are "
+        "restocked), never only decay, so the residents keep acting on their own needs indefinitely, "
+        "with no goal imposed."
     ),
 }
 

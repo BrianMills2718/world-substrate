@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import contextvars
 import json
 import sys
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from dataclasses import make_dataclass
 from pathlib import Path
@@ -29,7 +31,9 @@ DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
 DEFAULT_POLICY_BUDGET = 0.12
 MAX_TURNS = 30
 MAX_BLOCKED_RECORDED = 3
-MAX_ACTORS = 6
+# A whole supply chain needs several specialists; each run's spend is capped by
+# DEFAULT_POLICY_BUDGET regardless of how many act.
+MAX_ACTORS = 12
 
 
 def _component_types(bundle: dict[str, Any]) -> dict[str, type]:
@@ -221,6 +225,7 @@ def run_world(
         intents: dict[str, dict[str, Any] | None] = {}
         reasons: dict[str, str] = {}
         blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
+        pages: dict[str, dict[str, Any]] = {}
         for actor in actors:
             page = engine.discover(actor)
             # What the installed rules refused this actor at this moment, and why.
@@ -234,21 +239,35 @@ def run_world(
                 if key not in distinct and len(distinct) < MAX_BLOCKED_RECORDED:
                     distinct[key] = {"action": dict(row["action"]), "reason": row.get("reason", "")}
             blocked_by_rules[actor] = list(distinct.values())
+            pages[actor] = page
             if policy == "scripted":
                 intents[actor], reasons[actor] = _scripted_choice(page)
-            else:
-                intent, reason, call_cost = _llm_choice(
-                    engine,
-                    actor,
-                    page,
-                    world_summary=bundle["world"]["summary"],
-                    model=model_name,
-                    trace_id=trace_id,
-                    max_budget=max_budget,
-                    recent=_recent_for(engine, actor, seen),
-                )
-                intents[actor], reasons[actor] = intent, reason
-                cost += call_cost
+        if policy == "llm":
+            # Every actor chooses against the same world revision before anything
+            # is submitted, so the choices are independent: ask in parallel. A
+            # 7-business pencil chain took ~7 minutes for 12 rounds asked one
+            # at a time (2026-10-06).
+            recents = {actor: _recent_for(engine, actor, seen) for actor in actors}
+            with ThreadPoolExecutor(max_workers=len(actors)) as pool:
+                futures = {
+                    actor: pool.submit(
+                        contextvars.copy_context().run,
+                        _llm_choice,
+                        engine,
+                        actor,
+                        pages[actor],
+                        world_summary=bundle["world"]["summary"],
+                        model=model_name,
+                        trace_id=trace_id,
+                        max_budget=max_budget,
+                        recent=recents[actor],
+                    )
+                    for actor in actors
+                }
+                for actor in actors:
+                    intent, reason, call_cost = futures[actor].result()
+                    intents[actor], reasons[actor] = intent, reason
+                    cost += call_cost
 
         if not any(intents.values()) and not causal_model.processes:
             break
@@ -348,11 +367,21 @@ def run_world(
                 if row.get("status") == "accepted"
             ),
             "world_changes": sum(len(t["world_changes"]) for t in transcript),
-            # Whether the world is still alive at the end: anything accepted or
-            # changed in the last third of the rounds.
+            # Alive means people are still acting in the last third of the rounds.
+            # Changes the world makes by itself do not count: a world where only
+            # decay processes run (energy drains, stock runs out) and nobody can
+            # act is dead, and was wrongly reported as alive (2026-10-06).
             "active_at_end": any(
-                t["world_changes"] or any(row.get("status") == "accepted" for row in t["actors"].values())
+                any(row.get("status") == "accepted" for row in t["actors"].values())
                 for t in transcript[-max(1, len(transcript) // 3):]
+            ),
+            # Actors who never managed a single action: in a system world they
+            # are dead weight (the pencil chain's delivery company, 2026-10-06).
+            "idle_actors": sorted(
+                actor for actor in actors
+                if not any(
+                    (t["actors"].get(actor) or {}).get("status") == "accepted" for t in transcript
+                )
             ),
             "first_turn": turn_offset + 1,
             "last_turn": turn_offset + len(transcript),

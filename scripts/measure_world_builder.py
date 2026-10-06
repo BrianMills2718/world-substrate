@@ -71,11 +71,14 @@ def main() -> int:
     parser.add_argument("--kinds", default="task")
     parser.add_argument("--limit", type=int, default=len(DESCRIPTIONS))
     parser.add_argument("--save", help="write every response to this JSON file")
+    parser.add_argument("--description", action="append",
+                        help="build this description instead of the built-in set (repeatable)")
     args = parser.parse_args()
+    descriptions = args.description or DESCRIPTIONS
     kinds = [k.strip() for k in args.kinds.split(",") if k.strip()]
     rows, failures, saved = [], 0, []
     for kind in kinds:
-        for i, description in enumerate(DESCRIPTIONS[: args.limit]):
+        for i, description in enumerate(descriptions[: args.limit]):
             status, payload, seconds = build(args.base, description, kind)
             saved.append({"kind": kind, "description": description, "status": status, "payload": payload})
             if status != 200:
@@ -87,7 +90,9 @@ def main() -> int:
             rows.append((kind, bool(dry["ok"]), bool(dry["ok"] and ok_kind)))
             print(f"{kind:8} {i} HTTP 200 {seconds:5.0f}s ${payload['cost_usd']:.4f} {payload['bundle']['world']['id']:22} "
                   f"runnable={dry['ok']} {'finished' if kind == 'task' else 'active_at_end'}={ok_kind} "
-                  f"attempts={[a['ok'] for a in payload['dry_run_attempts']]}", flush=True)
+                  f"attempts={[a['ok'] for a in payload['dry_run_attempts']]} "
+                  f"things={len(payload['bundle']['entities'])} actions={dry.get('accepted_actions')} "
+                  f"idle={dry.get('idle_actors')}", flush=True)
     if args.save:
         with open(args.save, "w") as handle:
             json.dump(saved, handle, indent=1)

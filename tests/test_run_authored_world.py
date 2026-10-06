@@ -50,6 +50,28 @@ class AuthoredWorldRunTests(unittest.TestCase):
             self.assertLessEqual(len(keys), 3)
         self.assertTrue(all(b["reason"] for b in refusals))
 
+    def test_world_where_only_processes_run_is_not_active(self):
+        # The 2026-10-06 pencil world: drains ran every round but no actor could
+        # ever act, and it was reported as still alive.
+        causal = json.loads(json.dumps(self.causal))
+        causal["terminal"] = None
+        for mechanic in causal["mechanics"]:
+            mechanic["checks"].append({"label": "never possible",
+                                       "left": {"literal": 1}, "op": "eq", "right": {"literal": 2}})
+        def flip(pid, a, b):
+            return {"process_id": pid, "rationale": "Fruit changes by itself.",
+                    "selector": {"categories": ["fruit"], "components": ["fruit"]},
+                    "checks": [{"label": f"the fruit is {a}",
+                                "left": {"participant": {"name": "it", "path": "components.fruit.stage"}},
+                                "op": "eq", "right": {"literal": a}}],
+                    "effects": [{"participant": "it", "path": "components.fruit.stage", "op": "set",
+                                 "value": {"literal": b}}]}
+        causal["processes"] = [flip("wilt", "ripe", "wilted"), flip("recover", "wilted", "ripe")]
+        trace, _, _ = run_world(self.bundle, causal, policy="scripted", max_turns=6)
+        self.assertEqual(trace["summary"]["accepted_actions"], 0)
+        self.assertTrue(all(t["world_changes"] for t in trace["transcript"]))
+        self.assertFalse(trace["summary"]["active_at_end"])
+
     def test_processes_keep_an_ongoing_world_going_and_runs_continue(self):
         causal = json.loads(json.dumps(self.causal))
         causal["terminal"] = None
@@ -131,7 +153,8 @@ class RepairBayLiveProofTests(unittest.TestCase):
             trace["summary"],
             {
                 "turns": 5, "terminal_reached": True, "accepted_actions": 10,
-                "world_changes": 0, "active_at_end": True, "first_turn": 1, "last_turn": 5,
+                "world_changes": 0, "active_at_end": True, "idle_actors": ["dee"],
+                "first_turn": 1, "last_turn": 5,
             },
         )
         accepted_kinds = [
