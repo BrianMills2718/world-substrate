@@ -19,10 +19,10 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual(self.page.count('apiJob("/run"'), 1)
 
     def test_feeling_lucky_and_dialogue_paths_are_wired(self):
-        self.assertIn("I’m feeling lucky", self.page)
+        self.assertIn(">Surprise me</button>", self.page)
         self.assertIn('api("/surprise"', self.page)
         self.assertIn("without stopping for review", self.page)
-        self.assertIn("Help me describe it", self.page)
+        self.assertIn(">Talk it through first</button>", self.page)
         self.assertIn('api("/clarify", { messages: talk, world_kind: kind() })', self.page)
         self.assertIn("Use this description and build", self.page)
 
@@ -44,6 +44,27 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('h["X-World-Builder-Owner"] = k', self.page)
         self.assertIn("headers: authHeaders(", self.page)
         self.assertIn('fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() })', self.page)
+
+    def test_every_control_has_a_tooltip(self):
+        import re
+        controls = re.findall(r"<(button|a|textarea|summary)\b[^>]*>", self.page)
+        tags = re.findall(r"<(?:button|a|textarea|summary)\b[^>]*>", self.page)
+        missing = [t for t in tags if "title=" not in t]
+        self.assertEqual(missing, [], "every control needs a tooltip (title)")
+        kinds = re.findall(r'<label class="kind"[^>]*>', self.page)
+        self.assertEqual(len(kinds), 3)
+        self.assertTrue(all("title=" in k for k in kinds))
+        self.assertTrue(controls)
+        # Controls created at runtime get tooltips too, and phones get them on long press.
+        self.assertIn("c.title = bad ?", self.page)
+        self.assertIn("c.title = \"Use this answer", self.page)
+        self.assertIn('e.target.closest("[title]")', self.page)
+
+    def test_start_choices_are_explained_in_plain_words(self):
+        for line in ("Build it now</strong>: you already know what you want",
+                     "Talk it through first</strong>: not sure yet",
+                     "Surprise me</strong>: the AI invents a world"):
+            self.assertIn(line, self.page)
 
     def test_failure_states_are_written_in_plain_words(self):
         self.assertIn("These rules let nobody act", self.page)

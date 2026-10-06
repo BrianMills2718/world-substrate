@@ -75,6 +75,9 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 .kind span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
 .kind:has(input:checked){border-color:var(--accent);background:#1a2024}
 @media (max-width:640px){.kinds{grid-template-columns:1fr}}
+.choices{margin:10px 0 0;padding-left:18px}
+.choices li{margin:2px 0}
+.tip-toast{position:fixed;left:12px;right:12px;bottom:16px;z-index:50;background:#1d2529;color:var(--text);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -82,8 +85,8 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
 <header>
   <div class="brand">World Builder</div>
   <nav aria-label="Other views">
-    <a href="play/">Watch an example run</a>
-    <a href="build/">Advanced editor</a>
+    <a href="play/" title="Replays of worlds that already ran; no waiting and no AI cost">Watch an example run</a>
+    <a href="build/" title="The full form editor for building a world field by field (for experts)">Advanced editor</a>
   </nav>
 </header>
 <main>
@@ -91,11 +94,11 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   <p class="lede">You write a situation in plain English. An AI proposes what exists and the rules for what can happen. You check the rules, approve them, and a fresh simulation runs where only those rules decide what happens.</p>
 
   <ol class="steps" aria-label="How it works">
-    <li><button type="button" data-step="1" aria-current="step"><span class="n">1</span>Describe</button></li>
+    <li><button type="button" data-step="1" aria-current="step" title="Step 1: describe the situation in plain English (click for a one-line explanation)"><span class="n">1</span>Describe</button></li>
     <li class="arrow" aria-hidden="true">→</li>
-    <li><button type="button" data-step="2"><span class="n">2</span>Check the rules</button></li>
+    <li><button type="button" data-step="2" title="Step 2: read the rules the AI proposes and approve them (click for a one-line explanation)"><span class="n">2</span>Check the rules</button></li>
     <li class="arrow" aria-hidden="true">→</li>
-    <li><button type="button" data-step="3"><span class="n">3</span>Watch it run</button></li>
+    <li><button type="button" data-step="3" title="Step 3: watch a fresh run where only the approved rules decide what happens (click for a one-line explanation)"><span class="n">3</span>Watch it run</button></li>
   </ol>
   <p class="stepnote" id="stepnote"></p>
 
@@ -105,33 +108,38 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <fieldset style="border:0;padding:0;margin:0">
       <legend class="muted small">What kind of world?</legend>
       <div class="kinds">
-        <label class="kind"><input type="radio" name="kind" value="task" checked><strong>A task to finish</strong><span>A job with a finish line. The run stops when it is done.</span></label>
-        <label class="kind"><input type="radio" name="kind" value="ongoing"><strong>Ongoing work</strong><span>Work keeps coming (new orders, plants dry out again). It keeps going; you see how much gets done.</span></label>
-        <label class="kind"><input type="radio" name="kind" value="open"><strong>An open world</strong><span>No goal. People live by their own needs while the world changes around them. Keep going as long as you like.</span></label>
+        <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task" checked><strong>A task to finish</strong><span>A job with a finish line. The run stops when it is done.</span></label>
+        <label class="kind" title="Work keeps arriving; there is no finish line and you can keep it going"><input type="radio" name="kind" value="ongoing"><strong>Ongoing work</strong><span>Work keeps coming (new orders, plants dry out again). It keeps going; you see how much gets done.</span></label>
+        <label class="kind" title="No goal; people live by their own needs while the world changes; keep it going as long as you like"><input type="radio" name="kind" value="open"><strong>An open world</strong><span>No goal. People live by their own needs while the world changes around them. Keep going as long as you like.</span></label>
       </div>
     </fieldset>
     <label class="muted small" for="desc">Your description</label>
-    <textarea id="desc" maxlength="2000" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
+    <textarea id="desc" maxlength="2000" title="Describe who is involved, what they share or use, and what they are trying to do" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
     <div class="chips" id="examples"></div>
     <div class="row">
-      <button class="primary" id="build-btn" type="button">Build my world</button>
-      <button class="secondary" id="lucky-btn" type="button" title="The AI invents a small world, builds it and runs it without stopping for review">I’m feeling lucky</button>
-      <button class="secondary" id="talk-btn" type="button">Help me describe it</button>
-      <span class="muted small" id="build-hint">Takes about 20–60 seconds.</span>
+      <button class="primary" id="build-btn" type="button" title="Build the world from the description above right now. You will check its rules before anything runs.">Build it now</button>
+      <button class="secondary" id="talk-btn" type="button" title="Not sure what to write? The AI asks a few questions and writes the description with you; you build when it looks right.">Talk it through first</button>
+      <button class="secondary" id="lucky-btn" type="button" title="The AI invents a small world of the kind you picked, builds it and runs it straight away, without stopping for you to check the rules.">Surprise me</button>
+      <span class="muted small" id="build-hint">Building takes about 20–60 seconds.</span>
     </div>
+    <ul class="choices small muted">
+      <li><strong>Build it now</strong>: you already know what you want; build from your description.</li>
+      <li><strong>Talk it through first</strong>: not sure yet; the AI asks questions and writes the description with you.</li>
+      <li><strong>Surprise me</strong>: the AI invents a world and runs it.</li>
+    </ul>
     <div id="dialogue" hidden>
       <h3>Let’s work it out together</h3>
       <p class="small muted">Answer the questions (click a suggestion or type your own). The description below updates as you go; edit it any time, then build.</p>
       <div class="chat" id="chat" aria-live="polite"></div>
       <div class="row">
-        <textarea id="talk-input" rows="2" maxlength="2000" style="flex:1;min-height:56px" placeholder="Your answer…"></textarea>
-        <button class="secondary" id="send-btn" type="button">Send</button>
+        <textarea id="talk-input" rows="2" maxlength="2000" title="Your answer to the AI; click a suggestion or type your own" style="flex:1;min-height:56px" placeholder="Your answer…"></textarea>
+        <button class="secondary" id="send-btn" type="button" title="Send your answer to the AI (Enter also sends)">Send</button>
       </div>
       <h3>Description so far</h3>
-      <textarea class="so-far" id="so-far" maxlength="2000"></textarea>
+      <textarea class="so-far" id="so-far" maxlength="2000" title="The description the AI has written with you so far; you can edit it"></textarea>
       <div class="row" style="margin-top:10px">
-        <button class="primary" id="use-btn" type="button" disabled>Use this description and build</button>
-        <button class="secondary" id="talk-close" type="button">Close</button>
+        <button class="primary" id="use-btn" type="button" disabled title="Use the description below and build the world from it">Use this description and build</button>
+        <button class="secondary" id="talk-close" type="button" title="Close the conversation; your description so far is kept below">Close</button>
       </div>
     </div>
     <div class="status" id="service-status">Checking the builder…</div>
@@ -140,13 +148,13 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
   <section class="panel" id="stage-working" hidden aria-live="polite">
     <h2><span class="spinner" aria-hidden="true"></span>Building your world <span id="elapsed" class="muted">0 s</span></h2>
     <p class="muted" id="working-line">Writing down what exists in your world…</p>
-    <p class="small muted">Meanwhile you can <a href="play/">watch an example run</a>.</p>
+    <p class="small muted">Meanwhile you can <a href="play/" title="Replays of worlds that already ran; no waiting and no AI cost">watch an example run</a>.</p>
   </section>
 
   <section class="panel" id="stage-review" hidden aria-labelledby="review-h">
     <h2 id="review-h"></h2>
     <p class="muted" id="review-summary"></p>
-    <p class="small muted">From your description: “<span id="review-desc"></span>” · <button class="secondary small" type="button" id="change-btn">Change description</button></p>
+    <p class="small muted">From your description: “<span id="review-desc"></span>” · <button class="secondary small" type="button" id="change-btn" title="Go back and edit your description; nothing is lost">Change description</button></p>
     <div id="dry-notice"></div>
     <div id="not-modeled"></div>
     <h3>What exists</h3>
@@ -160,10 +168,10 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     </div>
     <h3>When is it finished?</h3>
     <p id="goal"></p>
-    <details><summary>Technical details (the exact rule data)</summary><pre id="raw"></pre></details>
+    <details><summary title="The exact rule data the simulator runs, for experts">Technical details (the exact rule data)</summary><pre id="raw"></pre></details>
     <div class="row" style="margin-top:18px">
-      <button class="primary" id="approve-btn" type="button">Approve rules and run</button>
-      <label class="small muted"><input type="checkbox" id="ai-moves"> Let AI choose each move (slower, costs a few cents)</label>
+      <button class="primary" id="approve-btn" type="button" title="You accept these rules; a fresh simulation runs where only they decide what happens">Approve rules and run</button>
+      <label class="small muted" title="Instead of simple first-available moves, an AI picks each person\u2019s move; slower and costs a few cents"><input type="checkbox" id="ai-moves"> Let AI choose each move (slower, costs a few cents)</label>
     </div>
   </section>
 
@@ -176,18 +184,19 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     <p class="detail" id="detail"></p>
     <iframe class="replay" id="replay" title="Graphical replay of the run" sandbox="allow-scripts"></iframe>
     <div class="row" style="margin-top:14px">
-      <button class="secondary" type="button" id="rules-btn">See the rules</button>
-      <button class="primary" type="button" id="keep-btn" hidden>Keep going (12 more rounds)</button>
-      <button class="secondary" type="button" id="again-btn">Run it again</button>
-      <button class="secondary" type="button" id="new-btn">Build another world</button>
-      <button class="secondary" type="button" id="download-btn">Download this world</button>
+      <button class="secondary" type="button" id="rules-btn" title="Read the rules that decided every attempt in this run">See the rules</button>
+      <button class="primary" type="button" id="keep-btn" hidden title="Continue this same world for 12 more rounds from exactly where it stopped">Keep going (12 more rounds)</button>
+      <button class="secondary" type="button" id="again-btn" title="Start this world over from the beginning with the same rules">Run it again</button>
+      <button class="secondary" type="button" id="new-btn" title="Go back to the start and describe a different world">Build another world</button>
+      <button class="secondary" type="button" id="download-btn" title="Save this world and its rules as a JSON file you can load in the advanced editor">Download this world</button>
     </div>
   </section>
   <p class="small muted" style="margin-top:28px">
-    <button type="button" class="secondary small" id="owner-btn">Owner access</button>
+    <button type="button" class="secondary small" id="owner-btn" title="For the site owner: enter a password to use the owner allowance instead of the shared public budget">Owner access</button>
     <span id="owner-state"></span>
   </p>
 </main>
+<div class="tip-toast" id="tip-toast" role="status" hidden></div>
 <script>
 (function () {
   "use strict";
@@ -334,7 +343,11 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     if (v.participant) return (v.participant.name === "actor" ? "the person acting" : words(v.participant.name)) + "’s " + field(v.participant.path);
     return "a computed value";
   }
-  function chip(text, bad) { const c = document.createElement("span"); c.className = "check" + (bad ? " bad" : ""); c.textContent = text; return c; }
+  function chip(text, bad) {
+    const c = document.createElement("span"); c.className = "check" + (bad ? " bad" : ""); c.textContent = text;
+    c.title = bad ? "This condition was false, so the action was refused" : "A condition that must be true at that moment for this to happen";
+    return c;
+  }
 
   function renderReview(data) {
     world = data;
@@ -535,6 +548,7 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
       const row = document.createElement("div"); row.className = "chips"; row.style.margin = "6px 0 0";
       q.options.forEach((o) => {
         const c = document.createElement("button"); c.type = "button"; c.className = "chip"; c.textContent = o;
+        c.title = "Use this answer (it is added to your reply below; you can edit it before sending)";
         c.addEventListener("click", () => {
           const cur = $("talk-input").value.trim();
           $("talk-input").value = (cur ? cur + "; " : "") + q.question.replace(/\?$/, "") + ": " + o;
@@ -592,6 +606,19 @@ iframe.replay{width:100%;height:780px;border:1px solid var(--line);border-radius
     const k = window.prompt("Owner password (overrides the public budget):");
     if (k && k.trim()) { setOwnerKey(k.trim()); checkService(); }
   });
+  // Phones cannot hover: a long press on anything with a tooltip shows the same text.
+  let pressTimer = null;
+  document.addEventListener("touchstart", (e) => {
+    const el = e.target.closest("[title]");
+    if (!el) return;
+    clearTimeout(pressTimer);
+    pressTimer = setTimeout(() => {
+      $("tip-toast").textContent = el.getAttribute("title");
+      $("tip-toast").hidden = false;
+      setTimeout(() => { $("tip-toast").hidden = true; }, 4000);
+    }, 450);
+  }, { passive: true });
+  ["touchend", "touchmove", "touchcancel"].forEach((t) => document.addEventListener(t, () => clearTimeout(pressTimer), { passive: true }));
   setStep(1);
   checkService();
 })();
