@@ -4,7 +4,7 @@
 //   node world_builder_e2e.mjs <base> <flow...>      e.g. node world_builder_e2e.mjs https://brianmills.dev task open
 //
 // Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open (build, approve, run; ongoing/open also press Keep going),
-// lucky (Surprise me), dialogue (Talk it through first, two turns, then build).
+// lucky (Make one up for me), dialogue (Help me write it, two turns, then build).
 // Screenshots go to $E2E_OUT (default ./out). Spends real model money on the target.
 // Prints one line per step and `RESULT passed=N failed=M`; exits 1 if any flow failed.
 import { chromium } from 'playwright';
@@ -55,7 +55,7 @@ for (const flow of flows.length ? flows : ['task']) {
     if (flow in DESCRIPTIONS) {
       await p.check(`input[name="kind"][value="${flow}"]`);
       await p.fill('#desc', DESCRIPTIONS[flow]);
-      await p.getByRole('button', { name: 'Build it now' }).click();
+      await p.getByRole('button', { name: 'Build what I wrote' }).click();
       await buildAndRun(p, flow, log);
     } else if (flow === 'tooltips') {
       // Costs nothing: hover every visible control and require a visible tooltip bubble.
@@ -76,15 +76,15 @@ for (const flow of flows.length ? flows : ['task']) {
       await p.locator('.info[data-tip-for="talk-btn"]').click();
       const tapped = (await p.textContent('#tip-bubble')).trim();
       log('tap info', tapped);
-      if (!/questions/.test(tapped)) throw new Error('info button did not show the Talk it through first tip');
+      if (!/questions/.test(tapped)) throw new Error('info button did not show the Help me write it tip');
     } else if (flow === 'lucky') {
-      await p.getByRole('button', { name: 'Surprise me' }).click();
+      await p.getByRole('button', { name: 'Make one up for me' }).click();
       await p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG });
       log('surprise', await p.textContent('#lucky-note'));
       log('run', await p.textContent('#outcome'));
     } else if (flow === 'dialogue') {
       await p.fill('#desc', 'some kids and a lemonade stand');
-      await p.getByRole('button', { name: 'Talk it through first' }).click();
+      await p.getByRole('button', { name: 'Help me write it' }).click();
       await p.locator('#chat .bubble.ai').first().waitFor({ timeout: LONG });
       log('ai', await p.locator('#chat .bubble.ai').first().innerText());
       const chip = p.locator('#chat .bubble.ai .chip').first();

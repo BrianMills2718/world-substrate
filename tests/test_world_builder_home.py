@@ -19,10 +19,10 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual(self.page.count('apiJob("/run"'), 1)
 
     def test_feeling_lucky_and_dialogue_paths_are_wired(self):
-        self.assertIn(">Surprise me</button>", self.page)
+        self.assertIn(">Make one up for me</button>", self.page)
         self.assertIn('api("/surprise"', self.page)
         self.assertIn("without stopping for review", self.page)
-        self.assertIn(">Talk it through first</button>", self.page)
+        self.assertIn(">Help me write it</button>", self.page)
         self.assertIn('api("/clarify", { messages: talk, world_kind: kind() })', self.page)
         self.assertIn("Use this description and build", self.page)
 
@@ -61,10 +61,13 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("const tipTarget = (node) => node && node.closest", self.page)
 
     def test_start_choices_are_explained_in_plain_words(self):
-        for line in ("Build it now</strong>: you already know what you want",
-                     "Talk it through first</strong>: not sure yet",
-                     "Surprise me</strong>: the AI invents a world"):
+        for line in ("Build what I wrote</strong>: <em>you</em> write the story",
+                     "Help me write it</strong>: you and the AI write the story together",
+                     "Make one up for me</strong>: the <em>AI</em> writes the story (the box is ignored)"):
             self.assertIn(line, self.page)
+        # An empty box never silently builds the example text.
+        self.assertNotIn('$("desc").value.trim() || $("desc").placeholder', self.page)
+        self.assertIn('$("build-btn").disabled = Boolean(serviceBlock) || !has;', self.page)
 
     def test_page_script_is_valid_javascript(self):
         # A syntax error stops every handler on the page; the gate must catch it.
