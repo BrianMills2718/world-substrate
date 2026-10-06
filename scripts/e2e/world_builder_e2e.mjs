@@ -4,7 +4,7 @@
 //   node world_builder_e2e.mjs <base> <flow...>      e.g. node world_builder_e2e.mjs https://brianmills.dev task open
 //
 // Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open | pencil (build, approve, watch it play live; continuing worlds are also paused, checked to stay still, and resumed),
-// lucky (Make one up for me), dialogue (Help me write it, two turns, then build).
+// lucky (empty box: Surprise me), dialogue (Not sure what to write? link, two turns, then build).
 // E2E_AI=1 also switches a playing continuing world to AI moves for two rounds (costs a few cents).
 // Screenshots go to $E2E_OUT (default ./out). Spends real model money on the target.
 // Prints one line per step and `RESULT passed=N failed=M`; exits 1 if any flow failed.
@@ -76,7 +76,7 @@ for (const flow of flows.length ? flows : ['task']) {
     if (flow in DESCRIPTIONS) {
       await p.check(`input[name="kind"][value="${flow === 'task' ? 'task' : 'ongoing'}"]`);
       await p.fill('#desc', DESCRIPTIONS[flow]);
-      await p.getByRole('button', { name: 'Build what I wrote', exact: true }).click();
+      await p.getByRole('button', { name: 'Build my world', exact: true }).click();
       await buildAndRun(p, flow === 'task' ? 'task' : 'ongoing', log);
     } else if (flow === 'tooltips') {
       // Costs nothing: hover every visible control and require a visible tooltip bubble.
@@ -94,18 +94,23 @@ for (const flow of flows.length ? flows : ['task']) {
       }
       log('hovered', `${n} controls, ${n - missing.length} showed a tooltip`);
       if (missing.length) throw new Error('no visible tooltip on: ' + missing.join(' | '));
-      await p.locator('.info[data-tip-for="talk-btn"]').click();
+      // Phones: the info button shows the start button's tip, which says what it will do.
+      await p.locator('.info[data-tip-for="build-btn"]').click();
       const tapped = (await p.textContent('#tip-bubble')).trim();
       log('tap info', tapped);
-      if (!/questions/.test(tapped)) throw new Error('info button did not show the Help me write it tip');
+      if (!/makes up a world/.test(tapped)) throw new Error('info button did not explain the empty-box start button');
+      await p.fill('#desc', 'two cooks');
+      if ((await p.textContent('#build-btn')).trim() !== 'Build my world') throw new Error('button did not change to Build my world after typing');
+      await p.fill('#desc', '');
+      log('button', 'empty box: Surprise me; after typing: Build my world');
     } else if (flow === 'lucky') {
-      await p.getByRole('button', { name: 'Make one up for me', exact: true }).click();
+      await p.getByRole('button', { name: 'Surprise me: the AI makes one up', exact: true }).click();
       await p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG });
       log('surprise', await p.textContent('#lucky-note'));
       log('run', await p.textContent('#outcome'));
     } else if (flow === 'dialogue') {
       await p.fill('#desc', 'some kids and a lemonade stand');
-      await p.getByRole('button', { name: 'Help me write it', exact: true }).click();
+      await p.getByRole('button', { name: 'Not sure what to write? Let the AI ask you a few questions' }).click();
       await p.locator('#chat .bubble.ai').first().waitFor({ timeout: LONG });
       log('ai', await p.locator('#chat .bubble.ai').first().innerText());
       const chip = p.locator('#chat .bubble.ai .chip').first();
