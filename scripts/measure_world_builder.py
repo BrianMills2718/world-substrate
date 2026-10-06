@@ -33,7 +33,8 @@ DESCRIPTIONS = [
 ]
 # Cloudflare rejects urllib's default user agent; the live site needs a browser-like one.
 HEADERS = {"Content-Type": "application/json", "Origin": "https://brianmills.dev",
-           "User-Agent": "Mozilla/5.0 world-builder-measurement"}
+           "User-Agent": "Mozilla/5.0 world-builder-measurement",
+           "X-World-Builder-Client": "measure"}
 # Measurement spends from the owner allowance, never the shared visitor budget.
 if os.environ.get("WORLD_BUILDER_OWNER_PASSWORD"):
     HEADERS["X-World-Builder-Owner"] = os.environ["WORLD_BUILDER_OWNER_PASSWORD"]

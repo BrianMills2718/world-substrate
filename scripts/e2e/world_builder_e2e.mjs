@@ -46,6 +46,8 @@ let passed = 0, failed = 0;
 for (const flow of flows.length ? flows : ['task']) {
   const p = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   if (OWNER) await p.addInitScript((k) => { try { localStorage.setItem('wb-owner', k); } catch (e) {} }, OWNER);
+  // Label agent traffic so the run log never confuses it with a person's runs.
+  await p.route('**/world-builder/api/**', (route) => route.continue({ headers: { ...route.request().headers(), 'x-world-builder-client': 'e2e' } }));
   const errors = []; p.on('pageerror', (e) => errors.push(String(e)));
   const log = (step, text) => console.log(`${flow.padEnd(8)} ${step}: ${String(text).replace(/\s+/g, ' ').slice(0, 300)}`);
   try {

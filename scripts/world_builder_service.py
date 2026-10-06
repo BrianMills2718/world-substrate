@@ -275,6 +275,116 @@ def _prune_jobs() -> None:
         del _JOBS[min(_JOBS, key=lambda k: _JOBS[k]["created"])]
 
 
+# --- Run log ----------------------------------------------------------------
+#
+# Every build, run, dialogue turn and surprise leaves one durable JSONL record
+# (one file per UTC day), so what happened in any visitor's world can be read
+# after the fact: who (owner / agent / visitor, visitors only as a salted
+# fingerprint), what they asked, the world and rules produced, the quick test,
+# the run outcome, errors and cost. Read it with GET /runs (owner only) or
+# scripts/world_builder_runs.py.
+LOGGED_PATHS = ("/generate-world", "/run", "/clarify", "/surprise", "/generate-draft",
+                "/generate-mechanics", "/compare-native-coordination")
+CLIENT_HEADER = "X-World-Builder-Client"
+_REQUEST: contextvars.ContextVar[dict[str, Any] | None] = contextvars.ContextVar("world_builder_request", default=None)
+_RUN_LOG_LOCK = threading.Lock()
+
+
+def _run_log_dir() -> Path:
+    return Path(os.environ.get("WORLD_BUILDER_RUN_LOG_DIR") or BUDGET_STATE_PATH.parent / "runs")
+
+
+def _fingerprint(client: str) -> str:
+    salt = (_owner_password() or "world-builder").encode()
+    return hmac.new(salt, client.encode(), "sha256").hexdigest()[:12]
+
+
+def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
+    keep = ("description", "world_kind", "policy", "turns", "turn_offset", "approved", "execution_mode", "async")
+    out = {k: body[k] for k in keep if k in body}
+    if isinstance(body.get("messages"), list):
+        out["messages"] = body["messages"][-6:]
+    if path == "/run" and isinstance(body.get("bundle"), dict):
+        out["world"] = (body["bundle"].get("world") or {}).get("label")
+        out["continued"] = body.get("continue_from") is not None
+    return out
+
+
+def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, Any]:
+    if status >= 400 or value.get("ok") is False:
+        return {"error": str(value.get("error"))[:500]}
+    if path == "/generate-world":
+        bundle = value.get("bundle") or {}
+        review = value.get("review") or {}
+        return {
+            "world": (bundle.get("world") or {}).get("label"),
+            "things": [e.get("label") for e in bundle.get("entities", [])],
+            "rules": [m.get("action_kind") for m in review.get("mechanics", [])],
+            "processes": [p.get("process_id") for p in review.get("processes", [])],
+            "finish_line": review.get("terminal") is not None,
+            "dry_run": value.get("dry_run"),
+            "dry_run_attempts": value.get("dry_run_attempts"),
+            "not_modeled": value.get("not_modeled"),
+            # Full artifacts, so the exact world can be rebuilt and re-run later.
+            "bundle": bundle,
+            "causal_model": value.get("causal_model"),
+        }
+    if path == "/run":
+        trace = value.get("trace") or {}
+        return {
+            "summary": value.get("summary"),
+            "mover": trace.get("model"),
+            "transcript": trace.get("transcript"),
+        }
+    if path == "/clarify":
+        return {k: value.get(k) for k in ("reply", "questions", "description", "ready")}
+    if path == "/surprise":
+        return {k: value.get(k) for k in ("theme", "description")}
+    return {"keys": sorted(value)[:20]}
+
+
+def _record_response(status: int, value: dict[str, Any]) -> None:
+    request = _REQUEST.get()
+    if request is None or request["path"] not in LOGGED_PATHS:
+        return
+    if status == HTTPStatus.ACCEPTED and value.get("job_id"):
+        return  # the job's final result is recorded when it finishes
+    entry = {
+        "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "path": request["path"],
+        "status": int(status),
+        "who": request["who"],
+        "client": request["client"],
+        "job_id": request.get("job_id"),
+        "trace_id": value.get("trace_id"),
+        "cost_usd": value.get("cost_usd"),
+        "request": request["summary"],
+        "result": _result_summary(request["path"], int(status), value),
+    }
+    try:
+        directory = _run_log_dir()
+        directory.mkdir(parents=True, exist_ok=True)
+        line = json.dumps(entry, separators=(",", ":"), default=str) + "\n"
+        with _RUN_LOG_LOCK, open(directory / f"runs_{entry['ts'][:10]}.jsonl", "a") as handle:
+            handle.write(line)
+    except Exception as error:  # observability must never break the request
+        print(f"world-builder-api: run log write failed: {type(error).__name__}: {error}", flush=True)
+
+
+def _recent_runs(limit: int) -> list[dict[str, Any]]:
+    directory = _run_log_dir()
+    rows: list[dict[str, Any]] = []
+    for path in sorted(directory.glob("runs_*.jsonl"), reverse=True):
+        for line in reversed(path.read_text().splitlines()):
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+            if len(rows) >= limit:
+                return rows
+    return rows
+
+
 class _JobResponder:
     """Stands in for the HTTP handler inside a job: captures the one response."""
 
@@ -286,6 +396,7 @@ class _JobResponder:
             job = _JOBS.get(self.job_id)
             if job is not None:
                 job.update(status="done", http_status=int(status), payload=value)
+        _record_response(status, value)
 
     def _error(self, status: int, message: str) -> None:
         self._json(status, {"ok": False, "error": message})
@@ -310,6 +421,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         sys.stderr.write("world-builder-api: " + (fmt % args) + "\n")
 
     def _json(self, status: int, value: dict[str, Any]) -> None:
+        _record_response(status, value)
         data = json.dumps(value, separators=(",", ":")).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -362,6 +474,21 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.OK, payload)
             return
         path = self._path()
+        if path == "/runs" or path.startswith("/runs?"):
+            if self._owner_check() is not True:
+                self._error(HTTPStatus.FORBIDDEN, "the run log needs the owner password")
+                return
+            from urllib.parse import parse_qs, urlparse
+            query = parse_qs(urlparse(self.path).query)
+            limit = max(1, min(200, int((query.get("limit") or ["20"])[0])))
+            rows = _recent_runs(limit)
+            if (query.get("full") or ["0"])[0] != "1":
+                for row in rows:
+                    result = row.get("result") or {}
+                    for heavy in ("bundle", "causal_model", "transcript", "dry_run_attempts"):
+                        result.pop(heavy, None)
+            self._json(HTTPStatus.OK, {"ok": True, "runs": rows})
+            return
         if path.startswith("/jobs/"):
             job_id = path[len("/jobs/"):]
             with _JOBS_LOCK:
@@ -388,9 +515,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         target = {"/generate-world": WorldBuilderHandler._generate_world, "/run": WorldBuilderHandler._run}[path]
 
         ledger = _LEDGER.get()
+        request = dict(_REQUEST.get() or {}, job_id=job_id) if _REQUEST.get() else None
 
         def work() -> None:
             _LEDGER.set(ledger)
+            _REQUEST.set(request)
             try:
                 target(responder, client, body)
             except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
@@ -435,6 +564,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             return
 
         path = self._path()
+        agent = (self.headers.get(CLIENT_HEADER) or "").strip()[:40]
+        _REQUEST.set({
+            "path": path,
+            "who": "owner" if _is_owner() else (f"agent:{agent}" if agent else "visitor"),
+            "client": _fingerprint(client),
+            "summary": _request_summary(path, body),
+        })
         if body.get("async") is True and path in ASYNC_PATHS:
             self._start_job(client, path, body)
             return
