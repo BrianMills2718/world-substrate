@@ -526,6 +526,15 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(len(light["runs"]), 1)
         self.assertNotIn("transcript", light["runs"][0]["result"])
         self.assertIn("transcript", full["runs"][0]["result"])
+        self.assertNotIn("bundle", light["runs"][0]["request"])
+        logged = full["runs"][0]
+        # The run records the exact world it used, where it ended, and a
+        # fingerprint that matches the same world's build entry.
+        self.assertEqual(logged["request"]["bundle"], BUNDLE)
+        self.assertEqual(logged["request"]["causal_model"], CAUSAL)
+        self.assertEqual(logged["request"]["world_fingerprint"], service._world_fingerprint(BUNDLE, CAUSAL))
+        self.assertIsNotNone(logged["result"]["final_snapshot"])
+        self.assertNotEqual(service._world_fingerprint(BUNDLE, CAUSAL), service._world_fingerprint(BUNDLE, {**CAUSAL, "terminal": None}))
 
     def test_unapproved_model_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:

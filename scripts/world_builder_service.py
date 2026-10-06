@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import contextvars
+import hashlib
 import hmac
 import json
 import math
@@ -299,6 +300,14 @@ def _fingerprint(client: str) -> str:
     return hmac.new(salt, client.encode(), "sha256").hexdigest()[:12]
 
 
+def _world_fingerprint(bundle: Any, causal: Any) -> str | None:
+    """Same world and rules -> same fingerprint, so a run can be matched to its build."""
+    if not isinstance(bundle, dict) or not isinstance(causal, dict):
+        return None
+    canonical = json.dumps({"bundle": bundle, "causal_model": causal}, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode()).hexdigest()[:16]
+
+
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
     keep = ("description", "world_kind", "policy", "turns", "turn_offset", "approved", "execution_mode", "async")
     out = {k: body[k] for k in keep if k in body}
@@ -307,6 +316,12 @@ def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
     if path == "/run" and isinstance(body.get("bundle"), dict):
         out["world"] = (body["bundle"].get("world") or {}).get("label")
         out["continued"] = body.get("continue_from") is not None
+        # The exact world and rules this run used (they can be edited after the
+        # build), so any logged run can be matched to its build and re-run.
+        out["world_fingerprint"] = _world_fingerprint(body["bundle"], body.get("causal_model"))
+        out["bundle"] = body["bundle"]
+        out["causal_model"] = body.get("causal_model")
+        out["continue_from"] = body.get("continue_from")
     return out
 
 
@@ -326,6 +341,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "dry_run_attempts": value.get("dry_run_attempts"),
             "not_modeled": value.get("not_modeled"),
             # Full artifacts, so the exact world can be rebuilt and re-run later.
+            "world_fingerprint": _world_fingerprint(bundle, value.get("causal_model")),
             "bundle": bundle,
             "causal_model": value.get("causal_model"),
         }
@@ -335,6 +351,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "summary": value.get("summary"),
             "mover": trace.get("model"),
             "transcript": trace.get("transcript"),
+            # Where the world ended up, so a Keep going continuation is reconstructable.
+            "final_snapshot": trace.get("final_snapshot"),
         }
     if path == "/clarify":
         return {k: value.get(k) for k in ("reply", "questions", "description", "ready")}
@@ -506,8 +524,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if (query.get("full") or ["0"])[0] != "1":
                 for row in rows:
                     result = row.get("result") or {}
-                    for heavy in ("bundle", "causal_model", "transcript", "dry_run_attempts"):
+                    request = row.get("request") or {}
+                    for heavy in ("bundle", "causal_model", "transcript", "dry_run_attempts", "final_snapshot"):
                         result.pop(heavy, None)
+                    for heavy in ("bundle", "causal_model", "continue_from"):
+                        request.pop(heavy, None)
             self._json(HTTPStatus.OK, {"ok": True, "runs": rows})
             return
         if path.startswith("/jobs/"):
