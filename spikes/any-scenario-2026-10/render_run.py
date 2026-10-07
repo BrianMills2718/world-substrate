@@ -32,6 +32,7 @@ def to_trace(run_dir: Path, bundle: dict[str, Any]) -> dict[str, Any]:
         ticks = {t: {"tick": t, "world_changes": []} for t in range(summary["final_tick"])}
         for ev in evs:
             t = int(ev.get("tick") or 0)
+            t -= 1  # process events carry the next tick number (clock first)
             if t in ticks and ev.get("causal_bearer", {}).get("kind") == "process" and ev["rule_id"] != "system.clock.advance":
                 ticks[t]["world_changes"].append(ev["rule_id"])
     actors = sorted({a["actor"] for a in attempts}) or [e["id"] for e in bundle["entities"] if "actor" in e.get("categories", [])]
@@ -69,8 +70,11 @@ def state_rounds(run_dir: Path, bundle: dict[str, Any], rounds: int) -> list[dic
              for e in bundle["entities"]}
     events = [json.loads(x) for x in (run_dir / "events.jsonl").read_text().splitlines() if x.strip()]
     by_tick: dict[int, list[dict[str, Any]]] = {}
-    for ev in events:
-        by_tick.setdefault(int(ev.get("tick") or 0), []).append(ev)
+    for ev in events:  # the clock runs first in each advance, so process events carry the next tick number
+        t = int(ev.get("tick") or 0)
+        if (ev.get("causal_bearer") or {}).get("kind") == "process":
+            t -= 1
+        by_tick.setdefault(t, []).append(ev)
     out = []
     for t in range(rounds):
         rows = []

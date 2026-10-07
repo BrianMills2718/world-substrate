@@ -565,7 +565,7 @@
       },
       "checks": [
         {
-          "label": "The Delivery driver is requesting roadside assistance",
+          "label": "The Delivery driver is requesting the tow",
           "left": {
             "action_field": "driver"
           },
@@ -604,7 +604,7 @@
           }
         },
         {
-          "label": "The Delivery vehicle and destination are on the same route",
+          "label": "The Delivery vehicle and Town are on the same route",
           "left": {
             "participant": {
               "name": "vehicle",
@@ -633,31 +633,31 @@
           }
         },
         {
-          "label": "The Delivery vehicle lacks fuel for ten miles",
-          "left": {
-            "participant": {
-              "name": "vehicle",
-              "path": "components.vehicle.fuel"
-            }
-          },
-          "op": "lt",
-          "right": {
-            "literal": 0.4
-          }
-        },
-        {
-          "label": "The destination is ahead of the Delivery vehicle",
+          "label": "The Town is at mile 120",
           "left": {
             "participant": {
               "name": "destination",
               "path": "components.place.road_position"
             }
           },
-          "op": "gt",
+          "op": "eq",
           "right": {
+            "literal": 120
+          }
+        },
+        {
+          "label": "The Delivery vehicle has not reached the Town",
+          "left": {
             "participant": {
               "name": "vehicle",
               "path": "components.vehicle.road_position"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "destination",
+              "path": "components.place.road_position"
             }
           }
         }
@@ -665,21 +665,21 @@
       "effects": [
         {
           "op": "set",
-          "participant": "driver",
-          "path": "components.driver.decision_status",
+          "participant": "vehicle",
+          "path": "components.vehicle.operational_status",
           "value": {
-            "literal": "awaiting roadside assistance"
+            "literal": "awaiting tow to mile 120"
           }
         }
       ],
       "limits": [
-        "The action records only the driver's roadside-assistance request.",
-        "No tow provider, communication system, response time, cargo state, or payment state is represented.",
-        "The request does not move, refuel, repair, or change the status of the Delivery vehicle.",
-        "The request is refused unless the Delivery vehicle is stopped with less than 0.4 fuel.",
-        "The selected destination must be ahead on the same represented route."
+        "A tow can be requested only for an owned vehicle that is already stopped.",
+        "The represented tow destination is limited to the Town at mile 120.",
+        "The request does not immediately move the Delivery vehicle.",
+        "Tow providers, availability, payment, traffic, and travel duration are not represented.",
+        "The selected Delivery driver is treated as accompanying the owned Delivery vehicle, so the driver's stored road position is not checked or changed."
       ],
-      "mechanic_id": "request-roadside-assistance-for-stopped-vehicle",
+      "mechanic_id": "request-tow-to-mile-120",
       "parameters": {},
       "participants": {
         "destination": {
@@ -709,24 +709,22 @@
           ]
         }
       },
-      "rationale": "A driver whose owned vehicle has stopped without enough fuel can request roadside assistance toward a selected destination ahead, while no unrepresented towing outcome is assumed.",
+      "rationale": "A driver whose owned vehicle has stopped before the represented town can request a tow, placing the vehicle into a represented waiting state for autonomous transport.",
       "schema_version": "world-substrate-action-mechanic/v0",
       "semantic_bindings": [
-        "components.driver.decision_status equal to awaiting roadside assistance represents a submitted request with no represented response yet.",
-        "components.vehicle.operational_status equal to stopped identifies the vehicle stranded by the existing insufficient-fuel process.",
-        "Fuel below 0.4 means the Delivery vehicle cannot complete another represented ten-mile advance.",
-        "A greater destination road position represents a destination ahead of the stopped Delivery vehicle.",
-        "The absence of represented assistance or towing resources prevents this action from asserting transport to the destination."
+        "components.vehicle.operational_status equal to awaiting tow to mile 120 represents an accepted request whose transport has not yet resolved.",
+        "components.place.road_position equal to 120 identifies the represented Town as the tow destination.",
+        "components.vehicle.road_position records the Delivery vehicle's current mile along the shared route.",
+        "The tow request itself records no movement; an autonomous process resolves the transport."
       ],
       "tests": [
-        "A driver can request roadside assistance when the owned Delivery vehicle is stopped with less than 0.4 fuel and the Town is ahead on the same route.",
-        "A successful request changes the Delivery driver's decision status to awaiting roadside assistance.",
-        "A successful request does not move or refuel the Delivery vehicle.",
-        "The request is refused while the Delivery vehicle is operational.",
-        "The request is refused when the Delivery vehicle has at least 0.4 fuel.",
-        "The request is refused when the Delivery vehicle does not belong to the Delivery driver.",
-        "The request is refused when the destination is not ahead of the Delivery vehicle.",
-        "The request is refused when the destination is on a different route."
+        "A stopped owned Delivery vehicle before mile 120 can request a tow to the Town.",
+        "Requesting the tow changes the Delivery vehicle status to awaiting tow to mile 120 without changing its road position.",
+        "A tow request is refused while the Delivery vehicle is operational or attempting to drive.",
+        "A tow request is refused when the Delivery vehicle does not belong to the Delivery driver.",
+        "A tow request is refused when the Delivery vehicle and Town are on different routes.",
+        "A tow request is refused when the selected destination is not at mile 120.",
+        "A tow request is refused when the Delivery vehicle is already at or beyond the Town."
       ],
       "version": "1.0"
     }
@@ -839,6 +837,64 @@
       ],
       "process_id": "stop-delivery-vehicle-without-fuel",
       "rationale": "A pending driving attempt stops without movement when the vehicle has less than the 0.4 fuel needed to advance ten miles.",
+      "selector": {
+        "categories": [
+          "vehicle"
+        ],
+        "components": [
+          "vehicle"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "The Delivery vehicle is awaiting its tow",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "awaiting tow to mile 120"
+          }
+        },
+        {
+          "label": "The Delivery vehicle is before mile 120",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.vehicle.road_position"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "literal": 120
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.vehicle.road_position",
+          "value": {
+            "literal": 120
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.vehicle.operational_status",
+          "value": {
+            "literal": "operational"
+          }
+        }
+      ],
+      "process_id": "complete-tow-to-mile-120",
+      "rationale": "An accepted roadside-assistance request resolves after the request by transporting the waiting vehicle to the represented town without consuming its fuel.",
       "selector": {
         "categories": [
           "vehicle"

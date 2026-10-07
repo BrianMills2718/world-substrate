@@ -194,6 +194,7 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
     ended = "max_ticks"
     t_run = time.time()
     for _ in range(max_ticks):
+        n_events_before = len(events)
         tick = engine.world.tick
         woke = False
         for a in actors:
@@ -253,7 +254,11 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
             ended = "terminal"
             break
         material = [e for e in adv.get("events", []) if e.get("rule_id") != ClockAdvanceProcess.rule_id]
-        quiet = 0 if (woke or material) else quiet + 1
+        # progress = the world changed (a process event, or an attempt whose event changed component state);
+        # a resident repeating an action that changes nothing is not progress (audit finding: 178 such calls)
+        changed_by_attempt = any(any(".components." in c["path"] for c in e.get("changes", []))
+                                 for e in events[n_events_before:] if e.get("causal_bearer", {}).get("kind") != "process")
+        quiet = 0 if (material or changed_by_attempt) else quiet + 1
         if quiet >= quiet_ticks:
             ended = "quiescent"
             break

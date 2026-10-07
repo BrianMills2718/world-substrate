@@ -132,6 +132,18 @@ def check_game_master_wrote_one_rule_and_fell_back_to_one_ruling():
     assert events[installed[0]["event_id"]]["rule_id"] in installed[0]["rules_installed"]
 
 
+def check_rule_written_mid_run_resolves():
+    """The accepted mid-run rule must lead somewhere: an installed process fires and the run reaches its end."""
+    summary = json.loads((TRUCK / "run/summary.json").read_text())
+    installed = [w for w in summary["rules_written_mid_run"] if w["written_mid_run"]][0]["rules_installed"]
+    fired = [e for e in _jsonl_gz(TRUCK / "run/events.jsonl.gz")
+             if e["rule_id"] in installed and (e.get("causal_bearer") or {}).get("kind") == "process"]
+    assert fired and fired[-1]["status"] == "accepted"
+    assert summary["ended"] == "terminal"
+    final = json.loads((TRUCK / "run/final_world.json").read_text())["entities"]["delivery-vehicle"]
+    assert final["components"]["vehicle"]["road_position"] == 120
+
+
 def check_single_duration_primitive():
     hits = []
     for root in ("src", "reference_worlds", "spikes"):
@@ -168,6 +180,9 @@ class AnyScenarioPocTests(unittest.TestCase):
 
     def test_game_master_wrote_one_rule_and_fell_back_to_one_ruling(self):
         check_game_master_wrote_one_rule_and_fell_back_to_one_ruling()
+
+    def test_rule_written_mid_run_resolves(self):
+        check_rule_written_mid_run_resolves()
 
     def test_single_duration_primitive(self):
         check_single_duration_primitive()

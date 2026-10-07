@@ -8,13 +8,12 @@
       ],
       "components": {
         "driver": {
-          "decision_status": "awaiting roadside assistance",
+          "decision_status": "driving",
           "road_position": 0
         }
       },
       "entity_id": "delivery-driver",
       "label": "Delivery driver",
-      "last_cause_event_id": "e00410",
       "location": {
         "location_id": "delivery-route"
       },
@@ -55,13 +54,13 @@
           "fuel_consumption_rate": 0.04,
           "fuel_economy": 25,
           "fuel_tank_capacity": 16,
-          "operational_status": "stopped",
-          "road_position": 100
+          "operational_status": "operational",
+          "road_position": 120
         }
       },
       "entity_id": "delivery-vehicle",
       "label": "Delivery vehicle",
-      "last_cause_event_id": "e00055",
+      "last_cause_event_id": "e00060",
       "location": {
         "location_id": "delivery-route"
       },
@@ -121,7 +120,7 @@
       "source_pack_id": "world-substrate-delivery-trip@1"
     }
   },
-  "revision": 410,
-  "tick": 200,
+  "revision": 58,
+  "tick": 24,
   "world_id": "delivery-trip-live"
 }

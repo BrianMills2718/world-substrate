@@ -55,7 +55,7 @@
       "kind": "record-route-progress"
     },
     {
-      "description": "Request roadside assistance or a tow for a stopped delivery vehicle to an ahead destination.",
+      "description": "Request a tow to transport a stopped delivery vehicle to the town at mile 120.",
       "fields": [
         {
           "name": "driver",
