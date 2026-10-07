@@ -1,0 +1,21 @@
+{
+  "schema_version": "method-activation-facts.v1",
+  "record_type": "method_activation_facts",
+  "plan_ref": "docs/plans/any_scenario_poc.md",
+  "plan_sha256": "0bfee021da95bde63e8e734927bdfea741f5438571c0500232b63d215ef7a45c",
+  "path_decision_ref": "docs/plans/any_scenario_poc/path-decision.json",
+  "path_decision_sha256": "9aed40c7351e56b82f7883bc16b0fce8fbe2df4ac9bd26d951880ce1af8d9ad7",
+  "facts": {
+    "shared_mechanism": true,
+    "empirical_comparison_proposed": false,
+    "llm_central": true,
+    "irreversible_or_spend_action": true
+  },
+  "fact_sources": {
+    "shared_mechanism": "derived_current_boundary",
+    "empirical_comparison_proposed": "derived_current_boundary",
+    "llm_central": "derived_current_boundary",
+    "irreversible_or_spend_action": "derived_current_boundary"
+  },
+  "recorded_at": "2026-10-07T20:05:17Z"
+}
