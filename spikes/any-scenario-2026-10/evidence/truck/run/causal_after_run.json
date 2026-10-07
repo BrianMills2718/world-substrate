@@ -1,0 +1,871 @@
+{
+  "mechanics": [
+    {
+      "action_kind": "drive",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      },
+      "checks": [
+        {
+          "label": "The Delivery driver is driving",
+          "left": {
+            "action_field": "driver"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "The Delivery vehicle belongs to the Delivery driver",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "The Delivery driver and Delivery vehicle are on the same route",
+          "left": {
+            "participant": {
+              "name": "driver",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "vehicle",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The Delivery driver is ready to drive",
+          "left": {
+            "participant": {
+              "name": "driver",
+              "path": "components.driver.decision_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "driving"
+          }
+        },
+        {
+          "label": "The Delivery vehicle is operational",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "operational"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "vehicle",
+          "path": "components.vehicle.operational_status",
+          "value": {
+            "literal": "attempting to drive"
+          }
+        }
+      ],
+      "limits": [
+        "The action starts one represented ten-mile driving attempt without checking whether enough fuel remains.",
+        "Neither road position advances when the attempt starts; autonomous vehicle processes determine whether the vehicle advances or stops.",
+        "The driver is treated as accompanying the owned vehicle, so the driver's stored road position is not updated.",
+        "Traffic, road closure, breakdown, reverse travel, and delivery unloading are not modeled."
+      ],
+      "mechanic_id": "drive-delivery-vehicle-ten-miles",
+      "parameters": {},
+      "participants": {
+        "driver": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "vehicle": {
+          "categories": [
+            "vehicle"
+          ],
+          "components": [
+            "vehicle"
+          ]
+        }
+      },
+      "rationale": "Starting a ten-mile driving attempt marks the vehicle as attempting to drive without claiming that it has begun moving; autonomous processes then resolve fuel availability.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "components.vehicle.operational_status equal to attempting to drive represents an unresolved driving attempt, not vehicle motion.",
+        "components.vehicle.road_position records completed vehicle progress along the route.",
+        "The drive action does not inspect or consume components.vehicle.fuel.",
+        "Autonomous vehicle processes determine whether the vehicle advances or stops for insufficient fuel.",
+        "The selected Delivery driver is treated as accompanying the owned Delivery vehicle without synchronizing components.driver.road_position."
+      ],
+      "tests": [
+        "An operational owned Delivery vehicle can begin a driving attempt even with less than 0.4 fuel.",
+        "Beginning a driving attempt changes the Delivery vehicle status to attempting to drive without changing either road position.",
+        "With zero fuel, the stopping process changes the Delivery vehicle status from attempting to drive to stopped without advancing it.",
+        "With at least 0.4 fuel, the advancing process moves the Delivery vehicle ten miles, consumes 0.4 fuel, and restores operational status.",
+        "Driving is refused when the Delivery driver and Delivery vehicle have different route locations.",
+        "Driving is refused when the Delivery vehicle does not belong to the Delivery driver.",
+        "Driving is refused when the Delivery vehicle is not operational."
+      ],
+      "version": "3.2"
+    },
+    {
+      "action_kind": "refuel",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      },
+      "checks": [
+        {
+          "label": "The Delivery driver is buying the fuel",
+          "left": {
+            "action_field": "driver"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "The Delivery vehicle belongs to the Delivery driver",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "The Delivery driver and Delivery vehicle are on the same route",
+          "left": {
+            "participant": {
+              "name": "driver",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "vehicle",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The Delivery vehicle and Gas station are on the same route",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "station",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The Delivery vehicle is at the Gas station",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.road_position"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "station",
+              "path": "components.place.road_position"
+            }
+          }
+        },
+        {
+          "label": "The Gas station is open",
+          "left": {
+            "participant": {
+              "name": "station",
+              "path": "components.place.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "open"
+          }
+        },
+        {
+          "label": "The Delivery vehicle is operational",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "operational"
+          }
+        },
+        {
+          "label": "The requested fuel amount is one unit",
+          "left": {
+            "action_field": "amount"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "The Gas station has one unit of fuel",
+          "left": {
+            "participant": {
+              "name": "station",
+              "path": "components.place.fuel_stock"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "amount"
+          }
+        },
+        {
+          "label": "The Delivery vehicle has a sixteen-unit tank",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel_tank_capacity"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 16
+          }
+        },
+        {
+          "label": "The Delivery vehicle has room for one unit of fuel",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel"
+            }
+          },
+          "op": "lte",
+          "right": {
+            "literal": 15
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "vehicle",
+          "path": "components.vehicle.fuel",
+          "value": {
+            "action_field": "amount"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "station",
+          "path": "components.place.fuel_stock",
+          "value": {
+            "action_field": "amount"
+          }
+        }
+      ],
+      "limits": [
+        "Fuel purchases are restricted to one-unit atomic transfers.",
+        "A purchase is refused above fifteen units because the full one-unit transfer would exceed the represented sixteen-unit tank.",
+        "Fractional tank headroom below one unit cannot be filled by this action.",
+        "The selected driver is treated as accompanying the owned vehicle, so the driver's stored road position is not checked.",
+        "The action does not limit purchases to the fuel needed for the remaining route.",
+        "Payment and money are omitted because no represented monetary state exists.",
+        "Refueling does not repair a non-operational vehicle."
+      ],
+      "mechanic_id": "buy-one-unit-of-fuel",
+      "parameters": {
+        "amount": [
+          1
+        ]
+      },
+      "participants": {
+        "driver": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "station": {
+          "categories": [
+            "gas station",
+            "fuel source"
+          ],
+          "components": [
+            "place"
+          ]
+        },
+        "vehicle": {
+          "categories": [
+            "vehicle"
+          ],
+          "components": [
+            "vehicle"
+          ]
+        }
+      },
+      "rationale": "A one-unit fuel purchase is allowed only when the represented sixteen-unit tank has room for the entire atomic transfer.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "The amount field is bound to a one-unit fuel transfer.",
+        "components.place.fuel_stock is the source stock for fuel sold by the Gas station.",
+        "components.vehicle.fuel is the receiving stock in the Delivery vehicle.",
+        "components.vehicle.fuel_tank_capacity identifies the represented sixteen-unit tank.",
+        "Fuel at or below fifteen leaves room for the complete one-unit transfer.",
+        "Equal route locations and matching vehicle and station road positions represent presence at the Gas station.",
+        "The selected Delivery driver is treated as accompanying the owned Delivery vehicle without consulting components.driver.road_position."
+      ],
+      "tests": [
+        "Refueling at fifteen units raises Delivery vehicle fuel to sixteen and lowers Gas station fuel stock by one.",
+        "Refueling is refused when Delivery vehicle fuel is greater than fifteen, including at sixteen units.",
+        "Repeated refueling never raises Delivery vehicle fuel above its sixteen-unit tank capacity.",
+        "Refueling is refused when the Delivery vehicle is away from the Gas station road position.",
+        "Refueling is refused when the Gas station is not open.",
+        "Refueling is refused when the selected vehicle does not belong to the Delivery driver.",
+        "Refueling is refused when the amount is not exactly one.",
+        "Refueling is refused when Gas station fuel stock is below one."
+      ],
+      "version": "1.3"
+    },
+    {
+      "action_kind": "record-route-progress",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      },
+      "checks": [
+        {
+          "label": "The Delivery driver is recording the progress",
+          "left": {
+            "action_field": "driver"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "The Delivery vehicle belongs to the Delivery driver",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "The Delivery vehicle is on the Delivery road",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "route"
+          }
+        },
+        {
+          "label": "The Delivery vehicle is awaiting route progress",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "awaiting route progress"
+          }
+        },
+        {
+          "label": "The Delivery vehicle has completed unrecorded progress",
+          "left": {
+            "participant": {
+              "name": "route",
+              "path": "components.place.road_position"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.road_position"
+            }
+          }
+        },
+        {
+          "label": "The Delivery road has at least ten miles remaining",
+          "left": {
+            "participant": {
+              "name": "route",
+              "path": "components.place.distance_remaining"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 10
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "route",
+          "path": "components.place.road_position",
+          "value": {
+            "literal": 10
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "route",
+          "path": "components.place.distance_remaining",
+          "value": {
+            "literal": 10
+          }
+        },
+        {
+          "op": "set",
+          "participant": "vehicle",
+          "path": "components.vehicle.operational_status",
+          "value": {
+            "literal": "operational"
+          }
+        }
+      ],
+      "limits": [
+        "Progress is recorded in ten-mile increments matching successful driving attempts.",
+        "A successful movement must be recorded before another driving attempt can begin.",
+        "The action does not move the Delivery vehicle or consume fuel.",
+        "Progress cannot be recorded when fewer than ten miles remain, so partial final segments are not modeled.",
+        "Road endpoints, reverse travel, and unloading at the Town are not modeled."
+      ],
+      "mechanic_id": "record-completed-route-progress",
+      "parameters": {},
+      "participants": {
+        "driver": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "route": {
+          "categories": [
+            "road",
+            "route"
+          ],
+          "components": [
+            "place"
+          ]
+        },
+        "vehicle": {
+          "categories": [
+            "vehicle"
+          ],
+          "components": [
+            "vehicle"
+          ]
+        }
+      },
+      "rationale": "Each successful ten-mile vehicle advance must be reconciled exactly once before the vehicle becomes available for another driving attempt.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "components.vehicle.operational_status equal to awaiting route progress represents one successful ten-mile advance that has not yet been reconciled with the Delivery road.",
+        "components.place.road_position on the Delivery road records vehicle progress already reconciled with the route.",
+        "components.place.distance_remaining falls by ten for each reconciled ten-mile advance.",
+        "Restoring components.vehicle.operational_status to operational marks the pending movement as recorded and permits the next driving attempt."
+      ],
+      "tests": [
+        "After the Delivery vehicle advances from mile 0 to mile 10, recording progress raises the Delivery road position to 10, lowers its distance remaining to 110, and restores the vehicle to operational.",
+        "A second progress recording without another successful vehicle advance is refused because the Delivery vehicle is no longer awaiting route progress.",
+        "Another driving attempt is refused while the Delivery vehicle is awaiting route progress.",
+        "After each successful advance is recorded, the next driving attempt can begin.",
+        "When the Delivery vehicle advances from mile 110 to mile 120, the required recording raises the Delivery road position to 120 and lowers its distance remaining to zero.",
+        "Progress recording is refused before the Delivery vehicle has moved beyond the Delivery road's recorded position.",
+        "Progress recording is refused when the Delivery vehicle is not on the selected Delivery road.",
+        "Progress recording is refused when the Delivery vehicle does not belong to the Delivery driver."
+      ],
+      "version": "2.0"
+    },
+    {
+      "action_kind": "request-roadside-assistance",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      },
+      "checks": [
+        {
+          "label": "The Delivery driver is requesting roadside assistance",
+          "left": {
+            "action_field": "driver"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "The Delivery vehicle belongs to the Delivery driver",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "owner_ref": "actor"
+          }
+        },
+        {
+          "label": "The Delivery driver and Delivery vehicle are on the same route",
+          "left": {
+            "participant": {
+              "name": "driver",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "vehicle",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The Delivery vehicle and destination are on the same route",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "destination",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The Delivery vehicle is stopped",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "stopped"
+          }
+        },
+        {
+          "label": "The Delivery vehicle lacks fuel for ten miles",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "literal": 0.4
+          }
+        },
+        {
+          "label": "The destination is ahead of the Delivery vehicle",
+          "left": {
+            "participant": {
+              "name": "destination",
+              "path": "components.place.road_position"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.road_position"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "driver",
+          "path": "components.driver.decision_status",
+          "value": {
+            "literal": "awaiting roadside assistance"
+          }
+        }
+      ],
+      "limits": [
+        "The action records only the driver's roadside-assistance request.",
+        "No tow provider, communication system, response time, cargo state, or payment state is represented.",
+        "The request does not move, refuel, repair, or change the status of the Delivery vehicle.",
+        "The request is refused unless the Delivery vehicle is stopped with less than 0.4 fuel.",
+        "The selected destination must be ahead on the same represented route."
+      ],
+      "mechanic_id": "request-roadside-assistance-for-stopped-vehicle",
+      "parameters": {},
+      "participants": {
+        "destination": {
+          "categories": [
+            "town",
+            "destination"
+          ],
+          "components": [
+            "place"
+          ]
+        },
+        "driver": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "vehicle": {
+          "categories": [
+            "vehicle"
+          ],
+          "components": [
+            "vehicle"
+          ]
+        }
+      },
+      "rationale": "A driver whose owned vehicle has stopped without enough fuel can request roadside assistance toward a selected destination ahead, while no unrepresented towing outcome is assumed.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "components.driver.decision_status equal to awaiting roadside assistance represents a submitted request with no represented response yet.",
+        "components.vehicle.operational_status equal to stopped identifies the vehicle stranded by the existing insufficient-fuel process.",
+        "Fuel below 0.4 means the Delivery vehicle cannot complete another represented ten-mile advance.",
+        "A greater destination road position represents a destination ahead of the stopped Delivery vehicle.",
+        "The absence of represented assistance or towing resources prevents this action from asserting transport to the destination."
+      ],
+      "tests": [
+        "A driver can request roadside assistance when the owned Delivery vehicle is stopped with less than 0.4 fuel and the Town is ahead on the same route.",
+        "A successful request changes the Delivery driver's decision status to awaiting roadside assistance.",
+        "A successful request does not move or refuel the Delivery vehicle.",
+        "The request is refused while the Delivery vehicle is operational.",
+        "The request is refused when the Delivery vehicle has at least 0.4 fuel.",
+        "The request is refused when the Delivery vehicle does not belong to the Delivery driver.",
+        "The request is refused when the destination is not ahead of the Delivery vehicle.",
+        "The request is refused when the destination is on a different route."
+      ],
+      "version": "1.0"
+    }
+  ],
+  "processes": [
+    {
+      "checks": [
+        {
+          "label": "The Delivery vehicle is attempting to drive",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "attempting to drive"
+          }
+        },
+        {
+          "label": "The Delivery vehicle has enough fuel for ten miles",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.vehicle.fuel"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 0.4
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.vehicle.road_position",
+          "value": {
+            "literal": 10
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.vehicle.fuel",
+          "value": {
+            "literal": 0.4
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.vehicle.operational_status",
+          "value": {
+            "literal": "awaiting route progress"
+          }
+        }
+      ],
+      "process_id": "advance-driving-delivery-vehicle",
+      "rationale": "A successful ten-mile advance leaves the vehicle awaiting route reconciliation, preventing another driving attempt before that movement is recorded.",
+      "selector": {
+        "categories": [
+          "vehicle"
+        ],
+        "components": [
+          "vehicle"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "The Delivery vehicle is attempting to drive",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "attempting to drive"
+          }
+        },
+        {
+          "label": "The Delivery vehicle lacks fuel for ten miles",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.vehicle.fuel"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "literal": 0.4
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.vehicle.operational_status",
+          "value": {
+            "literal": "stopped"
+          }
+        }
+      ],
+      "process_id": "stop-delivery-vehicle-without-fuel",
+      "rationale": "A pending driving attempt stops without movement when the vehicle has less than the 0.4 fuel needed to advance ten miles.",
+      "selector": {
+        "categories": [
+          "vehicle"
+        ],
+        "components": [
+          "vehicle"
+        ]
+      }
+    }
+  ],
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": {
+    "checks": [
+      {
+        "op": "gte",
+        "path": "components.vehicle.road_position",
+        "value": 120
+      }
+    ],
+    "mode": "any",
+    "selector": {
+      "categories": [
+        "vehicle"
+      ],
+      "components": [
+        "vehicle"
+      ]
+    }
+  }
+}

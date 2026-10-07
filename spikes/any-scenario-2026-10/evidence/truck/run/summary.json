@@ -1,0 +1,469 @@
+{
+  "attempts": 200,
+  "conditions_changed": [
+    {
+      "field": "gas-station.place.fuel_stock",
+      "from": 1000,
+      "to": 0
+    }
+  ],
+  "cost": 0.07870159999999998,
+  "ended": "max_ticks",
+  "events": 411,
+  "final_tick": 200,
+  "plan_spend_after": 0.1644994,
+  "profile_id": "1dd30f337d123517",
+  "resident_calls": 200,
+  "rules_written_mid_run": [
+    {
+      "checks": {
+        "baseline_blocking": 2,
+        "blocking": 2,
+        "findings_on_new_rule": [
+          "rule deliver-requested-roadside-fuel creates vehicle.fuel from nothing; elsewhere that quantity only moves between things, so it must come from a stock that loses it."
+        ]
+      },
+      "event_id": "e00014",
+      "gm_trace": "any-scenario-gm-truck-20261007T171351-gm1",
+      "intent": "Request roadside assistance or arrange an emergency fuel supply before continuing toward the town.",
+      "proposal": {
+        "change": "add_action+add_process",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Request roadside assistance to deliver one unit of emergency fuel to a stopped vehicle.",
+              "fields": [
+                {
+                  "name": "driver",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "vehicle",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "request-roadside-fuel"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "request-roadside-fuel",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "driver"
+                ],
+                "components": [
+                  "driver"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "The Delivery driver is requesting assistance",
+                  "left": {
+                    "action_field": "driver"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "The Delivery vehicle belongs to the Delivery driver",
+                  "left": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "ownership.owner_ref"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "owner_ref": "actor"
+                  }
+                },
+                {
+                  "label": "The Delivery driver and Delivery vehicle are on the same route",
+                  "left": {
+                    "participant": {
+                      "name": "driver",
+                      "path": "location.location_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "location.location_id"
+                    }
+                  }
+                },
+                {
+                  "label": "The Delivery vehicle is stopped",
+                  "left": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "components.vehicle.operational_status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "stopped"
+                  }
+                },
+                {
+                  "label": "The Delivery vehicle lacks fuel for ten miles",
+                  "left": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "components.vehicle.fuel"
+                    }
+                  },
+                  "op": "lt",
+                  "right": {
+                    "literal": 0.4
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "vehicle",
+                  "path": "components.vehicle.operational_status",
+                  "value": {
+                    "literal": "awaiting roadside fuel"
+                  }
+                }
+              ],
+              "limits": [
+                "The request is available only after insufficient fuel has stopped the vehicle.",
+                "Only one pending roadside-fuel request can exist for a vehicle.",
+                "The roadside provider, payment, communication method, and exact response time are omitted because they have no represented state.",
+                "The request does not itself move the vehicle or deliver fuel.",
+                "Each completed request supplies exactly one fuel unit."
+              ],
+              "mechanic_id": "request-roadside-emergency-fuel",
+              "parameters": {},
+              "participants": {
+                "driver": {
+                  "categories": [
+                    "actor",
+                    "driver"
+                  ],
+                  "components": [
+                    "driver"
+                  ]
+                },
+                "vehicle": {
+                  "categories": [
+                    "vehicle"
+                  ],
+                  "components": [
+                    "vehicle"
+                  ]
+                }
+              },
+              "rationale": "A driver whose owned vehicle has stopped for insufficient fuel can request a represented pending emergency-fuel delivery.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "components.vehicle.operational_status equal to awaiting roadside fuel represents an accepted request whose emergency fuel has not yet arrived.",
+                "components.vehicle.fuel below 0.4 represents insufficient fuel for the modeled ten-mile driving attempt.",
+                "The selected Delivery driver accompanies the owned Delivery vehicle without consulting components.driver.road_position."
+              ],
+              "tests": [
+                "A driver can request roadside fuel for an owned stopped vehicle with less than 0.4 fuel.",
+                "The request changes the Delivery vehicle status to awaiting roadside fuel without immediately changing its fuel or road position.",
+                "A request is refused while the Delivery vehicle is operational.",
+                "A request is refused when the Delivery vehicle has at least 0.4 fuel.",
+                "A request is refused when the Delivery vehicle does not belong to the Delivery driver.",
+                "A request is refused when the Delivery driver and Delivery vehicle are on different routes."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          },
+          {
+            "change": "add_process",
+            "rule": {
+              "checks": [
+                {
+                  "label": "The Delivery vehicle is awaiting roadside fuel",
+                  "left": {
+                    "participant": {
+                      "name": "it",
+                      "path": "components.vehicle.operational_status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "awaiting roadside fuel"
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "add",
+                  "participant": "it",
+                  "path": "components.vehicle.fuel",
+                  "value": {
+                    "literal": 1
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "it",
+                  "path": "components.vehicle.operational_status",
+                  "value": {
+                    "literal": "operational"
+                  }
+                }
+              ],
+              "process_id": "deliver-requested-roadside-fuel",
+              "rationale": "An accepted roadside-assistance request resolves by delivering one emergency fuel unit and returning the stopped vehicle to operational status.",
+              "selector": {
+                "categories": [
+                  "vehicle"
+                ],
+                "components": [
+                  "vehicle"
+                ]
+              }
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None,None",
+        "why": "These rules let any driver request time-delayed emergency fuel for an owned vehicle stopped by insufficient fuel, after which one fuel unit arrives and the vehicle can continue."
+      },
+      "ruling": "No rule could be added that passes the checks; the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": "any-scenario-gm-truck-20261007T171351-gm1",
+      "written_mid_run": false
+    },
+    {
+      "checks": {
+        "baseline_blocking": 2,
+        "blocking": 2,
+        "findings_on_new_rule": []
+      },
+      "event_id": "e00056",
+      "gm_trace": "any-scenario-gm-truck-20261007T171351-gm2",
+      "intent": "Attempt to request roadside assistance or a tow to transport the delivery vehicle and cargo to the town at mile 120.",
+      "proposal": {
+        "change": "add_action",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Request roadside assistance or a tow for a stopped delivery vehicle to an ahead destination.",
+              "fields": [
+                {
+                  "name": "driver",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "vehicle",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "destination",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "request-roadside-assistance"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "request-roadside-assistance",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "driver"
+                ],
+                "components": [
+                  "driver"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "The Delivery driver is requesting roadside assistance",
+                  "left": {
+                    "action_field": "driver"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "The Delivery vehicle belongs to the Delivery driver",
+                  "left": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "ownership.owner_ref"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "owner_ref": "actor"
+                  }
+                },
+                {
+                  "label": "The Delivery driver and Delivery vehicle are on the same route",
+                  "left": {
+                    "participant": {
+                      "name": "driver",
+                      "path": "location.location_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "location.location_id"
+                    }
+                  }
+                },
+                {
+                  "label": "The Delivery vehicle and destination are on the same route",
+                  "left": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "location.location_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "participant": {
+                      "name": "destination",
+                      "path": "location.location_id"
+                    }
+                  }
+                },
+                {
+                  "label": "The Delivery vehicle is stopped",
+                  "left": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "components.vehicle.operational_status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "stopped"
+                  }
+                },
+                {
+                  "label": "The Delivery vehicle lacks fuel for ten miles",
+                  "left": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "components.vehicle.fuel"
+                    }
+                  },
+                  "op": "lt",
+                  "right": {
+                    "literal": 0.4
+                  }
+                },
+                {
+                  "label": "The destination is ahead of the Delivery vehicle",
+                  "left": {
+                    "participant": {
+                      "name": "destination",
+                      "path": "components.place.road_position"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "participant": {
+                      "name": "vehicle",
+                      "path": "components.vehicle.road_position"
+                    }
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "driver",
+                  "path": "components.driver.decision_status",
+                  "value": {
+                    "literal": "awaiting roadside assistance"
+                  }
+                }
+              ],
+              "limits": [
+                "The action records only the driver's roadside-assistance request.",
+                "No tow provider, communication system, response time, cargo state, or payment state is represented.",
+                "The request does not move, refuel, repair, or change the status of the Delivery vehicle.",
+                "The request is refused unless the Delivery vehicle is stopped with less than 0.4 fuel.",
+                "The selected destination must be ahead on the same represented route."
+              ],
+              "mechanic_id": "request-roadside-assistance-for-stopped-vehicle",
+              "parameters": {},
+              "participants": {
+                "destination": {
+                  "categories": [
+                    "town",
+                    "destination"
+                  ],
+                  "components": [
+                    "place"
+                  ]
+                },
+                "driver": {
+                  "categories": [
+                    "actor",
+                    "driver"
+                  ],
+                  "components": [
+                    "driver"
+                  ]
+                },
+                "vehicle": {
+                  "categories": [
+                    "vehicle"
+                  ],
+                  "components": [
+                    "vehicle"
+                  ]
+                }
+              },
+              "rationale": "A driver whose owned vehicle has stopped without enough fuel can request roadside assistance toward a selected destination ahead, while no unrepresented towing outcome is assumed.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "components.driver.decision_status equal to awaiting roadside assistance represents a submitted request with no represented response yet.",
+                "components.vehicle.operational_status equal to stopped identifies the vehicle stranded by the existing insufficient-fuel process.",
+                "Fuel below 0.4 means the Delivery vehicle cannot complete another represented ten-mile advance.",
+                "A greater destination road position represents a destination ahead of the stopped Delivery vehicle.",
+                "The absence of represented assistance or towing resources prevents this action from asserting transport to the destination."
+              ],
+              "tests": [
+                "A driver can request roadside assistance when the owned Delivery vehicle is stopped with less than 0.4 fuel and the Town is ahead on the same route.",
+                "A successful request changes the Delivery driver's decision status to awaiting roadside assistance.",
+                "A successful request does not move or refuel the Delivery vehicle.",
+                "The request is refused while the Delivery vehicle is operational.",
+                "The request is refused when the Delivery vehicle has at least 0.4 fuel.",
+                "The request is refused when the Delivery vehicle does not belong to the Delivery driver.",
+                "The request is refused when the destination is not ahead of the Delivery vehicle.",
+                "The request is refused when the destination is on a different route."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None",
+        "why": "This adds a general request action for an owner whose vehicle has stopped without enough fuel, recording the request without inventing an assistance provider or claiming an unsupported tow outcome."
+      },
+      "rules_installed": [
+        "request-roadside-assistance-for-stopped-vehicle"
+      ],
+      "status": "accepted",
+      "trace_id": "any-scenario-gm-truck-20261007T171351-gm2",
+      "written_mid_run": true
+    }
+  ],
+  "run_id": "truck-20261007T171351/run-20261007T182313",
+  "seconds": 679.2,
+  "situation_briefing": "A delivery driver with a quarter tank must reach a town 120 miles away; there is one gas station at mile 60.",
+  "trace_id": "any-scenario-run-truck-20261007T171351-20261007T182313"
+}
