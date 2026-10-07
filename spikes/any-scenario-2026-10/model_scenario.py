@@ -33,7 +33,7 @@ from checks import run_checks  # noqa: E402
 from rule_writer import propose_rule  # noqa: E402
 from spend import CAP, plan_spend  # noqa: E402
 
-MAX_REPAIRS = 6
+MAX_REPAIRS = 8
 RULE_MODEL = "openrouter/openai/gpt-5.6-sol"
 RULE_MODEL_WHY = ("Rule writing needs the stronger tier: eight gpt-5.6-luna attempts on 2026-10-07 produced rules with "
                   "non-actor actors, wrong location checks and missing depletion rules that repairs could not fix.")
@@ -188,21 +188,28 @@ def anomaly_reviewer(scenario: str, *, trace_id: str, max_budget: float = 0.03):
         why: str
 
     class Review(BaseModel):
+        expected_consequence: str
         anomalies: list[Anomaly]
+
+    counter = {"n": 0}
 
     def review(stock: str, log: str) -> list[dict[str, str]]:
         if not log.strip():
             return []
+        counter["n"] += 1  # one trace per review: the per-trace budget caps each review, not the sum
         out, _ = call_llm_structured(
             DEFAULT_MODEL,
             [{"role": "system", "content": (
                 "You review a simulation run log for behavior a domain expert would call physically or socially "
                 "implausible given the scenario, e.g. something keeps moving or progressing after what powers it "
-                "has stopped, or a quantity changes with no cause. Quote the exact log line for each problem. "
-                "Return an empty list if nothing is implausible. Do not flag style, naming or missing detail.")},
+                "has stopped, or a quantity changes with no cause. When the condition sets a resource to zero, first "
+                "state in expected_consequence what a domain expert would expect to happen to the people or things "
+                "that depend on it (Sterman's extreme-conditions test); if the log never shows that consequence, report "
+                "it as an anomaly quoting the log line where it should have appeared. Quote exact log lines. Return an "
+                "empty list if nothing is implausible. Do not flag style, naming or missing detail.")},
              {"role": "user", "content": json.dumps({"scenario": scenario, "condition": f"{stock} started at zero",
                                                      "run_log": log})}],
-            Review, task="world-substrate-behavior-anomaly", trace_id=trace_id, max_budget=max_budget,
+            Review, task="world-substrate-behavior-anomaly", trace_id=f"{trace_id}-{counter['n']}", max_budget=max_budget,
             reasoning_effort="low", num_retries=1)
         return [{"quote": a.quote, "why": a.why} for a in out.anomalies if a.quote and a.quote in log]
 
@@ -317,6 +324,9 @@ def main() -> int:
                                                       model.get("stock_map") or [], reviewer, out, args.name, stamp)
         for nm, v in {"bundle": bundle, "causal": causal, "checks": report}.items():
             (d / f"{nm}.json").write_text(json.dumps(v, indent=2, sort_keys=True))
+        if not (d / "sensing.json").exists():
+            sensing, _ = sensing_map(bundle, model["odd"], trace_id=f"any-scenario-{args.name}-sensing-{stamp}")
+            (d / "sensing.json").write_text(json.dumps(sensing, indent=2, sort_keys=True))
         model.setdefault("repairs", []).extend(repairs)
         model["final_check_counts"] = report["counts"]
         (d / "model.json").write_text(json.dumps(model, indent=2, sort_keys=True))
@@ -346,6 +356,10 @@ def main() -> int:
     stocks_trace = f"any-scenario-{args.name}-stocks-{stamp}"
     stocks, r4 = stock_map(bundle, odd, trace_id=stocks_trace)
     print(f"[step] stock map trace={stocks_trace} cost={getattr(r4, 'cost', None)} mapped={sum(1 for x in stocks if x['field'])}/{len(stocks)}", flush=True)
+    early = {"scenario_text": args.text, "world_kind": args.kind, "odd": odd, "stock_map": stocks,
+             "traces": {"odd": odd_trace, "bundle": bundle_trace, "mechanics": causal_trace, "stocks": stocks_trace}}
+    for name_, value in {"bundle": bundle, "causal": causal, "model": early}.items():  # resumable with --repair-dir
+        (out / f"{name_}.json").write_text(json.dumps(value, indent=2, sort_keys=True))
     reviewer = anomaly_reviewer(args.text, trace_id=f"any-scenario-{args.name}-anomaly-{stamp}")
     bundle, causal, report, repairs = repair_loop(bundle, causal, stocks, reviewer, out, args.name, stamp)
     (out / "checks.json").write_text(json.dumps(report, indent=2, sort_keys=True))

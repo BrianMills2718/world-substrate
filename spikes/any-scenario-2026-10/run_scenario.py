@@ -45,8 +45,6 @@ sys.path.insert(0, str(HERE))
 from spend import CAP, plan_spend as plan_spend_total  # noqa: E402
 
 RESIDENT_MODEL = "openrouter/openai/gpt-5.6-luna"
-SPEND_LEDGER = HERE / "runs" / "spend.jsonl"
-PLAN_CAP_USD = 5.00
 
 
 class Attempt(BaseModel):
@@ -58,18 +56,6 @@ class Attempt(BaseModel):
     offered_index: int | None = Field(default=None, description="Index into offered actions when choice is 'offered'.")
     unlisted_intent: str | None = Field(default=None, description="Plain description of the attempt when choice is 'unlisted'.")
     expected_effect: str = Field(description="What you expect to happen as a result.")
-
-
-def plan_spend() -> float:
-    if not SPEND_LEDGER.exists():
-        return 0.0
-    return sum(json.loads(line)["cost"] for line in SPEND_LEDGER.read_text().splitlines() if line.strip())
-
-
-def record_spend(run_id: str, cost: float) -> None:
-    SPEND_LEDGER.parent.mkdir(parents=True, exist_ok=True)
-    with SPEND_LEDGER.open("a") as fh:
-        fh.write(json.dumps({"run_id": run_id, "cost": cost, "at": time.strftime("%Y-%m-%dT%H:%M:%S")}) + "\n")
 
 
 def flat_fields(observation: dict[str, Any]) -> dict[str, Any]:
@@ -276,11 +262,10 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
             ended = "run_budget"
             break
     cost = sum(x.cost for x in acts.values())
-    record_spend(run_id, cost)
     summary = {"conditions_changed": applied, "situation_briefing": situation, "run_id": run_id, "trace_id": trace_id, "profile_id": profile_id, "ended": ended,
                "final_tick": engine.world.tick, "events": len(events), "attempts": len(attempts),
                "resident_calls": sum(x.calls for x in acts.values()), "cost": cost,
-               "seconds": round(time.time() - t_run, 1), "plan_spend_after": plan_spend()}
+               "seconds": round(time.time() - t_run, 1), "plan_spend_after": plan_spend_total()[1]}
     (out / "events.jsonl").write_text("\n".join(json.dumps(e, sort_keys=True) for e in events) + "\n")
     (out / "attempts.jsonl").write_text("\n".join(json.dumps(r, sort_keys=True) for r in attempts) + "\n")
     (out / "final_world.json").write_text(json.dumps(engine.observe(actors[0]), indent=2, sort_keys=True))

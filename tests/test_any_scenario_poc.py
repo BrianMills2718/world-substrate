@@ -13,7 +13,7 @@ import sys
 from copy import deepcopy
 from pathlib import Path
 
-import pytest
+import unittest
 
 REPO = Path(__file__).resolve().parents[1]
 SPIKE = REPO / "spikes/any-scenario-2026-10"
@@ -38,13 +38,13 @@ def _vehicle(bundle: dict) -> dict:
     return next(e for e in bundle["entities"] if e["id"] == "delivery-vehicle")
 
 
-def test_truck_world_passes_static_and_simulation_checks():
+def check_truck_world_passes_static_and_simulation_checks():
     report = run_checks(_load("bundle.json"), _load("causal.json"), stocks=_load("model.json")["stock_map"])
     assert report["counts"]["blocking"] == 0, [f["finding"] for f in report["findings"] if f["blocking"]]
     assert report["counts"]["rules_fired"] == report["counts"]["rules"]
 
 
-def test_attempt_starts_without_fuel_and_world_stops_it_later():
+def check_attempt_starts_without_fuel_and_world_stops_it_later():
     bundle = _load("bundle.json")
     _vehicle(bundle)["components"]["vehicle"]["fuel"] = 0
     engine, _, _ = build_engine(bundle, _load("causal.json"))
@@ -62,7 +62,7 @@ def test_attempt_starts_without_fuel_and_world_stops_it_later():
     assert after["operational_status"] == "stopped" and after["road_position"] == 0
 
 
-def test_attempt_check_flags_a_fuel_gate_on_driving():
+def check_attempt_check_flags_a_fuel_gate_on_driving():
     causal = deepcopy(_load("causal.json"))
     assert attempt_findings(_load("bundle.json"), causal) == []
     drive = next(m for m in causal["mechanics"] if m["action_kind"] == "drive")
@@ -72,7 +72,7 @@ def test_attempt_check_flags_a_fuel_gate_on_driving():
     assert [f["rule"] for f in findings] == [drive["mechanic_id"]]
 
 
-def test_conservation_flags_fuel_created_from_nothing():
+def check_conservation_flags_fuel_created_from_nothing():
     causal = deepcopy(_load("causal.json"))
     assert conservation_findings(causal) == []
     causal["processes"].append({
@@ -82,14 +82,14 @@ def test_conservation_flags_fuel_created_from_nothing():
     assert [f["rule"] for f in conservation_findings(causal)] == ["free-fuel"]
 
 
-def test_removing_the_out_of_fuel_rule_is_caught():
+def check_removing_the_out_of_fuel_rule_is_caught():
     causal = deepcopy(_load("causal.json"))
     causal["processes"] = [p for p in causal["processes"] if p["process_id"] != "stop-delivery-vehicle-without-fuel"]
     report = run_checks(_load("bundle.json"), causal, stocks=_load("model.json")["stock_map"])
     assert report["counts"]["blocking"] > 0
 
 
-def test_recorded_run_state_comes_only_from_engine_events():
+def check_recorded_run_state_comes_only_from_engine_events():
     """Parallel-implementation check: replaying the run's Engine event changes over the initial state
     reproduces the final world exactly, so no other path (Concordia state, the runner) mutated it."""
     summary = json.loads((TRUCK / "run/summary.json").read_text())
@@ -110,7 +110,7 @@ def test_recorded_run_state_comes_only_from_engine_events():
         assert final[eid]["components"] == components
 
 
-def test_resident_learned_out_of_fuel_by_observation():
+def check_resident_learned_out_of_fuel_by_observation():
     attempts = _jsonl_gz(TRUCK / "run/attempts.jsonl.gz")
     stop = next(e for e in _jsonl_gz(TRUCK / "run/events.jsonl.gz") if e["rule_id"] == "stop-delivery-vehicle-without-fuel")
     before = [a for a in attempts if a["tick"] == stop["tick"] - 1][0]
@@ -120,7 +120,7 @@ def test_resident_learned_out_of_fuel_by_observation():
     assert "Delivery vehicle.operational_status: stopped" in after["cited_observations"]
 
 
-def test_game_master_wrote_one_rule_and_fell_back_to_one_ruling():
+def check_game_master_wrote_one_rule_and_fell_back_to_one_ruling():
     summary = json.loads((TRUCK / "run/summary.json").read_text())
     written = summary["rules_written_mid_run"]
     ruled = [w for w in written if not w["written_mid_run"]]
@@ -132,7 +132,7 @@ def test_game_master_wrote_one_rule_and_fell_back_to_one_ruling():
     assert events[installed[0]["event_id"]]["rule_id"] in installed[0]["rules_installed"]
 
 
-def test_single_duration_primitive():
+def check_single_duration_primitive():
     hits = []
     for root in ("src", "reference_worlds", "spikes"):
         for path in (REPO / root).rglob("*.py"):
@@ -142,5 +142,36 @@ def test_single_duration_primitive():
     assert hits == ["reference_worlds/waltzman/components.py"], hits
 
 
+class AnyScenarioPocTests(unittest.TestCase):
+    """Run by the project gate (scripts/check_project.py uses unittest discover)."""
+
+    def test_truck_world_passes_static_and_simulation_checks(self):
+        check_truck_world_passes_static_and_simulation_checks()
+
+    def test_attempt_starts_without_fuel_and_world_stops_it_later(self):
+        check_attempt_starts_without_fuel_and_world_stops_it_later()
+
+    def test_attempt_check_flags_a_fuel_gate_on_driving(self):
+        check_attempt_check_flags_a_fuel_gate_on_driving()
+
+    def test_conservation_flags_fuel_created_from_nothing(self):
+        check_conservation_flags_fuel_created_from_nothing()
+
+    def test_removing_the_out_of_fuel_rule_is_caught(self):
+        check_removing_the_out_of_fuel_rule_is_caught()
+
+    def test_recorded_run_state_comes_only_from_engine_events(self):
+        check_recorded_run_state_comes_only_from_engine_events()
+
+    def test_resident_learned_out_of_fuel_by_observation(self):
+        check_resident_learned_out_of_fuel_by_observation()
+
+    def test_game_master_wrote_one_rule_and_fell_back_to_one_ruling(self):
+        check_game_master_wrote_one_rule_and_fell_back_to_one_ruling()
+
+    def test_single_duration_primitive(self):
+        check_single_duration_primitive()
+
+
 if __name__ == "__main__":
-    raise SystemExit(pytest.main([__file__, "-v"]))
+    unittest.main(verbosity=2)

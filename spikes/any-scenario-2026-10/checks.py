@@ -102,8 +102,9 @@ def simulate(bundle: dict[str, Any], causal: dict[str, Any], *, seed: int, ticks
         acted = False
         for a in actors:
             offered = engine.discover(a)["available"]
-            if guided:
-                offered = [r for r in offered if not _dead_end(engine, actors, model, r["action"])]
+            if guided:  # lookahead on at most 4 sampled candidates: copying the world per action is the cost
+                sample = rng.sample(offered, min(4, len(offered)))
+                offered = [r for r in sample if not _dead_end(engine, actors, model, r["action"])]
             preferred = [r for r in offered if prefer_kind and r["action"]["kind"] == prefer_kind]
             if preferred:  # repeated-action test: keep doing this kind whenever it is offered
                 row = preferred[0]
@@ -341,7 +342,9 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
     rules = [m["mechanic_id"] for m in causal.get("mechanics", [])] + [p["process_id"] for p in causal.get("processes", [])]
     fired = set().union(*(r["fired"] for r in base))
     # reachability: random runs that avoid one-step dead ends (PDDL2.1/ENHSP cannot express processes)
+    t_base = time.time() - t0
     guided = [simulate(bundle, causal, seed=100 + s, ticks=ticks * 2, guided=True) for s in range(2 * seeds)]
+    t_guided = time.time() - t0 - t_base
     fired |= set().union(*(r["fired"] for r in guided))
     if causal.get("terminal") and not any(r["reached"] for r in [*base, *guided]):
         why = sorted({b for r in [*base, *guided] for b in r["blocked_at_deadlock"]})[:6]
@@ -420,6 +423,8 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
                        "advisory": sum(not f["blocking"] for f in findings),
                        "rules": len(rules), "rules_fired": len(fired & set(rules)),
                        "depletable_stocks": len(extreme_rows)},
+            "step_seconds": {"random_runs": round(t_base, 1), "guided_runs": round(t_guided, 1),
+                             "total": round(time.time() - t0, 1)},
             "extreme_conditions": extreme_rows, "behavior_anomalies": anomaly_rows, "findings": findings}
 
 

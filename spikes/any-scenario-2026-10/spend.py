@@ -9,6 +9,8 @@ CAP = 5.00
 
 
 def plan_spend() -> tuple[int, float]:
+    if not LOGS.is_dir():  # a missing log must not read as $0 spent: that would silently disable the cap
+        raise SystemExit(f"spend log directory not found: {LOGS}")
     n, total = 0, 0.0
     for f in sorted(LOGS.glob("calls_*.jsonl")):
         for line in f.open():
