@@ -356,7 +356,7 @@ For one missing mechanic, an agent should produce a reviewable package containin
 | Limits | Unsupported interactions, approximation, and refinement conditions |
 | Trace contract | What a builder can inspect when it applies, refuses, or fails |
 
-The installer should validate and freeze this package into a world profile before the simulation. Runtime invention or revision of laws remains deferred.
+The installer should validate and freeze this package into a world profile before the simulation. Runtime invention or revision of laws was deferred here; [Decision 007](../decisions/007-any-scenario-path.md) (2026-10-07) reverses that: a game master may write checked rules mid-run, reviewed after the run.
 
 ## Decisions and open questions added by this review
 
