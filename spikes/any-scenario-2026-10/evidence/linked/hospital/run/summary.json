@@ -1,0 +1,16 @@
+{
+  "attempts": 13,
+  "conditions_changed": [],
+  "cost": 0.0114698,
+  "ended": "max_ticks",
+  "events": 137,
+  "final_tick": 40,
+  "plan_spend_after": 5.001143963999994,
+  "profile_id": "0a715acb9bcbf17d",
+  "resident_calls": 13,
+  "resident_model": "openrouter/openai/gpt-5.6-luna",
+  "run_id": "hospital-20261007T223600-repaired/run-20261007T232430",
+  "seconds": 62.8,
+  "situation_briefing": "A 40-bed hospital with 6 ventilators faces a flu surge; staff decide who gets ventilated and whether to order more.",
+  "trace_id": "any-scenario-run-hospital-20261007T223600-repaired-20261007T232430"
+}

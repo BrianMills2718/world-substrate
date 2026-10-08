@@ -1,0 +1,67 @@
+{
+  "behavior_anomalies": [
+    {
+      "quote": "t0 delivery-driver did begin-ten-mile-driving-interval: delivery-driver.driver.driving_status ready->driving",
+      "why": "With fuel_amount starting at zero, the vehicle has no fuel to power a ten-mile driving interval, yet the log shows the driver beginning to drive."
+    }
+  ],
+  "counts": {
+    "advisory": 3,
+    "blocking": 2,
+    "depletable_stocks": 2,
+    "rules": 8,
+    "rules_fired": 6
+  },
+  "extreme_conditions": [
+    {
+      "identical_to_baseline": false,
+      "stock": "delivery-vehicle.vehicle.fuel_amount",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": false,
+      "stock": "gas-station.place_state.fuel_stock",
+      "went_negative_from_zero": false
+    }
+  ],
+  "findings": [
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'vehicle route position' falls, but no rule ever decreases delivery-vehicle.vehicle.route_position.",
+      "stock": "vehicle route position"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule fail-refuel-for-empty-station never fired in 12 random runs.",
+      "rule": "fail-refuel-for-empty-station"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule fail-refuel-for-full-tank never fired in 12 random runs.",
+      "rule": "fail-refuel-for-full-tank"
+    },
+    {
+      "blocking": false,
+      "check": "deadlock",
+      "finding": "6 of 6 runs stopped with nobody able to act before the end (ticks [19, 18, 19, 15, 16, 13])."
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with delivery-vehicle fuel_amount at zero: With fuel_amount starting at zero, the vehicle has no fuel to power a ten-mile driving interval, yet the log shows the driver beginning to drive. (run log: \"t0 delivery-driver did begin-ten-mile-driving-interval: delivery-driver.driver.driving_status ready->driving\")",
+      "rule": "delivery-vehicle.vehicle.fuel_amount",
+      "stock": "delivery-vehicle.vehicle.fuel_amount"
+    }
+  ],
+  "seconds": 25.9,
+  "seeds": 6,
+  "step_seconds": {
+    "guided_runs": 2.5,
+    "random_runs": 0.5,
+    "total": 25.9
+  },
+  "ticks": 80
+}

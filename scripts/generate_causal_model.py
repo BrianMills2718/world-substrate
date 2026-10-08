@@ -251,12 +251,32 @@ WORLD_KIND_RULES["open"] = WORLD_KIND_RULES["ongoing"]
 
 def _process_schema() -> dict[str, Any]:
     expr = _expr_schema(["it"], [])
+    # Processes may name linked participants (see "participants" below), so a participant reference
+    # inside a process expression is any declared name, not only `it`.
+    for option in expr["anyOf"]:
+        name = option.get("properties", {}).get("participant", {}).get("properties", {}).get("name")
+        if isinstance(name, dict) and "enum" in name:
+            option["properties"]["participant"]["properties"]["name"] = {"type": "string", "minLength": 1}
     return {
         "type": "object",
         "properties": {
             "process_id": {"type": "string", "minLength": 1},
             "rationale": {"type": "string", "minLength": 1},
             "selector": _selector_schema(),
+            "participants": {
+                "description": (
+                    "Optional linked entities this process also changes in the same transition, each resolved from "
+                    "the matching entity `it`: link owner_of_it (the entity named by it's ownership.owner_ref), "
+                    "owned_by_it, co_located (same location), or ref:<component>.<field> (an entity_ref field on it)."
+                ),
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {"link": {"type": "string", "minLength": 1}, "selector": _selector_schema()},
+                    "required": ["link", "selector"],
+                    "additionalProperties": False,
+                },
+            },
             "checks": {
                 "type": "array",
                 "maxItems": 6,
@@ -279,7 +299,7 @@ def _process_schema() -> dict[str, Any]:
                 "items": {
                     "type": "object",
                     "properties": {
-                        "participant": {"const": "it"},
+                        "participant": {"type": "string", "minLength": 1},
                         "path": {"type": "string", "minLength": 1},
                         "op": {"enum": ["set", "add", "subtract"]},
                         "value": expr,
@@ -387,6 +407,10 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
         "allowed_state_paths": paths,
         "authority_rules": [
             "Use only action participants as effect targets.",
+            "A process acts on each matching entity `it`. When one physical change moves or changes a linked entity "
+            "too (a driver riding in a vehicle, a hospital whose bed a dying patient frees), declare that entity in "
+            "the process's participants (link owner_of_it, owned_by_it, co_located, or ref:<component>.<field>) and "
+            "target it by that name in the same process; never split one physical change across two processes.",
             "Checks on location/ownership/portable paths must agree with initial_builtin_state "
             "(null means unset), so that at least one action is possible from the starting state.",
             "Never check ownership.owner_ref or portable.portable on an entity whose initial_builtin_state "

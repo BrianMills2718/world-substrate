@@ -1,0 +1,368 @@
+{
+  "final_check_counts": {
+    "advisory": 3,
+    "blocking": 2,
+    "depletable_stocks": 2,
+    "rules": 8,
+    "rules_fired": 6
+  },
+  "guidance": "Separate permissibility from feasibility. An action's checks say only whether the actor is allowed or positioned to begin it (rules of the game, location, possession). Never check whether the attempt will succeed: do not refuse an action because a resource is too low to finish it. Starting a multi-step activity sets the actor's or object's activity state. Autonomous processes then advance that activity every tick, consume or produce stocks, and switch the activity to a stopped or failed state when a needed stock runs out, or to a finished state when it completes. Every numeric stock needs a process or action for each way it can rise and each way it can fall.",
+  "not_modeled": [
+    "The exact ordering of state updates within a driving tick",
+    "The condition that fuel reaching zero before a location causes failure",
+    "The condition that arrival at the destination ends the journey successfully",
+    "The rule that refueling occurs before the next driving interval"
+  ],
+  "odd": {
+    "actor_decisions": [
+      {
+        "actor": "delivery driver",
+        "allowed_only_when": [
+          "Driving may be attempted only while the journey is in progress, the vehicle is operational, and the driver is not at the destination.",
+          "Refueling may be attempted only when the vehicle is at mile 60 and the gas station has available fuel.",
+          "The added fuel may not exceed the vehicle's remaining tank capacity or the gas station's fuel stock.",
+          "No decision may be made after the journey has succeeded or failed."
+        ],
+        "may_attempt": [
+          "Attempt to drive the vehicle for the next 10-mile interval.",
+          "At the gas station, attempt to purchase fuel.",
+          "At the gas station, choose the amount of fuel to add, up to the vehicle's unused tank capacity and the station's available stock."
+        ]
+      }
+    ],
+    "assumptions": [
+      "The route is a one-way, linear road measured in miles from the origin.",
+      "The vehicle starts at mile 0 and the gas station is exactly 60 miles from the origin.",
+      "The town is exactly 120 miles from the origin, so the total route length is 120 miles.",
+      "A full fuel tank has been estimated as 15 gallons because the scenario gives only a quarter-tank fraction and no tank capacity.",
+      "A quarter tank therefore initially contains 3.75 gallons.",
+      "Fuel economy has been estimated as 25 miles per gallon, equivalent to a consumption rate of 0.04 gallons per mile.",
+      "Each 10-mile driving tick consumes exactly 0.4 gallons, with no variation due to speed, terrain, traffic, weather, or idling.",
+      "The driver begins at the origin with the vehicle operational and the journey in progress.",
+      "The gas station has been estimated to contain 1000 gallons initially and can supply fuel until its stock is depleted.",
+      "Fuel is available at the gas station unless its stock reaches zero.",
+      "Refueling occurs instantaneously at the station between driving ticks.",
+      "The driver knows the modeled route, fuel state, and station availability.",
+      "There are no other gas stations, stops, breakdown causes, road closures, or alternative routes.",
+      "The vehicle cannot move after its fuel amount reaches zero.",
+      "A driving interval cannot be partially completed; the model uses a 10-mile tick and checks fuel sufficiency for that interval before movement.",
+      "The driver may choose any refueling amount that satisfies tank-capacity and station-stock constraints.",
+      "The simulation ends when the driver reaches the town, the vehicle becomes inoperable, or another terminal journey status is defined."
+    ],
+    "entities": [
+      {
+        "kind": "actor",
+        "name": "delivery driver",
+        "state": [
+          {
+            "initial": 0,
+            "unit": "miles from origin",
+            "variable": "route position"
+          },
+          {
+            "initial": "ready",
+            "unit": "categorical",
+            "variable": "driving status"
+          },
+          {
+            "initial": false,
+            "unit": "boolean",
+            "variable": "delivery completed"
+          }
+        ]
+      },
+      {
+        "kind": "object",
+        "name": "delivery vehicle",
+        "state": [
+          {
+            "initial": 3.75,
+            "unit": "gallons",
+            "variable": "fuel amount"
+          },
+          {
+            "initial": 15,
+            "unit": "gallons",
+            "variable": "fuel tank capacity"
+          },
+          {
+            "initial": 0.25,
+            "unit": "tank fraction",
+            "variable": "fuel fraction"
+          },
+          {
+            "initial": 0.04,
+            "unit": "gallons per mile",
+            "variable": "fuel consumption rate"
+          },
+          {
+            "initial": 25,
+            "unit": "miles per gallon",
+            "variable": "fuel economy"
+          },
+          {
+            "initial": "operational",
+            "unit": "categorical",
+            "variable": "vehicle operational status"
+          }
+        ]
+      },
+      {
+        "kind": "place",
+        "name": "gas station",
+        "state": [
+          {
+            "initial": 60,
+            "unit": "miles from origin",
+            "variable": "route position"
+          },
+          {
+            "initial": 1000,
+            "unit": "gallons",
+            "variable": "fuel stock"
+          },
+          {
+            "initial": true,
+            "unit": "boolean",
+            "variable": "fuel availability"
+          }
+        ]
+      },
+      {
+        "kind": "place",
+        "name": "destination town",
+        "state": [
+          {
+            "initial": 120,
+            "unit": "miles from origin",
+            "variable": "route position"
+          },
+          {
+            "initial": "not reached",
+            "unit": "categorical",
+            "variable": "arrival status"
+          }
+        ]
+      },
+      {
+        "kind": "object",
+        "name": "journey",
+        "state": [
+          {
+            "initial": 120,
+            "unit": "miles",
+            "variable": "route length"
+          },
+          {
+            "initial": 60,
+            "unit": "miles",
+            "variable": "distance to gas station"
+          },
+          {
+            "initial": 120,
+            "unit": "miles",
+            "variable": "distance to destination"
+          },
+          {
+            "initial": 0,
+            "unit": "ticks",
+            "variable": "elapsed driving ticks"
+          },
+          {
+            "initial": "in progress",
+            "unit": "categorical",
+            "variable": "journey status"
+          }
+        ]
+      }
+    ],
+    "processes_each_tick": [
+      "If the vehicle is operational and the driver attempts to drive, the vehicle advances 10 miles along the route.",
+      "Each driving tick consumes 0.4 gallons of fuel, calculated as 10 miles multiplied by 0.04 gallons per mile.",
+      "The journey's elapsed driving tick count increases by 1 whenever a driving interval occurs.",
+      "The vehicle's fuel fraction is recalculated as fuel amount divided by tank capacity.",
+      "If fuel amount reaches zero before the vehicle reaches the destination or gas station, the vehicle becomes inoperable and the journey fails.",
+      "If the vehicle reaches the gas station, the driver may refuel before the next driving interval.",
+      "If the vehicle reaches mile 120 while operational, the destination arrival status becomes reached, delivery is completed, and the journey ends successfully.",
+      "If the vehicle reaches or passes the destination during a tick, its route position is set to mile 120 rather than exceeding the destination."
+    ],
+    "purpose": "Determine whether the delivery driver can reach the town 120 miles away with a quarter tank and, if needed, refuel at the gas station at mile 60.",
+    "sensing": [
+      {
+        "actor": "delivery driver",
+        "can_observe": [
+          "Current route position",
+          "Current fuel amount and fuel fraction",
+          "Vehicle tank capacity",
+          "Fuel consumption rate",
+          "Location of the gas station at mile 60",
+          "Destination location at mile 120",
+          "Whether the vehicle is operational",
+          "Whether fuel is available at the gas station"
+        ],
+        "cannot_observe": [
+          "Future fuel consumption deviations",
+          "Any fuel station not represented in the scenario",
+          "Events outside the modeled route and entities"
+        ]
+      }
+    ],
+    "stocks": [
+      {
+        "inflows": [
+          "Fuel purchased and transferred from the gas station into the vehicle"
+        ],
+        "outflows": [
+          "Fuel consumed during each 10-mile driving tick",
+          "Fuel lost when the journey ends with unused fuel, if the model records end-of-journey removal"
+        ],
+        "stock": "vehicle fuel amount"
+      },
+      {
+        "inflows": [],
+        "outflows": [
+          "Fuel transferred to the vehicle during refueling"
+        ],
+        "stock": "gas station fuel stock"
+      },
+      {
+        "inflows": [
+          "Forward movement of 10 miles during each successful driving tick"
+        ],
+        "outflows": [
+          "Reset to zero only if a new journey is explicitly initiated"
+        ],
+        "stock": "vehicle route position"
+      }
+    ],
+    "time_step": "1 tick = 10 miles of attempted driving, representing the distance covered during one driving interval."
+  },
+  "repairs": [
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 3,
+      "change": "replace_mechanic+replace_process+replace_process",
+      "cost": 0.042322,
+      "finding": "with delivery-vehicle fuel_amount at zero: With fuel_amount starting at zero, the vehicle has no fuel to power a ten-mile driving interval, yet the log shows the driver beginning to drive. (run log: \"t0 delivery-driver did begin-ten-mile-driving-interval: delivery-driver.driver.driving_status ready->driving\")",
+      "kept": false,
+      "round": 1,
+      "target_id": "begin-ten-mile-driving-interval,advance-started-driving-interval,stall-started-driving-interval",
+      "trace": "any-scenario-truck-repair1-20261007T223556",
+      "why": "These changes preserve the required permission to attempt driving with zero fuel while making the logged action a pending attempt and leaving the autonomous process to stall it without movement."
+    },
+    {
+      "blocking_after": 4,
+      "candidate_blocking": 4,
+      "change": "replace_process",
+      "cost": 0.1085855,
+      "finding": "the conceptual model says 'vehicle route position' falls, but no rule ever decreases delivery-vehicle.vehicle.route_position.",
+      "kept": true,
+      "round": 2,
+      "target_id": "stall-started-driving-interval",
+      "trace": "any-scenario-truck-repair2-20261007T223556",
+      "why": "Replacing the existing stall process avoids exceeding the six-process limit while making an underfueled interval decrease the linked vehicle's route position and moving its driver with it."
+    },
+    {
+      "blocking_after": 4,
+      "candidate_blocking": 4,
+      "change": "replace_process",
+      "cost": 0.039114,
+      "finding": "with delivery-vehicle route_position set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "kept": true,
+      "round": 3,
+      "target_id": "stall-started-driving-interval",
+      "trace": "any-scenario-truck-repair3-20261007T223556",
+      "why": "This makes an insufficient-fuel driving attempt exhaust the vehicle and stall it without the erroneous ten-mile rollback."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 2,
+      "change": "replace_process",
+      "cost": 0.10170850000000001,
+      "finding": "with delivery-vehicle fuel_amount at zero: The vehicle's fuel amount started at zero, so initiating a ten-mile driving interval is physically implausible. Driving should not begin without fuel. (run log: \"t0 delivery-driver did begin-ten-mile-driving-interval: delivery-driver.driver.driving_status ready->driving\")",
+      "kept": true,
+      "round": 4,
+      "target_id": "stall-started-driving-interval",
+      "trace": "any-scenario-truck-repair4-20261007T223556",
+      "why": "Replacing the existing stall process keeps the process count at six while marking the driver stalled before a zero-fuel vehicle can begin a driving interval."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 2,
+      "change": "replace_process",
+      "cost": 0.0405,
+      "finding": "with delivery-vehicle fuel_amount at zero: The vehicle starts a ten-mile driving interval even though its fuel amount started at zero; with no fuel, it should not begin driving. (run log: \"t0 delivery-driver did begin-ten-mile-driving-interval: delivery-driver.driver.driving_status ready->driving\")",
+      "kept": true,
+      "round": 5,
+      "target_id": "stall-started-driving-interval",
+      "trace": "any-scenario-truck-repair5-20261007T223556",
+      "why": "This makes a zero-fuel driving attempt immediately fail as stalled only after it has begun, preserving the required separation between permissibility and fuel feasibility."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 2,
+      "change": "replace_mechanic+replace_process",
+      "cost": 0.059536,
+      "finding": "when 'refuel' is repeated: Once the tank is full, repeatedly initiating the same failed refueling action is physically and behaviorally implausible. The driver remains stuck at the station and never resumes the journey despite having fuel. (run log: \"t23 process fail-refuel-for-full-tank: delivery-driver.driver.driving_status refueling->refuel failed\nt23 delivery-driver did begin-one-gallon-refuel: delivery-driver.driver.driving_status refuel failed->refueling\") ALSO: The run ends after dozens of repeated full-tank refueling failures, with no progress beyond mile 60 toward the destination. (run log: \"t78 process fail-refuel-for-full-tank: delivery-driver.driver.driving_status refueling->refuel failed\")",
+      "kept": true,
+      "round": 6,
+      "target_id": "begin-one-gallon-refuel,fail-refuel-for-full-tank",
+      "trace": "any-scenario-truck-repair6-20261007T223556",
+      "why": "Requiring a ready state to begin refueling and resuming driving after a full-tank failure prevents same-tick repeated failures while allowing earlier one-gallon refuels and continued progress toward the destination."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 5,
+      "change": "replace_process",
+      "cost": 0.1002265,
+      "finding": "with delivery-vehicle fuel_amount at zero: The driver begins a driving interval even though the delivery vehicle's fuel_amount started at zero; a fuel-depleted vehicle should not initiate driving. (run log: \"t0 delivery-driver did begin-ten-mile-driving-interval: delivery-driver.driver.driving_status ready->driving\")",
+      "kept": false,
+      "round": 7,
+      "target_id": "stall-started-driving-interval",
+      "trace": "any-scenario-truck-repair7-20261007T223556",
+      "why": "Replacing the existing fuel-stall process avoids exceeding the six-process limit while ensuring a vehicle starting at zero fuel makes its driver stalled rather than ready to initiate driving."
+    },
+    {
+      "blocking_after": 4,
+      "candidate_blocking": 4,
+      "change": "add_action",
+      "cost": 0.12096799999999999,
+      "finding": "the conceptual model says 'vehicle route position' falls, but no rule ever decreases delivery-vehicle.vehicle.route_position.",
+      "kept": true,
+      "round": 8,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair8-20261007T223556",
+      "why": "The added towing action introduces a causally matched transition that decreases components.vehicle.route_position without adding a seventh autonomous process."
+    }
+  ],
+  "scenario_text": "A delivery driver with a quarter tank must reach a town 120 miles away; there is one gas station at mile 60.",
+  "stock_map": [
+    {
+      "field": "delivery-vehicle.vehicle.fuel_amount",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "vehicle fuel amount"
+    },
+    {
+      "field": "gas-station.place_state.fuel_stock",
+      "has_inflows": false,
+      "has_outflows": true,
+      "stock": "gas station fuel stock"
+    },
+    {
+      "field": "delivery-vehicle.vehicle.route_position",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "vehicle route position"
+    }
+  ],
+  "traces": {
+    "anomaly": "any-scenario-truck-anomaly-20261007T223556",
+    "bundle": "any-scenario-truck-bundle-20261007T223556",
+    "mechanics": "any-scenario-truck-mechanics-20261007T223556",
+    "odd": "any-scenario-truck-odd-20261007T223556",
+    "sensing": "any-scenario-truck-sensing-20261007T223556",
+    "stocks": "any-scenario-truck-stocks-20261007T223556"
+  },
+  "world_kind": "task"
+}

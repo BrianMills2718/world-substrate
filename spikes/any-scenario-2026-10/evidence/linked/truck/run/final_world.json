@@ -1,0 +1,129 @@
+{
+  "actor_id": "delivery-driver",
+  "entities": {
+    "delivery-driver": {
+      "category_ids": [
+        "actor",
+        "driver"
+      ],
+      "components": {
+        "driver": {
+          "delivery_completed": true,
+          "driving_status": "delivered",
+          "route_position": 120,
+          "vehicle_ref": "delivery-vehicle"
+        }
+      },
+      "entity_id": "delivery-driver",
+      "label": "Delivery driver",
+      "last_cause_event_id": "e00055",
+      "location": {
+        "location_id": "route"
+      },
+      "source_entity_id": "delivery-driver",
+      "source_pack_id": "world-substrate-delivery-journey@1"
+    },
+    "delivery-journey": {
+      "category_ids": [
+        "journey",
+        "task"
+      ],
+      "components": {
+        "journey": {
+          "destination_ref": "destination-town",
+          "distance_to_destination": 0,
+          "distance_to_gas_station": 60,
+          "elapsed_driving_ticks": 12,
+          "gas_station_ref": "gas-station",
+          "journey_status": "completed",
+          "route_length": 120
+        }
+      },
+      "entity_id": "delivery-journey",
+      "label": "Delivery journey",
+      "last_cause_event_id": "e00055",
+      "location": {
+        "location_id": "route"
+      },
+      "source_entity_id": "delivery-journey",
+      "source_pack_id": "world-substrate-delivery-journey@1"
+    },
+    "delivery-vehicle": {
+      "category_ids": [
+        "vehicle"
+      ],
+      "components": {
+        "vehicle": {
+          "fuel_amount": 4.949999999999998,
+          "fuel_consumption_rate": 0.04,
+          "fuel_economy": 25,
+          "fuel_fraction": 0.32999999999999985,
+          "operational_status": "operational",
+          "route_position": 120,
+          "tank_capacity": 15
+        }
+      },
+      "entity_id": "delivery-vehicle",
+      "label": "Delivery vehicle",
+      "last_cause_event_id": "e00054",
+      "location": {
+        "location_id": "route"
+      },
+      "ownership": {
+        "owner_ref": "actor:delivery-driver"
+      },
+      "portable": {
+        "portable": true
+      },
+      "source_entity_id": "delivery-vehicle",
+      "source_pack_id": "world-substrate-delivery-journey@1"
+    },
+    "destination-town": {
+      "category_ids": [
+        "place",
+        "destination"
+      ],
+      "components": {
+        "place_state": {
+          "arrival_status": "reached",
+          "fuel_available": false,
+          "fuel_stock": 0,
+          "route_position": 120
+        }
+      },
+      "entity_id": "destination-town",
+      "label": "Destination town",
+      "last_cause_event_id": "e00055",
+      "location": {
+        "location_id": "route"
+      },
+      "source_entity_id": "destination-town",
+      "source_pack_id": "world-substrate-delivery-journey@1"
+    },
+    "gas-station": {
+      "category_ids": [
+        "place",
+        "gas_station"
+      ],
+      "components": {
+        "place_state": {
+          "arrival_status": "not reached",
+          "fuel_available": true,
+          "fuel_stock": 994,
+          "route_position": 60
+        }
+      },
+      "entity_id": "gas-station",
+      "label": "Gas station",
+      "last_cause_event_id": "e00036",
+      "location": {
+        "location_id": "route"
+      },
+      "source_entity_id": "gas-station",
+      "source_pack_id": "world-substrate-delivery-journey@1"
+    }
+  },
+  "revision": 55,
+  "tick": 18,
+  "world_id": "delivery-journey-live"
+}

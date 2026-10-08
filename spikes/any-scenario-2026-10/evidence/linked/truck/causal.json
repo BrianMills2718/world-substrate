@@ -1,0 +1,2004 @@
+{
+  "mechanics": [
+    {
+      "action_kind": "drive",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the delivery is not complete",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.driver.delivery_completed"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "the delivery driver is ready to drive",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.driver.driving_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "ready"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "actor",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "driving"
+          }
+        }
+      ],
+      "limits": [
+        "The action begins exactly one ten-mile interval; autonomous processes determine whether it advances or stalls.",
+        "The action does not itself inspect or consume fuel.",
+        "The model assumes the represented driver remains linked to the vehicle named by components.driver.vehicle_ref.",
+        "Route movement is limited to the represented ten-mile interval and does not model speed, traffic, or detours."
+      ],
+      "mechanic_id": "begin-ten-mile-driving-interval",
+      "parameters": {},
+      "participants": {},
+      "rationale": "A drive attempt begins one represented ten-mile driving interval. Fuel feasibility is resolved by autonomous processes after the interval begins.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "One drive action requests one ten-mile interval.",
+        "Driving status records the begun interval.",
+        "Fuel consumption is 10 miles multiplied by the represented 0.04 gallons per mile.",
+        "Movement of the driver and linked vehicle occurs together in one process."
+      ],
+      "tests": [
+        "A ready delivery driver with an incomplete delivery enters driving status.",
+        "A driver whose delivery is complete is refused.",
+        "A driver who is already driving, refueling, or otherwise not ready is refused.",
+        "Low fuel does not refuse the action; the subsequent driving process stalls the interval if less than 0.4 gallons is represented."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "refuel",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the delivery is not complete",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.driver.delivery_completed"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "the delivery driver is not already refueling",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.driver.driving_status"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "literal": "refueling"
+          }
+        },
+        {
+          "label": "the delivery driver and gas station are on the same route",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "station",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the delivery driver is at the gas station",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.driver.route_position"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.route_position"
+            }
+          }
+        },
+        {
+          "label": "the gas station offers fuel",
+          "left": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.fuel_available"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "the requested amount is one gallon",
+          "left": {
+            "action_field": "amount"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "actor",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "refueling"
+          }
+        }
+      ],
+      "limits": [
+        "Only a one-gallon request is supported because no represented field stores an arbitrary pending refuel amount.",
+        "Beginning the attempt does not guarantee sufficient station stock or tank space.",
+        "The selected station must be a represented gas station at the driver's route position.",
+        "Payment, price, and refueling duration are not represented."
+      ],
+      "mechanic_id": "begin-one-gallon-refuel",
+      "parameters": {
+        "amount": [
+          1
+        ]
+      },
+      "participants": {
+        "station": {
+          "categories": [
+            "place",
+            "gas_station"
+          ],
+          "components": [
+            "place_state"
+          ]
+        }
+      },
+      "rationale": "A refuel attempt may begin only at the represented gas station and is limited to one gallon so the requested quantity can be represented without inventing storage for a pending amount. Stock and tank feasibility are resolved autonomously.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "The station field identifies the represented gas station participant.",
+        "The amount field is constrained to one gallon.",
+        "Refueling status records the begun attempt.",
+        "Successful completion transfers one gallon from station stock to the linked vehicle."
+      ],
+      "tests": [
+        "At route position 60, a non-refueling driver can begin a one-gallon refuel attempt at the gas station.",
+        "A driver away from the station is refused.",
+        "An amount other than one gallon is refused.",
+        "Zero station stock does not refuse the attempt; the autonomous failure process resolves it.",
+        "A nearly full tank does not refuse the attempt; the autonomous capacity failure process resolves it."
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "processes": [
+    {
+      "checks": [
+        {
+          "label": "the delivery driver has begun driving",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.driving_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "driving"
+          }
+        },
+        {
+          "label": "the delivery vehicle is operational",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.operational_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "operational"
+          }
+        },
+        {
+          "label": "the delivery vehicle has enough fuel for this interval",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel_amount"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 0.4
+          }
+        },
+        {
+          "label": "the delivery driver has not reached the route end",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.route_position"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "journey",
+              "path": "components.journey.route_length"
+            }
+          }
+        },
+        {
+          "label": "the delivery vehicle uses the represented fuel rate",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel_consumption_rate"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 0.04
+          }
+        },
+        {
+          "label": "the delivery vehicle has the represented tank size",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.tank_capacity"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 15
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.driver.route_position",
+          "value": {
+            "literal": 10
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "ready"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "vehicle",
+          "path": "components.vehicle.route_position",
+          "value": {
+            "literal": 10
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "vehicle",
+          "path": "components.vehicle.fuel_amount",
+          "value": {
+            "literal": 0.4
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "vehicle",
+          "path": "components.vehicle.fuel_fraction",
+          "value": {
+            "literal": 0.02666666666666667
+          }
+        },
+        {
+          "op": "add",
+          "participant": "journey",
+          "path": "components.journey.elapsed_driving_ticks",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "participants": {
+        "journey": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "journey",
+              "task"
+            ],
+            "components": [
+              "journey"
+            ]
+          }
+        },
+        "vehicle": {
+          "link": "ref:driver.vehicle_ref",
+          "selector": {
+            "categories": [
+              "vehicle"
+            ],
+            "components": [
+              "vehicle"
+            ]
+          }
+        }
+      },
+      "process_id": "advance-started-driving-interval",
+      "rationale": "Each started driving interval advances the driver and linked vehicle ten miles, consumes 0.4 gallons at the represented rate, updates the fuel fraction for the represented 15-gallon tank, and counts one driving tick when enough fuel exists.",
+      "selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the delivery driver has begun driving",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.driving_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "driving"
+          }
+        },
+        {
+          "label": "the delivery vehicle lacks fuel for this interval",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel_amount"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "literal": 0.4
+          }
+        },
+        {
+          "label": "the delivery driver has not reached the route end",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.route_position"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "journey",
+              "path": "components.journey.route_length"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "stalled"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "vehicle",
+          "path": "components.vehicle.operational_status",
+          "value": {
+            "literal": "out of fuel"
+          }
+        }
+      ],
+      "participants": {
+        "journey": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "journey",
+              "task"
+            ],
+            "components": [
+              "journey"
+            ]
+          }
+        },
+        "vehicle": {
+          "link": "ref:driver.vehicle_ref",
+          "selector": {
+            "categories": [
+              "vehicle"
+            ],
+            "components": [
+              "vehicle"
+            ]
+          }
+        }
+      },
+      "process_id": "stall-started-driving-interval",
+      "rationale": "A begun driving interval stalls without movement when the linked vehicle lacks the 0.4 gallons required for ten miles.",
+      "selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the delivery driver is refueling",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.driving_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "refueling"
+          }
+        },
+        {
+          "label": "the delivery driver remains at the gas station",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.route_position"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.route_position"
+            }
+          }
+        },
+        {
+          "label": "the gas station offers fuel",
+          "left": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.fuel_available"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "the gas station has one gallon",
+          "left": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.fuel_stock"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the delivery vehicle has room for one gallon",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel_amount"
+            }
+          },
+          "op": "lte",
+          "right": {
+            "literal": 14
+          }
+        },
+        {
+          "label": "the delivery vehicle has the represented tank size",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.tank_capacity"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 15
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "station",
+          "path": "components.place_state.fuel_stock",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "vehicle",
+          "path": "components.vehicle.fuel_amount",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "vehicle",
+          "path": "components.vehicle.fuel_fraction",
+          "value": {
+            "literal": 0.06666666666666667
+          }
+        },
+        {
+          "op": "set",
+          "participant": "vehicle",
+          "path": "components.vehicle.operational_status",
+          "value": {
+            "literal": "operational"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "ready"
+          }
+        }
+      ],
+      "participants": {
+        "station": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "place",
+              "gas_station"
+            ],
+            "components": [
+              "place_state"
+            ]
+          }
+        },
+        "vehicle": {
+          "link": "ref:driver.vehicle_ref",
+          "selector": {
+            "categories": [
+              "vehicle"
+            ],
+            "components": [
+              "vehicle"
+            ]
+          }
+        }
+      },
+      "process_id": "complete-one-gallon-refuel",
+      "rationale": "A pending one-gallon refuel transfers fuel from the co-located gas station to the linked vehicle when stock and tank space suffice.",
+      "selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the delivery driver is refueling",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.driving_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "refueling"
+          }
+        },
+        {
+          "label": "the delivery driver remains at the gas station",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.route_position"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.route_position"
+            }
+          }
+        },
+        {
+          "label": "the gas station lacks one gallon",
+          "left": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.fuel_stock"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "literal": 1
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "refuel failed"
+          }
+        }
+      ],
+      "participants": {
+        "station": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "place",
+              "gas_station"
+            ],
+            "components": [
+              "place_state"
+            ]
+          }
+        }
+      },
+      "process_id": "fail-refuel-for-empty-station",
+      "rationale": "A pending refuel attempt fails without transferring fuel when the represented station has less than one gallon.",
+      "selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the delivery driver is refueling",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.driving_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "refueling"
+          }
+        },
+        {
+          "label": "the delivery driver remains at the gas station",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.route_position"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "station",
+              "path": "components.place_state.route_position"
+            }
+          }
+        },
+        {
+          "label": "the delivery vehicle lacks room for one gallon",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.fuel_amount"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 14
+          }
+        },
+        {
+          "label": "the delivery vehicle has the represented tank size",
+          "left": {
+            "participant": {
+              "name": "vehicle",
+              "path": "components.vehicle.tank_capacity"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 15
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "refuel failed"
+          }
+        }
+      ],
+      "participants": {
+        "station": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "place",
+              "gas_station"
+            ],
+            "components": [
+              "place_state"
+            ]
+          }
+        },
+        "vehicle": {
+          "link": "ref:driver.vehicle_ref",
+          "selector": {
+            "categories": [
+              "vehicle"
+            ],
+            "components": [
+              "vehicle"
+            ]
+          }
+        }
+      },
+      "process_id": "fail-refuel-for-full-tank",
+      "rationale": "A pending one-gallon refuel fails without transferring fuel when adding a gallon would exceed the represented 15-gallon tank.",
+      "selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the delivery is not already complete",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.delivery_completed"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "the delivery driver has reached the destination",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.driver.route_position"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "participant": {
+              "name": "destination",
+              "path": "components.place_state.route_position"
+            }
+          }
+        },
+        {
+          "label": "the destination matches the route end",
+          "left": {
+            "participant": {
+              "name": "destination",
+              "path": "components.place_state.route_position"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "journey",
+              "path": "components.journey.route_length"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.driver.delivery_completed",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.driver.driving_status",
+          "value": {
+            "literal": "delivered"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "destination",
+          "path": "components.place_state.arrival_status",
+          "value": {
+            "literal": "reached"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "journey",
+          "path": "components.journey.distance_to_destination",
+          "value": {
+            "literal": 0
+          }
+        },
+        {
+          "op": "set",
+          "participant": "journey",
+          "path": "components.journey.journey_status",
+          "value": {
+            "literal": "completed"
+          }
+        }
+      ],
+      "participants": {
+        "destination": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "place",
+              "destination"
+            ],
+            "components": [
+              "place_state"
+            ]
+          }
+        },
+        "journey": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "journey",
+              "task"
+            ],
+            "components": [
+              "journey"
+            ]
+          }
+        }
+      },
+      "process_id": "complete-delivery-at-destination",
+      "rationale": "When the driver reaches the represented destination position, the destination, journey, and delivery completion state change together.",
+      "selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      }
+    }
+  ],
+  "review": {
+    "mechanics": [
+      {
+        "action_kind": "drive",
+        "checks": [
+          {
+            "label": "the delivery is not complete",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.driver.delivery_completed"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "the delivery driver is ready to drive",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.driver.driving_status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "ready"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "actor",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "driving"
+            }
+          }
+        ],
+        "limits": [
+          "The action begins exactly one ten-mile interval; autonomous processes determine whether it advances or stalls.",
+          "The action does not itself inspect or consume fuel.",
+          "The model assumes the represented driver remains linked to the vehicle named by components.driver.vehicle_ref.",
+          "Route movement is limited to the represented ten-mile interval and does not model speed, traffic, or detours."
+        ],
+        "mechanic_id": "begin-ten-mile-driving-interval",
+        "rationale": "A drive attempt begins one represented ten-mile driving interval. Fuel feasibility is resolved by autonomous processes after the interval begins.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.driver",
+          "entities.<actor>.components.driver.delivery_completed",
+          "entities.<actor>.components.driver.driving_status"
+        ],
+        "tests": [
+          "A ready delivery driver with an incomplete delivery enters driving status.",
+          "A driver whose delivery is complete is refused.",
+          "A driver who is already driving, refueling, or otherwise not ready is refused.",
+          "Low fuel does not refuse the action; the subsequent driving process stalls the interval if less than 0.4 gallons is represented."
+        ],
+        "writes": [
+          "entities.<actor>.components.driver.driving_status",
+          "entities.<actor>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "refuel",
+        "checks": [
+          {
+            "label": "the delivery is not complete",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.driver.delivery_completed"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "the delivery driver is not already refueling",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.driver.driving_status"
+              }
+            },
+            "op": "ne",
+            "right": {
+              "literal": "refueling"
+            }
+          },
+          {
+            "label": "the delivery driver and gas station are on the same route",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "station",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the delivery driver is at the gas station",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.driver.route_position"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.route_position"
+              }
+            }
+          },
+          {
+            "label": "the gas station offers fuel",
+            "left": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.fuel_available"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the requested amount is one gallon",
+            "left": {
+              "action_field": "amount"
+            },
+            "op": "eq",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "actor",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "refueling"
+            }
+          }
+        ],
+        "limits": [
+          "Only a one-gallon request is supported because no represented field stores an arbitrary pending refuel amount.",
+          "Beginning the attempt does not guarantee sufficient station stock or tank space.",
+          "The selected station must be a represented gas station at the driver's route position.",
+          "Payment, price, and refueling duration are not represented."
+        ],
+        "mechanic_id": "begin-one-gallon-refuel",
+        "rationale": "A refuel attempt may begin only at the represented gas station and is limited to one gallon so the requested quantity can be represented without inventing storage for a pending amount. Stock and tank feasibility are resolved autonomously.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.driver",
+          "entities.<actor>.components.driver.delivery_completed",
+          "entities.<actor>.components.driver.driving_status",
+          "entities.<actor>.components.driver.route_position",
+          "entities.<actor>.location.location_id",
+          "entities.<station>.category_ids",
+          "entities.<station>.components.place_state",
+          "entities.<station>.components.place_state.fuel_available",
+          "entities.<station>.components.place_state.route_position",
+          "entities.<station>.location.location_id"
+        ],
+        "tests": [
+          "At route position 60, a non-refueling driver can begin a one-gallon refuel attempt at the gas station.",
+          "A driver away from the station is refused.",
+          "An amount other than one gallon is refused.",
+          "Zero station stock does not refuse the attempt; the autonomous failure process resolves it.",
+          "A nearly full tank does not refuse the attempt; the autonomous capacity failure process resolves it."
+        ],
+        "writes": [
+          "entities.<actor>.components.driver.driving_status",
+          "entities.<actor>.last_cause_event_id"
+        ]
+      }
+    ],
+    "processes": [
+      {
+        "checks": [
+          {
+            "label": "the delivery driver has begun driving",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.driving_status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "driving"
+            }
+          },
+          {
+            "label": "the delivery vehicle is operational",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.operational_status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "operational"
+            }
+          },
+          {
+            "label": "the delivery vehicle has enough fuel for this interval",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.fuel_amount"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 0.4
+            }
+          },
+          {
+            "label": "the delivery driver has not reached the route end",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.route_position"
+              }
+            },
+            "op": "lt",
+            "right": {
+              "participant": {
+                "name": "journey",
+                "path": "components.journey.route_length"
+              }
+            }
+          },
+          {
+            "label": "the delivery vehicle uses the represented fuel rate",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.fuel_consumption_rate"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 0.04
+            }
+          },
+          {
+            "label": "the delivery vehicle has the represented tank size",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.tank_capacity"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 15
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "add",
+            "participant": "it",
+            "path": "components.driver.route_position",
+            "value": {
+              "literal": 10
+            }
+          },
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "ready"
+            }
+          },
+          {
+            "op": "add",
+            "participant": "vehicle",
+            "path": "components.vehicle.route_position",
+            "value": {
+              "literal": 10
+            }
+          },
+          {
+            "op": "subtract",
+            "participant": "vehicle",
+            "path": "components.vehicle.fuel_amount",
+            "value": {
+              "literal": 0.4
+            }
+          },
+          {
+            "op": "subtract",
+            "participant": "vehicle",
+            "path": "components.vehicle.fuel_fraction",
+            "value": {
+              "literal": 0.02666666666666667
+            }
+          },
+          {
+            "op": "add",
+            "participant": "journey",
+            "path": "components.journey.elapsed_driving_ticks",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "participants": {
+          "journey": {
+            "link": "co_located",
+            "selector": {
+              "categories": [
+                "journey",
+                "task"
+              ],
+              "components": [
+                "journey"
+              ]
+            }
+          },
+          "vehicle": {
+            "link": "ref:driver.vehicle_ref",
+            "selector": {
+              "categories": [
+                "vehicle"
+              ],
+              "components": [
+                "vehicle"
+              ]
+            }
+          }
+        },
+        "process_id": "advance-started-driving-interval",
+        "rationale": "Each started driving interval advances the driver and linked vehicle ten miles, consumes 0.4 gallons at the represented rate, updates the fuel fraction for the represented 15-gallon tank, and counts one driving tick when enough fuel exists.",
+        "selector": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.driver.driving_status",
+          "entities.<it>.components.driver.route_position",
+          "entities.<it>.last_cause_event_id",
+          "entities.<journey>.components.journey.elapsed_driving_ticks",
+          "entities.<journey>.last_cause_event_id",
+          "entities.<vehicle>.components.vehicle.fuel_amount",
+          "entities.<vehicle>.components.vehicle.fuel_fraction",
+          "entities.<vehicle>.components.vehicle.route_position",
+          "entities.<vehicle>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the delivery driver has begun driving",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.driving_status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "driving"
+            }
+          },
+          {
+            "label": "the delivery vehicle lacks fuel for this interval",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.fuel_amount"
+              }
+            },
+            "op": "lt",
+            "right": {
+              "literal": 0.4
+            }
+          },
+          {
+            "label": "the delivery driver has not reached the route end",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.route_position"
+              }
+            },
+            "op": "lt",
+            "right": {
+              "participant": {
+                "name": "journey",
+                "path": "components.journey.route_length"
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "stalled"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "vehicle",
+            "path": "components.vehicle.operational_status",
+            "value": {
+              "literal": "out of fuel"
+            }
+          }
+        ],
+        "participants": {
+          "journey": {
+            "link": "co_located",
+            "selector": {
+              "categories": [
+                "journey",
+                "task"
+              ],
+              "components": [
+                "journey"
+              ]
+            }
+          },
+          "vehicle": {
+            "link": "ref:driver.vehicle_ref",
+            "selector": {
+              "categories": [
+                "vehicle"
+              ],
+              "components": [
+                "vehicle"
+              ]
+            }
+          }
+        },
+        "process_id": "stall-started-driving-interval",
+        "rationale": "A begun driving interval stalls without movement when the linked vehicle lacks the 0.4 gallons required for ten miles.",
+        "selector": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.driver.driving_status",
+          "entities.<it>.last_cause_event_id",
+          "entities.<vehicle>.components.vehicle.operational_status",
+          "entities.<vehicle>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the delivery driver is refueling",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.driving_status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "refueling"
+            }
+          },
+          {
+            "label": "the delivery driver remains at the gas station",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.route_position"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.route_position"
+              }
+            }
+          },
+          {
+            "label": "the gas station offers fuel",
+            "left": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.fuel_available"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the gas station has one gallon",
+            "left": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.fuel_stock"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the delivery vehicle has room for one gallon",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.fuel_amount"
+              }
+            },
+            "op": "lte",
+            "right": {
+              "literal": 14
+            }
+          },
+          {
+            "label": "the delivery vehicle has the represented tank size",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.tank_capacity"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 15
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "subtract",
+            "participant": "station",
+            "path": "components.place_state.fuel_stock",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "op": "add",
+            "participant": "vehicle",
+            "path": "components.vehicle.fuel_amount",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "op": "add",
+            "participant": "vehicle",
+            "path": "components.vehicle.fuel_fraction",
+            "value": {
+              "literal": 0.06666666666666667
+            }
+          },
+          {
+            "op": "set",
+            "participant": "vehicle",
+            "path": "components.vehicle.operational_status",
+            "value": {
+              "literal": "operational"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "ready"
+            }
+          }
+        ],
+        "participants": {
+          "station": {
+            "link": "co_located",
+            "selector": {
+              "categories": [
+                "place",
+                "gas_station"
+              ],
+              "components": [
+                "place_state"
+              ]
+            }
+          },
+          "vehicle": {
+            "link": "ref:driver.vehicle_ref",
+            "selector": {
+              "categories": [
+                "vehicle"
+              ],
+              "components": [
+                "vehicle"
+              ]
+            }
+          }
+        },
+        "process_id": "complete-one-gallon-refuel",
+        "rationale": "A pending one-gallon refuel transfers fuel from the co-located gas station to the linked vehicle when stock and tank space suffice.",
+        "selector": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.driver.driving_status",
+          "entities.<it>.last_cause_event_id",
+          "entities.<station>.components.place_state.fuel_stock",
+          "entities.<station>.last_cause_event_id",
+          "entities.<vehicle>.components.vehicle.fuel_amount",
+          "entities.<vehicle>.components.vehicle.fuel_fraction",
+          "entities.<vehicle>.components.vehicle.operational_status",
+          "entities.<vehicle>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the delivery driver is refueling",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.driving_status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "refueling"
+            }
+          },
+          {
+            "label": "the delivery driver remains at the gas station",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.route_position"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.route_position"
+              }
+            }
+          },
+          {
+            "label": "the gas station lacks one gallon",
+            "left": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.fuel_stock"
+              }
+            },
+            "op": "lt",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "refuel failed"
+            }
+          }
+        ],
+        "participants": {
+          "station": {
+            "link": "co_located",
+            "selector": {
+              "categories": [
+                "place",
+                "gas_station"
+              ],
+              "components": [
+                "place_state"
+              ]
+            }
+          }
+        },
+        "process_id": "fail-refuel-for-empty-station",
+        "rationale": "A pending refuel attempt fails without transferring fuel when the represented station has less than one gallon.",
+        "selector": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.driver.driving_status",
+          "entities.<it>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the delivery driver is refueling",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.driving_status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "refueling"
+            }
+          },
+          {
+            "label": "the delivery driver remains at the gas station",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.route_position"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "station",
+                "path": "components.place_state.route_position"
+              }
+            }
+          },
+          {
+            "label": "the delivery vehicle lacks room for one gallon",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.fuel_amount"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 14
+            }
+          },
+          {
+            "label": "the delivery vehicle has the represented tank size",
+            "left": {
+              "participant": {
+                "name": "vehicle",
+                "path": "components.vehicle.tank_capacity"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 15
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "refuel failed"
+            }
+          }
+        ],
+        "participants": {
+          "station": {
+            "link": "co_located",
+            "selector": {
+              "categories": [
+                "place",
+                "gas_station"
+              ],
+              "components": [
+                "place_state"
+              ]
+            }
+          },
+          "vehicle": {
+            "link": "ref:driver.vehicle_ref",
+            "selector": {
+              "categories": [
+                "vehicle"
+              ],
+              "components": [
+                "vehicle"
+              ]
+            }
+          }
+        },
+        "process_id": "fail-refuel-for-full-tank",
+        "rationale": "A pending one-gallon refuel fails without transferring fuel when adding a gallon would exceed the represented 15-gallon tank.",
+        "selector": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.driver.driving_status",
+          "entities.<it>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the delivery is not already complete",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.delivery_completed"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "the delivery driver has reached the destination",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.driver.route_position"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "participant": {
+                "name": "destination",
+                "path": "components.place_state.route_position"
+              }
+            }
+          },
+          {
+            "label": "the destination matches the route end",
+            "left": {
+              "participant": {
+                "name": "destination",
+                "path": "components.place_state.route_position"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "journey",
+                "path": "components.journey.route_length"
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.driver.delivery_completed",
+            "value": {
+              "literal": true
+            }
+          },
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.driver.driving_status",
+            "value": {
+              "literal": "delivered"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "destination",
+            "path": "components.place_state.arrival_status",
+            "value": {
+              "literal": "reached"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "journey",
+            "path": "components.journey.distance_to_destination",
+            "value": {
+              "literal": 0
+            }
+          },
+          {
+            "op": "set",
+            "participant": "journey",
+            "path": "components.journey.journey_status",
+            "value": {
+              "literal": "completed"
+            }
+          }
+        ],
+        "participants": {
+          "destination": {
+            "link": "co_located",
+            "selector": {
+              "categories": [
+                "place",
+                "destination"
+              ],
+              "components": [
+                "place_state"
+              ]
+            }
+          },
+          "journey": {
+            "link": "co_located",
+            "selector": {
+              "categories": [
+                "journey",
+                "task"
+              ],
+              "components": [
+                "journey"
+              ]
+            }
+          }
+        },
+        "process_id": "complete-delivery-at-destination",
+        "rationale": "When the driver reaches the represented destination position, the destination, journey, and delivery completion state change together.",
+        "selector": {
+          "categories": [
+            "actor",
+            "driver"
+          ],
+          "components": [
+            "driver"
+          ]
+        },
+        "writes": [
+          "entities.<destination>.components.place_state.arrival_status",
+          "entities.<destination>.last_cause_event_id",
+          "entities.<it>.components.driver.delivery_completed",
+          "entities.<it>.components.driver.driving_status",
+          "entities.<it>.last_cause_event_id",
+          "entities.<journey>.components.journey.distance_to_destination",
+          "entities.<journey>.components.journey.journey_status",
+          "entities.<journey>.last_cause_event_id"
+        ]
+      }
+    ],
+    "schema_version": "world-substrate-causal-model/v0",
+    "terminal": {
+      "checks": [
+        {
+          "op": "eq",
+          "path": "components.driver.delivery_completed",
+          "value": true
+        }
+      ],
+      "mode": "all",
+      "selector": {
+        "categories": [
+          "actor",
+          "driver"
+        ],
+        "components": [
+          "driver"
+        ]
+      }
+    }
+  },
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": {
+    "checks": [
+      {
+        "op": "eq",
+        "path": "components.driver.delivery_completed",
+        "value": true
+      }
+    ],
+    "mode": "all",
+    "selector": {
+      "categories": [
+        "actor",
+        "driver"
+      ],
+      "components": [
+        "driver"
+      ]
+    }
+  }
+}

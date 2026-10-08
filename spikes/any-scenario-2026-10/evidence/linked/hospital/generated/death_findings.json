@@ -1,0 +1,197 @@
+{
+  "coverage": [
+    {
+      "stock": "occupied_beds",
+      "outflow": "Patient recovery",
+      "rules": [
+        "record-one-recovering-patient"
+      ]
+    },
+    {
+      "stock": "occupied_beds",
+      "outflow": "Patient death",
+      "rules": []
+    },
+    {
+      "stock": "available_beds",
+      "outflow": "Patient admission",
+      "rules": []
+    },
+    {
+      "stock": "patients_requiring_ventilation",
+      "outflow": "Recovery",
+      "rules": [
+        "release-one-ventilator"
+      ]
+    },
+    {
+      "stock": "patients_requiring_ventilation",
+      "outflow": "Death",
+      "rules": []
+    },
+    {
+      "stock": "patients_requiring_ventilation",
+      "outflow": "Clinical improvement removing ventilation requirement",
+      "rules": [
+        "release-one-ventilator"
+      ]
+    },
+    {
+      "stock": "patients_on_ventilators",
+      "outflow": "Recovery",
+      "rules": [
+        "release-one-ventilator"
+      ]
+    },
+    {
+      "stock": "patients_on_ventilators",
+      "outflow": "Death",
+      "rules": []
+    },
+    {
+      "stock": "patients_on_ventilators",
+      "outflow": "Clinical improvement",
+      "rules": [
+        "release-one-ventilator"
+      ]
+    },
+    {
+      "stock": "patients_on_ventilators",
+      "outflow": "Ventilator failure",
+      "rules": []
+    },
+    {
+      "stock": "patients_on_ventilators",
+      "outflow": "Staff reassignment",
+      "rules": []
+    },
+    {
+      "stock": "patients_waiting_for_ventilation",
+      "outflow": "Assignment of a ventilator",
+      "rules": [
+        "allocate-one-available-ventilator"
+      ]
+    },
+    {
+      "stock": "patients_waiting_for_ventilation",
+      "outflow": "Recovery",
+      "rules": []
+    },
+    {
+      "stock": "patients_waiting_for_ventilation",
+      "outflow": "Death",
+      "rules": []
+    },
+    {
+      "stock": "operational_ventilators",
+      "outflow": "Ventilator failure",
+      "rules": []
+    },
+    {
+      "stock": "operational_ventilators",
+      "outflow": "Permanent equipment retirement",
+      "rules": []
+    },
+    {
+      "stock": "available_ventilators",
+      "outflow": "Assignment to a patient",
+      "rules": [
+        "allocate-one-available-ventilator"
+      ]
+    },
+    {
+      "stock": "available_ventilators",
+      "outflow": "Ventilator failure while idle",
+      "rules": []
+    },
+    {
+      "stock": "pending_ventilator_orders",
+      "outflow": "Supplier shipment after the delivery delay",
+      "rules": []
+    },
+    {
+      "stock": "pending_ventilator_orders",
+      "outflow": "Order cancellation",
+      "rules": []
+    },
+    {
+      "stock": "supplier_inventory",
+      "outflow": "Accepted hospital orders",
+      "rules": [
+        "dispatch-ventilators-to-hospital"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "check": "structure",
+      "blocking": true,
+      "stock": "occupied_beds",
+      "rule": "Patient death",
+      "finding": "the conceptual model says 'occupied_beds' falls by 'Patient death', but no rule implements that outflow."
+    },
+    {
+      "check": "structure",
+      "blocking": true,
+      "stock": "patients_requiring_ventilation",
+      "rule": "Death",
+      "finding": "the conceptual model says 'patients_requiring_ventilation' falls by 'Death', but no rule implements that outflow."
+    },
+    {
+      "check": "structure",
+      "blocking": true,
+      "stock": "patients_on_ventilators",
+      "rule": "Death",
+      "finding": "the conceptual model says 'patients_on_ventilators' falls by 'Death', but no rule implements that outflow."
+    },
+    {
+      "check": "structure",
+      "blocking": true,
+      "stock": "patients_waiting_for_ventilation",
+      "rule": "Death",
+      "finding": "the conceptual model says 'patients_waiting_for_ventilation' falls by 'Death', but no rule implements that outflow."
+    },
+    {
+      "check": "extreme_conditions",
+      "blocking": true,
+      "stock": "flu-patients.flu_patients.patients_on_ventilators",
+      "rule": "expected-consequence",
+      "finding": "with flu-patients patients_on_ventilators at zero the expected consequence never happens in the run (Flu patients requiring ventilation would be unable to receive it, potentially causing deterioration or death.): a rule for it is missing."
+    },
+    {
+      "check": "extreme_conditions",
+      "blocking": true,
+      "stock": "flu-patients.flu_patients.patients_requiring_ventilation",
+      "rule": "expected-consequence",
+      "finding": "with flu-patients patients_requiring_ventilation at zero the expected consequence never happens in the run (With zero patients requiring ventilation, no patient should need or receive a ventilator; ventilation allocation should stop and ventilators should remain idle.): a rule for it is missing."
+    },
+    {
+      "check": "extreme_conditions",
+      "blocking": true,
+      "stock": "flu-patients.flu_patients.patients_waiting_for_ventilation",
+      "rule": "expected-consequence",
+      "finding": "with flu-patients patients_waiting_for_ventilation at zero the expected consequence never happens in the run (Patients who need ventilation cannot receive it, causing treatment failure and potentially severe harm or death.): a rule for it is missing."
+    },
+    {
+      "check": "extreme_conditions",
+      "blocking": true,
+      "stock": "ventilators.ventilator_stock.number_available",
+      "rule": "expected-consequence",
+      "finding": "with ventilators number_available at zero the expected consequence never happens in the run (Patients who require ventilation cannot be placed on ventilators and remain waiting, potentially worsening or dying due to lack of respiratory support.): a rule for it is missing."
+    },
+    {
+      "check": "extreme_conditions",
+      "blocking": true,
+      "stock": "medical-supplier.supplier_stock.inventory",
+      "rule": "expected-consequence",
+      "finding": "with medical-supplier inventory at zero the expected consequence never happens in the run (The hospital would be unable to obtain additional ventilators, causing ventilator shortages and potentially leaving patients waiting for ventilation or sufferin): a rule for it is missing."
+    }
+  ],
+  "counts": {
+    "blocking": 22,
+    "advisory": 6,
+    "rules": 9,
+    "rules_fired": 9,
+    "depletable_stocks": 5
+  }
+}
