@@ -1,0 +1,2770 @@
+{
+  "mechanics": [
+    {
+      "action_kind": "communicate",
+      "actor_selector": {
+        "categories": [
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "checks": [
+        {
+          "label": "Actor is the represented information source",
+          "left": {
+            "participant": {
+              "name": "information",
+              "path": "components.information.source_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "Delivery names the represented information",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.info_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "information"
+          }
+        },
+        {
+          "label": "Delivery names the represented recipient",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.recipient_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "recipient"
+          }
+        },
+        {
+          "label": "Delivery channel agrees with information channel",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.channel_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "information",
+              "path": "components.information.channel_id"
+            }
+          }
+        },
+        {
+          "label": "Information is not active yet",
+          "left": {
+            "participant": {
+              "name": "information",
+              "path": "components.information.active"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "Delivery is pending",
+          "left": {
+            "participant": {
+              "name": "delivery",
+              "path": "components.delivery.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "pending"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "information",
+          "path": "components.information.active",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "op": "set",
+          "participant": "delivery",
+          "path": "components.delivery.status",
+          "value": {
+            "literal": "delivered"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "recipient",
+          "path": "components.member.aware",
+          "value": {
+            "literal": true
+          }
+        }
+      ],
+      "limits": [
+        "Delivery is represented, not a claim that the message caused a later decision."
+      ],
+      "mechanic_id": "coordination.action.communicate",
+      "parameters": {},
+      "participants": {
+        "delivery": {
+          "categories": [
+            "delivery"
+          ],
+          "components": [
+            "delivery"
+          ]
+        },
+        "information": {
+          "categories": [
+            "information"
+          ],
+          "components": [
+            "information"
+          ]
+        },
+        "recipient": {
+          "categories": [
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        }
+      },
+      "rationale": "A represented member may deliver one represented information item through its declared delivery record to its declared recipient.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [],
+      "tests": [
+        "only the declared source can deliver; recipient visibility remains actor-scoped"
+      ],
+      "version": "1"
+    },
+    {
+      "action_kind": "hold-member-meeting",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the partnership is organizing the meeting",
+          "left": {
+            "entity_id": "organizer"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "the organizer is the collective decision-making body",
+          "left": {
+            "participant": {
+              "name": "organizer",
+              "path": "components.member.role"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "Collective decision-making body responsible for the activation decision."
+          }
+        },
+        {
+          "label": "the selected meeting is the regular member meeting",
+          "left": {
+            "entity_id": "meeting"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "regular_member_meeting"
+          }
+        },
+        {
+          "label": "a new weekly meeting occurrence is available",
+          "left": {
+            "participant": {
+              "name": "regular_member_meeting",
+              "path": "components.moment.occurrences"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "participant": {
+              "name": "meeting_progress",
+              "path": "components.meeting_progress.meetings_delayed"
+            }
+          }
+        },
+        {
+          "label": "deliberation has room to advance",
+          "left": {
+            "participant": {
+              "name": "meeting_progress",
+              "path": "components.meeting_progress.progress_percent"
+            }
+          },
+          "op": "lte",
+          "right": {
+            "literal": 80
+          }
+        },
+        {
+          "label": "time remains before the deadline",
+          "left": {
+            "participant": {
+              "name": "time_to_deadline",
+              "path": "components.time_to_deadline.weeks_remaining"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "meeting_progress",
+          "path": "components.meeting_progress.progress_percent",
+          "value": {
+            "literal": 20
+          }
+        },
+        {
+          "op": "add",
+          "participant": "meeting_progress",
+          "path": "components.meeting_progress.meetings_delayed",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Each represented weekly occurrence can support only one meeting under this progress record.",
+        "The meeting advances deliberation but does not itself authorize activation or manufacture member support.",
+        "Progress advances in twenty-point increments and is capped by the pre-action boundary at one hundred."
+      ],
+      "mechanic_id": "hold-scheduled-member-meeting",
+      "parameters": {},
+      "participants": {
+        "meeting": {
+          "categories": [
+            "moment"
+          ],
+          "components": [
+            "moment"
+          ]
+        },
+        "meeting_progress": {
+          "categories": [
+            "deliberation-state"
+          ],
+          "components": [
+            "meeting_progress"
+          ]
+        },
+        "organizer": {
+          "categories": [
+            "actor",
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        },
+        "regular_member_meeting": {
+          "categories": [
+            "moment"
+          ],
+          "components": [
+            "moment"
+          ]
+        },
+        "time_to_deadline": {
+          "categories": [
+            "time-state"
+          ],
+          "components": [
+            "time_to_deadline"
+          ]
+        }
+      },
+      "rationale": "The partnership can use an occurrence of the represented weekly meeting to advance deliberation while time remains before the deadline.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "moment occurrences represent available weekly meetings",
+        "meeting progress represents deliberation toward a decision",
+        "meetings_delayed tracks consumed weekly meeting occurrences"
+      ],
+      "tests": [
+        "The partnership can hold the first meeting after the first weekly occurrence.",
+        "A member country cannot substitute for the collective organizer.",
+        "The same weekly occurrence cannot be counted twice.",
+        "A meeting is refused when no time remains or progress is already above eighty."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "reopen-settled-issue",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the requester is making the request",
+          "left": {
+            "entity_id": "requester"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "the requester is aware of a represented concern",
+          "left": {
+            "participant": {
+              "name": "requester",
+              "path": "components.member.aware"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "enough deliberation has occurred to revisit an issue",
+          "left": {
+            "participant": {
+              "name": "meeting_progress",
+              "path": "components.meeting_progress.progress_percent"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 10
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "meeting_progress",
+          "path": "components.meeting_progress.settled_issues_reopened",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "meeting_progress",
+          "path": "components.meeting_progress.progress_percent",
+          "value": {
+            "literal": 10
+          }
+        }
+      ],
+      "limits": [
+        "The issue and concern must use the governed vocabulary.",
+        "Awareness establishes that a concern was received but does not encode a one-to-one mapping between each concern string and requester.",
+        "The model does not retain the identity of each reopened issue, so repeated reopening requests are not deduplicated."
+      ],
+      "mechanic_id": "reopen-issue-for-known-concern",
+      "parameters": {
+        "concern": [
+          "technical_concern",
+          "legal_concern",
+          "logistics_concern",
+          "community_concern"
+        ],
+        "issue": [
+          "technical readiness",
+          "legal authority",
+          "logistics continuity",
+          "community communication"
+        ]
+      },
+      "participants": {
+        "meeting_progress": {
+          "categories": [
+            "deliberation-state"
+          ],
+          "components": [
+            "meeting_progress"
+          ]
+        },
+        "requester": {
+          "categories": [
+            "actor",
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        }
+      },
+      "rationale": "An aware member may reopen a previously considered issue, increasing the represented reopening count and consuming accumulated deliberation progress.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "awareness represents receipt of a concern",
+        "settled_issues_reopened counts renewed issues",
+        "reconsideration consumes meeting progress"
+      ],
+      "tests": [
+        "An aware member with at least ten progress points can reopen an allowed issue.",
+        "An unaware requester is refused.",
+        "A requester cannot act on behalf of another member.",
+        "A reopening that would drive progress below zero is refused."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "make-support-conditional",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the member is changing its own position",
+          "left": {
+            "entity_id": "member"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "the member is aware of a represented concern",
+          "left": {
+            "participant": {
+              "name": "member",
+              "path": "components.member.aware"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "the member has not given full approval",
+          "left": {
+            "participant": {
+              "name": "member",
+              "path": "components.member.approved"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "fewer than five represented members are conditionally supportive",
+          "left": {
+            "participant": {
+              "name": "member_support",
+              "path": "components.member_support.conditional_support_count"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "literal": 5
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "member",
+          "path": "components.member.approved",
+          "value": {
+            "literal": false
+          }
+        },
+        {
+          "op": "add",
+          "participant": "member_support",
+          "path": "components.member_support.conditional_support_count",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "The concern must use the governed concern vocabulary.",
+        "The aggregate count records conditional support, but represented state does not provide a dynamic per-member field that this single mechanic can select.",
+        "Because identity-specific conditional markers are absent, repeated declarations by one member cannot be distinguished from declarations by different members; the count is conservatively capped at five.",
+        "This action never grants full approval."
+      ],
+      "mechanic_id": "declare-conditional-support",
+      "parameters": {
+        "concern": [
+          "technical_concern",
+          "legal_concern",
+          "logistics_concern",
+          "community_concern"
+        ]
+      },
+      "participants": {
+        "member": {
+          "categories": [
+            "actor",
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        },
+        "member_support": {
+          "categories": [
+            "support-state"
+          ],
+          "components": [
+            "member_support"
+          ]
+        }
+      },
+      "rationale": "An aware member may withhold full approval pending an allowed concern and increase the aggregate represented count of conditional supporters.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "member awareness grounds the pending concern",
+        "lack of approval represents withholding unconditional approval",
+        "conditional_support_count aggregates conditional positions"
+      ],
+      "tests": [
+        "An aware member without full approval can add one conditional-support declaration.",
+        "An unaware member is refused.",
+        "A member cannot change another member's position.",
+        "A sixth aggregate conditional-support declaration is refused."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "delay-activation",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the partnership is making the decision",
+          "left": {
+            "entity_id": "decision_maker"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "the decision maker is the collective decision-making body",
+          "left": {
+            "participant": {
+              "name": "decision_maker",
+              "path": "components.member.role"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "Collective decision-making body responsible for the activation decision."
+          }
+        },
+        {
+          "label": "the activation decision is pending",
+          "left": {
+            "participant": {
+              "name": "activation_decision",
+              "path": "components.activation_decision.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "pending"
+          }
+        },
+        {
+          "label": "time remains before the deadline",
+          "left": {
+            "participant": {
+              "name": "time_to_deadline",
+              "path": "components.time_to_deadline.weeks_remaining"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the system has not been deployed",
+          "left": {
+            "participant": {
+              "name": "deployment_status",
+              "path": "components.deployment_status.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "not_deployed"
+          }
+        },
+        {
+          "label": "deployment has not been formally blocked",
+          "left": {
+            "participant": {
+              "name": "deployment_status",
+              "path": "components.deployment_status.deployment_blocked"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "activation_decision",
+          "path": "components.activation_decision.status",
+          "value": {
+            "literal": "delayed"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "deployment_status",
+          "path": "components.deployment_status.status",
+          "value": {
+            "literal": "postponed"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "meeting_progress",
+          "path": "components.meeting_progress.meetings_delayed",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "The reason must identify insufficient deliberation, readiness, or support.",
+        "The reason text is governed but is not independently persisted after the action.",
+        "Delay does not block deployment permanently and does not create additional deadline time."
+      ],
+      "mechanic_id": "postpone-pending-activation",
+      "parameters": {
+        "reason": [
+          "deliberation is insufficient",
+          "readiness is insufficient",
+          "support is insufficient"
+        ]
+      },
+      "participants": {
+        "activation_decision": {
+          "categories": [
+            "decision-status"
+          ],
+          "components": [
+            "activation_decision"
+          ]
+        },
+        "decision_maker": {
+          "categories": [
+            "actor",
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        },
+        "deployment_status": {
+          "categories": [
+            "deployment-state"
+          ],
+          "components": [
+            "deployment_status"
+          ]
+        },
+        "meeting_progress": {
+          "categories": [
+            "deliberation-state"
+          ],
+          "components": [
+            "meeting_progress"
+          ]
+        },
+        "member_support": {
+          "categories": [
+            "support-state"
+          ],
+          "components": [
+            "member_support"
+          ]
+        },
+        "time_to_deadline": {
+          "categories": [
+            "time-state"
+          ],
+          "components": [
+            "time_to_deadline"
+          ]
+        }
+      },
+      "rationale": "While the activation decision remains pending and time remains, the collective decision-making body may postpone activation for an allowed insufficiency reason without deploying.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "delayed decision status represents postponement",
+        "postponed deployment status prevents immediate deployment",
+        "meetings_delayed records additional deliberative delay"
+      ],
+      "tests": [
+        "The partnership can postpone a pending, undeployed activation while time remains.",
+        "A member country cannot make the collective postponement.",
+        "A decision that is already delayed, activated, or blocked cannot be delayed again.",
+        "Delay is refused after time has run out or after deployment."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "block-deployment",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the partnership is making the decision",
+          "left": {
+            "entity_id": "decision_maker"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "the decision maker is the collective decision-making body",
+          "left": {
+            "participant": {
+              "name": "decision_maker",
+              "path": "components.member.role"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "Collective decision-making body responsible for the activation decision."
+          }
+        },
+        {
+          "label": "the decision deadline has occurred",
+          "left": {
+            "participant": {
+              "name": "activation_decision_deadline",
+              "path": "components.moment.occurrences"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "activation has not been authorized",
+          "left": {
+            "participant": {
+              "name": "activation_decision",
+              "path": "components.activation_decision.status"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "literal": "activated"
+          }
+        },
+        {
+          "label": "Country One has not supplied required support",
+          "left": {
+            "participant": {
+              "name": "member_support",
+              "path": "components.member_support.country_one"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "literal": "supportive"
+          }
+        },
+        {
+          "label": "the system has not been deployed",
+          "left": {
+            "participant": {
+              "name": "deployment_status",
+              "path": "components.deployment_status.status"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "literal": "deployed"
+          }
+        },
+        {
+          "label": "deployment is not already blocked",
+          "left": {
+            "participant": {
+              "name": "deployment_status",
+              "path": "components.deployment_status.deployment_blocked"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "activation_decision",
+          "path": "components.activation_decision.status",
+          "value": {
+            "literal": "blocked"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "deployment_status",
+          "path": "components.deployment_status.status",
+          "value": {
+            "literal": "blocked"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "deployment_status",
+          "path": "components.deployment_status.deployment_blocked",
+          "value": {
+            "literal": true
+          }
+        }
+      ],
+      "limits": [
+        "This conservative rule proves absent support through Country One's represented position.",
+        "Readiness-only blocking is omitted because the action contract cannot express an OR between missing support and missing readiness without incorrectly requiring both.",
+        "Blocking is available only after the scheduled deadline occurrence and before deployment."
+      ],
+      "mechanic_id": "block-at-deadline-for-missing-support",
+      "parameters": {
+        "reason": [
+          "required support is absent"
+        ]
+      },
+      "participants": {
+        "activation_decision": {
+          "categories": [
+            "decision-status"
+          ],
+          "components": [
+            "activation_decision"
+          ]
+        },
+        "activation_decision_deadline": {
+          "categories": [
+            "moment"
+          ],
+          "components": [
+            "moment"
+          ]
+        },
+        "decision_maker": {
+          "categories": [
+            "actor",
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        },
+        "deployment_readiness": {
+          "categories": [
+            "readiness-state"
+          ],
+          "components": [
+            "deployment_readiness"
+          ]
+        },
+        "deployment_status": {
+          "categories": [
+            "deployment-state"
+          ],
+          "components": [
+            "deployment_status"
+          ]
+        },
+        "member_support": {
+          "categories": [
+            "support-state"
+          ],
+          "components": [
+            "member_support"
+          ]
+        }
+      },
+      "rationale": "Once the represented deadline has occurred, the partnership may formally block an undeployed system when at least one required member support position remains absent.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "deadline occurrence establishes the blocking boundary",
+        "non-supportive member state establishes absent required support",
+        "deployment_blocked records the formal prohibition"
+      ],
+      "tests": [
+        "The partnership can block after the deadline when Country One is not supportive.",
+        "Blocking before the deadline is refused.",
+        "A member country cannot issue the collective block.",
+        "An already deployed or already blocked system cannot be blocked again."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "activate-and-deploy",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "member"
+        ],
+        "components": [
+          "member"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the partnership is making the decision",
+          "left": {
+            "entity_id": "decision_maker"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "the deadline has not occurred",
+          "left": {
+            "participant": {
+              "name": "activation_decision_deadline",
+              "path": "components.moment.occurrences"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the activation decision is pending",
+          "left": {
+            "participant": {
+              "name": "activation_decision",
+              "path": "components.activation_decision.status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "pending"
+          }
+        },
+        {
+          "label": "Country One supports activation",
+          "left": {
+            "participant": {
+              "name": "support",
+              "path": "components.member_support.country_one"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "supportive"
+          }
+        },
+        {
+          "label": "Country Two supports activation",
+          "left": {
+            "participant": {
+              "name": "support",
+              "path": "components.member_support.country_two"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "supportive"
+          }
+        },
+        {
+          "label": "Country Three supports activation",
+          "left": {
+            "participant": {
+              "name": "support",
+              "path": "components.member_support.country_three"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "supportive"
+          }
+        },
+        {
+          "label": "Country Four supports activation",
+          "left": {
+            "participant": {
+              "name": "support",
+              "path": "components.member_support.country_four"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "supportive"
+          }
+        },
+        {
+          "label": "the Regional Health Network supports activation",
+          "left": {
+            "participant": {
+              "name": "support",
+              "path": "components.member_support.regional_health_network"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "supportive"
+          }
+        },
+        {
+          "label": "technical readiness is complete",
+          "left": {
+            "participant": {
+              "name": "readiness",
+              "path": "components.deployment_readiness.technical_ready"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "legal readiness is complete",
+          "left": {
+            "participant": {
+              "name": "readiness",
+              "path": "components.deployment_readiness.legal_ready"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "logistics readiness is complete",
+          "left": {
+            "participant": {
+              "name": "readiness",
+              "path": "components.deployment_readiness.logistics_ready"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "community readiness is complete",
+          "left": {
+            "participant": {
+              "name": "readiness",
+              "path": "components.deployment_readiness.community_ready"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "activation_decision",
+          "path": "components.activation_decision.status",
+          "value": {
+            "literal": "activated"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "deployment_status",
+          "path": "components.deployment_status.status",
+          "value": {
+            "literal": "deployed"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "deployment_status",
+          "path": "components.deployment_status.deployment_blocked",
+          "value": {
+            "literal": false
+          }
+        },
+        {
+          "op": "set",
+          "participant": "deployment_readiness",
+          "path": "components.deployment_readiness.overall_status",
+          "value": {
+            "literal": "ready"
+          }
+        }
+      ],
+      "limits": [
+        "All five represented support positions and all four readiness dimensions are required.",
+        "The supplied support and readiness references are category-constrained to the unique represented state records.",
+        "The provided actions do not include a general way to turn undecided positions into supportive positions, so deployment requires those represented positions to be established by another governed transition or initial-state revision.",
+        "Activation after the deadline or from a non-pending decision is refused."
+      ],
+      "mechanic_id": "authorize-supported-ready-deployment",
+      "parameters": {},
+      "participants": {
+        "activation_decision": {
+          "categories": [
+            "decision-status"
+          ],
+          "components": [
+            "activation_decision"
+          ]
+        },
+        "activation_decision_deadline": {
+          "categories": [
+            "moment"
+          ],
+          "components": [
+            "moment"
+          ]
+        },
+        "decision_maker": {
+          "categories": [
+            "actor",
+            "member"
+          ],
+          "components": [
+            "member"
+          ]
+        },
+        "deployment_readiness": {
+          "categories": [
+            "readiness-state"
+          ],
+          "components": [
+            "deployment_readiness"
+          ]
+        },
+        "deployment_status": {
+          "categories": [
+            "deployment-state"
+          ],
+          "components": [
+            "deployment_status"
+          ]
+        },
+        "member_support": {
+          "categories": [
+            "support-state"
+          ],
+          "components": [
+            "member_support"
+          ]
+        },
+        "readiness": {
+          "categories": [
+            "readiness-state"
+          ],
+          "components": [
+            "deployment_readiness"
+          ]
+        },
+        "support": {
+          "categories": [
+            "support-state"
+          ],
+          "components": [
+            "member_support"
+          ]
+        }
+      },
+      "rationale": "The partnership may activate and deploy before the deadline only when every represented member is supportive and every represented readiness dimension is true.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "unanimous represented support is sufficient support",
+        "four true readiness dimensions are sufficient readiness",
+        "activated decision and deployed status record authorization and deployment"
+      ],
+      "tests": [
+        "The partnership can deploy when all support positions are supportive, all readiness dimensions are true, the decision is pending, and the deadline has not occurred.",
+        "Any undecided or conditional member position prevents deployment.",
+        "Any false readiness dimension prevents deployment.",
+        "Deployment at or after the deadline occurrence is refused."
+      ],
+      "version": "1.0"
+    }
+  ],
+  "processes": [
+    {
+      "checks": [
+        {
+          "label": "the moment is still ahead",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.moment.ticks_until"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.moment.ticks_until",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "moment-countdown",
+      "rationale": "A scheduled moment's countdown falls by one each tick.",
+      "selector": {
+        "categories": [
+          "moment"
+        ],
+        "components": [
+          "moment"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the moment is due",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.moment.ticks_until"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.moment.occurrences",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.moment.ticks_until",
+          "value": {
+            "participant": {
+              "name": "it",
+              "path": "components.moment.every_ticks"
+            }
+          }
+        }
+      ],
+      "process_id": "moment-occurs",
+      "rationale": "At zero the moment happens once, then restarts its countdown.",
+      "selector": {
+        "categories": [
+          "moment"
+        ],
+        "components": [
+          "moment"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "at least one week remains",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.time_to_deadline.weeks_remaining"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.time_to_deadline.weeks_remaining",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "advance-deadline-countdown",
+      "rationale": "Each round consumes one represented week while positive time remains.",
+      "selector": {
+        "categories": [
+          "time-state"
+        ],
+        "components": [
+          "time_to_deadline"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the current planning horizon has ended",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.time_to_deadline.weeks_remaining"
+            }
+          },
+          "op": "lte",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.time_to_deadline.weeks_remaining",
+          "value": {
+            "literal": 8
+          }
+        },
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.time_to_deadline.deadline_tick",
+          "value": {
+            "literal": 8
+          }
+        }
+      ],
+      "process_id": "renew-planning-horizon",
+      "rationale": "Because the world is ongoing, an exhausted planning horizon starts a new eight-week cycle and advances the represented deadline tick.",
+      "selector": {
+        "categories": [
+          "time-state"
+        ],
+        "components": [
+          "time_to_deadline"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the deliberation cycle is complete",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.meeting_progress.progress_percent"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 100
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.meeting_progress.progress_percent",
+          "value": {
+            "literal": 0
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.meeting_progress.settled_issues_reopened",
+          "value": {
+            "literal": 0
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.meeting_progress.meetings_delayed",
+          "value": {
+            "literal": 0
+          }
+        }
+      ],
+      "process_id": "renew-deliberation-cycle",
+      "rationale": "Completing a full deliberation cycle opens a fresh cycle in the ongoing world and clears cycle-specific reopening and meeting counters.",
+      "selector": {
+        "categories": [
+          "deliberation-state"
+        ],
+        "components": [
+          "meeting_progress"
+        ]
+      }
+    }
+  ],
+  "review": {
+    "mechanics": [
+      {
+        "action_kind": "communicate",
+        "checks": [
+          {
+            "label": "the information names the sender as its source",
+            "left": {
+              "participant": {
+                "name": "information",
+                "path": "components.information.source_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the delivery carries this information",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.info_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "information"
+            }
+          },
+          {
+            "label": "the delivery names this recipient",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.recipient_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "recipient"
+            }
+          },
+          {
+            "label": "the delivery uses the information channel",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.channel_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "information",
+                "path": "components.information.channel_id"
+              }
+            }
+          },
+          {
+            "label": "the delivery is pending",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pending"
+            }
+          },
+          {
+            "label": "the information is not already active",
+            "left": {
+              "participant": {
+                "name": "information",
+                "path": "components.information.active"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "information",
+            "path": "components.information.active",
+            "value": {
+              "literal": true
+            }
+          },
+          {
+            "op": "set",
+            "participant": "delivery",
+            "path": "components.delivery.status",
+            "value": {
+              "literal": "delivered"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "recipient",
+            "path": "components.member.aware",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "Delivery records must already represent the information, recipient, and matching channel.",
+          "The action records awareness but does not establish agreement, readiness, or resolution of the concern.",
+          "A delivered record cannot be delivered again until an autonomous cycle returns it to pending."
+        ],
+        "mechanic_id": "deliver-declared-information",
+        "rationale": "The represented source may deliver an active information item through its matching pending delivery record to the delivery record's declared recipient.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<delivery>.category_ids",
+          "entities.<delivery>.components.delivery",
+          "entities.<delivery>.components.delivery.channel_id",
+          "entities.<delivery>.components.delivery.info_id",
+          "entities.<delivery>.components.delivery.recipient_id",
+          "entities.<delivery>.components.delivery.status",
+          "entities.<information>.category_ids",
+          "entities.<information>.components.information",
+          "entities.<information>.components.information.active",
+          "entities.<information>.components.information.channel_id",
+          "entities.<information>.components.information.source_id",
+          "entities.<recipient>.category_ids",
+          "entities.<recipient>.components.member"
+        ],
+        "tests": [
+          "A specialist named by the information source can complete the matching pending delivery.",
+          "A different sender is refused.",
+          "A delivery naming another information item or recipient is refused.",
+          "An already delivered record is refused."
+        ],
+        "writes": [
+          "entities.<delivery>.components.delivery.status",
+          "entities.<delivery>.last_cause_event_id",
+          "entities.<information>.components.information.active",
+          "entities.<information>.last_cause_event_id",
+          "entities.<recipient>.components.member.aware",
+          "entities.<recipient>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "hold-member-meeting",
+        "checks": [
+          {
+            "label": "the partnership is organizing the meeting",
+            "left": {
+              "entity_id": "organizer"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the organizer is the collective decision-making body",
+            "left": {
+              "participant": {
+                "name": "organizer",
+                "path": "components.member.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "Collective decision-making body responsible for the activation decision."
+            }
+          },
+          {
+            "label": "the selected meeting is the regular member meeting",
+            "left": {
+              "entity_id": "meeting"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "regular_member_meeting"
+            }
+          },
+          {
+            "label": "a new weekly meeting occurrence is available",
+            "left": {
+              "participant": {
+                "name": "regular_member_meeting",
+                "path": "components.moment.occurrences"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "participant": {
+                "name": "meeting_progress",
+                "path": "components.meeting_progress.meetings_delayed"
+              }
+            }
+          },
+          {
+            "label": "deliberation has room to advance",
+            "left": {
+              "participant": {
+                "name": "meeting_progress",
+                "path": "components.meeting_progress.progress_percent"
+              }
+            },
+            "op": "lte",
+            "right": {
+              "literal": 80
+            }
+          },
+          {
+            "label": "time remains before the deadline",
+            "left": {
+              "participant": {
+                "name": "time_to_deadline",
+                "path": "components.time_to_deadline.weeks_remaining"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "add",
+            "participant": "meeting_progress",
+            "path": "components.meeting_progress.progress_percent",
+            "value": {
+              "literal": 20
+            }
+          },
+          {
+            "op": "add",
+            "participant": "meeting_progress",
+            "path": "components.meeting_progress.meetings_delayed",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "Each represented weekly occurrence can support only one meeting under this progress record.",
+          "The meeting advances deliberation but does not itself authorize activation or manufacture member support.",
+          "Progress advances in twenty-point increments and is capped by the pre-action boundary at one hundred."
+        ],
+        "mechanic_id": "hold-scheduled-member-meeting",
+        "rationale": "The partnership can use an occurrence of the represented weekly meeting to advance deliberation while time remains before the deadline.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<meeting>.category_ids",
+          "entities.<meeting>.components.moment",
+          "entities.<meeting_progress>.category_ids",
+          "entities.<meeting_progress>.components.meeting_progress",
+          "entities.<meeting_progress>.components.meeting_progress.meetings_delayed",
+          "entities.<meeting_progress>.components.meeting_progress.progress_percent",
+          "entities.<organizer>.category_ids",
+          "entities.<organizer>.components.member",
+          "entities.<organizer>.components.member.role",
+          "entities.<regular_member_meeting>.category_ids",
+          "entities.<regular_member_meeting>.components.moment",
+          "entities.<regular_member_meeting>.components.moment.occurrences",
+          "entities.<time_to_deadline>.category_ids",
+          "entities.<time_to_deadline>.components.time_to_deadline",
+          "entities.<time_to_deadline>.components.time_to_deadline.weeks_remaining"
+        ],
+        "tests": [
+          "The partnership can hold the first meeting after the first weekly occurrence.",
+          "A member country cannot substitute for the collective organizer.",
+          "The same weekly occurrence cannot be counted twice.",
+          "A meeting is refused when no time remains or progress is already above eighty."
+        ],
+        "writes": [
+          "entities.<meeting_progress>.components.meeting_progress.meetings_delayed",
+          "entities.<meeting_progress>.components.meeting_progress.progress_percent",
+          "entities.<meeting_progress>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "reopen-settled-issue",
+        "checks": [
+          {
+            "label": "the requester is making the request",
+            "left": {
+              "entity_id": "requester"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the requester is aware of a represented concern",
+            "left": {
+              "participant": {
+                "name": "requester",
+                "path": "components.member.aware"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "enough deliberation has occurred to revisit an issue",
+            "left": {
+              "participant": {
+                "name": "meeting_progress",
+                "path": "components.meeting_progress.progress_percent"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 10
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "add",
+            "participant": "meeting_progress",
+            "path": "components.meeting_progress.settled_issues_reopened",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "op": "subtract",
+            "participant": "meeting_progress",
+            "path": "components.meeting_progress.progress_percent",
+            "value": {
+              "literal": 10
+            }
+          }
+        ],
+        "limits": [
+          "The issue and concern must use the governed vocabulary.",
+          "Awareness establishes that a concern was received but does not encode a one-to-one mapping between each concern string and requester.",
+          "The model does not retain the identity of each reopened issue, so repeated reopening requests are not deduplicated."
+        ],
+        "mechanic_id": "reopen-issue-for-known-concern",
+        "rationale": "An aware member may reopen a previously considered issue, increasing the represented reopening count and consuming accumulated deliberation progress.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<meeting_progress>.category_ids",
+          "entities.<meeting_progress>.components.meeting_progress",
+          "entities.<meeting_progress>.components.meeting_progress.progress_percent",
+          "entities.<meeting_progress>.components.meeting_progress.settled_issues_reopened",
+          "entities.<requester>.category_ids",
+          "entities.<requester>.components.member",
+          "entities.<requester>.components.member.aware"
+        ],
+        "tests": [
+          "An aware member with at least ten progress points can reopen an allowed issue.",
+          "An unaware requester is refused.",
+          "A requester cannot act on behalf of another member.",
+          "A reopening that would drive progress below zero is refused."
+        ],
+        "writes": [
+          "entities.<meeting_progress>.components.meeting_progress.progress_percent",
+          "entities.<meeting_progress>.components.meeting_progress.settled_issues_reopened",
+          "entities.<meeting_progress>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "make-support-conditional",
+        "checks": [
+          {
+            "label": "the member is changing its own position",
+            "left": {
+              "entity_id": "member"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the member is aware of a represented concern",
+            "left": {
+              "participant": {
+                "name": "member",
+                "path": "components.member.aware"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the member has not given full approval",
+            "left": {
+              "participant": {
+                "name": "member",
+                "path": "components.member.approved"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "fewer than five represented members are conditionally supportive",
+            "left": {
+              "participant": {
+                "name": "member_support",
+                "path": "components.member_support.conditional_support_count"
+              }
+            },
+            "op": "lt",
+            "right": {
+              "literal": 5
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "member",
+            "path": "components.member.approved",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "op": "add",
+            "participant": "member_support",
+            "path": "components.member_support.conditional_support_count",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The concern must use the governed concern vocabulary.",
+          "The aggregate count records conditional support, but represented state does not provide a dynamic per-member field that this single mechanic can select.",
+          "Because identity-specific conditional markers are absent, repeated declarations by one member cannot be distinguished from declarations by different members; the count is conservatively capped at five.",
+          "This action never grants full approval."
+        ],
+        "mechanic_id": "declare-conditional-support",
+        "rationale": "An aware member may withhold full approval pending an allowed concern and increase the aggregate represented count of conditional supporters.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<member>.category_ids",
+          "entities.<member>.components.member",
+          "entities.<member>.components.member.approved",
+          "entities.<member>.components.member.aware",
+          "entities.<member_support>.category_ids",
+          "entities.<member_support>.components.member_support",
+          "entities.<member_support>.components.member_support.conditional_support_count"
+        ],
+        "tests": [
+          "An aware member without full approval can add one conditional-support declaration.",
+          "An unaware member is refused.",
+          "A member cannot change another member's position.",
+          "A sixth aggregate conditional-support declaration is refused."
+        ],
+        "writes": [
+          "entities.<member>.components.member.approved",
+          "entities.<member>.last_cause_event_id",
+          "entities.<member_support>.components.member_support.conditional_support_count",
+          "entities.<member_support>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "delay-activation",
+        "checks": [
+          {
+            "label": "the partnership is making the decision",
+            "left": {
+              "entity_id": "decision_maker"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the decision maker is the collective decision-making body",
+            "left": {
+              "participant": {
+                "name": "decision_maker",
+                "path": "components.member.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "Collective decision-making body responsible for the activation decision."
+            }
+          },
+          {
+            "label": "the activation decision is pending",
+            "left": {
+              "participant": {
+                "name": "activation_decision",
+                "path": "components.activation_decision.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pending"
+            }
+          },
+          {
+            "label": "time remains before the deadline",
+            "left": {
+              "participant": {
+                "name": "time_to_deadline",
+                "path": "components.time_to_deadline.weeks_remaining"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          },
+          {
+            "label": "the system has not been deployed",
+            "left": {
+              "participant": {
+                "name": "deployment_status",
+                "path": "components.deployment_status.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "not_deployed"
+            }
+          },
+          {
+            "label": "deployment has not been formally blocked",
+            "left": {
+              "participant": {
+                "name": "deployment_status",
+                "path": "components.deployment_status.deployment_blocked"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "activation_decision",
+            "path": "components.activation_decision.status",
+            "value": {
+              "literal": "delayed"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "deployment_status",
+            "path": "components.deployment_status.status",
+            "value": {
+              "literal": "postponed"
+            }
+          },
+          {
+            "op": "add",
+            "participant": "meeting_progress",
+            "path": "components.meeting_progress.meetings_delayed",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The reason must identify insufficient deliberation, readiness, or support.",
+          "The reason text is governed but is not independently persisted after the action.",
+          "Delay does not block deployment permanently and does not create additional deadline time."
+        ],
+        "mechanic_id": "postpone-pending-activation",
+        "rationale": "While the activation decision remains pending and time remains, the collective decision-making body may postpone activation for an allowed insufficiency reason without deploying.",
+        "reads": [
+          "entities.<activation_decision>.category_ids",
+          "entities.<activation_decision>.components.activation_decision",
+          "entities.<activation_decision>.components.activation_decision.status",
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<decision_maker>.category_ids",
+          "entities.<decision_maker>.components.member",
+          "entities.<decision_maker>.components.member.role",
+          "entities.<deployment_status>.category_ids",
+          "entities.<deployment_status>.components.deployment_status",
+          "entities.<deployment_status>.components.deployment_status.deployment_blocked",
+          "entities.<deployment_status>.components.deployment_status.status",
+          "entities.<meeting_progress>.category_ids",
+          "entities.<meeting_progress>.components.meeting_progress",
+          "entities.<meeting_progress>.components.meeting_progress.meetings_delayed",
+          "entities.<member_support>.category_ids",
+          "entities.<member_support>.components.member_support",
+          "entities.<time_to_deadline>.category_ids",
+          "entities.<time_to_deadline>.components.time_to_deadline",
+          "entities.<time_to_deadline>.components.time_to_deadline.weeks_remaining"
+        ],
+        "tests": [
+          "The partnership can postpone a pending, undeployed activation while time remains.",
+          "A member country cannot make the collective postponement.",
+          "A decision that is already delayed, activated, or blocked cannot be delayed again.",
+          "Delay is refused after time has run out or after deployment."
+        ],
+        "writes": [
+          "entities.<activation_decision>.components.activation_decision.status",
+          "entities.<activation_decision>.last_cause_event_id",
+          "entities.<deployment_status>.components.deployment_status.status",
+          "entities.<deployment_status>.last_cause_event_id",
+          "entities.<meeting_progress>.components.meeting_progress.meetings_delayed",
+          "entities.<meeting_progress>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "block-deployment",
+        "checks": [
+          {
+            "label": "the partnership is making the decision",
+            "left": {
+              "entity_id": "decision_maker"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the decision maker is the collective decision-making body",
+            "left": {
+              "participant": {
+                "name": "decision_maker",
+                "path": "components.member.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "Collective decision-making body responsible for the activation decision."
+            }
+          },
+          {
+            "label": "the decision deadline has occurred",
+            "left": {
+              "participant": {
+                "name": "activation_decision_deadline",
+                "path": "components.moment.occurrences"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          },
+          {
+            "label": "activation has not been authorized",
+            "left": {
+              "participant": {
+                "name": "activation_decision",
+                "path": "components.activation_decision.status"
+              }
+            },
+            "op": "ne",
+            "right": {
+              "literal": "activated"
+            }
+          },
+          {
+            "label": "Country One has not supplied required support",
+            "left": {
+              "participant": {
+                "name": "member_support",
+                "path": "components.member_support.country_one"
+              }
+            },
+            "op": "ne",
+            "right": {
+              "literal": "supportive"
+            }
+          },
+          {
+            "label": "the system has not been deployed",
+            "left": {
+              "participant": {
+                "name": "deployment_status",
+                "path": "components.deployment_status.status"
+              }
+            },
+            "op": "ne",
+            "right": {
+              "literal": "deployed"
+            }
+          },
+          {
+            "label": "deployment is not already blocked",
+            "left": {
+              "participant": {
+                "name": "deployment_status",
+                "path": "components.deployment_status.deployment_blocked"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "activation_decision",
+            "path": "components.activation_decision.status",
+            "value": {
+              "literal": "blocked"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "deployment_status",
+            "path": "components.deployment_status.status",
+            "value": {
+              "literal": "blocked"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "deployment_status",
+            "path": "components.deployment_status.deployment_blocked",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "This conservative rule proves absent support through Country One's represented position.",
+          "Readiness-only blocking is omitted because the action contract cannot express an OR between missing support and missing readiness without incorrectly requiring both.",
+          "Blocking is available only after the scheduled deadline occurrence and before deployment."
+        ],
+        "mechanic_id": "block-at-deadline-for-missing-support",
+        "rationale": "Once the represented deadline has occurred, the partnership may formally block an undeployed system when at least one required member support position remains absent.",
+        "reads": [
+          "entities.<activation_decision>.category_ids",
+          "entities.<activation_decision>.components.activation_decision",
+          "entities.<activation_decision>.components.activation_decision.status",
+          "entities.<activation_decision_deadline>.category_ids",
+          "entities.<activation_decision_deadline>.components.moment",
+          "entities.<activation_decision_deadline>.components.moment.occurrences",
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<decision_maker>.category_ids",
+          "entities.<decision_maker>.components.member",
+          "entities.<decision_maker>.components.member.role",
+          "entities.<deployment_readiness>.category_ids",
+          "entities.<deployment_readiness>.components.deployment_readiness",
+          "entities.<deployment_status>.category_ids",
+          "entities.<deployment_status>.components.deployment_status",
+          "entities.<deployment_status>.components.deployment_status.deployment_blocked",
+          "entities.<deployment_status>.components.deployment_status.status",
+          "entities.<member_support>.category_ids",
+          "entities.<member_support>.components.member_support",
+          "entities.<member_support>.components.member_support.country_one"
+        ],
+        "tests": [
+          "The partnership can block after the deadline when Country One is not supportive.",
+          "Blocking before the deadline is refused.",
+          "A member country cannot issue the collective block.",
+          "An already deployed or already blocked system cannot be blocked again."
+        ],
+        "writes": [
+          "entities.<activation_decision>.components.activation_decision.status",
+          "entities.<activation_decision>.last_cause_event_id",
+          "entities.<deployment_status>.components.deployment_status.deployment_blocked",
+          "entities.<deployment_status>.components.deployment_status.status",
+          "entities.<deployment_status>.last_cause_event_id"
+        ]
+      },
+      {
+        "action_kind": "activate-and-deploy",
+        "checks": [
+          {
+            "label": "the partnership is making the decision",
+            "left": {
+              "entity_id": "decision_maker"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the deadline has not occurred",
+            "left": {
+              "participant": {
+                "name": "activation_decision_deadline",
+                "path": "components.moment.occurrences"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 0
+            }
+          },
+          {
+            "label": "the activation decision is pending",
+            "left": {
+              "participant": {
+                "name": "activation_decision",
+                "path": "components.activation_decision.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pending"
+            }
+          },
+          {
+            "label": "Country One supports activation",
+            "left": {
+              "participant": {
+                "name": "support",
+                "path": "components.member_support.country_one"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "supportive"
+            }
+          },
+          {
+            "label": "Country Two supports activation",
+            "left": {
+              "participant": {
+                "name": "support",
+                "path": "components.member_support.country_two"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "supportive"
+            }
+          },
+          {
+            "label": "Country Three supports activation",
+            "left": {
+              "participant": {
+                "name": "support",
+                "path": "components.member_support.country_three"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "supportive"
+            }
+          },
+          {
+            "label": "Country Four supports activation",
+            "left": {
+              "participant": {
+                "name": "support",
+                "path": "components.member_support.country_four"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "supportive"
+            }
+          },
+          {
+            "label": "the Regional Health Network supports activation",
+            "left": {
+              "participant": {
+                "name": "support",
+                "path": "components.member_support.regional_health_network"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "supportive"
+            }
+          },
+          {
+            "label": "technical readiness is complete",
+            "left": {
+              "participant": {
+                "name": "readiness",
+                "path": "components.deployment_readiness.technical_ready"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "legal readiness is complete",
+            "left": {
+              "participant": {
+                "name": "readiness",
+                "path": "components.deployment_readiness.legal_ready"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "logistics readiness is complete",
+            "left": {
+              "participant": {
+                "name": "readiness",
+                "path": "components.deployment_readiness.logistics_ready"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "community readiness is complete",
+            "left": {
+              "participant": {
+                "name": "readiness",
+                "path": "components.deployment_readiness.community_ready"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "activation_decision",
+            "path": "components.activation_decision.status",
+            "value": {
+              "literal": "activated"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "deployment_status",
+            "path": "components.deployment_status.status",
+            "value": {
+              "literal": "deployed"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "deployment_status",
+            "path": "components.deployment_status.deployment_blocked",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "op": "set",
+            "participant": "deployment_readiness",
+            "path": "components.deployment_readiness.overall_status",
+            "value": {
+              "literal": "ready"
+            }
+          }
+        ],
+        "limits": [
+          "All five represented support positions and all four readiness dimensions are required.",
+          "The supplied support and readiness references are category-constrained to the unique represented state records.",
+          "The provided actions do not include a general way to turn undecided positions into supportive positions, so deployment requires those represented positions to be established by another governed transition or initial-state revision.",
+          "Activation after the deadline or from a non-pending decision is refused."
+        ],
+        "mechanic_id": "authorize-supported-ready-deployment",
+        "rationale": "The partnership may activate and deploy before the deadline only when every represented member is supportive and every represented readiness dimension is true.",
+        "reads": [
+          "entities.<activation_decision>.category_ids",
+          "entities.<activation_decision>.components.activation_decision",
+          "entities.<activation_decision>.components.activation_decision.status",
+          "entities.<activation_decision_deadline>.category_ids",
+          "entities.<activation_decision_deadline>.components.moment",
+          "entities.<activation_decision_deadline>.components.moment.occurrences",
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<decision_maker>.category_ids",
+          "entities.<decision_maker>.components.member",
+          "entities.<deployment_readiness>.category_ids",
+          "entities.<deployment_readiness>.components.deployment_readiness",
+          "entities.<deployment_status>.category_ids",
+          "entities.<deployment_status>.components.deployment_status",
+          "entities.<member_support>.category_ids",
+          "entities.<member_support>.components.member_support",
+          "entities.<readiness>.category_ids",
+          "entities.<readiness>.components.deployment_readiness",
+          "entities.<readiness>.components.deployment_readiness.community_ready",
+          "entities.<readiness>.components.deployment_readiness.legal_ready",
+          "entities.<readiness>.components.deployment_readiness.logistics_ready",
+          "entities.<readiness>.components.deployment_readiness.technical_ready",
+          "entities.<support>.category_ids",
+          "entities.<support>.components.member_support",
+          "entities.<support>.components.member_support.country_four",
+          "entities.<support>.components.member_support.country_one",
+          "entities.<support>.components.member_support.country_three",
+          "entities.<support>.components.member_support.country_two",
+          "entities.<support>.components.member_support.regional_health_network"
+        ],
+        "tests": [
+          "The partnership can deploy when all support positions are supportive, all readiness dimensions are true, the decision is pending, and the deadline has not occurred.",
+          "Any undecided or conditional member position prevents deployment.",
+          "Any false readiness dimension prevents deployment.",
+          "Deployment at or after the deadline occurrence is refused."
+        ],
+        "writes": [
+          "entities.<activation_decision>.components.activation_decision.status",
+          "entities.<activation_decision>.last_cause_event_id",
+          "entities.<deployment_readiness>.components.deployment_readiness.overall_status",
+          "entities.<deployment_readiness>.last_cause_event_id",
+          "entities.<deployment_status>.components.deployment_status.deployment_blocked",
+          "entities.<deployment_status>.components.deployment_status.status",
+          "entities.<deployment_status>.last_cause_event_id"
+        ]
+      }
+    ],
+    "processes": [
+      {
+        "checks": [
+          {
+            "label": "at least one week remains",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.time_to_deadline.weeks_remaining"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "subtract",
+            "participant": "it",
+            "path": "components.time_to_deadline.weeks_remaining",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "process_id": "advance-deadline-countdown",
+        "rationale": "Each round consumes one represented week while positive time remains.",
+        "selector": {
+          "categories": [
+            "time-state"
+          ],
+          "components": [
+            "time_to_deadline"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.time_to_deadline.weeks_remaining",
+          "entities.<it>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the current planning horizon has ended",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.time_to_deadline.weeks_remaining"
+              }
+            },
+            "op": "lte",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.time_to_deadline.weeks_remaining",
+            "value": {
+              "literal": 8
+            }
+          },
+          {
+            "op": "add",
+            "participant": "it",
+            "path": "components.time_to_deadline.deadline_tick",
+            "value": {
+              "literal": 8
+            }
+          }
+        ],
+        "process_id": "renew-planning-horizon",
+        "rationale": "Because the world is ongoing, an exhausted planning horizon starts a new eight-week cycle and advances the represented deadline tick.",
+        "selector": {
+          "categories": [
+            "time-state"
+          ],
+          "components": [
+            "time_to_deadline"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.time_to_deadline.deadline_tick",
+          "entities.<it>.components.time_to_deadline.weeks_remaining",
+          "entities.<it>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the briefing has been delivered",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.delivery.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "delivered"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.delivery.status",
+            "value": {
+              "literal": "pending"
+            }
+          },
+          {
+            "op": "set",
+            "participant": "information",
+            "path": "components.information.active",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "op": "set",
+            "participant": "recipient",
+            "path": "components.member.aware",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "participants": {
+          "information": {
+            "link": "ref:delivery.info_id",
+            "selector": {
+              "categories": [
+                "information"
+              ],
+              "components": [
+                "information"
+              ]
+            }
+          },
+          "recipient": {
+            "link": "ref:delivery.recipient_id",
+            "selector": {
+              "categories": [
+                "actor",
+                "member"
+              ],
+              "components": [
+                "member"
+              ]
+            }
+          }
+        },
+        "process_id": "recycle-delivered-briefings",
+        "rationale": "Delivered local briefings return to pending circulation in the ongoing world, deactivating the information and clearing the named recipient's awareness so specialist communication remains repeatable.",
+        "selector": {
+          "categories": [
+            "delivery"
+          ],
+          "components": [
+            "delivery"
+          ]
+        },
+        "writes": [
+          "entities.<information>.components.information.active",
+          "entities.<information>.last_cause_event_id",
+          "entities.<it>.components.delivery.status",
+          "entities.<it>.last_cause_event_id",
+          "entities.<recipient>.components.member.aware",
+          "entities.<recipient>.last_cause_event_id"
+        ]
+      },
+      {
+        "checks": [
+          {
+            "label": "the deliberation cycle is complete",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.meeting_progress.progress_percent"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 100
+            }
+          }
+        ],
+        "effects": [
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.meeting_progress.progress_percent",
+            "value": {
+              "literal": 0
+            }
+          },
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.meeting_progress.settled_issues_reopened",
+            "value": {
+              "literal": 0
+            }
+          },
+          {
+            "op": "set",
+            "participant": "it",
+            "path": "components.meeting_progress.meetings_delayed",
+            "value": {
+              "literal": 0
+            }
+          }
+        ],
+        "process_id": "renew-deliberation-cycle",
+        "rationale": "Completing a full deliberation cycle opens a fresh cycle in the ongoing world and clears cycle-specific reopening and meeting counters.",
+        "selector": {
+          "categories": [
+            "deliberation-state"
+          ],
+          "components": [
+            "meeting_progress"
+          ]
+        },
+        "writes": [
+          "entities.<it>.components.meeting_progress.meetings_delayed",
+          "entities.<it>.components.meeting_progress.progress_percent",
+          "entities.<it>.components.meeting_progress.settled_issues_reopened",
+          "entities.<it>.last_cause_event_id"
+        ]
+      }
+    ],
+    "schema_version": "world-substrate-causal-model/v0",
+    "terminal": null
+  },
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": null
+}

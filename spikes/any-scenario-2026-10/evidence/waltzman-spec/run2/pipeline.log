@@ -1,0 +1,11 @@
+[step] spec 0.0s trace=any-scenario-pipeline1 from_spec=spikes/any-scenario-2026-10/evidence/waltzman-spec/pipeline1/scenario_spec.json cost=None people=10 items=4 moments=2 records=6 behaviors=8 unsupported=3
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm_structured)
+[step] actions 17.3s trace=any-scenario-waltzman-spec-actions-20261008T174927 cost=0.001077 kinds=['hold-member-meeting', 'reopen-settled-issue', 'make-support-conditional', 'delay-activation', 'block-deployment', 'activate-and-deploy']
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+[step] mechanics 82.1s trace=any-scenario-waltzman-spec-mechanics-20261008T174927 cost=0.140846 dropped=['generated mechanic deliver-declared-information dropped: action communicate is compiled', 'generated process recycle-delivered-briefings dropped: it writes what a compiled rule owns']
+Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7cd77990e5a0>
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7cd77b2f9da0>, 85912.005723612)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7cd77990e420>
+Waiting for provider cooldown: provider=openrouter remaining=13.4s

@@ -1,0 +1,71 @@
+{
+  "rows": [
+    {
+      "behavior": "Each specialist group can send its small, true, local concern through its own channel to a different partnership member.",
+      "by": "communicate",
+      "classification": "exact",
+      "request_id": "raise_local_concerns"
+    },
+    {
+      "behavior": "Members can meet on the recurring weekly schedule to review concerns and work toward an activation decision.",
+      "by": [
+        "hold-scheduled-member-meeting"
+      ],
+      "classification": "coarse",
+      "request_id": "hold_regular_meetings"
+    },
+    {
+      "behavior": "Consideration of the local concerns can consume meeting time and slow progress toward the decision.",
+      "by": [
+        "hold-scheduled-member-meeting"
+      ],
+      "classification": "coarse",
+      "request_id": "concerns_slow_meetings"
+    },
+    {
+      "behavior": "A relevant concern can cause members to reopen an issue that had previously been treated as settled.",
+      "by": [
+        "reopen-issue-for-known-concern"
+      ],
+      "classification": "coarse",
+      "request_id": "reopen_settled_issues"
+    },
+    {
+      "behavior": "A member can change from undecided or supportive to conditionally supportive until a relevant concern is addressed.",
+      "by": [
+        "declare-conditional-support"
+      ],
+      "classification": "coarse",
+      "request_id": "make_support_conditional"
+    },
+    {
+      "behavior": "If deliberations, readiness, or support remain insufficient, the partnership can delay activation rather than deploy immediately.",
+      "by": [
+        "postpone-pending-activation"
+      ],
+      "classification": "coarse",
+      "request_id": "delay_activation_decision"
+    },
+    {
+      "behavior": "If required support or readiness is absent by the deadline, activation can be blocked.",
+      "by": [
+        "block-at-deadline-for-missing-support"
+      ],
+      "classification": "coarse",
+      "request_id": "block_deployment"
+    },
+    {
+      "behavior": "If the partnership obtains sufficient support and readiness by the deadline, it can activate and deploy the early-warning system.",
+      "by": [
+        "authorize-supported-ready-deployment"
+      ],
+      "classification": "coarse",
+      "request_id": "activate_and_deploy_system"
+    }
+  ],
+  "unsupported": [
+    "The schema cannot encode a formal voting rule, veto structure, or required number of supportive members without one being supplied.",
+    "The schema cannot directly enforce that a concern affects only its local scope; that constraint is represented descriptively and in provenance.",
+    "The schema cannot model the technical operation or epidemiological performance of the bio-surveillance system in detail."
+  ]
+}

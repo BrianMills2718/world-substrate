@@ -131,7 +131,7 @@ The system model's files, its drift test and VIEW_COVERAGE are updated in the sa
   - **Extreme-conditions and anomaly reviews:** Pydantic verdicts with verbatim quotes.
   - **Rule writer:** a JSON change list, compiled locally.
   - **Agents:** the Pydantic `Attempt`, with the person's profile in the prompt.
-  - **Game-master rules:** the same rule-writer call as above, returning a JSON change list `{changes: [{change: add_action|add_process|replace_*, rule: <CausalModel mechanic or process>}], why}` (`midrun.py`, via `rule_writer.propose_rule`). It is compiled locally by `CausalModel.from_dict` and run through `run_checks`. It is installed only if no blocking finding names the new rule and the blocking count does not rise. Otherwise the attempt is recorded as an `unsupported.gm-ruling` Engine event with no changes. Each attempt leaves a record `{intent, trace_id, proposal, checks: {baseline_blocking, blocking, findings_on_new_rule}, event_id}` in `summary.json` under `rules_written_mid_run`.
+  - **Game-master rules:** the same rule-writer call as above, returning a JSON change list `{changes: [{change: add_action|add_process|replace_*, rule: <CausalModel mechanic or process>}], why}` (`midrun.py`, via `rule_writer.propose_rule`). It is compiled locally by `CausalModel.from_dict` and judged by `static_checks`: the checks that need no simulation (structure, selectors, attempt-vs-outcome, conservation, unresolved activity, co-located links). The simulated `run_checks` took over 4 minutes per call on the 10-agent world. A rule is installed only if no blocking finding names it and the blocking count does not rise. Otherwise the attempt is recorded as an `unsupported.gm-ruling` Engine event with no changes. Each attempt leaves a record `{intent, trace_id, proposal, checks: {baseline_blocking, blocking, findings_on_new_rule}, event_id}` in `summary.json` under `rules_written_mid_run`.
 - **Prose never mutates state.** Profiles shape attempts only; the Engine decides every consequence.
 - **Tracing:** every call goes through `llm_client` with an `any-scenario-` trace id, summed by `spend.py`.
 
@@ -140,6 +140,11 @@ The system model's files, its drift test and VIEW_COVERAGE are updated in the sa
 - **Spend:** OpenRouter model calls under Brian's key.
   - **Authorizer:** Brian, 2026-10-08. The cap is $2, measured from `spend.py` at the plan's start.
   - **Raising the cap:** needs his explicit yes.
+  - **Containment**, as enforced in code since 2026-10-08, after one run overshot the cap by $1.86 because game-master calls were not counted:
+    - `model_scenario.py` and `run_scenario.py` refuse to start when `spend.py`'s logged total plus the run budget exceeds `CAP`;
+    - during an agent run, spend is re-read from the call logs every tick, and the run stops (`ended: run_budget` or `plan_spend_cap`) when the run's logged spend exceeds its budget or the plan total exceeds `CAP`;
+    - the game master is limited to 6 rule-writing attempts per run (`midrun.GM_MAX_ATTEMPTS`);
+    - every model call goes through `llm_client` with a per-call `max_budget`.
   - **Expected cost:** about $0.60 to $1.20.
 - **Irreversible actions:** none. There is no deploy and no outreach.
 - **Promotion condition:** nothing is shown to Waltzman or deployed from this plan. Before any promotion, a fresh pipeline run of his text on a real model, with trace ids reported, must have an agent run showing at least three of the four mechanisms with Engine event ids.
@@ -216,8 +221,57 @@ The machine record is `scenario_spec_adoption/activation-facts.json`.
 
 ## Assessment
 
-To be written from the recorded run (S6).
+From pipeline run `waltzman-spec-20261008T174927` (world defined by `scenario_spec.json`, spec trace `any-scenario-waltzman-spec-spec-20261008T163904`, rules trace `any-scenario-waltzman-spec-mechanics-20261008T174927`) and agent run `run-20261008T184545` (trace `any-scenario-run-waltzman-spec-20261008T174927-20261008T184545`). The agent run went 12 ticks with 105 Engine events and 74 attempts, and spent $0.66 by the call logs. Evidence is in `spikes/any-scenario-2026-10/evidence/waltzman-spec/run2/`, and the tests are `RecordedWaltzmanRunTests`.
+
+**Bottom line:** all four of the paper's mechanisms appear as Engine events, driven by the AI agents' own choices. Two are only roughly represented. The run's one "deployment blocked" event is not valid; the bug behind it is fixed.
+
+| Mechanism | Verdict | Evidence | What is missing |
+| --- | --- | --- | --- |
+| Concerns delivered to different members through separate channels | represented | `e00005`–`e00008`, rule `coordination.action.communicate` (the reviewed rule). Each event delivers one group's concern to exactly one country, for example `e00006`: legal group to Country Two, delivery `pending`→`delivered`. At tick 1, Country Two's attempt cites that concern ("…(to country_two).topic: legal_concern") and makes its support conditional on it (`e00015`). | — |
+| Meetings that slow | represented roughly | `hold-scheduled-member-meeting` was held 7 times (`e00013`, `e00024`, …, `e00090`). Reopened issues set meeting progress back, for example `e00025` takes progress from 60 to 50. | The generated meeting rule adds to `meetings_delayed` at every meeting, whatever the concerns, so that counter is not evidence of slowing. The slowing that is evidenced is progress lost to reopened issues. |
+| Settled issues that reopen | represented | 14 events of `reopen-issue-for-known-concern`, for example `e00025` (Country Two, `settled_issues_reopened` 0→1) and `e00026` (Country Four). | — |
+| Support that becomes conditional | represented roughly | `declare-conditional-support` `e00014`–`e00017`, with `conditional_support_count` 0→4. By round 5 every member's support is `conditional` (`run/frame-round5-state.png`). | The condition is a status and a count; it does not record which concern the support depends on. Resolving a concern cannot restore support automatically. |
+
+**The block that was not valid:** `e00047` (`block-at-deadline-for-missing-support`, tick 5) blocked deployment. But its "the decision deadline has occurred" check read the *weekly meeting's* occurrence count (5), not the deadline's (0). The slot named `activation_decision_deadline` accepted any moment. This is fixed by `pin_named_slots`: a slot named after a specific record or moment accepts only that entity, and the test `test_pinned_slots_refuse_the_meeting_as_the_deadline` covers it. No valid run of the deadline outcome exists yet.
+
+**What to fix next** (from this run): store conditional support as a commitment linked to the concern it depends on, with states conditional, met and broken (Singh's commitments; see the research in this session). Make meeting slowing depend on open concerns. Both belong in the metamodel integration discussed with Brian, not in more spike patches.
 
 ## Current State
 
-- Demonstrated: none yet. Plan authored on 2026-10-08.
+- **S1-S3 met** (commits `9c03de6`, `a743a64`, `f59ff66`): the contract, the compiler with its Engine test, and the system model. The drift test failed twice before the model update and passes 14 of 14 after it (`evidence/scenario-spec/drift-*.log`).
+- **Pipeline run 1** (`waltzman-spec-20261008T163904`, trace `any-scenario-waltzman-spec-spec-20261008T163904`) stopped at a bundle naming error: action kinds need hyphens.
+- **Run 1b** (`--from-spec`, same spec) wrote the rules. Its repair loop was stopped before its first check finished.
+- **Agent runs on that world:**
+  - Two launches stalled with no model calls: discovery took about 1 second per agent, and the game master's simulated baseline check took over 4 minutes.
+  - One run, `run-20261008T174222`, was stopped at the audit after its first tick.
+- **Audit, 2026-10-08:**
+  - Generated rules never changed the world's records, because action signatures had no fields for them.
+  - Coverage counted an action's existence as coverage.
+  - Generated processes double-counted the meeting countdown.
+  - All three are repaired and tested against the recorded files: `RecordedPipelineRepairTests`, with evidence in `evidence/waltzman-spec/pipeline1/`.
+- **Deviation from the declared diff scope:** `src/world_substrate/engine.py`. `Engine.discover` now checks the read-only view once per page and re-runs hook by hook only when it changed, which is 12 times faster with the same errors. Also changed: `spikes/any-scenario-2026-10/checks.py` (`static_checks`) and `midrun.py`. These are needed to run 10 agents. The project gate passes 572 of 572.
+- **Pipeline run 2** (`waltzman-spec-20261008T174927`, `--from-spec`, after the audit repairs): every behavior is now covered by a rule that changes its records. Its simulated check was stopped after about 25 minutes. `checks.json` holds the static checks: 1 blocking finding, liveness on `authorize-supported-ready-deployment`.
+- **Agent run on pipeline run 2** (`run-20261008T181230`): it crashed at tick 10 when OpenRouter credit ran out. The run folder is empty, because events were written only at the end. The progress log is kept at `evidence/waltzman-spec/run1-crashed/members.log`. In it:
+  - all four groups delivered their concerns to their own country at tick 0 (`e00002`-`e00005`);
+  - the countries made support conditional at tick 1 (`e00011`-`e00014`);
+  - meetings were held each tick;
+  - Country Two reopened a settled issue at tick 10.
+
+  Those event ids appear only in the log; the Engine's change records are lost.
+- **Spend over the cap:**
+  - The game master's rule writing cost $3.30 (32 calls) in that run.
+  - The run budget counted only the residents' $0.23.
+  - The plan total reached $11.45 against the $9.59 cap: $1.86 over, without Brian's yes.
+- **Fixed:**
+  - the run budget now comes from the call logs, and the plan cap is checked every tick;
+  - the game master is limited to 6 rule-writing attempts per run;
+  - events and attempts are written every tick, and a failure writes a summary naming the error, then re-raises (verified with a failing model id).
+- **Blocked:** S5 and S6 need one more agent run. That needs more credit on the OpenRouter account ($0.57 left) and Brian's yes to raise the cap.
+- **Credit and cap:** Brian added credit and approved $2 more from $11.45 ("yeah i added mroe money"), so `CAP` = $13.45.
+- **Agent run `run-20261008T184545`** (complete): 12 ticks, $0.66 by the logs, game master stopped at 6 attempts. Its block event was found invalid during the assessment and the slot-pinning fix was added.
+- **Every run made in this plan:**
+  - pipeline runs: 1 (stopped at a naming error), 1b (repair loop stopped), and 2 (static checks);
+  - agent launches stalled with no model calls: two;
+  - agent runs: `run-20261008T174222` (stopped at the audit after tick 1), `run-20261008T181230` (credit ran out at tick 10, log only), and `run-20261008T184545` (complete);
+  - plus one run that tested the failure path with a fake model id and made no calls.
+

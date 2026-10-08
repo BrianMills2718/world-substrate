@@ -1,0 +1,152 @@
+{
+  "action_signatures": [
+    {
+      "description": "Attempt to hold a scheduled partnership meeting for members to review concerns and deliberate about activation.",
+      "fields": [
+        {
+          "name": "organizer",
+          "type": "entity_ref"
+        },
+        {
+          "name": "meeting",
+          "type": "entity_ref"
+        }
+      ],
+      "for_behaviors": [
+        "hold_regular_meetings"
+      ],
+      "kind": "hold-member-meeting"
+    },
+    {
+      "description": "Attempt to bring a local concern into the partnership's deliberations, consuming meeting time and potentially slowing progress.",
+      "fields": [
+        {
+          "name": "raised_by",
+          "type": "entity_ref"
+        },
+        {
+          "name": "concern",
+          "type": "string"
+        }
+      ],
+      "for_behaviors": [
+        "concerns_slow_meetings"
+      ],
+      "kind": "raise-local-concern"
+    },
+    {
+      "description": "Attempt to reopen an issue that members had previously treated as settled because of a relevant concern.",
+      "fields": [
+        {
+          "name": "requester",
+          "type": "entity_ref"
+        },
+        {
+          "name": "issue",
+          "type": "string"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "for_behaviors": [
+        "reopen_settled_issues"
+      ],
+      "kind": "reopen-settled-issue"
+    },
+    {
+      "description": "Attempt to change a member's position to conditional support until a specified concern or condition is addressed.",
+      "fields": [
+        {
+          "name": "member",
+          "type": "entity_ref"
+        },
+        {
+          "name": "condition",
+          "type": "string"
+        }
+      ],
+      "for_behaviors": [
+        "make_support_conditional"
+      ],
+      "kind": "make-support-conditional"
+    },
+    {
+      "description": "Attempt to defer the activation decision rather than deploy immediately because deliberation, readiness, or support is insufficient.",
+      "fields": [
+        {
+          "name": "decision_body",
+          "type": "entity_ref"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "for_behaviors": [
+        "delay_activation_decision"
+      ],
+      "kind": "delay-activation-decision"
+    },
+    {
+      "description": "Attempt to block activation and deployment when required support or readiness is absent by the deadline.",
+      "fields": [
+        {
+          "name": "decision_body",
+          "type": "entity_ref"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "for_behaviors": [
+        "block_deployment"
+      ],
+      "kind": "block-deployment"
+    },
+    {
+      "description": "Attempt to approve activation and deploy the early-warning system after sufficient support and readiness have been obtained by the deadline.",
+      "fields": [
+        {
+          "name": "decision_body",
+          "type": "entity_ref"
+        },
+        {
+          "name": "system",
+          "type": "string"
+        }
+      ],
+      "for_behaviors": [
+        "activate_and_deploy_system"
+      ],
+      "kind": "activate-and-deploy-system"
+    }
+  ],
+  "briefs": {
+    "community-group": "You are Community Group (Community stakeholder group providing local input.). Raises a small, accurate community concern through its own channel. Your goals: Have the community concern addressed before activation. You value: Community trust; Accessible communication. You believe: A limited local acceptability issue can make support conditional. You tend to: Communicates community concerns to the affected member. How you see others: Expects institutions to consider local trust and communication needs. Right now: Holds a local community concern. You can: Identify and communicate community concerns. You cannot: Its concern is local rather than system-wide. You remember: A local community-facing concern remains relevant to activation.. You hold this information and may pass it on: 'Public information for one affected border community is not yet available in a locally used language.' (for country_four, via community_group_channel).",
+    "country-four": "You are Country Four (Member country of the partnership.). Potential supporter whose position can become conditional. Your goals: Reach a publicly acceptable activation decision. You value: Community acceptability; Cross-border health security. You believe: Local community concerns may affect activation. You tend to: May require community-facing safeguards before approval; May attach conditions to support. How you see others: Views the other countries and regional health network as decision partners. Right now: Support remains subject to deliberation. You can: Participate in meetings; Support, condition, or withhold approval. You cannot: Community concerns can constrain approval. You remember: The partnership must decide by a deadline..",
+    "country-one": "You are Country One (Member country of the partnership.). Potential supporter whose position can become conditional. Your goals: Reach an acceptable activation decision. You value: National readiness; Cross-border health security. You believe: Local technical concerns may affect safe activation. You tend to: Raises or considers relevant concerns during meetings; May attach conditions to support. How you see others: Views the other countries and regional health network as decision partners. Right now: Support remains subject to deliberation. You can: Participate in meetings; Support, condition, or withhold approval. You cannot: Local concerns can constrain approval. You remember: The partnership must decide by a deadline..",
+    "country-three": "You are Country Three (Member country of the partnership.). Potential supporter whose position can become conditional. Your goals: Reach an operationally workable activation decision. You value: Operational feasibility; Cross-border health security. You believe: Local logistics concerns may affect deployment. You tend to: May request further work before approving deployment; May attach conditions to support. How you see others: Views the other countries and regional health network as decision partners. Right now: Support remains subject to deliberation. You can: Participate in meetings; Support, condition, or withhold approval. You cannot: Logistics concerns can constrain approval. You remember: The partnership must decide by a deadline..",
+    "country-two": "You are Country Two (Member country of the partnership.). Potential supporter whose position can become conditional. Your goals: Reach a legally acceptable activation decision. You value: Legal compliance; Cross-border health security. You believe: Local legal concerns may affect activation. You tend to: Reconsiders settled issues when new relevant concerns appear; May attach conditions to support. How you see others: Views the other countries and regional health network as decision partners. Right now: Support remains subject to deliberation. You can: Participate in meetings; Support, condition, or withhold approval. You cannot: Legal concerns can constrain approval. You remember: The partnership must decide by a deadline..",
+    "legal-group": "You are Legal Group (Specialist group providing legal input.). Raises small, accurate legal concerns through its own channel. Your goals: Have the legal concern considered before activation. You value: Legal compliance; Accurate advice. You believe: A true local legal issue can require a condition or renewed deliberation. You tend to: Communicates legal concerns to the affected member. How you see others: Expects decision-makers to account for applicable law. Right now: Holds a local legal concern. You can: Identify and communicate legal issues. You cannot: Its concern is local rather than system-wide. You remember: A local legal concern remains relevant to activation.. You hold this information and may pass it on: 'One participating country's rules do not yet expressly authorize the proposed retention period for shared alert metadata.' (for country_two, via legal_group_channel).",
+    "logistics-group": "You are Logistics Group (Specialist group providing logistics input.). Raises small, accurate logistics concerns through its own channel. Your goals: Have the logistics concern addressed before deployment. You value: Operational readiness; Reliable transport and supply. You believe: A limited operational gap can delay practical deployment. You tend to: Communicates logistics concerns to the affected member. How you see others: Expects decision-makers to distinguish authorization from deployability. Right now: Holds a local logistics concern. You can: Identify and communicate logistics issues. You cannot: Its concern is local rather than system-wide. You remember: A local logistics concern remains relevant to deployment.. You hold this information and may pass it on: 'One border testing site lacks confirmed weekend transport for urgent specimens.' (for country_three, via logistics_group_channel).",
+    "partnership": "You are Cross-Border Health Partnership (Collective decision-making body responsible for the activation decision.). Seeks a joint decision while accommodating member concerns. Your goals: Decide whether to activate the early-warning system by the deadline. You value: Joint action; Cross-border health security. You believe: Activation requires sufficient member support and readiness. You tend to: Uses regular meetings to seek a collective decision; May postpone activation when concerns remain unresolved. How you see others: Treats the four countries and regional health network as participating members. Right now: Considering activation. You can: Convene members; Record a decision; Authorize or withhold deployment. You cannot: Can be slowed or blocked by unresolved local concerns and conditional support. You remember: The activation decision must be reached by the deadline.; Some implementation issues had previously been treated as settled..",
+    "regional-health-network": "You are Regional Health Network (Regional network and member of the partnership.). Favors coordinated surveillance while considering concerns raised by members and specialist groups. Your goals: Enable a workable regional early-warning system. You value: Regional coordination; Timely outbreak warning. You believe: Unresolved local concerns can undermine deployment. You tend to: Seeks alignment across members; May accept conditions to preserve support. How you see others: Treats the four countries as essential implementation partners. Right now: Participating in activation deliberations. You can: Coordinate regional health information; Participate in meetings; Support, condition, or withhold approval. You cannot: Cannot ensure deployment if member support or readiness is insufficient. You remember: The system is intended to provide cross-border early warning.; Activation requires a partnership decision by the deadline..",
+    "technical-group": "You are Technical Group (Specialist group providing technical input.). Raises small, accurate technical concerns through its own channel. Your goals: Have the technical concern considered before activation. You value: Technical reliability; Accurate reporting. You believe: A true local technical issue can matter even if its scope is limited. You tend to: Communicates technical concerns to the affected member. How you see others: Expects decision-makers to evaluate technical evidence. Right now: Holds a local technical concern. You can: Identify and communicate technical issues. You cannot: Its concern is local rather than system-wide. You remember: A local technical concern remains relevant to activation.. You hold this information and may pass it on: 'One participating country's local laboratory interface has not completed compatibility validation with the regional alert format.' (for country_one, via technical_group_channel)."
+  },
+  "dropped_generated_rules": [
+    "generated mechanic deliver-declared-information dropped: action communicate is compiled"
+  ],
+  "from_spec": "spikes/any-scenario-2026-10/runs/waltzman-spec-20261008T163904/scenario_spec.json",
+  "scenario_text": "A partnership of four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system. Technical, legal, logistics and community groups each raise small, true but local concerns through their own channels to different members. Members meet regularly; the concerns slow meetings, reopen settled issues and make support conditional, which can delay or block deployment.",
+  "stock_map": [],
+  "traces": {
+    "actions": "any-scenario-waltzman-spec-actions-20261008T164141",
+    "mechanics": "any-scenario-waltzman-spec-mechanics-20261008T164141",
+    "spec": "any-scenario-waltzman-spec-spec-20261008T163904"
+  },
+  "world_def": "spec",
+  "world_kind": "ongoing"
+}

@@ -1,0 +1,5 @@
+[step] spec 0.0s trace=any-scenario-waltzman-spec-spec-20261008T163904 from_spec=spikes/any-scenario-2026-10/runs/waltzman-spec-20261008T163904/scenario_spec.json cost=None people=10 items=4 moments=2 records=6 behaviors=8 unsupported=3
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm_structured)
+[step] actions 13.7s trace=any-scenario-waltzman-spec-actions-20261008T164141 cost=0.0012522 kinds=['hold-member-meeting', 'raise-local-concern', 'reopen-settled-issue', 'make-support-conditional', 'delay-activation-decision', 'block-deployment', 'activate-and-deploy-system']
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+[step] mechanics 81.7s trace=any-scenario-waltzman-spec-mechanics-20261008T164141 cost=0.129244 dropped=['generated mechanic deliver-declared-information dropped: action communicate is compiled']

@@ -1,0 +1,4665 @@
+{
+  "attempts": 74,
+  "conditions_changed": [],
+  "cost": 0.10995540000000001,
+  "ended": "max_ticks",
+  "events": 105,
+  "final_tick": 12,
+  "plan_spend_after": 12.113856103999993,
+  "profile_id": "5b6626758e0c8278",
+  "resident_calls": 74,
+  "resident_model": "openrouter/openai/gpt-5.6-luna",
+  "rules_written_mid_run": [
+    {
+      "action_kind": "convene-structured-partnership-meeting",
+      "action_record": {
+        "actor_id": "partnership",
+        "entities": {
+          "activation-decision": {
+            "category_ids": [
+              "decision-status"
+            ],
+            "components": {
+              "activation_decision": {
+                "status": "pending"
+              }
+            },
+            "entity_id": "activation-decision",
+            "label": "Activation Decision",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "activation-decision-deadline": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": -1,
+                "occurrences": 0,
+                "ticks_until": 8
+              }
+            },
+            "entity_id": "activation-decision-deadline",
+            "label": "Deadline for the partnership to decide whether to activate the cross-border bio-",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "community-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Community stakeholder group providing local input."
+              }
+            },
+            "entity_id": "community-group",
+            "label": "Community Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "community-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-four": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-four",
+            "label": "Country Four",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-four",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-one": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-one",
+            "label": "Country One",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-one",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-three": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-three",
+            "label": "Country Three",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-three",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-two": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-two",
+            "label": "Country Two",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-two",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-readiness": {
+            "category_ids": [
+              "readiness-state"
+            ],
+            "components": {
+              "deployment_readiness": {
+                "community_ready": true,
+                "legal_ready": true,
+                "logistics_ready": true,
+                "overall_status": "provisionally_ready",
+                "technical_ready": true
+              }
+            },
+            "entity_id": "deployment-readiness",
+            "label": "Early-Warning System Deployment Readiness",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-readiness",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-status": {
+            "category_ids": [
+              "deployment-state"
+            ],
+            "components": {
+              "deployment_status": {
+                "deployment_blocked": false,
+                "status": "not_deployed"
+              }
+            },
+            "entity_id": "deployment-status",
+            "label": "System Deployment Status",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-status",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "legal-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing legal input."
+              }
+            },
+            "entity_id": "legal-group",
+            "label": "Legal Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "legal-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "logistics-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing logistics input."
+              }
+            },
+            "entity_id": "logistics-group",
+            "label": "Logistics Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "logistics-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "meeting-progress": {
+            "category_ids": [
+              "deliberation-state"
+            ],
+            "components": {
+              "meeting_progress": {
+                "meetings_delayed": 0,
+                "progress_percent": 0,
+                "settled_issues_reopened": 0
+              }
+            },
+            "entity_id": "meeting-progress",
+            "label": "Partnership Deliberation Progress",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "meeting-progress",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "member-support": {
+            "category_ids": [
+              "support-state"
+            ],
+            "components": {
+              "member_support": {
+                "conditional_support_count": 0,
+                "country_four": "undecided",
+                "country_one": "undecided",
+                "country_three": "undecided",
+                "country_two": "undecided",
+                "regional_health_network": "undecided"
+              }
+            },
+            "entity_id": "member-support",
+            "label": "Member Support for Activation",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "member-support",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "partnership": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Collective decision-making body responsible for the activation decision."
+              }
+            },
+            "entity_id": "partnership",
+            "label": "Cross-Border Health Partnership",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "partnership",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regional-health-network": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Regional network and member of the partnership."
+              }
+            },
+            "entity_id": "regional-health-network",
+            "label": "Regional Health Network",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regional-health-network",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regular-member-meeting": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": 1,
+                "occurrences": 0,
+                "ticks_until": 1
+              }
+            },
+            "entity_id": "regular-member-meeting",
+            "label": "The partnership members meet weekly to review concerns, support, readiness, and ",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regular-member-meeting",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "technical-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing technical input."
+              }
+            },
+            "entity_id": "technical-group",
+            "label": "Technical Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "technical-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "time-to-deadline": {
+            "category_ids": [
+              "time-state"
+            ],
+            "components": {
+              "time_to_deadline": {
+                "deadline_tick": 8,
+                "weeks_remaining": 8
+              }
+            },
+            "entity_id": "time-to-deadline",
+            "label": "Time Remaining Before Decision Deadline",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "time-to-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          }
+        },
+        "revision": 0,
+        "tick": 0,
+        "world_id": "cross-border-bio-surveillance-decision-live"
+      },
+      "checks": {
+        "baseline_blocking": 1,
+        "blocking": 1,
+        "findings_on_new_rule": []
+      },
+      "event_id": "e00001",
+      "gm_trace": "any-scenario-gm-waltzman-spec-20261008T174927-gm1",
+      "intent": "Convene an initial structured partnership meeting with all four countries, the regional health network, and relevant technical, legal, logistics, and community groups; record each concern, identify conditions for support, and establish a path to a decision before the deadline.",
+      "proposal": {
+        "change": "add_action",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Convene a structured partnership meeting after all four local concerns have reached their members, identify conditional support, and establish deliberation progress before the deadline.",
+              "fields": [
+                {
+                  "name": "organizer",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "technical_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "legal_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "logistics_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "community_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "member_support",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting_progress",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "time_to_deadline",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "convene-structured-partnership-meeting"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "convene-structured-partnership-meeting",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "member"
+                ],
+                "components": [
+                  "member"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "the partnership is convening its own meeting",
+                  "left": {
+                    "entity_id": "organizer"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "the organizer is the collective decision-making body",
+                  "left": {
+                    "participant": {
+                      "name": "organizer",
+                      "path": "components.member.role"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "Collective decision-making body responsible for the activation decision."
+                  }
+                },
+                {
+                  "label": "the technical concern reached its member",
+                  "left": {
+                    "participant": {
+                      "name": "technical_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the technical concern used the technical group channel",
+                  "left": {
+                    "participant": {
+                      "name": "technical_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "technical_group_channel"
+                  }
+                },
+                {
+                  "label": "the legal concern reached its member",
+                  "left": {
+                    "participant": {
+                      "name": "legal_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the legal concern used the legal group channel",
+                  "left": {
+                    "participant": {
+                      "name": "legal_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "legal_group_channel"
+                  }
+                },
+                {
+                  "label": "the logistics concern reached its member",
+                  "left": {
+                    "participant": {
+                      "name": "logistics_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the logistics concern used the logistics group channel",
+                  "left": {
+                    "participant": {
+                      "name": "logistics_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "logistics_group_channel"
+                  }
+                },
+                {
+                  "label": "the community concern reached its member",
+                  "left": {
+                    "participant": {
+                      "name": "community_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the community concern used the community group channel",
+                  "left": {
+                    "participant": {
+                      "name": "community_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "community_group_channel"
+                  }
+                },
+                {
+                  "label": "initial structured deliberation has not begun",
+                  "left": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.progress_percent"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": 0
+                  }
+                },
+                {
+                  "label": "time remains before the deadline",
+                  "left": {
+                    "participant": {
+                      "name": "time_to_deadline",
+                      "path": "components.time_to_deadline.weeks_remaining"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "literal": 0
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_one",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_two",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_three",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_four",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.conditional_support_count",
+                  "value": {
+                    "literal": 4
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "meeting_progress",
+                  "path": "components.meeting_progress.progress_percent",
+                  "value": {
+                    "literal": 20
+                  }
+                }
+              ],
+              "limits": [
+                "The four delivered channel records ground the represented concerns, but attendance and concern text are not separately persisted.",
+                "The meeting makes the four directly affected countries conditional; it does not infer support from the Regional Health Network.",
+                "The meeting establishes deliberation progress but does not authorize, delay, block, or deploy the system.",
+                "The initial meeting is refused after deliberation progress has already begun or when no time remains."
+              ],
+              "mechanic_id": "convene-structured-partnership-meeting",
+              "parameters": {},
+              "participants": {
+                "community_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "legal_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "logistics_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "meeting_progress": {
+                  "categories": [
+                    "deliberation-state"
+                  ],
+                  "components": [
+                    "meeting_progress"
+                  ]
+                },
+                "member_support": {
+                  "categories": [
+                    "support-state"
+                  ],
+                  "components": [
+                    "member_support"
+                  ]
+                },
+                "organizer": {
+                  "categories": [
+                    "actor",
+                    "member"
+                  ],
+                  "components": [
+                    "member"
+                  ]
+                },
+                "technical_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "time_to_deadline": {
+                  "categories": [
+                    "time-state"
+                  ],
+                  "components": [
+                    "time_to_deadline"
+                  ]
+                }
+              },
+              "rationale": "The collective partnership may convene a structured initial deliberation once the four represented concern channels have delivered their concerns, recording conditional positions and a path toward decision.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "delivered channel records represent the four concerns available for structured review",
+                "conditional country positions represent identified conditions for support",
+                "twenty percent meeting progress represents an established path toward decision"
+              ],
+              "tests": [
+                "The partnership can convene the initial structured meeting after all four concern deliveries are complete and time remains.",
+                "A member country or specialist group cannot substitute for the collective organizer.",
+                "A pending or wrongly channeled concern delivery causes refusal.",
+                "One delivered concern cannot stand in for concerns from differently named channels.",
+                "A second initial structured meeting is refused once progress is no longer zero.",
+                "The meeting is refused after the deadline countdown reaches zero.",
+                "The meeting leaves the Regional Health Network undecided and does not deploy the system."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None",
+        "why": "This adds one governed structured-meeting action that requires all four represented concerns to have been delivered before the deadline, records the affected countries as conditionally supportive, and starts deliberation without inventing attendance or concern state."
+      },
+      "rules_installed": [
+        "convene-structured-partnership-meeting"
+      ],
+      "status": "invalid_action",
+      "trace_id": "any-scenario-gm-waltzman-spec-20261008T174927-gm1",
+      "written_mid_run": true
+    },
+    {
+      "action_kind": "participate-in-legal-readiness-review",
+      "action_record": {
+        "actor_id": "country-two",
+        "entities": {
+          "activation-decision": {
+            "category_ids": [
+              "decision-status"
+            ],
+            "components": {
+              "activation_decision": {
+                "status": "pending"
+              }
+            },
+            "entity_id": "activation-decision",
+            "label": "Activation Decision",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "activation-decision-deadline": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": -1,
+                "occurrences": 0,
+                "ticks_until": 8
+              }
+            },
+            "entity_id": "activation-decision-deadline",
+            "label": "Deadline for the partnership to decide whether to activate the cross-border bio-",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "community-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Community stakeholder group providing local input."
+              }
+            },
+            "entity_id": "community-group",
+            "label": "Community Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "community-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-four": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-four",
+            "label": "Country Four",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-four",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-one": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-one",
+            "label": "Country One",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-one",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-three": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-three",
+            "label": "Country Three",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-three",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-two": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-two",
+            "label": "Country Two",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-two",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-readiness": {
+            "category_ids": [
+              "readiness-state"
+            ],
+            "components": {
+              "deployment_readiness": {
+                "community_ready": true,
+                "legal_ready": true,
+                "logistics_ready": true,
+                "overall_status": "provisionally_ready",
+                "technical_ready": true
+              }
+            },
+            "entity_id": "deployment-readiness",
+            "label": "Early-Warning System Deployment Readiness",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-readiness",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-status": {
+            "category_ids": [
+              "deployment-state"
+            ],
+            "components": {
+              "deployment_status": {
+                "deployment_blocked": false,
+                "status": "not_deployed"
+              }
+            },
+            "entity_id": "deployment-status",
+            "label": "System Deployment Status",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-status",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "legal-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing legal input."
+              }
+            },
+            "entity_id": "legal-group",
+            "label": "Legal Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "legal-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "logistics-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing logistics input."
+              }
+            },
+            "entity_id": "logistics-group",
+            "label": "Logistics Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "logistics-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "meeting-progress": {
+            "category_ids": [
+              "deliberation-state"
+            ],
+            "components": {
+              "meeting_progress": {
+                "meetings_delayed": 0,
+                "progress_percent": 0,
+                "settled_issues_reopened": 0
+              }
+            },
+            "entity_id": "meeting-progress",
+            "label": "Partnership Deliberation Progress",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "meeting-progress",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "member-support": {
+            "category_ids": [
+              "support-state"
+            ],
+            "components": {
+              "member_support": {
+                "conditional_support_count": 0,
+                "country_four": "undecided",
+                "country_one": "undecided",
+                "country_three": "undecided",
+                "country_two": "undecided",
+                "regional_health_network": "undecided"
+              }
+            },
+            "entity_id": "member-support",
+            "label": "Member Support for Activation",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "member-support",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "partnership": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Collective decision-making body responsible for the activation decision."
+              }
+            },
+            "entity_id": "partnership",
+            "label": "Cross-Border Health Partnership",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "partnership",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regional-health-network": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Regional network and member of the partnership."
+              }
+            },
+            "entity_id": "regional-health-network",
+            "label": "Regional Health Network",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regional-health-network",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regular-member-meeting": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": 1,
+                "occurrences": 0,
+                "ticks_until": 1
+              }
+            },
+            "entity_id": "regular-member-meeting",
+            "label": "The partnership members meet weekly to review concerns, support, readiness, and ",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regular-member-meeting",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "technical-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing technical input."
+              }
+            },
+            "entity_id": "technical-group",
+            "label": "Technical Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "technical-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "time-to-deadline": {
+            "category_ids": [
+              "time-state"
+            ],
+            "components": {
+              "time_to_deadline": {
+                "deadline_tick": 8,
+                "weeks_remaining": 8
+              }
+            },
+            "entity_id": "time-to-deadline",
+            "label": "Time Remaining Before Decision Deadline",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "time-to-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          }
+        },
+        "revision": 0,
+        "tick": 0,
+        "world_id": "cross-border-bio-surveillance-decision-live"
+      },
+      "checks": {
+        "baseline_blocking": 1,
+        "blocking": 1,
+        "findings_on_new_rule": []
+      },
+      "event_id": "e00002",
+      "gm_trace": "any-scenario-gm-waltzman-spec-20261008T174927-gm2",
+      "intent": "Participate in the upcoming partnership meeting, review any legally relevant local concerns, and work toward supporting activation if the existing legal readiness is confirmed.",
+      "proposal": {
+        "change": "add_action",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Participate in an available recurring member meeting, review a delivered local legal concern, and approve activation when legal readiness is confirmed.",
+              "fields": [
+                {
+                  "name": "member",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "information",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "readiness",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting_progress",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "time_to_deadline",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "participate-in-legal-readiness-review"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "participate-in-legal-readiness-review",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "member"
+                ],
+                "components": [
+                  "member"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "the member is participating personally",
+                  "left": {
+                    "entity_id": "member"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "the delivery was addressed to the member",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.recipient_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "member"
+                  }
+                },
+                {
+                  "label": "the delivery carries the selected information",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.info_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "information"
+                  }
+                },
+                {
+                  "label": "the information concerns legal readiness",
+                  "left": {
+                    "participant": {
+                      "name": "information",
+                      "path": "components.information.topic"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "legal_concern"
+                  }
+                },
+                {
+                  "label": "the legal concern has reached the member",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the member is aware of the concern",
+                  "left": {
+                    "participant": {
+                      "name": "member",
+                      "path": "components.member.aware"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": true
+                  }
+                },
+                {
+                  "label": "legal readiness is confirmed",
+                  "left": {
+                    "participant": {
+                      "name": "readiness",
+                      "path": "components.deployment_readiness.legal_ready"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": true
+                  }
+                },
+                {
+                  "label": "the meeting recurs weekly",
+                  "left": {
+                    "participant": {
+                      "name": "meeting",
+                      "path": "components.moment.every_ticks"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": 1
+                  }
+                },
+                {
+                  "label": "a weekly meeting occurrence is available",
+                  "left": {
+                    "participant": {
+                      "name": "meeting",
+                      "path": "components.moment.occurrences"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.meetings_delayed"
+                    }
+                  }
+                },
+                {
+                  "label": "time remains before the deadline",
+                  "left": {
+                    "participant": {
+                      "name": "time_to_deadline",
+                      "path": "components.time_to_deadline.weeks_remaining"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "literal": 0
+                  }
+                },
+                {
+                  "label": "the member has not already approved activation",
+                  "left": {
+                    "participant": {
+                      "name": "member",
+                      "path": "components.member.approved"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": false
+                  }
+                },
+                {
+                  "label": "deliberation has room for the member's contribution",
+                  "left": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.progress_percent"
+                    }
+                  },
+                  "op": "lte",
+                  "right": {
+                    "literal": 90
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "member",
+                  "path": "components.member.approved",
+                  "value": {
+                    "literal": true
+                  }
+                },
+                {
+                  "op": "add",
+                  "participant": "meeting_progress",
+                  "path": "components.meeting_progress.progress_percent",
+                  "value": {
+                    "literal": 10
+                  }
+                }
+              ],
+              "limits": [
+                "This rule covers delivered legal concerns whose represented legal readiness is confirmed.",
+                "Approval is recorded on the participating member and does not infer approval by another member.",
+                "The fixed member-support record has no general actor-to-country-field mapping, so this action does not rewrite a named country support field.",
+                "A member can make this contribution only once while its approval remains recorded."
+              ],
+              "mechanic_id": "participate-in-legal-readiness-review",
+              "parameters": {},
+              "participants": {
+                "delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "information": {
+                  "categories": [
+                    "information"
+                  ],
+                  "components": [
+                    "information"
+                  ]
+                },
+                "meeting": {
+                  "categories": [
+                    "moment"
+                  ],
+                  "components": [
+                    "moment"
+                  ]
+                },
+                "meeting_progress": {
+                  "categories": [
+                    "deliberation-state"
+                  ],
+                  "components": [
+                    "meeting_progress"
+                  ]
+                },
+                "member": {
+                  "categories": [
+                    "actor",
+                    "member"
+                  ],
+                  "components": [
+                    "member"
+                  ]
+                },
+                "readiness": {
+                  "categories": [
+                    "readiness-state"
+                  ],
+                  "components": [
+                    "deployment_readiness"
+                  ]
+                },
+                "time_to_deadline": {
+                  "categories": [
+                    "time-state"
+                  ],
+                  "components": [
+                    "time_to_deadline"
+                  ]
+                }
+              },
+              "rationale": "A member whose delivered local legal concern is available may use an available recurring meeting to review it and approve activation when represented legal readiness is confirmed.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "a delivered legal concern and member awareness establish material available for review",
+                "legal_ready confirms the readiness condition considered by the member",
+                "member approval records the member's resulting support",
+                "ten progress points represent the member's contribution to meeting deliberation"
+              ],
+              "tests": [
+                "Country Two can review its delivered legal concern during an available weekly meeting and approve activation when legal readiness is true.",
+                "Any other member in the same represented situation is handled by the same rule.",
+                "A member cannot use a delivery addressed to another member.",
+                "A pending delivery or non-legal information is refused.",
+                "Participation is refused when legal readiness is false, no weekly occurrence is available, or the deadline has passed.",
+                "A member whose approval is already recorded cannot add deliberation progress again through this action."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None",
+        "why": "This adds a reusable member action that handles the attempted legal-concern review and readiness-confirmed move toward support during an available recurring meeting."
+      },
+      "rules_installed": [
+        "participate-in-legal-readiness-review"
+      ],
+      "status": "invalid_action",
+      "trace_id": "any-scenario-gm-waltzman-spec-20261008T174927-gm2",
+      "written_mid_run": true
+    },
+    {
+      "action_kind": "participate-in-conditional-support-review",
+      "action_record": {
+        "actor_id": "country-three",
+        "entities": {
+          "activation-decision": {
+            "category_ids": [
+              "decision-status"
+            ],
+            "components": {
+              "activation_decision": {
+                "status": "pending"
+              }
+            },
+            "entity_id": "activation-decision",
+            "label": "Activation Decision",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "activation-decision-deadline": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": -1,
+                "occurrences": 0,
+                "ticks_until": 8
+              }
+            },
+            "entity_id": "activation-decision-deadline",
+            "label": "Deadline for the partnership to decide whether to activate the cross-border bio-",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "community-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Community stakeholder group providing local input."
+              }
+            },
+            "entity_id": "community-group",
+            "label": "Community Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "community-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-four": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-four",
+            "label": "Country Four",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-four",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-one": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-one",
+            "label": "Country One",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-one",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-three": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-three",
+            "label": "Country Three",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-three",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-two": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-two",
+            "label": "Country Two",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-two",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-readiness": {
+            "category_ids": [
+              "readiness-state"
+            ],
+            "components": {
+              "deployment_readiness": {
+                "community_ready": true,
+                "legal_ready": true,
+                "logistics_ready": true,
+                "overall_status": "provisionally_ready",
+                "technical_ready": true
+              }
+            },
+            "entity_id": "deployment-readiness",
+            "label": "Early-Warning System Deployment Readiness",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-readiness",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-status": {
+            "category_ids": [
+              "deployment-state"
+            ],
+            "components": {
+              "deployment_status": {
+                "deployment_blocked": false,
+                "status": "not_deployed"
+              }
+            },
+            "entity_id": "deployment-status",
+            "label": "System Deployment Status",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-status",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "legal-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing legal input."
+              }
+            },
+            "entity_id": "legal-group",
+            "label": "Legal Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "legal-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "logistics-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing logistics input."
+              }
+            },
+            "entity_id": "logistics-group",
+            "label": "Logistics Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "logistics-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "meeting-progress": {
+            "category_ids": [
+              "deliberation-state"
+            ],
+            "components": {
+              "meeting_progress": {
+                "meetings_delayed": 0,
+                "progress_percent": 0,
+                "settled_issues_reopened": 0
+              }
+            },
+            "entity_id": "meeting-progress",
+            "label": "Partnership Deliberation Progress",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "meeting-progress",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "member-support": {
+            "category_ids": [
+              "support-state"
+            ],
+            "components": {
+              "member_support": {
+                "conditional_support_count": 0,
+                "country_four": "undecided",
+                "country_one": "undecided",
+                "country_three": "undecided",
+                "country_two": "undecided",
+                "regional_health_network": "undecided"
+              }
+            },
+            "entity_id": "member-support",
+            "label": "Member Support for Activation",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "member-support",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "partnership": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Collective decision-making body responsible for the activation decision."
+              }
+            },
+            "entity_id": "partnership",
+            "label": "Cross-Border Health Partnership",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "partnership",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regional-health-network": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Regional network and member of the partnership."
+              }
+            },
+            "entity_id": "regional-health-network",
+            "label": "Regional Health Network",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regional-health-network",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regular-member-meeting": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": 1,
+                "occurrences": 0,
+                "ticks_until": 1
+              }
+            },
+            "entity_id": "regular-member-meeting",
+            "label": "The partnership members meet weekly to review concerns, support, readiness, and ",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regular-member-meeting",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "technical-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing technical input."
+              }
+            },
+            "entity_id": "technical-group",
+            "label": "Technical Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "technical-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "time-to-deadline": {
+            "category_ids": [
+              "time-state"
+            ],
+            "components": {
+              "time_to_deadline": {
+                "deadline_tick": 8,
+                "weeks_remaining": 8
+              }
+            },
+            "entity_id": "time-to-deadline",
+            "label": "Time Remaining Before Decision Deadline",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "time-to-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          }
+        },
+        "revision": 0,
+        "tick": 0,
+        "world_id": "cross-border-bio-surveillance-decision-live"
+      },
+      "checks": {
+        "baseline_blocking": 1,
+        "blocking": 1,
+        "findings_on_new_rule": []
+      },
+      "event_id": "e00003",
+      "gm_trace": "any-scenario-gm-waltzman-spec-20261008T174927-gm3",
+      "intent": "Participate in the next partnership meeting and state Country Three's conditional support for activation, subject to confirming a concrete cross-border logistics implementation and contingency plan before deployment.",
+      "proposal": {
+        "change": "add_action",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Participate in an available recurring member meeting, review a delivered local concern, and state conditional support pending resolution of that concern.",
+              "fields": [
+                {
+                  "name": "member",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "information",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "concern",
+                  "type": "string"
+                },
+                {
+                  "name": "member_support",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting_progress",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "time_to_deadline",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "participate-in-conditional-support-review"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "participate-in-conditional-support-review",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "member"
+                ],
+                "components": [
+                  "member"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "the member is participating personally",
+                  "left": {
+                    "entity_id": "member"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "the delivery was addressed to the member",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.recipient_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "member"
+                  }
+                },
+                {
+                  "label": "the delivery carries the selected information",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.info_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "information"
+                  }
+                },
+                {
+                  "label": "the information concerns the stated issue",
+                  "left": {
+                    "participant": {
+                      "name": "information",
+                      "path": "components.information.topic"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "action_field": "concern"
+                  }
+                },
+                {
+                  "label": "the concern has reached the member",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the member is aware of the concern",
+                  "left": {
+                    "participant": {
+                      "name": "member",
+                      "path": "components.member.aware"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": true
+                  }
+                },
+                {
+                  "label": "the meeting recurs weekly",
+                  "left": {
+                    "participant": {
+                      "name": "meeting",
+                      "path": "components.moment.every_ticks"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": 1
+                  }
+                },
+                {
+                  "label": "a weekly meeting occurrence is available",
+                  "left": {
+                    "participant": {
+                      "name": "meeting",
+                      "path": "components.moment.occurrences"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.meetings_delayed"
+                    }
+                  }
+                },
+                {
+                  "label": "time remains before the deadline",
+                  "left": {
+                    "participant": {
+                      "name": "time_to_deadline",
+                      "path": "components.time_to_deadline.weeks_remaining"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "literal": 0
+                  }
+                },
+                {
+                  "label": "the member has not given full approval",
+                  "left": {
+                    "participant": {
+                      "name": "member",
+                      "path": "components.member.approved"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": false
+                  }
+                },
+                {
+                  "label": "fewer than five represented members are conditionally supportive",
+                  "left": {
+                    "participant": {
+                      "name": "member_support",
+                      "path": "components.member_support.conditional_support_count"
+                    }
+                  },
+                  "op": "lt",
+                  "right": {
+                    "literal": 5
+                  }
+                },
+                {
+                  "label": "deliberation has room for the member's contribution",
+                  "left": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.progress_percent"
+                    }
+                  },
+                  "op": "lte",
+                  "right": {
+                    "literal": 90
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "member",
+                  "path": "components.member.approved",
+                  "value": {
+                    "literal": false
+                  }
+                },
+                {
+                  "op": "add",
+                  "participant": "member_support",
+                  "path": "components.member_support.conditional_support_count",
+                  "value": {
+                    "literal": 1
+                  }
+                },
+                {
+                  "op": "add",
+                  "participant": "meeting_progress",
+                  "path": "components.meeting_progress.progress_percent",
+                  "value": {
+                    "literal": 10
+                  }
+                }
+              ],
+              "limits": [
+                "The concern must use the governed concern vocabulary and must match the delivered information topic.",
+                "The aggregate support record has no general member-to-country-field mapping, so this action does not rewrite a named country support field.",
+                "Because no identity-specific conditional marker exists, repeated conditional statements by one member cannot be distinguished from statements by different members; the aggregate is capped at five.",
+                "The concrete resolution condition is expressed by the attempt but is not separately persisted.",
+                "Participation does not grant full approval or authorize deployment."
+              ],
+              "mechanic_id": "participate-in-conditional-support-review",
+              "parameters": {
+                "concern": [
+                  "technical_concern",
+                  "legal_concern",
+                  "logistics_concern",
+                  "community_concern"
+                ]
+              },
+              "participants": {
+                "delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "information": {
+                  "categories": [
+                    "information"
+                  ],
+                  "components": [
+                    "information"
+                  ]
+                },
+                "meeting": {
+                  "categories": [
+                    "moment"
+                  ],
+                  "components": [
+                    "moment"
+                  ]
+                },
+                "meeting_progress": {
+                  "categories": [
+                    "deliberation-state"
+                  ],
+                  "components": [
+                    "meeting_progress"
+                  ]
+                },
+                "member": {
+                  "categories": [
+                    "actor",
+                    "member"
+                  ],
+                  "components": [
+                    "member"
+                  ]
+                },
+                "member_support": {
+                  "categories": [
+                    "support-state"
+                  ],
+                  "components": [
+                    "member_support"
+                  ]
+                },
+                "time_to_deadline": {
+                  "categories": [
+                    "time-state"
+                  ],
+                  "components": [
+                    "time_to_deadline"
+                  ]
+                }
+              },
+              "rationale": "A member may use an available recurring meeting to review its delivered local concern and record conditional rather than full support while time remains.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "a delivered concern and member awareness establish material available for review",
+                "an available recurring meeting establishes the participation opportunity",
+                "lack of full approval and the aggregate count represent conditional support",
+                "ten progress points represent the member's meeting contribution"
+              ],
+              "tests": [
+                "Country Three can review its delivered logistics concern during an available weekly meeting and state conditional support while time remains.",
+                "Any other member with a delivered matching concern is handled by the same rule.",
+                "A member cannot use a delivery addressed to another member or carrying different information.",
+                "A pending delivery, mismatched concern topic, or unaware member is refused.",
+                "Participation is refused when no weekly occurrence is available, the deadline has passed, or deliberation would exceed one hundred.",
+                "A sixth aggregate conditional-support statement is refused, and the action never grants full approval."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None",
+        "why": "This adds one general meeting-participation action allowing Country Three or any similarly situated member to review its delivered concern and record conditional support before the deadline."
+      },
+      "rules_installed": [
+        "participate-in-conditional-support-review"
+      ],
+      "status": "invalid_action",
+      "trace_id": "any-scenario-gm-waltzman-spec-20261008T174927-gm3",
+      "written_mid_run": true
+    },
+    {
+      "action_kind": "propose-safeguards-and-make-support-conditional",
+      "action_record": {
+        "actor_id": "country-four",
+        "entities": {
+          "activation-decision": {
+            "category_ids": [
+              "decision-status"
+            ],
+            "components": {
+              "activation_decision": {
+                "status": "pending"
+              }
+            },
+            "entity_id": "activation-decision",
+            "label": "Activation Decision",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "activation-decision-deadline": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": -1,
+                "occurrences": 0,
+                "ticks_until": 8
+              }
+            },
+            "entity_id": "activation-decision-deadline",
+            "label": "Deadline for the partnership to decide whether to activate the cross-border bio-",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "community-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Community stakeholder group providing local input."
+              }
+            },
+            "entity_id": "community-group",
+            "label": "Community Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "community-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-four": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-four",
+            "label": "Country Four",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-four",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-one": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-one",
+            "label": "Country One",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-one",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-three": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-three",
+            "label": "Country Three",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-three",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-two": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-two",
+            "label": "Country Two",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-two",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-readiness": {
+            "category_ids": [
+              "readiness-state"
+            ],
+            "components": {
+              "deployment_readiness": {
+                "community_ready": true,
+                "legal_ready": true,
+                "logistics_ready": true,
+                "overall_status": "provisionally_ready",
+                "technical_ready": true
+              }
+            },
+            "entity_id": "deployment-readiness",
+            "label": "Early-Warning System Deployment Readiness",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-readiness",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-status": {
+            "category_ids": [
+              "deployment-state"
+            ],
+            "components": {
+              "deployment_status": {
+                "deployment_blocked": false,
+                "status": "not_deployed"
+              }
+            },
+            "entity_id": "deployment-status",
+            "label": "System Deployment Status",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-status",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "legal-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing legal input."
+              }
+            },
+            "entity_id": "legal-group",
+            "label": "Legal Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "legal-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "logistics-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing logistics input."
+              }
+            },
+            "entity_id": "logistics-group",
+            "label": "Logistics Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "logistics-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "meeting-progress": {
+            "category_ids": [
+              "deliberation-state"
+            ],
+            "components": {
+              "meeting_progress": {
+                "meetings_delayed": 0,
+                "progress_percent": 0,
+                "settled_issues_reopened": 0
+              }
+            },
+            "entity_id": "meeting-progress",
+            "label": "Partnership Deliberation Progress",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "meeting-progress",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "member-support": {
+            "category_ids": [
+              "support-state"
+            ],
+            "components": {
+              "member_support": {
+                "conditional_support_count": 0,
+                "country_four": "undecided",
+                "country_one": "undecided",
+                "country_three": "undecided",
+                "country_two": "undecided",
+                "regional_health_network": "undecided"
+              }
+            },
+            "entity_id": "member-support",
+            "label": "Member Support for Activation",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "member-support",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "partnership": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Collective decision-making body responsible for the activation decision."
+              }
+            },
+            "entity_id": "partnership",
+            "label": "Cross-Border Health Partnership",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "partnership",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regional-health-network": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Regional network and member of the partnership."
+              }
+            },
+            "entity_id": "regional-health-network",
+            "label": "Regional Health Network",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regional-health-network",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regular-member-meeting": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": 1,
+                "occurrences": 0,
+                "ticks_until": 1
+              }
+            },
+            "entity_id": "regular-member-meeting",
+            "label": "The partnership members meet weekly to review concerns, support, readiness, and ",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regular-member-meeting",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "technical-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing technical input."
+              }
+            },
+            "entity_id": "technical-group",
+            "label": "Technical Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "technical-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "time-to-deadline": {
+            "category_ids": [
+              "time-state"
+            ],
+            "components": {
+              "time_to_deadline": {
+                "deadline_tick": 8,
+                "weeks_remaining": 8
+              }
+            },
+            "entity_id": "time-to-deadline",
+            "label": "Time Remaining Before Decision Deadline",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "time-to-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          }
+        },
+        "revision": 0,
+        "tick": 0,
+        "world_id": "cross-border-bio-surveillance-decision-live"
+      },
+      "checks": {
+        "baseline_blocking": 1,
+        "blocking": 1,
+        "findings_on_new_rule": []
+      },
+      "event_id": "e00004",
+      "gm_trace": "any-scenario-gm-waltzman-spec-20261008T174927-gm4",
+      "intent": "Participate in the next partnership meeting and propose documented community-facing safeguards, consultation, and feedback procedures; make Country Four's activation support conditional on those safeguards being accepted.",
+      "proposal": {
+        "change": "add_action",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Participate in an available recurring member meeting, propose documented safeguards for a delivered local concern, and make activation support conditional on acceptance of those safeguards.",
+              "fields": [
+                {
+                  "name": "member",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "information",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "concern",
+                  "type": "string"
+                },
+                {
+                  "name": "safeguards",
+                  "type": "string"
+                },
+                {
+                  "name": "member_support",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting_progress",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "time_to_deadline",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "propose-safeguards-and-make-support-conditional"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "propose-safeguards-and-make-support-conditional",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "member"
+                ],
+                "components": [
+                  "member"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "the member is participating personally",
+                  "left": {
+                    "entity_id": "member"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "the delivery was addressed to the member",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.recipient_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "member"
+                  }
+                },
+                {
+                  "label": "the delivery carries the selected information",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.info_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "information"
+                  }
+                },
+                {
+                  "label": "the information concerns the stated issue",
+                  "left": {
+                    "participant": {
+                      "name": "information",
+                      "path": "components.information.topic"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "action_field": "concern"
+                  }
+                },
+                {
+                  "label": "the concern has reached the member",
+                  "left": {
+                    "participant": {
+                      "name": "delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the member is aware of the concern",
+                  "left": {
+                    "participant": {
+                      "name": "member",
+                      "path": "components.member.aware"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": true
+                  }
+                },
+                {
+                  "label": "the meeting recurs weekly",
+                  "left": {
+                    "participant": {
+                      "name": "meeting",
+                      "path": "components.moment.every_ticks"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": 1
+                  }
+                },
+                {
+                  "label": "a weekly meeting occurrence is available",
+                  "left": {
+                    "participant": {
+                      "name": "meeting",
+                      "path": "components.moment.occurrences"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.meetings_delayed"
+                    }
+                  }
+                },
+                {
+                  "label": "time remains before the deadline",
+                  "left": {
+                    "participant": {
+                      "name": "time_to_deadline",
+                      "path": "components.time_to_deadline.weeks_remaining"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "literal": 0
+                  }
+                },
+                {
+                  "label": "the member has not given full approval",
+                  "left": {
+                    "participant": {
+                      "name": "member",
+                      "path": "components.member.approved"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": false
+                  }
+                },
+                {
+                  "label": "fewer than five represented members are conditionally supportive",
+                  "left": {
+                    "participant": {
+                      "name": "member_support",
+                      "path": "components.member_support.conditional_support_count"
+                    }
+                  },
+                  "op": "lt",
+                  "right": {
+                    "literal": 5
+                  }
+                },
+                {
+                  "label": "deliberation has room for the member's proposal",
+                  "left": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.progress_percent"
+                    }
+                  },
+                  "op": "lte",
+                  "right": {
+                    "literal": 90
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "member",
+                  "path": "components.member.approved",
+                  "value": {
+                    "literal": false
+                  }
+                },
+                {
+                  "op": "add",
+                  "participant": "member_support",
+                  "path": "components.member_support.conditional_support_count",
+                  "value": {
+                    "literal": 1
+                  }
+                },
+                {
+                  "op": "add",
+                  "participant": "meeting_progress",
+                  "path": "components.meeting_progress.progress_percent",
+                  "value": {
+                    "literal": 10
+                  }
+                }
+              ],
+              "limits": [
+                "The concern and safeguards must use the governed vocabulary.",
+                "The safeguard proposal is expressed by the attempt but is not separately persisted.",
+                "The aggregate support record has no general member-to-country-field mapping, so this action does not rewrite a named country support field.",
+                "Because no identity-specific conditional marker exists, repeated proposals by one member cannot be distinguished from proposals by different members; the aggregate is capped at five.",
+                "The proposal does not grant full approval, establish acceptance of the safeguards, or authorize deployment."
+              ],
+              "mechanic_id": "propose-safeguards-and-make-support-conditional",
+              "parameters": {
+                "concern": [
+                  "technical_concern",
+                  "legal_concern",
+                  "logistics_concern",
+                  "community_concern"
+                ],
+                "safeguards": [
+                  "documented technical validation safeguards",
+                  "documented legal compliance safeguards",
+                  "documented logistics continuity safeguards",
+                  "documented community-facing safeguards, consultation, and feedback procedures"
+                ]
+              },
+              "participants": {
+                "delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "information": {
+                  "categories": [
+                    "information"
+                  ],
+                  "components": [
+                    "information"
+                  ]
+                },
+                "meeting": {
+                  "categories": [
+                    "moment"
+                  ],
+                  "components": [
+                    "moment"
+                  ]
+                },
+                "meeting_progress": {
+                  "categories": [
+                    "deliberation-state"
+                  ],
+                  "components": [
+                    "meeting_progress"
+                  ]
+                },
+                "member": {
+                  "categories": [
+                    "actor",
+                    "member"
+                  ],
+                  "components": [
+                    "member"
+                  ]
+                },
+                "member_support": {
+                  "categories": [
+                    "support-state"
+                  ],
+                  "components": [
+                    "member_support"
+                  ]
+                },
+                "time_to_deadline": {
+                  "categories": [
+                    "time-state"
+                  ],
+                  "components": [
+                    "time_to_deadline"
+                  ]
+                }
+              },
+              "rationale": "A member may use an available recurring meeting to propose documented safeguards addressing its delivered local concern and record conditional support while time remains.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "a delivered concern and member awareness establish the issue addressed by the proposal",
+                "an available recurring meeting establishes the participation opportunity",
+                "the safeguard parameter represents the documented condition proposed by the member",
+                "lack of full approval and the aggregate count represent conditional support",
+                "ten progress points represent the proposal's contribution to meeting deliberation"
+              ],
+              "tests": [
+                "Country Four can propose documented community-facing safeguards during an available weekly meeting after receiving its community concern.",
+                "Any member with a delivered matching concern can make an allowed safeguard proposal under the same conditions.",
+                "A member cannot use a delivery addressed to another member or carrying different information.",
+                "A pending delivery, mismatched concern topic, or unaware member is refused.",
+                "The action is refused when no weekly occurrence is available, the deadline has passed, or deliberation would exceed one hundred.",
+                "A sixth aggregate conditional-support proposal is refused, and proposing safeguards never grants full approval."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None",
+        "why": "This adds a general meeting action that lets Country Four or any similarly situated member propose documented safeguards for its delivered concern and record conditional support before the deadline."
+      },
+      "rules_installed": [
+        "propose-safeguards-and-make-support-conditional"
+      ],
+      "status": "invalid_action",
+      "trace_id": "any-scenario-gm-waltzman-spec-20261008T174927-gm4",
+      "written_mid_run": true
+    },
+    {
+      "action_kind": "coordinate-urgent-partnership-alignment-session",
+      "action_record": {
+        "actor_id": "regional-health-network",
+        "entities": {
+          "activation-decision": {
+            "category_ids": [
+              "decision-status"
+            ],
+            "components": {
+              "activation_decision": {
+                "status": "pending"
+              }
+            },
+            "entity_id": "activation-decision",
+            "label": "Activation Decision",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "activation-decision-deadline": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": -1,
+                "occurrences": 0,
+                "ticks_until": 7
+              }
+            },
+            "entity_id": "activation-decision-deadline",
+            "label": "Deadline for the partnership to decide whether to activate the cross-border bio-",
+            "last_cause_event_id": "e00010",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "community-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Community stakeholder group providing local input."
+              }
+            },
+            "entity_id": "community-group",
+            "label": "Community Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "community-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-four": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-four",
+            "label": "Country Four",
+            "last_cause_event_id": "e00017",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-four",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-one": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-one",
+            "label": "Country One",
+            "last_cause_event_id": "e00014",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-one",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-three": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-three",
+            "label": "Country Three",
+            "last_cause_event_id": "e00016",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-three",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-two": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-two",
+            "label": "Country Two",
+            "last_cause_event_id": "e00015",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-two",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-readiness": {
+            "category_ids": [
+              "readiness-state"
+            ],
+            "components": {
+              "deployment_readiness": {
+                "community_ready": true,
+                "legal_ready": true,
+                "logistics_ready": true,
+                "overall_status": "provisionally_ready",
+                "technical_ready": true
+              }
+            },
+            "entity_id": "deployment-readiness",
+            "label": "Early-Warning System Deployment Readiness",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-readiness",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-status": {
+            "category_ids": [
+              "deployment-state"
+            ],
+            "components": {
+              "deployment_status": {
+                "deployment_blocked": false,
+                "status": "not_deployed"
+              }
+            },
+            "entity_id": "deployment-status",
+            "label": "System Deployment Status",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-status",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "legal-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing legal input."
+              }
+            },
+            "entity_id": "legal-group",
+            "label": "Legal Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "legal-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "logistics-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing logistics input."
+              }
+            },
+            "entity_id": "logistics-group",
+            "label": "Logistics Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "logistics-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "meeting-progress": {
+            "category_ids": [
+              "deliberation-state"
+            ],
+            "components": {
+              "meeting_progress": {
+                "meetings_delayed": 1,
+                "progress_percent": 20,
+                "settled_issues_reopened": 0
+              }
+            },
+            "entity_id": "meeting-progress",
+            "label": "Partnership Deliberation Progress",
+            "last_cause_event_id": "e00013",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "meeting-progress",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "member-support": {
+            "category_ids": [
+              "support-state"
+            ],
+            "components": {
+              "member_support": {
+                "conditional_support_count": 4,
+                "country_four": "undecided",
+                "country_one": "undecided",
+                "country_three": "undecided",
+                "country_two": "undecided",
+                "regional_health_network": "undecided"
+              }
+            },
+            "entity_id": "member-support",
+            "label": "Member Support for Activation",
+            "last_cause_event_id": "e00017",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "member-support",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "partnership": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Collective decision-making body responsible for the activation decision."
+              }
+            },
+            "entity_id": "partnership",
+            "label": "Cross-Border Health Partnership",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "partnership",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regional-health-network": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Regional network and member of the partnership."
+              }
+            },
+            "entity_id": "regional-health-network",
+            "label": "Regional Health Network",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regional-health-network",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regular-member-meeting": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": 1,
+                "occurrences": 1,
+                "ticks_until": 1
+              }
+            },
+            "entity_id": "regular-member-meeting",
+            "label": "The partnership members meet weekly to review concerns, support, readiness, and ",
+            "last_cause_event_id": "e00011",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regular-member-meeting",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "technical-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing technical input."
+              }
+            },
+            "entity_id": "technical-group",
+            "label": "Technical Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "technical-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "time-to-deadline": {
+            "category_ids": [
+              "time-state"
+            ],
+            "components": {
+              "time_to_deadline": {
+                "deadline_tick": 8,
+                "weeks_remaining": 7
+              }
+            },
+            "entity_id": "time-to-deadline",
+            "label": "Time Remaining Before Decision Deadline",
+            "last_cause_event_id": "e00012",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "time-to-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          }
+        },
+        "revision": 13,
+        "tick": 1,
+        "world_id": "cross-border-bio-surveillance-decision-live"
+      },
+      "checks": {
+        "baseline_blocking": 1,
+        "blocking": 1,
+        "findings_on_new_rule": []
+      },
+      "event_id": "e00018",
+      "gm_trace": "any-scenario-gm-waltzman-spec-20261008T174927-gm5",
+      "intent": "Coordinate an urgent partnership alignment session: gather and circulate the technical, legal, logistics, and community concerns in one shared register; identify which conditions can be accepted immediately; assign owners and deadlines for the remainder; and seek conditional approval from each country and the Regional Health Network for activation by the decision deadline.",
+      "proposal": {
+        "change": "add_action",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Coordinate an urgent shared review of the four delivered concerns, identify immediately acceptable conditions, assign responsibility for the remainder, and record conditional activation support from all five partnership members before the deadline.",
+              "fields": [
+                {
+                  "name": "coordinator",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "technical_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "legal_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "logistics_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "community_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "accepted_conditions",
+                  "type": "string"
+                },
+                {
+                  "name": "remainder_plan",
+                  "type": "string"
+                },
+                {
+                  "name": "member_support",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting_progress",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "time_to_deadline",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "coordinate-urgent-partnership-alignment-session"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "coordinate-urgent-partnership-alignment-session",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "member"
+                ],
+                "components": [
+                  "member"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "the coordinator is leading the alignment session",
+                  "left": {
+                    "entity_id": "coordinator"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "the technical concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "technical_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the technical concern used the technical group channel",
+                  "left": {
+                    "participant": {
+                      "name": "technical_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "technical_group_channel"
+                  }
+                },
+                {
+                  "label": "the legal concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "legal_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the legal concern used the legal group channel",
+                  "left": {
+                    "participant": {
+                      "name": "legal_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "legal_group_channel"
+                  }
+                },
+                {
+                  "label": "the logistics concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "logistics_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the logistics concern used the logistics group channel",
+                  "left": {
+                    "participant": {
+                      "name": "logistics_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "logistics_group_channel"
+                  }
+                },
+                {
+                  "label": "the community concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "community_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the community concern used the community group channel",
+                  "left": {
+                    "participant": {
+                      "name": "community_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "community_group_channel"
+                  }
+                },
+                {
+                  "label": "the Regional Health Network has not already recorded a position",
+                  "left": {
+                    "participant": {
+                      "name": "member_support",
+                      "path": "components.member_support.regional_health_network"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "undecided"
+                  }
+                },
+                {
+                  "label": "time remains before the decision deadline",
+                  "left": {
+                    "participant": {
+                      "name": "time_to_deadline",
+                      "path": "components.time_to_deadline.weeks_remaining"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "literal": 0
+                  }
+                },
+                {
+                  "label": "deliberation has room for the urgent alignment session",
+                  "left": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.progress_percent"
+                    }
+                  },
+                  "op": "lte",
+                  "right": {
+                    "literal": 80
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_one",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_two",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_three",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_four",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.regional_health_network",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.conditional_support_count",
+                  "value": {
+                    "literal": 5
+                  }
+                },
+                {
+                  "op": "add",
+                  "participant": "meeting_progress",
+                  "path": "components.meeting_progress.progress_percent",
+                  "value": {
+                    "literal": 20
+                  }
+                }
+              ],
+              "limits": [
+                "The four delivered channel records represent the concerns gathered for shared review; no separate shared-register entity exists.",
+                "The accepted conditions and remainder plan are expressed by the attempt but are not independently persisted.",
+                "Named owners and individual deadlines cannot be stored because no represented assignment or per-condition deadline fields exist.",
+                "Conditional positions do not establish full approval, resolve the concerns, authorize activation, or deploy the system.",
+                "The Regional Health Network position prevents the same alignment session from being recorded repeatedly."
+              ],
+              "mechanic_id": "coordinate-urgent-partnership-alignment-session",
+              "parameters": {
+                "accepted_conditions": [
+                  "represented readiness conditions already confirmed can be accepted immediately"
+                ],
+                "remainder_plan": [
+                  "technical, legal, logistics, and community groups own their remaining conditions through the decision deadline"
+                ]
+              },
+              "participants": {
+                "community_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "coordinator": {
+                  "categories": [
+                    "actor",
+                    "member"
+                  ],
+                  "components": [
+                    "member"
+                  ]
+                },
+                "legal_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "logistics_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "meeting_progress": {
+                  "categories": [
+                    "deliberation-state"
+                  ],
+                  "components": [
+                    "meeting_progress"
+                  ]
+                },
+                "member_support": {
+                  "categories": [
+                    "support-state"
+                  ],
+                  "components": [
+                    "member_support"
+                  ]
+                },
+                "technical_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "time_to_deadline": {
+                  "categories": [
+                    "time-state"
+                  ],
+                  "components": [
+                    "time_to_deadline"
+                  ]
+                }
+              },
+              "rationale": "Any partnership member may coordinate an urgent alignment session after all four concern channels have delivered their concerns, recording five conditional positions and advancing deliberation while time remains.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "the four delivered channel records represent the shared concern set",
+                "the action parameters represent immediately accepted conditions and the remainder plan",
+                "five conditional support positions represent the requested partnership-wide conditional alignment",
+                "twenty progress points represent the urgent session's contribution to deliberation"
+              ],
+              "tests": [
+                "The Regional Health Network can coordinate the session after all four correctly channeled concerns are delivered and time remains.",
+                "Any other partnership member in the same represented situation can coordinate the session.",
+                "A pending concern or a concern supplied through the wrong channel causes refusal.",
+                "The session is refused after the deadline or when adding twenty progress points would exceed one hundred.",
+                "A second session is refused after the Regional Health Network position becomes conditional.",
+                "The session records five conditional positions but does not grant full approval or deploy the system."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None",
+        "why": "This adds one general urgent-alignment action that any partnership member can use to consolidate all four delivered concern channels, express the unpersisted assignment plan, record conditional support from all five members, and advance deliberation before the deadline."
+      },
+      "rules_installed": [
+        "coordinate-urgent-partnership-alignment-session"
+      ],
+      "status": "invalid_action",
+      "trace_id": "any-scenario-gm-waltzman-spec-20261008T174927-gm5",
+      "written_mid_run": true
+    },
+    {
+      "action_kind": "convene-focused-cross-partnership-alignment",
+      "action_record": {
+        "actor_id": "regional-health-network",
+        "entities": {
+          "activation-decision": {
+            "category_ids": [
+              "decision-status"
+            ],
+            "components": {
+              "activation_decision": {
+                "status": "pending"
+              }
+            },
+            "entity_id": "activation-decision",
+            "label": "Activation Decision",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "activation-decision-deadline": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": -1,
+                "occurrences": 0,
+                "ticks_until": 6
+              }
+            },
+            "entity_id": "activation-decision-deadline",
+            "label": "Deadline for the partnership to decide whether to activate the cross-border bio-",
+            "last_cause_event_id": "e00021",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "activation-decision-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "community-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Community stakeholder group providing local input."
+              }
+            },
+            "entity_id": "community-group",
+            "label": "Community Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "community-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-four": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-four",
+            "label": "Country Four",
+            "last_cause_event_id": "e00017",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-four",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-one": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-one",
+            "label": "Country One",
+            "last_cause_event_id": "e00014",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-one",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-three": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-three",
+            "label": "Country Three",
+            "last_cause_event_id": "e00016",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-three",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "country-two": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": true,
+                "role": "Member country of the partnership."
+              }
+            },
+            "entity_id": "country-two",
+            "label": "Country Two",
+            "last_cause_event_id": "e00015",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "country-two",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-readiness": {
+            "category_ids": [
+              "readiness-state"
+            ],
+            "components": {
+              "deployment_readiness": {
+                "community_ready": true,
+                "legal_ready": true,
+                "logistics_ready": true,
+                "overall_status": "provisionally_ready",
+                "technical_ready": true
+              }
+            },
+            "entity_id": "deployment-readiness",
+            "label": "Early-Warning System Deployment Readiness",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-readiness",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "deployment-status": {
+            "category_ids": [
+              "deployment-state"
+            ],
+            "components": {
+              "deployment_status": {
+                "deployment_blocked": false,
+                "status": "not_deployed"
+              }
+            },
+            "entity_id": "deployment-status",
+            "label": "System Deployment Status",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "deployment-status",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "legal-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing legal input."
+              }
+            },
+            "entity_id": "legal-group",
+            "label": "Legal Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "legal-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "logistics-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing logistics input."
+              }
+            },
+            "entity_id": "logistics-group",
+            "label": "Logistics Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "logistics-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "meeting-progress": {
+            "category_ids": [
+              "deliberation-state"
+            ],
+            "components": {
+              "meeting_progress": {
+                "meetings_delayed": 2,
+                "progress_percent": 40,
+                "settled_issues_reopened": 2
+              }
+            },
+            "entity_id": "meeting-progress",
+            "label": "Partnership Deliberation Progress",
+            "last_cause_event_id": "e00026",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "meeting-progress",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "member-support": {
+            "category_ids": [
+              "support-state"
+            ],
+            "components": {
+              "member_support": {
+                "conditional_support_count": 5,
+                "country_four": "conditional",
+                "country_one": "conditional",
+                "country_three": "conditional",
+                "country_two": "conditional",
+                "regional_health_network": "conditional"
+              }
+            },
+            "entity_id": "member-support",
+            "label": "Member Support for Activation",
+            "last_cause_event_id": "e00019",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "member-support",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "partnership": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Collective decision-making body responsible for the activation decision."
+              }
+            },
+            "entity_id": "partnership",
+            "label": "Cross-Border Health Partnership",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "partnership",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regional-health-network": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Regional network and member of the partnership."
+              }
+            },
+            "entity_id": "regional-health-network",
+            "label": "Regional Health Network",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regional-health-network",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "regular-member-meeting": {
+            "category_ids": [
+              "moment"
+            ],
+            "components": {
+              "moment": {
+                "every_ticks": 1,
+                "occurrences": 2,
+                "ticks_until": 1
+              }
+            },
+            "entity_id": "regular-member-meeting",
+            "label": "The partnership members meet weekly to review concerns, support, readiness, and ",
+            "last_cause_event_id": "e00022",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "regular-member-meeting",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "technical-group": {
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "components": {
+              "member": {
+                "approved": false,
+                "authorized": false,
+                "aware": false,
+                "role": "Specialist group providing technical input."
+              }
+            },
+            "entity_id": "technical-group",
+            "label": "Technical Group",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "technical-group",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          },
+          "time-to-deadline": {
+            "category_ids": [
+              "time-state"
+            ],
+            "components": {
+              "time_to_deadline": {
+                "deadline_tick": 8,
+                "weeks_remaining": 6
+              }
+            },
+            "entity_id": "time-to-deadline",
+            "label": "Time Remaining Before Decision Deadline",
+            "last_cause_event_id": "e00023",
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_entity_id": "time-to-deadline",
+            "source_pack_id": "world-substrate-cross-border-bio-surveillance-decision@1"
+          }
+        },
+        "revision": 21,
+        "tick": 2,
+        "world_id": "cross-border-bio-surveillance-decision-live"
+      },
+      "checks": {
+        "baseline_blocking": 1,
+        "blocking": 1,
+        "findings_on_new_rule": []
+      },
+      "event_id": "e00027",
+      "gm_trace": "any-scenario-gm-waltzman-spec-20261008T174927-gm6",
+      "intent": "Convene a focused cross-partnership alignment process: collect the technical, legal, logistics, and community concerns into one shared register, group them by decision-relevant risk, assign owners and time-bound mitigations, and seek agreement on a single set of activation conditions for the partnership to decide before the deadline.",
+      "proposal": {
+        "change": "add_action",
+        "changes": [
+          {
+            "action_signature": {
+              "description": "Collect the four delivered local concerns into a shared decision register, group them by risk, assign time-bound mitigations, and seek partnership-wide agreement on activation conditions before the deadline.",
+              "fields": [
+                {
+                  "name": "coordinator",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "technical_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "legal_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "logistics_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "community_delivery",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "shared_register",
+                  "type": "string"
+                },
+                {
+                  "name": "risk_grouping",
+                  "type": "string"
+                },
+                {
+                  "name": "mitigation_assignments",
+                  "type": "string"
+                },
+                {
+                  "name": "activation_conditions",
+                  "type": "string"
+                },
+                {
+                  "name": "member_support",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "meeting_progress",
+                  "type": "entity_ref"
+                },
+                {
+                  "name": "time_to_deadline",
+                  "type": "entity_ref"
+                }
+              ],
+              "kind": "convene-focused-cross-partnership-alignment"
+            },
+            "change": "add_action",
+            "rule": {
+              "action_kind": "convene-focused-cross-partnership-alignment",
+              "actor_selector": {
+                "categories": [
+                  "actor",
+                  "member"
+                ],
+                "components": [
+                  "member"
+                ]
+              },
+              "checks": [
+                {
+                  "label": "the coordinator is leading the focused alignment",
+                  "left": {
+                    "entity_id": "coordinator"
+                  },
+                  "op": "eq",
+                  "right": {
+                    "entity_id": "actor"
+                  }
+                },
+                {
+                  "label": "the technical concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "technical_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the technical concern used the technical group channel",
+                  "left": {
+                    "participant": {
+                      "name": "technical_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "technical_group_channel"
+                  }
+                },
+                {
+                  "label": "the legal concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "legal_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the legal concern used the legal group channel",
+                  "left": {
+                    "participant": {
+                      "name": "legal_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "legal_group_channel"
+                  }
+                },
+                {
+                  "label": "the logistics concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "logistics_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the logistics concern used the logistics group channel",
+                  "left": {
+                    "participant": {
+                      "name": "logistics_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "logistics_group_channel"
+                  }
+                },
+                {
+                  "label": "the community concern has been delivered",
+                  "left": {
+                    "participant": {
+                      "name": "community_delivery",
+                      "path": "components.delivery.status"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "delivered"
+                  }
+                },
+                {
+                  "label": "the community concern used the community group channel",
+                  "left": {
+                    "participant": {
+                      "name": "community_delivery",
+                      "path": "components.delivery.channel_id"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "community_group_channel"
+                  }
+                },
+                {
+                  "label": "the Regional Health Network has not joined a partnership-wide alignment",
+                  "left": {
+                    "participant": {
+                      "name": "member_support",
+                      "path": "components.member_support.regional_health_network"
+                    }
+                  },
+                  "op": "eq",
+                  "right": {
+                    "literal": "undecided"
+                  }
+                },
+                {
+                  "label": "time remains before the decision deadline",
+                  "left": {
+                    "participant": {
+                      "name": "time_to_deadline",
+                      "path": "components.time_to_deadline.weeks_remaining"
+                    }
+                  },
+                  "op": "gt",
+                  "right": {
+                    "literal": 0
+                  }
+                },
+                {
+                  "label": "deliberation has room for the focused alignment",
+                  "left": {
+                    "participant": {
+                      "name": "meeting_progress",
+                      "path": "components.meeting_progress.progress_percent"
+                    }
+                  },
+                  "op": "lte",
+                  "right": {
+                    "literal": 80
+                  }
+                }
+              ],
+              "effects": [
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_one",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_two",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_three",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.country_four",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.regional_health_network",
+                  "value": {
+                    "literal": "conditional"
+                  }
+                },
+                {
+                  "op": "set",
+                  "participant": "member_support",
+                  "path": "components.member_support.conditional_support_count",
+                  "value": {
+                    "literal": 5
+                  }
+                },
+                {
+                  "op": "add",
+                  "participant": "meeting_progress",
+                  "path": "components.meeting_progress.progress_percent",
+                  "value": {
+                    "literal": 20
+                  }
+                }
+              ],
+              "limits": [
+                "The four delivered channel records ground the shared concern set, but no shared-register field exists to persist its text.",
+                "Risk grouping, named mitigation owners, time bounds, and activation conditions are expressed by the attempt but cannot be stored separately.",
+                "The resulting positions are conditional and do not prove that mitigations were completed or conditions accepted.",
+                "The alignment does not grant full approval, authorize activation, or deploy the system.",
+                "The Regional Health Network position prevents the same partnership-wide alignment from being recorded repeatedly."
+              ],
+              "mechanic_id": "convene-focused-cross-partnership-alignment",
+              "parameters": {
+                "activation_conditions": [
+                  "activate only when the agreed technical, legal, logistics, and community conditions are satisfied"
+                ],
+                "mitigation_assignments": [
+                  "assign each specialist group its corresponding mitigation through the decision deadline"
+                ],
+                "risk_grouping": [
+                  "group concerns by technical, legal, logistics, and community decision risk"
+                ],
+                "shared_register": [
+                  "one shared register containing the technical, legal, logistics, and community concerns"
+                ]
+              },
+              "participants": {
+                "community_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "coordinator": {
+                  "categories": [
+                    "actor",
+                    "member"
+                  ],
+                  "components": [
+                    "member"
+                  ]
+                },
+                "legal_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "logistics_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "meeting_progress": {
+                  "categories": [
+                    "deliberation-state"
+                  ],
+                  "components": [
+                    "meeting_progress"
+                  ]
+                },
+                "member_support": {
+                  "categories": [
+                    "support-state"
+                  ],
+                  "components": [
+                    "member_support"
+                  ]
+                },
+                "technical_delivery": {
+                  "categories": [
+                    "delivery"
+                  ],
+                  "components": [
+                    "delivery"
+                  ]
+                },
+                "time_to_deadline": {
+                  "categories": [
+                    "time-state"
+                  ],
+                  "components": [
+                    "time_to_deadline"
+                  ]
+                }
+              },
+              "rationale": "Any partnership actor may organize the four delivered concern streams into a focused alignment attempt that records partnership-wide conditional support and advances deliberation before the deadline.",
+              "schema_version": "world-substrate-action-mechanic/v0",
+              "semantic_bindings": [
+                "the four delivered channel records represent the concerns collected into the shared review",
+                "the action parameters represent the register, risk grouping, mitigation assignments, and common activation conditions",
+                "five conditional positions represent partnership-wide agreement to deliberate under those conditions",
+                "twenty progress points represent the focused alignment's contribution to deliberation"
+              ],
+              "tests": [
+                "The Regional Health Network can lead the focused alignment after all four correctly channeled concerns are delivered and time remains.",
+                "Any other partnership actor in the same represented situation can lead the same alignment.",
+                "A pending concern or a concern delivered through the wrong channel causes refusal.",
+                "The alignment is refused after the deadline or when adding twenty progress points would exceed one hundred.",
+                "A repeated alignment is refused after the Regional Health Network position becomes conditional.",
+                "The alignment records five conditional positions but does not record completed mitigations, full approval, or deployment."
+              ],
+              "version": "1.0"
+            },
+            "target_id": null
+          }
+        ],
+        "target_id": "None",
+        "why": "This adds a general focused-alignment action for any partnership actor while honestly representing its available outcome through conditional support and deliberation progress without inventing persistent register, assignment, or mitigation state."
+      },
+      "rules_installed": [
+        "convene-focused-cross-partnership-alignment"
+      ],
+      "status": "invalid_action",
+      "trace_id": "any-scenario-gm-waltzman-spec-20261008T174927-gm6",
+      "written_mid_run": true
+    },
+    {
+      "event_id": "e00035",
+      "gm_trace": null,
+      "intent": "As the Regional Health Network, convene an urgent cross-partnership alignment session and circulate one consolidated register of technical, legal, logistics, and community concerns. For each concern, propose a proportionate activation condition, owner, and deadline; seek member agreement that the register is final for this decision cycle, enabling conditional approval and activation without reopening settled issues.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00041",
+      "gm_trace": null,
+      "intent": "Formally maintain Country Four\u2019s conditional support and request a concrete community-facing safeguard: publish activation information in the affected community\u2019s locally used language before or at activation, with responsibility and a near-term completion deadline recorded by the partnership.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00042",
+      "gm_trace": null,
+      "intent": "Coordinate an urgent partnership alignment process: collect and consolidate the technical, legal, logistics, and community concerns into one shared action-and-safeguard plan, circulate it to all four countries and the partnership, and seek conditional approval for activation with explicit review points and owners before the deadline.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00048",
+      "gm_trace": null,
+      "intent": "Support activation subject to a concrete, time-bound compatibility validation and mitigation plan for the local laboratory interface, rather than reopening another settled issue. Ask the partnership to record this as a narrowly scoped implementation condition and proceed to the activation decision.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00050",
+      "gm_trace": null,
+      "intent": "Maintain Country Three's conditional support and communicate that approval will be given if the partnership confirms a weekend urgent-specimen transport arrangement or named backup provider before activation; do not reopen a settled issue.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00052",
+      "gm_trace": null,
+      "intent": "Initiate an urgent regional alignment process: gather the technical, legal, logistics, community, and country concerns into one shared register; distinguish deployment-blocking issues from conditions that can be managed after activation; propose a time-bound mitigation package; and seek explicit conditional approval from all partnership members before the deadline.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00058",
+      "gm_trace": null,
+      "intent": "Support activation conditionally, requiring the logistics group to confirm a reliable weekend transport arrangement for urgent specimens at the affected border site before or at activation, with the arrangement documented and monitored rather than reopening unrelated settled issues.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00060",
+      "gm_trace": null,
+      "intent": "Initiate an urgent regional coordination process: consolidate the technical, legal, logistics, and community concerns into one shared issue-and-mitigation register; circulate it to all four countries and the partnership; seek agreement on a limited set of explicit, time-bound activation conditions; and recommend conditional activation with scheduled reviews rather than reopening settled issues.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00065",
+      "gm_trace": null,
+      "intent": "Convene an emergency, time-boxed decision meeting of all four countries and the regional health network, with the technical, legal, logistics, and community concerns consolidated in advance. Require each member to state a final approval or specific non-negotiable condition, resolve only deployment-critical conditions, and record a joint activation decision before the deadline.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00068",
+      "gm_trace": null,
+      "intent": "As the Regional Health Network, urgently convene the four countries and the technical, legal, logistics, and community groups for a final alignment process. Consolidate their local concerns into a single written condition-and-mitigation package, assign owners and deadlines, freeze further reopening of settled issues, and seek conditional approvals sufficient for the partnership to activate before the deadline.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00077",
+      "gm_trace": null,
+      "intent": "Coordinate an urgent partnership alignment process: consolidate the technical, legal, logistics, and community concerns into a single decision record, distinguish non-negotiable safeguards from implementation conditions, and propose conditional activation with time-bound commitments and review points. Seek explicit approval from all four countries and the regional network while preventing further reopening of settled issues.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00082",
+      "gm_trace": null,
+      "intent": "Record a formal partnership decision to withhold activation and authorize no deployment at this time, citing blocked deployment and insufficient unconditional member support; communicate that a future activation decision requires resolved concerns and documented member approval.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00085",
+      "gm_trace": null,
+      "intent": "Initiate an urgent regional alignment process: convene all four countries and the technical, legal, logistics, and community groups; circulate a single consolidated issue-and-mitigation register; distinguish blocking conditions from nonblocking follow-up items; assign owners and deadlines; and propose activation with explicit, reviewable conditions and a no-new-issues cutoff before the decision meeting. Seek each country's and the Regional Health Network's conditional approval on that package and communicate it to the partnership decision body.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00091",
+      "gm_trace": null,
+      "intent": "Provide conditional approval for activation, contingent on a time-bound interim weekend transport arrangement for urgent specimens at the affected border site, with the logistics gap tracked for post-activation resolution rather than reopening another settled issue.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00093",
+      "gm_trace": null,
+      "intent": "Escalate an urgent, time-boxed regional alignment process: convene the four countries and the partnership decision body, consolidate all local concerns into a single decision log, assign owners and deadlines for only safety-critical conditions, and seek a formal conditional activation decision with a post-activation review mechanism.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00098",
+      "gm_trace": null,
+      "intent": "Convene an emergency, time-limited decision session with all partnership members and the community, legal, logistics, and technical groups; circulate the consolidated outstanding concerns in advance, distinguish deployment-blocking issues from post-activation conditions, and seek a documented activation decision with explicit safeguards and owners.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00099",
+      "gm_trace": null,
+      "intent": "Support activation conditionally, without reopening another settled issue: require the partnership to confirm and implement weekend transport for urgent specimens at the affected border testing site, with a named responsible party and immediate contingency coverage. Once that mitigation is recorded, move to activation rather than further deliberation.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    },
+    {
+      "event_id": "e00101",
+      "gm_trace": null,
+      "intent": "Urgently convene a focused cross-partnership alignment session, consolidate all local concerns into one shared register, assign each concern a responsible specialist response and deadline, and negotiate explicit safeguards and review conditions with the four countries and community representatives. Seek provisional approval and a time-bound activation decision rather than reopening settled issues indefinitely.",
+      "ruling": "The game master's limit of 6 rule-writing attempts for this run is used up, so the attempt has no effect in this world.",
+      "status": "ruling",
+      "trace_id": null,
+      "written_mid_run": false
+    }
+  ],
+  "run_id": "waltzman-spec-20261008T174927/run-20261008T184545",
+  "run_spend_from_logs": 0.6611,
+  "seconds": 883.6,
+  "situation_briefing": "A partnership of four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system. Technical, legal, logistics and community groups each raise small, true but local concerns through their own channels to different members. Members meet regularly; the concerns slow meetings, reopen settled issues and make support conditional, which can delay or block deployment.",
+  "trace_id": "any-scenario-run-waltzman-spec-20261008T174927-20261008T184545"
+}

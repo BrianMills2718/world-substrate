@@ -1,0 +1,883 @@
+{
+  "scenario_spec_version": 1,
+  "scenario_id": "cross_border_bio_surveillance_decision",
+  "title": "Cross-Border Bio-Surveillance Activation Decision",
+  "description": "A partnership comprising four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system. Specialist groups communicate small, accurate local concerns through separate channels. Those concerns can slow recurring meetings, reopen previously settled issues, make member support conditional, and delay or block deployment.",
+  "people": [
+    {
+      "entity_id": "partnership",
+      "label": "Cross-Border Health Partnership",
+      "position": "Collective decision-making body responsible for the activation decision.",
+      "disposition": "Seeks a joint decision while accommodating member concerns.",
+      "memories": [
+        "The activation decision must be reached by the deadline.",
+        "Some implementation issues had previously been treated as settled."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Joint action",
+          "Cross-border health security"
+        ],
+        "goals": [
+          "Decide whether to activate the early-warning system by the deadline"
+        ],
+        "beliefs": [
+          "Activation requires sufficient member support and readiness"
+        ],
+        "decision_tendencies": [
+          "Uses regular meetings to seek a collective decision",
+          "May postpone activation when concerns remain unresolved"
+        ],
+        "social_perceptions": [
+          "Treats the four countries and regional health network as participating members"
+        ],
+        "current_state": [
+          "Considering activation"
+        ],
+        "capabilities": [
+          "Convene members",
+          "Record a decision",
+          "Authorize or withhold deployment"
+        ],
+        "limitations": [
+          "Can be slowed or blocked by unresolved local concerns and conditional support"
+        ]
+      }
+    },
+    {
+      "entity_id": "country_one",
+      "label": "Country One",
+      "position": "Member country of the partnership.",
+      "disposition": "Potential supporter whose position can become conditional.",
+      "memories": [
+        "The partnership must decide by a deadline."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "National readiness",
+          "Cross-border health security"
+        ],
+        "goals": [
+          "Reach an acceptable activation decision"
+        ],
+        "beliefs": [
+          "Local technical concerns may affect safe activation"
+        ],
+        "decision_tendencies": [
+          "Raises or considers relevant concerns during meetings",
+          "May attach conditions to support"
+        ],
+        "social_perceptions": [
+          "Views the other countries and regional health network as decision partners"
+        ],
+        "current_state": [
+          "Support remains subject to deliberation"
+        ],
+        "capabilities": [
+          "Participate in meetings",
+          "Support, condition, or withhold approval"
+        ],
+        "limitations": [
+          "Local concerns can constrain approval"
+        ]
+      }
+    },
+    {
+      "entity_id": "country_two",
+      "label": "Country Two",
+      "position": "Member country of the partnership.",
+      "disposition": "Potential supporter whose position can become conditional.",
+      "memories": [
+        "The partnership must decide by a deadline."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Legal compliance",
+          "Cross-border health security"
+        ],
+        "goals": [
+          "Reach a legally acceptable activation decision"
+        ],
+        "beliefs": [
+          "Local legal concerns may affect activation"
+        ],
+        "decision_tendencies": [
+          "Reconsiders settled issues when new relevant concerns appear",
+          "May attach conditions to support"
+        ],
+        "social_perceptions": [
+          "Views the other countries and regional health network as decision partners"
+        ],
+        "current_state": [
+          "Support remains subject to deliberation"
+        ],
+        "capabilities": [
+          "Participate in meetings",
+          "Support, condition, or withhold approval"
+        ],
+        "limitations": [
+          "Legal concerns can constrain approval"
+        ]
+      }
+    },
+    {
+      "entity_id": "country_three",
+      "label": "Country Three",
+      "position": "Member country of the partnership.",
+      "disposition": "Potential supporter whose position can become conditional.",
+      "memories": [
+        "The partnership must decide by a deadline."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Operational feasibility",
+          "Cross-border health security"
+        ],
+        "goals": [
+          "Reach an operationally workable activation decision"
+        ],
+        "beliefs": [
+          "Local logistics concerns may affect deployment"
+        ],
+        "decision_tendencies": [
+          "May request further work before approving deployment",
+          "May attach conditions to support"
+        ],
+        "social_perceptions": [
+          "Views the other countries and regional health network as decision partners"
+        ],
+        "current_state": [
+          "Support remains subject to deliberation"
+        ],
+        "capabilities": [
+          "Participate in meetings",
+          "Support, condition, or withhold approval"
+        ],
+        "limitations": [
+          "Logistics concerns can constrain approval"
+        ]
+      }
+    },
+    {
+      "entity_id": "country_four",
+      "label": "Country Four",
+      "position": "Member country of the partnership.",
+      "disposition": "Potential supporter whose position can become conditional.",
+      "memories": [
+        "The partnership must decide by a deadline."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Community acceptability",
+          "Cross-border health security"
+        ],
+        "goals": [
+          "Reach a publicly acceptable activation decision"
+        ],
+        "beliefs": [
+          "Local community concerns may affect activation"
+        ],
+        "decision_tendencies": [
+          "May require community-facing safeguards before approval",
+          "May attach conditions to support"
+        ],
+        "social_perceptions": [
+          "Views the other countries and regional health network as decision partners"
+        ],
+        "current_state": [
+          "Support remains subject to deliberation"
+        ],
+        "capabilities": [
+          "Participate in meetings",
+          "Support, condition, or withhold approval"
+        ],
+        "limitations": [
+          "Community concerns can constrain approval"
+        ]
+      }
+    },
+    {
+      "entity_id": "regional_health_network",
+      "label": "Regional Health Network",
+      "position": "Regional network and member of the partnership.",
+      "disposition": "Favors coordinated surveillance while considering concerns raised by members and specialist groups.",
+      "memories": [
+        "The system is intended to provide cross-border early warning.",
+        "Activation requires a partnership decision by the deadline."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Regional coordination",
+          "Timely outbreak warning"
+        ],
+        "goals": [
+          "Enable a workable regional early-warning system"
+        ],
+        "beliefs": [
+          "Unresolved local concerns can undermine deployment"
+        ],
+        "decision_tendencies": [
+          "Seeks alignment across members",
+          "May accept conditions to preserve support"
+        ],
+        "social_perceptions": [
+          "Treats the four countries as essential implementation partners"
+        ],
+        "current_state": [
+          "Participating in activation deliberations"
+        ],
+        "capabilities": [
+          "Coordinate regional health information",
+          "Participate in meetings",
+          "Support, condition, or withhold approval"
+        ],
+        "limitations": [
+          "Cannot ensure deployment if member support or readiness is insufficient"
+        ]
+      }
+    },
+    {
+      "entity_id": "technical_group",
+      "label": "Technical Group",
+      "position": "Specialist group providing technical input.",
+      "disposition": "Raises small, accurate technical concerns through its own channel.",
+      "memories": [
+        "A local technical concern remains relevant to activation."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Technical reliability",
+          "Accurate reporting"
+        ],
+        "goals": [
+          "Have the technical concern considered before activation"
+        ],
+        "beliefs": [
+          "A true local technical issue can matter even if its scope is limited"
+        ],
+        "decision_tendencies": [
+          "Communicates technical concerns to the affected member"
+        ],
+        "social_perceptions": [
+          "Expects decision-makers to evaluate technical evidence"
+        ],
+        "current_state": [
+          "Holds a local technical concern"
+        ],
+        "capabilities": [
+          "Identify and communicate technical issues"
+        ],
+        "limitations": [
+          "Its concern is local rather than system-wide"
+        ]
+      }
+    },
+    {
+      "entity_id": "legal_group",
+      "label": "Legal Group",
+      "position": "Specialist group providing legal input.",
+      "disposition": "Raises small, accurate legal concerns through its own channel.",
+      "memories": [
+        "A local legal concern remains relevant to activation."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Legal compliance",
+          "Accurate advice"
+        ],
+        "goals": [
+          "Have the legal concern considered before activation"
+        ],
+        "beliefs": [
+          "A true local legal issue can require a condition or renewed deliberation"
+        ],
+        "decision_tendencies": [
+          "Communicates legal concerns to the affected member"
+        ],
+        "social_perceptions": [
+          "Expects decision-makers to account for applicable law"
+        ],
+        "current_state": [
+          "Holds a local legal concern"
+        ],
+        "capabilities": [
+          "Identify and communicate legal issues"
+        ],
+        "limitations": [
+          "Its concern is local rather than system-wide"
+        ]
+      }
+    },
+    {
+      "entity_id": "logistics_group",
+      "label": "Logistics Group",
+      "position": "Specialist group providing logistics input.",
+      "disposition": "Raises small, accurate logistics concerns through its own channel.",
+      "memories": [
+        "A local logistics concern remains relevant to deployment."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Operational readiness",
+          "Reliable transport and supply"
+        ],
+        "goals": [
+          "Have the logistics concern addressed before deployment"
+        ],
+        "beliefs": [
+          "A limited operational gap can delay practical deployment"
+        ],
+        "decision_tendencies": [
+          "Communicates logistics concerns to the affected member"
+        ],
+        "social_perceptions": [
+          "Expects decision-makers to distinguish authorization from deployability"
+        ],
+        "current_state": [
+          "Holds a local logistics concern"
+        ],
+        "capabilities": [
+          "Identify and communicate logistics issues"
+        ],
+        "limitations": [
+          "Its concern is local rather than system-wide"
+        ]
+      }
+    },
+    {
+      "entity_id": "community_group",
+      "label": "Community Group",
+      "position": "Community stakeholder group providing local input.",
+      "disposition": "Raises a small, accurate community concern through its own channel.",
+      "memories": [
+        "A local community-facing concern remains relevant to activation."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Community trust",
+          "Accessible communication"
+        ],
+        "goals": [
+          "Have the community concern addressed before activation"
+        ],
+        "beliefs": [
+          "A limited local acceptability issue can make support conditional"
+        ],
+        "decision_tendencies": [
+          "Communicates community concerns to the affected member"
+        ],
+        "social_perceptions": [
+          "Expects institutions to consider local trust and communication needs"
+        ],
+        "current_state": [
+          "Holds a local community concern"
+        ],
+        "capabilities": [
+          "Identify and communicate community concerns"
+        ],
+        "limitations": [
+          "Its concern is local rather than system-wide"
+        ]
+      }
+    }
+  ],
+  "world_records": [
+    {
+      "record_id": "activation_decision",
+      "kind": "decision_status",
+      "label": "Activation Decision",
+      "public_state": [
+        {
+          "key": "status",
+          "value": "pending"
+        },
+        {
+          "key": "available_outcomes",
+          "value": [
+            "activate",
+            "delay",
+            "block"
+          ]
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    },
+    {
+      "record_id": "member_support",
+      "kind": "support_state",
+      "label": "Member Support for Activation",
+      "public_state": [
+        {
+          "key": "country_one",
+          "value": "undecided"
+        },
+        {
+          "key": "country_two",
+          "value": "undecided"
+        },
+        {
+          "key": "country_three",
+          "value": "undecided"
+        },
+        {
+          "key": "country_four",
+          "value": "undecided"
+        },
+        {
+          "key": "regional_health_network",
+          "value": "undecided"
+        },
+        {
+          "key": "conditional_support_count",
+          "value": 0
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    },
+    {
+      "record_id": "deployment_readiness",
+      "kind": "readiness_state",
+      "label": "Early-Warning System Deployment Readiness",
+      "public_state": [
+        {
+          "key": "technical_ready",
+          "value": true
+        },
+        {
+          "key": "legal_ready",
+          "value": true
+        },
+        {
+          "key": "logistics_ready",
+          "value": true
+        },
+        {
+          "key": "community_ready",
+          "value": true
+        },
+        {
+          "key": "overall_status",
+          "value": "provisionally_ready"
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    },
+    {
+      "record_id": "meeting_progress",
+      "kind": "deliberation_state",
+      "label": "Partnership Deliberation Progress",
+      "public_state": [
+        {
+          "key": "progress_percent",
+          "value": 0
+        },
+        {
+          "key": "settled_issues_reopened",
+          "value": 0
+        },
+        {
+          "key": "meetings_delayed",
+          "value": 0
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    },
+    {
+      "record_id": "time_to_deadline",
+      "kind": "time_state",
+      "label": "Time Remaining Before Decision Deadline",
+      "public_state": [
+        {
+          "key": "weeks_remaining",
+          "value": 8
+        },
+        {
+          "key": "deadline_tick",
+          "value": 8
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    },
+    {
+      "record_id": "deployment_status",
+      "kind": "deployment_state",
+      "label": "System Deployment Status",
+      "public_state": [
+        {
+          "key": "status",
+          "value": "not_deployed"
+        },
+        {
+          "key": "deployment_blocked",
+          "value": false
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    }
+  ],
+  "information_items": [
+    {
+      "representation_id": "technical_concern",
+      "content": "One participating country's local laboratory interface has not completed compatibility validation with the regional alert format.",
+      "apparent_source": "Technical Group",
+      "holder_id": "technical_group",
+      "channel_id": "technical_group_channel",
+      "recipient_ids": [
+        "country_one"
+      ],
+      "hidden_provenance": [
+        {
+          "key": "truth_status",
+          "value": "true"
+        },
+        {
+          "key": "scope",
+          "value": "local"
+        },
+        {
+          "key": "magnitude",
+          "value": "small"
+        }
+      ]
+    },
+    {
+      "representation_id": "legal_concern",
+      "content": "One participating country's rules do not yet expressly authorize the proposed retention period for shared alert metadata.",
+      "apparent_source": "Legal Group",
+      "holder_id": "legal_group",
+      "channel_id": "legal_group_channel",
+      "recipient_ids": [
+        "country_two"
+      ],
+      "hidden_provenance": [
+        {
+          "key": "truth_status",
+          "value": "true"
+        },
+        {
+          "key": "scope",
+          "value": "local"
+        },
+        {
+          "key": "magnitude",
+          "value": "small"
+        }
+      ]
+    },
+    {
+      "representation_id": "logistics_concern",
+      "content": "One border testing site lacks confirmed weekend transport for urgent specimens.",
+      "apparent_source": "Logistics Group",
+      "holder_id": "logistics_group",
+      "channel_id": "logistics_group_channel",
+      "recipient_ids": [
+        "country_three"
+      ],
+      "hidden_provenance": [
+        {
+          "key": "truth_status",
+          "value": "true"
+        },
+        {
+          "key": "scope",
+          "value": "local"
+        },
+        {
+          "key": "magnitude",
+          "value": "small"
+        }
+      ]
+    },
+    {
+      "representation_id": "community_concern",
+      "content": "Public information for one affected border community is not yet available in a locally used language.",
+      "apparent_source": "Community Group",
+      "holder_id": "community_group",
+      "channel_id": "community_group_channel",
+      "recipient_ids": [
+        "country_four"
+      ],
+      "hidden_provenance": [
+        {
+          "key": "truth_status",
+          "value": "true"
+        },
+        {
+          "key": "scope",
+          "value": "local"
+        },
+        {
+          "key": "magnitude",
+          "value": "small"
+        }
+      ]
+    }
+  ],
+  "scheduled_moments": [
+    {
+      "moment_id": "regular_member_meeting",
+      "tick": 1,
+      "every_ticks": 1,
+      "description": "The partnership members meet weekly to review concerns, support, readiness, and the pending activation decision.",
+      "participant_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    },
+    {
+      "moment_id": "activation_decision_deadline",
+      "tick": 8,
+      "every_ticks": null,
+      "description": "Deadline for the partnership to decide whether to activate the cross-border bio-surveillance early-warning system.",
+      "participant_ids": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network"
+      ]
+    }
+  ],
+  "behaviors": [
+    {
+      "request_id": "raise_local_concerns",
+      "subject_refs": [
+        "technical_group",
+        "legal_group",
+        "logistics_group",
+        "community_group",
+        "technical_concern",
+        "legal_concern",
+        "logistics_concern",
+        "community_concern",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four"
+      ],
+      "behavior_description": "Each specialist group can send its small, true, local concern through its own channel to a different partnership member.",
+      "desired_effects": [
+        "Recipients become aware of the relevant concern.",
+        "The concerns enter partnership deliberations without being treated as system-wide failures."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    },
+    {
+      "request_id": "hold_regular_meetings",
+      "subject_refs": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network",
+        "regular_member_meeting",
+        "meeting_progress"
+      ],
+      "behavior_description": "Members can meet on the recurring weekly schedule to review concerns and work toward an activation decision.",
+      "desired_effects": [
+        "Deliberation progress can increase.",
+        "Member support and readiness can be reviewed."
+      ],
+      "fidelity_need": "bounded",
+      "causally_material": true
+    },
+    {
+      "request_id": "concerns_slow_meetings",
+      "subject_refs": [
+        "technical_concern",
+        "legal_concern",
+        "logistics_concern",
+        "community_concern",
+        "regular_member_meeting",
+        "meeting_progress",
+        "time_to_deadline"
+      ],
+      "behavior_description": "Consideration of the local concerns can consume meeting time and slow progress toward the decision.",
+      "desired_effects": [
+        "Meeting progress advances more slowly.",
+        "The number of delayed meetings can increase while time remaining decreases."
+      ],
+      "fidelity_need": "bounded",
+      "causally_material": true
+    },
+    {
+      "request_id": "reopen_settled_issues",
+      "subject_refs": [
+        "technical_concern",
+        "legal_concern",
+        "logistics_concern",
+        "community_concern",
+        "meeting_progress",
+        "partnership"
+      ],
+      "behavior_description": "A relevant concern can cause members to reopen an issue that had previously been treated as settled.",
+      "desired_effects": [
+        "The settled_issues_reopened count can increase.",
+        "Earlier tentative agreements can return to active deliberation."
+      ],
+      "fidelity_need": "bounded",
+      "causally_material": true
+    },
+    {
+      "request_id": "make_support_conditional",
+      "subject_refs": [
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network",
+        "member_support",
+        "technical_concern",
+        "legal_concern",
+        "logistics_concern",
+        "community_concern"
+      ],
+      "behavior_description": "A member can change from undecided or supportive to conditionally supportive until a relevant concern is addressed.",
+      "desired_effects": [
+        "A member's support state becomes conditional.",
+        "The conditional_support_count increases.",
+        "Activation depends on satisfying stated conditions."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    },
+    {
+      "request_id": "delay_activation_decision",
+      "subject_refs": [
+        "partnership",
+        "activation_decision",
+        "time_to_deadline",
+        "meeting_progress",
+        "member_support",
+        "deployment_status"
+      ],
+      "behavior_description": "If deliberations, readiness, or support remain insufficient, the partnership can delay activation rather than deploy immediately.",
+      "desired_effects": [
+        "The activation decision can become delayed.",
+        "Deployment remains not deployed.",
+        "Available time continues to decrease."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    },
+    {
+      "request_id": "block_deployment",
+      "subject_refs": [
+        "partnership",
+        "activation_decision",
+        "member_support",
+        "deployment_readiness",
+        "deployment_status",
+        "activation_decision_deadline"
+      ],
+      "behavior_description": "If required support or readiness is absent by the deadline, activation can be blocked.",
+      "desired_effects": [
+        "The activation decision becomes block.",
+        "deployment_blocked becomes true.",
+        "The system remains not deployed."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    },
+    {
+      "request_id": "activate_and_deploy_system",
+      "subject_refs": [
+        "partnership",
+        "country_one",
+        "country_two",
+        "country_three",
+        "country_four",
+        "regional_health_network",
+        "activation_decision",
+        "member_support",
+        "deployment_readiness",
+        "deployment_status",
+        "activation_decision_deadline"
+      ],
+      "behavior_description": "If the partnership obtains sufficient support and readiness by the deadline, it can activate and deploy the early-warning system.",
+      "desired_effects": [
+        "The activation decision becomes activate.",
+        "The deployment status becomes deployed.",
+        "The participating members begin cross-border early-warning operation."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    }
+  ],
+  "fidelity_assumptions": [
+    "One tick represents one week.",
+    "Because the scenario gives no exact deadline interval, the deadline is modeled at tick 8, allowing eight weekly meeting cycles.",
+    "The four countries are represented as Country One through Country Four because no country names are provided.",
+    "Each concern is concretized as a representative small, true, local issue consistent with its group's domain; the scenario does not specify the exact concern content.",
+    "Each of the four specialist groups initially contacts a different country member through a distinct group-owned channel.",
+    "No voting threshold is specified, so sufficient support is left as a qualitative partnership requirement rather than a numeric rule.",
+    "Initial readiness is provisional and can change when concerns are evaluated."
+  ],
+  "unsupported": [
+    "The schema cannot encode a formal voting rule, veto structure, or required number of supportive members without one being supplied.",
+    "The schema cannot directly enforce that a concern affects only its local scope; that constraint is represented descriptively and in provenance.",
+    "The schema cannot model the technical operation or epidemiological performance of the bio-surveillance system in detail."
+  ],
+  "unresolved_questions": [
+    "What exact date or number of weeks defines the real decision deadline?",
+    "What voting or consensus rule governs the partnership's decision?",
+    "Which member receives each real-world concern?",
+    "What exact conditions must be satisfied for each member's support?",
+    "Does authorization immediately trigger deployment, or is there a separate implementation period?"
+  ]
+}

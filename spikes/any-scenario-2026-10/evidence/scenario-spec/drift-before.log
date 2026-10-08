@@ -1,0 +1,43 @@
+.....FF.......
+======================================================================
+FAIL: test_pipeline_evidence_folders (tests.test_system_model.SystemModelMatchesCode.test_pipeline_evidence_folders)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/brian/code/.scratch/ws-check3/tests/test_system_model.py", line 347, in test_pipeline_evidence_folders
+    self.assertEqual(sorted(e["folder"] for e in self.model["pipeline"]["evidence"]), on_disk,
+AssertionError: Lists differ: ['hospital', 'linked', 'truck', 'waltzman'] != ['hospital', 'linked', 'scenario-spec', 'truck', 'waltzman']
+
+First differing element 2:
+'truck'
+'scenario-spec'
+
+Second list contains 1 additional elements.
+First extra element 4:
+'waltzman'
+
+- ['hospital', 'linked', 'truck', 'waltzman']
++ ['hospital', 'linked', 'scenario-spec', 'truck', 'waltzman']
+?                        +++++++++++++++++
+ : evidence folders on disk differ from the model
+
+======================================================================
+FAIL: test_pipeline_records (tests.test_system_model.SystemModelMatchesCode.test_pipeline_records)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/brian/code/.scratch/ws-check3/tests/test_system_model.py", line 339, in test_pipeline_records
+    self._compare("pipeline record", expanded, pipeline_records())
+  File "/home/brian/code/.scratch/ws-check3/tests/test_system_model.py", line 303, in _compare
+    self.assertEqual(sorted(set(in_code) - set(declared)), [], f"{kind} written in code but not declared in the model")
+AssertionError: Lists differ: ['coverage.json', 'scenario_spec.json'] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+'coverage.json'
+
+- ['coverage.json', 'scenario_spec.json']
++ [] : pipeline record written in code but not declared in the model
+
+----------------------------------------------------------------------
+Ran 14 tests in 2.086s
+
+FAILED (failures=2)

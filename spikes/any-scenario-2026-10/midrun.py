@@ -21,7 +21,13 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 sys.path[:0] = [str(REPO), str(REPO / "src"), str(HERE)]
 
-from checks import run_checks  # noqa: E402
+from checks import static_checks  # noqa: E402
+
+# The game master compares blocking findings before and after a proposed rule, so it uses the same check both times:
+# the checks that need no simulation. The simulated checks (run_checks) took over 4 minutes per call on the
+# generated Waltzman world (26 entities, 10 agents; 2026-10-08) even at 2 runs of 16 ticks, before any agent acted.
+# Rule writing costs about $0.10 per attempt; one 10-agent run made 32 attempts ($3.30) on 2026-10-08.
+GM_MAX_ATTEMPTS = 6
 from rule_writer import propose_rule  # noqa: E402
 from world_substrate.action_authoring import (  # noqa: E402
     CausalModel,
@@ -38,7 +44,7 @@ class MidRunGameMaster:
                  scenario: str, trace_id: str):
         self.bundle, self.causal, self.stocks = bundle, causal, stocks
         self.scenario, self.trace_id = scenario, trace_id
-        self.baseline = run_checks(bundle, causal, stocks=stocks)["counts"]["blocking"]
+        self.baseline = static_checks(bundle, causal, stocks)["counts"]["blocking"]
         self.written: list[dict[str, Any]] = []
 
     def _install(self, engine: Any, new_bundle: dict[str, Any], new_causal: dict[str, Any]) -> list[str]:
@@ -58,6 +64,16 @@ class MidRunGameMaster:
 
     def __call__(self, engine: Any, actor: str, intent: str, events: list[dict[str, Any]]) -> dict[str, Any]:
         n = len(self.written) + 1
+        if n > GM_MAX_ATTEMPTS:  # rule writing is the costly call (about $0.10 each on the rule model); cap it per run
+            ruling = engine.submit({"actor": actor, "kind": "gm-ruling", "base_revision": engine.world.revision,
+                                    "controller": "game-master"})
+            events.append(ruling["event"])
+            entry = {"status": "ruling", "event_id": ruling["event"]["event_id"], "written_mid_run": False,
+                     "ruling": f"The game master's limit of {GM_MAX_ATTEMPTS} rule-writing attempts for this run is "
+                               "used up, so the attempt has no effect in this world.", "gm_trace": None}
+            self.written.append({"intent": intent, "trace_id": None, **entry})
+            print(f"[gm] {actor} '{intent[:60]}' -> ruling (attempt limit reached)", flush=True)
+            return entry
         trace = f"{self.trace_id}-gm{n}"
         problem = (f"During a run of the scenario '{self.scenario}', resident {actor} attempted something no rule "
                    f"covers: '{intent}'. Add the general rule(s) for this kind of attempt so any actor in the same "
@@ -68,7 +84,7 @@ class MidRunGameMaster:
             new_bundle, new_causal, rec = propose_rule(self.bundle, self.causal, problem, trace_id=trace,
                                                        model=RULE_MODEL, model_justification=RULE_MODEL_WHY)
             record["proposal"] = rec["proposal"]
-            report = run_checks(new_bundle, new_causal, stocks=self.stocks)
+            report = static_checks(new_bundle, new_causal, self.stocks)
             new_ids = {c.get("rule", {}).get("mechanic_id") or c.get("rule", {}).get("process_id")
                        for c in rec["proposal"].get("changes", [])}
             own = [f for f in report["findings"] if f["blocking"] and (f.get("rule") in new_ids or f["check"] == "conservation")]

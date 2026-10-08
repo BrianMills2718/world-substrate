@@ -1,0 +1,789 @@
+{
+  "actions": [
+    {
+      "description": "Deliver one represented information item to its declared recipient.",
+      "fields": [
+        {
+          "name": "information",
+          "type": "entity_ref"
+        },
+        {
+          "name": "delivery",
+          "type": "entity_ref"
+        },
+        {
+          "name": "recipient",
+          "type": "entity_ref"
+        }
+      ],
+      "kind": "communicate"
+    },
+    {
+      "description": "Attempt to hold a scheduled partnership meeting for members to review concerns and deliberate about activation.",
+      "fields": [
+        {
+          "name": "organizer",
+          "type": "entity_ref"
+        },
+        {
+          "name": "meeting",
+          "type": "entity_ref"
+        }
+      ],
+      "kind": "hold-member-meeting"
+    },
+    {
+      "description": "Attempt to bring a local concern into the partnership's deliberations, consuming meeting time and potentially slowing progress.",
+      "fields": [
+        {
+          "name": "raised_by",
+          "type": "entity_ref"
+        },
+        {
+          "name": "concern",
+          "type": "string"
+        }
+      ],
+      "kind": "raise-local-concern"
+    },
+    {
+      "description": "Attempt to reopen an issue that members had previously treated as settled because of a relevant concern.",
+      "fields": [
+        {
+          "name": "requester",
+          "type": "entity_ref"
+        },
+        {
+          "name": "issue",
+          "type": "string"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "kind": "reopen-settled-issue"
+    },
+    {
+      "description": "Attempt to change a member's position to conditional support until a specified concern or condition is addressed.",
+      "fields": [
+        {
+          "name": "member",
+          "type": "entity_ref"
+        },
+        {
+          "name": "condition",
+          "type": "string"
+        }
+      ],
+      "kind": "make-support-conditional"
+    },
+    {
+      "description": "Attempt to defer the activation decision rather than deploy immediately because deliberation, readiness, or support is insufficient.",
+      "fields": [
+        {
+          "name": "decision_body",
+          "type": "entity_ref"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "kind": "delay-activation-decision"
+    },
+    {
+      "description": "Attempt to block activation and deployment when required support or readiness is absent by the deadline.",
+      "fields": [
+        {
+          "name": "decision_body",
+          "type": "entity_ref"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "kind": "block-deployment"
+    },
+    {
+      "description": "Attempt to approve activation and deploy the early-warning system after sufficient support and readiness have been obtained by the deadline.",
+      "fields": [
+        {
+          "name": "decision_body",
+          "type": "entity_ref"
+        },
+        {
+          "name": "system",
+          "type": "string"
+        }
+      ],
+      "kind": "activate-and-deploy-system"
+    }
+  ],
+  "components": [
+    {
+      "fields": [
+        {
+          "default": "participant",
+          "name": "role",
+          "type": "string"
+        },
+        {
+          "default": false,
+          "name": "authorized",
+          "type": "boolean"
+        },
+        {
+          "default": false,
+          "name": "approved",
+          "type": "boolean"
+        },
+        {
+          "default": false,
+          "name": "aware",
+          "type": "boolean"
+        }
+      ],
+      "name": "member"
+    },
+    {
+      "fields": [
+        {
+          "default": "report",
+          "name": "content",
+          "type": "string"
+        },
+        {
+          "default": "placeholder",
+          "name": "source_id",
+          "type": "entity_ref"
+        },
+        {
+          "default": "brief",
+          "name": "channel_id",
+          "type": "string"
+        },
+        {
+          "default": "direct",
+          "name": "visibility",
+          "type": "string"
+        },
+        {
+          "default": "coordination",
+          "name": "topic",
+          "type": "string"
+        },
+        {
+          "default": false,
+          "name": "active",
+          "type": "boolean"
+        }
+      ],
+      "name": "information"
+    },
+    {
+      "fields": [
+        {
+          "default": "placeholder",
+          "name": "info_id",
+          "type": "entity_ref"
+        },
+        {
+          "default": "placeholder",
+          "name": "recipient_id",
+          "type": "entity_ref"
+        },
+        {
+          "default": "brief",
+          "name": "channel_id",
+          "type": "string"
+        },
+        {
+          "default": "pending",
+          "name": "status",
+          "type": "string"
+        }
+      ],
+      "name": "delivery"
+    },
+    {
+      "fields": [
+        {
+          "default": "pending",
+          "name": "status",
+          "type": "string"
+        }
+      ],
+      "name": "activation_decision"
+    },
+    {
+      "fields": [
+        {
+          "default": "undecided",
+          "name": "country_one",
+          "type": "string"
+        },
+        {
+          "default": "undecided",
+          "name": "country_two",
+          "type": "string"
+        },
+        {
+          "default": "undecided",
+          "name": "country_three",
+          "type": "string"
+        },
+        {
+          "default": "undecided",
+          "name": "country_four",
+          "type": "string"
+        },
+        {
+          "default": "undecided",
+          "name": "regional_health_network",
+          "type": "string"
+        },
+        {
+          "default": 0,
+          "name": "conditional_support_count",
+          "type": "integer"
+        }
+      ],
+      "name": "member_support"
+    },
+    {
+      "fields": [
+        {
+          "default": true,
+          "name": "technical_ready",
+          "type": "boolean"
+        },
+        {
+          "default": true,
+          "name": "legal_ready",
+          "type": "boolean"
+        },
+        {
+          "default": true,
+          "name": "logistics_ready",
+          "type": "boolean"
+        },
+        {
+          "default": true,
+          "name": "community_ready",
+          "type": "boolean"
+        },
+        {
+          "default": "provisionally_ready",
+          "name": "overall_status",
+          "type": "string"
+        }
+      ],
+      "name": "deployment_readiness"
+    },
+    {
+      "fields": [
+        {
+          "default": 0,
+          "name": "progress_percent",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "settled_issues_reopened",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "meetings_delayed",
+          "type": "integer"
+        }
+      ],
+      "name": "meeting_progress"
+    },
+    {
+      "fields": [
+        {
+          "default": 8,
+          "name": "weeks_remaining",
+          "type": "integer"
+        },
+        {
+          "default": 8,
+          "name": "deadline_tick",
+          "type": "integer"
+        }
+      ],
+      "name": "time_to_deadline"
+    },
+    {
+      "fields": [
+        {
+          "default": "not_deployed",
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "default": false,
+          "name": "deployment_blocked",
+          "type": "boolean"
+        }
+      ],
+      "name": "deployment_status"
+    },
+    {
+      "fields": [
+        {
+          "default": 0,
+          "name": "ticks_until",
+          "type": "integer"
+        },
+        {
+          "default": -1,
+          "name": "every_ticks",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "occurrences",
+          "type": "integer"
+        }
+      ],
+      "name": "moment"
+    }
+  ],
+  "entities": [
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Collective decision-making body responsible for the activation decision."
+        }
+      },
+      "id": "partnership",
+      "label": "Cross-Border Health Partnership"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Member country of the partnership."
+        }
+      },
+      "id": "country-one",
+      "label": "Country One"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Member country of the partnership."
+        }
+      },
+      "id": "country-two",
+      "label": "Country Two"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Member country of the partnership."
+        }
+      },
+      "id": "country-three",
+      "label": "Country Three"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Member country of the partnership."
+        }
+      },
+      "id": "country-four",
+      "label": "Country Four"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Regional network and member of the partnership."
+        }
+      },
+      "id": "regional-health-network",
+      "label": "Regional Health Network"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Specialist group providing technical input."
+        }
+      },
+      "id": "technical-group",
+      "label": "Technical Group"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Specialist group providing legal input."
+        }
+      },
+      "id": "legal-group",
+      "label": "Legal Group"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Specialist group providing logistics input."
+        }
+      },
+      "id": "logistics-group",
+      "label": "Logistics Group"
+    },
+    {
+      "categories": [
+        "actor",
+        "member"
+      ],
+      "components": {
+        "member": {
+          "approved": false,
+          "authorized": false,
+          "aware": false,
+          "role": "Community stakeholder group providing local input."
+        }
+      },
+      "id": "community-group",
+      "label": "Community Group"
+    },
+    {
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "active": false,
+          "channel_id": "technical_group_channel",
+          "content": "One participating country's local laboratory interface has not completed compatibility validation with the regional alert format.",
+          "source_id": "technical-group",
+          "topic": "technical_concern",
+          "visibility": "direct"
+        }
+      },
+      "id": "info-technical-concern-to-country-one",
+      "label": "One participating country's local laboratory interface has n (to country_one)"
+    },
+    {
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "channel_id": "technical_group_channel",
+          "info_id": "info-technical-concern-to-country-one",
+          "recipient_id": "country-one",
+          "status": "pending"
+        }
+      },
+      "id": "delivery-info-technical-concern-to-country-one",
+      "label": "Delivery to country_one"
+    },
+    {
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "active": false,
+          "channel_id": "legal_group_channel",
+          "content": "One participating country's rules do not yet expressly authorize the proposed retention period for shared alert metadata.",
+          "source_id": "legal-group",
+          "topic": "legal_concern",
+          "visibility": "direct"
+        }
+      },
+      "id": "info-legal-concern-to-country-two",
+      "label": "One participating country's rules do not yet expressly autho (to country_two)"
+    },
+    {
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "channel_id": "legal_group_channel",
+          "info_id": "info-legal-concern-to-country-two",
+          "recipient_id": "country-two",
+          "status": "pending"
+        }
+      },
+      "id": "delivery-info-legal-concern-to-country-two",
+      "label": "Delivery to country_two"
+    },
+    {
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "active": false,
+          "channel_id": "logistics_group_channel",
+          "content": "One border testing site lacks confirmed weekend transport for urgent specimens.",
+          "source_id": "logistics-group",
+          "topic": "logistics_concern",
+          "visibility": "direct"
+        }
+      },
+      "id": "info-logistics-concern-to-country-three",
+      "label": "One border testing site lacks confirmed weekend transport fo (to country_three)"
+    },
+    {
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "channel_id": "logistics_group_channel",
+          "info_id": "info-logistics-concern-to-country-three",
+          "recipient_id": "country-three",
+          "status": "pending"
+        }
+      },
+      "id": "delivery-info-logistics-concern-to-country-three",
+      "label": "Delivery to country_three"
+    },
+    {
+      "categories": [
+        "information"
+      ],
+      "components": {
+        "information": {
+          "active": false,
+          "channel_id": "community_group_channel",
+          "content": "Public information for one affected border community is not yet available in a locally used language.",
+          "source_id": "community-group",
+          "topic": "community_concern",
+          "visibility": "direct"
+        }
+      },
+      "id": "info-community-concern-to-country-four",
+      "label": "Public information for one affected border community is not  (to country_four)"
+    },
+    {
+      "categories": [
+        "delivery"
+      ],
+      "components": {
+        "delivery": {
+          "channel_id": "community_group_channel",
+          "info_id": "info-community-concern-to-country-four",
+          "recipient_id": "country-four",
+          "status": "pending"
+        }
+      },
+      "id": "delivery-info-community-concern-to-country-four",
+      "label": "Delivery to country_four"
+    },
+    {
+      "categories": [
+        "decision-status"
+      ],
+      "components": {
+        "activation_decision": {
+          "status": "pending"
+        }
+      },
+      "id": "activation-decision",
+      "label": "Activation Decision"
+    },
+    {
+      "categories": [
+        "support-state"
+      ],
+      "components": {
+        "member_support": {
+          "conditional_support_count": 0,
+          "country_four": "undecided",
+          "country_one": "undecided",
+          "country_three": "undecided",
+          "country_two": "undecided",
+          "regional_health_network": "undecided"
+        }
+      },
+      "id": "member-support",
+      "label": "Member Support for Activation"
+    },
+    {
+      "categories": [
+        "readiness-state"
+      ],
+      "components": {
+        "deployment_readiness": {
+          "community_ready": true,
+          "legal_ready": true,
+          "logistics_ready": true,
+          "overall_status": "provisionally_ready",
+          "technical_ready": true
+        }
+      },
+      "id": "deployment-readiness",
+      "label": "Early-Warning System Deployment Readiness"
+    },
+    {
+      "categories": [
+        "deliberation-state"
+      ],
+      "components": {
+        "meeting_progress": {
+          "meetings_delayed": 0,
+          "progress_percent": 0,
+          "settled_issues_reopened": 0
+        }
+      },
+      "id": "meeting-progress",
+      "label": "Partnership Deliberation Progress"
+    },
+    {
+      "categories": [
+        "time-state"
+      ],
+      "components": {
+        "time_to_deadline": {
+          "deadline_tick": 8,
+          "weeks_remaining": 8
+        }
+      },
+      "id": "time-to-deadline",
+      "label": "Time Remaining Before Decision Deadline"
+    },
+    {
+      "categories": [
+        "deployment-state"
+      ],
+      "components": {
+        "deployment_status": {
+          "deployment_blocked": false,
+          "status": "not_deployed"
+        }
+      },
+      "id": "deployment-status",
+      "label": "System Deployment Status"
+    },
+    {
+      "categories": [
+        "moment"
+      ],
+      "components": {
+        "moment": {
+          "every_ticks": 1,
+          "occurrences": 0,
+          "ticks_until": 1
+        }
+      },
+      "id": "regular-member-meeting",
+      "label": "The partnership members meet weekly to review concerns, support, readiness, and "
+    },
+    {
+      "categories": [
+        "moment"
+      ],
+      "components": {
+        "moment": {
+          "every_ticks": -1,
+          "occurrences": 0,
+          "ticks_until": 8
+        }
+      },
+      "id": "activation-decision-deadline",
+      "label": "Deadline for the partnership to decide whether to activate the cross-border bio-"
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "delivery": {
+        "kind": "text",
+        "value": "\u2192"
+      },
+      "information": {
+        "kind": "emoji",
+        "value": "\u2709\ufe0f"
+      },
+      "participant": {
+        "kind": "emoji",
+        "value": "\ud83d\udc64"
+      }
+    },
+    "category_assets": {
+      "delivery": "delivery",
+      "information": "information",
+      "member": "participant"
+    },
+    "station_roles": {}
+  },
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "content_version": 1,
+    "id": "cross-border-bio-surveillance-decision",
+    "label": "Cross-Border Bio-Surveillance Activation Decision",
+    "location": "scenario",
+    "summary": "A partnership comprising four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system. Specialist groups communicate small, accurate local concerns through separate channels. Those concerns can slow recurring meetings, reopen previously settled issues, make member support conditional, and delay or block deployment."
+  }
+}

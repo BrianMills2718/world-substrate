@@ -364,6 +364,18 @@ def co_located_findings(bundle: dict[str, Any], causal: dict[str, Any]) -> list[
     return out
 
 
+def static_checks(bundle: dict[str, Any], causal: dict[str, Any], stocks: list[dict[str, Any]] | None = None
+                  ) -> dict[str, Any]:
+    """The checks that need no simulation (structure, selectors, attempt-vs-outcome, conservation, unresolved
+    activity, co-located links). Used where a decision must be made mid-run; the simulated checks in run_checks
+    (random, guided, extreme-condition and repeated-action runs) are a development check of the generator."""
+    findings = (structure_findings(causal, stocks or []) + selector_findings(bundle, causal)
+                + attempt_findings(bundle, causal) + conservation_findings(causal, stocks)
+                + unresolved_findings(causal) + co_located_findings(bundle, causal))
+    return {"findings": findings, "counts": {"blocking": sum(1 for f in findings if f["blocking"]),
+                                             "advisory": sum(1 for f in findings if not f["blocking"])}}
+
+
 def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6, ticks: int = 80,
                stocks: list[dict[str, Any]] | None = None, anomaly_review: Any = None,
                coverage: list[dict[str, Any]] | None = None, consequence_check: Any = None) -> dict[str, Any]:

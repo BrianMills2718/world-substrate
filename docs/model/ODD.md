@@ -233,4 +233,13 @@ Issue #106 (actors that move to the same place stack on one point) **does show u
 
 ## 10. The any-scenario pipeline and this model
 
-The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its evidence folders (`truck`, `hospital`, `linked`, `waltzman` under `spikes/any-scenario-2026-10/evidence/`), the substrate component kinds (`information`, `delivery`) and the process link kinds are checked against the code by `tests/test_system_model.py`. Its two views (`scenario_replay`, `scenario_state_panel`) and gaps G12-G16 are in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The pipeline is a spike under an adopted plan (`docs/plans/scenario_actors_kept.md` changes `odd_brief` and `model.json`); when it changes a record, the drift test fails until this model is updated. Plan for this extension: [system_model_pipeline.md](../plans/system_model_pipeline.md).
+**Default world definition since plan `scenario-spec-adoption` (2026-10-08).** `model_scenario.py --world-def spec`, the default, defines a world as a `ScenarioSpec` (`scenario_spec.json`). That is `ScenarioSpecV1`, ported from Cybernetic Influence v3's `ScenarioSpecV2` at `1c1c207`, and it adds an information item's holder and channel. `compile_spec.py` turns it into World Substrate state:
+
+- people become `member` actors, each with a profile brief shown only to its own agent;
+- information items become one `information` entity and one pending `delivery` per recipient, delivered by the reviewed `communicate` rule;
+- scheduled moments become `moment` countdowns;
+- each behavior gets a row in a `CoverageReport` (`coverage.json`).
+
+On this path, generated worlds therefore have the kinds that section 4.2 marks lacking or unused: people with profiles, information items with recipients, and scheduled moments. The older outline path is still available as `--world-def odd`.
+
+The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its evidence folders (`truck`, `hospital`, `linked`, `scenario-spec`, `waltzman`, `waltzman-spec` under `spikes/any-scenario-2026-10/evidence/`), the substrate component kinds (`information`, `delivery`) and the process link kinds are checked against the code by `tests/test_system_model.py`. Its two views (`scenario_replay`, `scenario_state_panel`) and gaps G12-G16 are in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The pipeline is a spike under an adopted plan (`docs/plans/scenario_actors_kept.md` changes `odd_brief` and `model.json`); when it changes a record, the drift test fails until this model is updated. Plan for this extension: [system_model_pipeline.md](../plans/system_model_pipeline.md).
