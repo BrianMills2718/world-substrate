@@ -11,7 +11,9 @@ LOGS = DATA / "world-substrate/world-substrate_llm_client_data"  # must exist: a
 # any-scenario-poc ($5 cap) ended at $3.93; linked-process-participants ($3, approved 2026-10-08) ended at $7.07;
 # waltzman-scenario-run adds $2 from that start value (docs/plans/waltzman_scenario_run.md).
 # waltzman-scenario-run ended at $7.59; scenario-spec-adoption adds $2 (docs/plans/scenario_spec_adoption.md).
-CAP = 7.59 + 2.00
+# 2026-10-08: the plan overspent to $11.45 (game-master calls were uncounted; fixed); Brian approved $2 more from
+# there ("yeah i added mroe money", replying to the request for credit plus $2 more).
+CAP = 11.45 + 2.00
 SINCE = "2026-10-07"
 
 

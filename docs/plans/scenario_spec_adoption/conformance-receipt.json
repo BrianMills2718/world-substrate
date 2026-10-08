@@ -1,10 +1,10 @@
 {
   "schema_version": "planning-method-conformance-receipt.v1",
   "record_type": "planning_method_conformance_receipt",
-  "receipt_id": "RECEIPT-scenario_spec_adoption-1802f6ec3bf1",
+  "receipt_id": "RECEIPT-scenario_spec_adoption-415670b91596",
   "plan": {
     "plan_ref": "docs/plans/scenario_spec_adoption.md",
-    "plan_sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+    "plan_sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
   },
   "path_decision": {
     "ref": "docs/plans/scenario_spec_adoption/path-decision.json",
@@ -26,7 +26,7 @@
   },
   "activation": {
     "facts_ref": "docs/plans/scenario_spec_adoption/activation-facts.json",
-    "facts_sha256": "b8dcb7fca75f7a059f6e7897d83a9a9391cb52b3903421e0889737fa2fede698",
+    "facts_sha256": "a1a48f32991212df531d9a3d2e3e10b3c1308d78c1ee5cc417e9fd61d5f522bd",
     "facts": {
       "shared_mechanism": true,
       "empirical_comparison_proposed": false,
@@ -102,10 +102,10 @@
   },
   "checklist": {
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:ef61a76a7a8354cd220216cf955aaa9879e7de23ca85514750c3d61eb560ad18",
-    "definition_sha256": "d29b4f7aa43f930f6940fdd7050966bcbc092c6f89f38bc9b2a6f310df97abed",
+    "revision": "sha256:bbcc7fa577cabf476098ac32900db789b815b0288b93c582be5aa44adf3c0101",
+    "definition_sha256": "9ef57d7a0bbbcd3a3cdf600fa0d24e25808932d6729c21e1dee4e8791ca275bd",
     "bundle_ref": "docs/plans/scenario_spec_adoption/checklist.json",
-    "bundle_sha256": "d7ea87ee3dd0e8d4d0ff36af56ad45289c7dddb4cb0d237e28dcb0c2983f5388",
+    "bundle_sha256": "0ec1095a15286aea6b9f98b7ad7358f147e043b783acff03d132d426948bd284",
     "coverage": "complete",
     "definition_matches_recompilation": true
   },
@@ -123,7 +123,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#actor-result-and-authority",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -169,7 +169,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#success-and-disproof",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -196,7 +196,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#trace-review-per-criterion",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -223,7 +223,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#system-model",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -250,7 +250,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#actor-result-and-authority",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -277,7 +277,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#spend-and-irreversible-actions",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -287,7 +287,7 @@
         "materiality": "non_material",
         "missing": null,
         "rationale": "The evidence identifies the spend boundary as the $2 `CAP` and per-run/per-call budgets, names Brian as the authorizer, and specifies containment through pre-run checks, tick-level spend monitoring, stop conditions, GM attempt limits, and per-call limits. It explicitly states that there are no other irreversible actions, deployments, or outreach.",
-        "reused": false
+        "reused": true
       },
       "suggested_action": null
     },
@@ -304,7 +304,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#uncertainties",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -331,16 +331,16 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#activation-facts",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/scenario_spec_adoption/13fb3a6ff462/CORE-ACTIVATION-FACTS",
+        "trace_id": "company-planning/method-conformance/scenario_spec_adoption/347f0812e3be/CORE-ACTIVATION-FACTS",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The plan explicitly declares `shared_mechanism`, `llm_central`, and `irreversible_or_spend_action` true, matching its new scenario contract/compiler, central model calls, and OpenRouter spend. It declares `empirical_comparison_proposed` false, and the quoted plan describes a single rerun and verification checks rather than an experiment comparing alternative designs.",
+        "rationale": "The plan explicitly declares `llm_central: true`, `irreversible_or_spend_action: true`, and `shared_mechanism: true`, matching its central model calls, OpenRouter spend, and new typed scenario contract/compiler. It declares `empirical_comparison_proposed: false`, and the plan describes one rerun and acceptance/regression checks rather than an experiment comparing alternatives.",
         "reused": false
       },
       "suggested_action": null
@@ -358,7 +358,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#prior-art-and-parallel-implementation-check",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -385,7 +385,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#prior-art-and-parallel-implementation-check",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -412,7 +412,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#model-calls",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -439,7 +439,7 @@
       "evidence": [
         {
           "ref": "docs/plans/scenario_spec_adoption.md#spend-and-irreversible-actions",
-          "sha256": "1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9"
+          "sha256": "415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946"
         }
       ],
       "semantic": {
@@ -449,7 +449,7 @@
         "materiality": "non_material",
         "missing": null,
         "rationale": "The evidence names OpenRouter as the provider and Brian as the spend authorizer under his key. It also states that before promotion, a fresh pipeline run of Waltzman's text on a real model must be completed with reported trace IDs and an agent run showing at least three of four mechanisms with Engine event IDs.",
-        "reused": false
+        "reused": true
       },
       "suggested_action": null
     }
@@ -470,11 +470,11 @@
   "conformance_report": {
     "schema_version": "1.0",
     "record_type": "planning_conformance_report",
-    "report_id": "REPORT-scenario_spec_adoption-1802f6ec3bf1",
+    "report_id": "REPORT-scenario_spec_adoption-415670b91596",
     "snapshot_ref": "SNAPSHOT-scenario_spec_adoption",
-    "snapshot_revision": "sha256:d7ea87ee3dd0e8d4d0ff36af56ad45289c7dddb4cb0d237e28dcb0c2983f5388",
+    "snapshot_revision": "sha256:0ec1095a15286aea6b9f98b7ad7358f147e043b783acff03d132d426948bd284",
     "packet_ref": "docs/plans/scenario_spec_adoption.md",
-    "packet_revision": "sha256:1802f6ec3bf1e5b2f5718cc601f3dd092dacfae58b714f3c480d58e5044174e9",
+    "packet_revision": "sha256:415670b915967403b6f4caa0bdc01e2307c7186ca0993ee3b7167185f7065946",
     "structural_status": "pass",
     "semantic_review_status": "complete",
     "diagnostics": [],
@@ -497,7 +497,7 @@
     "client": "claude-code",
     "session": "55a7bcf4-391a-4f04-9516-3c0e91fe91c8"
   },
-  "started_at": "2026-10-08T22:39:10Z",
-  "completed_at": "2026-10-08T22:39:21Z",
-  "duration_ms": 10363
+  "started_at": "2026-10-08T23:10:24Z",
+  "completed_at": "2026-10-08T23:10:47Z",
+  "duration_ms": 19796
 }

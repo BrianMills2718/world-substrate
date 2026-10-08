@@ -203,5 +203,74 @@ class RecordedPipelineRepairTests(unittest.TestCase):
         self.assertIn("member_support", rows["make_support_conditional"]["why"])
 
 
+RUN2 = SPIKE / "evidence/waltzman-spec/run2"  # pipeline run waltzman-spec-20261008T174927, agent run run-20261008T184545
+
+
+def _run2_events():
+    import gzip
+    with gzip.open(RUN2 / "run/events.jsonl.gz", "rt") as fh:
+        return [json.loads(line) for line in fh if line.strip()]
+
+
+class RecordedWaltzmanRunTests(unittest.TestCase):  # S5/S6: claims in the Assessment, against the recorded run
+    def setUp(self):
+        self.events = _run2_events()
+        self.attempts = [json.loads(x) for x in (RUN2 / "run/attempts.jsonl").read_text().splitlines() if x.strip()]
+
+    def _changes(self, event_id):
+        e = next(e for e in self.events if e["event_id"] == event_id)
+        return {c["path"]: (c["before"], c["after"]) for c in e["changes"]}
+
+    def test_each_group_delivers_its_concern_to_exactly_one_country(self):
+        sends = [e for e in self.events if e["rule_id"] == "coordination.action.communicate"]
+        self.assertEqual(len(sends), 4)
+        for e in sends:
+            aware = [p for p in self._changes(e["event_id"]) if p.endswith(".components.member.aware")]
+            self.assertEqual(len(aware), 1, e["event_id"])
+        self.assertEqual(self._changes("e00006")["entities.delivery-info-legal-concern-to-country-two.components.delivery.status"],
+                         ("pending", "delivered"))
+
+    def test_country_two_makes_support_conditional_citing_the_concern_only_it_received(self):
+        a = next(x for x in self.attempts if (x.get("performed") or {}).get("event_id") == "e00015")
+        self.assertEqual(a["actor"], "country-two")
+        self.assertTrue(any("to country_two" in c for c in a["cited_observations"]))
+        self.assertEqual(self._changes("e00015")["entities.member-support.components.member_support.conditional_support_count"],
+                         (1, 2))
+
+    def test_reopened_issue_sets_progress_back(self):
+        ch = self._changes("e00025")
+        self.assertEqual(ch["entities.meeting-progress.components.meeting_progress.progress_percent"], (60, 50))
+        self.assertEqual(ch["entities.meeting-progress.components.meeting_progress.settled_issues_reopened"], (0, 1))
+
+    def test_every_agent_was_briefed_with_its_own_profile(self):
+        briefed = {x["actor"] for x in self.attempts if x.get("brief")}
+        self.assertEqual(briefed, {x["actor"] for x in self.attempts})
+        legal = next(x for x in self.attempts if x["actor"] == "legal-group")
+        self.assertIn("Legal", legal["brief"])
+
+    def test_the_recorded_block_used_the_weekly_meeting_as_its_deadline(self):
+        e = next(e for e in self.events if e["event_id"] == "e00047")
+        check = next(c for c in e["checks"] if c["label"] == "the decision deadline has occurred")
+        self.assertEqual(check["actual"], 5)  # occurrences of the weekly meeting; the deadline had occurred 0 times
+
+    def test_pinned_slots_refuse_the_meeting_as_the_deadline(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import compile_spec
+        from scripts.run_authored_world import build_engine
+        from spec_pipeline import pin_named_slots
+        spec = ScenarioSpecV1.model_validate_json((RUN2 / "scenario_spec.json").read_text())
+        bundle, _, _ = compile_spec(spec)
+        recorded = json.loads((RUN2 / "run/bundle_after_run.json").read_text())
+        bundle["actions"] = recorded["actions"]
+        bundle["components"] = recorded["components"]
+        causal, pinned = pin_named_slots(spec, json.loads((RUN2 / "run/causal_after_run.json").read_text()))
+        self.assertIn("block-at-deadline-for-missing-support.activation_decision_deadline -> activation-decision-deadline",
+                      pinned)
+        engine, _, _ = build_engine(bundle, causal)
+        page = engine.discover("partnership", kind="block-deployment")
+        slots = {r["action"]["activation_decision_deadline"] for r in page["available"] + page["blocked"]}
+        self.assertEqual(slots, {"activation-decision-deadline"})
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

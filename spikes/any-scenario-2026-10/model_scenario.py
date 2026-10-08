@@ -395,7 +395,8 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
 def main_spec(args, out: Path, stamp: str) -> int:
     """The scenario-spec path (docs/plans/scenario_spec_adoption.md)."""
     from compile_spec import compile_spec
-    from spec_pipeline import (action_signatures, behavior_coverage, merge_causal, person_briefs, record_fields,
+    from spec_pipeline import (action_signatures, behavior_coverage, merge_causal, person_briefs, pin_named_slots,
+                               record_fields,
                                scenario_spec)
     trace = lambda step: f"any-scenario-{args.name}-{step}-{stamp}"  # noqa: E731
     t0 = time.time()
@@ -427,6 +428,8 @@ def main_spec(args, out: Path, stamp: str) -> int:
                                           reasoning_effort="medium", model=RULE_MODEL,
                                           model_justification=RULE_MODEL_WHY, max_budget=0.40)
     causal, dropped = merge_causal(compiled, generated)
+    causal, pinned = pin_named_slots(spec, causal)
+    dropped += [f"slot pinned: {x}" for x in pinned]
     print(f"[step] mechanics {time.time() - t2:.1f}s trace={trace('mechanics')} cost={getattr(r2, 'cost', None)} "
           f"dropped={dropped}", flush=True)
     build_engine(bundle, causal)  # compile + install: raises if any mechanic is rejected

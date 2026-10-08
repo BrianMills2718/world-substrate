@@ -104,7 +104,7 @@ font:13px/1.45 system-ui,sans-serif}#ws-state h3{margin:4px 0 6px;font-size:14px
 #ws-state table{border-collapse:collapse}#ws-state td{padding:1px 10px 1px 0;vertical-align:top}</style>
 <div id="ws-state"><h3>Engine events this round</h3><div id="ws-ev"></div><h3>State after this round</h3><div id="ws-st"></div></div>
 <script>const WS_STATE=__DATA__;(function(){const orig=window.render;window.render=function(i){orig(i);
-const r=WS_STATE[i]||{events:[],state:{}};document.getElementById('ws-ev').innerHTML=r.events.length?r.events.map(e=>
+const r=WS_STATE[Math.max(0,Math.min(i,WS_STATE.length-1))]||{events:[],state:{}};document.getElementById('ws-ev').innerHTML=r.events.length?r.events.map(e=>
 '<div><code>'+e.event_id+'</code> '+e.rule+' <b>'+e.status+'</b>'+(e.changes.length?': '+e.changes.join('; '):'')+'</div>').join(''):'<i>none</i>';
 document.getElementById('ws-st').innerHTML='<table>'+Object.entries(r.state).map(([k,v])=>'<tr><td><b>'+k+'</b></td><td>'+
 Object.entries(v).map(([f,x])=>f+'='+(typeof x==='number'?Math.round(x*100)/100:x)).join(', ')+'</td></tr>').join('')+'</table>';};

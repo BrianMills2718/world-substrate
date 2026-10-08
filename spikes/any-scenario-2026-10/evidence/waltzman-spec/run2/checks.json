@@ -1,0 +1,15 @@
+{
+  "counts": {
+    "advisory": 0,
+    "blocking": 1
+  },
+  "findings": [
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "action authorize-supported-ready-deployment sets deployment_readiness.overall_status to 'ready', but no rule ever reacts to it or changes it again: the activity is started and never resolved.",
+      "rule": "authorize-supported-ready-deployment"
+    }
+  ],
+  "scope": "static checks only (no simulation); the full simulated run_checks was stopped after ~25 min as a development diagnostic"
+}

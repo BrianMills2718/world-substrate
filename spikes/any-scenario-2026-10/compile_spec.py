@@ -111,12 +111,13 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
         fields = [(e.key, e.value) for e in rec.public_state] + [(f"hidden_{e.key}", e.value) for e in rec.hidden_state]
         fields = [(k, v) for k, v in fields if not isinstance(v, list) and v is not None]
         components.append({"name": name, "fields": [{"name": k, "type": _field_type(v), "default": v} for k, v in fields]})
-        entities.append({"id": _eid(rec.record_id), "label": rec.label, "categories": [_eid(rec.kind)],
+        # its own id as a category too, so a rule slot named after this record can be pinned to it (spec_pipeline.pin_named_slots)
+        entities.append({"id": _eid(rec.record_id), "label": rec.label, "categories": [_eid(rec.kind), _eid(rec.record_id)],
                          "components": {name: dict(fields)}})
     if spec.scheduled_moments:
         components.append(MOMENT)
     for m in spec.scheduled_moments:
-        entities.append({"id": _eid(m.moment_id), "label": m.description[:80], "categories": ["moment"],
+        entities.append({"id": _eid(m.moment_id), "label": m.description[:80], "categories": ["moment", _eid(m.moment_id)],
                          "components": {"moment": {"ticks_until": m.tick, "every_ticks": m.every_ticks or -1,
                                                    "occurrences": 0}}})
     bundle = {"schema_version": BUNDLE_SCHEMA,

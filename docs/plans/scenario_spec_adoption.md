@@ -221,7 +221,20 @@ The machine record is `scenario_spec_adoption/activation-facts.json`.
 
 ## Assessment
 
-To be written from the recorded run (S6).
+From pipeline run `waltzman-spec-20261008T174927` (world defined by `scenario_spec.json`, spec trace `any-scenario-waltzman-spec-spec-20261008T163904`, rules trace `any-scenario-waltzman-spec-mechanics-20261008T174927`) and agent run `run-20261008T184545` (trace `any-scenario-run-waltzman-spec-20261008T174927-20261008T184545`). The agent run went 12 ticks with 105 Engine events and 74 attempts, and spent $0.66 by the call logs. Evidence is in `spikes/any-scenario-2026-10/evidence/waltzman-spec/run2/`, and the tests are `RecordedWaltzmanRunTests`.
+
+**Bottom line:** all four of the paper's mechanisms appear as Engine events, driven by the AI agents' own choices. Two are only roughly represented. The run's one "deployment blocked" event is not valid; the bug behind it is fixed.
+
+| Mechanism | Verdict | Evidence | What is missing |
+| --- | --- | --- | --- |
+| Concerns delivered to different members through separate channels | represented | `e00005`–`e00008`, rule `coordination.action.communicate` (the reviewed rule). Each event delivers one group's concern to exactly one country, for example `e00006`: legal group to Country Two, delivery `pending`→`delivered`. At tick 1, Country Two's attempt cites that concern ("…(to country_two).topic: legal_concern") and makes its support conditional on it (`e00015`). | — |
+| Meetings that slow | represented roughly | `hold-scheduled-member-meeting` was held 7 times (`e00013`, `e00024`, …, `e00090`). Reopened issues set meeting progress back, for example `e00025` takes progress from 60 to 50. | The generated meeting rule adds to `meetings_delayed` at every meeting, whatever the concerns, so that counter is not evidence of slowing. The slowing that is evidenced is progress lost to reopened issues. |
+| Settled issues that reopen | represented | 14 events of `reopen-issue-for-known-concern`, for example `e00025` (Country Two, `settled_issues_reopened` 0→1) and `e00026` (Country Four). | — |
+| Support that becomes conditional | represented roughly | `declare-conditional-support` `e00014`–`e00017`, with `conditional_support_count` 0→4. By round 5 every member's support is `conditional` (`run/frame-round5-state.png`). | The condition is a status and a count; it does not record which concern the support depends on. Resolving a concern cannot restore support automatically. |
+
+**The block that was not valid:** `e00047` (`block-at-deadline-for-missing-support`, tick 5) blocked deployment. But its "the decision deadline has occurred" check read the *weekly meeting's* occurrence count (5), not the deadline's (0). The slot named `activation_decision_deadline` accepted any moment. This is fixed by `pin_named_slots`: a slot named after a specific record or moment accepts only that entity, and the test `test_pinned_slots_refuse_the_meeting_as_the_deadline` covers it. No valid run of the deadline outcome exists yet.
+
+**What to fix next** (from this run): store conditional support as a commitment linked to the concern it depends on, with states conditional, met and broken (Singh's commitments; see the research in this session). Make meeting slowing depend on open concerns. Both belong in the metamodel integration discussed with Brian, not in more spike patches.
 
 ## Current State
 
@@ -254,3 +267,11 @@ To be written from the recorded run (S6).
   - the game master is limited to 6 rule-writing attempts per run;
   - events and attempts are written every tick, and a failure writes a summary naming the error, then re-raises (verified with a failing model id).
 - **Blocked:** S5 and S6 need one more agent run. That needs more credit on the OpenRouter account ($0.57 left) and Brian's yes to raise the cap.
+- **Credit and cap:** Brian added credit and approved $2 more from $11.45 ("yeah i added mroe money"), so `CAP` = $13.45.
+- **Agent run `run-20261008T184545`** (complete): 12 ticks, $0.66 by the logs, game master stopped at 6 attempts. Its block event was found invalid during the assessment and the slot-pinning fix was added.
+- **Every run made in this plan:**
+  - pipeline runs: 1 (stopped at a naming error), 1b (repair loop stopped), and 2 (static checks);
+  - agent launches stalled with no model calls: two;
+  - agent runs: `run-20261008T174222` (stopped at the audit after tick 1), `run-20261008T181230` (credit ran out at tick 10, log only), and `run-20261008T184545` (complete);
+  - plus one run that tested the failure path with a fake model id and made no calls.
+

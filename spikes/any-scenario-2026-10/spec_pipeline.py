@@ -141,6 +141,22 @@ def merge_causal(compiled: dict[str, Any], generated: dict[str, Any]) -> tuple[d
     return merged, dropped
 
 
+def pin_named_slots(spec: ScenarioSpecV1, causal: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """A rule slot named after a specific record or moment accepts only that entity. Without this, a slot named
+    `activation_decision_deadline` (category `moment`) accepted the weekly meeting, and an agent blocked deployment
+    at tick 5 because the meeting had occurred 5 times (run-20261008T184545, event e00047)."""
+    named = {r.record_id: r.record_id for r in spec.world_records} | {m.moment_id: m.moment_id for m in spec.scheduled_moments}
+    pinned = []
+    for m in causal.get("mechanics", []):
+        for slot, selector in (m.get("participants") or {}).items():
+            if slot in named:
+                eid = named[slot].replace("_", "-")
+                if selector.get("categories") != [eid]:
+                    selector["categories"] = [eid]
+                    pinned.append(f"{m.get('mechanic_id')}.{slot} -> {eid}")
+    return causal, pinned
+
+
 def record_fields(spec: ScenarioSpecV1, sigs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Give each action an entity field for every world record or moment its behaviors involve, so its rule can
     change them (the signature call proposes people fields; without these no rule can reach a record)."""
