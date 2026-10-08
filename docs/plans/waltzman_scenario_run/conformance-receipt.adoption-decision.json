@@ -1,0 +1,15 @@
+{
+  "schema_version": "method-adoption-decision.v1",
+  "record_type": "method_adoption_decision",
+  "decision": "adopted",
+  "plan_ref": "docs/plans/waltzman_scenario_run.md",
+  "plan_sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa",
+  "receipt_ref": "docs/plans/waltzman_scenario_run/conformance-receipt.json",
+  "receipt_sha256": "7f6103011b988874e28c9d1cd6da691a5177ca980de9278e75013a64fc0c5bed",
+  "receipt_result": "pass",
+  "reason_codes": [],
+  "summary": [
+    "pass: 10 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
+  ],
+  "decided_at": "2026-10-08T05:30:20Z"
+}

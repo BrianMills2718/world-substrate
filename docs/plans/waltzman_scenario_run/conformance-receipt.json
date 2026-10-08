@@ -1,0 +1,397 @@
+{
+  "schema_version": "planning-method-conformance-receipt.v1",
+  "record_type": "planning_method_conformance_receipt",
+  "receipt_id": "RECEIPT-waltzman_scenario_run-73dd2189e218",
+  "plan": {
+    "plan_ref": "docs/plans/waltzman_scenario_run.md",
+    "plan_sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+  },
+  "path_decision": {
+    "ref": "docs/plans/waltzman_scenario_run/path-decision.json",
+    "sha256": "1878d7f3ba435a22478133924583bef1085fb1bc590c5570472406d6f3ef29de",
+    "selected_path": "durable_solo",
+    "classified_path": "durable_solo",
+    "errors": []
+  },
+  "route": "durable_solo",
+  "profile": {
+    "profile_id": "bounded-design",
+    "revision": "bounded-design@4",
+    "path": "contracts/method-conformance/profiles/bounded-design.v1.json",
+    "sha256": "8ef56347e0d354416b7ec547ab97208e8d767a58ed7c3f82c72dcd96c1deba97"
+  },
+  "compiler": {
+    "path": "scripts/method_conformance/compiler.py",
+    "sha256": "b2aaf9581e24108cf0bc7642bbc381cfb1868cb40491982fe6963ab5c126184e"
+  },
+  "activation": {
+    "facts_ref": "docs/plans/waltzman_scenario_run/activation-facts.json",
+    "facts_sha256": "1c5017af6c7096f4a7aac807ad3d03244005cd1e87b540201b71685e4cfd44b5",
+    "facts": {
+      "shared_mechanism": false,
+      "empirical_comparison_proposed": false,
+      "llm_central": true,
+      "irreversible_or_spend_action": true,
+      "multiple_writers": false,
+      "consequential_boundary": false,
+      "inline_prototype": false
+    },
+    "fact_origins": {
+      "shared_mechanism": "declared:derived_current_boundary",
+      "empirical_comparison_proposed": "declared:derived_current_boundary",
+      "llm_central": "declared:derived_current_boundary",
+      "irreversible_or_spend_action": "declared:derived_current_boundary",
+      "multiple_writers": "derived:path_decision.concurrent_writers",
+      "consequential_boundary": "derived:path_decision.persistent_migration|consequential_external_mutation",
+      "inline_prototype": "derived:classified_path==prototype"
+    },
+    "overlays": [
+      {
+        "overlay_id": "OV-PRIOR-ART",
+        "activation_fact": "shared_mechanism",
+        "active": false,
+        "reason": "shared_mechanism=false (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-EMPIRICAL-COMPARISON",
+        "activation_fact": "empirical_comparison_proposed",
+        "active": false,
+        "reason": "empirical_comparison_proposed=false (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-LLM-CENTRAL",
+        "activation_fact": "llm_central",
+        "active": true,
+        "reason": "llm_central=true (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-MULTIPLE-WRITERS",
+        "activation_fact": "multiple_writers",
+        "active": false,
+        "reason": "multiple_writers=false (derived:path_decision.concurrent_writers)"
+      },
+      {
+        "overlay_id": "OV-CONSEQUENTIAL-BOUNDARY",
+        "activation_fact": "consequential_boundary",
+        "active": false,
+        "reason": "consequential_boundary=false (derived:path_decision.persistent_migration|consequential_external_mutation)"
+      },
+      {
+        "overlay_id": "OV-INLINE-PROTOTYPE",
+        "activation_fact": "inline_prototype",
+        "active": false,
+        "reason": "inline_prototype=false (derived:classified_path==prototype)"
+      }
+    ]
+  },
+  "checklist": {
+    "checklist_id": "method-conformance.bounded-design",
+    "revision": "sha256:7652cfc9b9c542639628ad8c12060656d77c467274188b12d6d881b639d71818",
+    "definition_sha256": "33a64047589eb331e6a871965cfe86ccfcc2c39b39e2e0d5b16065567eace4b4",
+    "bundle_ref": "docs/plans/waltzman_scenario_run/checklist.json",
+    "bundle_sha256": "dbcc83f0c47c27774ae31e7ccbb2eb414f20df810e58731237eff3bc5bf73e42",
+    "coverage": "complete",
+    "definition_matches_recompilation": true
+  },
+  "items": [
+    {
+      "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#actor-result-and-authority",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/CORE-ACTOR-RESULT-EXAMPLE",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly names the actor as Brian, states the desired result as a recorded scenario run with frames and a one-page assessment, and gives a stable, concrete user-visible example: a four-row assessment table with specified columns, a sample row, and an adjacent replay screenshot."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-ROUTE",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "structural",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run/path-decision.json",
+          "sha256": "1878d7f3ba435a22478133924583bef1085fb1bc590c5570472406d6f3ef29de"
+        }
+      ],
+      "semantic": null,
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-SUCCESS-DISPROOF",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#success-and-disproof",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/CORE-SUCCESS-DISPROOF",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly defines success as W1–W5 passing and the assessment being accurate against recorded files. It also gives concrete disproof conditions: at least three of four mechanisms are missing, or no runnable model can be produced within three repair rounds."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-TRACE-REVIEW",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#trace-review-per-criterion",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/CORE-TRACE-REVIEW",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly lists each criterion (W1–W5), the run or artifact whose full trace is examined, where that trace lives, and what must be observed beyond the final outcome. It also specifies detailed trace requirements such as event IDs, repair records, cited observations, rule verdicts, check results, and the exact merge commit."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-AUTHORITY-NONGOALS",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#actor-result-and-authority",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/CORE-AUTHORITY-NONGOALS",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly identifies Brian as the authority who requested the goal, states that the implementing agent is the sole writer, and specifies repository access constraints. It also lists explicit non-goals, including contacting Waltzman, deployment, changing the live World Builder, tuning the pipeline, and comparing variants or models."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-IRREVERSIBLE-SPEND",
+      "effect": "blocking",
+      "applicability_mode": "conditional",
+      "condition_fact": "irreversible_or_spend_action",
+      "condition_value": true,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#spend-and-irreversible-actions",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/CORE-IRREVERSIBLE-SPEND",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The spend is bounded by a $2 cap, Brian is explicitly named as the authorizer, and raising the cap requires his explicit approval. The plan also states that there are no irreversible actions."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-UNCERTAINTIES",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#uncertainties",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/CORE-UNCERTAINTIES",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly lists three material uncertainties, assigns the owner “Implementing agent” to each, and specifies evidence that would resolve each one."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-ACTIVATION-FACTS",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#activation-facts",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/CORE-ACTIVATION-FACTS",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The plan declares `llm_central` and `irreversible_or_spend_action` true, matching its model calls and OpenRouter spend. It explicitly states that no shared mechanism is introduced and that the plan runs and assesses one scenario rather than comparing alternatives, so the false declarations for `shared_mechanism` and `empirical_comparison_proposed` are supported."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-LLM-CALL-BOUNDARY",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#model-calls",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/OV-LLM-CALL-BOUNDARY",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly lists the calls in pipeline order and specifies the structured result boundary for each call, including JSON objects, validated Pydantic records/verdicts, compiled change lists, and compiled game-master rules. It also explicitly states that every call uses `llm_client` with its own trace ID and is logged to `calls_<date>.jsonl`, with spending summarized by `spend.py`."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-LLM-AUTHORITY-PROMOTION",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/waltzman_scenario_run.md#spend-and-irreversible-actions",
+          "sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/waltzman_scenario_run/3492804de31d/OV-LLM-AUTHORITY-PROMOTION",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly names OpenRouter as the model-call provider and Brian as the authorizer/spend authority. It also states a pre-promotion authentic-run condition: a fresh pipeline run on a real model with reported trace IDs and a member run showing at least three of four mechanisms with Engine event IDs."
+      },
+      "suggested_action": null
+    }
+  ],
+  "item_counts": {
+    "pass": 10,
+    "unresolved": 0,
+    "not_applicable": 0,
+    "unavailable": 0,
+    "missing": 0
+  },
+  "semantic_verifier": {
+    "kind": "llm_client",
+    "available": true,
+    "model": "openrouter/openai/gpt-5.6-luna",
+    "task": "company_planning.method_conformance.semantic_item_review"
+  },
+  "conformance_report": {
+    "schema_version": "1.0",
+    "record_type": "planning_conformance_report",
+    "report_id": "REPORT-waltzman_scenario_run-73dd2189e218",
+    "snapshot_ref": "SNAPSHOT-waltzman_scenario_run",
+    "snapshot_revision": "sha256:dbcc83f0c47c27774ae31e7ccbb2eb414f20df810e58731237eff3bc5bf73e42",
+    "packet_ref": "docs/plans/waltzman_scenario_run.md",
+    "packet_revision": "sha256:73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa",
+    "structural_status": "pass",
+    "semantic_review_status": "complete",
+    "diagnostics": [],
+    "route": "durable_solo",
+    "adoption_readiness": "ready_for_contributor",
+    "limitations": [
+      "Semantic verdicts judge only the cited plan excerpt against the item statement; they do not judge product strategy."
+    ]
+  },
+  "advisory_deviations": [],
+  "result": "pass",
+  "reason_codes": [],
+  "actionable_summary": [
+    "pass: 10 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
+  ],
+  "limitations": [
+    "Semantic verdicts judge only the cited plan excerpt against the item statement; they do not judge product strategy."
+  ],
+  "caller": {
+    "client": "claude-code",
+    "session": "55a7bcf4-391a-4f04-9516-3c0e91fe91c8"
+  },
+  "started_at": "2026-10-08T05:30:08Z",
+  "completed_at": "2026-10-08T05:30:20Z",
+  "duration_ms": 11188
+}
