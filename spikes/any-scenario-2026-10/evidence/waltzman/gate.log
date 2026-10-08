@@ -1,0 +1,6 @@
+World Substrate project check passed.
+Neutral runtime tests: Ran 551 tests in 18.073s · OK (skipped=1)
+Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
+Planning path: README.md -> roadmap/README.md -> active slice
+Pinned source records checked: 16
+Donor checkout verification skipped (use --with-donors to enable).

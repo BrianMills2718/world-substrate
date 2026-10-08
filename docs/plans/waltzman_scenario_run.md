@@ -171,6 +171,6 @@ Members did try to coordinate on concerns. In round 2, Countries B, C and D each
 | W2 | met | Member run `run-20261008T125239` (trace `any-scenario-run-waltzman-20261008T123134-20261008T125239`): AI members on Concordia (`openrouter/openai/gpt-5.6-luna`), game master on. It ended `terminal` at tick 2 with 13 Engine events, 10 attempts and 3 game-master rulings, costing $0.004 (`spikes/any-scenario-2026-10/evidence/waltzman/run/summary.json`). This was the only member run. The first launch was refused by the scratch storage guard and made no calls. |
 | W3 | met | `spikes/any-scenario-2026-10/evidence/waltzman/run/frame-round1-votes.png` shows round 1: each member's decision and its Engine events `e00001`–`e00005` and `e00007`. `spikes/any-scenario-2026-10/evidence/waltzman/run/frame-round2-gm.png` shows round 2: the game-master rulings and the activation. |
 | W4 | met | The Assessment above: all four mechanisms are missing, each with its reason. |
-| W5 | see the pull request | Gate output is in the pull request. |
+| W5 | met | `scripts/check_project.py` on commit `7d66867` exited 0, with 551 tests OK (546 before plus 5 new) and 1 skipped (`tests/test_world_builder_home.py`, "node is not installed"; it was also skipped before this change). Output: `spikes/any-scenario-2026-10/evidence/waltzman/gate.log`. The diff touches only the plan, `spend.py`, the evidence folder and the new test. |
 
 Spend: $7.07 at the plan's start, $7.59 after both runs ($0.52 of the $2 cap; `spend.py`).
