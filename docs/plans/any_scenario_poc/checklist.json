@@ -7,13 +7,13 @@
     "schema_version": "checklist-definition.v1",
     "record_type": "checklist_definition",
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
+    "revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
     "title": "bounded-design method conformance for any_scenario_poc",
     "purpose": "Route-bound evidence that the selected Company Planning method was applied before adoption.",
     "subject_ref": {
       "kind": "planning_review",
       "id": "any_scenario_poc",
-      "revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4"
+      "revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869"
     },
     "items": [
       {
@@ -241,8 +241,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-ACTOR-RESULT-EXAMPLE",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
       "evidence_types": [
         "plan_section"
@@ -255,9 +255,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#actor-result-and-authority",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:21Z",
+        "observed_at": "2026-10-08T00:33:12Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -267,8 +267,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-ROUTE",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-ROUTE",
       "evidence_types": [
         "path_decision_record"
@@ -281,9 +281,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc/path-decision.json",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:21Z",
+        "observed_at": "2026-10-08T00:33:13Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -293,8 +293,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-SUCCESS-DISPROOF",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-SUCCESS-DISPROOF",
       "evidence_types": [
         "plan_section"
@@ -307,9 +307,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#success-and-disproof",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:21Z",
+        "observed_at": "2026-10-08T00:33:13Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -319,8 +319,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-TRACE-REVIEW",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-TRACE-REVIEW",
       "evidence_types": [
         "plan_section"
@@ -333,9 +333,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#trace-review-per-criterion",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:21Z",
+        "observed_at": "2026-10-08T00:33:13Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -345,8 +345,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-AUTHORITY-NONGOALS",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-AUTHORITY-NONGOALS",
       "evidence_types": [
         "plan_section"
@@ -359,9 +359,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#actor-result-and-authority",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:21Z",
+        "observed_at": "2026-10-08T00:33:13Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -371,8 +371,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-IRREVERSIBLE-SPEND",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-IRREVERSIBLE-SPEND",
       "evidence_types": [
         "plan_section"
@@ -385,9 +385,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#spend-and-irreversible-actions",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:22Z",
+        "observed_at": "2026-10-08T00:33:13Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -397,8 +397,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-UNCERTAINTIES",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-UNCERTAINTIES",
       "evidence_types": [
         "plan_section"
@@ -411,9 +411,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#uncertainties",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:22Z",
+        "observed_at": "2026-10-08T00:33:13Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -423,8 +423,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-ACTIVATION-FACTS",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "CORE-ACTIVATION-FACTS",
       "evidence_types": [
         "plan_document",
@@ -438,9 +438,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#activation-facts",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:22Z",
+        "observed_at": "2026-10-08T00:33:13Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -450,8 +450,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-PRIOR-ART-DISPOSITION",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "OV-PRIOR-ART-DISPOSITION",
       "evidence_types": [
         "plan_section"
@@ -464,9 +464,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#prior-art-and-parallel-implementation-check",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:22Z",
+        "observed_at": "2026-10-08T00:33:14Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -476,8 +476,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-PRIOR-ART-PARALLEL-CHECK",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "OV-PRIOR-ART-PARALLEL-CHECK",
       "evidence_types": [
         "plan_section"
@@ -490,9 +490,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#prior-art-and-parallel-implementation-check",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:22Z",
+        "observed_at": "2026-10-08T00:33:14Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -502,8 +502,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-LLM-CALL-BOUNDARY",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "OV-LLM-CALL-BOUNDARY",
       "evidence_types": [
         "plan_section"
@@ -516,9 +516,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#model-calls",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:22Z",
+        "observed_at": "2026-10-08T00:33:14Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null
@@ -528,8 +528,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-LLM-AUTHORITY-PROMOTION",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:ece8060d4c0e1329323b1bb068279ed2b853b4c417b7bf959c955f123be34e96",
-      "definition_sha256": "348bfa3353b0a8d25b6702ee5f531bc898d6ca978c4ec90323da913c809942e0",
+      "checklist_revision": "sha256:a4ca01415cd7abb51c60e7b4996abfed3f33e27748f18e8714ca772196218e87",
+      "definition_sha256": "958f77bc27629a39ff73cf72e325ea005c0f46b6ba3abbe6fa73808aaf26238e",
       "item_id": "OV-LLM-AUTHORITY-PROMOTION",
       "evidence_types": [
         "plan_section"
@@ -542,9 +542,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/any_scenario_poc.md#spend-and-irreversible-actions",
         "scope": "plan:docs/plans/any_scenario_poc.md",
-        "observed_at": "2026-10-08T00:28:22Z",
+        "observed_at": "2026-10-08T00:33:14Z",
         "producer": "claude-opus-5-5",
-        "source_revision": "sha256:263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
+        "source_revision": "sha256:2b9bc38fec2a8af5e5eb18b2fbb85c9b6c51e6eb309376aef4129474aa2f2869",
         "limitations": []
       },
       "annotation": null

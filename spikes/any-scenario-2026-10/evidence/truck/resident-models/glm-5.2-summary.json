@@ -1,0 +1,16 @@
+{
+  "attempts": 1,
+  "conditions_changed": [],
+  "cost": 0.00063732,
+  "ended": "quiescent",
+  "events": 6,
+  "final_tick": 6,
+  "plan_spend_after": 3.926151363999997,
+  "profile_id": "1dd30f337d123517",
+  "resident_calls": 1,
+  "resident_model": "openrouter/z-ai/glm-5.2",
+  "run_id": "truck-20261007T171351/run-20261007T203238",
+  "seconds": 6.2,
+  "situation_briefing": "A delivery driver with a quarter tank must reach a town 120 miles away; there is one gas station at mile 60.",
+  "trace_id": "any-scenario-run-truck-20261007T171351-20261007T203238"
+}
