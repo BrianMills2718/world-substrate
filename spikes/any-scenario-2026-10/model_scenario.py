@@ -398,9 +398,15 @@ def main_spec(args, out: Path, stamp: str) -> int:
     from spec_pipeline import action_signatures, merge_causal, person_briefs, scenario_spec
     trace = lambda step: f"any-scenario-{args.name}-{step}-{stamp}"  # noqa: E731
     t0 = time.time()
-    spec, r0 = scenario_spec(args.text, model=RULE_MODEL, trace_id=trace("spec"))
+    if args.from_spec:
+        from scenario_spec import ScenarioSpecV1
+        spec, r0 = ScenarioSpecV1.model_validate_json(args.from_spec.read_text()), None
+        spec_trace = "any-scenario-" + args.from_spec.parent.name.replace(args.name + "-", args.name + "-spec-", 1)
+    else:
+        spec, r0 = scenario_spec(args.text, model=RULE_MODEL, trace_id=trace("spec"))
+        spec_trace = trace("spec")
     (out / "scenario_spec.json").write_text(spec.model_dump_json(indent=2))
-    print(f"[step] spec {time.time() - t0:.1f}s trace={trace('spec')} cost={getattr(r0, 'cost', None)} "
+    print(f"[step] spec {time.time() - t0:.1f}s trace={spec_trace} from_spec={args.from_spec} cost={getattr(r0, 'cost', None)} "
           f"people={len(spec.people)} items={len(spec.information_items)} moments={len(spec.scheduled_moments)} "
           f"records={len(spec.world_records)} behaviors={len(spec.behaviors)} unsupported={len(spec.unsupported)}",
           flush=True)
@@ -429,7 +435,8 @@ def main_spec(args, out: Path, stamp: str) -> int:
             row["classification"] = "coarse" if row["by"] else "unsupported"
     early = {"scenario_text": args.text, "world_kind": "ongoing", "world_def": "spec", "stock_map": [],
              "briefs": person_briefs(spec), "dropped_generated_rules": dropped, "action_signatures": sigs,
-             "traces": {"spec": trace("spec"), "actions": trace("actions"), "mechanics": trace("mechanics")}}
+             "from_spec": str(args.from_spec) if args.from_spec else None,
+             "traces": {"spec": spec_trace, "actions": trace("actions"), "mechanics": trace("mechanics")}}
     for name_, value in {"bundle": bundle, "causal": causal, "model": early, "coverage": coverage}.items():
         (out / f"{name_}.json").write_text(json.dumps(value, indent=2, sort_keys=True))
     reviewer = anomaly_reviewer(args.text, trace_id=trace("anomaly"))
@@ -453,6 +460,8 @@ def main() -> int:
     ap.add_argument("--out-root", default=str(HERE / "runs"))
     ap.add_argument("--max-repairs", type=int, default=None)
     ap.add_argument("--repair-dir", type=Path, help="rerun checks + repairs on an existing model dir (no regeneration)")
+    ap.add_argument("--from-spec", type=Path, help="spec path: reuse a saved scenario_spec.json (its spec trace is "
+                                                  "kept) instead of calling the model again")
     ap.add_argument("--world-def", default="spec", choices=("spec", "odd"),
                     help="spec: ScenarioSpecV1 ported from Cybernetic Influence (default); odd: the older free-form "
                          "outline handed to the World Builder bundle generator")

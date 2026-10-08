@@ -94,6 +94,10 @@ def _two_recipient_spec():
                            "disposition": "Cautious", "memories": ["Asked about data rules."],
                            "behavioral_profile": {}})
     spec["information_items"][0]["recipient_ids"] = ["country_b", "country_c"]
+    spec["behaviors"].append({"request_id": "concern_slows_meeting", "subject_refs": ["clause_conflict", "weekly_meeting"],
+                              "behavior_description": "Considering the concern uses meeting time.",
+                              "desired_effects": ["The meeting runs longer."], "fidelity_need": "coarse",
+                              "causally_material": True})
     spec["behaviors"].append({"request_id": "meeting_slows", "subject_refs": ["weekly_meeting"],
                               "behavior_description": "Concerns slow the meeting.",
                               "desired_effects": ["Less time for decisions."], "fidelity_need": "coarse",
@@ -147,7 +151,9 @@ class CompilerTests(unittest.TestCase):  # S2
 
     def test_coverage_marks_delivery_exact_and_the_rest_for_the_generator(self):
         rows = {r["request_id"]: r["classification"] for r in self.coverage["rows"]}
-        self.assertEqual(rows, {"raise_concern": "exact", "meeting_slows": "to_generate"})
+        # mentioning an item does not make a behavior delivery: the concern slowing a meeting needs its own rules
+        self.assertEqual(rows, {"raise_concern": "exact", "concern_slows_meeting": "to_generate",
+                                "meeting_slows": "to_generate"})
 
     def test_communicate_rule_is_the_reviewed_one_unchanged(self):
         reviewed = json.loads((REPO / "examples/native_coordination/coordination-causal-v0.json").read_text())

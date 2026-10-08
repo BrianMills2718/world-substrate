@@ -93,10 +93,11 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
     known = {r["request_id"] for r in wanted}
     out, seen = [], set()
     for a in sigs.actions:  # client-side validation: unique, new, serving a real behavior
-        if a.kind in existing or a.kind in seen or not set(a.for_behaviors) & known:
+        kind = a.kind.replace("_", "-")
+        if kind in existing or kind in seen or not set(a.for_behaviors) & known:
             continue
-        seen.add(a.kind)
-        out.append({"kind": a.kind, "description": a.description,
+        seen.add(kind)
+        out.append({"kind": a.kind.replace("_", "-"), "description": a.description,  # bundle kinds use hyphens
                     "fields": [f.model_dump() for f in a.fields], "for_behaviors": a.for_behaviors})
     return out, result
 

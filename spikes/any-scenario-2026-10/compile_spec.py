@@ -131,9 +131,14 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
     communicate = json.loads(COORDINATION_CAUSAL.read_text())["mechanics"][0]
     causal = {"schema_version": "world-substrate-causal-model/v0", "mechanics": [communicate],
               "processes": _moment_processes() if spec.scheduled_moments else []}
+    # Delivery alone is exact: a behavior whose subjects are only people and information items (and include an
+    # item) is what communicate does. Anything that also involves a record or a moment (a meeting slowing, support
+    # becoming conditional) needs rules of its own, so it goes to the generator even though it mentions an item.
     item_ids = {i.representation_id for i in spec.information_items}
+    people_ids = {p.entity_id for p in spec.people}
+    delivery = lambda b: bool(set(b.subject_refs) & item_ids) and set(b.subject_refs) <= item_ids | people_ids  # noqa: E731
     rows = [{"request_id": b.request_id, "behavior": b.behavior_description,
-             "classification": "exact" if set(b.subject_refs) & item_ids else "to_generate",
-             "by": "communicate" if set(b.subject_refs) & item_ids else None} for b in spec.behaviors]
+             "classification": "exact" if delivery(b) else "to_generate",
+             "by": "communicate" if delivery(b) else None} for b in spec.behaviors]
     coverage = {"rows": rows, "unsupported": list(spec.unsupported)}
     return bundle, causal, coverage
