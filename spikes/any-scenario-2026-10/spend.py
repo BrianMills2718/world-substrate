@@ -5,7 +5,8 @@ import sys
 from pathlib import Path
 
 LOGS = Path.home() / "projects/data/world-substrate/world-substrate_llm_client_data"
-CAP = 5.00
+# any-scenario-poc ($5 cap) ended at $3.93; linked-process-participants adds $3 on top (approved 2026-10-08).
+CAP = 3.93 + 3.00
 
 
 def plan_spend() -> tuple[int, float]:

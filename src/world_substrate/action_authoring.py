@@ -13,7 +13,7 @@ installation apply exactly as they do to hand-written rules.
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import product
 from typing import Any
 
@@ -259,6 +259,9 @@ class DeclaredProcess:
     limits: tuple[str, ...]
     read_paths: tuple[str, ...]
     write_paths: tuple[str, ...]
+    # Optional linked participants: name -> {"link": ..., "selector": ...}. Each is resolved from the
+    # matching entity `it` (see PROCESS_LINKS), so one process event can change linked entities.
+    participants: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def package(self) -> MechanicPackage:
         return MechanicPackage(
@@ -283,13 +286,14 @@ class DeclaredProcess:
         missing = sorted(required - set(value))
         if missing:
             raise ActionDeclarationError(f"process is missing: {missing}")
-        unknown = sorted(set(value) - required - {"schema_version", "version", "limits"})
+        unknown = sorted(set(value) - required - {"schema_version", "version", "limits", "participants"})
         if unknown:
             raise ActionDeclarationError(f"unknown process keys: {unknown}")
         process_id = _nonempty(value["process_id"], "process_id")
         selector = _selector(value["selector"], bundle, f"process {process_id} selector")
         signature: dict[str, Any] = {"fields": []}
-        selectors = {"it": selector}
+        linked = _process_participants(value.get("participants") or {}, bundle, process_id)
+        selectors = {"it": selector, **{name: row["selector"] for name, row in linked.items()}}
         # A process may run on every matching entity unconditionally.
         checks = _checks(value["checks"], bundle, signature, selectors) if value["checks"] else ()
         effects = _effects(value["effects"], bundle, signature, selectors)
@@ -302,9 +306,14 @@ class DeclaredProcess:
             effects=effects,
             limits=_string_list(value.get("limits", []), "limits", nonempty=False),
             # _derived_reads names the selector's entity `<actor>`; a process's
-            # only participant is `it`.
-            read_paths=tuple(sorted(p.replace("<actor>", "<it>") for p in _derived_reads(selector, {}, checks, effects))),
+            # own entity is `it`, plus any linked participants.
+            read_paths=tuple(sorted(
+                {p.replace("<actor>", "<it>") for p in _derived_reads(
+                    selector, {n: r["selector"] for n, r in linked.items()}, checks, effects)}
+                | set(_link_reads(linked))
+            )),
             write_paths=_derived_writes(effects),
+            participants=linked,
         )
 
 
@@ -319,39 +328,42 @@ class CompiledProcessMechanic:
         self.read_paths = declared.read_paths
         self.write_paths = declared.write_paths
 
-    def _matching(self, world: World) -> list[str]:
-        out = []
+    def _matching(self, world: World) -> list[dict[str, str]]:
+        """One binding per matching entity `it` (times each combination of linked participants)."""
+        out: list[dict[str, str]] = []
         for entity_id in sorted(world.entities):
             entity = world.entities[entity_id]
             if not _selector_matches(entity, self.declared.selector):
                 continue
-            participants = {"it": entity_id}
-            ok = True
-            for row in self.declared.checks:
-                try:
-                    left = _resolve_expr(row["left"], world, {}, participants, None)
-                    right = _resolve_expr(row["right"], world, {}, participants, None)
-                    ok = _compare(left, row["op"], right)
-                except (KeyError, TypeError, ValueError, ActionDeclarationError):
-                    ok = False
-                if not ok:
-                    break
-            if ok:
-                out.append(entity_id)
+            for participants in _link_bindings(world, entity_id, self.declared.participants):
+                ok = True
+                for row in self.declared.checks:
+                    try:
+                        left = _resolve_expr(row["left"], world, {}, participants, None)
+                        right = _resolve_expr(row["right"], world, {}, participants, None)
+                        ok = _compare(left, row["op"], right)
+                    except (KeyError, TypeError, ValueError, ActionDeclarationError):
+                        ok = False
+                    if not ok:
+                        break
+                if ok:
+                    out.append(participants)
         return out
 
     def due(self, world: World) -> bool:
         return bool(self._matching(world))
 
     def apply_with_event_id(self, world: World, event_id: str | None) -> None:
-        for entity_id in self._matching(world):
-            participants = {"it": entity_id}
-            entity = world.entities[entity_id]
+        for participants in self._matching(world):
+            touched: set[str] = set()
             for effect in self.declared.effects:
                 value = _resolve_expr(effect["value"], world, {}, participants, event_id)
-                _assign_entity_value(entity, effect["path"], effect["op"], value)
+                target_id = participants[effect["participant"]]
+                _assign_entity_value(world.entities[target_id], effect["path"], effect["op"], value)
+                touched.add(target_id)
             if event_id is not None:
-                entity.last_cause_event_id = event_id
+                for target_id in touched:
+                    world.entities[target_id].last_cause_event_id = event_id
 
     def apply(self, world: World) -> None:
         self.apply_with_event_id(world, None)
@@ -425,6 +437,7 @@ class CausalModel:
                     "checks": deepcopy(list(p.checks)),
                     "effects": deepcopy(list(p.effects)),
                     "writes": list(p.write_paths),
+                    **({"participants": deepcopy(p.participants)} if p.participants else {}),
                 }
                 for p in self.processes
             ],
@@ -651,6 +664,81 @@ def _selector(value: object, bundle: dict[str, Any], label: str) -> dict[str, An
     if missing:
         raise ActionDeclarationError(f"{label} names unknown components: {missing}")
     return {"categories": list(categories), "components": list(components)}
+
+
+PROCESS_LINKS = ("owner_of_it", "owned_by_it", "co_located")  # plus "ref:<component>.<field>" (entity_ref field on it)
+
+
+def _process_participants(value: object, bundle: dict[str, Any], process_id: str) -> dict[str, dict[str, Any]]:
+    """Validate a process's optional linked participants: {name: {"link": ..., "selector": {...}}}."""
+    if not isinstance(value, dict):
+        raise ActionDeclarationError(f"process {process_id} participants must be an object")
+    field_types = {(c["name"], f["name"]): f["type"] for c in bundle.get("components") or [] for f in c.get("fields") or []}
+    out: dict[str, dict[str, Any]] = {}
+    for name, row in sorted(value.items()):
+        label = f"process {process_id} participants.{name}"
+        if not isinstance(name, str) or not name or name in {"it", "actor"}:
+            raise ActionDeclarationError(f"{label}: participant name must be a nonempty name other than it/actor")
+        if not isinstance(row, dict) or set(row) != {"link", "selector"}:
+            raise ActionDeclarationError(f"{label} must contain exactly link and selector")
+        link = row["link"]
+        if isinstance(link, str) and link.startswith("ref:"):
+            parts = link[4:].split(".")
+            if len(parts) != 2 or field_types.get((parts[0], parts[1])) != "entity_ref":
+                raise ActionDeclarationError(f"{label}: {link!r} must name an entity_ref field as ref:<component>.<field>")
+        elif link not in PROCESS_LINKS:
+            raise ActionDeclarationError(
+                f"{label}: unknown link {link!r}; use one of {list(PROCESS_LINKS)} or ref:<component>.<field>")
+        out[name] = {"link": link, "selector": _selector(row["selector"], bundle, f"{label}.selector")}
+    return out
+
+
+def _link_reads(linked: dict[str, dict[str, Any]]) -> list[str]:
+    """State a link resolution reads, so linked processes declare it like any other read."""
+    reads: list[str] = []
+    for name, row in linked.items():
+        link = row["link"]
+        if link == "owner_of_it":
+            reads.append("entities.<it>.ownership.owner_ref")
+        elif link == "owned_by_it":
+            reads.append(f"entities.<{name}>.ownership.owner_ref")
+        elif link == "co_located":
+            reads += ["entities.<it>.location.location_id", f"entities.<{name}>.location.location_id"]
+        else:
+            component, field_name = link[4:].split(".")
+            reads.append(f"entities.<it>.components.{component}.{field_name}")
+    return reads
+
+
+def _link_candidates(world: World, it_id: str, row: dict[str, Any]) -> list[str]:
+    it = world.entities[it_id]
+    link = row["link"]
+    if link == "owner_of_it":
+        ref = _entity_value(it, "ownership.owner_ref")
+        ids = [str(ref).split(":", 1)[1]] if isinstance(ref, str) and ":" in ref else []
+    elif link == "owned_by_it":
+        ids = [eid for eid, e in world.entities.items()
+               if eid != it_id and str(_entity_value(e, "ownership.owner_ref") or "").split(":", 1)[-1] == it_id]
+    elif link == "co_located":
+        here = _entity_value(it, "location.location_id")
+        ids = [eid for eid, e in world.entities.items()
+               if eid != it_id and here is not None and _entity_value(e, "location.location_id") == here]
+    else:
+        component, field_name = link[4:].split(".")
+        ref = _entity_value(it, f"components.{component}.{field_name}")
+        ids = [ref] if isinstance(ref, str) else []
+    return sorted(eid for eid in ids if eid in world.entities and _selector_matches(world.entities[eid], row["selector"]))
+
+
+def _link_bindings(world: World, it_id: str, linked: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
+    """All participant bindings for `it`; empty when any linked participant resolves to nothing."""
+    bindings: list[dict[str, str]] = [{"it": it_id}]
+    for name, row in sorted(linked.items()):
+        candidates = _link_candidates(world, it_id, row)
+        if not candidates:
+            return []
+        bindings = [dict(b, **{name: c}) for b in bindings for c in candidates]
+    return bindings
 
 
 def _selector_matches(entity: Entity, selector: dict[str, Any]) -> bool:
