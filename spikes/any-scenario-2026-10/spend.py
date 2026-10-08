@@ -4,7 +4,10 @@ import json
 import sys
 from pathlib import Path
 
-LOGS = Path.home() / "projects/data/world-substrate/world-substrate_llm_client_data"
+# llm_client names its log folder after the working directory, so a run from a clone or worktree logs under
+# another project name. Sum this plan's trace prefix across every project's call logs.
+DATA = Path.home() / "projects/data"
+LOGS = DATA / "world-substrate/world-substrate_llm_client_data"  # must exist: a missing home log reads as $0
 # any-scenario-poc ($5 cap) ended at $3.93; linked-process-participants adds $3 on top (approved 2026-10-08).
 CAP = 3.93 + 3.00
 
@@ -13,8 +16,12 @@ def plan_spend() -> tuple[int, float]:
     if not LOGS.is_dir():  # a missing log must not read as $0 spent: that would silently disable the cap
         raise SystemExit(f"spend log directory not found: {LOGS}")
     n, total = 0, 0.0
-    for f in sorted(LOGS.glob("calls_*.jsonl")):
-        for line in f.open():
+    for f in sorted(DATA.glob("*/*_llm_client_data/calls_*.jsonl")):
+        try:
+            lines = f.read_text(errors="replace").splitlines()
+        except (FileNotFoundError, IsADirectoryError, PermissionError):
+            continue  # another project's log moved or is a broken link; it holds none of this plan's calls
+        for line in lines:
             try:
                 row = json.loads(line)
             except json.JSONDecodeError:

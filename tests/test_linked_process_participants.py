@@ -121,5 +121,29 @@ class EngineTests(unittest.TestCase):  # L2
         self.assertEqual(json.dumps(engine.world.material_dict(), sort_keys=True), before)
 
 
+LINKED_TRUCK = REPO / "spikes/any-scenario-2026-10/evidence/linked/truck"
+
+
+class GeneratedTruckTests(unittest.TestCase):  # L4, from the recorded generated-world run
+    def test_generated_world_declares_a_linked_driving_process(self):
+        causal = json.loads((LINKED_TRUCK / "causal.json").read_text())
+        linked = [p for p in causal["processes"] if p.get("participants")]
+        movers = [p for p in linked if {e["participant"] for e in p["effects"] if e["path"].endswith("route_position")} >= {"it", "vehicle"}]
+        self.assertTrue(movers, "a generated process moves both its entity and the linked vehicle")
+
+    def test_every_drive_event_moves_driver_and_vehicle_together(self):
+        import gzip
+        with gzip.open(LINKED_TRUCK / "run/events.jsonl.gz", "rt") as fh:
+            events = [json.loads(line) for line in fh if line.strip()]
+        drives = [e for e in events if e["rule_id"] == "advance-started-driving-interval"]
+        self.assertGreaterEqual(len(drives), 10)
+        for e in drives:
+            after = {c["path"]: c["after"] for c in e["changes"]}
+            self.assertEqual(after["entities.delivery-driver.components.driver.route_position"],
+                             after["entities.delivery-vehicle.components.vehicle.route_position"], e["event_id"])
+        summary = json.loads((LINKED_TRUCK / "run/summary.json").read_text())
+        self.assertEqual(summary["ended"], "terminal")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

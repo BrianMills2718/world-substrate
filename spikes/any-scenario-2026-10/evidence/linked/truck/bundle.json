@@ -1,0 +1,287 @@
+{
+  "actions": [
+    {
+      "description": "Attempt one driving interval of 10 miles along the delivery route.",
+      "fields": [],
+      "kind": "drive"
+    },
+    {
+      "description": "Attempt to add fuel to the delivery vehicle at the represented gas station.",
+      "fields": [
+        {
+          "name": "station",
+          "type": "entity_ref"
+        },
+        {
+          "name": "amount",
+          "type": "number"
+        }
+      ],
+      "kind": "refuel"
+    }
+  ],
+  "components": [
+    {
+      "fields": [
+        {
+          "default": 0,
+          "name": "route_position",
+          "type": "number"
+        },
+        {
+          "default": "ready",
+          "name": "driving_status",
+          "type": "string"
+        },
+        {
+          "default": false,
+          "name": "delivery_completed",
+          "type": "boolean"
+        },
+        {
+          "default": "delivery-vehicle",
+          "name": "vehicle_ref",
+          "type": "entity_ref"
+        }
+      ],
+      "name": "driver"
+    },
+    {
+      "fields": [
+        {
+          "default": 3.75,
+          "name": "fuel_amount",
+          "type": "number"
+        },
+        {
+          "default": 15,
+          "name": "tank_capacity",
+          "type": "number"
+        },
+        {
+          "default": 0.25,
+          "name": "fuel_fraction",
+          "type": "number"
+        },
+        {
+          "default": 0.04,
+          "name": "fuel_consumption_rate",
+          "type": "number"
+        },
+        {
+          "default": 25,
+          "name": "fuel_economy",
+          "type": "number"
+        },
+        {
+          "default": "operational",
+          "name": "operational_status",
+          "type": "string"
+        },
+        {
+          "default": 0,
+          "name": "route_position",
+          "type": "number"
+        }
+      ],
+      "name": "vehicle"
+    },
+    {
+      "fields": [
+        {
+          "default": 0,
+          "name": "route_position",
+          "type": "number"
+        },
+        {
+          "default": 0,
+          "name": "fuel_stock",
+          "type": "number"
+        },
+        {
+          "default": false,
+          "name": "fuel_available",
+          "type": "boolean"
+        },
+        {
+          "default": "not reached",
+          "name": "arrival_status",
+          "type": "string"
+        }
+      ],
+      "name": "place_state"
+    },
+    {
+      "fields": [
+        {
+          "default": 120,
+          "name": "route_length",
+          "type": "number"
+        },
+        {
+          "default": 60,
+          "name": "distance_to_gas_station",
+          "type": "number"
+        },
+        {
+          "default": 120,
+          "name": "distance_to_destination",
+          "type": "number"
+        },
+        {
+          "default": 0,
+          "name": "elapsed_driving_ticks",
+          "type": "integer"
+        },
+        {
+          "default": "in progress",
+          "name": "journey_status",
+          "type": "string"
+        },
+        {
+          "default": "gas-station",
+          "name": "gas_station_ref",
+          "type": "entity_ref"
+        },
+        {
+          "default": "destination-town",
+          "name": "destination_ref",
+          "type": "entity_ref"
+        }
+      ],
+      "name": "journey"
+    }
+  ],
+  "entities": [
+    {
+      "categories": [
+        "actor",
+        "driver"
+      ],
+      "components": {
+        "driver": {
+          "delivery_completed": false,
+          "driving_status": "ready",
+          "route_position": 0,
+          "vehicle_ref": "delivery-vehicle"
+        }
+      },
+      "id": "delivery-driver",
+      "label": "Delivery driver"
+    },
+    {
+      "categories": [
+        "vehicle"
+      ],
+      "components": {
+        "vehicle": {
+          "fuel_amount": 3.75,
+          "fuel_consumption_rate": 0.04,
+          "fuel_economy": 25,
+          "fuel_fraction": 0.25,
+          "operational_status": "operational",
+          "route_position": 0,
+          "tank_capacity": 15
+        }
+      },
+      "id": "delivery-vehicle",
+      "label": "Delivery vehicle",
+      "owner_ref": "actor:delivery-driver",
+      "portable": true
+    },
+    {
+      "categories": [
+        "place",
+        "gas_station"
+      ],
+      "components": {
+        "place_state": {
+          "arrival_status": "not reached",
+          "fuel_available": true,
+          "fuel_stock": 1000,
+          "route_position": 60
+        }
+      },
+      "id": "gas-station",
+      "label": "Gas station"
+    },
+    {
+      "categories": [
+        "place",
+        "destination"
+      ],
+      "components": {
+        "place_state": {
+          "arrival_status": "not reached",
+          "fuel_available": false,
+          "fuel_stock": 0,
+          "route_position": 120
+        }
+      },
+      "id": "destination-town",
+      "label": "Destination town"
+    },
+    {
+      "categories": [
+        "journey",
+        "task"
+      ],
+      "components": {
+        "journey": {
+          "destination_ref": "destination-town",
+          "distance_to_destination": 120,
+          "distance_to_gas_station": 60,
+          "elapsed_driving_ticks": 0,
+          "gas_station_ref": "gas-station",
+          "journey_status": "in progress",
+          "route_length": 120
+        }
+      },
+      "id": "delivery-journey",
+      "label": "Delivery journey"
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "destination": {
+        "kind": "emoji",
+        "value": "\ud83c\udfd8\ufe0f"
+      },
+      "driver": {
+        "kind": "emoji",
+        "value": "\ud83d\ude9a"
+      },
+      "gas_station": {
+        "kind": "emoji",
+        "value": "\u26fd"
+      },
+      "journey": {
+        "kind": "emoji",
+        "value": "\ud83d\udee3\ufe0f"
+      },
+      "vehicle": {
+        "kind": "emoji",
+        "value": "\ud83d\ude90"
+      }
+    },
+    "category_assets": {
+      "destination": "destination",
+      "driver": "driver",
+      "gas_station": "gas_station",
+      "journey": "journey",
+      "vehicle": "vehicle"
+    },
+    "station_roles": {
+      "destination": "goal",
+      "gas_station": "source"
+    }
+  },
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "content_version": 1,
+    "id": "delivery-journey",
+    "label": "Delivery Journey",
+    "location": "route",
+    "summary": "A delivery driver can travel to a town with one available refueling station along the route."
+  }
+}

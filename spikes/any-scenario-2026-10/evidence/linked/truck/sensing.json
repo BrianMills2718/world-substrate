@@ -1,0 +1,14 @@
+{
+  "delivery-driver": [
+    "Delivery driver.route_position",
+    "Delivery vehicle.fuel_amount",
+    "Delivery vehicle.fuel_consumption_rate",
+    "Delivery vehicle.fuel_fraction",
+    "Delivery vehicle.operational_status",
+    "Delivery vehicle.route_position",
+    "Delivery vehicle.tank_capacity",
+    "Destination town.route_position",
+    "Gas station.fuel_available",
+    "Gas station.route_position"
+  ]
+}
