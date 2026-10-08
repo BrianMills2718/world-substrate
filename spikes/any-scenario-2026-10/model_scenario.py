@@ -392,6 +392,59 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
     return bundle, causal, report, repairs
 
 
+def main_spec(args, out: Path, stamp: str) -> int:
+    """The scenario-spec path (docs/plans/scenario_spec_adoption.md)."""
+    from compile_spec import compile_spec
+    from spec_pipeline import action_signatures, merge_causal, person_briefs, scenario_spec
+    trace = lambda step: f"any-scenario-{args.name}-{step}-{stamp}"  # noqa: E731
+    t0 = time.time()
+    spec, r0 = scenario_spec(args.text, model=RULE_MODEL, trace_id=trace("spec"))
+    (out / "scenario_spec.json").write_text(spec.model_dump_json(indent=2))
+    print(f"[step] spec {time.time() - t0:.1f}s trace={trace('spec')} cost={getattr(r0, 'cost', None)} "
+          f"people={len(spec.people)} items={len(spec.information_items)} moments={len(spec.scheduled_moments)} "
+          f"records={len(spec.world_records)} behaviors={len(spec.behaviors)} unsupported={len(spec.unsupported)}",
+          flush=True)
+    bundle, compiled, coverage = compile_spec(spec)
+    t1 = time.time()
+    sigs, r1 = action_signatures(spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace("actions"))
+    bundle["actions"] = bundle["actions"] + [{k: a[k] for k in ("kind", "description", "fields")} for a in sigs]
+    print(f"[step] actions {time.time() - t1:.1f}s trace={trace('actions')} cost={getattr(r1, 'cost', None)} "
+          f"kinds={[a['kind'] for a in sigs]}", flush=True)
+    t2 = time.time()
+    behaviors = [r["behavior"] for r in coverage["rows"] if r["classification"] == "to_generate"]
+    guidance = (ATTEMPT_GUIDANCE + " The `communicate` action is already defined by a reviewed rule; keep it as is. "
+                "Scheduled moments are entities in category `moment` whose `occurrences` rises when they happen; "
+                "rules may read `ticks_until` and `occurrences`. Make these behaviors possible: " + " | ".join(behaviors))
+    generated, r2 = generate_causal_model(bundle, trace_id=trace("mechanics"), guidance=guidance, world_kind="ongoing",
+                                          reasoning_effort="medium", model=RULE_MODEL,
+                                          model_justification=RULE_MODEL_WHY, max_budget=0.40)
+    causal, dropped = merge_causal(compiled, generated)
+    print(f"[step] mechanics {time.time() - t2:.1f}s trace={trace('mechanics')} cost={getattr(r2, 'cost', None)} "
+          f"dropped={dropped}", flush=True)
+    build_engine(bundle, causal)  # compile + install: raises if any mechanic is rejected
+    for row in coverage["rows"]:  # coverage after generation: which generated rules name the behavior's actions
+        if row["classification"] == "to_generate":
+            kinds = [a["kind"] for a in sigs if row["request_id"] in a["for_behaviors"]]
+            row["by"] = [m["mechanic_id"] for m in causal["mechanics"] if m["action_kind"] in kinds] or None
+            row["classification"] = "coarse" if row["by"] else "unsupported"
+    early = {"scenario_text": args.text, "world_kind": "ongoing", "world_def": "spec", "stock_map": [],
+             "briefs": person_briefs(spec), "dropped_generated_rules": dropped, "action_signatures": sigs,
+             "traces": {"spec": trace("spec"), "actions": trace("actions"), "mechanics": trace("mechanics")}}
+    for name_, value in {"bundle": bundle, "causal": causal, "model": early, "coverage": coverage}.items():
+        (out / f"{name_}.json").write_text(json.dumps(value, indent=2, sort_keys=True))
+    reviewer = anomaly_reviewer(args.text, trace_id=trace("anomaly"))
+    bundle, causal, report, repairs = repair_loop(bundle, causal, [], reviewer, out, args.name, stamp,
+                                                  odd=None, scenario=args.text, max_repairs=args.max_repairs)
+    (out / "checks.json").write_text(json.dumps(report, indent=2, sort_keys=True))
+    model = {**early, "traces": {**early["traces"], "anomaly": trace("anomaly")}, "repairs": repairs,
+             "final_check_counts": report["counts"], "not_modeled": list(spec.unsupported), "guidance": guidance}
+    for name, value in {"bundle": bundle, "causal": causal, "flows": flows(bundle, causal), "model": model}.items():
+        (out / f"{name}.json").write_text(json.dumps(value, indent=2, sort_keys=True))
+    print(f"[done] {out} actions={len(causal.get('mechanics', []))} processes={len(causal.get('processes', []))} "
+          f"people={len(spec.people)} unsupported={len(spec.unsupported)}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--name", required=True)
@@ -400,6 +453,9 @@ def main() -> int:
     ap.add_argument("--out-root", default=str(HERE / "runs"))
     ap.add_argument("--max-repairs", type=int, default=None)
     ap.add_argument("--repair-dir", type=Path, help="rerun checks + repairs on an existing model dir (no regeneration)")
+    ap.add_argument("--world-def", default="spec", choices=("spec", "odd"),
+                    help="spec: ScenarioSpecV1 ported from Cybernetic Influence (default); odd: the older free-form "
+                         "outline handed to the World Builder bundle generator")
     args = ap.parse_args()
     if args.repair_dir:
         d = args.repair_dir
@@ -428,6 +484,8 @@ def main() -> int:
     stamp = time.strftime("%Y%m%dT%H%M%S")
     out = Path(args.out_root) / f"{args.name}-{stamp}"
     out.mkdir(parents=True, exist_ok=False)
+    if args.world_def == "spec":
+        return main_spec(args, out, stamp)
     t0 = time.time()
     odd_trace = f"any-scenario-{args.name}-odd-{stamp}"
     odd, r0 = odd_model(args.text, trace_id=odd_trace)

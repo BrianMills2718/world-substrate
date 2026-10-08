@@ -10,7 +10,8 @@ DATA = Path.home() / "projects/data"
 LOGS = DATA / "world-substrate/world-substrate_llm_client_data"  # must exist: a missing home log reads as $0
 # any-scenario-poc ($5 cap) ended at $3.93; linked-process-participants ($3, approved 2026-10-08) ended at $7.07;
 # waltzman-scenario-run adds $2 from that start value (docs/plans/waltzman_scenario_run.md).
-CAP = 7.07 + 2.00
+# waltzman-scenario-run ended at $7.59; scenario-spec-adoption adds $2 (docs/plans/scenario_spec_adoption.md).
+CAP = 7.59 + 2.00
 SINCE = "2026-10-07"
 
 

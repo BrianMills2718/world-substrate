@@ -182,6 +182,30 @@ source = "spikes/any-scenario-2026-10/model_scenario.py:463"
 state = ["scenario_text, world_kind", "odd (OddModel)", "stock_map[] {stock, field | null, has_inflows, has_outflows}", "repairs[] (RuleChange rows with kept true/false)", "final_check_counts", "not_modeled[] (from generate_world_bundle)", "guidance (ATTEMPT_GUIDANCE)", "traces {odd, bundle, mechanics, sensing, stocks, anomaly}"]
 
 [[entities]]
+name = "ScenarioSpec"
+what = "The world definition for the default pipeline path (scenario_spec.json): ScenarioSpecV1, ported from Cybernetic Influence v3's ScenarioSpecV2 at 1c1c207 (spikes/any-scenario-2026-10/scenario_spec.py). Filled by one structured LLM call; references checked client-side."
+source = "spikes/any-scenario-2026-10/scenario_spec.py:100"
+state = ["people[] (Person: profile with goals, beliefs, decision tendencies, capabilities, limitations; memories)", "information_items[] (holder_id, channel_id, recipient_ids, content, apparent_source)", "scheduled_moments[] (tick, every_ticks, participants)", "world_records[] (public/hidden state, visible_to_actor_ids)", "behaviors[] (subject_refs, fidelity_need)", "unsupported[]"]
+
+[[entities]]
+name = "Person"
+what = "A person or group from the scenario spec, compiled to an actor entity with the `member` component; its profile becomes that agent's brief (model.json briefs, shown to that agent only by run_scenario.py)."
+source = "spikes/any-scenario-2026-10/compile_spec.py:105"
+state = ["member: role, authorized, approved, aware", "brief (text in model.json, not world state)"]
+
+[[entities]]
+name = "ScheduledMoment"
+what = "A meeting, review or deadline from the scenario spec, compiled to a `moment` entity: ticks_until counts down each tick (moment-countdown); at 0 it occurs (moment-occurs: occurrences + 1, countdown restarts from every_ticks, -1 = never)."
+source = "spikes/any-scenario-2026-10/compile_spec.py:66"
+state = ["moment: ticks_until, every_ticks, occurrences"]
+
+[[entities]]
+name = "CoverageReport"
+what = "Per spec behavior, how the world produces it (coverage.json): exact (a compiled rule), coarse (a generated rule names its action), unsupported; plus the spec's unsupported parts."
+source = "spikes/any-scenario-2026-10/compile_spec.py:150"
+state = ["rows[] {request_id, behavior, classification, by}", "unsupported[]"]
+
+[[entities]]
 name = "SensingMap"
 what = "Per actor, the exact bundle fields it can observe (sensing.json), mapped from the ODD's plain-language sensing by one LLM call and validated client-side. Enforced by run_scenario.py on each observation, not by the Engine."
 source = "spikes/any-scenario-2026-10/model_scenario.py:110"
@@ -380,11 +404,11 @@ schedule = "per submitted communicate attempt; reference worlds and native-coord
 
 [[processes]]
 name = "model_scenario"
-what = "Pipeline layer 1: scenario text -> OddModel (one LLM call) -> odd_brief appended to the text -> generate_world_bundle -> generate_causal_model (ATTEMPT_GUIDANCE, stronger rule model) -> build_engine compiles and installs (raises on a reject) -> stock map (one LLM call) -> early model.json -> check_scenario + repair_rules -> sensing map (one LLM call) -> flows -> final files. No approval step (G14)."
+what = "Pipeline layer 1. Default path (--world-def spec, main_spec): scenario text -> ScenarioSpec (one structured LLM call, ScenarioSpecV1 ported from Cybernetic Influence v3) -> compile_spec (no call: people as member actors, one information + pending delivery per recipient with the reviewed communicate rule, scheduled moments as countdown entities with moment-countdown/moment-occurs processes, coverage rows) -> action signatures for the remaining behaviors (one structured call) -> generate_causal_model -> merge (compiled rules win) -> build_engine -> early model.json with per-person briefs -> check_scenario + repair_rules -> flows -> final files; no sensing map (the Engine hides undelivered information). Older path (--world-def odd): scenario text -> OddModel (one LLM call) -> odd_brief appended to the text -> generate_world_bundle -> generate_causal_model (ATTEMPT_GUIDANCE, stronger rule model) -> build_engine compiles and installs (raises on a reject) -> stock map (one LLM call) -> early model.json -> check_scenario + repair_rules -> sensing map (one LLM call) -> flows -> final files. No approval step (G14)."
 source = "spikes/any-scenario-2026-10/model_scenario.py:395"
 routes = []
-changes = ["OddModel", "AuthoringBundle", "CausalModel", "ScenarioModel", "SensingMap", "StockFlows"]
-writes = ["bundle.json", "causal.json", "model.json", "flows.json", "sensing.json", "checks.json"]
+changes = ["ScenarioSpec", "CoverageReport", "OddModel", "AuthoringBundle", "CausalModel", "ScenarioModel", "SensingMap", "StockFlows"]
+writes = ["scenario_spec.json", "coverage.json", "bundle.json", "causal.json", "model.json", "flows.json", "sensing.json", "checks.json"]
 schedule = "offline, by hand (python3 spikes/any-scenario-2026-10/model_scenario.py --name N --text T); --repair-dir reruns checks and repairs on a saved model; refuses to start when spend.py's plan total is within $0.25 of CAP"
 
 [[processes]]
@@ -793,32 +817,46 @@ writers = [
 # several (round 0 is written literally; repair rounds use an f-string).
 
 [[pipeline_records]]
+name = "scenario_spec.json"
+scope = "pipeline"
+meaning = "ScenarioSpec. The world definition one structured call fills from the scenario text (ScenarioSpecV1, ported from Cybernetic Influence v3): people with profiles, information items with holder, channel and recipients, scheduled moments, world records, behaviors, unsupported parts."
+written_by = ["model_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 402 }]
+
+[[pipeline_records]]
+name = "coverage.json"
+scope = "pipeline"
+meaning = "CoverageReport. One row per spec behavior: exact (produced by a compiled rule, e.g. communicate), coarse (a generated rule serves it), unsupported; plus the spec's unsupported parts."
+written_by = ["model_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 434 }]
+
+[[pipeline_records]]
 name = "model.json"
 scope = "pipeline"
 meaning = "ScenarioModel. Written early (resumable with --repair-dir), then final."
 written_by = ["model_scenario"]
-writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }, { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 434 }, { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 442 }]
 
 [[pipeline_records]]
 name = "bundle.json"
 scope = "pipeline"
 meaning = "The AuthoringBundle (world-substrate-authoring-bundle/v0) after repairs."
 written_by = ["model_scenario"]
-writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }, { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 434 }, { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 442 }]
 
 [[pipeline_records]]
 name = "causal.json"
 scope = "pipeline"
 meaning = "The CausalModel (world-substrate-causal-model/v0) after repairs."
 written_by = ["model_scenario"]
-writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }, { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 434 }, { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 442 }]
 
 [[pipeline_records]]
 name = "flows.json"
 scope = "pipeline"
 meaning = "StockFlows."
 written_by = ["model_scenario"]
-writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }, { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 442 }]
 
 [[pipeline_records]]
 name = "sensing.json"
@@ -835,6 +873,7 @@ written_by = ["model_scenario", "check_scenario"]
 writers = [
   { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 457 },
   { file = "spikes/any-scenario-2026-10/checks.py", function = "main", line = 512 },
+  { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main_spec", line = 438 },
 ]
 
 [[pipeline_records]]
@@ -946,6 +985,10 @@ holds = "Hospital scenario: generated/ (model with checks), full/ (model plus c2
 [[pipeline.evidence]]
 folder = "linked"
 holds = "Linked process participants (PR #136): truck/ and hospital/ models and runs, hospital-pipeline/ and hospital-pipeline-attempts/ (per-round causal and checks files)"
+
+[[pipeline.evidence]]
+folder = "scenario-spec"
+holds = "ScenarioSpecV1 port (plan scenario-spec-adoption): the recorded Cybernetic Influence pencil draft used by tests/test_scenario_spec.py, and the drift-test output before the model was updated"
 
 [[pipeline.evidence]]
 folder = "waltzman"

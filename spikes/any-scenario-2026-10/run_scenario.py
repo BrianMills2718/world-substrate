@@ -108,9 +108,10 @@ class LLMAttemptAct(entity_component.ActingComponent):
     """Concordia acting component: one typed llm_client call returns an Attempt as JSON."""
 
     def __init__(self, actor_label: str, trace_id: str, max_budget: float, situation: str = "",
-                 model: str = RESIDENT_MODEL):
+                 model: str = RESIDENT_MODEL, brief: str = ""):
         super().__init__()
         self._model = model
+        self.brief = brief  # this person's own profile (scenario-spec path); shown to this agent only
         self._label, self._trace, self._budget, self._situation = actor_label, trace_id, max_budget, situation
         self.cost = 0.0
         self.calls = 0
@@ -121,7 +122,8 @@ class LLMAttemptAct(entity_component.ActingComponent):
         memory = "\n".join(str(v) for v in context.values())
         messages = [
             {"role": "system", "content": (
-                f"You are {self._label}, a person inside this situation: {self._situation} You know only what you have "
+                f"You are {self._label}, a person inside this situation: {self._situation} "
+                + (f"Your role: {self.brief} " if self.brief else "") + "You know only what you have "
                 "observed. Decide what to attempt now. You may attempt an offered action, keep doing what you "
                 "are already doing ('continue'), or attempt something not offered ('unlisted'). Offered actions "
                 "are only those you are allowed to begin; whether they succeed is not guaranteed.")},
@@ -180,10 +182,13 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
     labels = {e["id"]: e.get("label", e["id"]) for e in bundle["entities"]}
     actors = [e["id"] for e in bundle["entities"] if "actor" in e.get("categories", [])]
     model_path = model_dir / "model.json"
-    situation = json.loads(model_path.read_text()).get("scenario_text", "") if model_path.exists() else ""
+    model_doc = json.loads(model_path.read_text()) if model_path.exists() else {}
+    situation = model_doc.get("scenario_text", "")
+    briefs = model_doc.get("briefs", {})
     if situation_override:
         situation = situation_override
-    acts = {a: LLMAttemptAct(labels[a], trace_id, run_budget, situation, resident_model) for a in actors}
+    acts = {a: LLMAttemptAct(labels[a], trace_id, run_budget, situation, resident_model, brief=briefs.get(a, ""))
+            for a in actors}
     residents = {
         a: entity_agent_with_logging.EntityAgentWithLogging(
             agent_name=labels[a], act_component=acts[a], context_components={"observations": ObservationLog()})
@@ -229,7 +234,7 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
                 output_type=entity_lib.OutputType.FREE)
             raw = residents[a].act(spec)
             attempt = json.loads(raw)
-            record = {"tick": tick, "actor": a, "belief": attempt["belief"], "belief_as_of": tick,
+            record = {"tick": tick, "actor": a, "brief": acts[a].brief, "belief": attempt["belief"], "belief_as_of": tick,
                       "cited_observations": attempt["cited_observations"], "decision": attempt["choice"],
                       "expected_effect": attempt["expected_effect"], "offered": menu}
             if attempt["choice"] == "offered" and attempt.get("offered_index") is not None \
