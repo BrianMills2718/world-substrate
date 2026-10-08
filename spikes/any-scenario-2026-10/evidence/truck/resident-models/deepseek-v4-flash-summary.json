@@ -1,0 +1,16 @@
+{
+  "attempts": 1,
+  "conditions_changed": [],
+  "cost": 5.9094e-05,
+  "ended": "quiescent",
+  "events": 6,
+  "final_tick": 6,
+  "plan_spend_after": 3.925514043999997,
+  "profile_id": "1dd30f337d123517",
+  "resident_calls": 1,
+  "resident_model": "openrouter/deepseek/deepseek-v4-flash",
+  "run_id": "truck-20261007T171351/run-20261007T203220",
+  "seconds": 14.9,
+  "situation_briefing": "A delivery driver with a quarter tank must reach a town 120 miles away; there is one gas station at mile 60.",
+  "trace_id": "any-scenario-run-truck-20261007T171351-20261007T203220"
+}

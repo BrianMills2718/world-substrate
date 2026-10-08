@@ -107,8 +107,10 @@ class ObservationLog(entity_component.ContextComponent):
 class LLMAttemptAct(entity_component.ActingComponent):
     """Concordia acting component: one typed llm_client call returns an Attempt as JSON."""
 
-    def __init__(self, actor_label: str, trace_id: str, max_budget: float, situation: str = ""):
+    def __init__(self, actor_label: str, trace_id: str, max_budget: float, situation: str = "",
+                 model: str = RESIDENT_MODEL):
         super().__init__()
+        self._model = model
         self._label, self._trace, self._budget, self._situation = actor_label, trace_id, max_budget, situation
         self.cost = 0.0
         self.calls = 0
@@ -126,8 +128,12 @@ class LLMAttemptAct(entity_component.ActingComponent):
             {"role": "user", "content": f"Your observations (newest last):\n{memory}\n\n{action_spec.call_to_action}"},
         ]
         attempt, result = call_llm_structured(
-            RESIDENT_MODEL, messages, Attempt, task="world-substrate-resident-attempt",
-            trace_id=self._trace, max_budget=self._budget, reasoning_effort="low", num_retries=1)
+            self._model, messages, Attempt, task="world-substrate-resident-attempt",
+            trace_id=self._trace, max_budget=self._budget, num_retries=1,
+            reasoning_effort="low" if self._model == RESIDENT_MODEL else "none",
+            **({} if self._model == RESIDENT_MODEL else {"model_justification": (
+                "Checking whether resident choices on the canonical truck example depend on the model family "
+                "(goal any-scenario-poc, 2026-10-07); every run is reported.")}))
         self.cost += float(getattr(result, "cost", 0.0) or 0.0)
         self.calls += 1
         return attempt.model_dump_json()
@@ -141,7 +147,7 @@ class LLMAttemptAct(entity_component.ActingComponent):
 
 def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
         unlisted_handler: Any = None, situation_override: str | None = None,
-        conditions: list[str] | None = None, game_master: bool = True) -> Path:
+        conditions: list[str] | None = None, game_master: bool = True, resident_model: str = RESIDENT_MODEL) -> Path:
     bundle = json.loads((model_dir / "bundle.json").read_text())
     causal = json.loads((model_dir / "causal.json").read_text())
     applied = []
@@ -177,7 +183,7 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
     situation = json.loads(model_path.read_text()).get("scenario_text", "") if model_path.exists() else ""
     if situation_override:
         situation = situation_override
-    acts = {a: LLMAttemptAct(labels[a], trace_id, run_budget, situation) for a in actors}
+    acts = {a: LLMAttemptAct(labels[a], trace_id, run_budget, situation, resident_model) for a in actors}
     residents = {
         a: entity_agent_with_logging.EntityAgentWithLogging(
             agent_name=labels[a], act_component=acts[a], context_components={"observations": ObservationLog()})
@@ -267,7 +273,7 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
             ended = "run_budget"
             break
     cost = sum(x.cost for x in acts.values())
-    summary = {"conditions_changed": applied, "situation_briefing": situation, "run_id": run_id, "trace_id": trace_id, "profile_id": profile_id, "ended": ended,
+    summary = {"resident_model": resident_model, "conditions_changed": applied, "situation_briefing": situation, "run_id": run_id, "trace_id": trace_id, "profile_id": profile_id, "ended": ended,
                "final_tick": engine.world.tick, "events": len(events), "attempts": len(attempts),
                "resident_calls": sum(x.calls for x in acts.values()), "cost": cost,
                "seconds": round(time.time() - t_run, 1), "plan_spend_after": plan_spend_total()[1]}
@@ -293,9 +299,11 @@ def main() -> int:
     ap.add_argument("--situation", help="scenario text the residents are briefed on (default: the modeled text)")
     ap.add_argument("--set", action="append", default=[], help="entity.component.field=value initial-state change")
     ap.add_argument("--no-gm", action="store_true", help="disable mid-run rule writing (uncovered attempts do nothing)")
+    ap.add_argument("--resident-model", default=RESIDENT_MODEL)
     args = ap.parse_args()
     run(args.model_dir, max_ticks=args.max_ticks, run_budget=args.run_budget, quiet_ticks=args.quiet_ticks,
-        situation_override=args.situation, conditions=args.set, game_master=not args.no_gm)
+        situation_override=args.situation, conditions=args.set, game_master=not args.no_gm,
+        resident_model=args.resident_model)
     return 0
 
 
