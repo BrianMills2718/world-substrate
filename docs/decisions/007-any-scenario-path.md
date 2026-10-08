@@ -85,3 +85,14 @@ Dropped:
 - Two runs of the same scenario with the same seed produce game-master rules that contradict each other.
 - An existing system covers layers 1–3 with structured state changes. Then adopt it, and keep only the parts it lacks.
 - The extreme-conditions check fails to flag the omitted-death rule on the hospital scenario.
+
+## Observed (2026-10-07, proof of concept)
+
+Evidence: `docs/plans/any_scenario_poc.md` (Current State), PRs #131–#133, and `spikes/any-scenario-2026-10/evidence/`. The four conditions under "Wrong when":
+
+- **Mid-run rules mostly failing: borderline.** On the final truck run, 2 of 3 game-master proposals failed conservation and became rulings. The third (a tow) passed and resolved. Three proposals is too few to judge.
+- **Contradictory same-seed rules: not tested.** Only one game-master run was made under the final checks.
+- **An existing system covering layers 1–3: not found** (landscape check above).
+- **The extreme-conditions check failing to flag the omitted death rule: fired, then fixed.** The open AI review missed it in one run. The closed-question version (expected consequence, majority of 3) flagged it in two runs, and an outflow-coverage check also catches it deterministically.
+
+Separately, the rule language limits what the path can model. A process changes only its own entity, and there is no randomness. These limits, not the attempt-over-time loop, were the main blockers to richer worlds.
