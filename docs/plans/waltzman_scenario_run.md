@@ -148,8 +148,29 @@ The machine record is `waltzman_scenario_run/activation-facts.json`.
 
 ## Assessment
 
-To be written from the recorded run (W4).
+From pipeline run `waltzman-20261008T123134` and member run `run-20261008T125239`. Evidence is in `spikes/any-scenario-2026-10/evidence/waltzman/`.
+
+**Bottom line:** none of the four mechanisms appears in the run. The generated model has the parts for two of them: a concern can be sent to one member, and a meeting resolves a concern. But it has no source of concerns. The four groups that raise them are listed as not modeled. So every member approved in the first round, and the system was switched on in the second (`e00011`). By the plan's own disproof condition (three or more missing), the pipeline is not close to a demo of this scenario.
+
+| Mechanism | Verdict | Evidence | What is missing |
+| --- | --- | --- | --- |
+| Concerns delivered to different members through separate channels | missing | Rule `submit-concern` adds to one recipient's `concerns_received` and `unresolved_concerns` (`causal.json`). It was offered to every member in round 1 (`run/attempts.jsonl`, tick 0), and none chose it. Country A's belief: "no observed concerns or conditional-support requirement". No `submit-concern` event exists in `run/events.jsonl.gz`. | The groups that raise concerns (technical, legal, logistics, community) and their channels are in the model's `not_modeled` list (`model.json`). Members have no concern of their own to send. |
+| Meetings that slow | missing | Rule `hold-meeting` uses meeting time and resolves one concern, but it is offered only when a member holds a concern. It never fired. | There is no meeting schedule, and no rule makes a meeting longer as concerns pile up. Both are in `not_modeled`. |
+| Settled issues that reopen | missing | Votes go from `approve` to `counted_approve` (`e00001`–`e00005`, `e00007`). No rule sets a vote back. `apply-weekly-unresolved-concern-pressure` needs more than eight unresolved concerns, and it never fired. | No rule reopens a decision. |
+| Support that becomes conditional | missing | Every member has a field `conditional_support`, false at the start. No rule in `causal.json` writes it. | No rule makes support depend on a concern being resolved. |
+
+Members did try to coordinate on concerns. In round 2, Countries B, C and D each proposed a shared register of concerns or a time-boxed review, an action the model did not offer. The game master's proposed rules made the checks worse, so each attempt was recorded as a ruling with no effect (`e00008`–`e00010`, traces `any-scenario-gm-waltzman-20261008T123134-gm1` to `-gm3`). That is where rule-writing mid-run could have added a concern mechanism, and it did not.
+
+**What to fix first** (from this run, not tuned to it): make the concern sources part of the world. The four groups need to be actors, or a process needs to deliver true local concerns to specific members on a schedule. Without them the members have nothing to coordinate about. The model step dropped them, even though the scenario text names them. A size limit of about 10 entities for a "task" world may be the cause. The plan listed that as an uncertainty, and this run is consistent with it but does not prove it.
 
 ## Current State
 
-- Demonstrated: none yet. Plan authored on 2026-10-08.
+| Check | Status | Evidence |
+| --- | --- | --- |
+| W1 | met | Pipeline run `waltzman-20261008T123134`: traces `any-scenario-waltzman-{odd,bundle,mechanics,stocks,sensing}-20261008T123134`, plus repairs `-repair1/2/3-20261008T123134`. Repair 1 was kept; repairs 2 and 3 were reverted. The final checks are 14 blocking and 15 advisory, with 5 of the 7 rules fired (`spikes/any-scenario-2026-10/evidence/waltzman/model.json`, `spikes/any-scenario-2026-10/evidence/waltzman/pipeline.log`). This was the only pipeline run that made model calls. The first launch failed before any call, because its environment lacked `llm_client`. |
+| W2 | met | Member run `run-20261008T125239` (trace `any-scenario-run-waltzman-20261008T123134-20261008T125239`): AI members on Concordia (`openrouter/openai/gpt-5.6-luna`), game master on. It ended `terminal` at tick 2 with 13 Engine events, 10 attempts and 3 game-master rulings, costing $0.004 (`spikes/any-scenario-2026-10/evidence/waltzman/run/summary.json`). This was the only member run. The first launch was refused by the scratch storage guard and made no calls. |
+| W3 | met | `spikes/any-scenario-2026-10/evidence/waltzman/run/frame-round1-votes.png` shows round 1: each member's decision and its Engine events `e00001`–`e00005` and `e00007`. `spikes/any-scenario-2026-10/evidence/waltzman/run/frame-round2-gm.png` shows round 2: the game-master rulings and the activation. |
+| W4 | met | The Assessment above: all four mechanisms are missing, each with its reason. |
+| W5 | met | `scripts/check_project.py` on commit `7d66867` exited 0, with 551 tests OK (546 before plus 5 new) and 1 skipped (`tests/test_world_builder_home.py`, "node is not installed"; it was also skipped before this change). Output: `spikes/any-scenario-2026-10/evidence/waltzman/gate.log`. The diff touches only the plan, `spend.py`, the evidence folder and the new test. |
+
+Spend: $7.07 at the plan's start, $7.59 after both runs ($0.52 of the $2 cap; `spend.py`).

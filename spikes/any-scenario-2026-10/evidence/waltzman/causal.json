@@ -1,0 +1,772 @@
+{
+  "mechanics": [
+    {
+      "action_kind": "submit-concern",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": [
+          "governance_participant"
+        ]
+      },
+      "checks": [
+        {
+          "label": "The sender and selected member are in the same place",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "recipient",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The selected member is someone else",
+          "left": {
+            "entity_id": "actor"
+          },
+          "op": "ne",
+          "right": {
+            "entity_id": "recipient"
+          }
+        },
+        {
+          "label": "The selected member has not voted",
+          "left": {
+            "participant": {
+              "name": "recipient",
+              "path": "components.governance_participant.vote"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "undecided"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "recipient",
+          "path": "components.governance_participant.concerns_received",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "recipient",
+          "path": "components.governance_participant.unresolved_concerns",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Each action represents one concern and does not store its text or subject.",
+        "A concern cannot be submitted to a member after that member has voted.",
+        "The model does not prevent repeated concerns from the same sender."
+      ],
+      "mechanic_id": "submit-member-concern",
+      "parameters": {},
+      "participants": {
+        "recipient": {
+          "categories": [
+            "actor"
+          ],
+          "components": [
+            "governance_participant"
+          ]
+        }
+      },
+      "rationale": "A participating member may submit a concern to another member before that recipient has voted. The submission increases both the recipient's cumulative received count and its unresolved concern count.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "recipient is the member asked to consider the concern",
+        "concerns_received is a cumulative submission count",
+        "unresolved_concerns is the number still awaiting consideration"
+      ],
+      "tests": [
+        "A participating member can submit a concern to a different undecided member in the same place.",
+        "Submitting a concern increases the recipient's received and unresolved counts by one.",
+        "A member cannot submit a concern to itself.",
+        "A concern is refused when the selected member has already voted.",
+        "A concern is refused when the sender and selected member are in different places."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "hold-meeting",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "health-network"
+        ],
+        "components": [
+          "governance_participant"
+        ]
+      },
+      "checks": [
+        {
+          "label": "Regional Health Network and the selected member are in the same place",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "participant",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The selected member is not Regional Health Network",
+          "left": {
+            "entity_id": "actor"
+          },
+          "op": "ne",
+          "right": {
+            "entity_id": "participant"
+          }
+        },
+        {
+          "label": "The selected member has a concern to consider",
+          "left": {
+            "participant": {
+              "name": "participant",
+              "path": "components.governance_participant.unresolved_concerns"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "The selected member has not voted",
+          "left": {
+            "participant": {
+              "name": "participant",
+              "path": "components.governance_participant.vote"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "undecided"
+          }
+        },
+        {
+          "label": "Regional Health Network has meeting time available",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.governance_participant.meeting_time_available"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "The selected member has meeting time available",
+          "left": {
+            "participant": {
+              "name": "participant",
+              "path": "components.governance_participant.meeting_time_available"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "actor",
+          "path": "components.governance_participant.meeting_time_available",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "participant",
+          "path": "components.governance_participant.meeting_time_available",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "participant",
+          "path": "components.governance_participant.unresolved_concerns",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Each meeting action considers exactly one unresolved concern.",
+        "The model records that a concern was considered but not the substance or outcome of the discussion.",
+        "Meeting time is not replenished because no replenishment action or autonomous behavior is described.",
+        "Meetings cannot address concerns after the selected member has voted."
+      ],
+      "mechanic_id": "hold-partnership-concern-meeting",
+      "parameters": {},
+      "participants": {
+        "participant": {
+          "categories": [
+            "actor"
+          ],
+          "components": [
+            "governance_participant"
+          ]
+        }
+      },
+      "rationale": "The Regional Health Network may hold a meeting with an undecided member to consider one submitted concern. Holding the meeting consumes one unit of meeting time from each attendee and resolves one concern.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "participant is the member whose submitted concern is considered",
+        "one meeting resolves one unresolved concern",
+        "meeting_time_available is a finite meeting capacity"
+      ],
+      "tests": [
+        "Regional Health Network can meet with an undecided co-located member that has an unresolved concern and available time.",
+        "A successful meeting reduces the selected member's unresolved concerns by one.",
+        "A successful meeting consumes one unit of meeting time from both attendees.",
+        "A meeting is refused when the selected member has no unresolved concerns.",
+        "A meeting is refused when either attendee has no meeting time available.",
+        "A meeting is refused when the selected member has already voted."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "cast-vote",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": [
+          "governance_participant"
+        ]
+      },
+      "checks": [
+        {
+          "label": "The selected member is recording its own decision",
+          "left": {
+            "entity_id": "actor"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "participant"
+          }
+        },
+        {
+          "label": "The selected member has not voted",
+          "left": {
+            "participant": {
+              "name": "participant",
+              "path": "components.governance_participant.vote"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "undecided"
+          }
+        },
+        {
+          "label": "The selected member has no unresolved concerns",
+          "left": {
+            "participant": {
+              "name": "participant",
+              "path": "components.governance_participant.unresolved_concerns"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "participant",
+          "path": "components.governance_participant.vote",
+          "value": {
+            "action_field": "decision"
+          }
+        }
+      ],
+      "limits": [
+        "Only approve and reject are represented decisions.",
+        "A member cannot change its vote after recording it.",
+        "Country approvals are tallied on the next autonomous round rather than during this action.",
+        "The model does not infer a decision from decision_support or conditional_support."
+      ],
+      "mechanic_id": "record-member-activation-vote",
+      "parameters": {
+        "decision": [
+          "approve",
+          "reject"
+        ]
+      },
+      "participants": {
+        "participant": {
+          "categories": [
+            "actor"
+          ],
+          "components": [
+            "governance_participant"
+          ]
+        }
+      },
+      "rationale": "A member records its own one-time approval or rejection after all concerns addressed to that member have been considered.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "participant is the member whose decision is recorded",
+        "approve supports activation",
+        "reject withholds support for activation",
+        "undecided identifies a member that may still receive concerns"
+      ],
+      "tests": [
+        "An undecided member with no unresolved concerns can record approve.",
+        "An undecided member with no unresolved concerns can record reject.",
+        "A member cannot record a decision for another member.",
+        "A vote is refused while the member has an unresolved concern.",
+        "A second vote is refused after a decision has been recorded.",
+        "A decision outside approve or reject is refused."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "activate-system",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "health-network"
+        ],
+        "components": [
+          "governance_participant"
+        ]
+      },
+      "checks": [
+        {
+          "label": "Regional Health Network and the early-warning system are in the same place",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "system",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "The early-warning system is not activated",
+          "left": {
+            "participant": {
+              "name": "system",
+              "path": "components.surveillance_system.stage"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "not_activated"
+          }
+        },
+        {
+          "label": "Regional Health Network approves activation",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.governance_participant.vote"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "approve"
+          }
+        },
+        {
+          "label": "Regional Health Network has full deployment readiness",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.governance_participant.deployment_readiness"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 100
+          }
+        },
+        {
+          "label": "Regional Health Network has no unresolved concerns",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.governance_participant.unresolved_concerns"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "system",
+          "path": "components.surveillance_system.stage",
+          "value": {
+            "literal": "activated"
+          }
+        }
+      ],
+      "limits": [
+        "The readiness threshold encodes unanimous approval by the four represented countries from the stated initial readiness of 20.",
+        "This rule assumes the single co-located health network is the partnership coordinator.",
+        "Activation does not alter population, geographic position, or decision support.",
+        "A rejection or missing country vote prevents the readiness threshold from being reached."
+      ],
+      "mechanic_id": "activate-unanimously-approved-system",
+      "parameters": {},
+      "participants": {
+        "system": {
+          "categories": [
+            "surveillance-system",
+            "deployment-target"
+          ],
+          "components": [
+            "surveillance_system"
+          ]
+        }
+      },
+      "rationale": "Regional Health Network may activate the co-located early-warning system only after approving activation itself and reaching deployment readiness 100. Starting from 20, the four countries must each contribute 20 through a counted approval.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "system is the represented early-warning system",
+        "deployment_readiness 100 represents four counted country approvals plus initial readiness 20",
+        "activated is the terminal operational stage"
+      ],
+      "tests": [
+        "Activation succeeds when Regional Health Network approves, readiness is at least 100, its concerns are resolved, and the system is co-located and not activated.",
+        "Activation is refused below deployment readiness 100.",
+        "Activation is refused unless Regional Health Network has voted approve.",
+        "Activation is refused when Regional Health Network has an unresolved concern.",
+        "Activation is refused when the early-warning system is already activated.",
+        "Activation is refused when the early-warning system is elsewhere."
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "processes": [
+    {
+      "checks": [
+        {
+          "label": "The country's approval is ready to count",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.governance_participant.vote"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "approve"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.governance_participant.vote",
+          "value": {
+            "literal": "counted_approve"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "coordinator",
+          "path": "components.governance_participant.deployment_readiness",
+          "value": {
+            "literal": 20
+          }
+        }
+      ],
+      "participants": {
+        "coordinator": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "actor",
+              "health-network"
+            ],
+            "components": [
+              "governance_participant"
+            ]
+          }
+        }
+      },
+      "process_id": "tally-country-approval",
+      "rationale": "Once per round, each newly recorded country approval is counted exactly once. Counting marks that country's vote and adds 20 to the co-located Regional Health Network's deployment readiness.",
+      "selector": {
+        "categories": [
+          "actor",
+          "country"
+        ],
+        "components": [
+          "governance_participant"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "The member has more than eight unresolved concerns",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.governance_participant.unresolved_concerns"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 8
+          }
+        },
+        {
+          "label": "The member has deployment readiness remaining",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.governance_participant.deployment_readiness"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 2
+          }
+        },
+        {
+          "label": "The member has decision support remaining",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.governance_participant.decision_support"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "The member has meeting time remaining",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.governance_participant.meeting_time_available"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.governance_participant.unresolved_concerns",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.governance_participant.decision_support",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.governance_participant.meeting_time_available",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.governance_participant.deployment_readiness",
+          "value": {
+            "literal": 2
+          }
+        }
+      ],
+      "process_id": "apply-weekly-unresolved-concern-pressure",
+      "rationale": "Each week, a severe concern backlog invalidates one stale concern, reduces decision support and available meeting time through repeated reopening and coordination, and lowers deployment readiness by two percentage points.",
+      "selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": [
+          "governance_participant"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "The early-warning system is activated",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.surveillance_system.stage"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "activated"
+          }
+        },
+        {
+          "label": "Regional Health Network has operating readiness remaining",
+          "left": {
+            "participant": {
+              "name": "coordinator",
+              "path": "components.governance_participant.deployment_readiness"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 2
+          }
+        },
+        {
+          "label": "Regional Health Network has decision support remaining",
+          "left": {
+            "participant": {
+              "name": "coordinator",
+              "path": "components.governance_participant.decision_support"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "Regional Health Network has coordination time remaining",
+          "left": {
+            "participant": {
+              "name": "coordinator",
+              "path": "components.governance_participant.meeting_time_available"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "coordinator",
+          "path": "components.governance_participant.deployment_readiness",
+          "value": {
+            "literal": 2
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "coordinator",
+          "path": "components.governance_participant.decision_support",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "coordinator",
+          "path": "components.governance_participant.meeting_time_available",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "participants": {
+        "coordinator": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "actor",
+              "health-network"
+            ],
+            "components": [
+              "governance_participant"
+            ]
+          }
+        }
+      },
+      "process_id": "apply-weekly-activated-system-wear",
+      "rationale": "Each operating week after activation consumes aggregate technical and logistics readiness, community decision support, and coordination time represented by the available state.",
+      "selector": {
+        "categories": [
+          "surveillance-system",
+          "deployment-target"
+        ],
+        "components": [
+          "surveillance_system"
+        ]
+      }
+    }
+  ],
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": {
+    "checks": [
+      {
+        "op": "eq",
+        "path": "components.surveillance_system.stage",
+        "value": "activated"
+      }
+    ],
+    "mode": "any",
+    "selector": {
+      "categories": [
+        "surveillance-system"
+      ],
+      "components": [
+        "surveillance_system"
+      ]
+    }
+  }
+}

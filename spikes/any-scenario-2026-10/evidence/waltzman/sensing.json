@@ -1,0 +1,48 @@
+{
+  "country-a": [
+    "Country A.concerns_received",
+    "Country A.conditional_support",
+    "Country A.decision_support",
+    "Country A.meeting_time_available",
+    "Cross-Border Bio-Surveillance Early-Warning System.stage"
+  ],
+  "country-b": [
+    "Country B.concerns_received",
+    "Country B.conditional_support",
+    "Country B.decision_support",
+    "Country B.meeting_time_available",
+    "Cross-Border Bio-Surveillance Early-Warning System.stage"
+  ],
+  "country-c": [
+    "Country C.concerns_received",
+    "Country C.conditional_support",
+    "Country C.decision_support",
+    "Country C.meeting_time_available",
+    "Cross-Border Bio-Surveillance Early-Warning System.stage"
+  ],
+  "country-d": [
+    "Country D.concerns_received",
+    "Country D.conditional_support",
+    "Country D.decision_support",
+    "Country D.meeting_time_available",
+    "Cross-Border Bio-Surveillance Early-Warning System.stage"
+  ],
+  "regional-health-network": [
+    "Country A.conditional_support",
+    "Country A.deployment_readiness",
+    "Country A.vote",
+    "Country B.conditional_support",
+    "Country B.deployment_readiness",
+    "Country B.vote",
+    "Country C.conditional_support",
+    "Country C.deployment_readiness",
+    "Country C.vote",
+    "Country D.conditional_support",
+    "Country D.deployment_readiness",
+    "Country D.vote",
+    "Regional Health Network.concerns_received",
+    "Regional Health Network.deployment_readiness",
+    "Regional Health Network.meeting_time_available",
+    "Regional Health Network.unresolved_concerns"
+  ]
+}

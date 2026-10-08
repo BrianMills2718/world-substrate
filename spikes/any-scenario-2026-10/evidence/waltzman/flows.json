@@ -1,0 +1,76 @@
+{
+  "stocks": {
+    "governance_participant.concerns_received": {
+      "inflows": [],
+      "initial": {
+        "country-a": 0,
+        "country-b": 0,
+        "country-c": 0,
+        "country-d": 0,
+        "regional-health-network": 0
+      },
+      "outflows": [],
+      "sets": []
+    },
+    "governance_participant.decision_support": {
+      "inflows": [],
+      "initial": {
+        "country-a": 60,
+        "country-b": 60,
+        "country-c": 60,
+        "country-d": 60,
+        "regional-health-network": 60
+      },
+      "outflows": [],
+      "sets": []
+    },
+    "governance_participant.deployment_readiness": {
+      "inflows": [],
+      "initial": {
+        "country-a": 20,
+        "country-b": 20,
+        "country-c": 20,
+        "country-d": 20,
+        "regional-health-network": 20
+      },
+      "outflows": [],
+      "sets": []
+    },
+    "governance_participant.meeting_time_available": {
+      "inflows": [],
+      "initial": {
+        "country-a": 80,
+        "country-b": 80,
+        "country-c": 80,
+        "country-d": 80,
+        "regional-health-network": 80
+      },
+      "outflows": [],
+      "sets": []
+    },
+    "governance_participant.population": {
+      "inflows": [],
+      "initial": {
+        "country-a": 12000000,
+        "country-b": 20000000,
+        "country-c": 8000000,
+        "country-d": 15000000,
+        "regional-health-network": 0
+      },
+      "outflows": [],
+      "sets": []
+    },
+    "governance_participant.unresolved_concerns": {
+      "inflows": [],
+      "initial": {
+        "country-a": 0,
+        "country-b": 0,
+        "country-c": 0,
+        "country-d": 0,
+        "regional-health-network": 0
+      },
+      "outflows": [],
+      "sets": []
+    }
+  }
+}

@@ -1,0 +1,265 @@
+{
+  "actions": [
+    {
+      "description": "Submit a concern for a participating member to consider.",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "entity_ref"
+        }
+      ],
+      "kind": "submit-concern"
+    },
+    {
+      "description": "Hold a partnership meeting to consider submitted concerns.",
+      "fields": [
+        {
+          "name": "participant",
+          "type": "entity_ref"
+        }
+      ],
+      "kind": "hold-meeting"
+    },
+    {
+      "description": "Record a member's decision about activating the system.",
+      "fields": [
+        {
+          "name": "participant",
+          "type": "entity_ref"
+        },
+        {
+          "name": "decision",
+          "type": "string"
+        }
+      ],
+      "kind": "cast-vote"
+    },
+    {
+      "description": "Activate the represented early-warning system.",
+      "fields": [
+        {
+          "name": "system",
+          "type": "entity_ref"
+        }
+      ],
+      "kind": "activate-system"
+    }
+  ],
+  "components": [
+    {
+      "fields": [
+        {
+          "default": "regional",
+          "name": "geographic_position",
+          "type": "string"
+        },
+        {
+          "default": 0,
+          "name": "population",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "decision_support",
+          "type": "integer"
+        },
+        {
+          "default": false,
+          "name": "conditional_support",
+          "type": "boolean"
+        },
+        {
+          "default": 0,
+          "name": "concerns_received",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "unresolved_concerns",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "meeting_time_available",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "deployment_readiness",
+          "type": "integer"
+        },
+        {
+          "default": "undecided",
+          "name": "vote",
+          "type": "string"
+        }
+      ],
+      "name": "governance_participant"
+    },
+    {
+      "fields": [
+        {
+          "default": "not_activated",
+          "name": "stage",
+          "type": "string"
+        }
+      ],
+      "name": "surveillance_system"
+    }
+  ],
+  "entities": [
+    {
+      "categories": [
+        "actor",
+        "country"
+      ],
+      "components": {
+        "governance_participant": {
+          "concerns_received": 0,
+          "conditional_support": false,
+          "decision_support": 60,
+          "deployment_readiness": 20,
+          "geographic_position": "(0, 0)",
+          "meeting_time_available": 80,
+          "population": 12000000,
+          "unresolved_concerns": 0,
+          "vote": "undecided"
+        }
+      },
+      "id": "country-a",
+      "label": "Country A"
+    },
+    {
+      "categories": [
+        "actor",
+        "country"
+      ],
+      "components": {
+        "governance_participant": {
+          "concerns_received": 0,
+          "conditional_support": false,
+          "decision_support": 60,
+          "deployment_readiness": 20,
+          "geographic_position": "(100, 0)",
+          "meeting_time_available": 80,
+          "population": 20000000,
+          "unresolved_concerns": 0,
+          "vote": "undecided"
+        }
+      },
+      "id": "country-b",
+      "label": "Country B"
+    },
+    {
+      "categories": [
+        "actor",
+        "country"
+      ],
+      "components": {
+        "governance_participant": {
+          "concerns_received": 0,
+          "conditional_support": false,
+          "decision_support": 60,
+          "deployment_readiness": 20,
+          "geographic_position": "(0, 100)",
+          "meeting_time_available": 80,
+          "population": 8000000,
+          "unresolved_concerns": 0,
+          "vote": "undecided"
+        }
+      },
+      "id": "country-c",
+      "label": "Country C"
+    },
+    {
+      "categories": [
+        "actor",
+        "country"
+      ],
+      "components": {
+        "governance_participant": {
+          "concerns_received": 0,
+          "conditional_support": false,
+          "decision_support": 60,
+          "deployment_readiness": 20,
+          "geographic_position": "(100, 100)",
+          "meeting_time_available": 80,
+          "population": 15000000,
+          "unresolved_concerns": 0,
+          "vote": "undecided"
+        }
+      },
+      "id": "country-d",
+      "label": "Country D"
+    },
+    {
+      "categories": [
+        "actor",
+        "health-network"
+      ],
+      "components": {
+        "governance_participant": {
+          "concerns_received": 0,
+          "conditional_support": false,
+          "decision_support": 60,
+          "deployment_readiness": 20,
+          "geographic_position": "regional",
+          "meeting_time_available": 80,
+          "population": 0,
+          "unresolved_concerns": 0,
+          "vote": "undecided"
+        }
+      },
+      "id": "regional-health-network",
+      "label": "Regional Health Network"
+    },
+    {
+      "categories": [
+        "surveillance-system",
+        "deployment-target"
+      ],
+      "components": {
+        "surveillance_system": {
+          "stage": "not_activated"
+        }
+      },
+      "id": "bio-surveillance-system",
+      "label": "Cross-Border Bio-Surveillance Early-Warning System"
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "actor": {
+        "kind": "emoji",
+        "value": "\ud83d\udc65"
+      },
+      "country": {
+        "kind": "emoji",
+        "value": "\ud83c\udf0d"
+      },
+      "health_network": {
+        "kind": "emoji",
+        "value": "\ud83c\udfe5"
+      },
+      "surveillance_system": {
+        "kind": "emoji",
+        "value": "\ud83d\udce1"
+      }
+    },
+    "category_assets": {
+      "actor": "actor",
+      "country": "country",
+      "health-network": "health_network",
+      "surveillance-system": "surveillance_system"
+    },
+    "station_roles": {}
+  },
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "content_version": 1,
+    "id": "cross-border-surveillance-decision",
+    "label": "Cross-Border Surveillance Decision",
+    "location": "regional-partnership",
+    "summary": "Four countries and a regional health network can work through concerns and decide whether the early-warning system is activated."
+  }
+}
