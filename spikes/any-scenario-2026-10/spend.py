@@ -10,13 +10,15 @@ DATA = Path.home() / "projects/data"
 LOGS = DATA / "world-substrate/world-substrate_llm_client_data"  # must exist: a missing home log reads as $0
 # any-scenario-poc ($5 cap) ended at $3.93; linked-process-participants adds $3 on top (approved 2026-10-08).
 CAP = 3.93 + 3.00
+SINCE = "2026-10-07"
 
 
 def plan_spend() -> tuple[int, float]:
     if not LOGS.is_dir():  # a missing log must not read as $0 spent: that would silently disable the cap
         raise SystemExit(f"spend log directory not found: {LOGS}")
     n, total = 0, 0.0
-    for f in sorted(DATA.glob("*/*_llm_client_data/calls_*.jsonl")):
+    # Only logs from this work's dates (it began 2026-10-07): reading every project's full history took minutes.
+    for f in sorted(p for p in DATA.glob("*/*_llm_client_data/calls_*.jsonl") if p.name >= f"calls_{SINCE}"):
         try:
             lines = f.read_text(errors="replace").splitlines()
         except (FileNotFoundError, IsADirectoryError, PermissionError):

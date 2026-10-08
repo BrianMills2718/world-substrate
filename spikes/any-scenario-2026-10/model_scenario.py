@@ -269,6 +269,7 @@ def consequence_checker(scenario: str, *, trace_id: str, votes: int = 3, max_bud
 
     class Verdict(BaseModel):
         expected_consequence: str
+        consequence_expected: bool  # does an expert expect any harm, loss or failure at all with this at zero?
         consequence_observed: bool
         evidence_quote: str
 
@@ -283,14 +284,18 @@ def consequence_checker(scenario: str, *, trace_id: str, votes: int = 3, max_bud
                 [{"role": "system", "content": (
                     "Extreme-conditions test. A resource starts at zero in a simulation. State the consequence a domain "
                     "expert would expect for the people or things that depend on it (harm, loss, failure, stopping). "
-                    "Then answer strictly: does the run log show that consequence actually happening (a state change "
-                    "that is that consequence)? Quote the log line that shows it, or '' if none does.")},
+                    "Set consequence_expected to false only when an expert would expect nothing to go wrong (for "
+                    "example an empty queue or backlog). Then answer strictly: does the run log show the expected "
+                    "consequence actually happening (a state change that is that consequence)? Quote the log line that "
+                    "shows it, or '' if none does.")},
                  {"role": "user", "content": json.dumps({"scenario": scenario, "resource_at_zero": stock,
                                                          "run_log": log})}],
                 Verdict, task="world-substrate-extreme-conditions", trace_id=f"{trace_id}-{counter['n']}",
                 max_budget=max_budget, reasoning_effort="low", num_retries=1)
-            observed = v.consequence_observed and bool(v.evidence_quote) and v.evidence_quote in log
-            rows.append({"expected": v.expected_consequence, "observed": observed, "quote": v.evidence_quote})
+            observed = (not v.consequence_expected) or (
+                v.consequence_observed and bool(v.evidence_quote) and v.evidence_quote in log)
+            rows.append({"expected": v.expected_consequence, "consequence_expected": v.consequence_expected,
+                         "observed": observed, "quote": v.evidence_quote})
         yes = sum(r["observed"] for r in rows)
         return {"observed": yes * 2 > votes, "votes": rows, "expected": rows[0]["expected"]}
 
@@ -334,13 +339,16 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
     (out / "causal.r0.json").write_text(json.dumps(causal, indent=2, sort_keys=True))
     (out / "checks.r0.json").write_text(json.dumps(report, indent=2, sort_keys=True))
     print(f"[step] checks r0 blocking={report['counts']['blocking']} advisory={report['counts']['advisory']}", flush=True)
-    best = (report["counts"]["blocking"], 0, bundle, causal, report)
+    stable_count = lambda r: sum(1 for f in r["findings"] if f["blocking"] and f["check"] not in ("extreme_conditions", "behavior_anomaly"))
+    best = (stable_count(report), 0, bundle, causal, report)
     for n in range(1, (max_repairs or MAX_REPAIRS) + 1):  # propose -> compile -> check -> keep or revert
         blocking = [f for f in report["findings"] if f["blocking"]]
         if not blocking:
             break
         # missing consequences first (what the world fails to mean), then what stops it running, then refinements
-        order = ["extreme_conditions", "structure", "liveness", "reachability", "attempt_vs_outcome", "boundedness",
+        # outflows the conceptual model declares but no rule implements come first (omissions such as a missing
+        # death rule), then missing expert-expected consequences, then what stops the world running, then refinements
+        order = ["structure", "extreme_conditions", "liveness", "reachability", "attempt_vs_outcome", "boundedness",
                  "behavior_anomaly"]
         blocking.sort(key=lambda f: order.index(f["check"]) if f["check"] in order else len(order))
         target = blocking[0] if not repairs or repairs[-1].get("kept") or len(blocking) == 1 else blocking[min(1, len(blocking) - 1)]
@@ -363,12 +371,14 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
         same = lambda f: f["check"] == target["check"] and f.get("rule") == target.get("rule") and f.get("stock") == target.get("stock")
         resolved = not any(same(f) for f in cand_report["findings"] if f["blocking"])
         # keep an improvement, or a fix of the targeted finding that exposes at most two new ones (bounded search)
-        kept = cand_report["counts"]["blocking"] < report["counts"]["blocking"] or (
-            resolved and cand_report["counts"]["blocking"] <= report["counts"]["blocking"] + 2)
+        # Keep-or-revert counts only stable categories: extreme-conditions and anomaly findings grow when a fix
+        # makes more stocks testable, and are model-judged, so they are reported but cannot veto a fix.
+        stable = lambda r: sum(1 for f in r["findings"] if f["blocking"] and f["check"] not in ("extreme_conditions", "behavior_anomaly"))
+        kept = stable(cand_report) < stable(report) or (resolved and stable(cand_report) <= stable(report) + 2)
         if kept:
             bundle, causal, report = cand_bundle, candidate, cand_report
-            if report["counts"]["blocking"] < best[0]:
-                best = (report["counts"]["blocking"], n, bundle, causal, report)
+            if stable_count(report) < best[0]:
+                best = (stable_count(report), n, bundle, causal, report)
         repairs.append({"round": n, "trace": repair_trace, "finding": target["finding"], "kept": kept,
                         "change": rec["proposal"].get("change"), "target_id": rec["proposal"].get("target_id"),
                         "why": rec["proposal"].get("why"), "candidate_blocking": cand_report["counts"]["blocking"],
@@ -376,7 +386,7 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
         print(f"[step] repair {n} {time.time() - t3:.1f}s trace={repair_trace} {rec['proposal'].get('change')} "
               f"{rec['proposal'].get('target_id')} candidate_blocking={cand_report['counts']['blocking']} kept={kept} "
               f"blocking_now={report['counts']['blocking']}", flush=True)
-    if best[0] < report["counts"]["blocking"]:  # return the best model seen, not the last one kept
+    if best[0] < stable_count(report):  # return the best model seen (same stable count as keep-or-revert)
         print(f"[step] returning best round r{best[1]} (blocking={best[0]})", flush=True)
         _, _, bundle, causal, report = best
     return bundle, causal, report, repairs
@@ -400,7 +410,9 @@ def main() -> int:
         reviewer = anomaly_reviewer(model["scenario_text"], trace_id=f"any-scenario-{args.name}-anomaly-{stamp}")
         bundle, causal, report, repairs = repair_loop(json.loads((d / "bundle.json").read_text()),
                                                       json.loads((d / "causal.json").read_text()),
-                                                      model.get("stock_map") or [], reviewer, out, args.name, stamp)
+                                                      model.get("stock_map") or [], reviewer, out, args.name, stamp,
+                                                      odd=model.get("odd"), scenario=model["scenario_text"],
+                                                      max_repairs=args.max_repairs)
         for nm, v in {"bundle": bundle, "causal": causal, "checks": report}.items():
             (d / f"{nm}.json").write_text(json.dumps(v, indent=2, sort_keys=True))
         if not (d / "sensing.json").exists():

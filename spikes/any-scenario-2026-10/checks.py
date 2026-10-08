@@ -297,7 +297,7 @@ def attempt_findings(bundle: dict[str, Any], causal: dict[str, Any]) -> list[dic
     return out
 
 
-def conservation_findings(causal: dict[str, Any]) -> list[dict[str, Any]]:
+def conservation_findings(causal: dict[str, Any], stocks: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
     """Conservation (Petri-net P-invariant style): a quantity that existing rules only ever move between
     entities (an add paired with a subtract of the same amount in one rule) must not be created from nothing."""
     def amount(eff: dict[str, Any]) -> str:
@@ -317,7 +317,11 @@ def conservation_findings(causal: dict[str, Any]) -> list[dict[str, Any]]:
         subs = {amount(e) for e in r.get("effects", []) if e.get("op") == "subtract"}
         for e in r.get("effects", []):
             if e.get("op") == "add" and e.get("path") in conserved and amount(e) not in subs:
-                out.append({"check": "conservation", "blocking": True, "rule": rid,
+                # An open system has declared inflows (arrivals, deliveries): when the conceptual model says this
+                # stock rises from outside, an unpaired add may be that inflow. Report it, but do not block.
+                declared_inflow = any(r.get("field") and r["field"].split(".", 1)[1] == e["path"].removeprefix("components.")
+                                      and r.get("has_inflows") for r in (stocks or []))
+                out.append({"check": "conservation", "blocking": not declared_inflow, "rule": rid,
                             "finding": f"rule {rid} creates {e['path'].removeprefix('components.')} from nothing; elsewhere "
                                        "that quantity only moves between things, so it must come from a stock that loses it."})
     return out
@@ -359,7 +363,7 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
                stocks: list[dict[str, Any]] | None = None, anomaly_review: Any = None,
                coverage: list[dict[str, Any]] | None = None, consequence_check: Any = None) -> dict[str, Any]:
     t0 = time.time()
-    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal) + unresolved_findings(causal) + outflow_findings(coverage, causal) + co_located_findings(bundle, causal)
+    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal, stocks) + unresolved_findings(causal) + outflow_findings(coverage, causal) + co_located_findings(bundle, causal)
     base = [simulate(bundle, causal, seed=s, ticks=ticks) for s in range(seeds)]
     # boundedness / conservation
     steps: dict[str, float] = {}
@@ -420,6 +424,18 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
         consequence_free = identical or any(n["stock"] == f"{eid}.{comp}.{field}" for z in zero for n in z["negatives"])
         extreme_rows.append({"stock": f"{eid}.{comp}.{field}", "identical_to_baseline": identical,
                              "went_negative_from_zero": consequence_free and not identical})
+        if consequence_free and identical and consequence_check is not None:
+            # "Nothing changed" is only a defect if an expert expected something to: an empty queue or backlog
+            # rightly changes nothing. Let the closed-question test judge it (a negative stock is always a defect).
+            run0q = simulate(bundle, causal, seed=100, ticks=ticks, override=(eid, comp, field, 0), guided=True)
+            verdict_q = consequence_check(f"{eid} {field}", "\n".join(run0q["log"][:150]) or "(nothing happened)")
+            extreme_rows[-1]["consequence"] = verdict_q
+            if verdict_q["observed"]:
+                findings.append({"check": "extreme_conditions", "blocking": False, "stock": f"{eid}.{comp}.{field}",
+                                 "finding": f"with {eid} {field} at zero nothing changed, which matches what an expert "
+                                            f"expects ({verdict_q['expected'][:120]})."})
+                consequence_free = False
+                identical = False
         if consequence_free:
             findings.append({"check": "extreme_conditions", "blocking": True, "stock": f"{eid}.{comp}.{field}",
                              "finding": (f"with {eid} {field} set to zero the world behaves as if nothing were missing "
