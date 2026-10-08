@@ -1,0 +1,350 @@
+{
+  "stock": "hospital-ventilators.ventilator_stock.functional_count",
+  "removed_rule": "unventilated-patients-die",
+  "runs": {
+    "full": {
+      "trace_prefix": "any-scenario-c2-full-20261007T202119",
+      "blocking_for_stock": 1,
+      "missing_harm_outflow": [
+        "the conceptual model says 'hospital occupied beds' falls by 'Patient deaths', but no rule implements that outflow.",
+        "the conceptual model says 'ventilators in use' falls by 'Patient death', but no rule implements that outflow.",
+        "the conceptual model says 'unmet ventilation demand' falls by 'Patient death', but no rule implements that outflow."
+      ],
+      "extreme_consequence_missing": [],
+      "findings": [
+        "with hospital-ventilators functional_count at zero: The hospital has had functional_count 0 since the start, and no repair occurs before this assignment. A patient cannot be newly placed on a functional ventilator when none are available. (run log: \"t5 clinical-staff did assign-ventilators-v1: hospitalized-flu-patients.patient_group.ventilation_status needs ventilation->ventilated\") ALSO: The log previously marked a patient as ventilated, but when the only functional ventilator fails and the count returns to zero, it shows no loss of ventilation, deterioration, or death for that dependent patient. The subsequent repeated repairs and failures likewise leave the patient\u2019s ventilated status unchanged. (run log: \"t11 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\")"
+      ],
+      "all_counts": {
+        "blocking": 30,
+        "advisory": 6,
+        "rules": 13,
+        "rules_fired": 9,
+        "depletable_stocks": 4
+      },
+      "extreme_row": [
+        {
+          "stock": "hospital-ventilators.ventilator_stock.functional_count",
+          "identical_to_baseline": false,
+          "went_negative_from_zero": false,
+          "consequence": {
+            "observed": true,
+            "votes": [
+              {
+                "expected": "Patients who need ventilation cannot be supported and die.",
+                "observed": true,
+                "quote": "t3 process unventilated-patients-die: hospitalized-flu-patients.patient_group.patient_count 36->35"
+              },
+              {
+                "expected": "Patients who need ventilation cannot receive it and die, causing patient loss and failure of critical care.",
+                "observed": true,
+                "quote": "t3 process unventilated-patients-die: hospitalized-flu-patients.patient_group.patient_count 36->35"
+              },
+              {
+                "expected": "Patients who need ventilation cannot receive it and die, causing patient loss.",
+                "observed": true,
+                "quote": "t3 process unventilated-patients-die: hospitalized-flu-patients.patient_group.patient_count 36->35"
+              }
+            ],
+            "expected": "Patients who need ventilation cannot be supported and die."
+          }
+        }
+      ]
+    },
+    "without_harm_rule": {
+      "trace_prefix": "any-scenario-c2-without_harm_rule-20261007T202119",
+      "blocking_for_stock": 2,
+      "missing_harm_outflow": [
+        "the conceptual model says 'hospital occupied beds' falls by 'Patient deaths', but no rule implements that outflow.",
+        "the conceptual model says 'ventilators in use' falls by 'Patient death', but no rule implements that outflow.",
+        "the conceptual model says 'patients needing ventilation' falls by 'Death', but no rule implements that outflow.",
+        "the conceptual model says 'unmet ventilation demand' falls by 'Patient death', but no rule implements that outflow."
+      ],
+      "extreme_consequence_missing": [
+        "with hospital-ventilators functional_count at zero the expected consequence never happens in the run (Patients who need ventilation cannot be ventilated, leading to treatment failure and potentially deterioration or death.): a rule for it is missing."
+      ],
+      "findings": [
+        "with hospital-ventilators functional_count at zero the expected consequence never happens in the run (Patients who need ventilation cannot be ventilated, leading to treatment failure and potentially deterioration or death.): a rule for it is missing.",
+        "with hospital-ventilators functional_count at zero: The hospital began with zero functional ventilators, so assigning a patient to ventilated status is physically impossible. (run log: \"t5 clinical-staff did assign-ventilators-v1: hospitalized-flu-patients.patient_group.ventilation_status needs ventilation->ventilated\") ALSO: After the only functional ventilator fails, the patient remains recorded as ventilated, with no disconnection, deterioration, or other consequence despite having no available ventilator. (run log: \"t11 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\")"
+      ],
+      "all_counts": {
+        "blocking": 34,
+        "advisory": 6,
+        "rules": 12,
+        "rules_fired": 8,
+        "depletable_stocks": 4
+      },
+      "extreme_row": [
+        {
+          "stock": "hospital-ventilators.ventilator_stock.functional_count",
+          "identical_to_baseline": false,
+          "went_negative_from_zero": false,
+          "consequence": {
+            "observed": false,
+            "votes": [
+              {
+                "expected": "Patients who need ventilation cannot be ventilated, leading to treatment failure and potentially deterioration or death.",
+                "observed": false,
+                "quote": ""
+              },
+              {
+                "expected": "Patients who need ventilation would go without it, resulting in failed treatment and potentially severe deterioration or death.",
+                "observed": false,
+                "quote": ""
+              },
+              {
+                "expected": "Patients needing ventilation would go untreated, with clinical deterioration or death, and ventilation-dependent care would fail.",
+                "observed": false,
+                "quote": ""
+              }
+            ],
+            "expected": "Patients who need ventilation cannot be ventilated, leading to treatment failure and potentially deterioration or death."
+          }
+        }
+      ]
+    }
+  },
+  "outflow_coverage": {
+    "full": [
+      {
+        "stock": "hospital occupied beds",
+        "outflow": "Patient deaths",
+        "rules": []
+      },
+      {
+        "stock": "hospital occupied beds",
+        "outflow": "Patient recovery and discharge",
+        "rules": [
+          "discharge-recovered-patients-v1"
+        ]
+      },
+      {
+        "stock": "hospital occupied beds",
+        "outflow": "Transfers out of the hospital",
+        "rules": []
+      },
+      {
+        "stock": "hospital functional ventilators",
+        "outflow": "Ventilator failures",
+        "rules": [
+          "functional-ventilators-fail"
+        ]
+      },
+      {
+        "stock": "hospital functional ventilators",
+        "outflow": "Permanent equipment loss",
+        "rules": []
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Patient recovery",
+        "rules": []
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Patient death",
+        "rules": []
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Patient no longer needing ventilation",
+        "rules": [
+          "ventilator-use-cycle-completes"
+        ]
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Ventilator failure",
+        "rules": []
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Ventilator assignment",
+        "rules": [
+          "assign-ventilators-v1",
+          "assign-ventilators-by-staff-v1"
+        ]
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Recovery",
+        "rules": []
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Death",
+        "rules": [
+          "unventilated-patients-die"
+        ]
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Transfer or discharge",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Ventilator assignment",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Patient recovery",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Patient death",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Transfer out",
+        "rules": []
+      },
+      {
+        "stock": "supplier ventilator inventory",
+        "outflow": "Ventilator orders accepted for this hospital",
+        "rules": [
+          "order-ventilators-v1"
+        ]
+      },
+      {
+        "stock": "supplier ventilator inventory",
+        "outflow": "Orders for other customers",
+        "rules": []
+      },
+      {
+        "stock": "available clinical staff",
+        "outflow": "Illness or absence",
+        "rules": []
+      },
+      {
+        "stock": "available clinical staff",
+        "outflow": "Staff leaving employment",
+        "rules": []
+      }
+    ],
+    "without_harm_rule": [
+      {
+        "stock": "hospital occupied beds",
+        "outflow": "Patient deaths",
+        "rules": []
+      },
+      {
+        "stock": "hospital occupied beds",
+        "outflow": "Patient recovery and discharge",
+        "rules": [
+          "discharge-recovered-patients-v1"
+        ]
+      },
+      {
+        "stock": "hospital occupied beds",
+        "outflow": "Transfers out of the hospital",
+        "rules": []
+      },
+      {
+        "stock": "hospital functional ventilators",
+        "outflow": "Ventilator failures",
+        "rules": [
+          "functional-ventilators-fail"
+        ]
+      },
+      {
+        "stock": "hospital functional ventilators",
+        "outflow": "Permanent equipment loss",
+        "rules": []
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Patient recovery",
+        "rules": []
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Patient death",
+        "rules": []
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Patient no longer needing ventilation",
+        "rules": [
+          "ventilator-use-cycle-completes"
+        ]
+      },
+      {
+        "stock": "ventilators in use",
+        "outflow": "Ventilator failure",
+        "rules": []
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Ventilator assignment",
+        "rules": [
+          "assign-ventilators-v1",
+          "assign-ventilators-by-staff-v1"
+        ]
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Recovery",
+        "rules": []
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Death",
+        "rules": []
+      },
+      {
+        "stock": "patients needing ventilation",
+        "outflow": "Transfer or discharge",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Ventilator assignment",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Patient recovery",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Patient death",
+        "rules": []
+      },
+      {
+        "stock": "unmet ventilation demand",
+        "outflow": "Transfer out",
+        "rules": []
+      },
+      {
+        "stock": "supplier ventilator inventory",
+        "outflow": "Ventilator orders accepted for this hospital",
+        "rules": [
+          "order-ventilators-v1"
+        ]
+      },
+      {
+        "stock": "supplier ventilator inventory",
+        "outflow": "Orders for other customers",
+        "rules": []
+      },
+      {
+        "stock": "available clinical staff",
+        "outflow": "Illness or absence",
+        "rules": []
+      },
+      {
+        "stock": "available clinical staff",
+        "outflow": "Staff leaving employment",
+        "rules": []
+      }
+    ]
+  },
+  "result": {
+    "outflow_coverage_detects": false,
+    "extreme_review_detects": true
+  }
+}

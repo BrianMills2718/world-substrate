@@ -261,6 +261,42 @@ def outflow_coverage(odd: dict[str, Any], causal: dict[str, Any], *, trace_id: s
     return [r.model_dump() for r in cov.rows], result
 
 
+def consequence_checker(scenario: str, *, trace_id: str, votes: int = 3, max_budget: float = 0.02):
+    """Extreme-conditions test (Sterman ch. 21) as a closed question: with a resource at zero from the start,
+    does the consequence a domain expert expects appear in the run log? Majority of `votes` independent calls."""
+    from pydantic import BaseModel
+    from llm_client import call_llm_structured
+
+    class Verdict(BaseModel):
+        expected_consequence: str
+        consequence_observed: bool
+        evidence_quote: str
+
+    counter = {"n": 0}
+
+    def check(stock: str, log: str) -> dict[str, Any]:
+        rows = []
+        for _ in range(votes):
+            counter["n"] += 1
+            v, _ = call_llm_structured(
+                DEFAULT_MODEL,
+                [{"role": "system", "content": (
+                    "Extreme-conditions test. A resource starts at zero in a simulation. State the consequence a domain "
+                    "expert would expect for the people or things that depend on it (harm, loss, failure, stopping). "
+                    "Then answer strictly: does the run log show that consequence actually happening (a state change "
+                    "that is that consequence)? Quote the log line that shows it, or '' if none does.")},
+                 {"role": "user", "content": json.dumps({"scenario": scenario, "resource_at_zero": stock,
+                                                         "run_log": log})}],
+                Verdict, task="world-substrate-extreme-conditions", trace_id=f"{trace_id}-{counter['n']}",
+                max_budget=max_budget, reasoning_effort="low", num_retries=1)
+            observed = v.consequence_observed and bool(v.evidence_quote) and v.evidence_quote in log
+            rows.append({"expected": v.expected_consequence, "observed": observed, "quote": v.evidence_quote})
+        yes = sum(r["observed"] for r in rows)
+        return {"observed": yes * 2 > votes, "votes": rows, "expected": rows[0]["expected"]}
+
+    return check
+
+
 def flows(bundle: dict[str, Any], causal: dict[str, Any]) -> dict[str, Any]:
     """Stock-and-flow view: every numeric component path, with each rule that adds to or subtracts from it."""
     stocks: dict[str, dict[str, Any]] = {}
