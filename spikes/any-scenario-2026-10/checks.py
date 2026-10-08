@@ -420,6 +420,18 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
         consequence_free = identical or any(n["stock"] == f"{eid}.{comp}.{field}" for z in zero for n in z["negatives"])
         extreme_rows.append({"stock": f"{eid}.{comp}.{field}", "identical_to_baseline": identical,
                              "went_negative_from_zero": consequence_free and not identical})
+        if consequence_free and identical and consequence_check is not None:
+            # "Nothing changed" is only a defect if an expert expected something to: an empty queue or backlog
+            # rightly changes nothing. Let the closed-question test judge it (a negative stock is always a defect).
+            run0q = simulate(bundle, causal, seed=100, ticks=ticks, override=(eid, comp, field, 0), guided=True)
+            verdict_q = consequence_check(f"{eid} {field}", "\n".join(run0q["log"][:150]) or "(nothing happened)")
+            extreme_rows[-1]["consequence"] = verdict_q
+            if verdict_q["observed"]:
+                findings.append({"check": "extreme_conditions", "blocking": False, "stock": f"{eid}.{comp}.{field}",
+                                 "finding": f"with {eid} {field} at zero nothing changed, which matches what an expert "
+                                            f"expects ({verdict_q['expected'][:120]})."})
+                consequence_free = False
+                identical = False
         if consequence_free:
             findings.append({"check": "extreme_conditions", "blocking": True, "stock": f"{eid}.{comp}.{field}",
                              "finding": (f"with {eid} {field} set to zero the world behaves as if nothing were missing "

@@ -269,6 +269,7 @@ def consequence_checker(scenario: str, *, trace_id: str, votes: int = 3, max_bud
 
     class Verdict(BaseModel):
         expected_consequence: str
+        consequence_expected: bool  # does an expert expect any harm, loss or failure at all with this at zero?
         consequence_observed: bool
         evidence_quote: str
 
@@ -283,14 +284,18 @@ def consequence_checker(scenario: str, *, trace_id: str, votes: int = 3, max_bud
                 [{"role": "system", "content": (
                     "Extreme-conditions test. A resource starts at zero in a simulation. State the consequence a domain "
                     "expert would expect for the people or things that depend on it (harm, loss, failure, stopping). "
-                    "Then answer strictly: does the run log show that consequence actually happening (a state change "
-                    "that is that consequence)? Quote the log line that shows it, or '' if none does.")},
+                    "Set consequence_expected to false only when an expert would expect nothing to go wrong (for "
+                    "example an empty queue or backlog). Then answer strictly: does the run log show the expected "
+                    "consequence actually happening (a state change that is that consequence)? Quote the log line that "
+                    "shows it, or '' if none does.")},
                  {"role": "user", "content": json.dumps({"scenario": scenario, "resource_at_zero": stock,
                                                          "run_log": log})}],
                 Verdict, task="world-substrate-extreme-conditions", trace_id=f"{trace_id}-{counter['n']}",
                 max_budget=max_budget, reasoning_effort="low", num_retries=1)
-            observed = v.consequence_observed and bool(v.evidence_quote) and v.evidence_quote in log
-            rows.append({"expected": v.expected_consequence, "observed": observed, "quote": v.evidence_quote})
+            observed = (not v.consequence_expected) or (
+                v.consequence_observed and bool(v.evidence_quote) and v.evidence_quote in log)
+            rows.append({"expected": v.expected_consequence, "consequence_expected": v.consequence_expected,
+                         "observed": observed, "quote": v.evidence_quote})
         yes = sum(r["observed"] for r in rows)
         return {"observed": yes * 2 > votes, "votes": rows, "expected": rows[0]["expected"]}
 
@@ -340,7 +345,9 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
         if not blocking:
             break
         # missing consequences first (what the world fails to mean), then what stops it running, then refinements
-        order = ["extreme_conditions", "structure", "liveness", "reachability", "attempt_vs_outcome", "boundedness",
+        # outflows the conceptual model declares but no rule implements come first (omissions such as a missing
+        # death rule), then missing expert-expected consequences, then what stops the world running, then refinements
+        order = ["structure", "extreme_conditions", "liveness", "reachability", "attempt_vs_outcome", "boundedness",
                  "behavior_anomaly"]
         blocking.sort(key=lambda f: order.index(f["check"]) if f["check"] in order else len(order))
         target = blocking[0] if not repairs or repairs[-1].get("kept") or len(blocking) == 1 else blocking[min(1, len(blocking) - 1)]
