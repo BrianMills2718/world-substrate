@@ -1,0 +1,238 @@
+{
+  "behavior_anomalies": [
+    {
+      "quote": "t24 process apply-weekly-unresolved-concern-pressure: regional-health-network.governance_participant.decision_support 41->40; regional-health-network.governance_participant.deployment_readiness 2->0; regional-health-network.governance_participant.meeting_time_available 49->48; regional-health-network.governance_participant.unresolved_concerns 20->19",
+      "why": "The regional health network's deployment readiness is set to zero, but the log never shows activation being blocked or deployment stopping as the expected consequence."
+    },
+    {
+      "quote": "t20 process apply-weekly-unresolved-concern-pressure: country-c.governance_participant.decision_support 51->50; country-c.governance_participant.deployment_readiness 2->0; country-c.governance_participant.meeting_time_available 64->63; country-c.governance_participant.unresolved_concerns 11->10; regional-health-network.governance_participant.decision_support 45->44; regional-health-network.governance_participant.deployment_readiness 50->48; regional-health-network.governance_participant.meeting_time_available 58->57; regional-health-network.governance_participant.unresolved_concerns 29->28",
+      "why": "Country-c's deployment readiness is set to zero, but the log never shows the expected consequence\u2014deployment or activation being blocked or stopping."
+    },
+    {
+      "quote": "t0 country-a did record-member-activation-vote: country-a.governance_participant.vote undecided->approve",
+      "why": "A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action."
+    },
+    {
+      "quote": "t0 country-b did record-member-activation-vote: country-b.governance_participant.vote undecided->reject",
+      "why": "A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action."
+    },
+    {
+      "quote": "t0 country-c did record-member-activation-vote: country-c.governance_participant.vote undecided->reject",
+      "why": "A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action."
+    },
+    {
+      "quote": "t0 country-d did record-member-activation-vote: country-d.governance_participant.vote undecided->reject",
+      "why": "A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action."
+    },
+    {
+      "quote": "t0 regional-health-network did record-member-activation-vote: regional-health-network.governance_participant.vote undecided->approve",
+      "why": "A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action."
+    },
+    {
+      "quote": "t1 process tally-country-approval: country-a.governance_participant.vote approve->counted_approve; regional-health-network.governance_participant.deployment_readiness 20->40",
+      "why": "The process counts a vote and increases deployment readiness even though no enabling cause or resource is present; the decision process progresses after it should be unable to act."
+    }
+  ],
+  "counts": {
+    "advisory": 15,
+    "blocking": 14,
+    "depletable_stocks": 0,
+    "rules": 7,
+    "rules_fired": 5
+  },
+  "extreme_conditions": [],
+  "findings": [
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Time remaining to decision deadline' could not be matched to a state field.",
+      "stock": "Time remaining to decision deadline"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Unresolved concerns' could not be matched to a state field.",
+      "stock": "Unresolved concerns"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Decision support' could not be matched to a state field.",
+      "stock": "Decision support"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Available meeting time' could not be matched to a state field.",
+      "stock": "Available meeting time"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Deployment progress' could not be matched to a state field.",
+      "stock": "Deployment progress"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Technical capacity' could not be matched to a state field.",
+      "stock": "Technical capacity"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Legal clearance' could not be matched to a state field.",
+      "stock": "Legal clearance"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Logistics capacity' could not be matched to a state field.",
+      "stock": "Logistics capacity"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Community acceptance' could not be matched to a state field.",
+      "stock": "Community acceptance"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Concern-group local concern pools' could not be matched to a state field.",
+      "stock": "Concern-group local concern pools"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'Coordination capacity' could not be matched to a state field.",
+      "stock": "Coordination capacity"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action hold-partnership-concern-meeting refuses up front with check 'Regional Health Network has meeting time available' on actor.components.governance_participant.meeting_time_available, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "hold-partnership-concern-meeting"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action activate-unanimously-approved-system refuses up front with check 'Regional Health Network has full deployment readiness' on actor.components.governance_participant.deployment_readiness, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "activate-unanimously-approved-system"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Time remaining to decision deadline' falls by '1 week per tick', but no rule implements that outflow.",
+      "rule": "1 week per tick",
+      "stock": "Time remaining to decision deadline"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Decision support' falls by 'Receipt of unresolved concerns', but no rule implements that outflow.",
+      "rule": "Receipt of unresolved concerns",
+      "stock": "Decision support"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Deployment progress' falls by 'Failure reset or interruption, if deployment failure is modeled', but no rule implements that outflow.",
+      "rule": "Failure reset or interruption, if deployment failure is modeled",
+      "stock": "Deployment progress"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Legal clearance' falls by 'Legal objections or newly identified legal constraints', but no rule implements that outflow.",
+      "rule": "Legal objections or newly identified legal constraints",
+      "stock": "Legal clearance"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Community acceptance' falls by 'Unresolved community concerns and deployment harms', but no rule implements that outflow.",
+      "rule": "Unresolved community concerns and deployment harms",
+      "stock": "Community acceptance"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Coordination capacity' falls by 'Concern routing', but no rule implements that outflow.",
+      "rule": "Concern routing",
+      "stock": "Coordination capacity"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Coordination capacity' falls by 'Meeting facilitation', but no rule implements that outflow.",
+      "rule": "Meeting facilitation",
+      "stock": "Coordination capacity"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'Coordination capacity' falls by 'Readiness coordination', but no rule implements that outflow.",
+      "rule": "Readiness coordination",
+      "stock": "Coordination capacity"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "process tally-country-approval links coordinator by co_located, but every entity shares the one location 'regional-partnership', so the link binds every matching entity; pin the place with a check (e.g. equal positions) or use a ref: link.",
+      "rule": "tally-country-approval"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "process apply-weekly-activated-system-wear links coordinator by co_located, but every entity shares the one location 'regional-partnership', so the link binds every matching entity; pin the place with a check (e.g. equal positions) or use a ref: link.",
+      "rule": "apply-weekly-activated-system-wear"
+    },
+    {
+      "blocking": true,
+      "check": "reachability",
+      "finding": "the end condition was never reached in 12 random runs."
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule activate-unanimously-approved-system never fired in 10 random runs.",
+      "rule": "activate-unanimously-approved-system"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule apply-weekly-activated-system-wear never fired in 10 random runs.",
+      "rule": "apply-weekly-activated-system-wear"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "in an ordinary run: The regional health network's deployment readiness is set to zero, but the log never shows activation being blocked or deployment stopping as the expected consequence. (run log: \"t24 process apply-weekly-unresolved-concern-pressure: regional-health-network.governance_participant.decision_support 41->40; regional-health-network.governance_participant.deployment_readiness 2->0; regional-health-network.governance_participant.meeting_time_available 49->48; regional-health-network.governance_participant.unresolved_concerns 20->19\")",
+      "rule": "ordinary-run",
+      "stock": "ordinary-run"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'activate-system' is repeated: Country-c's deployment readiness is set to zero, but the log never shows the expected consequence\u2014deployment or activation being blocked or stopping. (run log: \"t20 process apply-weekly-unresolved-concern-pressure: country-c.governance_participant.decision_support 51->50; country-c.governance_participant.deployment_readiness 2->0; country-c.governance_participant.meeting_time_available 64->63; country-c.governance_participant.unresolved_concerns 11->10; regional-health-network.governance_participant.decision_support 45->44; regional-health-network.governance_participant.deployment_readiness 50->48; regional-health-network.governance_participant.meeting_time_available 58->57; regional-health-network.governance_participant.unresolved_concerns 29->28\")",
+      "rule": "repeat-activate-system",
+      "stock": "repeat-activate-system"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'cast-vote' is repeated: A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action. (run log: \"t0 country-a did record-member-activation-vote: country-a.governance_participant.vote undecided->approve\") ALSO: A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action. (run log: \"t0 country-b did record-member-activation-vote: country-b.governance_participant.vote undecided->reject\") ALSO: A vote is cast despite the condition providing nothing to enable the actor's repeated cast-vote action. (run log: \"t0 country-c did record-member-activation-vote: country-c.governance_participant.vote undecided->reject\")",
+      "rule": "repeat-cast-vote",
+      "stock": "repeat-cast-vote"
+    }
+  ],
+  "seconds": 194.4,
+  "seeds": 6,
+  "step_seconds": {
+    "guided_runs": 110.1,
+    "random_runs": 14.0,
+    "total": 194.4
+  },
+  "ticks": 80
+}

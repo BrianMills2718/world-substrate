@@ -1,0 +1,893 @@
+{
+  "final_check_counts": {
+    "advisory": 15,
+    "blocking": 14,
+    "depletable_stocks": 0,
+    "rules": 7,
+    "rules_fired": 5
+  },
+  "guidance": "Separate permissibility from feasibility. An action's checks say only whether the actor is allowed or positioned to begin it (rules of the game, location, possession). Never check whether the attempt will succeed: do not refuse an action because a resource is too low to finish it. Starting a multi-step activity sets the actor's or object's activity state. Autonomous processes then advance that activity every tick, consume or produce stocks, and switch the activity to a stopped or failed state when a needed stock runs out, or to a finished state when it completes. Every numeric stock needs a process or action for each way it can rise and each way it can fall.",
+  "not_modeled": [
+    "The technical, legal, logistics, and community groups as separate entities.",
+    "The groups' separate submission channels.",
+    "The local and true attributes of individual concerns.",
+    "The decision deadline.",
+    "The one-week simulation tick and scheduled weekly processing.",
+    "The regular meeting schedule.",
+    "The causal effects of concerns on meeting duration, reopened issues, conditional support, delay, or blocked deployment.",
+    "The full text or subject matter of each concern."
+  ],
+  "odd": {
+    "actor_decisions": [
+      {
+        "actor": "Technical group",
+        "allowed_only_when": [
+          "The group has a nonzero local concern pool for submission.",
+          "A meeting or communication channel is available."
+        ],
+        "may_attempt": [
+          "Submit a true local technical concern through its own channel.",
+          "Request that a technical issue be placed on the meeting agenda."
+        ]
+      },
+      {
+        "actor": "Legal group",
+        "allowed_only_when": [
+          "The group has a nonzero local concern pool for submission.",
+          "A meeting or communication channel is available."
+        ],
+        "may_attempt": [
+          "Submit a true local legal concern through its own channel.",
+          "Request that a legal issue be placed on the meeting agenda."
+        ]
+      },
+      {
+        "actor": "Logistics group",
+        "allowed_only_when": [
+          "The group has a nonzero local concern pool for submission.",
+          "A meeting or communication channel is available."
+        ],
+        "may_attempt": [
+          "Submit a true local logistics concern through its own channel.",
+          "Request that a logistics issue be placed on the meeting agenda."
+        ]
+      },
+      {
+        "actor": "Community group",
+        "allowed_only_when": [
+          "The group has a nonzero local concern pool for submission.",
+          "A meeting or communication channel is available."
+        ],
+        "may_attempt": [
+          "Submit a true local community concern through its own channel.",
+          "Request that a community issue be placed on the meeting agenda."
+        ]
+      },
+      {
+        "actor": "Each country",
+        "allowed_only_when": [
+          "The country can observe the concern and has meeting access for deliberation.",
+          "A vote occurs before the deadline.",
+          "A country may approve only if its decision support is at least 50 points.",
+          "A country may make support conditional only when at least one concern remains unresolved."
+        ],
+        "may_attempt": [
+          "Review concerns received through its assigned channels.",
+          "Attend the regular partnership meeting.",
+          "Resolve or leave unresolved concerns.",
+          "Make support conditional on specified concern resolution.",
+          "Vote to approve or reject activation."
+        ]
+      },
+      {
+        "actor": "Regional health network",
+        "allowed_only_when": [
+          "Coordination capacity is available.",
+          "The deadline has not passed.",
+          "Activation may be requested only after all four countries vote to approve and each has at least 50 support points.",
+          "Activation may occur only when technical capacity is at least 70 percent, legal clearance is at least 50 percent, logistics capacity is at least 60 percent, and community acceptance is at least 50 percent."
+        ],
+        "may_attempt": [
+          "Convene the regular meeting.",
+          "Allocate coordination capacity to concern review.",
+          "Update technical, legal, logistics, and community readiness.",
+          "Request activation of the early-warning system."
+        ]
+      }
+    ],
+    "assumptions": [
+      "The partnership contains exactly four countries and one regional health network.",
+      "The four countries are represented as a 100-by-100 regional coordinate grid; coordinates and the 100-unit regional extent are estimated because no geography is specified.",
+      "The decision deadline is estimated as 26 weeks after simulation start.",
+      "Regular meetings occur once per week and last 4 hours; both values are estimates.",
+      "Each group uses a distinct communication channel, and each new concern is routed to one randomly selected recipient member.",
+      "All generated concerns are true but local, as stated in the scenario.",
+      "Concern generation rates are estimated at 0.4 per week for technical, 0.3 per week for legal, 0.3 per week for logistics, and 0.5 per week for community groups.",
+      "Initial country support is estimated at 60 points out of 100, and activation requires at least 50 points from every country.",
+      "One unresolved concern reduces the recipient country's support by 1 point; this effect size is an estimated simplification.",
+      "One unresolved concern consumes 1 meeting hour, and every 3 unresolved concerns reopens one settled issue; these rates are estimated simplifications.",
+      "Activation requires approval from all four countries; unanimity is an estimated rule-of-the-game simplification.",
+      "Initial technical capacity of 70 percent, legal clearance of 50 percent, logistics capacity of 60 percent, and community acceptance of 50 percent are estimated baseline values.",
+      "The threshold values for activation are set equal to those initial readiness values because the scenario gives no explicit thresholds.",
+      "Deployment progress increases by 5 percentage points per week after activation, and delay reduces progress by 2 percentage points per week when unresolved concerns exceed 8; both rates and the threshold are estimated.",
+      "Technical, logistics, and community capacities decline by 1 percentage point per operating week after activation; this depletion rate is estimated.",
+      "The system's operational lifetime is estimated as 520 weeks.",
+      "A concern has severity of 1 point by default because the scenario says concerns are small; severity variation is omitted.",
+      "The model treats support, readiness, acceptance, and capacity as bounded from 0 to 100.",
+      "Private concerns remain unobservable to actors outside their originating channel until formally routed or discussed.",
+      "No physical travel, monetary budget, disease transmission, or surveillance detections are modeled because the scenario does not specify them.",
+      "A system failure occurs when any required readiness capacity reaches 0 percent after activation.",
+      "The simulation stops activation after the deadline, while an already active system may continue operating until failure or expiration."
+    ],
+    "entities": [
+      {
+        "kind": "actor",
+        "name": "Country A",
+        "state": [
+          {
+            "initial": "(0, 0)",
+            "unit": "regional coordinate",
+            "variable": "geographic_position"
+          },
+          {
+            "initial": 12,
+            "unit": "million people",
+            "variable": "population"
+          },
+          {
+            "initial": 60,
+            "unit": "support points on a 0-100 scale",
+            "variable": "decision_support"
+          },
+          {
+            "initial": false,
+            "unit": "boolean",
+            "variable": "conditional_support"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "concerns_received"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "unresolved_concerns"
+          },
+          {
+            "initial": 80,
+            "unit": "person-hours per week",
+            "variable": "meeting_time_available"
+          },
+          {
+            "initial": 20,
+            "unit": "percent",
+            "variable": "deployment_readiness"
+          },
+          {
+            "initial": "undecided",
+            "unit": "categorical state",
+            "variable": "vote"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Country B",
+        "state": [
+          {
+            "initial": "(100, 0)",
+            "unit": "regional coordinate",
+            "variable": "geographic_position"
+          },
+          {
+            "initial": 20,
+            "unit": "million people",
+            "variable": "population"
+          },
+          {
+            "initial": 60,
+            "unit": "support points on a 0-100 scale",
+            "variable": "decision_support"
+          },
+          {
+            "initial": false,
+            "unit": "boolean",
+            "variable": "conditional_support"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "concerns_received"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "unresolved_concerns"
+          },
+          {
+            "initial": 80,
+            "unit": "person-hours per week",
+            "variable": "meeting_time_available"
+          },
+          {
+            "initial": 20,
+            "unit": "percent",
+            "variable": "deployment_readiness"
+          },
+          {
+            "initial": "undecided",
+            "unit": "categorical state",
+            "variable": "vote"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Country C",
+        "state": [
+          {
+            "initial": "(0, 100)",
+            "unit": "regional coordinate",
+            "variable": "geographic_position"
+          },
+          {
+            "initial": 8,
+            "unit": "million people",
+            "variable": "population"
+          },
+          {
+            "initial": 60,
+            "unit": "support points on a 0-100 scale",
+            "variable": "decision_support"
+          },
+          {
+            "initial": false,
+            "unit": "boolean",
+            "variable": "conditional_support"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "concerns_received"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "unresolved_concerns"
+          },
+          {
+            "initial": 80,
+            "unit": "person-hours per week",
+            "variable": "meeting_time_available"
+          },
+          {
+            "initial": 20,
+            "unit": "percent",
+            "variable": "deployment_readiness"
+          },
+          {
+            "initial": "undecided",
+            "unit": "categorical state",
+            "variable": "vote"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Country D",
+        "state": [
+          {
+            "initial": "(100, 100)",
+            "unit": "regional coordinate",
+            "variable": "geographic_position"
+          },
+          {
+            "initial": 15,
+            "unit": "million people",
+            "variable": "population"
+          },
+          {
+            "initial": 60,
+            "unit": "support points on a 0-100 scale",
+            "variable": "decision_support"
+          },
+          {
+            "initial": false,
+            "unit": "boolean",
+            "variable": "conditional_support"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "concerns_received"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "unresolved_concerns"
+          },
+          {
+            "initial": 80,
+            "unit": "person-hours per week",
+            "variable": "meeting_time_available"
+          },
+          {
+            "initial": 20,
+            "unit": "percent",
+            "variable": "deployment_readiness"
+          },
+          {
+            "initial": "undecided",
+            "unit": "categorical state",
+            "variable": "vote"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Regional health network",
+        "state": [
+          {
+            "initial": "(50, 50)",
+            "unit": "regional coordinate",
+            "variable": "geographic_position"
+          },
+          {
+            "initial": 120,
+            "unit": "person-hours per week",
+            "variable": "coordination_capacity"
+          },
+          {
+            "initial": "inactive",
+            "unit": "categorical state",
+            "variable": "system_activation_status"
+          },
+          {
+            "initial": 0,
+            "unit": "percent",
+            "variable": "deployment_progress"
+          },
+          {
+            "initial": 70,
+            "unit": "percent of required capability",
+            "variable": "technical_capacity"
+          },
+          {
+            "initial": 50,
+            "unit": "percent of required clearance",
+            "variable": "legal_clearance"
+          },
+          {
+            "initial": 60,
+            "unit": "percent of required capacity",
+            "variable": "logistics_capacity"
+          },
+          {
+            "initial": 50,
+            "unit": "percent",
+            "variable": "community_acceptance"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Technical group",
+        "state": [
+          {
+            "initial": 0.4,
+            "unit": "concerns per week",
+            "variable": "concern_generation_rate"
+          },
+          {
+            "initial": 1,
+            "unit": "channel identifier",
+            "variable": "channel_id"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "local_concern_pool"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Legal group",
+        "state": [
+          {
+            "initial": 0.3,
+            "unit": "concerns per week",
+            "variable": "concern_generation_rate"
+          },
+          {
+            "initial": 2,
+            "unit": "channel identifier",
+            "variable": "channel_id"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "local_concern_pool"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Logistics group",
+        "state": [
+          {
+            "initial": 0.3,
+            "unit": "concerns per week",
+            "variable": "concern_generation_rate"
+          },
+          {
+            "initial": 3,
+            "unit": "channel identifier",
+            "variable": "channel_id"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "local_concern_pool"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Community group",
+        "state": [
+          {
+            "initial": 0.5,
+            "unit": "concerns per week",
+            "variable": "concern_generation_rate"
+          },
+          {
+            "initial": 4,
+            "unit": "channel identifier",
+            "variable": "channel_id"
+          },
+          {
+            "initial": 0,
+            "unit": "concerns",
+            "variable": "local_concern_pool"
+          }
+        ]
+      },
+      {
+        "kind": "object",
+        "name": "Bio-surveillance early-warning system",
+        "state": [
+          {
+            "initial": "inactive",
+            "unit": "categorical state",
+            "variable": "activation_status"
+          },
+          {
+            "initial": 4,
+            "unit": "approvals",
+            "variable": "required_country_approvals"
+          },
+          {
+            "initial": 50,
+            "unit": "support points on a 0-100 scale",
+            "variable": "required_support_threshold"
+          },
+          {
+            "initial": 520,
+            "unit": "weeks",
+            "variable": "operational_lifetime"
+          }
+        ]
+      },
+      {
+        "kind": "place",
+        "name": "Decision deadline",
+        "state": [
+          {
+            "initial": 26,
+            "unit": "weeks",
+            "variable": "time_until_deadline"
+          },
+          {
+            "initial": "(50, 50)",
+            "unit": "regional coordinate",
+            "variable": "deadline_position"
+          }
+        ]
+      },
+      {
+        "kind": "place",
+        "name": "Regular partnership meeting",
+        "state": [
+          {
+            "initial": 1,
+            "unit": "meetings per week",
+            "variable": "meeting_frequency"
+          },
+          {
+            "initial": 4,
+            "unit": "hours per meeting",
+            "variable": "scheduled_duration"
+          },
+          {
+            "initial": 4,
+            "unit": "hours per meeting",
+            "variable": "remaining_agenda_time"
+          },
+          {
+            "initial": 0,
+            "unit": "issues",
+            "variable": "reopened_issue_count"
+          }
+        ]
+      },
+      {
+        "kind": "object",
+        "name": "Concern",
+        "state": [
+          {
+            "initial": true,
+            "unit": "boolean",
+            "variable": "truth_status"
+          },
+          {
+            "initial": "local",
+            "unit": "categorical state",
+            "variable": "locality"
+          },
+          {
+            "initial": 1,
+            "unit": "concern points",
+            "variable": "severity"
+          },
+          {
+            "initial": "unresolved",
+            "unit": "categorical state",
+            "variable": "resolution_status"
+          },
+          {
+            "initial": "randomly assigned",
+            "unit": "member identifier",
+            "variable": "recipient_member"
+          },
+          {
+            "initial": "randomly assigned",
+            "unit": "group identifier",
+            "variable": "origin_group"
+          }
+        ]
+      }
+    ],
+    "processes_each_tick": [
+      "Advance simulated time by 1 week.",
+      "Reduce the decision deadline's time remaining by 1 week.",
+      "Each concern group generates a stochastic number of true local concerns with mean equal to its concern generation rate.",
+      "Route each new concern through its group's separate channel to one randomly selected country or network member.",
+      "Increase the recipient's received and unresolved concern counts when concerns arrive.",
+      "Decrease each country's decision support by 1 point for each newly received unresolved concern, with a floor of 0.",
+      "Hold one regular partnership meeting and consume meeting time on active concerns.",
+      "Use 1 meeting hour per unresolved concern considered, up to the meeting's 4-hour duration.",
+      "Reopen one previously settled issue for every 3 unresolved concerns considered, with a minimum of zero reopened issues.",
+      "Reduce available meeting time by 0.5 hours for each reopened issue, with a floor of zero.",
+      "Reduce deployment progress by 2 percentage points for every week in which unresolved concerns exceed 8, with a floor of zero.",
+      "Increase deployment progress by 5 percentage points per week after activation when all required capacities and approvals remain sufficient, with a ceiling of 100.",
+      "Reduce technical, legal, logistics, and community capacity by 1 percentage point per week after activation to represent routine resource depletion.",
+      "If any required capacity reaches 0 percent after activation, change system status to failed.",
+      "If the deadline reaches 0 weeks while the system is inactive, record the decision as missed and stop further activation attempts.",
+      "If the system operates for its 520-week lifetime, change its status to expired."
+    ],
+    "purpose": "Determine whether four countries and a regional health network activate a cross-border bio-surveillance early-warning system before the decision deadline, and how locally raised concerns affect support, delay, and deployment.",
+    "sensing": [
+      {
+        "actor": "Each country",
+        "can_observe": [
+          "Concerns routed to that country or its designated members",
+          "Its own support level",
+          "Its own conditional-support state",
+          "Meeting agendas and outcomes",
+          "The current week and time remaining to the deadline",
+          "Whether the system is active"
+        ],
+        "cannot_observe": [
+          "Concerns submitted through other countries' channels before those concerns are discussed in a meeting",
+          "The private deliberations of other groups",
+          "The exact stochastic concerns that will be generated in future weeks",
+          "Other countries' support levels unless disclosed in a meeting"
+        ]
+      },
+      {
+        "actor": "Regional health network",
+        "can_observe": [
+          "All concerns formally routed to the network or reported during meetings",
+          "Each country's declared vote and conditional-support state",
+          "All four readiness capacities",
+          "Deployment progress",
+          "Meeting time and reopened issue count",
+          "Time remaining to the deadline"
+        ],
+        "cannot_observe": [
+          "Unreported private concerns held within local groups",
+          "Future concern generation",
+          "A country's undisclosed support change before it is communicated"
+        ]
+      },
+      {
+        "actor": "Technical group",
+        "can_observe": [
+          "Its own technical concerns",
+          "Its own submission channel",
+          "Public meeting outcomes"
+        ],
+        "cannot_observe": [
+          "Private concerns in other groups",
+          "Countries' private support levels",
+          "Future decisions"
+        ]
+      },
+      {
+        "actor": "Legal group",
+        "can_observe": [
+          "Its own legal concerns",
+          "Its own submission channel",
+          "Public meeting outcomes"
+        ],
+        "cannot_observe": [
+          "Private concerns in other groups",
+          "Countries' private support levels",
+          "Future decisions"
+        ]
+      },
+      {
+        "actor": "Logistics group",
+        "can_observe": [
+          "Its own logistics concerns",
+          "Its own submission channel",
+          "Public meeting outcomes"
+        ],
+        "cannot_observe": [
+          "Private concerns in other groups",
+          "Countries' private support levels",
+          "Future decisions"
+        ]
+      },
+      {
+        "actor": "Community group",
+        "can_observe": [
+          "Its own community concerns",
+          "Its own submission channel",
+          "Public meeting outcomes"
+        ],
+        "cannot_observe": [
+          "Private concerns in other groups",
+          "Countries' private support levels",
+          "Future decisions"
+        ]
+      }
+    ],
+    "stocks": [
+      {
+        "inflows": [],
+        "outflows": [
+          "1 week per tick"
+        ],
+        "stock": "Time remaining to decision deadline"
+      },
+      {
+        "inflows": [
+          "New concerns generated and routed",
+          "Previously settled issues reopened"
+        ],
+        "outflows": [
+          "Concern resolution during meetings",
+          "Concern withdrawal or invalidation, if modeled"
+        ],
+        "stock": "Unresolved concerns"
+      },
+      {
+        "inflows": [
+          "Concern resolution",
+          "Successful technical, legal, logistics, or community mitigation"
+        ],
+        "outflows": [
+          "Receipt of unresolved concerns",
+          "Meeting delay and repeated reopening of issues"
+        ],
+        "stock": "Decision support"
+      },
+      {
+        "inflows": [
+          "Weekly allocation of 4 scheduled meeting hours"
+        ],
+        "outflows": [
+          "Review of unresolved concerns",
+          "Reopened issues"
+        ],
+        "stock": "Available meeting time"
+      },
+      {
+        "inflows": [
+          "5 percentage points per operating week after valid activation"
+        ],
+        "outflows": [
+          "2 percentage points per week when unresolved concerns exceed 8",
+          "Failure reset or interruption, if deployment failure is modeled"
+        ],
+        "stock": "Deployment progress"
+      },
+      {
+        "inflows": [
+          "Technical remediation or added resources"
+        ],
+        "outflows": [
+          "1 percentage point per operating week after activation"
+        ],
+        "stock": "Technical capacity"
+      },
+      {
+        "inflows": [
+          "Legal review and resolution of legal concerns"
+        ],
+        "outflows": [
+          "Legal objections or newly identified legal constraints"
+        ],
+        "stock": "Legal clearance"
+      },
+      {
+        "inflows": [
+          "Logistics preparation and added resources"
+        ],
+        "outflows": [
+          "1 percentage point per operating week after activation"
+        ],
+        "stock": "Logistics capacity"
+      },
+      {
+        "inflows": [
+          "Community engagement and resolution of community concerns"
+        ],
+        "outflows": [
+          "Unresolved community concerns and deployment harms"
+        ],
+        "stock": "Community acceptance"
+      },
+      {
+        "inflows": [
+          "Stochastic concern generation"
+        ],
+        "outflows": [
+          "Submission through the group's channel"
+        ],
+        "stock": "Concern-group local concern pools"
+      },
+      {
+        "inflows": [
+          "Weekly staff availability"
+        ],
+        "outflows": [
+          "Concern routing",
+          "Meeting facilitation",
+          "Readiness coordination"
+        ],
+        "stock": "Coordination capacity"
+      }
+    ],
+    "time_step": "1 tick = 1 week of simulated time; scheduled meetings and concern submissions are processed once per tick."
+  },
+  "repairs": [
+    {
+      "blocking_after": 14,
+      "candidate_blocking": 14,
+      "change": "add_process+add_process",
+      "cost": 0.064416,
+      "finding": "the conceptual model says 'Time remaining to decision deadline' falls by '1 week per tick', but no rule implements that outflow.",
+      "kept": true,
+      "round": 1,
+      "target_id": "None,None",
+      "trace": "any-scenario-waltzman-repair1-20261008T123134",
+      "why": "These processes add the missing weekly concern-pressure and post-activation outflows using the represented aggregate stocks; deadline, failure-reset, and separate capacity stocks remain unmodeled because no allowed state paths represent them."
+    },
+    {
+      "blocking_after": 14,
+      "candidate_blocking": 20,
+      "change": "replace_mechanic+replace_process+add_process",
+      "cost": 0.059666,
+      "finding": "the conceptual model says 'Time remaining to decision deadline' falls by '1 week per tick', but no rule implements that outflow.",
+      "kept": false,
+      "round": 2,
+      "target_id": "submit-member-concern,tally-country-approval,None",
+      "trace": "any-scenario-waltzman-repair2-20261008T123134",
+      "why": "These changes implement weekly deadline loss, concern-driven legal and community support loss, concern-routing and readiness-coordination costs, while existing meeting and activated-system wear rules already implement facilitation costs and deployment interruption, and no separate failure reset is needed because deployment failure is not modeled."
+    },
+    {
+      "blocking_after": 14,
+      "candidate_blocking": 23,
+      "change": "replace_mechanic+replace_process+add_process",
+      "cost": 0.055546,
+      "finding": "the conceptual model says 'Decision support' falls by 'Receipt of unresolved concerns', but no rule implements that outflow.",
+      "kept": false,
+      "round": 3,
+      "target_id": "submit-member-concern,tally-country-approval,None",
+      "trace": "any-scenario-waltzman-repair3-20261008T123134",
+      "why": "These three changes implement weekly deadline loss, concern-driven losses of decision support, community acceptance, legal clearance and deployment progress, and coordination-capacity costs for concern routing, meeting facilitation, and readiness coordination using the represented aggregate stocks."
+    }
+  ],
+  "scenario_text": "A partnership of four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system. Technical, legal, logistics and community groups each raise small, true but local concerns through their own channels to different members. Members meet regularly; the concerns slow meetings, reopen settled issues and make support conditional, which can delay or block deployment.",
+  "stock_map": [
+    {
+      "field": null,
+      "has_inflows": false,
+      "has_outflows": true,
+      "stock": "Time remaining to decision deadline"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Unresolved concerns"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Decision support"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Available meeting time"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Deployment progress"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Technical capacity"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Legal clearance"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Logistics capacity"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Community acceptance"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Concern-group local concern pools"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "Coordination capacity"
+    }
+  ],
+  "traces": {
+    "anomaly": "any-scenario-waltzman-anomaly-20261008T123134",
+    "bundle": "any-scenario-waltzman-bundle-20261008T123134",
+    "mechanics": "any-scenario-waltzman-mechanics-20261008T123134",
+    "odd": "any-scenario-waltzman-odd-20261008T123134",
+    "sensing": "any-scenario-waltzman-sensing-20261008T123134",
+    "stocks": "any-scenario-waltzman-stocks-20261008T123134"
+  },
+  "world_kind": "task"
+}
