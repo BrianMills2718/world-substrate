@@ -1,0 +1,449 @@
+{
+  "schema_version": "planning-method-conformance-receipt.v1",
+  "record_type": "planning_method_conformance_receipt",
+  "receipt_id": "RECEIPT-linked_process_participants-ed2c5db9685c",
+  "plan": {
+    "plan_ref": "docs/plans/linked_process_participants.md",
+    "plan_sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+  },
+  "path_decision": {
+    "ref": "docs/plans/linked_process_participants/path-decision.json",
+    "sha256": "e2c28818d6005336125fc711b8105bceba0dfc45cacf22cede9647835fc06949",
+    "selected_path": "durable_solo",
+    "classified_path": "durable_solo",
+    "errors": []
+  },
+  "route": "durable_solo",
+  "profile": {
+    "profile_id": "bounded-design",
+    "revision": "bounded-design@4",
+    "path": "contracts/method-conformance/profiles/bounded-design.v1.json",
+    "sha256": "8ef56347e0d354416b7ec547ab97208e8d767a58ed7c3f82c72dcd96c1deba97"
+  },
+  "compiler": {
+    "path": "scripts/method_conformance/compiler.py",
+    "sha256": "b2aaf9581e24108cf0bc7642bbc381cfb1868cb40491982fe6963ab5c126184e"
+  },
+  "activation": {
+    "facts_ref": "docs/plans/linked_process_participants/activation-facts.json",
+    "facts_sha256": "470ed22b1d3e1216839ce9454b97a8521e121234ea80d72e4890bdb6d838de70",
+    "facts": {
+      "shared_mechanism": true,
+      "empirical_comparison_proposed": false,
+      "llm_central": true,
+      "irreversible_or_spend_action": true,
+      "multiple_writers": false,
+      "consequential_boundary": false,
+      "inline_prototype": false
+    },
+    "fact_origins": {
+      "shared_mechanism": "declared:derived_current_boundary",
+      "empirical_comparison_proposed": "declared:derived_current_boundary",
+      "llm_central": "declared:derived_current_boundary",
+      "irreversible_or_spend_action": "declared:derived_current_boundary",
+      "multiple_writers": "derived:path_decision.concurrent_writers",
+      "consequential_boundary": "derived:path_decision.persistent_migration|consequential_external_mutation",
+      "inline_prototype": "derived:classified_path==prototype"
+    },
+    "overlays": [
+      {
+        "overlay_id": "OV-PRIOR-ART",
+        "activation_fact": "shared_mechanism",
+        "active": true,
+        "reason": "shared_mechanism=true (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-EMPIRICAL-COMPARISON",
+        "activation_fact": "empirical_comparison_proposed",
+        "active": false,
+        "reason": "empirical_comparison_proposed=false (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-LLM-CENTRAL",
+        "activation_fact": "llm_central",
+        "active": true,
+        "reason": "llm_central=true (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-MULTIPLE-WRITERS",
+        "activation_fact": "multiple_writers",
+        "active": false,
+        "reason": "multiple_writers=false (derived:path_decision.concurrent_writers)"
+      },
+      {
+        "overlay_id": "OV-CONSEQUENTIAL-BOUNDARY",
+        "activation_fact": "consequential_boundary",
+        "active": false,
+        "reason": "consequential_boundary=false (derived:path_decision.persistent_migration|consequential_external_mutation)"
+      },
+      {
+        "overlay_id": "OV-INLINE-PROTOTYPE",
+        "activation_fact": "inline_prototype",
+        "active": false,
+        "reason": "inline_prototype=false (derived:classified_path==prototype)"
+      }
+    ]
+  },
+  "checklist": {
+    "checklist_id": "method-conformance.bounded-design",
+    "revision": "sha256:d89b8edf9044515567acc6495bb11d9045f9425a3a08633b9882d6dcb3caf3c4",
+    "definition_sha256": "a07b458880c4b117c5fd9b63cc01552d36e34518cb68633964bb6ee97bc66844",
+    "bundle_ref": "docs/plans/linked_process_participants/checklist.json",
+    "bundle_sha256": "c94d938d38a5eef08eb9ebfc99c531688ce636d2f6f2824891c04f1a5e3be760",
+    "coverage": "complete",
+    "definition_matches_recompilation": true
+  },
+  "items": [
+    {
+      "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#actor-result-and-authority",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-ACTOR-RESULT-EXAMPLE",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly names the actor as Brian, states the desired result as generated worlds where linked things change together, and provides a stable, concrete user-visible example: both vehicle and driver positions change from mile 40 to 50 under one event and cause ID, with the rendered frame showing both at mile 50."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-ROUTE",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "structural",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants/path-decision.json",
+          "sha256": "e2c28818d6005336125fc711b8105bceba0dfc45cacf22cede9647835fc06949"
+        }
+      ],
+      "semantic": null,
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-SUCCESS-DISPROOF",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#success-and-disproof",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-SUCCESS-DISPROOF",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly defines success as “L1–L6 pass with the evidence above” and gives concrete disproof conditions, including inability to scope-check linked writes, continued fallback to two single-entity processes, or needing to edit an existing test."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-TRACE-REVIEW",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#trace-review-per-criterion",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-TRACE-REVIEW",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly identifies the run for each criterion, where its full trace is stored, and the specific trace details that must be observed beyond the final outcome. All listed criteria are trace-based, and no document-only exemption is needed."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-AUTHORITY-NONGOALS",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#actor-result-and-authority",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-AUTHORITY-NONGOALS",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly identifies authority: Brian approved the work, the implementing agent is the sole writer in world-substrate, and other repositories are read-only. It also explicitly lists the plan’s non-goals, including linked participants, randomness, distance-limited sensing, running the scenario, live World Builder or `/waltzman/` changes, deployment, and benchmarking."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-IRREVERSIBLE-SPEND",
+      "effect": "blocking",
+      "applicability_mode": "conditional",
+      "condition_fact": "irreversible_or_spend_action",
+      "condition_value": true,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#spend-and-irreversible-actions",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-IRREVERSIBLE-SPEND",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The proposed spend explicitly identifies its boundary as a $3 cap, names Brian as the authorizer, and states containment through trace-prefix tracking, start-of-plan baselining, and requiring Brian’s approval to raise the cap. The evidence states there are no irreversible actions in this plan."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-UNCERTAINTIES",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#uncertainties",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-UNCERTAINTIES",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly states that each listed uncertainty is material and provides both an owner and specific resolving evidence for all three uncertainties. Each row includes an owner (“Implementing agent”) and concrete tests or artifacts (L2, L4, and L5)."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-ACTIVATION-FACTS",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#activation-facts",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-ACTIVATION-FACTS",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The only fact declared false is `empirical_comparison_proposed`, and the plan explicitly states “no comparison between alternatives” and “benchmark between alternatives” is a non-goal. The plan proposes verification checks of the built result, not an experiment comparing alternative designs."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-PRIOR-ART-DISPOSITION",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#prior-art-and-parallel-implementation-check",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-PRIOR-ART-DISPOSITION",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly states that existing ownership, internal lineage, and external prior art were searched. It also provides a disposition for each listed candidate using the required categories: reuse, extend, compose, supersede, or bounded exception."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-PRIOR-ART-PARALLEL-CHECK",
+      "effect": "advisory",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#prior-art-and-parallel-implementation-check",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-PRIOR-ART-PARALLEL-CHECK",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence specifies concrete checks: fail if any process effect occurs outside `Engine.advance` or if a second process-participant mechanism appears. It further identifies the structural observation that `rg -n \"participants\" ...` must show reuse of `_selector` and `_derived_writes`, with replayed Engine events reproducing the final world."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-LLM-CALL-BOUNDARY",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#model-calls",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-LLM-CALL-BOUNDARY",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly enumerates the calls in pipeline order and states the structured result each returns, including JSON, Pydantic, and compiled outputs. It also specifies tracing through `llm_client`, unique trace IDs, storage in `calls_<date>.jsonl`, and spend aggregation."
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-LLM-AUTHORITY-PROMOTION",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/linked_process_participants.md#spend-and-irreversible-actions",
+          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-LLM-AUTHORITY-PROMOTION",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly names OpenRouter as the model-call provider and Brian as the spend authority, including his approval and the $3 budget. It also states an authentic-run promotion condition: promotion waits for a separate plan and requires L4 and L5 to pass on real model runs with trace IDs reported."
+      },
+      "suggested_action": null
+    }
+  ],
+  "item_counts": {
+    "pass": 12,
+    "unresolved": 0,
+    "not_applicable": 0,
+    "unavailable": 0,
+    "missing": 0
+  },
+  "semantic_verifier": {
+    "kind": "llm_client",
+    "available": true,
+    "model": "openrouter/openai/gpt-5.6-luna",
+    "task": "company_planning.method_conformance.semantic_item_review"
+  },
+  "conformance_report": {
+    "schema_version": "1.0",
+    "record_type": "planning_conformance_report",
+    "report_id": "REPORT-linked_process_participants-ed2c5db9685c",
+    "snapshot_ref": "SNAPSHOT-linked_process_participants",
+    "snapshot_revision": "sha256:c94d938d38a5eef08eb9ebfc99c531688ce636d2f6f2824891c04f1a5e3be760",
+    "packet_ref": "docs/plans/linked_process_participants.md",
+    "packet_revision": "sha256:ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c",
+    "structural_status": "pass",
+    "semantic_review_status": "complete",
+    "diagnostics": [],
+    "route": "durable_solo",
+    "adoption_readiness": "ready_for_contributor",
+    "limitations": [
+      "Semantic verdicts judge only the cited plan excerpt against the item statement; they do not judge product strategy."
+    ]
+  },
+  "advisory_deviations": [],
+  "result": "pass",
+  "reason_codes": [],
+  "actionable_summary": [
+    "pass: 12 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
+  ],
+  "limitations": [
+    "Semantic verdicts judge only the cited plan excerpt against the item statement; they do not judge product strategy."
+  ],
+  "caller": {
+    "client": "claude-code",
+    "session": "55a7bcf4-391a-4f04-9516-3c0e91fe91c8"
+  },
+  "started_at": "2026-10-08T02:25:11Z",
+  "completed_at": "2026-10-08T02:25:22Z",
+  "duration_ms": 11636
+}
