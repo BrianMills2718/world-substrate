@@ -172,4 +172,20 @@ The machine record is `linked_process_participants/activation-facts.json`.
 
 ## Current State
 
-- Demonstrated: none yet. Plan authored on 2026-10-08.
+Updated 2026-10-08 at goal close. Evidence is under `spikes/any-scenario-2026-10/evidence/linked/`; tests are in `tests/test_linked_process_participants.py` (13 tests).
+
+| ID | Status | Evidence |
+| --- | --- | --- |
+| L1 | met | 5 compiler tests: acceptance with derived scope, an unknown link, a non-`entity_ref` ref, an undeclared participant, and an unchanged plain process. |
+| L2 | met | 3 Engine tests: one event changes the vehicle and its driver; a link resolving to nothing means the process is not due; an out-of-scope linked write raises `ScopeViolation` with the world unchanged. |
+| L3 | met | `scripts/check_project.py`: all prior tests unchanged and passing, plus the new ones (see the PR). |
+| L4 | met | Generated truck world, traces `any-scenario-truck-*-20261007T223556`. Process `advance-started-driving-interval` links the vehicle via `ref:driver.vehicle_ref`. In the AI-driver run, all 12 drive events set equal driver and vehicle positions under one event ID (`e00003` … `e00054`), and the run reached its end. |
+| L5 | met | Generated hospital world, traces `any-scenario-hospital-*-20261007T223600`, omitted deaths. The outflow-coverage and extreme-conditions checks flagged it (`death_findings.json`). A rule-writer repair, its problem taken verbatim from those findings (trace `any-scenario-hospital-linked-deathrepair-1`), added linked death processes. In the AI-staff run, event `e00007` (`record-death-during-ventilation`) lowers hospitalized patients 35→34, ventilated patients 5→4, hospital occupied beds 35→34 and ventilators in use 4→3, all in one event. |
+| L6 | met | `linked/truck/run/frame-linked-drive.png` (`e00015`: driver and vehicle 40→50) and `linked/hospital/run/frame-linked-death.png` (`e00007`). |
+
+### Deviations
+
+- **Work ran in a private scratch clone with no new claim.** The claim tool could not dispose of the previous canonical-root lane, which had no tracker (filed as AES issue #261), and the full disk blocked new worktrees. Delivery was through pull requests only.
+- **The hospital canonical example's field names differ in the generated world:** `hospitalized_patients` rather than `patient_count`, and `hospital_state.ventilators_in_use` for the freed ventilator.
+- **The repaired hospital run had no sensing map** (it was not copied), so residents saw the whole world. This does not affect L5, which concerns the transition.
+- **The spend tracker missed calls run from the clone** (`llm_client` logs under the working directory's name). It now sums every project's logs. Plan spend at close: about $1.08 of $3.

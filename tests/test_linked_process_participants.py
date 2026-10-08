@@ -145,5 +145,33 @@ class GeneratedTruckTests(unittest.TestCase):  # L4, from the recorded generated
         self.assertEqual(summary["ended"], "terminal")
 
 
+LINKED_HOSPITAL = REPO / "spikes/any-scenario-2026-10/evidence/linked/hospital"
+
+
+class GeneratedHospitalTests(unittest.TestCase):  # L5, from the recorded generated-world run
+    def test_generated_model_omitted_death_and_both_detectors_flagged_it(self):
+        causal = json.loads((LINKED_HOSPITAL / "generated/causal.json").read_text())
+        self.assertFalse([p for p in causal["processes"] if "death" in p["process_id"]])
+        found = json.loads((LINKED_HOSPITAL / "generated/death_findings.json").read_text())["findings"]
+        self.assertTrue({f["check"] for f in found} >= {"structure", "extreme_conditions"})
+
+    def test_repair_problem_came_verbatim_from_the_findings(self):
+        model = json.loads((LINKED_HOSPITAL / "repaired/model.json").read_text())
+        self.assertEqual(model["targeted_repair"]["problem_source"], "death_findings.json (verbatim)")
+
+    def test_one_death_event_changes_patients_beds_and_ventilator(self):
+        import gzip
+        with gzip.open(LINKED_HOSPITAL / "run/events.jsonl.gz", "rt") as fh:
+            events = [json.loads(line) for line in fh if line.strip()]
+        deaths = [e for e in events if e["rule_id"] == "record-death-during-ventilation"]
+        self.assertTrue(deaths)
+        changes = {c["path"]: (c["before"], c["after"]) for c in deaths[0]["changes"]}
+        down = lambda p: changes[p][1] == changes[p][0] - 1
+        self.assertTrue(down("entities.flu-patients.components.flu_patients.hospitalized_patients"))
+        self.assertTrue(down("entities.hospital.components.hospital_state.occupied_beds"))
+        self.assertTrue(down("entities.hospital.components.hospital_state.ventilators_in_use"))
+        self.assertEqual(deaths[0]["status"], "accepted")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

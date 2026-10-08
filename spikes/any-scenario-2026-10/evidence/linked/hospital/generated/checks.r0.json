@@ -1,0 +1,360 @@
+{
+  "behavior_anomalies": [
+    {
+      "quote": "t2 clinical-staff did allocate-one-available-ventilator: flu-patients.flu_patients.patients_on_ventilators 4->5; flu-patients.flu_patients.patients_waiting_for_ventilation 4->3; ventilators.ventilator_stock.number_available 7->6; ventilators.ventilator_stock.number_in_use 4->5",
+      "why": "The run begins with patients_requiring_ventilation at zero, but by t2 it already has four waiting patients and four patients on ventilators, with no preceding event creating patients requiring ventilation. The allocation therefore occurs without a causal transition from zero."
+    },
+    {
+      "quote": "t7 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "This increases hospitalized patients to 41 in a 40-bed hospital without any expansion, transfer, or overflow-capacity event."
+    },
+    {
+      "quote": "t19 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 39->45; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospitalized patients rise to 45, exceeding the stated 40-bed capacity without a capacity change."
+    },
+    {
+      "quote": "t3 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 6->8; ventilators.ventilator_stock.number_in_use 5->4; ventilators.ventilator_stock.number_operational 11->12; ventilators.ventilator_stock.number_owned 11->12",
+      "why": "The synchronization reduces ventilators in use from five to four immediately after an allocation raised the patient and ventilator-use counts to five, with no patient recovery, extubation, or ventilator release event."
+    },
+    {
+      "quote": "t11 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 21->24; ventilators.ventilator_stock.number_in_use 5->4; ventilators.ventilator_stock.number_operational 26->28; ventilators.ventilator_stock.number_owned 26->28",
+      "why": "The synchronization again reduces ventilators in use from five to four without any corresponding clinical event releasing a ventilator, making the equipment-use state inconsistent with the allocation history."
+    },
+    {
+      "quote": "t2 clinical-staff did allocate-one-available-ventilator: flu-patients.flu_patients.patients_on_ventilators 0->1; flu-patients.flu_patients.patients_waiting_for_ventilation 4->3; ventilators.ventilator_stock.number_available 7->6; ventilators.ventilator_stock.number_in_use 4->5",
+      "why": "The patient count starts at zero, but four ventilators are already recorded as in use before this allocation. The dependent in-use count should have been zero under the extreme condition."
+    },
+    {
+      "quote": "t12 clinical-staff did release-one-ventilator: flu-patients.flu_patients.patients_on_ventilators 1->0; flu-patients.flu_patients.patients_requiring_ventilation 8->7; ventilators.ventilator_stock.number_available 28->29; ventilators.ventilator_stock.number_in_use 4->3",
+      "why": "When patients_on_ventilators reaches zero, ventilators.number_in_use remains 3 rather than falling to zero. Ventilators remain assigned without ventilated patients."
+    },
+    {
+      "quote": "t18 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 36->42; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospitalized patients increase to 42 in a 40-bed hospital, exceeding the stated physical capacity without any overflow or expansion event."
+    },
+    {
+      "quote": "t28 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 41->47; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospitalized patients again exceed the 40-bed capacity, reaching 47 without a stated cause or capacity expansion."
+    },
+    {
+      "quote": "t3 clinical-staff did release-one-ventilator: flu-patients.flu_patients.patients_on_ventilators 4->3; flu-patients.flu_patients.patients_requiring_ventilation 8->7; ventilators.ventilator_stock.number_available 8->9; ventilators.ventilator_stock.number_in_use 4->3",
+      "why": "The log shows 7 patients requiring ventilation but only 3 on ventilators. With the waiting count initialized to zero, the expected consequence\u2014no unmet patients\u2014does not occur; at least four patients would have to be waiting or otherwise accounted for."
+    },
+    {
+      "quote": "t7 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "The hospital is defined as having 40 beds, yet this admission raises hospitalized patients to 41, exceeding physical bed capacity."
+    },
+    {
+      "quote": "t19 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 40->46; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospitalized patients again exceed the fixed 40-bed capacity, reaching 46."
+    },
+    {
+      "quote": "t28 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 46->52; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospitalized patients reach 52 in a 40-bed hospital, with no transfer, discharge, or capacity expansion shown."
+    },
+    {
+      "quote": "t31 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 52->58; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospitalized patients reach 58, far beyond the hospital's 40 beds."
+    },
+    {
+      "quote": "t17 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 38->39; ventilators.ventilator_stock.number_owned 38->39",
+      "why": "The stock synchronization increases ventilators in use to 4 even though the latest patient state shows only 1 patient on a ventilator: \"t16 clinical-staff did release-one-ventilator: ... patients_on_ventilators 2->1 ... number_in_use 4->3\". Ventilator use should track patients actually receiving ventilation, not increase without a corresponding patient assignment."
+    },
+    {
+      "quote": "t28 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "A 40-bed hospital cannot hospitalize 41 patients; this exceeds the stated bed capacity."
+    },
+    {
+      "quote": "t18 medical-supplier did dispatch-ventilators-to-hospital: hospital.hospital_state.ventilator_capacity 40->42; hospital.hospital_state.ventilators_available 36->38; medical-supplier.supplier_stock.inventory 58->56",
+      "why": "The hospital's ventilator capacity reaches 42, exceeding the hospital's 40 beds. Later dispatches increase it still further, making the equipment capacity physically inconsistent with the facility."
+    },
+    {
+      "quote": "t28 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 42->48; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "The scenario specifies a 40-bed hospital, yet hospitalized patients increase to 48, exceeding the hospital's physical bed capacity."
+    },
+    {
+      "quote": "t30 medical-supplier did dispatch-ventilators-to-hospital: hospital.hospital_state.ventilator_capacity 66->67; hospital.hospital_state.ventilators_available 62->63; medical-supplier.supplier_stock.inventory 60->59",
+      "why": "The hospital's ventilator capacity grows to 67 even though the scenario starts with only 6 ventilators and does not describe any physical expansion of the hospital. This is also inconsistent with the 40-bed facility."
+    },
+    {
+      "quote": "t19 clinical-staff did release-one-ventilator: flu-patients.flu_patients.patients_on_ventilators 1->0; flu-patients.flu_patients.patients_requiring_ventilation 4->3; ventilators.ventilator_stock.number_available 38->39; ventilators.ventilator_stock.number_in_use 4->3",
+      "why": "After all patients are removed from ventilators, the ventilator stock still records 3 ventilators in use; the dependent resource count should be zero or otherwise match the number of patients on ventilators."
+    },
+    {
+      "quote": "t26 clinical-staff did allocate-one-available-ventilator: flu-patients.flu_patients.patients_on_ventilators 0->1; flu-patients.flu_patients.patients_waiting_for_ventilation 3->2; ventilators.ventilator_stock.number_available 54->53; ventilators.ventilator_stock.number_in_use 4->5",
+      "why": "Allocating one ventilator to the only patient on a ventilator should make the number in use one, not five. The ventilator-use state changes independently of the patient count."
+    },
+    {
+      "quote": "t26 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 53->59; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "This raises hospitalized patients to 59 in a 40-bed hospital, with no bed expansion, discharge, or transfer event."
+    },
+    {
+      "quote": "t4 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 16->17; ventilators.ventilator_stock.number_owned 16->17",
+      "why": "Ventilators in use increase from 3 to 4 during synchronization, without an allocation event; this is inconsistent with the preceding release event and with patients_on_ventilators remaining at 3."
+    },
+    {
+      "quote": "t9 clinical-staff did allocate-one-available-ventilator: flu-patients.flu_patients.patients_on_ventilators 3->4; flu-patients.flu_patients.patients_waiting_for_ventilation 4->3; ventilators.ventilator_stock.number_available 21->20; ventilators.ventilator_stock.number_in_use 4->5",
+      "why": "Allocating one ventilator to raise patients_on_ventilators from 3 to 4 should raise number_in_use to 4, not 5; the two dependent quantities become inconsistent."
+    },
+    {
+      "quote": "t10 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 20->25; ventilators.ventilator_stock.number_in_use 5->4; ventilators.ventilator_stock.number_operational 25->29; ventilators.ventilator_stock.number_owned 25->29",
+      "why": "Synchronization removes one ventilator from use without a patient release event, while patients_on_ventilators remains 4."
+    },
+    {
+      "quote": "t18 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 35->38; ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 38->42; ventilators.ventilator_stock.number_owned 38->42",
+      "why": "Synchronization increases ventilators in use without an allocation event."
+    },
+    {
+      "quote": "t32 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 52->57; ventilators.ventilator_stock.number_in_use 5->4; ventilators.ventilator_stock.number_operational 57->61; ventilators.ventilator_stock.number_owned 57->61",
+      "why": "Synchronization decreases ventilators in use without a release event, while the preceding allocation left five patients on ventilators."
+    },
+    {
+      "quote": "t40 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 70->73; ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 73->77; ventilators.ventilator_stock.number_owned 73->77",
+      "why": "Synchronization increases ventilators in use without an allocation event."
+    },
+    {
+      "quote": "t0 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 36->42; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "The admission increases hospitalized patients by six while setting the available daily arrivals to zero. Under the zero-arrivals extreme condition, there should be no patients to admit."
+    },
+    {
+      "quote": "t4 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 48->54; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospitalized patients continue increasing even though the hospital has only 40 beds; this raises occupancy to 54 without any overflow, diversion, or capacity consequence."
+    },
+    {
+      "quote": "t35 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 74->77; ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 77->81; ventilators.ventilator_stock.number_owned 77->81",
+      "why": "The ventilator stock reports an additional ventilator becoming in use without a corresponding patient allocation or increase in patients_on_ventilators. The logged patient state had previously reached zero ventilated patients."
+    },
+    {
+      "quote": "t6 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 36->42; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "The hospital is specified as having 40 beds, but this event increases hospitalized patients to 42."
+    },
+    {
+      "quote": "t15 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 42->48; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "Hospital occupancy continues increasing beyond the 40-bed capacity, reaching 48 patients."
+    },
+    {
+      "quote": "t2 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 2->5; ventilators.ventilator_stock.number_in_use 5->4; ventilators.ventilator_stock.number_operational 7->9; ventilators.ventilator_stock.number_owned 7->9",
+      "why": "The synchronization process reduces ventilators in use from 5 to 4 without any patient release or other freeing event immediately preceding it, while allocations continue to use the inconsistent lower count."
+    },
+    {
+      "quote": "t39 process replenish-medical-supplier-inventory: medical-supplier.supplier_stock.inventory 96->100",
+      "why": "Supplier inventory repeatedly increases through replenishment with no production, delivery, or other source of the added ventilators/resources shown in the log, allowing the hospital's ventilator stock to grow to implausible levels."
+    },
+    {
+      "quote": "t39 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 82->85; ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 85->89; ventilators.ventilator_stock.number_owned 85->89",
+      "why": "The synchronization process increases ventilators in use from 3 to 4 without any allocation or other event putting a patient on a ventilator; it also increases the hospital's operational and owned stock to 89, exceeding the stated 40-bed hospital."
+    },
+    {
+      "quote": "t21 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 50->51; ventilators.ventilator_stock.number_owned 50->51",
+      "why": "Ventilators in use increase from 3 to 4 without a corresponding allocation event. The same unsupported increase recurs during synchronization."
+    },
+    {
+      "quote": "t22 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 51->52; ventilators.ventilator_stock.number_owned 51->52",
+      "why": "Ventilators in use again increase without a patient allocation or other cause."
+    },
+    {
+      "quote": "t13 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 30->33; ventilators.ventilator_stock.number_in_use 5->4; ventilators.ventilator_stock.number_operational 35->37; ventilators.ventilator_stock.number_owned 35->37",
+      "why": "Synchronization decreases ventilators in use from 5 to 4 even though no release event occurs at that time, making the resource state inconsistent with the preceding allocation."
+    },
+    {
+      "quote": "t1 process replenish-medical-supplier-inventory: medical-supplier.supplier_stock.inventory 16->20",
+      "why": "Supplier inventory increases from 16 to 20 without a manufacturing, purchase, or other replenishment cause in the log. This unexplained replenishment repeats throughout the run, allowing inventory to grow despite dispatches."
+    },
+    {
+      "quote": "t39 medical-supplier did dispatch-ventilators-to-hospital: hospital.hospital_state.ventilator_capacity 58->59; hospital.hospital_state.ventilators_available 54->55; medical-supplier.supplier_stock.inventory 124->123",
+      "why": "The hospital's ventilator capacity reaches 59 and 55 ventilators are available, exceeding the stated 40-bed hospital capacity. The log shows no consequence such as rejecting, storing elsewhere, or otherwise limiting these deliveries."
+    },
+    {
+      "quote": "t6 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0",
+      "why": "This admits 41 hospitalized patients into a 40-bed hospital. The overflow continues later, including the transition from 40 to 46 patients, without any consequence such as refusal or transfer."
+    }
+  ],
+  "counts": {
+    "advisory": 6,
+    "blocking": 16,
+    "depletable_stocks": 5,
+    "rules": 9,
+    "rules_fired": 9
+  },
+  "extreme_conditions": [
+    {
+      "identical_to_baseline": false,
+      "stock": "flu-patients.flu_patients.patients_requiring_ventilation",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": false,
+      "stock": "flu-patients.flu_patients.patients_on_ventilators",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": false,
+      "stock": "flu-patients.flu_patients.patients_waiting_for_ventilation",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": false,
+      "stock": "ventilators.ventilator_stock.number_available",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": false,
+      "stock": "medical-supplier.supplier_stock.inventory",
+      "went_negative_from_zero": false
+    }
+  ],
+  "findings": [
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'occupied_beds' falls, but no rule ever decreases hospital.hospital_state.occupied_beds.",
+      "stock": "occupied_beds"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'occupied_beds' rises, but no rule ever increases hospital.hospital_state.occupied_beds.",
+      "stock": "occupied_beds"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'available_beds' falls, but no rule ever decreases hospital.hospital_state.available_beds.",
+      "stock": "available_beds"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'available_beds' rises, but no rule ever increases hospital.hospital_state.available_beds.",
+      "stock": "available_beds"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients_requiring_ventilation' rises, but no rule ever increases flu-patients.flu_patients.patients_requiring_ventilation.",
+      "stock": "patients_requiring_ventilation"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients_waiting_for_ventilation' rises, but no rule ever increases flu-patients.flu_patients.patients_waiting_for_ventilation.",
+      "stock": "patients_waiting_for_ventilation"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'pending_ventilator_orders' falls, but no rule ever decreases hospital.hospital_state.pending_ventilator_orders.",
+      "stock": "pending_ventilator_orders"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'pending_ventilator_orders' rises, but no rule ever increases hospital.hospital_state.pending_ventilator_orders.",
+      "stock": "pending_ventilator_orders"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'patient_deaths' rises, but no rule ever increases flu-patients.flu_patients.patient_deaths.",
+      "stock": "patient_deaths"
+    },
+    {
+      "blocking": true,
+      "check": "conservation",
+      "finding": "rule replenish-medical-supplier-inventory creates supplier_stock.inventory from nothing; elsewhere that quantity only moves between things, so it must come from a stock that loses it.",
+      "rule": "replenish-medical-supplier-inventory"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with flu-patients patients_requiring_ventilation at zero: The run begins with patients_requiring_ventilation at zero, but by t2 it already has four waiting patients and four patients on ventilators, with no preceding event creating patients requiring ventilation. The allocation therefore occurs without a causal transition from zero. (run log: \"t2 clinical-staff did allocate-one-available-ventilator: flu-patients.flu_patients.patients_on_ventilators 4->5; flu-patients.flu_patients.patients_waiting_for_ventilation 4->3; ventilators.ventilator_stock.number_available 7->6; ventilators.ventilator_stock.number_in_use 4->5\") ALSO: This increases hospitalized patients to 41 in a 40-bed hospital without any expansion, transfer, or overflow-capacity event. (run log: \"t7 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: Hospitalized patients rise to 45, exceeding the stated 40-bed capacity without a capacity change. (run log: \"t19 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 39->45; flu-patients.flu_patients.new_arrivals_per_day 6->0\")",
+      "rule": "flu-patients.flu_patients.patients_requiring_ventilation",
+      "stock": "flu-patients.flu_patients.patients_requiring_ventilation"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with flu-patients patients_on_ventilators at zero: The patient count starts at zero, but four ventilators are already recorded as in use before this allocation. The dependent in-use count should have been zero under the extreme condition. (run log: \"t2 clinical-staff did allocate-one-available-ventilator: flu-patients.flu_patients.patients_on_ventilators 0->1; flu-patients.flu_patients.patients_waiting_for_ventilation 4->3; ventilators.ventilator_stock.number_available 7->6; ventilators.ventilator_stock.number_in_use 4->5\") ALSO: When patients_on_ventilators reaches zero, ventilators.number_in_use remains 3 rather than falling to zero. Ventilators remain assigned without ventilated patients. (run log: \"t12 clinical-staff did release-one-ventilator: flu-patients.flu_patients.patients_on_ventilators 1->0; flu-patients.flu_patients.patients_requiring_ventilation 8->7; ventilators.ventilator_stock.number_available 28->29; ventilators.ventilator_stock.number_in_use 4->3\") ALSO: Hospitalized patients increase to 42 in a 40-bed hospital, exceeding the stated physical capacity without any overflow or expansion event. (run log: \"t18 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 36->42; flu-patients.flu_patients.new_arrivals_per_day 6->0\")",
+      "rule": "flu-patients.flu_patients.patients_on_ventilators",
+      "stock": "flu-patients.flu_patients.patients_on_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with flu-patients patients_waiting_for_ventilation at zero: The log shows 7 patients requiring ventilation but only 3 on ventilators. With the waiting count initialized to zero, the expected consequence\u2014no unmet patients\u2014does not occur; at least four patients would have to be waiting or otherwise accounted for. (run log: \"t3 clinical-staff did release-one-ventilator: flu-patients.flu_patients.patients_on_ventilators 4->3; flu-patients.flu_patients.patients_requiring_ventilation 8->7; ventilators.ventilator_stock.number_available 8->9; ventilators.ventilator_stock.number_in_use 4->3\") ALSO: The hospital is defined as having 40 beds, yet this admission raises hospitalized patients to 41, exceeding physical bed capacity. (run log: \"t7 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: Hospitalized patients again exceed the fixed 40-bed capacity, reaching 46. (run log: \"t19 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 40->46; flu-patients.flu_patients.new_arrivals_per_day 6->0\")",
+      "rule": "flu-patients.flu_patients.patients_waiting_for_ventilation",
+      "stock": "flu-patients.flu_patients.patients_waiting_for_ventilation"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with ventilators number_available at zero: A 40-bed hospital cannot hospitalize 41 patients; this exceeds the stated bed capacity. (run log: \"t28 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: The hospital's ventilator capacity reaches 42, exceeding the hospital's 40 beds. Later dispatches increase it still further, making the equipment capacity physically inconsistent with the facility. (run log: \"t18 medical-supplier did dispatch-ventilators-to-hospital: hospital.hospital_state.ventilator_capacity 40->42; hospital.hospital_state.ventilators_available 36->38; medical-supplier.supplier_stock.inventory 58->56\")",
+      "rule": "ventilators.ventilator_stock.number_available",
+      "stock": "ventilators.ventilator_stock.number_available"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with medical-supplier inventory at zero: The scenario specifies a 40-bed hospital, yet hospitalized patients increase to 48, exceeding the hospital's physical bed capacity. (run log: \"t28 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 42->48; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: The hospital's ventilator capacity grows to 67 even though the scenario starts with only 6 ventilators and does not describe any physical expansion of the hospital. This is also inconsistent with the 40-bed facility. (run log: \"t30 medical-supplier did dispatch-ventilators-to-hospital: hospital.hospital_state.ventilator_capacity 66->67; hospital.hospital_state.ventilators_available 62->63; medical-supplier.supplier_stock.inventory 60->59\") ALSO: After all patients are removed from ventilators, the ventilator stock still records 3 ventilators in use; the dependent resource count should be zero or otherwise match the number of patients on ventilators. (run log: \"t19 clinical-staff did release-one-ventilator: flu-patients.flu_patients.patients_on_ventilators 1->0; flu-patients.flu_patients.patients_requiring_ventilation 4->3; ventilators.ventilator_stock.number_available 38->39; ventilators.ventilator_stock.number_in_use 4->3\")",
+      "rule": "medical-supplier.supplier_stock.inventory",
+      "stock": "medical-supplier.supplier_stock.inventory"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "in an ordinary run: This raises hospitalized patients to 59 in a 40-bed hospital, with no bed expansion, discharge, or transfer event. (run log: \"t26 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 53->59; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: Ventilators in use increase from 3 to 4 during synchronization, without an allocation event; this is inconsistent with the preceding release event and with patients_on_ventilators remaining at 3. (run log: \"t4 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 16->17; ventilators.ventilator_stock.number_owned 16->17\") ALSO: Allocating one ventilator to raise patients_on_ventilators from 3 to 4 should raise number_in_use to 4, not 5; the two dependent quantities become inconsistent. (run log: \"t9 clinical-staff did allocate-one-available-ventilator: flu-patients.flu_patients.patients_on_ventilators 3->4; flu-patients.flu_patients.patients_waiting_for_ventilation 4->3; ventilators.ventilator_stock.number_available 21->20; ventilators.ventilator_stock.number_in_use 4->5\")",
+      "rule": "ordinary-run",
+      "stock": "ordinary-run"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'admit-flu-patients' is repeated: The admission increases hospitalized patients by six while setting the available daily arrivals to zero. Under the zero-arrivals extreme condition, there should be no patients to admit. (run log: \"t0 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 36->42; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: Hospitalized patients continue increasing even though the hospital has only 40 beds; this raises occupancy to 54 without any overflow, diversion, or capacity consequence. (run log: \"t4 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 48->54; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: The ventilator stock reports an additional ventilator becoming in use without a corresponding patient allocation or increase in patients_on_ventilators. The logged patient state had previously reached zero ventilated patients. (run log: \"t35 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 74->77; ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 77->81; ventilators.ventilator_stock.number_owned 77->81\")",
+      "rule": "repeat-admit-flu-patients",
+      "stock": "repeat-admit-flu-patients"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'allocate-ventilator' is repeated: The hospital is specified as having 40 beds, but this event increases hospitalized patients to 42. (run log: \"t6 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 36->42; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: Hospital occupancy continues increasing beyond the 40-bed capacity, reaching 48 patients. (run log: \"t15 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 42->48; flu-patients.flu_patients.new_arrivals_per_day 6->0\") ALSO: The synchronization process reduces ventilators in use from 5 to 4 without any patient release or other freeing event immediately preceding it, while allocations continue to use the inconsistent lower count. (run log: \"t2 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 2->5; ventilators.ventilator_stock.number_in_use 5->4; ventilators.ventilator_stock.number_operational 7->9; ventilators.ventilator_stock.number_owned 7->9\")",
+      "rule": "repeat-allocate-ventilator",
+      "stock": "repeat-allocate-ventilator"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'deliver-ventilators' is repeated: The synchronization process increases ventilators in use from 3 to 4 without any allocation or other event putting a patient on a ventilator; it also increases the hospital's operational and owned stock to 89, exceeding the stated 40-bed hospital. (run log: \"t39 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_available 82->85; ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 85->89; ventilators.ventilator_stock.number_owned 85->89\") ALSO: Ventilators in use increase from 3 to 4 without a corresponding allocation event. The same unsupported increase recurs during synchronization. (run log: \"t21 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 50->51; ventilators.ventilator_stock.number_owned 50->51\") ALSO: Ventilators in use again increase without a patient allocation or other cause. (run log: \"t22 process synchronize-hospital-ventilator-stock: ventilators.ventilator_stock.number_in_use 3->4; ventilators.ventilator_stock.number_operational 51->52; ventilators.ventilator_stock.number_owned 51->52\")",
+      "rule": "repeat-deliver-ventilators",
+      "stock": "repeat-deliver-ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'order-ventilators' is repeated: Supplier inventory increases from 16 to 20 without a manufacturing, purchase, or other replenishment cause in the log. This unexplained replenishment repeats throughout the run, allowing inventory to grow despite dispatches. (run log: \"t1 process replenish-medical-supplier-inventory: medical-supplier.supplier_stock.inventory 16->20\")",
+      "rule": "repeat-order-ventilators",
+      "stock": "repeat-order-ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'record-patient-status' is repeated: The hospital's ventilator capacity reaches 59 and 55 ventilators are available, exceeding the stated 40-bed hospital capacity. The log shows no consequence such as rejecting, storing elsewhere, or otherwise limiting these deliveries. (run log: \"t39 medical-supplier did dispatch-ventilators-to-hospital: hospital.hospital_state.ventilator_capacity 58->59; hospital.hospital_state.ventilators_available 54->55; medical-supplier.supplier_stock.inventory 124->123\")",
+      "rule": "repeat-record-patient-status",
+      "stock": "repeat-record-patient-status"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'release-ventilator' is repeated: This admits 41 hospitalized patients into a 40-bed hospital. The overflow continues later, including the transition from 40 to 46 patients, without any consequence such as refusal or transfer. (run log: \"t6 clinical-staff did admit-represented-flu-arrivals: flu-patients.flu_patients.hospitalized_patients 35->41; flu-patients.flu_patients.new_arrivals_per_day 6->0\")",
+      "rule": "repeat-release-ventilator",
+      "stock": "repeat-release-ventilator"
+    }
+  ],
+  "seconds": 852.3,
+  "seeds": 6,
+  "step_seconds": {
+    "guided_runs": 542.9,
+    "random_runs": 5.2,
+    "total": 852.3
+  },
+  "ticks": 80
+}

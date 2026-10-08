@@ -1,0 +1,946 @@
+{
+  "odd": {
+    "actor_decisions": [
+      {
+        "actor": "clinical_staff",
+        "allowed_only_when": [
+          "A ventilator assignment is allowed only when an operational ventilator is available and the selected patient requires ventilation.",
+          "Ventilator reassignment is allowed only when the receiving patient requires ventilation and the hospital has an allocation policy permitting reassignment.",
+          "A ventilator order is allowed only when the supplier has inventory and the hospital has not exceeded its ordering limit of four ventilators per day.",
+          "Patient admission is allowed only when occupied beds are fewer than staffed beds."
+        ],
+        "may_attempt": [
+          "Assign an available operational ventilator to a patient requiring ventilation.",
+          "Remove a ventilator from one patient and assign it to another patient requiring ventilation.",
+          "Choose the allocation policy used to rank patients for scarce ventilators.",
+          "Order additional ventilators from the medical supplier.",
+          "Admit an arriving patient to an available staffed bed."
+        ]
+      },
+      {
+        "actor": "medical_supplier",
+        "allowed_only_when": [
+          "An order is accepted only when supplier inventory is at least the ordered quantity.",
+          "A shipment is made only after the stated seven-day delivery delay."
+        ],
+        "may_attempt": [
+          "Accept a hospital order.",
+          "Ship ordered ventilators after the delivery delay."
+        ]
+      }
+    ],
+    "assumptions": [
+      "The hospital starts with 40 physical beds and 40 staffed beds.",
+      "The hospital starts with 36 occupied beds and 4 available beds.",
+      "The hospital owns six ventilators, all initially operational; four are in use and two are available.",
+      "The flu surge produces an average of six new hospital arrivals per day; arrivals are modeled as a stochastic count around that mean.",
+      "Eight hospitalized patients initially require ventilation, including four currently ventilated and four waiting.",
+      "Each ventilated patient requires one ventilator.",
+      "The average remaining ventilation requirement is five days per patient.",
+      "A ventilated patient has a 10% daily recovery probability, a 3% daily death probability, and otherwise remains ventilated unless equipment fails or staff reassigns the ventilator.",
+      "A patient requiring ventilation without a ventilator has a 15% daily death probability.",
+      "Ventilator failure probability is 0.005 per ventilator-day, and failed ventilators are unavailable until repaired.",
+      "No ventilator repairs occur during the initial model version unless explicitly added as a process.",
+      "The hospital has 80 staff members, sufficient to staff all 40 beds initially; staffing does not decline during the simulation.",
+      "The supplier initially has 20 ventilators, can deliver at most four per day, and has a seven-day delivery delay.",
+      "Supplier replenishment is omitted unless explicitly added; therefore supplier inventory can only decrease.",
+      "Patients are represented as aggregate state counts rather than individually simulated people, except that allocation decisions conceptually rank individual patients by clinical priority.",
+      "All arrivals, clinical transitions, deaths, recoveries, failures, orders, and deliveries are resolved once per one-day tick.",
+      "The initial allocation policy is a clinical priority score, with ties resolved randomly.",
+      "Ventilator orders do not increase usable capacity until delivery occurs.",
+      "Patients who recover or die immediately release their bed and any ventilator they occupied within the same daily update."
+    ],
+    "entities": [
+      {
+        "kind": "place",
+        "name": "hospital",
+        "state": [
+          {
+            "initial": 40,
+            "unit": "beds",
+            "variable": "total_beds"
+          },
+          {
+            "initial": 36,
+            "unit": "beds",
+            "variable": "occupied_beds"
+          },
+          {
+            "initial": 4,
+            "unit": "beds",
+            "variable": "available_beds"
+          },
+          {
+            "initial": 6,
+            "unit": "ventilators",
+            "variable": "ventilator_capacity"
+          },
+          {
+            "initial": 4,
+            "unit": "ventilators",
+            "variable": "ventilators_in_use"
+          },
+          {
+            "initial": 2,
+            "unit": "ventilators",
+            "variable": "ventilators_available"
+          },
+          {
+            "initial": 40,
+            "unit": "beds",
+            "variable": "staffed_beds"
+          },
+          {
+            "initial": 0,
+            "unit": "ventilators",
+            "variable": "pending_ventilator_orders"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "flu_patient_population",
+        "state": [
+          {
+            "initial": 36,
+            "unit": "patients",
+            "variable": "hospitalized_patients"
+          },
+          {
+            "initial": 6,
+            "unit": "patients/day",
+            "variable": "new_arrivals_per_day"
+          },
+          {
+            "initial": 8,
+            "unit": "patients",
+            "variable": "patients_requiring_ventilation"
+          },
+          {
+            "initial": 4,
+            "unit": "patients",
+            "variable": "patients_on_ventilators"
+          },
+          {
+            "initial": 4,
+            "unit": "patients",
+            "variable": "patients_waiting_for_ventilation"
+          },
+          {
+            "initial": 0,
+            "unit": "patients",
+            "variable": "patients_recovering"
+          },
+          {
+            "initial": 0,
+            "unit": "patients",
+            "variable": "patient_deaths"
+          },
+          {
+            "initial": 5,
+            "unit": "days per patient",
+            "variable": "average_remaining_ventilation_need"
+          },
+          {
+            "initial": 0.15,
+            "unit": "probability per day",
+            "variable": "daily_death_risk_without_ventilation"
+          },
+          {
+            "initial": 0.03,
+            "unit": "probability per day",
+            "variable": "daily_death_risk_with_ventilation"
+          },
+          {
+            "initial": 0.1,
+            "unit": "probability per day",
+            "variable": "daily_recovery_probability_with_ventilation"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "clinical_staff",
+        "state": [
+          {
+            "initial": 80,
+            "unit": "staff members",
+            "variable": "staff_count"
+          },
+          {
+            "initial": 40,
+            "unit": "beds",
+            "variable": "staffed_bed_capacity"
+          },
+          {
+            "initial": "clinical priority score",
+            "unit": "policy category",
+            "variable": "allocation_policy"
+          },
+          {
+            "initial": 0,
+            "unit": "ventilators",
+            "variable": "orders_submitted"
+          }
+        ]
+      },
+      {
+        "kind": "object",
+        "name": "ventilator",
+        "state": [
+          {
+            "initial": 6,
+            "unit": "ventilators",
+            "variable": "number_owned"
+          },
+          {
+            "initial": 6,
+            "unit": "ventilators",
+            "variable": "number_operational"
+          },
+          {
+            "initial": 4,
+            "unit": "ventilators",
+            "variable": "number_in_use"
+          },
+          {
+            "initial": 2,
+            "unit": "ventilators",
+            "variable": "number_available"
+          },
+          {
+            "initial": 0.005,
+            "unit": "probability per ventilator-day",
+            "variable": "failure_probability_per_day"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "medical_supplier",
+        "state": [
+          {
+            "initial": 20,
+            "unit": "ventilators",
+            "variable": "inventory"
+          },
+          {
+            "initial": 7,
+            "unit": "days",
+            "variable": "delivery_delay"
+          },
+          {
+            "initial": 4,
+            "unit": "ventilators/day",
+            "variable": "maximum_delivery_per_day"
+          }
+        ]
+      }
+    ],
+    "processes_each_tick": [
+      "Six new flu patients arrive on average each day, with arrivals varying around that mean, and are admitted only when staffed beds are available.",
+      "Each hospitalized patient occupies one bed until recovery or death.",
+      "Patients requiring ventilation continue to require one ventilator until recovery, death, or a change in clinical status.",
+      "Patients receiving ventilation have a 0.10 probability per day of recovering and leaving ventilation.",
+      "Patients receiving ventilation have a 0.03 probability per day of dying.",
+      "Patients requiring ventilation but not receiving it have a 0.15 probability per day of dying.",
+      "Patients who recover leave the hospitalized population and free one bed and, if applicable, one ventilator.",
+      "Patients who die leave the hospitalized population and free one bed and, if applicable, one ventilator.",
+      "Each operational ventilator in use has a 0.005 probability per day of failing; a failed ventilator becomes unavailable and releases its patient to the unventilated waiting population.",
+      "Ventilator orders advance through their delivery delay, and delivered ventilators increase hospital ventilator capacity and availability.",
+      "Ventilator demand and waiting patients are updated after arrivals, clinical transitions, recoveries, deaths, and equipment failures."
+    ],
+    "purpose": "The simulation answers how hospital staff should allocate six ventilators among flu patients and when ordering additional ventilators reduces unmet ventilation demand and deaths during a flu surge.",
+    "sensing": [
+      {
+        "actor": "clinical_staff",
+        "can_observe": [
+          "Number of occupied and available beds",
+          "Number of operational, in-use, and available ventilators",
+          "Which patients currently require ventilation",
+          "Which patients are currently receiving ventilation",
+          "Patient clinical priority information",
+          "Number of patients waiting for ventilation",
+          "Pending ventilator orders",
+          "Estimated supplier delivery delay"
+        ],
+        "cannot_observe": [
+          "The exact future arrival count of flu patients",
+          "The exact future recovery or death outcome of any patient",
+          "The exact future failure time of any ventilator",
+          "The supplier's future inventory changes outside confirmed orders"
+        ]
+      },
+      {
+        "actor": "medical_supplier",
+        "can_observe": [
+          "Hospital orders",
+          "Supplier inventory",
+          "Orders already accepted and their delivery dates"
+        ],
+        "cannot_observe": [
+          "Patients' clinical conditions",
+          "Hospital staff allocation priorities",
+          "Future hospital demand not included in an order"
+        ]
+      }
+    ],
+    "stocks": [
+      {
+        "inflows": [
+          "Admitted flu patients"
+        ],
+        "outflows": [
+          "Patient recovery",
+          "Patient death"
+        ],
+        "stock": "occupied_beds"
+      },
+      {
+        "inflows": [
+          "Patient recovery",
+          "Patient death"
+        ],
+        "outflows": [
+          "Patient admission"
+        ],
+        "stock": "available_beds"
+      },
+      {
+        "inflows": [
+          "New patient deterioration requiring ventilation"
+        ],
+        "outflows": [
+          "Recovery",
+          "Death",
+          "Clinical improvement removing ventilation requirement"
+        ],
+        "stock": "patients_requiring_ventilation"
+      },
+      {
+        "inflows": [
+          "Staff assignment of an available ventilator"
+        ],
+        "outflows": [
+          "Recovery",
+          "Death",
+          "Clinical improvement",
+          "Ventilator failure",
+          "Staff reassignment"
+        ],
+        "stock": "patients_on_ventilators"
+      },
+      {
+        "inflows": [
+          "New patients requiring ventilation without an available ventilator",
+          "Ventilator failure affecting a ventilated patient",
+          "Staff reassignment away from a patient"
+        ],
+        "outflows": [
+          "Assignment of a ventilator",
+          "Recovery",
+          "Death"
+        ],
+        "stock": "patients_waiting_for_ventilation"
+      },
+      {
+        "inflows": [
+          "Supplier delivery",
+          "Repair of failed equipment"
+        ],
+        "outflows": [
+          "Ventilator failure",
+          "Permanent equipment retirement"
+        ],
+        "stock": "operational_ventilators"
+      },
+      {
+        "inflows": [
+          "Ventilator delivery",
+          "Patient recovery",
+          "Patient death",
+          "Clinical improvement",
+          "Completion of repair"
+        ],
+        "outflows": [
+          "Assignment to a patient",
+          "Ventilator failure while idle"
+        ],
+        "stock": "available_ventilators"
+      },
+      {
+        "inflows": [
+          "Staff order submission"
+        ],
+        "outflows": [
+          "Supplier shipment after the delivery delay",
+          "Order cancellation"
+        ],
+        "stock": "pending_ventilator_orders"
+      },
+      {
+        "inflows": [
+          "Supplier replenishment"
+        ],
+        "outflows": [
+          "Accepted hospital orders"
+        ],
+        "stock": "supplier_inventory"
+      },
+      {
+        "inflows": [
+          "Deaths among ventilated patients",
+          "Deaths among patients waiting for ventilation"
+        ],
+        "outflows": [],
+        "stock": "patient_deaths"
+      }
+    ],
+    "time_step": "1 tick = 1 hospital day."
+  },
+  "scenario_text": "A 40-bed hospital with 6 ventilators faces a flu surge; staff decide who gets ventilated and whether to order more.",
+  "stock_map": [
+    {
+      "field": "hospital.hospital_state.occupied_beds",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "occupied_beds"
+    },
+    {
+      "field": "hospital.hospital_state.available_beds",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "available_beds"
+    },
+    {
+      "field": "flu-patients.flu_patients.patients_requiring_ventilation",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "patients_requiring_ventilation"
+    },
+    {
+      "field": "flu-patients.flu_patients.patients_on_ventilators",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "patients_on_ventilators"
+    },
+    {
+      "field": "flu-patients.flu_patients.patients_waiting_for_ventilation",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "patients_waiting_for_ventilation"
+    },
+    {
+      "field": "ventilators.ventilator_stock.number_operational",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "operational_ventilators"
+    },
+    {
+      "field": "ventilators.ventilator_stock.number_available",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "available_ventilators"
+    },
+    {
+      "field": "hospital.hospital_state.pending_ventilator_orders",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "pending_ventilator_orders"
+    },
+    {
+      "field": "medical-supplier.supplier_stock.inventory",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "supplier_inventory"
+    },
+    {
+      "field": "flu-patients.flu_patients.patient_deaths",
+      "has_inflows": true,
+      "has_outflows": false,
+      "stock": "patient_deaths"
+    }
+  ],
+  "traces": {
+    "bundle": "any-scenario-hospital-bundle-20261007T223600",
+    "mechanics": "any-scenario-hospital-mechanics-20261007T223600",
+    "odd": "any-scenario-hospital-odd-20261007T223600",
+    "stocks": "any-scenario-hospital-stocks-20261007T223600"
+  },
+  "world_kind": "ongoing",
+  "derived_from": "hospital-20261007T223600",
+  "targeted_repair": {
+    "trace": "any-scenario-hospital-linked-deathrepair-1",
+    "problem_source": "death_findings.json (verbatim)",
+    "proposal": {
+      "changes": [
+        {
+          "change": "add_process",
+          "target_id": null,
+          "rule": {
+            "process_id": "record-death-without-ventilation",
+            "rationale": "Each round, one represented patient waiting without respiratory support may die, leaving the waiting, ventilation-need, hospitalized, and occupied-bed stocks.",
+            "selector": {
+              "categories": [
+                "patients",
+                "patient_population"
+              ],
+              "components": [
+                "flu_patients"
+              ]
+            },
+            "participants": {
+              "hospital": {
+                "link": "co_located",
+                "selector": {
+                  "categories": [
+                    "hospital",
+                    "place"
+                  ],
+                  "components": [
+                    "hospital_state"
+                  ]
+                }
+              }
+            },
+            "checks": [
+              {
+                "label": "Flu patients include someone waiting for ventilation",
+                "left": {
+                  "participant": {
+                    "name": "it",
+                    "path": "components.flu_patients.patients_waiting_for_ventilation"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Flu patients include someone requiring ventilation",
+                "left": {
+                  "participant": {
+                    "name": "it",
+                    "path": "components.flu_patients.patients_requiring_ventilation"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Flu patients include a hospitalized patient",
+                "left": {
+                  "participant": {
+                    "name": "it",
+                    "path": "components.flu_patients.hospitalized_patients"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Hospital has an occupied bed",
+                "left": {
+                  "participant": {
+                    "name": "hospital",
+                    "path": "components.hospital_state.occupied_beds"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              }
+            ],
+            "effects": [
+              {
+                "participant": "it",
+                "path": "components.flu_patients.patients_waiting_for_ventilation",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "it",
+                "path": "components.flu_patients.patients_requiring_ventilation",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "it",
+                "path": "components.flu_patients.hospitalized_patients",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "it",
+                "path": "components.flu_patients.patient_deaths",
+                "op": "add",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "hospital",
+                "path": "components.hospital_state.occupied_beds",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "change": "add_process",
+          "target_id": null,
+          "rule": {
+            "process_id": "record-death-during-ventilation",
+            "rationale": "Each round, one represented ventilated patient may die, ending that patient's ventilation requirement, hospitalization, bed occupancy, and active ventilator use.",
+            "selector": {
+              "categories": [
+                "patients",
+                "patient_population"
+              ],
+              "components": [
+                "flu_patients"
+              ]
+            },
+            "participants": {
+              "hospital": {
+                "link": "co_located",
+                "selector": {
+                  "categories": [
+                    "hospital",
+                    "place"
+                  ],
+                  "components": [
+                    "hospital_state"
+                  ]
+                }
+              }
+            },
+            "checks": [
+              {
+                "label": "Flu patients include someone on ventilation",
+                "left": {
+                  "participant": {
+                    "name": "it",
+                    "path": "components.flu_patients.patients_on_ventilators"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Flu patients include someone requiring ventilation",
+                "left": {
+                  "participant": {
+                    "name": "it",
+                    "path": "components.flu_patients.patients_requiring_ventilation"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Flu patients include a hospitalized patient",
+                "left": {
+                  "participant": {
+                    "name": "it",
+                    "path": "components.flu_patients.hospitalized_patients"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Hospital has an occupied bed",
+                "left": {
+                  "participant": {
+                    "name": "hospital",
+                    "path": "components.hospital_state.occupied_beds"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Hospital has a ventilator in use",
+                "left": {
+                  "participant": {
+                    "name": "hospital",
+                    "path": "components.hospital_state.ventilators_in_use"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              }
+            ],
+            "effects": [
+              {
+                "participant": "it",
+                "path": "components.flu_patients.patients_on_ventilators",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "it",
+                "path": "components.flu_patients.patients_requiring_ventilation",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "it",
+                "path": "components.flu_patients.hospitalized_patients",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "it",
+                "path": "components.flu_patients.patient_deaths",
+                "op": "add",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "hospital",
+                "path": "components.hospital_state.occupied_beds",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "hospital",
+                "path": "components.hospital_state.ventilators_in_use",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "change": "replace_mechanic",
+          "target_id": "allocate-one-available-ventilator",
+          "rule": {
+            "schema_version": "world-substrate-action-mechanic/v0",
+            "mechanic_id": "allocate-one-available-ventilator",
+            "version": "1.0.1",
+            "action_kind": "allocate-ventilator",
+            "rationale": "Clinical staff assign one represented available ventilator to one represented patient who is both waiting for and still requires ventilation.",
+            "actor_selector": {
+              "categories": [
+                "clinical_staff",
+                "actor"
+              ],
+              "components": [
+                "clinical_staff"
+              ]
+            },
+            "participants": {
+              "patients": {
+                "categories": [
+                  "patients",
+                  "patient_population"
+                ],
+                "components": [
+                  "flu_patients"
+                ]
+              },
+              "ventilators": {
+                "categories": [
+                  "ventilator",
+                  "medical_equipment"
+                ],
+                "components": [
+                  "ventilator_stock"
+                ]
+              }
+            },
+            "parameters": {},
+            "checks": [
+              {
+                "label": "The selected patients are Flu patients",
+                "left": {
+                  "action_field": "patients"
+                },
+                "op": "eq",
+                "right": {
+                  "entity_id": "patients"
+                }
+              },
+              {
+                "label": "The selected equipment is Ventilators",
+                "left": {
+                  "action_field": "ventilators"
+                },
+                "op": "eq",
+                "right": {
+                  "entity_id": "ventilators"
+                }
+              },
+              {
+                "label": "Clinical staff are with Flu patients",
+                "left": {
+                  "participant": {
+                    "name": "actor",
+                    "path": "location.location_id"
+                  }
+                },
+                "op": "eq",
+                "right": {
+                  "participant": {
+                    "name": "patients",
+                    "path": "location.location_id"
+                  }
+                }
+              },
+              {
+                "label": "Clinical staff are with Ventilators",
+                "left": {
+                  "participant": {
+                    "name": "actor",
+                    "path": "location.location_id"
+                  }
+                },
+                "op": "eq",
+                "right": {
+                  "participant": {
+                    "name": "ventilators",
+                    "path": "location.location_id"
+                  }
+                }
+              },
+              {
+                "label": "Flu patients include someone requiring ventilation",
+                "left": {
+                  "participant": {
+                    "name": "patients",
+                    "path": "components.flu_patients.patients_requiring_ventilation"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Flu patients include someone waiting for ventilation",
+                "left": {
+                  "participant": {
+                    "name": "patients",
+                    "path": "components.flu_patients.patients_waiting_for_ventilation"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              },
+              {
+                "label": "Ventilators include an available unit",
+                "left": {
+                  "participant": {
+                    "name": "ventilators",
+                    "path": "components.ventilator_stock.number_available"
+                  }
+                },
+                "op": "gt",
+                "right": {
+                  "literal": 0
+                }
+              }
+            ],
+            "effects": [
+              {
+                "participant": "patients",
+                "path": "components.flu_patients.patients_waiting_for_ventilation",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "patients",
+                "path": "components.flu_patients.patients_on_ventilators",
+                "op": "add",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "ventilators",
+                "path": "components.ventilator_stock.number_available",
+                "op": "subtract",
+                "value": {
+                  "literal": 1
+                }
+              },
+              {
+                "participant": "ventilators",
+                "path": "components.ventilator_stock.number_in_use",
+                "op": "add",
+                "value": {
+                  "literal": 1
+                }
+              }
+            ],
+            "limits": [
+              "Each action allocates exactly one ventilator.",
+              "Allocation stops when no represented patient still requires ventilation.",
+              "Patients remain waiting when no represented ventilator is available.",
+              "Hospital ventilator counters are synchronized later by an autonomous process rather than changed directly."
+            ],
+            "tests": [
+              "Clinical staff can allocate one available Ventilators unit to a waiting Flu patient who requires ventilation at the shared location.",
+              "The action is refused when no Flu patient requires ventilation.",
+              "The action is refused when no Flu patient is waiting for ventilation.",
+              "The action is refused when no Ventilators unit is available.",
+              "The action is refused for mismatched patient or ventilator references.",
+              "A successful allocation transfers one unit from available to in use and one patient from waiting to on ventilation."
+            ],
+            "semantic_bindings": [
+              "patients_requiring_ventilation is the population that still needs respiratory support",
+              "patients_waiting_for_ventilation is demand eligible for allocation",
+              "number_available is represented allocatable equipment",
+              "one allocation moves one patient and one ventilator between corresponding stocks"
+            ]
+          }
+        }
+      ],
+      "why": "The two death processes implement the missing death outflows for occupied beds and every ventilation population, while the allocation repair prevents ventilation when represented need is zero.",
+      "change": "add_process+add_process+replace_mechanic",
+      "target_id": "None,None,allocate-one-available-ventilator"
+    }
+  }
+}

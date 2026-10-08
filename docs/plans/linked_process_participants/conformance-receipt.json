@@ -1,10 +1,10 @@
 {
   "schema_version": "planning-method-conformance-receipt.v1",
   "record_type": "planning_method_conformance_receipt",
-  "receipt_id": "RECEIPT-linked_process_participants-ed2c5db9685c",
+  "receipt_id": "RECEIPT-linked_process_participants-ab463808821f",
   "plan": {
     "plan_ref": "docs/plans/linked_process_participants.md",
-    "plan_sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+    "plan_sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
   },
   "path_decision": {
     "ref": "docs/plans/linked_process_participants/path-decision.json",
@@ -26,7 +26,7 @@
   },
   "activation": {
     "facts_ref": "docs/plans/linked_process_participants/activation-facts.json",
-    "facts_sha256": "470ed22b1d3e1216839ce9454b97a8521e121234ea80d72e4890bdb6d838de70",
+    "facts_sha256": "115a1f5f75454d290d74692fb95dfcf34d97a7317582277feba7923da3107efd",
     "facts": {
       "shared_mechanism": true,
       "empirical_comparison_proposed": false,
@@ -86,10 +86,10 @@
   },
   "checklist": {
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:d89b8edf9044515567acc6495bb11d9045f9425a3a08633b9882d6dcb3caf3c4",
-    "definition_sha256": "a07b458880c4b117c5fd9b63cc01552d36e34518cb68633964bb6ee97bc66844",
+    "revision": "sha256:703a4af3975634cca2193d50c70bfc01515cd690a51ad3a9d3eb5d7600be60e2",
+    "definition_sha256": "defbcfc302ec272675e0979ebf1c0c14a425e89ee4ee360d22ee78c791c3bc06",
     "bundle_ref": "docs/plans/linked_process_participants/checklist.json",
-    "bundle_sha256": "c94d938d38a5eef08eb9ebfc99c531688ce636d2f6f2824891c04f1a5e3be760",
+    "bundle_sha256": "9373a813184b0b11a83f69b2f7bdc12dfa708add566cbc367e9d24745fd1f061",
     "coverage": "complete",
     "definition_matches_recompilation": true
   },
@@ -107,16 +107,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#actor-result-and-authority",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-ACTOR-RESULT-EXAMPLE",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/CORE-ACTOR-RESULT-EXAMPLE",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly names the actor as Brian, states the desired result as generated worlds where linked things change together, and provides a stable, concrete user-visible example: both vehicle and driver positions change from mile 40 to 50 under one event and cause ID, with the rendered frame showing both at mile 50."
+        "rationale": "The evidence explicitly names the actor as Brian, states the desired result as generated worlds where linked things change together, and gives a stable, concrete, user-visible truck-scenario example: both road positions change from 40 to 50 under one event and cause ID, with the rendered state panel showing both at mile 50."
       },
       "suggested_action": null
     },
@@ -152,16 +152,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#success-and-disproof",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-SUCCESS-DISPROOF",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/CORE-SUCCESS-DISPROOF",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly defines success as “L1–L6 pass with the evidence above” and gives concrete disproof conditions, including inability to scope-check linked writes, continued fallback to two single-entity processes, or needing to edit an existing test."
+        "rationale": "The evidence explicitly defines success as “L1–L6 pass with the evidence above” and gives concrete disproof conditions: inability to scope-check linked writes without a second commit path, continued fallback to two single-entity processes in both scenarios, or needing to edit an existing test."
       },
       "suggested_action": null
     },
@@ -178,16 +178,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#trace-review-per-criterion",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-TRACE-REVIEW",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/CORE-TRACE-REVIEW",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly identifies the run for each criterion, where its full trace is stored, and the specific trace details that must be observed beyond the final outcome. All listed criteria are trace-based, and no document-only exemption is needed."
+        "rationale": "Each listed criterion L1–L6 explicitly names the run being examined, identifies where its trace or rendered record lives, and states concrete evidence that must be seen beyond the final outcome. The evidence does not rely solely on outcomes such as tests passing or a pipeline succeeding."
       },
       "suggested_action": null
     },
@@ -204,16 +204,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#actor-result-and-authority",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-AUTHORITY-NONGOALS",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/CORE-AUTHORITY-NONGOALS",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly identifies authority: Brian approved the work, the implementing agent is the sole writer in world-substrate, and other repositories are read-only. It also explicitly lists the plan’s non-goals, including linked participants, randomness, distance-limited sensing, running the scenario, live World Builder or `/waltzman/` changes, deployment, and benchmarking."
+        "rationale": "The evidence explicitly identifies Brian as the authority, noting his approval and the implementing agent’s repository scope. It also explicitly lists the work’s non-goals, including linked participants, randomness, sensing limits, running the scenario, live World Builder changes, deployment, and benchmarking."
       },
       "suggested_action": null
     },
@@ -230,16 +230,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#spend-and-irreversible-actions",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-IRREVERSIBLE-SPEND",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/CORE-IRREVERSIBLE-SPEND",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The proposed spend explicitly identifies its boundary as a $3 cap, names Brian as the authorizer, and states containment through trace-prefix tracking, start-of-plan baselining, and requiring Brian’s approval to raise the cap. The evidence states there are no irreversible actions in this plan."
+        "rationale": "The spend is bounded by a stated $3 cap, authorized by Brian, and contained through trace-prefix tracking, baseline controls, and requiring Brian’s approval to raise the cap. The evidence states there are no irreversible actions in this plan; the later promotion is deferred to a separate plan and conditioned on L4/L5 checks and existing run caps."
       },
       "suggested_action": null
     },
@@ -256,16 +256,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#uncertainties",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-UNCERTAINTIES",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/CORE-UNCERTAINTIES",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly states that each listed uncertainty is material and provides both an owner and specific resolving evidence for all three uncertainties. Each row includes an owner (“Implementing agent”) and concrete tests or artifacts (L2, L4, and L5)."
+        "rationale": "The evidence explicitly states that each listed uncertainty is material, assigns an owner to each, and identifies specific resolving evidence for every uncertainty."
       },
       "suggested_action": null
     },
@@ -282,16 +282,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#activation-facts",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/CORE-ACTIVATION-FACTS",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/CORE-ACTIVATION-FACTS",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The only fact declared false is `empirical_comparison_proposed`, and the plan explicitly states “no comparison between alternatives” and “benchmark between alternatives” is a non-goal. The plan proposes verification checks of the built result, not an experiment comparing alternative designs."
+        "rationale": "The plan explicitly declares `shared_mechanism`, `llm_central`, and `irreversible_or_spend_action` true, matching the new shared process mechanism, central model calls, and OpenRouter spend. It declares `empirical_comparison_proposed` false, and explicitly states there is no benchmark or comparison between alternatives; L1–L6 are verification checks of the built result."
       },
       "suggested_action": null
     },
@@ -308,16 +308,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#prior-art-and-parallel-implementation-check",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-PRIOR-ART-DISPOSITION",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/OV-PRIOR-ART-DISPOSITION",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly states that existing ownership, internal lineage, and external prior art were searched. It also provides a disposition for each listed candidate using the required categories: reuse, extend, compose, supersede, or bounded exception."
+        "rationale": "The evidence explicitly states that existing ownership, internal lineage, and external prior art were searched. It also states that each candidate receives one of the required dispositions and provides a disposition table covering the cited candidates."
       },
       "suggested_action": null
     },
@@ -334,16 +334,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#prior-art-and-parallel-implementation-check",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-PRIOR-ART-PARALLEL-CHECK",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/OV-PRIOR-ART-PARALLEL-CHECK",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence specifies concrete checks: fail if any process effect occurs outside `Engine.advance` or if a second process-participant mechanism appears. It further identifies the structural observation that `rg -n \"participants\" ...` must show reuse of `_selector` and `_derived_writes`, with replayed Engine events reproducing the final world."
+        "rationale": "The evidence names a concrete structural check: searching `action_authoring.py` to verify process participants reuse `_selector` and `_derived_writes` rather than introducing parallel functions. It also specifies an observable consumer-path check—replaying linked-run Engine events must reproduce the final world—and a failure condition for effects applied outside `Engine.advance`."
       },
       "suggested_action": null
     },
@@ -360,16 +360,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#model-calls",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-LLM-CALL-BOUNDARY",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/OV-LLM-CALL-BOUNDARY",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly enumerates the calls in pipeline order and states the structured result each returns, including JSON, Pydantic, and compiled outputs. It also specifies tracing through `llm_client`, unique trace IDs, storage in `calls_<date>.jsonl`, and spend aggregation."
+        "rationale": "The evidence explicitly lists the calls in pipeline order and specifies the structured result each call returns, including validation or compilation boundaries. It also explicitly describes tracing through `llm_client`, per-call trace IDs, storage in `calls_<date>.jsonl`, and spend aggregation."
       },
       "suggested_action": null
     },
@@ -386,16 +386,16 @@
       "evidence": [
         {
           "ref": "docs/plans/linked_process_participants.md#spend-and-irreversible-actions",
-          "sha256": "ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c"
+          "sha256": "ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/linked_process_participants/1ea3010c0bc0/OV-LLM-AUTHORITY-PROMOTION",
+        "trace_id": "company-planning/method-conformance/linked_process_participants/d9ba99affbd1/OV-LLM-AUTHORITY-PROMOTION",
         "model": "openrouter/openai/gpt-5.6-luna",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "The evidence explicitly names OpenRouter as the model-call provider and Brian as the spend authority, including his approval and the $3 budget. It also states an authentic-run promotion condition: promotion waits for a separate plan and requires L4 and L5 to pass on real model runs with trace IDs reported."
+        "rationale": "The evidence explicitly names OpenRouter as the model-call provider and Brian as the spend authority, with a $3 cap and approval requirement. It also states an authentic-run promotion condition: L4 and L5 must pass on real model runs with trace IDs reported before promotion."
       },
       "suggested_action": null
     }
@@ -416,11 +416,11 @@
   "conformance_report": {
     "schema_version": "1.0",
     "record_type": "planning_conformance_report",
-    "report_id": "REPORT-linked_process_participants-ed2c5db9685c",
+    "report_id": "REPORT-linked_process_participants-ab463808821f",
     "snapshot_ref": "SNAPSHOT-linked_process_participants",
-    "snapshot_revision": "sha256:c94d938d38a5eef08eb9ebfc99c531688ce636d2f6f2824891c04f1a5e3be760",
+    "snapshot_revision": "sha256:9373a813184b0b11a83f69b2f7bdc12dfa708add566cbc367e9d24745fd1f061",
     "packet_ref": "docs/plans/linked_process_participants.md",
-    "packet_revision": "sha256:ed2c5db9685c216ed51ff2ee842cdbfad1c4a4880c35ed84e1b23e2a258e6f6c",
+    "packet_revision": "sha256:ab463808821feff3181487398d4cb712a36e85c26c5d8453acf2efab32cdc7bc",
     "structural_status": "pass",
     "semantic_review_status": "complete",
     "diagnostics": [],
@@ -443,7 +443,7 @@
     "client": "claude-code",
     "session": "55a7bcf4-391a-4f04-9516-3c0e91fe91c8"
   },
-  "started_at": "2026-10-08T02:25:11Z",
-  "completed_at": "2026-10-08T02:25:22Z",
-  "duration_ms": 11636
+  "started_at": "2026-10-08T03:27:46Z",
+  "completed_at": "2026-10-08T03:28:03Z",
+  "duration_ms": 14242
 }
