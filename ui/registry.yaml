@@ -1,0 +1,27 @@
+schema_version: ui-registry/v1
+project_id: world-substrate
+ui_status: active
+# Read this before adding or changing a world-substrate UI; the ecosystem UI index
+# (control.brianmills.dev/uis/) is built from these entries.
+surfaces:
+  - id: world-builder
+    name: World Builder
+    lifecycle: canonical
+    source_path: scripts/world_builder_home.html
+    url: https://brianmills.dev/world-builder/
+    tests: scripts/e2e/world_builder_e2e.mjs (includes the tooltip check the workspace tooltip policy cites)
+    purpose: Define a represented world, request a constrained model proposal for its mechanics, review compiler-derived authority, approve, then launch a fresh scripted or model-selected run and inspect it.
+  - id: waltzman-stakeholder-demo
+    name: Waltzman stakeholder demo
+    lifecycle: canonical
+    source_path: reference_worlds/waltzman/
+    url: https://brianmills.dev/waltzman/
+    note: The page is deployed from outside this repository; the world, its baseline and its intervention branch live here.
+    purpose: The promoted outreach experience, combining natural-language authoring, a fresh trajectory and living inspection of one bounded coordination world.
+  - id: living-world-visualization
+    name: Standalone living-world visualization
+    lifecycle: superseded
+    source_path: README.md
+    url: https://brianmills.dev/world-substrate-visualization/
+    note: Earlier synthetic visualization prototype, still deployed as design evidence; superseded by the World Builder and the Waltzman demo (README).
+    purpose: Legacy prototype of the living-world view.
