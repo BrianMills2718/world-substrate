@@ -1,0 +1,1237 @@
+{
+  "mechanics": [
+    {
+      "action_kind": "record-flu-arrivals",
+      "actor_selector": {
+        "categories": [
+          "arrival-source",
+          "influenza"
+        ],
+        "components": [
+          "arrival_stream"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the arrival stream is for the flu surge",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.arrival_stream.arrival_process"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "flu-surge"
+          }
+        },
+        {
+          "label": "the arrival count is positive",
+          "left": {
+            "action_field": "patients"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.arrival_stream.waiting_patients",
+          "value": {
+            "action_field": "patients"
+          }
+        }
+      ],
+      "limits": [
+        "This records arrivals in the selected influenza arrival stream.",
+        "It does not admit patients or reserve hospital beds.",
+        "Arrival counts must be positive integers from the offered parameter values."
+      ],
+      "mechanic_id": "record-flu-arrivals-v1",
+      "parameters": {
+        "patients": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      "participants": {},
+      "rationale": "New influenza arrivals first enter the represented surge arrival stream before an autonomous intake process moves them into the waiting cohort.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "patients is the number of newly arrived people",
+        "components.arrival_stream.waiting_patients is the unprocessed arrival queue",
+        "components.arrival_stream.arrival_process identifies the influenza surge"
+      ],
+      "tests": [
+        "Recording four arrivals adds four waiting patients to the arrival stream.",
+        "A zero or negative arrival count is refused.",
+        "A non-flu-surge arrival stream is refused.",
+        "Recording arrivals does not change occupied beds."
+      ],
+      "version": "2.0"
+    },
+    {
+      "action_kind": "admit-patients",
+      "actor_selector": {
+        "categories": [
+          "hospital"
+        ],
+        "components": [
+          "hospital_capacity"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the flu patients are waiting for admission",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.care_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "awaiting-admission"
+          }
+        },
+        {
+          "label": "the patients have influenza",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.infection_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "influenza"
+          }
+        },
+        {
+          "label": "the admission count is positive",
+          "left": {
+            "action_field": "patients"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the admission covers the whole waiting group",
+          "left": {
+            "action_field": "patients"
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.number_of_patients"
+            }
+          }
+        },
+        {
+          "label": "the hospital has enough available beds",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.hospital_capacity.available_beds"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "patients"
+          }
+        },
+        {
+          "label": "the hospital and flu patients are together",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital_capacity.occupied_beds",
+          "value": {
+            "action_field": "patients"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "actor",
+          "path": "components.hospital_capacity.available_beds",
+          "value": {
+            "action_field": "patients"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital_capacity.cumulative_patient_admissions",
+          "value": {
+            "action_field": "patients"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "patient_group",
+          "path": "components.patient_group.care_status",
+          "value": {
+            "literal": "admitted"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "patient_group",
+          "path": "components.patient_group.days_since_admission",
+          "value": {
+            "literal": 0
+          }
+        },
+        {
+          "op": "set",
+          "participant": "patient_group",
+          "path": "components.patient_group.remaining_treatment_duration",
+          "value": {
+            "literal": 7
+          }
+        }
+      ],
+      "limits": [
+        "Admission is atomic because no admission activity state is represented.",
+        "Partial admission of the aggregate waiting cohort is refused to avoid changing the status of patients left behind.",
+        "Each admitted patient consumes one bed; groups with another bed ratio are not modeled by this mechanic.",
+        "The mechanic does not determine ventilation need."
+      ],
+      "mechanic_id": "admit-flu-patients-v1",
+      "parameters": {
+        "patients": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "patient",
+            "influenza-patient"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "The hospital converts a complete waiting influenza cohort into an admitted cohort while occupying one represented bed per patient.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "patient_group identifies the waiting influenza cohort",
+        "patients is the complete cohort admitted",
+        "components.hospital_capacity.available_beds bounds safe admission",
+        "components.patient_group.care_status records admission"
+      ],
+      "tests": [
+        "A waiting group of four can be admitted when four beds are available.",
+        "Admission increases occupied beds and cumulative admissions by the admitted count.",
+        "Admission decreases available beds by the admitted count.",
+        "Admission is refused when the requested count differs from the waiting cohort.",
+        "Admission is refused when available beds are below the requested count."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "allocate-ventilation",
+      "actor_selector": {
+        "categories": [
+          "staff",
+          "decision-maker",
+          "actor"
+        ],
+        "components": [
+          "staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the staff use the clinical priority policy",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.staff.policy"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "clinical-priority-with-capacity-constraint"
+          }
+        },
+        {
+          "label": "the flu patients are admitted",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.care_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "admitted"
+          }
+        },
+        {
+          "label": "the ventilation decision count is positive",
+          "left": {
+            "action_field": "patients"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the decision covers the admitted group",
+          "left": {
+            "action_field": "patients"
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.number_of_patients"
+            }
+          }
+        },
+        {
+          "label": "the group has no prior ventilation decision",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.treatment_state.patients_requiring_ventilation"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the staff can make this many decisions today",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.staff.decision_capacity_per_day"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "patients"
+          }
+        },
+        {
+          "label": "the staff and flu patients are together",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "patient_group",
+          "path": "components.patient_group.ventilator_required_per_patient",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.treatment_state.patients_requiring_ventilation",
+          "value": {
+            "action_field": "patients"
+          }
+        }
+      ],
+      "limits": [
+        "This records a clinical-priority decision, not physical ventilator assignment.",
+        "The aggregate cohort receives one common decision; mixed decisions require separately represented groups.",
+        "Hospital ventilator stocks are not changed because the hospital and ventilator pool are not action participants.",
+        "Daily decision capacity is represented as a limit but is not consumed because no remaining-daily-capacity field exists."
+      ],
+      "mechanic_id": "allocate-clinical-ventilation-priority-v1",
+      "parameters": {
+        "patients": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "patient",
+            "influenza-patient"
+          ],
+          "components": [
+            "patient_group",
+            "treatment_state"
+          ]
+        }
+      },
+      "rationale": "Clinical staff record that an admitted cohort requires ventilation; the decision does not claim that a physical ventilator has already been assigned.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "patients is the number covered by the clinical decision",
+        "components.treatment_state.patients_requiring_ventilation records assessed need",
+        "components.patient_group.ventilator_required_per_patient records the cohort-level requirement"
+      ],
+      "tests": [
+        "A first decision for an admitted group marks all selected patients as requiring ventilation.",
+        "A repeated decision for the same group is refused.",
+        "A decision for a waiting group is refused.",
+        "A count above represented decision capacity is refused.",
+        "The decision does not increase patients on ventilators."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "order-ventilators",
+      "actor_selector": {
+        "categories": [
+          "hospital"
+        ],
+        "components": [
+          "hospital_capacity"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the ventilator order is positive",
+          "left": {
+            "action_field": "units"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the supplier order book is at the hospital",
+          "left": {
+            "participant": {
+              "name": "supplier",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the order book belongs to a supplier",
+          "left": {
+            "participant": {
+              "name": "supplier",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "literal": "unowned"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital_capacity.pending_ventilator_orders",
+          "value": {
+            "action_field": "units"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital_capacity.cumulative_ventilator_orders",
+          "value": {
+            "action_field": "units"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "supplier",
+          "path": "components.supplier_capacity.units_due",
+          "value": {
+            "action_field": "units"
+          }
+        }
+      ],
+      "limits": [
+        "The supplier field refers to the represented supplier-owned order book because no separate order participant is available to this action.",
+        "The action records requested units but does not guarantee fulfillment.",
+        "Lead time and fulfillment probability are descriptive because no per-order age or random outcome state is represented.",
+        "Orders do not immediately increase functional ventilators."
+      ],
+      "mechanic_id": "order-hospital-ventilators-v1",
+      "parameters": {
+        "units": [
+          1,
+          2,
+          4
+        ]
+      },
+      "participants": {
+        "supplier": {
+          "categories": [
+            "order",
+            "supply"
+          ],
+          "components": [
+            "supplier_capacity"
+          ]
+        }
+      },
+      "rationale": "The hospital records requested ventilator units as pending and places those units in the supplier-owned order book.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "supplier identifies the supplier-owned ventilator order book",
+        "units is the number requested",
+        "components.hospital_capacity.pending_ventilator_orders records undelivered hospital demand",
+        "components.supplier_capacity.units_due records supplier obligation"
+      ],
+      "tests": [
+        "Ordering four units adds four pending hospital units and four units due.",
+        "Ordering four units adds four to cumulative ventilator orders.",
+        "A zero or negative order is refused.",
+        "The order does not immediately increase available ventilators.",
+        "An unowned order book is refused."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "deliver-ventilators",
+      "actor_selector": {
+        "categories": [
+          "hospital"
+        ],
+        "components": [
+          "hospital_capacity"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the delivery count is positive",
+          "left": {
+            "action_field": "units"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the order has enough units due",
+          "left": {
+            "participant": {
+              "name": "order",
+              "path": "components.supplier_capacity.units_due"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "units"
+          }
+        },
+        {
+          "label": "the hospital has enough pending units",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.hospital_capacity.pending_ventilator_orders"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "units"
+          }
+        },
+        {
+          "label": "the delivery is within the daily supplier maximum",
+          "left": {
+            "participant": {
+              "name": "order",
+              "path": "components.supplier_capacity.maximum_daily_delivery"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "units"
+          }
+        },
+        {
+          "label": "the order and hospital are together",
+          "left": {
+            "participant": {
+              "name": "order",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "order",
+          "path": "components.supplier_capacity.units_due",
+          "value": {
+            "action_field": "units"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "actor",
+          "path": "components.hospital_capacity.pending_ventilator_orders",
+          "value": {
+            "action_field": "units"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital_capacity.functional_ventilators",
+          "value": {
+            "action_field": "units"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital_capacity.available_ventilators",
+          "value": {
+            "action_field": "units"
+          }
+        }
+      ],
+      "limits": [
+        "Only previously ordered units may be delivered.",
+        "A single delivery cannot exceed the represented daily delivery maximum.",
+        "The action updates hospital capacity but cannot also update the separate ventilator pool because that pool is not an action participant.",
+        "Order lead time and fulfillment probability cannot be enforced without represented order age and outcome state.",
+        "Partial deliveries leave the remaining units due and pending."
+      ],
+      "mechanic_id": "deliver-ordered-ventilators-v1",
+      "parameters": {
+        "units": [
+          1,
+          2,
+          4
+        ]
+      },
+      "participants": {
+        "order": {
+          "categories": [
+            "order",
+            "supply"
+          ],
+          "components": [
+            "supplier_capacity"
+          ]
+        }
+      },
+      "rationale": "The hospital processes delivered units from the referenced supplier order book, reducing outstanding obligations and increasing functional and available hospital ventilators.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "order identifies the supplier-owned order book",
+        "units is the delivered quantity",
+        "components.supplier_capacity.units_due is reduced by fulfillment",
+        "components.hospital_capacity.functional_ventilators records usable delivered machines",
+        "components.hospital_capacity.available_ventilators records unassigned delivered machines"
+      ],
+      "tests": [
+        "Delivering two due units reduces units due and pending units by two.",
+        "Delivered functional units also become available hospital ventilators.",
+        "Delivery above units due is refused.",
+        "Delivery above pending hospital units is refused.",
+        "Delivery above the daily maximum is refused."
+      ],
+      "version": "1.0"
+    },
+    {
+      "action_kind": "advance-patient-care",
+      "actor_selector": {
+        "categories": [
+          "staff",
+          "decision-maker",
+          "actor"
+        ],
+        "components": [
+          "staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the flu patients are admitted",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.care_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "admitted"
+          }
+        },
+        {
+          "label": "the flu patients have treatment time remaining",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.remaining_treatment_duration"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "clinical staff are present",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.staff.staff_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the staff and flu patients are together",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.patient_group.days_since_admission",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "patient_group",
+          "path": "components.patient_group.remaining_treatment_duration",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "Each successful action advances exactly one hospital day.",
+        "The action does not determine death because no deterministic represented outcome rule distinguishes deaths from discharges.",
+        "Disposition and bed release occur autonomously when remaining treatment duration reaches zero.",
+        "Ventilator failure and repair are omitted because no represented failed-unit or repair-progress stock exists."
+      ],
+      "mechanic_id": "advance-admitted-flu-care-v1",
+      "parameters": {},
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "patient",
+            "influenza-patient"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "Clinical staff advance an admitted influenza cohort by one represented hospital day, increasing elapsed care and reducing remaining treatment duration.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "components.patient_group.days_since_admission is elapsed inpatient care",
+        "components.patient_group.remaining_treatment_duration is unfinished treatment time",
+        "one action represents one hospital day"
+      ],
+      "tests": [
+        "Advancing admitted care adds one day since admission.",
+        "Advancing admitted care subtracts one remaining treatment day.",
+        "Care advancement is refused for a waiting group.",
+        "Care advancement is refused when no treatment duration remains.",
+        "Care advancement is refused when no clinical staff are present."
+      ],
+      "version": "1.0"
+    }
+  ],
+  "processes": [
+    {
+      "checks": [
+        {
+          "label": "the flu patients are waiting for admission",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.care_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "awaiting-admission"
+          }
+        },
+        {
+          "label": "the patients have influenza",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.infection_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "influenza"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.patient_group.number_of_patients",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "recurring-flu-demand",
+      "rationale": "A continuing influenza surge adds a new waiting patient each round whenever the reusable influenza cohort is awaiting admission, ensuring demand recurs indefinitely.",
+      "selector": {
+        "categories": [
+          "patient",
+          "influenza-patient"
+        ],
+        "components": [
+          "patient_group"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the flu patients are admitted",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.care_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "admitted"
+          }
+        },
+        {
+          "label": "the flu patients have completed treatment",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.remaining_treatment_duration"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.occupied_beds",
+          "value": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.number_of_patients"
+            }
+          }
+        },
+        {
+          "op": "add",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.available_beds",
+          "value": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.number_of_patients"
+            }
+          }
+        },
+        {
+          "op": "add",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.cumulative_patient_discharges",
+          "value": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.number_of_patients"
+            }
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.patient_group.care_status",
+          "value": {
+            "literal": "awaiting-admission"
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.patient_group.number_of_patients",
+          "value": {
+            "literal": 0
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.treatment_state.patients_requiring_ventilation",
+          "value": {
+            "literal": 0
+          }
+        }
+      ],
+      "participants": {
+        "hospital": {
+          "link": "owner_of_it",
+          "selector": {
+            "categories": [
+              "hospital"
+            ],
+            "components": [
+              "hospital_capacity"
+            ]
+          }
+        }
+      },
+      "process_id": "complete-flu-treatment",
+      "rationale": "When an admitted influenza cohort completes treatment, the same transition frees its hospital beds, records discharge, clears its ventilation requirement, and returns the reusable cohort to a waiting state for future arrivals.",
+      "selector": {
+        "categories": [
+          "patient",
+          "influenza-patient"
+        ],
+        "components": [
+          "patient_group",
+          "treatment_state"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the flu arrival stream has a waiting patient",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.arrival_stream.waiting_patients"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the flu patients are waiting for admission",
+          "left": {
+            "participant": {
+              "name": "waiting_group",
+              "path": "components.patient_group.care_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "awaiting-admission"
+          }
+        },
+        {
+          "label": "the waiting patients have influenza",
+          "left": {
+            "participant": {
+              "name": "waiting_group",
+              "path": "components.patient_group.infection_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "influenza"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.arrival_stream.waiting_patients",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "waiting_group",
+          "path": "components.patient_group.number_of_patients",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "participants": {
+        "waiting_group": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "patient",
+              "influenza-patient"
+            ],
+            "components": [
+              "patient_group"
+            ]
+          }
+        }
+      },
+      "process_id": "move-flu-arrivals-to-waiting-cohort",
+      "rationale": "Each round, one unprocessed influenza arrival moves from the surge stream into the co-located waiting influenza cohort.",
+      "selector": {
+        "categories": [
+          "arrival-source",
+          "influenza"
+        ],
+        "components": [
+          "arrival_stream"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the flu patients are admitted",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.care_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "admitted"
+          }
+        },
+        {
+          "label": "a flu patient requires ventilation",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.treatment_state.patients_requiring_ventilation"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the admitted group has a living patient",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.number_of_patients"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the hospital has an available ventilator",
+          "left": {
+            "participant": {
+              "name": "hospital",
+              "path": "components.hospital_capacity.available_ventilators"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the hospital has a functional ventilator",
+          "left": {
+            "participant": {
+              "name": "hospital",
+              "path": "components.hospital_capacity.functional_ventilators"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the hospital has an occupied bed",
+          "left": {
+            "participant": {
+              "name": "hospital",
+              "path": "components.hospital_capacity.occupied_beds"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.available_ventilators",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.ventilators_in_use",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.functional_ventilators",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.ventilators_in_use",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "hospital",
+          "path": "components.hospital_capacity.occupied_beds",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.patient_group.number_of_patients",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "participants": {
+        "hospital": {
+          "link": "owner_of_it",
+          "selector": {
+            "categories": [
+              "hospital"
+            ],
+            "components": [
+              "hospital_capacity"
+            ]
+          }
+        }
+      },
+      "process_id": "fatal-failure-during-ventilator-assignment",
+      "rationale": "When ventilation is required, one available ventilator is assigned, fails mechanically while entering use, and the resulting patient death releases an occupied bed.",
+      "selector": {
+        "categories": [
+          "patient",
+          "influenza-patient"
+        ],
+        "components": [
+          "patient_group",
+          "treatment_state"
+        ]
+      }
+    }
+  ],
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": null
+}

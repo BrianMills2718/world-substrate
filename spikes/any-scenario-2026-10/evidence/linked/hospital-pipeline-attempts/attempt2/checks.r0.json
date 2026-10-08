@@ -1,0 +1,306 @@
+{
+  "behavior_anomalies": [
+    {
+      "quote": "t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->8",
+      "why": "The run starts with zero ventilators and repeatedly attempts to deliver them, but never shows failed delivery, zero-inventory consequences, or patients remaining without ventilation. The log instead only continues recording patient arrivals, so the expected consequence of the zero resource is absent."
+    },
+    {
+      "quote": "t10 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 38->46",
+      "why": "The logged patient count exceeds the hospital's stated 40-bed capacity, but the run shows no diversion, transfer, overflow capacity, or other consequence of bed capacity being exceeded. Patient arrivals then continue to 382."
+    }
+  ],
+  "counts": {
+    "advisory": 8,
+    "blocking": 33,
+    "depletable_stocks": 2,
+    "rules": 8,
+    "rules_fired": 2
+  },
+  "extreme_conditions": [
+    {
+      "identical_to_baseline": true,
+      "stock": "hospital.hospital_capacity.occupied_beds",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": true,
+      "stock": "hospital.hospital_capacity.pending_ventilator_orders",
+      "went_negative_from_zero": false
+    }
+  ],
+  "findings": [
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'functional ventilators' falls, but no rule ever decreases hospital.hospital_capacity.functional_ventilators.",
+      "stock": "functional ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators in use' falls, but no rule ever decreases hospital.hospital_capacity.ventilators_in_use.",
+      "stock": "ventilators in use"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators in use' rises, but no rule ever increases hospital.hospital_capacity.ventilators_in_use.",
+      "stock": "ventilators in use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'available ventilators' falls, but no rule ever decreases hospital.hospital_capacity.available_ventilators.",
+      "stock": "available ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients awaiting admission' falls, but no rule ever decreases flu-arrivals.arrival_stream.waiting_patients.",
+      "stock": "patients awaiting admission"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients awaiting admission' rises, but no rule ever increases flu-arrivals.arrival_stream.waiting_patients.",
+      "stock": "patients awaiting admission"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule admit-flu-patients-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital_capacity']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule order-hospital-ventilators-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital_capacity']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "order-hospital-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule deliver-ordered-ventilators-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital_capacity']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action admit-flu-patients-v1 refuses up front with check 'the hospital has enough available beds' on actor.components.hospital_capacity.available_beds, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action deliver-ordered-ventilators-v1 refuses up front with check 'the order has enough units due' on order.components.supplier_capacity.units_due, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action deliver-ordered-ventilators-v1 refuses up front with check 'the hospital has enough pending units' on actor.components.hospital_capacity.pending_ventilator_orders, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "conservation",
+      "finding": "rule order-hospital-ventilators-v1 creates supplier_capacity.units_due from nothing; elsewhere that quantity only moves between things, so it must come from a stock that loses it.",
+      "rule": "order-hospital-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'occupied beds' falls by 'Patient deaths', but no rule implements that outflow.",
+      "rule": "Patient deaths",
+      "stock": "occupied beds"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'occupied beds' falls by 'Transfers out if transfers are represented', but no rule implements that outflow.",
+      "rule": "Transfers out if transfers are represented",
+      "stock": "occupied beds"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'functional ventilators' falls by 'Mechanical ventilator failures', but no rule implements that outflow.",
+      "rule": "Mechanical ventilator failures",
+      "stock": "functional ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'functional ventilators' falls by 'Permanent equipment loss if represented', but no rule implements that outflow.",
+      "rule": "Permanent equipment loss if represented",
+      "stock": "functional ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators in use' falls by 'Patient discharge', but no rule implements that outflow.",
+      "rule": "Patient discharge",
+      "stock": "ventilators in use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators in use' falls by 'Patient death', but no rule implements that outflow.",
+      "rule": "Patient death",
+      "stock": "ventilators in use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators in use' falls by 'Staff reassignment', but no rule implements that outflow.",
+      "rule": "Staff reassignment",
+      "stock": "ventilators in use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators in use' falls by 'Ventilator failure', but no rule implements that outflow.",
+      "rule": "Ventilator failure",
+      "stock": "ventilators in use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'available ventilators' falls by 'Staff assignment to a patient', but no rule implements that outflow.",
+      "rule": "Staff assignment to a patient",
+      "stock": "available ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'available ventilators' falls by 'Ventilator failure while idle', but no rule implements that outflow.",
+      "rule": "Ventilator failure while idle",
+      "stock": "available ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'pending ventilator orders' falls by 'Order cancellations if represented', but no rule implements that outflow.",
+      "rule": "Order cancellations if represented",
+      "stock": "pending ventilator orders"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'pending ventilator orders' falls by 'Unfulfilled orders expiring if represented', but no rule implements that outflow.",
+      "rule": "Unfulfilled orders expiring if represented",
+      "stock": "pending ventilator orders"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients awaiting admission' falls by 'Deaths before admission', but no rule implements that outflow.",
+      "rule": "Deaths before admission",
+      "stock": "patients awaiting admission"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients awaiting admission' falls by 'Transfers to another facility if represented', but no rule implements that outflow.",
+      "rule": "Transfers to another facility if represented",
+      "stock": "patients awaiting admission"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'living admitted patients' falls by 'Patient deaths', but no rule implements that outflow.",
+      "rule": "Patient deaths",
+      "stock": "living admitted patients"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule admit-flu-patients-v1 never fired in 12 random runs.",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule allocate-clinical-ventilation-priority-v1 never fired in 12 random runs.",
+      "rule": "allocate-clinical-ventilation-priority-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule order-hospital-ventilators-v1 never fired in 12 random runs.",
+      "rule": "order-hospital-ventilators-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule deliver-ordered-ventilators-v1 never fired in 12 random runs.",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule advance-admitted-flu-care-v1 never fired in 12 random runs.",
+      "rule": "advance-admitted-flu-care-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule complete-flu-treatment never fired in 12 random runs.",
+      "rule": "complete-flu-treatment"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "stuck activity: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it.",
+      "rule": "admitted-patients patient_group.care_status"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital occupied_beds at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "hospital.hospital_capacity.occupied_beds"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital occupied_beds set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "hospital.hospital_capacity.occupied_beds"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital pending_ventilator_orders at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "hospital.hospital_capacity.pending_ventilator_orders"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital pending_ventilator_orders set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "hospital.hospital_capacity.pending_ventilator_orders"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'deliver-ventilators' is repeated: The run starts with zero ventilators and repeatedly attempts to deliver them, but never shows failed delivery, zero-inventory consequences, or patients remaining without ventilation. The log instead only continues recording patient arrivals, so the expected consequence of the zero resource is absent. (run log: \"t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->8\")",
+      "rule": "repeat-deliver-ventilators",
+      "stock": "repeat-deliver-ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'record-flu-arrivals' is repeated: The logged patient count exceeds the hospital's stated 40-bed capacity, but the run shows no diversion, transfer, overflow capacity, or other consequence of bed capacity being exceeded. Patient arrivals then continue to 382. (run log: \"t10 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 38->46\")",
+      "rule": "repeat-record-flu-arrivals",
+      "stock": "repeat-record-flu-arrivals"
+    }
+  ],
+  "seconds": 442.2,
+  "seeds": 6,
+  "step_seconds": {
+    "guided_runs": 323.3,
+    "random_runs": 11.2,
+    "total": 442.2
+  },
+  "ticks": 80
+}
