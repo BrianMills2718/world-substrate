@@ -1,0 +1,21 @@
+{
+  "schema_version": "method-activation-facts.v1",
+  "record_type": "method_activation_facts",
+  "plan_ref": "docs/plans/waltzman_scenario_run.md",
+  "plan_sha256": "73dd2189e218c586c69a917bf39858bd60327e37638bf31cfbb6ff6ed2b8d1aa",
+  "path_decision_ref": "docs/plans/waltzman_scenario_run/path-decision.json",
+  "path_decision_sha256": "1878d7f3ba435a22478133924583bef1085fb1bc590c5570472406d6f3ef29de",
+  "facts": {
+    "shared_mechanism": false,
+    "empirical_comparison_proposed": false,
+    "llm_central": true,
+    "irreversible_or_spend_action": true
+  },
+  "fact_sources": {
+    "shared_mechanism": "derived_current_boundary",
+    "empirical_comparison_proposed": "derived_current_boundary",
+    "llm_central": "derived_current_boundary",
+    "irreversible_or_spend_action": "derived_current_boundary"
+  },
+  "recorded_at": "2026-10-08T05:30:02Z"
+}
