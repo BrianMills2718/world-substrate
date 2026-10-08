@@ -87,5 +87,72 @@ class ContractTests(unittest.TestCase):
             ScenarioSpecV1.model_validate(bad)
 
 
+def _two_recipient_spec():
+    spec = _minimal(scheduled_moments=[{"moment_id": "weekly_meeting", "tick": 2, "every_ticks": 3,
+                                        "description": "Partnership meeting"}])
+    spec["people"].append({"entity_id": "country_c", "label": "Country C", "position": "Member",
+                           "disposition": "Cautious", "memories": ["Asked about data rules."],
+                           "behavioral_profile": {}})
+    spec["information_items"][0]["recipient_ids"] = ["country_b", "country_c"]
+    spec["behaviors"].append({"request_id": "meeting_slows", "subject_refs": ["weekly_meeting"],
+                              "behavior_description": "Concerns slow the meeting.",
+                              "desired_effects": ["Less time for decisions."], "fidelity_need": "coarse",
+                              "causally_material": True})
+    return ScenarioSpecV1.model_validate(spec)
+
+
+class CompilerTests(unittest.TestCase):  # S2
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import compile_spec
+        from scaffold_world import validate_bundle
+        from scripts.run_authored_world import build_engine
+        self.bundle, self.causal, self.coverage = compile_spec(_two_recipient_spec())
+        validate_bundle(self.bundle)
+        self.engine, _, _ = build_engine(self.bundle, self.causal)
+
+    def _status(self, eid):
+        return self.engine.world.entities[eid].as_dict()["components"]["delivery"]["status"]
+
+    def test_one_information_entity_and_pending_delivery_per_recipient(self):
+        infos = [e for e in self.bundle["entities"] if "information" in e["categories"]]
+        self.assertEqual(sorted(e["id"] for e in infos),
+                         ["info-clause-conflict-to-country-b", "info-clause-conflict-to-country-c"])
+        self.assertTrue(all(e["components"]["information"]["topic"] == "clause_conflict" for e in infos))
+        self.assertEqual(self._status("delivery-info-clause-conflict-to-country-b"), "pending")
+
+    def test_one_communicate_event_delivers_to_exactly_its_recipient(self):
+        offered = [a["action"] for a in self.engine.discover("legal-group")["available"]]
+        to_b = next(a for a in offered if a["recipient"] == "country-b")
+        result = self.engine.submit(dict(to_b, controller="test"))
+        self.assertEqual(result["status"], "accepted")
+        changed = {c["path"] for c in result["event"]["changes"]}
+        self.assertIn("entities.delivery-info-clause-conflict-to-country-b.components.delivery.status", changed)
+        self.assertIn("entities.country-b.components.member.aware", changed)
+        self.assertFalse([p for p in changed if "country-c" in p])
+        self.assertEqual(self._status("delivery-info-clause-conflict-to-country-b"), "delivered")
+        self.assertEqual(self._status("delivery-info-clause-conflict-to-country-c"), "pending")
+
+    def test_only_the_holder_is_offered_communicate(self):
+        self.assertEqual(self.engine.discover("country-b")["available"], [])
+
+    def test_scheduled_moment_occurs_on_its_ticks(self):
+        from world_substrate.mechanisms.time import ClockAdvanceProcess
+        self.engine.registry.register_process(ClockAdvanceProcess())
+        ticks = []
+        for _ in range(9):
+            if any(e["rule_id"] == "moment-occurs" for e in self.engine.advance(1)["events"]):
+                ticks.append(self.engine.world.tick)
+        self.assertEqual(ticks, [2, 5, 8])
+
+    def test_coverage_marks_delivery_exact_and_the_rest_for_the_generator(self):
+        rows = {r["request_id"]: r["classification"] for r in self.coverage["rows"]}
+        self.assertEqual(rows, {"raise_concern": "exact", "meeting_slows": "to_generate"})
+
+    def test_communicate_rule_is_the_reviewed_one_unchanged(self):
+        reviewed = json.loads((REPO / "examples/native_coordination/coordination-causal-v0.json").read_text())
+        self.assertEqual(self.causal["mechanics"][0], reviewed["mechanics"][0])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
