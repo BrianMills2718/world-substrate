@@ -20,7 +20,9 @@ SPIKE = REPO / "spikes/any-scenario-2026-10"
 TRUCK = SPIKE / "evidence/truck"
 sys.path[:0] = [str(REPO), str(REPO / "src"), str(SPIKE)]
 
-from checks import attempt_findings, conservation_findings, run_checks  # noqa: E402
+from checks import attempt_findings, conservation_findings, outflow_findings, run_checks  # noqa: E402
+
+HOSPITAL = SPIKE / "evidence/hospital"
 from scripts.run_authored_world import build_engine  # noqa: E402
 from world_substrate.mechanisms.time import ClockAdvanceProcess  # noqa: E402
 
@@ -144,6 +146,36 @@ def check_rule_written_mid_run_resolves():
     assert final["components"]["vehicle"]["road_position"] == 120
 
 
+def check_removing_the_death_rule_is_detected_by_outflow_coverage():
+    """C2, deterministic part: replay the recorded outflow-to-rule mapping through the structure check."""
+    c2 = json.loads((HOSPITAL / "full/c2.json").read_text())
+    full = json.loads((HOSPITAL / "full/causal.json").read_text())
+    reduced = deepcopy(full)
+    reduced["processes"] = [p for p in reduced["processes"] if p["process_id"] != c2["removed_rule"]]
+    harm = {"Patient deaths", "Patient death", "Death"}  # harm outflows, named exactly as in the ODD (c2_extreme --harm-outflow)
+    # the two mapping calls also differ on non-harm outflows (mapping noise), so compare harm outflows only
+    with_rule = {f["finding"] for f in outflow_findings(c2["outflow_coverage"]["full"], full) if f["rule"] in harm}
+    without = {f["finding"] for f in outflow_findings(c2["outflow_coverage"]["without_harm_rule"], reduced) if f["rule"] in harm}
+    new = without - with_rule
+    assert with_rule < without and len(new) == 2, new
+    assert all("death" in f.lower() for f in new)
+
+
+def check_generated_hospital_model_omitted_death():
+    causal = json.loads((HOSPITAL / "generated/causal.json").read_text())
+    killers = [r for r in [*causal["mechanics"], *causal.get("processes", [])]
+               if any(e.get("op") == "subtract" and e.get("path", "").endswith("patient_count") for e in r.get("effects", []))]
+    assert [r.get("mechanic_id") or r.get("process_id") for r in killers] == ["discharge-recovered-patients-v1"]
+
+
+def check_hospital_run_death_comes_from_an_engine_event():
+    events = _jsonl_gz(HOSPITAL / "run/events.jsonl.gz")
+    deaths = [e for e in events if e["rule_id"] == "unventilated-patients-die"]
+    assert deaths and deaths[0]["status"] == "accepted"
+    change = [c for c in deaths[0]["changes"] if c["path"].endswith("patient_count")][0]
+    assert change["after"] == change["before"] - 1
+
+
 def check_single_duration_primitive():
     hits = []
     for root in ("src", "reference_worlds", "spikes"):
@@ -183,6 +215,15 @@ class AnyScenarioPocTests(unittest.TestCase):
 
     def test_rule_written_mid_run_resolves(self):
         check_rule_written_mid_run_resolves()
+
+    def test_removing_the_death_rule_is_detected_by_outflow_coverage(self):
+        check_removing_the_death_rule_is_detected_by_outflow_coverage()
+
+    def test_generated_hospital_model_omitted_death(self):
+        check_generated_hospital_model_omitted_death()
+
+    def test_hospital_run_death_comes_from_an_engine_event(self):
+        check_hospital_run_death_comes_from_an_engine_event()
 
     def test_single_duration_primitive(self):
         check_single_duration_primitive()

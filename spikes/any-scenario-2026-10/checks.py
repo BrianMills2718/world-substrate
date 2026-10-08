@@ -96,6 +96,7 @@ def simulate(bundle: dict[str, Any], causal: dict[str, Any], *, seed: int, ticks
     blocked: list[str] = []
     in_progress = in_progress_values(causal)
     since: dict[tuple[str, str], tuple[Any, int]] = {}
+    touched: dict[str, int] = {}  # entity -> last tick a process event changed it
     stuck: list[str] = []
     reached = False
     for _ in range(ticks):
@@ -124,6 +125,11 @@ def simulate(bundle: dict[str, Any], causal: dict[str, Any], *, seed: int, ticks
         adv = engine.advance(1)
         material = [e for e in adv["events"] if e["rule_id"] != CLOCK]
         fired.update(e["rule_id"] for e in material)
+        for e in material:
+            for c in e.get("changes", []):
+                parts = c["path"].split(".")
+                if len(parts) > 2 and parts[0] == "entities":
+                    touched[parts[1]] = engine.world.tick
         log += [f"t{engine.world.tick} process {e['rule_id']}: " + _changes(e) for e in material]
         for eid, comp, field in numeric_stocks(b):
             value = (engine.world.entities[eid].as_dict().get("components") or {}).get(comp, {}).get(field)
@@ -136,7 +142,8 @@ def simulate(bundle: dict[str, Any], causal: dict[str, Any], *, seed: int, ticks
                     key = (eid, f"{comp}.{field}")
                     if since.get(key, (None,))[0] != value:
                         since[key] = (value, engine.world.tick)
-                    elif (f"{comp}.{field}", value) in in_progress and engine.world.tick - since[key][1] >= 10:
+                    elif ((f"{comp}.{field}", value) in in_progress and engine.world.tick - since[key][1] >= 10
+                          and engine.world.tick - touched.get(eid, -99) >= 10):
                         msg = f"{eid} {comp}.{field} stays '{value}' for 10+ ticks with nothing resolving it"
                         if msg not in stuck:
                             stuck.append(msg)
@@ -316,10 +323,25 @@ def conservation_findings(causal: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
+def outflow_findings(coverage: list[dict[str, Any]] | None, causal: dict[str, Any]) -> list[dict[str, Any]]:
+    """Structure assessment against the conceptual model: every way the ODD says a stock falls has a rule.
+    `coverage` maps each declared outflow to rule ids (one traced LLM call, model_scenario.outflow_coverage);
+    ids are validated here against the model, so the finding itself is deterministic given the mapping."""
+    ids = {m["mechanic_id"] for m in causal.get("mechanics", [])} | {p["process_id"] for p in causal.get("processes", [])}
+    out = []
+    for row in coverage or []:
+        if not [r for r in row.get("rules", []) if r in ids]:
+            out.append({"check": "structure", "blocking": True, "stock": row["stock"], "rule": row["outflow"],
+                        "finding": f"the conceptual model says '{row['stock']}' falls by '{row['outflow']}', but no rule "
+                                   "implements that outflow."})
+    return out
+
+
 def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6, ticks: int = 80,
-               stocks: list[dict[str, Any]] | None = None, anomaly_review: Any = None) -> dict[str, Any]:
+               stocks: list[dict[str, Any]] | None = None, anomaly_review: Any = None,
+               coverage: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     t0 = time.time()
-    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal) + unresolved_findings(causal)
+    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal) + unresolved_findings(causal) + outflow_findings(coverage, causal)
     base = [simulate(bundle, causal, seed=s, ticks=ticks) for s in range(seeds)]
     # boundedness / conservation
     steps: dict[str, float] = {}

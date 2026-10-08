@@ -1,0 +1,438 @@
+{
+  "actions": [
+    {
+      "description": "Admit incoming flu patients into available hospital beds.",
+      "fields": [
+        {
+          "name": "patient_group",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ],
+      "kind": "admit-flu-patients"
+    },
+    {
+      "description": "Assess hospitalized flu patients for a need for ventilation.",
+      "fields": [
+        {
+          "name": "patient_group",
+          "type": "entity_ref"
+        }
+      ],
+      "kind": "assess-ventilation-need"
+    },
+    {
+      "description": "Assign functional ventilators to patients who need them.",
+      "fields": [
+        {
+          "name": "patient_group",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ],
+      "kind": "assign-ventilators"
+    },
+    {
+      "description": "Provide care to hospitalized flu patients using available staff capacity.",
+      "fields": [
+        {
+          "name": "patient_group",
+          "type": "entity_ref"
+        },
+        {
+          "name": "task_count",
+          "type": "integer"
+        }
+      ],
+      "kind": "provide-patient-care"
+    },
+    {
+      "description": "Discharge recovered patients whose hospital stay is complete.",
+      "fields": [
+        {
+          "name": "patient_group",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ],
+      "kind": "discharge-recovered-patients"
+    },
+    {
+      "description": "Order additional ventilators from the medical equipment supplier.",
+      "fields": [
+        {
+          "name": "supplier",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ],
+      "kind": "order-ventilators"
+    },
+    {
+      "description": "Repair failed ventilators and return them to functional stock.",
+      "fields": [
+        {
+          "name": "ventilators",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ],
+      "kind": "repair-ventilators"
+    },
+    {
+      "description": "Have clinical staff assign functional ventilators to patients who need them.",
+      "fields": [
+        {
+          "name": "ventilators",
+          "type": "entity_ref"
+        },
+        {
+          "name": "patient_group",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ],
+      "kind": "assign-ventilators-by-staff"
+    }
+  ],
+  "components": [
+    {
+      "fields": [
+        {
+          "default": 40,
+          "name": "licensed_beds",
+          "type": "integer"
+        },
+        {
+          "default": 36,
+          "name": "occupied_beds",
+          "type": "integer"
+        },
+        {
+          "default": 4,
+          "name": "available_beds",
+          "type": "integer"
+        },
+        {
+          "default": 4,
+          "name": "daily_admission_capacity",
+          "type": "integer"
+        },
+        {
+          "default": 4,
+          "name": "daily_discharge_capacity",
+          "type": "integer"
+        }
+      ],
+      "name": "hospital"
+    },
+    {
+      "fields": [
+        {
+          "default": 0,
+          "name": "patient_count",
+          "type": "integer"
+        },
+        {
+          "default": "hospitalized",
+          "name": "illness_stage",
+          "type": "string"
+        },
+        {
+          "default": 0.05,
+          "name": "ventilation_need_probability",
+          "type": "number"
+        },
+        {
+          "default": "not ventilated",
+          "name": "ventilation_status",
+          "type": "string"
+        },
+        {
+          "default": 0.25,
+          "name": "daily_death_risk_without_needed_ventilation",
+          "type": "number"
+        },
+        {
+          "default": 0.08,
+          "name": "daily_death_risk_with_ventilation_when_needed",
+          "type": "number"
+        },
+        {
+          "default": 0.1,
+          "name": "daily_recovery_probability",
+          "type": "number"
+        },
+        {
+          "default": 7,
+          "name": "length_of_stay_remaining",
+          "type": "integer"
+        }
+      ],
+      "name": "patient_group"
+    },
+    {
+      "fields": [
+        {
+          "default": 5,
+          "name": "arrival_rate",
+          "type": "number"
+        },
+        {
+          "default": 0.15,
+          "name": "probability_of_needing_ventilation",
+          "type": "number"
+        },
+        {
+          "default": 7,
+          "name": "length_of_stay",
+          "type": "integer"
+        }
+      ],
+      "name": "incoming_patients"
+    },
+    {
+      "fields": [
+        {
+          "default": 20,
+          "name": "staff_count",
+          "type": "integer"
+        },
+        {
+          "default": 20,
+          "name": "available_staff",
+          "type": "integer"
+        },
+        {
+          "default": 120,
+          "name": "daily_staff_capacity",
+          "type": "integer"
+        },
+        {
+          "default": 0.01,
+          "name": "staff_absence_rate",
+          "type": "number"
+        }
+      ],
+      "name": "clinical_staff"
+    },
+    {
+      "fields": [
+        {
+          "default": 6,
+          "name": "owned_count",
+          "type": "integer"
+        },
+        {
+          "default": 6,
+          "name": "functional_count",
+          "type": "integer"
+        },
+        {
+          "default": 0,
+          "name": "in_use_count",
+          "type": "integer"
+        },
+        {
+          "default": 0.001,
+          "name": "failure_rate",
+          "type": "number"
+        },
+        {
+          "default": 3,
+          "name": "repair_time",
+          "type": "integer"
+        }
+      ],
+      "name": "ventilator_stock"
+    },
+    {
+      "fields": [
+        {
+          "default": 20,
+          "name": "available_ventilators",
+          "type": "integer"
+        },
+        {
+          "default": 7,
+          "name": "order_lead_time",
+          "type": "integer"
+        },
+        {
+          "default": 10,
+          "name": "maximum_order_quantity_per_day",
+          "type": "integer"
+        }
+      ],
+      "name": "supplier_stock"
+    }
+  ],
+  "entities": [
+    {
+      "categories": [
+        "hospital",
+        "place"
+      ],
+      "components": {
+        "hospital": {
+          "available_beds": 4,
+          "daily_admission_capacity": 4,
+          "daily_discharge_capacity": 4,
+          "licensed_beds": 40,
+          "occupied_beds": 36
+        }
+      },
+      "id": "hospital",
+      "label": "Hospital"
+    },
+    {
+      "categories": [
+        "flu patient",
+        "patient group"
+      ],
+      "components": {
+        "patient_group": {
+          "daily_death_risk_with_ventilation_when_needed": 0.08,
+          "daily_death_risk_without_needed_ventilation": 0.25,
+          "daily_recovery_probability": 0.1,
+          "illness_stage": "hospitalized",
+          "length_of_stay_remaining": 7,
+          "patient_count": 36,
+          "ventilation_need_probability": 0.05,
+          "ventilation_status": "not ventilated"
+        }
+      },
+      "id": "hospitalized-flu-patients",
+      "label": "Hospitalized flu patients",
+      "owner_ref": "place:hospital"
+    },
+    {
+      "categories": [
+        "incoming patient",
+        "patient group"
+      ],
+      "components": {
+        "incoming_patients": {
+          "arrival_rate": 5,
+          "length_of_stay": 7,
+          "probability_of_needing_ventilation": 0.15
+        }
+      },
+      "id": "incoming-flu-patients",
+      "label": "Incoming flu patients",
+      "owner_ref": "place:hospital"
+    },
+    {
+      "categories": [
+        "clinical staff",
+        "actor"
+      ],
+      "components": {
+        "clinical_staff": {
+          "available_staff": 20,
+          "daily_staff_capacity": 120,
+          "staff_absence_rate": 0.01,
+          "staff_count": 20
+        }
+      },
+      "id": "clinical-staff",
+      "label": "Clinical staff",
+      "owner_ref": "place:hospital"
+    },
+    {
+      "categories": [
+        "ventilator",
+        "medical equipment"
+      ],
+      "components": {
+        "ventilator_stock": {
+          "failure_rate": 0.001,
+          "functional_count": 6,
+          "in_use_count": 0,
+          "owned_count": 6,
+          "repair_time": 3
+        }
+      },
+      "id": "hospital-ventilators",
+      "label": "Hospital ventilators",
+      "owner_ref": "place:hospital"
+    },
+    {
+      "categories": [
+        "supplier",
+        "actor"
+      ],
+      "components": {
+        "supplier_stock": {
+          "available_ventilators": 20,
+          "maximum_order_quantity_per_day": 10,
+          "order_lead_time": 7
+        }
+      },
+      "id": "medical-equipment-supplier",
+      "label": "Medical equipment supplier"
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "hospital": {
+        "kind": "emoji",
+        "value": "\ud83c\udfe5"
+      },
+      "patient": {
+        "kind": "emoji",
+        "value": "\ud83e\udd12"
+      },
+      "staff": {
+        "kind": "emoji",
+        "value": "\ud83e\ude7a"
+      },
+      "supplier": {
+        "kind": "emoji",
+        "value": "\ud83d\ude9a"
+      },
+      "ventilator": {
+        "kind": "emoji",
+        "value": "\ud83e\udec1"
+      }
+    },
+    "category_assets": {
+      "clinical staff": "staff",
+      "flu patient": "patient",
+      "hospital": "hospital",
+      "incoming patient": "patient",
+      "supplier": "supplier",
+      "ventilator": "ventilator"
+    },
+    "station_roles": {
+      "hospital": "surface",
+      "supplier": "source"
+    }
+  },
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "content_version": 1,
+    "id": "flu-surge-hospital",
+    "label": "Flu Surge Hospital",
+    "location": "hospital",
+    "summary": "A hospital, its patients, staff, ventilators, and supplier maintain care capacity during an ongoing flu surge."
+  }
+}

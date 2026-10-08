@@ -1,0 +1,15 @@
+{
+  "attempts": 31,
+  "conditions_changed": [],
+  "cost": 0.014219599999999995,
+  "ended": "max_ticks",
+  "events": 121,
+  "final_tick": 30,
+  "plan_spend_after": 3.8032345499999978,
+  "profile_id": "aade1f93343dbbed",
+  "resident_calls": 31,
+  "run_id": "hospital-20261007T190653-full/run-20261007T200322",
+  "seconds": 113.3,
+  "situation_briefing": "A 40-bed hospital with 6 ventilators faces a flu surge; staff decide who gets ventilated and whether to order more.",
+  "trace_id": "any-scenario-run-hospital-20261007T190653-full-20261007T200322"
+}

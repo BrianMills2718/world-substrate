@@ -200,4 +200,26 @@ These facts decide which planning checks apply. The machine record is `any_scena
 
 ## Current State
 
-- Demonstrated: none yet. The goal was authored on 2026-10-07.
+Updated 2026-10-07 at goal close. Evidence is under `spikes/any-scenario-2026-10/evidence/`; tests are in `tests/test_any_scenario_poc.py` (13 tests, run by `scripts/check_project.py`).
+
+| ID | Status | Evidence |
+| --- | --- | --- |
+| C1 | met | Hospital text to typed model with no hand edits. Traces `any-scenario-hospital-{odd,bundle,mechanics,stocks}-20261007T190653` (`evidence/hospital/generated/`). |
+| C2 | met (differential) | Removing the death rule adds exactly two "no rule implements death" findings (`evidence/hospital/full/c2.json`). The full model still has two real death gaps; see the deviations below. |
+| C3 | met (condition changed) | The driver attempts to drive on an empty tank (`e00053`, accepted), the world stops the truck (`e00055`), and the next decision cites "operational_status: stopped" (`evidence/truck/run/`). |
+| C4 | met | Two fuel-from-nothing rules fail conservation and become recorded rulings. A tow rule passes, is installed mid-run, and resolves (`e00058`, `e00060`: mile 100 to 120, run reaches its end). |
+| C5 | met | `evidence/truck/run/frame-stop.png`, `frame-tow.png` and `evidence/hospital/run/frame-death.png`: the existing World Builder replay plus an Engine-event panel. |
+| C6 | met | `python3 -m unittest tests.test_any_scenario_poc`: 13 OK. The parallel-implementation test confirms one duration primitive and that replaying the Engine events reproduces the final world. |
+
+### Deviations from the plan
+
+- **Reachability** uses a guided simulation, not unified-planning/ENHSP: PDDL2.1 cannot express World Substrate processes.
+- **The AI driver never chose to skip the station.** It sees its exact fuel and refuels every time. The run-dry evidence uses a recorded condition change (station fuel 0).
+- **Rule language limits:**
+  - A process changes only its own entity, so the driver does not move with the truck and a dying patient does not free a ventilator or a bed.
+  - There is no randomness, so a 0.1% failure rate became one failure per tick.
+- **The extreme-conditions test reviewed by the AI** did not reliably separate the full and death-removed models. The deterministic outflow-coverage check (structure assessment against the ODD) did. The outflow mapping call itself varies on non-harm outflows.
+- **The hospital death rule** came from a targeted rule-writer repair whose problem statement was written by the agent from the check findings. The rule is generated; the repair was steered.
+- **Rule writing uses `gpt-5.6-sol`.** `gpt-5.6-luna` rules failed to compile or chose non-actors.
+- **Sensing** lets the driver see remote facts (the station's fuel from mile 0). Sensing by distance is open.
+- **Spend** at close: about $3.80 of $5.

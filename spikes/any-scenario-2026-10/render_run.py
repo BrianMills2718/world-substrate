@@ -42,6 +42,9 @@ def to_trace(run_dir: Path, bundle: dict[str, Any]) -> dict[str, Any]:
         for a in [x for x in attempts if x["tick"] == tick]:
             perf = a.get("performed") or {}
             did = perf.get("action_record")
+            if not did and a.get("decision") == "unlisted":  # show the off-menu attempt, not "wait"
+                kind = perf.get("action_kind") or ("gm-ruling" if perf.get("status") == "ruling" else "unlisted")
+                did = {"actor": a["actor"], "kind": kind}
             rows[a["actor"]] = {
                 "wanted": did, "did": did, "status": perf.get("status") if did else "no_action",
                 "retried": False, "said": a.get("belief"), "refused_because": [],

@@ -92,13 +92,17 @@ class MidRunGameMaster:
                                          engine.world.revision, "controller": "llm-resident"})
             events.append(outcome["event"])
             entry = {"status": outcome["status"], "event_id": outcome["event"]["event_id"], "written_mid_run": True,
+                     "action_record": {k: v for k, v in (outcome["event"].get("observation") or {}).items()} or None,
+                     "action_kind": kinds[0] if kinds else None,
                      "rules_installed": installed, "gm_trace": trace}
         else:
             ruling = engine.submit({"actor": actor, "kind": "gm-ruling", "base_revision": engine.world.revision,
                                     "controller": "game-master"})
             events.append(ruling["event"])
+            why = (record.get("checks") or {}).get("findings_on_new_rule") or [record.get("error") or "the checks got worse"]
             entry = {"status": "ruling", "event_id": ruling["event"]["event_id"], "written_mid_run": False,
-                     "ruling": "No rule could be added that passes the checks; the attempt has no effect in this world.",
+                     "ruling": "No rule could be added that passes the checks, so the attempt has no effect in this "
+                               "world. The proposed rule failed because: " + " ".join(why)[:400],
                      "gm_trace": trace}
         record.update(entry)
         self.written.append(record)

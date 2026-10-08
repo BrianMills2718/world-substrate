@@ -1,0 +1,16 @@
+{
+  "clinical-staff": [
+    "Clinical staff.available_staff",
+    "Hospital ventilators.functional_count",
+    "Hospital ventilators.in_use_count",
+    "Hospital.available_beds",
+    "Hospital.occupied_beds",
+    "Hospitalized flu patients.illness_stage",
+    "Hospitalized flu patients.ventilation_need_probability",
+    "Hospitalized flu patients.ventilation_status"
+  ],
+  "medical-equipment-supplier": [
+    "Medical equipment supplier.available_ventilators",
+    "Medical equipment supplier.order_lead_time"
+  ]
+}

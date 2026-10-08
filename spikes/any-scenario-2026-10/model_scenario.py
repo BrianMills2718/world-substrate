@@ -136,8 +136,11 @@ def sensing_map(bundle: dict[str, Any], odd: dict[str, Any], *, trace_id: str, m
         if row.actor_id in actors:
             out[row.actor_id] = sorted(k for k in row.observable if k in keys)  # client-side validation
     missing = [a for a in actors if a not in out]
+    for a in missing:  # fallback, recorded: an actor the mapping left out senses only its own entity
+        label = next(e.get("label", e["id"]) for e in bundle["entities"] if e["id"] == a)
+        out[a] = sorted(k for k in keys if k.startswith(f"{label}."))
     if missing:
-        raise ValueError(f"sensing map omitted actors: {missing}")
+        out["_fallback_own_fields_only"] = missing
     return out, result
 
 
@@ -226,6 +229,36 @@ def rules_summary(causal: dict[str, Any], limit: int = 2400) -> str:
         eff = ", ".join(f"{e['path'].removeprefix('components.')} {e['op']} {json.dumps(e.get('value'))}" for e in p.get("effects", []))
         rows.append(f"process {p['process_id']} then {eff}")
     return " | ".join(rows)[:limit]
+
+
+def outflow_coverage(odd: dict[str, Any], causal: dict[str, Any], *, trace_id: str, max_budget: float = 0.03):
+    """For each outflow the ODD declares, name the rule ids that implement it (closed question, one traced call)."""
+    from pydantic import BaseModel
+    from llm_client import call_llm_structured
+
+    class Row(BaseModel):
+        stock: str
+        outflow: str
+        rules: list[str]
+
+    class Coverage(BaseModel):
+        rows: list[Row]
+
+    rules = [{"id": m["mechanic_id"], "kind": "action", "effects": m.get("effects", []), "rationale": m.get("rationale", "")}
+             for m in causal.get("mechanics", [])]
+    rules += [{"id": p["process_id"], "kind": "process", "effects": p.get("effects", []), "rationale": p.get("rationale", "")}
+              for p in causal.get("processes", [])]
+    wanted = [{"stock": st.get("stock"), "outflow": o} for st in odd.get("stocks", []) for o in st.get("outflows", [])]
+    cov, result = call_llm_structured(
+        DEFAULT_MODEL,
+        [{"role": "system", "content": (
+            "For each (stock, outflow) pair from a conceptual model, list the ids of the rules whose effects actually "
+            "implement that outflow (the rule removes or reduces what the outflow describes). Use [] when no rule does. "
+            "Copy ids exactly. Answer every pair, in order.")},
+         {"role": "user", "content": json.dumps({"pairs": wanted, "rules": rules})}],
+        Coverage, task="world-substrate-outflow-coverage", trace_id=trace_id, max_budget=max_budget,
+        reasoning_effort="low", num_retries=1)
+    return [r.model_dump() for r in cov.rows], result
 
 
 def flows(bundle: dict[str, Any], causal: dict[str, Any]) -> dict[str, Any]:
