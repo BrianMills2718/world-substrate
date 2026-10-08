@@ -65,8 +65,8 @@ One writer, reversible proof of concept, one repository.
 | ID | Criterion | Evidence to report |
 | --- | --- | --- |
 | C1 | The modeling step turns the hospital text into a structured model without hand edits | The model file plus the trace ID of the LLM call that produced it |
-| C2 | The extreme-conditions check flags the model with "patients can die" removed, and passes the full model | Check output with counts and exit status for both models |
-| C3 | The truck runs dry partway in one run, the resident learns it only by observation, and the refuel run arrives | Structured event list for both runs, with tick numbers and the resident's observation records |
+| C2 | met | Extreme-conditions check (functional ventilators at zero, closed question, majority of 3) sees deaths in the full model 3/3 and none in the death-removed model 0/3, which it flags. Same in a repeat run (`evidence/hospital/full/c2-extreme*.json`). Outflow coverage also adds exactly two death findings when the rule is removed (`c2.json`). |
+| C3 | met except the canonical skip (blocked) | The driver attempts to drive on an empty tank (`e00053`, accepted), the world stops the truck (`e00055`), and the next decision cites "operational_status: stopped". The canonical "driver skips the station" never happened: in 8 runs of the canonical text and 1 run with a "sure the fuel will last" briefing, the AI driver refueled every time. The run-dry evidence uses a recorded condition change (station fuel 0). |
 | C4 | A game-master-written rule passes the checks and is applied through `Engine.submit`; an invalid one fails conservation and falls back to a recorded ruling | Rule text, check output, and the Engine event IDs carrying the "written mid-run" or "ruling" flag |
 | C5 | Each scenario's run renders one living-scene frame from its recorded data | Rendered file path plus a screenshot taken through `agent-browser` or `npx playwright screenshot` |
 | C6 | The local verbose pytest run (`pytest -v` over the touched tests) | Terminal output saved to the run folder | Every test named in the trace is listed: the Engine attempt-over-time tests, the parallel-implementation test, and the existing Engine and Concordia-spike tests. None is skipped or deselected, and the totals line matches those names, along with the exit code. |
@@ -218,8 +218,8 @@ Updated 2026-10-07 at goal close. Evidence is under `spikes/any-scenario-2026-10
 - **Rule language limits:**
   - A process changes only its own entity, so the driver does not move with the truck and a dying patient does not free a ventilator or a bed.
   - There is no randomness, so a 0.1% failure rate became one failure per tick.
-- **The extreme-conditions test reviewed by the AI** did not reliably separate the full and death-removed models. The deterministic outflow-coverage check (structure assessment against the ODD) did. The outflow mapping call itself varies on non-harm outflows.
+- **The extreme-conditions test** first used an open AI review ("anything implausible?"), which did not reliably separate the models. The closed-question version ("does the expected consequence happen?", majority of 3) did, in two runs. The outflow-coverage check is a second detector; its mapping call varies on non-harm outflows.
 - **The hospital death rule** came from a targeted rule-writer repair whose problem statement was written by the agent from the check findings. The rule is generated; the repair was steered.
 - **Rule writing uses `gpt-5.6-sol`.** `gpt-5.6-luna` rules failed to compile or chose non-actors.
 - **Sensing** lets the driver see remote facts (the station's fuel from mile 0). Sensing by distance is open.
-- **Spend** at close: about $3.80 of $5.
+- **Spend** at close: about $3.93 of $5.

@@ -21,7 +21,7 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1]), str(HERE.parents[1] / "src")]
 
 from checks import run_checks  # noqa: E402
-from model_scenario import anomaly_reviewer, outflow_coverage  # noqa: E402
+from model_scenario import anomaly_reviewer, consequence_checker, outflow_coverage  # noqa: E402
 
 
 def stock_findings(report: dict, stock: str) -> list[dict]:
@@ -54,28 +54,38 @@ def main() -> int:
         trace = f"any-scenario-c2-{label}-{stamp}"
         coverage, _ = outflow_coverage(model["odd"], c, trace_id=f"{trace}-coverage")
         report = run_checks(bundle, c, stocks=model.get("stock_map") or [],
-                            anomaly_review=anomaly_reviewer(model["scenario_text"], trace_id=trace), coverage=coverage)
+                            anomaly_review=anomaly_reviewer(model["scenario_text"], trace_id=trace), coverage=coverage,
+                            consequence_check=consequence_checker(model["scenario_text"], trace_id=f"{trace}-extreme"))
+        extreme = [f for f in report["findings"] if f["check"] == "extreme_conditions" and f.get("stock") == args.stock
+                   and f.get("rule") == "expected-consequence"]
         hits = stock_findings(report, args.stock)
         harm = [f for f in report["findings"] if f["check"] == "structure" and f.get("rule") in args.harm_outflow]
         out.setdefault("outflow_coverage", {})[label] = coverage
         out["runs"][label] = {"trace_prefix": trace, "blocking_for_stock": len(hits),
                               "missing_harm_outflow": [f["finding"] for f in harm],
+                              "extreme_consequence_missing": [f["finding"] for f in extreme],
                               "findings": [h["finding"] for h in hits], "all_counts": report["counts"],
                               "extreme_row": [r for r in report["extreme_conditions"] if r["stock"] == args.stock]}
         print(f"[{label}] extreme/anomaly findings for {args.stock}: {len(hits)}; missing harm outflow: "
               f"{len(harm)} trace={trace}")
         for h in harm:
             print(f"   * {h['finding'][:300]}")
+        for h in extreme:
+            print(f"   ! {h['finding'][:300]}")
+        row = [r for r in report["extreme_conditions"] if r["stock"] == args.stock]
+        if row and row[0].get("consequence"):
+            print(f"   extreme-conditions votes: {[v['observed'] for v in row[0]['consequence']['votes']]}")
         for h in hits:
             print(f"   - {h['finding'][:300]}")
     (d / f"c2-{stamp}.json").write_text(json.dumps(out, indent=2))
     full, reduced = out["runs"]["full"], out["runs"]["without_harm_rule"]
     ok_structure = not full["missing_harm_outflow"] and bool(reduced["missing_harm_outflow"])
-    ok_extreme = full["blocking_for_stock"] == 0 and reduced["blocking_for_stock"] > 0
+    ok_extreme = not full["extreme_consequence_missing"] and bool(reduced["extreme_consequence_missing"])
     out["result"] = {"outflow_coverage_detects": ok_structure, "extreme_review_detects": ok_extreme}
     (d / f"c2-{stamp}.json").write_text(json.dumps(out, indent=2))
     print(f"[result] outflow coverage separates full/reduced: {ok_structure}; extreme review separates them: {ok_extreme}")
-    ok = ok_structure
+    ok = ok_structure or ok_extreme
+    out["result"]["c2_extreme_conditions_check_separates"] = ok_extreme
     print(f"RESULT c2={'PASS' if ok else 'FAIL'} report={d / f'c2-{stamp}.json'} exit={0 if ok else 1}")
     return 0 if ok else 1
 

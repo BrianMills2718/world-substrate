@@ -2,7 +2,7 @@
   "schema_version": "method-activation-facts.v1",
   "record_type": "method_activation_facts",
   "plan_ref": "docs/plans/any_scenario_poc.md",
-  "plan_sha256": "fc467dbc1c035f58539a288748d410426e2510b010a06a8d2329b9dcf1edd5aa",
+  "plan_sha256": "263bd624e64e423187743d45466d900a52c42195b59070397950d55a495a86b4",
   "path_decision_ref": "docs/plans/any_scenario_poc/path-decision.json",
   "path_decision_sha256": "9aed40c7351e56b82f7883bc16b0fce8fbe2df4ac9bd26d951880ce1af8d9ad7",
   "facts": {
@@ -17,5 +17,5 @@
     "llm_central": "derived_current_boundary",
     "irreversible_or_spend_action": "derived_current_boundary"
   },
-  "recorded_at": "2026-10-08T00:08:02Z"
+  "recorded_at": "2026-10-08T00:28:21Z"
 }

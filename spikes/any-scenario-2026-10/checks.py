@@ -339,7 +339,7 @@ def outflow_findings(coverage: list[dict[str, Any]] | None, causal: dict[str, An
 
 def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6, ticks: int = 80,
                stocks: list[dict[str, Any]] | None = None, anomaly_review: Any = None,
-               coverage: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+               coverage: list[dict[str, Any]] | None = None, consequence_check: Any = None) -> dict[str, Any]:
     t0 = time.time()
     findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal) + unresolved_findings(causal) + outflow_findings(coverage, causal)
     base = [simulate(bundle, causal, seed=s, ticks=ticks) for s in range(seeds)]
@@ -407,7 +407,16 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
                              "finding": (f"with {eid} {field} set to zero the world behaves as if nothing were missing "
                                          f"({'identical runs' if identical else 'the stock just goes negative'}): "
                                          "a rule for what happens when it runs out is missing.")})
-        elif anomaly_review is not None:  # behavior anomaly test on a guided run starting from zero
+        if consequence_check is not None and not consequence_free:  # expert-expected consequence must appear
+            run0c = simulate(bundle, causal, seed=100, ticks=ticks, override=(eid, comp, field, 0), guided=True)
+            verdict = consequence_check(f"{eid} {field}", "\n".join(run0c["log"][:150]))
+            extreme_rows[-1]["consequence"] = verdict
+            if not verdict["observed"]:
+                findings.append({"check": "extreme_conditions", "blocking": True, "stock": f"{eid}.{comp}.{field}",
+                                 "rule": "expected-consequence",
+                                 "finding": f"with {eid} {field} at zero the expected consequence never happens in the "
+                                            f"run ({verdict['expected'][:160]}): a rule for it is missing."})
+        if anomaly_review is not None and not consequence_free:  # behavior anomaly test on a guided run from zero
             run0 = simulate(bundle, causal, seed=100, ticks=ticks, override=(eid, comp, field, 0), guided=True)
             text = "\n".join(run0["log"][:120])
             for item in anomaly_review(f"{eid} {field}", text):

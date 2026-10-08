@@ -161,6 +161,19 @@ def check_removing_the_death_rule_is_detected_by_outflow_coverage():
     assert all("death" in f.lower() for f in new)
 
 
+def check_extreme_conditions_check_flags_the_death_removed_model():
+    """C2 as named: the closed-question extreme-conditions test (functional ventilators at zero) saw the expected
+    consequence in the full model and not in the death-removed model, in two independent recorded runs."""
+    for name in ("c2-extreme.json", "c2-extreme-repeat.json"):
+        c2 = json.loads((HOSPITAL / "full" / name).read_text())
+        full, reduced = c2["runs"]["full"], c2["runs"]["without_harm_rule"]
+        assert full["extreme_consequence_missing"] == []
+        assert len(reduced["extreme_consequence_missing"]) == 1
+        votes_full = [v["observed"] for v in full["extreme_row"][0]["consequence"]["votes"]]
+        votes_reduced = [v["observed"] for v in reduced["extreme_row"][0]["consequence"]["votes"]]
+        assert all(votes_full) and not any(votes_reduced)
+
+
 def check_generated_hospital_model_omitted_death():
     causal = json.loads((HOSPITAL / "generated/causal.json").read_text())
     killers = [r for r in [*causal["mechanics"], *causal.get("processes", [])]
@@ -218,6 +231,9 @@ class AnyScenarioPocTests(unittest.TestCase):
 
     def test_removing_the_death_rule_is_detected_by_outflow_coverage(self):
         check_removing_the_death_rule_is_detected_by_outflow_coverage()
+
+    def test_extreme_conditions_check_flags_the_death_removed_model(self):
+        check_extreme_conditions_check_flags_the_death_removed_model()
 
     def test_generated_hospital_model_omitted_death(self):
         check_generated_hospital_model_omitted_death()
