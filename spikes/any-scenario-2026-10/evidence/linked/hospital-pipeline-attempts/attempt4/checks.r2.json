@@ -1,0 +1,502 @@
+{
+  "behavior_anomalies": [
+    {
+      "quote": "t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4",
+      "why": "Four flu patients arrive while the hospital has zero available ventilators, but the run log contains no ventilation denial, unmet ventilator demand, or other consequence for patients dependent on ventilatory support. It only continues recording arrivals."
+    },
+    {
+      "quote": "t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4",
+      "why": "Patients begin arriving while the hospital has zero functional ventilators, but the run shows no patients being unable to receive ventilation, no alternative disposition, and no ventilator-ordering response. The same omission persists as arrivals increase."
+    },
+    {
+      "quote": "t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4",
+      "why": "Four patients arrive while waiting_patients is initially zero, but the log shows no corresponding increase in waiting patients or assignment of those patients to ventilation/care."
+    },
+    {
+      "quote": "t14 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 42->50",
+      "why": "The hospital has 40 beds, yet the logged patient count rises to 50 and continues increasing, with no diversion, transfer, discharge, or other capacity response shown."
+    }
+  ],
+  "counts": {
+    "advisory": 15,
+    "blocking": 30,
+    "depletable_stocks": 6,
+    "rules": 12,
+    "rules_fired": 1
+  },
+  "extreme_conditions": [
+    {
+      "consequence": {
+        "expected": "Patients who depend on ventilators would go without ventilation, resulting in treatment failure or death.",
+        "observed": false,
+        "votes": [
+          {
+            "consequence_expected": true,
+            "expected": "Patients who depend on ventilators would go without ventilation, resulting in treatment failure or death.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients needing ventilation would go without ventilators, resulting in treatment failure and potentially deaths.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients needing ventilation would go without it, resulting in treatment failure or harm when available ventilators are exhausted.",
+            "observed": false,
+            "quote": ""
+          }
+        ]
+      },
+      "identical_to_baseline": false,
+      "stock": "hospital.hospital_capacity.available_ventilators",
+      "went_negative_from_zero": false
+    },
+    {
+      "consequence": {
+        "expected": "Patients needing ventilation would go untreated, causing ventilator-dependent care to fail and potentially resulting in patient harm or death.",
+        "observed": false,
+        "votes": [
+          {
+            "consequence_expected": true,
+            "expected": "Patients needing ventilation would go untreated, causing ventilator-dependent care to fail and potentially resulting in patient harm or death.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients beyond available ventilator capacity would be unable to receive ventilation, causing treatment failure and potential harm or death.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients exceeding the available ventilator capacity would go without ventilation, leading to treatment failure or harm.",
+            "observed": false,
+            "quote": ""
+          }
+        ]
+      },
+      "identical_to_baseline": false,
+      "stock": "hospital.hospital_capacity.functional_ventilators",
+      "went_negative_from_zero": false
+    },
+    {
+      "consequence": {
+        "expected": "Patients dependent on hospital beds would eventually face bed-capacity failure, with admissions denied or care delayed as arrivals exceed the 40-bed capacity.",
+        "observed": false,
+        "votes": [
+          {
+            "consequence_expected": true,
+            "expected": "Patients dependent on hospital beds would eventually face bed-capacity failure, with admissions denied or care delayed as arrivals exceed the 40-bed capacity.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients cannot be accommodated because the hospital has no occupied-bed capacity available, leading to admission failure or patient harm.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients needing hospitalization cannot be admitted or treated, resulting in care failure and potential harm.",
+            "observed": false,
+            "quote": ""
+          }
+        ]
+      },
+      "identical_to_baseline": true,
+      "stock": "hospital.hospital_capacity.occupied_beds",
+      "went_negative_from_zero": false
+    },
+    {
+      "consequence": {
+        "expected": "Patients needing ventilation would go without ventilators, resulting in treatment failure or deaths as demand exceeds the available six ventilators.",
+        "observed": false,
+        "votes": [
+          {
+            "consequence_expected": true,
+            "expected": "Patients needing ventilation would go without ventilators, resulting in treatment failure or deaths as demand exceeds the available six ventilators.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Ventilator-dependent patients go without needed ventilation, causing treatment failure and potentially preventable deaths.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": false,
+            "expected": "No harm or failure is expected merely because pending ventilator orders are at zero; an empty order queue is benign.",
+            "observed": true,
+            "quote": ""
+          }
+        ]
+      },
+      "identical_to_baseline": true,
+      "stock": "hospital.hospital_capacity.pending_ventilator_orders",
+      "went_negative_from_zero": false
+    },
+    {
+      "consequence": {
+        "expected": "Patients needing ventilation would go untreated, leading to deterioration or death when ventilators_in_use is zero.",
+        "observed": false,
+        "votes": [
+          {
+            "consequence_expected": true,
+            "expected": "Patients needing ventilation would go untreated, leading to deterioration or death when ventilators_in_use is zero.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients needing ventilation would be unable to receive it, leading to treatment failure or death.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients who depend on ventilators would go without required ventilation, causing treatment failure and potentially death.",
+            "observed": false,
+            "quote": ""
+          }
+        ]
+      },
+      "identical_to_baseline": true,
+      "stock": "hospital.hospital_capacity.ventilators_in_use",
+      "went_negative_from_zero": false
+    },
+    {
+      "consequence": {
+        "expected": "No harm or failure is expected when the waiting-patient queue is empty.",
+        "observed": true,
+        "votes": [
+          {
+            "consequence_expected": false,
+            "expected": "No harm or failure is expected when the waiting-patient queue is empty.",
+            "observed": true,
+            "quote": ""
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients are left waiting for ventilation, creating risk of deterioration or death due to insufficient ventilators.",
+            "observed": true,
+            "quote": "t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4"
+          },
+          {
+            "consequence_expected": true,
+            "expected": "Patients lacking timely ventilator access, leading to harm or treatment failure as the waiting queue grows.",
+            "observed": true,
+            "quote": "t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4"
+          }
+        ]
+      },
+      "identical_to_baseline": true,
+      "stock": "flu-arrivals.arrival_stream.waiting_patients",
+      "went_negative_from_zero": false
+    }
+  ],
+  "findings": [
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients awaiting admission' rises, but no rule ever increases flu-arrivals.arrival_stream.waiting_patients.",
+      "stock": "patients awaiting admission"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule admit-flu-patients-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital_capacity']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule order-hospital-ventilators-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital_capacity']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "order-hospital-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule deliver-ordered-ventilators-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital_capacity']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action admit-flu-patients-v1 refuses up front with check 'the hospital has enough available beds' on actor.components.hospital_capacity.available_beds, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action deliver-ordered-ventilators-v1 refuses up front with check 'the order has enough units due' on order.components.supplier_capacity.units_due, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "attempt_vs_outcome",
+      "finding": "action deliver-ordered-ventilators-v1 refuses up front with check 'the hospital has enough pending units' on actor.components.hospital_capacity.pending_ventilator_orders, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": false,
+      "check": "conservation",
+      "finding": "rule record-flu-arrivals-v1 creates patient_group.number_of_patients from nothing; elsewhere that quantity only moves between things, so it must come from a stock that loses it.",
+      "rule": "record-flu-arrivals-v1"
+    },
+    {
+      "blocking": true,
+      "check": "conservation",
+      "finding": "rule order-hospital-ventilators-v1 creates supplier_capacity.units_due from nothing; elsewhere that quantity only moves between things, so it must come from a stock that loses it.",
+      "rule": "order-hospital-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'occupied beds' falls by 'Transfers out if transfers are represented', but no rule implements that outflow.",
+      "rule": "Transfers out if transfers are represented",
+      "stock": "occupied beds"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'functional ventilators' falls by 'Permanent equipment loss if represented', but no rule implements that outflow.",
+      "rule": "Permanent equipment loss if represented",
+      "stock": "functional ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators in use' falls by 'Staff reassignment', but no rule implements that outflow.",
+      "rule": "Staff reassignment",
+      "stock": "ventilators in use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'pending ventilator orders' falls by 'Order cancellations if represented', but no rule implements that outflow.",
+      "rule": "Order cancellations if represented",
+      "stock": "pending ventilator orders"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'pending ventilator orders' falls by 'Unfulfilled orders expiring if represented', but no rule implements that outflow.",
+      "rule": "Unfulfilled orders expiring if represented",
+      "stock": "pending ventilator orders"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients awaiting admission' falls by 'Deaths before admission', but no rule implements that outflow.",
+      "rule": "Deaths before admission",
+      "stock": "patients awaiting admission"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients awaiting admission' falls by 'Transfers to another facility if represented', but no rule implements that outflow.",
+      "rule": "Transfers to another facility if represented",
+      "stock": "patients awaiting admission"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "process intake-waiting-flu-arrivals links waiting_group by co_located, but every entity shares the one location 'hospital', so the link binds every matching entity; pin the place with a check (e.g. equal positions) or use a ref: link.",
+      "rule": "intake-waiting-flu-arrivals"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule admit-flu-patients-v1 never fired in 10 random runs.",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule allocate-clinical-ventilation-priority-v1 never fired in 10 random runs.",
+      "rule": "allocate-clinical-ventilation-priority-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule order-hospital-ventilators-v1 never fired in 10 random runs.",
+      "rule": "order-hospital-ventilators-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule deliver-ordered-ventilators-v1 never fired in 10 random runs.",
+      "rule": "deliver-ordered-ventilators-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule advance-admitted-flu-care-v1 never fired in 10 random runs.",
+      "rule": "advance-admitted-flu-care-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule assign-required-ventilation never fired in 10 random runs.",
+      "rule": "assign-required-ventilation"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule complete-flu-treatment never fired in 10 random runs.",
+      "rule": "complete-flu-treatment"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule intake-waiting-flu-arrivals never fired in 10 random runs.",
+      "rule": "intake-waiting-flu-arrivals"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule paired-mechanical-ventilator-failures never fired in 10 random runs.",
+      "rule": "paired-mechanical-ventilator-failures"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule fatal-critical-flu-outcome never fired in 10 random runs.",
+      "rule": "fatal-critical-flu-outcome"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule release-unneeded-ventilation never fired in 10 random runs.",
+      "rule": "release-unneeded-ventilation"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "stuck activity: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it.",
+      "rule": "admitted-patients patient_group.care_status"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital available_ventilators at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "hospital.hospital_capacity.available_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital available_ventilators at zero the expected consequence never happens in the run (Patients who depend on ventilators would go without ventilation, resulting in treatment failure or death.): a rule for it is missing.",
+      "rule": "expected-consequence",
+      "stock": "hospital.hospital_capacity.available_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital functional_ventilators at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "hospital.hospital_capacity.functional_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital functional_ventilators at zero the expected consequence never happens in the run (Patients needing ventilation would go untreated, causing ventilator-dependent care to fail and potentially resulting in patient harm or death.): a rule for it is missing.",
+      "rule": "expected-consequence",
+      "stock": "hospital.hospital_capacity.functional_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital occupied_beds at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "hospital.hospital_capacity.occupied_beds"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital occupied_beds set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "hospital.hospital_capacity.occupied_beds"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital pending_ventilator_orders at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "hospital.hospital_capacity.pending_ventilator_orders"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital pending_ventilator_orders set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "hospital.hospital_capacity.pending_ventilator_orders"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital ventilators_in_use at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "hospital.hospital_capacity.ventilators_in_use"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital ventilators_in_use set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "hospital.hospital_capacity.ventilators_in_use"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with flu-arrivals waiting_patients at zero: admitted-patients patient_group.care_status stays 'admitted' for 10+ ticks with nothing resolving it; a rule for what happens when it runs out is missing.",
+      "rule": "admitted-patients patient_group.care_status",
+      "stock": "flu-arrivals.arrival_stream.waiting_patients"
+    },
+    {
+      "blocking": false,
+      "check": "extreme_conditions",
+      "finding": "with flu-arrivals waiting_patients at zero nothing changed, which matches what an expert expects (Patients who depend on ventilators would go untreated, potentially resulting in patient deterioration or death as waitin).",
+      "stock": "flu-arrivals.arrival_stream.waiting_patients"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with hospital available_ventilators at zero: Four flu patients arrive while the hospital has zero available ventilators, but the run log contains no ventilation denial, unmet ventilator demand, or other consequence for patients dependent on ventilatory support. It only continues recording arrivals. (run log: \"t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4\")",
+      "rule": "hospital.hospital_capacity.available_ventilators",
+      "stock": "hospital.hospital_capacity.available_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with hospital functional_ventilators at zero: Patients begin arriving while the hospital has zero functional ventilators, but the run shows no patients being unable to receive ventilation, no alternative disposition, and no ventilator-ordering response. The same omission persists as arrivals increase. (run log: \"t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4\")",
+      "rule": "hospital.hospital_capacity.functional_ventilators",
+      "stock": "hospital.hospital_capacity.functional_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with flu-arrivals waiting_patients at zero: Four patients arrive while waiting_patients is initially zero, but the log shows no corresponding increase in waiting patients or assignment of those patients to ventilation/care. (run log: \"t0 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 0->4\")",
+      "rule": "flu-arrivals.arrival_stream.waiting_patients",
+      "stock": "flu-arrivals.arrival_stream.waiting_patients"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'order-ventilators' is repeated: The hospital has 40 beds, yet the logged patient count rises to 50 and continues increasing, with no diversion, transfer, discharge, or other capacity response shown. (run log: \"t14 flu-patients did record-flu-arrivals-v1: flu-patients.patient_group.number_of_patients 42->50\")",
+      "rule": "repeat-order-ventilators",
+      "stock": "repeat-order-ventilators"
+    }
+  ],
+  "seconds": 276.5,
+  "seeds": 6,
+  "step_seconds": {
+    "guided_runs": 40.2,
+    "random_runs": 9.8,
+    "total": 276.5
+  },
+  "ticks": 80
+}

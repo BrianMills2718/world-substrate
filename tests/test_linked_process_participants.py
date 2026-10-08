@@ -215,5 +215,43 @@ class PipelineHospitalTests(unittest.TestCase):
                       "that outflow.", {f["finding"] for f in checks["findings"] if f["blocking"]})
 
 
+ATTEMPT4 = REPO / "spikes/any-scenario-2026-10/evidence/linked/hospital-pipeline-attempts/attempt4"
+
+
+class PipelineHospitalAttempt4Tests(unittest.TestCase):
+    """Attempt 4 (repairs resumed on hospital-20261008T005218, trace stamp 20261008T120150): the automatic loop
+    wrote a linked death rule, but the generated world as a whole never reaches it."""
+
+    def _death(self):
+        causal = json.loads((ATTEMPT4 / "causal.r2.json").read_text())
+        return causal, next(p for p in causal["processes"] if p["process_id"] == "fatal-critical-flu-outcome")
+
+    def test_repair_wrote_a_death_rule_linked_to_the_hospital(self):
+        causal, death = self._death()
+        self.assertEqual(death["participants"]["hospital"]["link"], "owner_of_it")
+        effects = {(e["participant"], e["path"].split(".")[-1], e["op"]) for e in death["effects"]}
+        self.assertTrue({("hospital", "occupied_beds", "subtract"), ("hospital", "ventilators_in_use", "subtract"),
+                         ("it", "number_of_patients", "set")} <= effects)
+        first = json.loads((ATTEMPT4 / "causal.r1.json").read_text())
+        self.assertIn("fatal-critical-flu-outcome", [p["process_id"] for p in first["processes"]])
+
+    def test_generated_world_has_no_patients_and_no_arrival_rule(self):
+        causal, _ = self._death()
+        bundle = json.loads((ATTEMPT4 / "bundle.json").read_text())
+        flu = next(e for e in bundle["entities"] if e["id"] == "flu-patients")
+        self.assertEqual(flu["components"]["patient_group"]["number_of_patients"], 0)
+        self.assertNotIn("recurring-flu-demand", [p["process_id"] for p in causal["processes"]])
+
+    def test_from_a_set_start_one_event_lowers_patients_and_beds(self):
+        with open(ATTEMPT4 / "engine_only_start_set_events.jsonl") as fh:
+            events = [json.loads(line) for line in fh if line.strip()]
+        deaths = [e for e in events if e["rule_id"] == "fatal-critical-flu-outcome"]
+        self.assertEqual(len(deaths), 1)
+        changes = {c["path"]: (c["before"], c["after"]) for c in deaths[0]["changes"]}
+        self.assertEqual(changes["entities.flu-patients.components.patient_group.number_of_patients"], (5, 0))
+        self.assertEqual(changes["entities.hospital.components.hospital_capacity.occupied_beds"], (5, 0))
+        self.assertEqual(deaths[0]["status"], "accepted")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
