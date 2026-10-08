@@ -160,5 +160,48 @@ class CompilerTests(unittest.TestCase):  # S2
         self.assertEqual(self.causal["mechanics"][0], reviewed["mechanics"][0])
 
 
+PIPELINE1 = SPIKE / "evidence/waltzman-spec/pipeline1"  # pipeline run waltzman-spec-20261008T163904 (audit 2026-10-08)
+
+
+class RecordedPipelineRepairTests(unittest.TestCase):
+    """Defects the audit found in that run, checked against its recorded files."""
+
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import compile_spec
+        self.spec = ScenarioSpecV1.model_validate_json((PIPELINE1 / "scenario_spec.json").read_text())
+        _, self.compiled, self.coverage = compile_spec(self.spec)
+        self.recorded = json.loads((PIPELINE1 / "causal.json").read_text())
+        self.model = json.loads((PIPELINE1 / "model.json").read_text())
+
+    def test_generated_rules_may_not_write_moment_countdowns(self):
+        from spec_pipeline import merge_causal
+        generated = {**self.recorded,
+                     "mechanics": [m for m in self.recorded["mechanics"] if m["action_kind"] != "communicate"],
+                     "processes": [p for p in self.recorded["processes"]
+                                   if p["process_id"] not in ("moment-countdown", "moment-occurs")]}
+        merged, dropped = merge_causal(self.compiled, generated)
+        writers = [p["process_id"] for p in merged["processes"]
+                   if any(e["path"].startswith("components.moment.") for e in p["effects"])]
+        self.assertEqual(writers, ["moment-countdown", "moment-occurs"])
+        self.assertIn("generated process advance-scheduled-moments dropped: it writes what a compiled rule owns",
+                      dropped)
+
+    def test_actions_get_fields_for_their_behaviors_records(self):
+        from spec_pipeline import record_fields
+        sigs = {a["kind"]: [f["name"] for f in a["fields"]] for a in record_fields(self.spec,
+                                                                                   self.model["action_signatures"])}
+        self.assertIn("member_support", sigs["make-support-conditional"])
+        self.assertIn("meeting_progress", sigs["reopen-settled-issue"])
+
+    def test_coverage_counts_rules_that_change_records_not_names(self):
+        from spec_pipeline import behavior_coverage
+        cov = behavior_coverage(self.spec, self.model["action_signatures"], self.recorded, deepcopy(self.coverage))
+        rows = {r["request_id"]: r for r in cov["rows"]}
+        self.assertEqual(rows["raise_local_concerns"]["classification"], "exact")
+        self.assertEqual(rows["make_support_conditional"]["classification"], "unsupported")  # was reported coarse
+        self.assertIn("member_support", rows["make_support_conditional"]["why"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

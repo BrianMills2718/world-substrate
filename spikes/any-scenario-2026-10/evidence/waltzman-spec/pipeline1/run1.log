@@ -1,0 +1,22 @@
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm_structured)
+[step] spec 51.6s trace=any-scenario-waltzman-spec-spec-20261008T163904 cost=0.046596 people=10 items=4 moments=2 records=6 behaviors=8 unsupported=3
+[step] actions 4.9s trace=any-scenario-waltzman-spec-actions-20261008T163904 cost=0.0009292 kinds=['hold_member_meeting', 'delay_activation', 'block_deployment', 'activate_and_deploy']
+Traceback (most recent call last):
+  File "/home/brian/code/.scratch/ws-check3/spikes/any-scenario-2026-10/model_scenario.py", line 541, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/brian/code/.scratch/ws-check3/spikes/any-scenario-2026-10/model_scenario.py", line 488, in main
+    return main_spec(args, out, stamp)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code/.scratch/ws-check3/spikes/any-scenario-2026-10/model_scenario.py", line 418, in main_spec
+    generated, r2 = generate_causal_model(bundle, trace_id=trace("mechanics"), guidance=guidance, world_kind="ongoing",
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code/.scratch/ws-check3/scripts/generate_causal_model.py", line 447, in generate_causal_model
+    bundle = validate_bundle(bundle)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code/.scratch/ws-check3/scripts/scaffold_world.py", line 114, in validate_bundle
+    kind = _slug(action.get("kind"), "action.kind")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code/.scratch/ws-check3/scripts/scaffold_world.py", line 33, in _slug
+    raise BundleError(f"{label} must match {ID_RE.pattern}: {value!r}")
+scripts.scaffold_world.BundleError: action.kind must match ^[a-z][a-z0-9-]*$: 'hold_member_meeting'

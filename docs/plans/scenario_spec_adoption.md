@@ -131,7 +131,7 @@ The system model's files, its drift test and VIEW_COVERAGE are updated in the sa
   - **Extreme-conditions and anomaly reviews:** Pydantic verdicts with verbatim quotes.
   - **Rule writer:** a JSON change list, compiled locally.
   - **Agents:** the Pydantic `Attempt`, with the person's profile in the prompt.
-  - **Game-master rules:** the same rule-writer call as above, returning a JSON change list `{changes: [{change: add_action|add_process|replace_*, rule: <CausalModel mechanic or process>}], why}` (`midrun.py`, via `rule_writer.propose_rule`). It is compiled locally by `CausalModel.from_dict` and run through `run_checks`. It is installed only if no blocking finding names the new rule and the blocking count does not rise. Otherwise the attempt is recorded as an `unsupported.gm-ruling` Engine event with no changes. Each attempt leaves a record `{intent, trace_id, proposal, checks: {baseline_blocking, blocking, findings_on_new_rule}, event_id}` in `summary.json` under `rules_written_mid_run`.
+  - **Game-master rules:** the same rule-writer call as above, returning a JSON change list `{changes: [{change: add_action|add_process|replace_*, rule: <CausalModel mechanic or process>}], why}` (`midrun.py`, via `rule_writer.propose_rule`). It is compiled locally by `CausalModel.from_dict` and judged by `static_checks`: the checks that need no simulation (structure, selectors, attempt-vs-outcome, conservation, unresolved activity, co-located links). The simulated `run_checks` took over 4 minutes per call on the 10-agent world. A rule is installed only if no blocking finding names it and the blocking count does not rise. Otherwise the attempt is recorded as an `unsupported.gm-ruling` Engine event with no changes. Each attempt leaves a record `{intent, trace_id, proposal, checks: {baseline_blocking, blocking, findings_on_new_rule}, event_id}` in `summary.json` under `rules_written_mid_run`.
 - **Prose never mutates state.** Profiles shape attempts only; the Engine decides every consequence.
 - **Tracing:** every call goes through `llm_client` with an `any-scenario-` trace id, summed by `spend.py`.
 
@@ -220,4 +220,15 @@ To be written from the recorded run (S6).
 
 ## Current State
 
-- Demonstrated: none yet. Plan authored on 2026-10-08.
+- **S1-S3 met** (commits `9c03de6`, `a743a64`, `f59ff66`): the contract, the compiler with its Engine test, and the system model. The drift test failed twice before the model update and passes 14 of 14 after it (`evidence/scenario-spec/drift-*.log`).
+- **Pipeline run 1** (`waltzman-spec-20261008T163904`, trace `any-scenario-waltzman-spec-spec-20261008T163904`) stopped at a bundle naming error: action kinds need hyphens.
+- **Run 1b** (`--from-spec`, same spec) wrote the rules. Its repair loop was stopped before its first check finished.
+- **Agent runs on that world:**
+  - Two launches stalled with no model calls: discovery took about 1 second per agent, and the game master's simulated baseline check took over 4 minutes.
+  - One run, `run-20261008T174222`, was stopped at the audit after its first tick.
+- **Audit, 2026-10-08:**
+  - Generated rules never changed the world's records, because action signatures had no fields for them.
+  - Coverage counted an action's existence as coverage.
+  - Generated processes double-counted the meeting countdown.
+  - All three are repaired and tested against the recorded files: `RecordedPipelineRepairTests`, with evidence in `evidence/waltzman-spec/pipeline1/`.
+- **Deviation from the declared diff scope:** `src/world_substrate/engine.py`. `Engine.discover` now checks the read-only view once per page and re-runs hook by hook only when it changed, which is 12 times faster with the same errors. Also changed: `spikes/any-scenario-2026-10/checks.py` (`static_checks`) and `midrun.py`. These are needed to run 10 agents. The project gate passes 572 of 572.

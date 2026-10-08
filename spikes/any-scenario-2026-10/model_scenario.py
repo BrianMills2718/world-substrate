@@ -395,7 +395,8 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
 def main_spec(args, out: Path, stamp: str) -> int:
     """The scenario-spec path (docs/plans/scenario_spec_adoption.md)."""
     from compile_spec import compile_spec
-    from spec_pipeline import action_signatures, merge_causal, person_briefs, scenario_spec
+    from spec_pipeline import (action_signatures, behavior_coverage, merge_causal, person_briefs, record_fields,
+                               scenario_spec)
     trace = lambda step: f"any-scenario-{args.name}-{step}-{stamp}"  # noqa: E731
     t0 = time.time()
     if args.from_spec:
@@ -413,6 +414,7 @@ def main_spec(args, out: Path, stamp: str) -> int:
     bundle, compiled, coverage = compile_spec(spec)
     t1 = time.time()
     sigs, r1 = action_signatures(spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace("actions"))
+    sigs = record_fields(spec, sigs)
     bundle["actions"] = bundle["actions"] + [{k: a[k] for k in ("kind", "description", "fields")} for a in sigs]
     print(f"[step] actions {time.time() - t1:.1f}s trace={trace('actions')} cost={getattr(r1, 'cost', None)} "
           f"kinds={[a['kind'] for a in sigs]}", flush=True)
@@ -428,11 +430,7 @@ def main_spec(args, out: Path, stamp: str) -> int:
     print(f"[step] mechanics {time.time() - t2:.1f}s trace={trace('mechanics')} cost={getattr(r2, 'cost', None)} "
           f"dropped={dropped}", flush=True)
     build_engine(bundle, causal)  # compile + install: raises if any mechanic is rejected
-    for row in coverage["rows"]:  # coverage after generation: which generated rules name the behavior's actions
-        if row["classification"] == "to_generate":
-            kinds = [a["kind"] for a in sigs if row["request_id"] in a["for_behaviors"]]
-            row["by"] = [m["mechanic_id"] for m in causal["mechanics"] if m["action_kind"] in kinds] or None
-            row["classification"] = "coarse" if row["by"] else "unsupported"
+    coverage = behavior_coverage(spec, sigs, causal, coverage)  # coarse only if a rule changes the behavior's records
     early = {"scenario_text": args.text, "world_kind": "ongoing", "world_def": "spec", "stock_map": [],
              "briefs": person_briefs(spec), "dropped_generated_rules": dropped, "action_signatures": sigs,
              "from_spec": str(args.from_spec) if args.from_spec else None,

@@ -991,6 +991,10 @@ folder = "scenario-spec"
 holds = "ScenarioSpecV1 port (plan scenario-spec-adoption): the recorded Cybernetic Influence pencil draft used by tests/test_scenario_spec.py, and the drift-test output before the model was updated"
 
 [[pipeline.evidence]]
+folder = "waltzman-spec"
+holds = "Waltzman scenario on the scenario-spec path (plan scenario-spec-adoption): pipeline1/ (the first spec run's files and logs, used by the audit-repair tests), later runs and the agent run"
+
+[[pipeline.evidence]]
 folder = "waltzman"
 holds = "Waltzman scenario: model files, pipeline and gate logs, run/ with frames.html (the scenario_replay view probed for VIEW_COVERAGE)"
 

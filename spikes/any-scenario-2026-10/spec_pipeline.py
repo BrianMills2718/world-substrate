@@ -102,21 +102,82 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
     return out, result
 
 
+COMPILED_COMPONENTS = ("information", "delivery", "moment")  # written only by the compiled rules
+
+
+def _writes_compiled(effect: dict[str, Any]) -> bool:
+    return any(effect["path"].startswith(f"components.{c}.") for c in COMPILED_COMPONENTS)
+
+
 def merge_causal(compiled: dict[str, Any], generated: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
-    """Compiled rules win: the reviewed communicate rule and the moment processes are never replaced."""
+    """Compiled rules win. The reviewed communicate rule and the moment processes are never replaced, and only they
+    write the information, delivery and moment components: a generated process that writes one is dropped (it would,
+    for example, count a meeting down twice per tick), and a generated action loses those effects (dropped if none
+    remain). Every drop is recorded."""
     kinds = {m["action_kind"] for m in compiled["mechanics"]}
     pids = {p["process_id"] for p in compiled["processes"]}
-    dropped = [f"generated mechanic {m.get('mechanic_id')} dropped: action {m['action_kind']} is compiled"
-               for m in generated.get("mechanics", []) if m["action_kind"] in kinds]
-    dropped += [f"generated process {p['process_id']} dropped: id is compiled"
-                for p in generated.get("processes", []) if p["process_id"] in pids]
+    dropped: list[str] = []
+    mechanics = []
+    for m in generated.get("mechanics", []):
+        if m["action_kind"] in kinds:
+            dropped.append(f"generated mechanic {m.get('mechanic_id')} dropped: action {m['action_kind']} is compiled")
+            continue
+        kept = [e for e in m.get("effects", []) if not _writes_compiled(e)]
+        if len(kept) < len(m.get("effects", [])):
+            dropped.append(f"generated mechanic {m.get('mechanic_id')}: effects on compiled components removed")
+        if not kept:
+            dropped.append(f"generated mechanic {m.get('mechanic_id')} dropped: no effects left")
+            continue
+        mechanics.append({**m, "effects": kept})
+    processes = []
+    for p in generated.get("processes", []):
+        if p["process_id"] in pids or any(_writes_compiled(e) for e in p.get("effects", [])):
+            dropped.append(f"generated process {p['process_id']} dropped: it writes what a compiled rule owns")
+            continue
+        processes.append(p)
     merged = {**{k: v for k, v in generated.items() if k not in ("mechanics", "processes")},
               "schema_version": compiled["schema_version"],
-              "mechanics": compiled["mechanics"] + [m for m in generated.get("mechanics", [])
-                                                    if m["action_kind"] not in kinds],
-              "processes": compiled["processes"] + [p for p in generated.get("processes", [])
-                                                    if p["process_id"] not in pids]}
+              "mechanics": compiled["mechanics"] + mechanics, "processes": compiled["processes"] + processes}
     return merged, dropped
+
+
+def record_fields(spec: ScenarioSpecV1, sigs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Give each action an entity field for every world record or moment its behaviors involve, so its rule can
+    change them (the signature call proposes people fields; without these no rule can reach a record)."""
+    targets = {r.record_id for r in spec.world_records} | {m.moment_id for m in spec.scheduled_moments}
+    subjects = {b.request_id: [s for s in b.subject_refs if s in targets] for b in spec.behaviors}
+    out = []
+    for a in sigs:
+        fields = list(a["fields"])
+        names = {f["name"] for f in fields}
+        for req in a["for_behaviors"]:
+            for subject in subjects.get(req, []):
+                if subject not in names:
+                    fields.append({"name": subject, "type": "entity_ref"})
+                    names.add(subject)
+        out.append({**a, "fields": fields})
+    return out
+
+
+def behavior_coverage(spec: ScenarioSpecV1, sigs: list[dict[str, Any]], causal: dict[str, Any],
+                      coverage: dict[str, Any]) -> dict[str, Any]:
+    """A generated behavior is `coarse` only if a rule of one of its actions changes one of the behavior's own records
+    or moments (or, for a behavior about people only, changes anything); otherwise `unsupported`."""
+    targets = {r.record_id for r in spec.world_records} | {m.moment_id for m in spec.scheduled_moments}
+    subjects = {b.request_id: {s for s in b.subject_refs if s in targets} for b in spec.behaviors}
+    for row in coverage["rows"]:
+        if row["classification"] != "to_generate":
+            continue
+        kinds = {a["kind"] for a in sigs if row["request_id"] in a["for_behaviors"]}
+        rules = [m for m in causal["mechanics"] if m["action_kind"] in kinds]
+        wanted = subjects.get(row["request_id"], set())
+        hits = [m["mechanic_id"] for m in rules
+                if any((e.get("participant") in wanted) if wanted else True for e in m.get("effects", []))]
+        row["by"] = hits or None
+        row["classification"] = "coarse" if hits else "unsupported"
+        if not hits:
+            row["why"] = ("no rule changes " + ", ".join(sorted(wanted))) if wanted else "no rule for this behavior"
+    return coverage
 
 
 def person_briefs(spec: ScenarioSpecV1) -> dict[str, str]:
