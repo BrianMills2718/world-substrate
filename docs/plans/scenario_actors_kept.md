@@ -164,4 +164,4 @@ To be written from the recorded run (K6).
 
 ## Current State
 
-- Demonstrated: none yet. Plan authored on 2026-10-08.
+- **Superseded on 2026-10-08 by `docs/plans/scenario_spec_adoption.md`, before any work.** This plan patched the free-form outline step. The better fix is to adopt Cybernetic Influence v3's world schema, which already represents people with profiles and information items with recipients. The causes recorded above (summary cut at 1,500 of 6,188 characters; task world size) still hold for the old path.
