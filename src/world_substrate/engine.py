@@ -271,6 +271,8 @@ class Engine:
         call: Any,
     ) -> Any:
         result = call()
+        if not getattr(self, "_guard_each_hook", True):
+            return result
         mutations = _rule_mutations(before, world)
         if mutations:
             raise ScopeViolation(
@@ -348,11 +350,33 @@ class Engine:
         return sorted(rows, key=lambda row: (row["entity_id"], row["rule_id"]))
 
     def discover(self, actor_id: str, kind: str | None = None) -> dict[str, Any]:
-        # One detached view is enough for the whole affordance page. Every hook
-        # is checked immediately after it returns; if it mutates the view we
-        # fail before any subsequent hook can consume the altered state.
+        # One detached view is enough for the whole affordance page. The page is
+        # first built with a single read-only check at the end, not one per hook:
+        # a per-hook snapshot and diff of the whole world dominated discovery
+        # (about 1,000 hook calls and 1 s per actor in a 26-entity generated
+        # world, 2026-10-08). The view is detached and the page is discarded if
+        # anything changed, so nothing a mutating hook did can escape. Only then
+        # is the page rebuilt on a fresh view with every hook checked as it
+        # returns, which raises exactly the error the per-hook check always gave.
         world = _rule_world(self.world)
         before = world.material_dict()
+        self._guard_each_hook = False
+        try:
+            page = self._discover_page(world, before, actor_id, kind)
+            clean = not _rule_mutations(before, world)
+        except Exception:
+            clean = False
+        finally:
+            self._guard_each_hook = True
+        if clean:
+            return page
+        world = _rule_world(self.world)
+        before = world.material_dict()
+        return self._discover_page(world, before, actor_id, kind)
+
+    def _discover_page(
+        self, world: World, before: dict[str, Any], actor_id: str, kind: str | None
+    ) -> dict[str, Any]:
         actions: list[TypedAction] = []
         for action_kind in self.registry.action_kinds():
             if kind is None or action_kind == kind:
