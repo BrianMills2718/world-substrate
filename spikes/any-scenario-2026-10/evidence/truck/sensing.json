@@ -1,0 +1,11 @@
+{
+  "delivery-driver": [
+    "Delivery vehicle.fuel",
+    "Delivery vehicle.operational_status",
+    "Delivery vehicle.road_position",
+    "Gas station.fuel_stock",
+    "Gas station.operational_status",
+    "Gas station.road_position",
+    "Town.road_position"
+  ]
+}

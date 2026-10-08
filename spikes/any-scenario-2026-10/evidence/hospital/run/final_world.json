@@ -1,0 +1,153 @@
+{
+  "actor_id": "clinical-staff",
+  "entities": {
+    "clinical-staff": {
+      "category_ids": [
+        "clinical staff",
+        "actor"
+      ],
+      "components": {
+        "clinical_staff": {
+          "available_staff": 20,
+          "daily_staff_capacity": 120,
+          "staff_absence_rate": 0.01,
+          "staff_count": 20
+        }
+      },
+      "entity_id": "clinical-staff",
+      "label": "Clinical staff",
+      "last_cause_event_id": "e00120",
+      "location": {
+        "location_id": "hospital"
+      },
+      "ownership": {
+        "owner_ref": "place:hospital"
+      },
+      "source_entity_id": "clinical-staff",
+      "source_pack_id": "world-substrate-flu-surge-hospital@1"
+    },
+    "hospital": {
+      "category_ids": [
+        "hospital",
+        "place"
+      ],
+      "components": {
+        "hospital": {
+          "available_beds": 4,
+          "daily_admission_capacity": 4,
+          "daily_discharge_capacity": 4,
+          "licensed_beds": 40,
+          "occupied_beds": 36
+        }
+      },
+      "entity_id": "hospital",
+      "label": "Hospital",
+      "location": {
+        "location_id": "hospital"
+      },
+      "source_entity_id": "hospital",
+      "source_pack_id": "world-substrate-flu-surge-hospital@1"
+    },
+    "hospital-ventilators": {
+      "category_ids": [
+        "ventilator",
+        "medical equipment"
+      ],
+      "components": {
+        "ventilator_stock": {
+          "failure_rate": 0.001,
+          "functional_count": 2,
+          "in_use_count": 0,
+          "owned_count": 6,
+          "repair_time": 3
+        }
+      },
+      "entity_id": "hospital-ventilators",
+      "label": "Hospital ventilators",
+      "last_cause_event_id": "e00121",
+      "location": {
+        "location_id": "hospital"
+      },
+      "ownership": {
+        "owner_ref": "place:hospital"
+      },
+      "source_entity_id": "hospital-ventilators",
+      "source_pack_id": "world-substrate-flu-surge-hospital@1"
+    },
+    "hospitalized-flu-patients": {
+      "category_ids": [
+        "flu patient",
+        "patient group"
+      ],
+      "components": {
+        "patient_group": {
+          "daily_death_risk_with_ventilation_when_needed": 0.08,
+          "daily_death_risk_without_needed_ventilation": 0.25,
+          "daily_recovery_probability": 0.1,
+          "illness_stage": "recovering",
+          "length_of_stay_remaining": 5,
+          "patient_count": 35,
+          "ventilation_need_probability": 0.05,
+          "ventilation_status": "ventilated"
+        }
+      },
+      "entity_id": "hospitalized-flu-patients",
+      "label": "Hospitalized flu patients",
+      "last_cause_event_id": "e00098",
+      "location": {
+        "location_id": "hospital"
+      },
+      "ownership": {
+        "owner_ref": "place:hospital"
+      },
+      "source_entity_id": "hospitalized-flu-patients",
+      "source_pack_id": "world-substrate-flu-surge-hospital@1"
+    },
+    "incoming-flu-patients": {
+      "category_ids": [
+        "incoming patient",
+        "patient group"
+      ],
+      "components": {
+        "incoming_patients": {
+          "arrival_rate": 5,
+          "length_of_stay": 7,
+          "probability_of_needing_ventilation": 0.15
+        }
+      },
+      "entity_id": "incoming-flu-patients",
+      "label": "Incoming flu patients",
+      "location": {
+        "location_id": "hospital"
+      },
+      "ownership": {
+        "owner_ref": "place:hospital"
+      },
+      "source_entity_id": "incoming-flu-patients",
+      "source_pack_id": "world-substrate-flu-surge-hospital@1"
+    },
+    "medical-equipment-supplier": {
+      "category_ids": [
+        "supplier",
+        "actor"
+      ],
+      "components": {
+        "supplier_stock": {
+          "available_ventilators": 20,
+          "maximum_order_quantity_per_day": 10,
+          "order_lead_time": 7
+        }
+      },
+      "entity_id": "medical-equipment-supplier",
+      "label": "Medical equipment supplier",
+      "location": {
+        "location_id": "hospital"
+      },
+      "source_entity_id": "medical-equipment-supplier",
+      "source_pack_id": "world-substrate-flu-surge-hospital@1"
+    }
+  },
+  "revision": 121,
+  "tick": 30,
+  "world_id": "flu-surge-hospital-live"
+}

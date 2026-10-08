@@ -1,0 +1,645 @@
+{
+  "final_check_counts": {
+    "advisory": 3,
+    "blocking": 1,
+    "depletable_stocks": 3,
+    "rules": 5,
+    "rules_fired": 5
+  },
+  "guidance": "Separate permissibility from feasibility. An action's checks say only whether the actor is allowed or positioned to begin it (rules of the game, location, possession). Never check whether the attempt will succeed: do not refuse an action because a resource is too low to finish it. Starting a multi-step activity sets the actor's or object's activity state. Autonomous processes then advance that activity every tick, consume or produce stocks, and switch the activity to a stopped or failed state when a needed stock runs out, or to a finished state when it completes. Every numeric stock needs a process or action for each way it can rise and each way it can fall.",
+  "not_modeled": [
+    "The 1-tick equals 10-mile time-step schedule",
+    "The exact movement and fuel-consumption consequences of actions",
+    "The condition that the vehicle stops and fails when it lacks fuel",
+    "The restriction that refueling is available only at mile 60",
+    "The delivery trip ending after arrival"
+  ],
+  "odd": {
+    "actor_decisions": [
+      {
+        "actor": "delivery driver",
+        "allowed_only_when": [
+          "Driving is allowed only while the vehicle is operational and has enough fuel for the next 10-mile movement.",
+          "Refueling is allowed only when the vehicle is at mile 60, the gas station is open, and gas-station fuel stock is greater than zero.",
+          "The purchased amount must be nonnegative and cannot exceed the vehicle tank's remaining capacity or the gas station's available fuel stock.",
+          "The trip succeeds only if the vehicle reaches mile 120 while operational."
+        ],
+        "may_attempt": [
+          "Continue driving toward the town.",
+          "Stop at the gas station at mile 60.",
+          "Purchase fuel at the gas station.",
+          "Purchase enough fuel to fill the vehicle tank or purchase a smaller amount."
+        ]
+      }
+    ],
+    "assumptions": [
+      "The vehicle's fuel tank capacity is estimated at 16 gallons, a typical passenger-vehicle capacity.",
+      "A quarter tank is interpreted as exactly 25% of capacity, giving an initial fuel level of 4 gallons.",
+      "Fuel economy is estimated at 25 miles per gallon, equivalent to a consumption rate of 0.04 gallons per mile.",
+      "Fuel consumption is constant and does not vary with speed, terrain, traffic, weather, or driving behavior.",
+      "The gas station has an estimated initial fuel stock of 1000 gallons and does not receive resupply during the simulation.",
+      "The gas station is open and operational when the driver reaches mile 60.",
+      "The vehicle can refuel instantaneously within the tick in which it reaches the gas station.",
+      "The driver begins at mile 0 and the town is exactly 120 miles along one continuous route.",
+      "The gas station is exactly on the route at mile 60.",
+      "The vehicle must have enough fuel for the entire next 10-mile movement before that movement begins.",
+      "There are no fuel leaks, mechanical failures, detours, road closures, fuel prices, payment constraints, or other vehicles.",
+      "The driver knows the route, the station location, the vehicle tank capacity, and the assumed fuel economy.",
+      "The delivery is successful only when the vehicle reaches the town; merely arriving near the town does not count."
+    ],
+    "entities": [
+      {
+        "kind": "actor",
+        "name": "delivery driver",
+        "state": [
+          {
+            "initial": 0,
+            "unit": "miles from departure",
+            "variable": "road_position"
+          },
+          {
+            "initial": "driving",
+            "unit": "categorical state",
+            "variable": "decision_status"
+          }
+        ]
+      },
+      {
+        "kind": "object",
+        "name": "delivery vehicle",
+        "state": [
+          {
+            "initial": 0,
+            "unit": "miles from departure",
+            "variable": "road_position"
+          },
+          {
+            "initial": 4,
+            "unit": "gallons",
+            "variable": "fuel"
+          },
+          {
+            "initial": 16,
+            "unit": "gallons",
+            "variable": "fuel_tank_capacity"
+          },
+          {
+            "initial": 0.04,
+            "unit": "gallons per mile",
+            "variable": "fuel_consumption_rate"
+          },
+          {
+            "initial": 25,
+            "unit": "miles per gallon",
+            "variable": "fuel_economy"
+          },
+          {
+            "initial": "operational",
+            "unit": "categorical state",
+            "variable": "operational_status"
+          }
+        ]
+      },
+      {
+        "kind": "place",
+        "name": "gas station",
+        "state": [
+          {
+            "initial": 60,
+            "unit": "miles from departure",
+            "variable": "road_position"
+          },
+          {
+            "initial": 1000,
+            "unit": "gallons",
+            "variable": "fuel_stock"
+          },
+          {
+            "initial": "open",
+            "unit": "categorical state",
+            "variable": "operational_status"
+          }
+        ]
+      },
+      {
+        "kind": "place",
+        "name": "town",
+        "state": [
+          {
+            "initial": 120,
+            "unit": "miles from departure",
+            "variable": "road_position"
+          },
+          {
+            "initial": false,
+            "unit": "Boolean",
+            "variable": "delivery_received"
+          }
+        ]
+      },
+      {
+        "kind": "place",
+        "name": "road",
+        "state": [
+          {
+            "initial": 120,
+            "unit": "miles",
+            "variable": "length"
+          },
+          {
+            "initial": 120,
+            "unit": "miles",
+            "variable": "distance_remaining"
+          }
+        ]
+      }
+    ],
+    "processes_each_tick": [
+      "If the vehicle is operational and has enough fuel for the next 10 miles, the vehicle and driver advance 10 miles toward the town.",
+      "Each 10-mile movement reduces vehicle fuel by 0.4 gallons.",
+      "Road distance remaining decreases by the vehicle's movement distance.",
+      "If the vehicle reaches the gas station and the driver refuels, vehicle fuel increases by the purchased amount and gas-station fuel stock decreases by the same amount.",
+      "Fuel cannot exceed the vehicle tank capacity or the gas station's available fuel stock.",
+      "If the vehicle lacks enough fuel to complete the next 10-mile movement, it stops, its operational status becomes failed, and the delivery cannot be completed unless refueling is possible at its current location.",
+      "When the vehicle reaches mile 120 while operational, the town's delivery_received state becomes true and the trip ends.",
+      "If the vehicle reaches or passes the gas station's position, the gas station is available for refueling only at mile 60."
+    ],
+    "purpose": "Determine whether the delivery driver can reach the town 120 miles away with a quarter tank, with or without refueling at the gas station at mile 60.",
+    "sensing": [
+      {
+        "actor": "delivery driver",
+        "can_observe": [
+          "Current vehicle position in miles.",
+          "Current fuel level and approximate fraction of tank remaining.",
+          "The gas station at mile 60 when approaching or reaching it.",
+          "The town destination at mile 120.",
+          "Whether the vehicle is operational.",
+          "Whether the gas station is open and has fuel available when the driver is there."
+        ],
+        "cannot_observe": [
+          "Future fuel consumption deviations from the assumed rate.",
+          "Any gas station fuel stock beyond what is observable at the station.",
+          "Whether the vehicle will fail before the next movement except through the current fuel state and assumed consumption rate."
+        ]
+      }
+    ],
+    "stocks": [
+      {
+        "inflows": [
+          "Fuel purchased and transferred from the gas station into the vehicle."
+        ],
+        "outflows": [
+          "Fuel consumed during each 10-mile movement."
+        ],
+        "stock": "vehicle fuel"
+      },
+      {
+        "inflows": [],
+        "outflows": [
+          "Fuel purchased by the driver and transferred to the vehicle."
+        ],
+        "stock": "gas-station fuel"
+      },
+      {
+        "inflows": [],
+        "outflows": [
+          "Vehicle movement toward the town."
+        ],
+        "stock": "road distance remaining"
+      },
+      {
+        "inflows": [
+          "Vehicle movement of 10 miles per completed driving tick."
+        ],
+        "outflows": [],
+        "stock": "vehicle road position"
+      },
+      {
+        "inflows": [
+          "Driver movement with the vehicle."
+        ],
+        "outflows": [],
+        "stock": "driver road position"
+      },
+      {
+        "inflows": [
+          "Vehicle reaching the town at mile 120 while operational."
+        ],
+        "outflows": [],
+        "stock": "delivery completion"
+      }
+    ],
+    "time_step": "1 tick = 10 miles of driving; 12 ticks represent the full 120-mile trip, and the gas station is reached after 6 ticks."
+  },
+  "repairs": [
+    {
+      "blocking_after": 3,
+      "candidate_blocking": 6,
+      "change": "replace_mechanic",
+      "cost": 0.037702,
+      "finding": "action drive-delivery-vehicle-ten-miles refuses up front with check 'The Delivery vehicle has enough fuel for ten miles' on vehicle.components.vehicle.fuel, a stock the actor's own activity consumes. Remove that check so the attempt can start, and add a process that stops or fails the activity when the stock runs out, so the actor discovers it by observation.",
+      "kept": false,
+      "round": 1,
+      "target_id": "drive-delivery-vehicle-ten-miles",
+      "trace": "any-scenario-truck-repair1-20261007T171351",
+      "why": "This removes the upfront fuel-feasibility refusal so a permitted, correctly positioned driver can attempt the drive even when the vehicle lacks enough fuel for the full segment."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 2,
+      "change": "replace_mechanic",
+      "cost": 0.03782,
+      "finding": "action buy-one-unit-of-fuel refuses up front with check 'The Delivery vehicle has room for one unit of fuel' on vehicle.components.vehicle.fuel, a stock the actor's own activity consumes. Remove that check so the attempt can start, and add a process that stops or fails the activity when the stock runs out, so the actor discovers it by observation.",
+      "kept": true,
+      "round": 2,
+      "target_id": "buy-one-unit-of-fuel",
+      "trace": "any-scenario-truck-repair2-20261007T171351",
+      "why": "This removes the up-front tank-headroom refusal so a positioned driver can attempt the fuel purchase, while noting that no autonomous failure process can be added without represented refueling activity state."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 5,
+      "change": "replace_mechanic",
+      "cost": 0.034704,
+      "finding": "action drive-delivery-vehicle-ten-miles refuses up front with check 'The Delivery vehicle has enough fuel for ten miles' on vehicle.components.vehicle.fuel, a stock the actor's own activity consumes. Remove that check so the attempt can start, and add a process that stops or fails the activity when the stock runs out, so the actor discovers it by observation.",
+      "kept": false,
+      "round": 3,
+      "target_id": "drive-delivery-vehicle-ten-miles",
+      "trace": "any-scenario-truck-repair3-20261007T171351",
+      "why": "This removes the up-front fuel feasibility refusal so a permitted drive attempt begins even when the vehicle lacks enough fuel for the full segment."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 27,
+      "change": "add_process",
+      "cost": 0.02591,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 4,
+      "target_id": null,
+      "trace": "any-scenario-truck-repair4-20261007T171351",
+      "why": "This process makes the represented road distance remaining fall by ten miles per tick until it reaches zero."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 15,
+      "change": "add_process",
+      "cost": 0.02803,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 5,
+      "target_id": null,
+      "trace": "any-scenario-truck-repair5-20261007T171351",
+      "why": "This process decreases the Delivery road's represented distance remaining by ten miles on each open-route travel tick."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 17,
+      "change": "add_process",
+      "cost": 0.02898,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 6,
+      "target_id": null,
+      "trace": "any-scenario-truck-repair6-20261007T171351",
+      "why": "This adds the missing decrease rule for delivery-route.place.distance_remaining while stopping at zero on the represented ten-mile boundary."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 3,
+      "change": "replace_mechanic+add_process",
+      "cost": 0.042632,
+      "finding": "action drive-delivery-vehicle-ten-miles refuses up front with check 'The Delivery vehicle has enough fuel for ten miles' on vehicle.components.vehicle.fuel, a stock the actor's own activity consumes. Remove that check so the attempt can start, and add a process that stops or fails the activity when the stock runs out, so the actor discovers it by observation.",
+      "kept": false,
+      "round": 1,
+      "target_id": "drive-delivery-vehicle-ten-miles,None",
+      "trace": "any-scenario-truck-repair1-20261007T172105",
+      "why": "The drive attempt no longer checks its consumable fuel stock up front, while an autonomous process observes exhaustion afterward, normalizes the stock, and stops the vehicle by marking it out of fuel."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 18,
+      "change": "add_process",
+      "cost": 0.025928,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 2,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair2-20261007T172105",
+      "why": "This adds the missing transition that decreases the Delivery road's represented distance remaining by ten miles per tick while preserving every existing action rule."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 26,
+      "change": "add_process",
+      "cost": 0.027238,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 3,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair3-20261007T172105",
+      "why": "This autonomous process decreases the Delivery road's represented distance remaining by ten miles per tick and stops at zero."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 18,
+      "change": "add_process",
+      "cost": 0.032498,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 4,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair4-20261007T172105",
+      "why": "This autonomous process gives components.place.distance_remaining its missing decrease rule and reduces the Delivery road from 120 miles to zero in ten-mile ticks without crossing below zero."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 35,
+      "change": "add_process",
+      "cost": 0.031538,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 5,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair5-20261007T172105",
+      "why": "This adds the missing rule that decreases delivery-route components.place.distance_remaining in ten-mile increments until it reaches zero."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 26,
+      "change": "add_process",
+      "cost": 0.031078,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 6,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair6-20261007T172105",
+      "why": "This adds the missing autonomous decrease of delivery-route.place.distance_remaining in ten-mile increments without changing any existing action rule."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 4,
+      "change": "replace_mechanic+add_process+add_process",
+      "cost": 0.058422,
+      "finding": "action drive-delivery-vehicle-ten-miles refuses up front with check 'The Delivery vehicle has enough fuel for ten miles' on vehicle.components.vehicle.fuel, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "kept": false,
+      "round": 1,
+      "target_id": "drive-delivery-vehicle-ten-miles,None,None",
+      "trace": "any-scenario-truck-repair1-20261007T172643",
+      "why": "The drive action now only starts driving, while autonomous processes consume fuel and advance the vehicle when fuel is positive and expose fuel exhaustion by switching the vehicle to a stopped-no-fuel status."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 13,
+      "change": "add_process",
+      "cost": 0.025268,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 2,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair2-20261007T172643",
+      "why": "This adds the missing rule that decreases delivery-route.components.place.distance_remaining from 120 toward zero in ten-mile increments."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 26,
+      "change": "add_process",
+      "cost": 0.030128,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 3,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair3-20261007T172643",
+      "why": "This adds the missing downward transition for the Delivery road's distance remaining, reducing it by ten miles per active tick without changing action permissibility."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 5,
+      "change": "add_process",
+      "cost": 0.031698,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 4,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair4-20261007T172643",
+      "why": "This adds the missing autonomous decrease for the Delivery road's distance remaining, reducing it by ten miles per travel tick until it reaches zero."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 17,
+      "change": "add_process",
+      "cost": 0.036368,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 5,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair5-20261007T172643",
+      "why": "This autonomous process supplies the missing decrease pathway for the Delivery road's distance remaining, reducing it by one represented ten-mile segment per tick until it reaches zero."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 17,
+      "change": "add_process",
+      "cost": 0.028278,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 6,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair6-20261007T172643",
+      "why": "This process supplies the missing decrease for delivery-route components.place.distance_remaining in ten-mile increments while preventing it from falling below zero from the represented 120-mile starting distance."
+    },
+    {
+      "blocking_after": 4,
+      "candidate_blocking": 4,
+      "change": "replace_mechanic+add_process+add_process",
+      "cost": 0.049452,
+      "finding": "action drive-delivery-vehicle-ten-miles refuses up front with check 'The Delivery vehicle has enough fuel for ten miles' on vehicle.components.vehicle.fuel, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "kept": true,
+      "round": 1,
+      "target_id": "drive-delivery-vehicle-ten-miles,None,None",
+      "trace": "any-scenario-truck-repair1-20261007T173321",
+      "why": "The drive action now starts driving without checking fuel, while autonomous processes consume fuel during progress and visibly stop the vehicle after fuel exhaustion."
+    },
+    {
+      "blocking_after": 3,
+      "candidate_blocking": 3,
+      "change": "replace_mechanic+replace_process+replace_process",
+      "cost": 0.063926,
+      "finding": "the end condition was never reached in 12 random runs; runs got stuck where delivery-driver cannot drive: The Delivery driver is with the Delivery vehicle (actual 0, needs 110); The Delivery vehicle is operational (actual 'stopped', needs 'operational') | delivery-driver cannot refuel: The Delivery driver is with the Delivery vehicle (actual 0, needs 110); The Delivery vehicle is at the Gas station (actual 110, needs 60)",
+      "kept": true,
+      "round": 2,
+      "target_id": "drive-delivery-vehicle-ten-miles,advance-driving-delivery-vehicle,stop-delivery-vehicle-without-fuel",
+      "trace": "any-scenario-truck-repair2-20261007T173321",
+      "why": "These changes keep the driver synchronized with successful ten-mile vehicle steps, make each step finish in an operational state so refueling is possible at mile 60, and stop the vehicle before a fuel-short step can overshoot."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 2,
+      "change": "replace_mechanic+replace_mechanic",
+      "cost": 0.058386,
+      "finding": "with delivery-vehicle fuel at zero: The vehicle started with zero fuel but drove ten miles before stopping, which is physically implausible without an alternative power source. (run log: \"t0 delivery-driver did drive-delivery-vehicle-ten-miles: delivery-driver.driver.road_position 0->10; delivery-vehicle.vehicle.operational_status operational->driving\")",
+      "kept": true,
+      "round": 3,
+      "target_id": "drive-delivery-vehicle-ten-miles,buy-one-unit-of-fuel",
+      "trace": "any-scenario-truck-repair3-20261007T173321",
+      "why": "These changes prevent a zero-fuel driving attempt from advancing any road position before the autonomous fuel process runs while preserving later driving and refueling despite the driver's intentionally unsynchronized stored position."
+    },
+    {
+      "blocking_after": 1,
+      "candidate_blocking": 1,
+      "change": "replace_mechanic+replace_process+replace_process",
+      "cost": 0.03452,
+      "finding": "with delivery-vehicle fuel at zero: The vehicle started with zero fuel, so it cannot plausibly drive ten miles or transition to driving. (run log: \"t0 delivery-driver did drive-delivery-vehicle-ten-miles: delivery-vehicle.vehicle.operational_status operational->driving\")",
+      "kept": true,
+      "round": 4,
+      "target_id": "drive-delivery-vehicle-ten-miles,advance-driving-delivery-vehicle,stop-delivery-vehicle-without-fuel",
+      "trace": "any-scenario-truck-repair4-20261007T173321",
+      "why": "These changes represent the action as a driving attempt rather than actual driving, so a zero-fuel vehicle never enters the driving state and is stopped by the autonomous process without moving."
+    },
+    {
+      "blocking_after": 1,
+      "candidate_blocking": 16,
+      "change": "add_process",
+      "cost": 0.028504,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": false,
+      "round": 5,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair5-20261007T173321",
+      "why": "This autonomous process supplies the missing decrease for Delivery road distance remaining and stops at zero."
+    },
+    {
+      "blocking_after": 1,
+      "candidate_blocking": 1,
+      "change": "add_action",
+      "cost": 0.046214,
+      "finding": "the conceptual model says 'road distance remaining' falls, but no rule ever decreases delivery-route.place.distance_remaining.",
+      "kept": true,
+      "round": 6,
+      "target_id": "None",
+      "trace": "any-scenario-truck-repair6-20261007T173321",
+      "why": "This adds the missing causal decrease of delivery-route.place.distance_remaining while allowing it only after the vehicle has completed unrecorded ten-mile progress."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 2,
+      "change": "replace_mechanic",
+      "cost": 0.037168,
+      "finding": "when 'drive' is repeated: The vehicle was stopped for lack of fuel immediately beforehand, so route progress should not continue. (run log: \"t11 delivery-driver did record-completed-route-progress: delivery-route.place.distance_remaining 120->110; delivery-route.place.road_position 0->10\") ALSO: Route progress continues even though the vehicle remains stopped and no refueling or other means of transport is recorded. (run log: \"t13 delivery-driver did record-completed-route-progress: delivery-route.place.distance_remaining 110->100; delivery-route.place.road_position 10->20\") ALSO: Route progress continues without the stopped vehicle moving or any recorded cause. (run log: \"t14 delivery-driver did record-completed-route-progress: delivery-route.place.distance_remaining 100->90; delivery-route.place.road_position 20->30\")",
+      "kept": true,
+      "round": 1,
+      "target_id": "record-completed-route-progress",
+      "trace": "any-scenario-truck-repair1-20261007T180821",
+      "why": "Requiring the Delivery vehicle to be operational blocks route-progress records after fuel exhaustion has stopped it, while preserving recording after successful movement."
+    },
+    {
+      "blocking_after": 1,
+      "candidate_blocking": 1,
+      "change": "replace_process+replace_mechanic",
+      "cost": 0.050948,
+      "finding": "in an ordinary run: Route progress advances even though the vehicle has not moved since t22 (it remains at road position 110). (run log: \"t23 delivery-driver did record-completed-route-progress: delivery-route.place.distance_remaining 50->40; delivery-route.place.road_position 70->80\") ALSO: Route progress advances again without any intervening driving or vehicle movement. (run log: \"t24 delivery-driver did record-completed-route-progress: delivery-route.place.distance_remaining 40->30; delivery-route.place.road_position 80->90\") ALSO: The vehicle reaches the town at mile 120, but the route state still reports only mile 90 and 30 miles remaining, leaving route progress inconsistent with the vehicle's actual destination. (run log: \"t26 process advance-driving-delivery-vehicle: delivery-vehicle.vehicle.fuel 0.6000000000000009->0.20000000000000084; delivery-vehicle.vehicle.operational_status attempting to drive->operational; delivery-vehicle.vehicle.road_position 110->120\")",
+      "kept": true,
+      "round": 2,
+      "target_id": "advance-driving-delivery-vehicle,record-completed-route-progress",
+      "trace": "any-scenario-truck-repair2-20261007T180821",
+      "why": "The vehicle now waits for exactly one route-progress record after every successful ten-mile movement, preventing duplicate records and ensuring the route reaches mile 120 with zero miles remaining when the vehicle reaches the Town."
+    },
+    {
+      "blocking_after": 1,
+      "candidate_blocking": 2,
+      "change": "replace_mechanic+add_process",
+      "cost": 0.051596,
+      "finding": "when 'refuel' is repeated: The vehicle keeps accepting fuel far beyond what is needed for the remaining 60 miles and beyond a plausible tank capacity (it began with a quarter tank at 4 units). Repeated refueling raises the fuel level to 66.6 units instead of stopping when the tank is full. (run log: \"t79 delivery-driver did buy-one-unit-of-fuel: delivery-vehicle.vehicle.fuel 65.6->66.6; gas-station.place.fuel_stock 936->935\")",
+      "kept": false,
+      "round": 3,
+      "target_id": "buy-one-unit-of-fuel,None",
+      "trace": "any-scenario-truck-repair3-20261007T180821",
+      "why": "The refuel action now stops once the tank reaches capacity, while the added process caps the final atomic transfer when fractional headroom would otherwise leave the vehicle overfilled."
+    },
+    {
+      "blocking_after": 1,
+      "candidate_blocking": 1,
+      "change": "replace_mechanic",
+      "cost": 0.046466,
+      "finding": "when 'refuel' is repeated: The vehicle keeps accepting fuel far beyond what is needed for the remaining 60 miles and beyond a plausible tank capacity (it began with a quarter tank at 4 units). Repeated refueling raises the fuel level to 66.6 units instead of stopping when the tank is full. (run log: \"t79 delivery-driver did buy-one-unit-of-fuel: delivery-vehicle.vehicle.fuel 65.6->66.6; gas-station.place.fuel_stock 936->935\")",
+      "kept": true,
+      "round": 4,
+      "target_id": "buy-one-unit-of-fuel",
+      "trace": "any-scenario-truck-repair4-20261007T180821",
+      "why": "The replacement adds the missing one-unit tank-headroom boundary, so repeated refueling cannot raise vehicle fuel above the represented sixteen-unit capacity."
+    },
+    {
+      "blocking_after": 3,
+      "candidate_blocking": 3,
+      "change": "replace_mechanic+add_process+add_process",
+      "cost": 0.113441,
+      "finding": "action buy-one-unit-of-fuel refuses up front with check 'The Delivery vehicle has room for one unit of fuel' on vehicle.components.vehicle.fuel, a stock the actor's own activity consumes. Fix with three changes: (1) the action only STARTS the activity (sets a status such as 'driving'), with no check on that stock and no progress or consumption effects; (2) add a process that, every tick while the status is active and the stock is above zero, makes one tick of progress and consumes the stock; (3) add a process that switches the status to a stopped/failed value when the stock is at or below zero, so the actor discovers it by observation.",
+      "kept": true,
+      "round": 5,
+      "target_id": "buy-one-unit-of-fuel,None,None",
+      "trace": "any-scenario-truck-repair5-20261007T180821",
+      "why": "The refuel action now starts without checking the consumable stock, while autonomous processes advance and consume that stock when available and expose failure by stopping when it is exhausted."
+    },
+    {
+      "blocking_after": 2,
+      "candidate_blocking": 2,
+      "change": "replace_mechanic",
+      "cost": 0.051664,
+      "finding": "the end condition was never reached in 12 random runs; runs got stuck where delivery-driver cannot drive: The Delivery vehicle is operational (actual 'stopped', needs 'operational') | delivery-driver cannot record-route-progress: The Delivery vehicle is awaiting route progress (actual 'stopped', needs 'awaiting route progress') | delivery-driver cannot record-route-progress: The Delivery vehicle is awaiting route progress (actual 'stopped', needs 'awaiting route progress'); The Delivery vehicle has completed unrecorded progress (actual 100, needs 100) | delivery-driver cannot refuel: The Delivery vehicle is at the Gas station (actual 100, needs 60); The Delivery vehicle is operational (actual 'stopped', needs 'operational')",
+      "kept": true,
+      "round": 6,
+      "target_id": "buy-one-unit-of-fuel",
+      "trace": "any-scenario-truck-repair6-20261007T180821",
+      "why": "This replaces the erroneous refueling activity that moved the vehicle and consumed its fuel with a direct fuel transfer, allowing a purchase at mile 60 to supply enough fuel to reach the Town."
+    }
+  ],
+  "restored_best_round": "repair-20261007T180821/r4 (bounded search had kept a worse round)",
+  "scenario_text": "A delivery driver with a quarter tank must reach a town 120 miles away; there is one gas station at mile 60.",
+  "stock_map": [
+    {
+      "field": "delivery-vehicle.vehicle.fuel",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "vehicle fuel"
+    },
+    {
+      "field": "gas-station.place.fuel_stock",
+      "has_inflows": false,
+      "has_outflows": true,
+      "stock": "gas-station fuel"
+    },
+    {
+      "field": "delivery-route.place.distance_remaining",
+      "has_inflows": false,
+      "has_outflows": true,
+      "stock": "road distance remaining"
+    },
+    {
+      "field": "delivery-vehicle.vehicle.road_position",
+      "has_inflows": true,
+      "has_outflows": false,
+      "stock": "vehicle road position"
+    },
+    {
+      "field": "delivery-driver.driver.road_position",
+      "has_inflows": true,
+      "has_outflows": false,
+      "stock": "driver road position"
+    },
+    {
+      "field": null,
+      "has_inflows": true,
+      "has_outflows": false,
+      "stock": "delivery completion"
+    }
+  ],
+  "traces": {
+    "anomaly": "any-scenario-truck-anomaly-20261007T171351",
+    "bundle": "any-scenario-truck-bundle-20261007T171351",
+    "mechanics": "any-scenario-truck-mechanics-20261007T171351",
+    "odd": "any-scenario-truck-odd-20261007T171351",
+    "sensing": "any-scenario-truck-sensing-20261007T171351",
+    "stocks": "any-scenario-truck-stocks-20261007T171351"
+  },
+  "world_kind": "task"
+}

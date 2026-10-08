@@ -1,0 +1,126 @@
+{
+  "actor_id": "delivery-driver",
+  "entities": {
+    "delivery-driver": {
+      "category_ids": [
+        "actor",
+        "driver"
+      ],
+      "components": {
+        "driver": {
+          "decision_status": "driving",
+          "road_position": 0
+        }
+      },
+      "entity_id": "delivery-driver",
+      "label": "Delivery driver",
+      "location": {
+        "location_id": "delivery-route"
+      },
+      "source_entity_id": "delivery-driver",
+      "source_pack_id": "world-substrate-delivery-trip@1"
+    },
+    "delivery-route": {
+      "category_ids": [
+        "road",
+        "route"
+      ],
+      "components": {
+        "place": {
+          "delivery_received": false,
+          "distance_remaining": 20,
+          "fuel_stock": 0,
+          "length": 120,
+          "operational_status": "open",
+          "road_position": 100
+        }
+      },
+      "entity_id": "delivery-route",
+      "label": "Delivery road",
+      "last_cause_event_id": "e00051",
+      "location": {
+        "location_id": "delivery-route"
+      },
+      "source_entity_id": "delivery-route",
+      "source_pack_id": "world-substrate-delivery-trip@1"
+    },
+    "delivery-vehicle": {
+      "category_ids": [
+        "vehicle"
+      ],
+      "components": {
+        "vehicle": {
+          "fuel": 5.551115123125783e-16,
+          "fuel_consumption_rate": 0.04,
+          "fuel_economy": 25,
+          "fuel_tank_capacity": 16,
+          "operational_status": "operational",
+          "road_position": 120
+        }
+      },
+      "entity_id": "delivery-vehicle",
+      "label": "Delivery vehicle",
+      "last_cause_event_id": "e00060",
+      "location": {
+        "location_id": "delivery-route"
+      },
+      "ownership": {
+        "owner_ref": "actor:delivery-driver"
+      },
+      "portable": {
+        "portable": true
+      },
+      "source_entity_id": "delivery-vehicle",
+      "source_pack_id": "world-substrate-delivery-trip@1"
+    },
+    "gas-station": {
+      "category_ids": [
+        "gas station",
+        "fuel source"
+      ],
+      "components": {
+        "place": {
+          "delivery_received": false,
+          "distance_remaining": 0,
+          "fuel_stock": 0,
+          "length": 0,
+          "operational_status": "open",
+          "road_position": 60
+        }
+      },
+      "entity_id": "gas-station",
+      "label": "Gas station",
+      "location": {
+        "location_id": "delivery-route"
+      },
+      "source_entity_id": "gas-station",
+      "source_pack_id": "world-substrate-delivery-trip@1"
+    },
+    "town": {
+      "category_ids": [
+        "town",
+        "destination"
+      ],
+      "components": {
+        "place": {
+          "delivery_received": false,
+          "distance_remaining": 0,
+          "fuel_stock": 0,
+          "length": 0,
+          "operational_status": "open",
+          "road_position": 120
+        }
+      },
+      "entity_id": "town",
+      "label": "Town",
+      "location": {
+        "location_id": "delivery-route"
+      },
+      "source_entity_id": "town",
+      "source_pack_id": "world-substrate-delivery-trip@1"
+    }
+  },
+  "revision": 58,
+  "tick": 24,
+  "world_id": "delivery-trip-live"
+}

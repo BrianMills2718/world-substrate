@@ -1,0 +1,1256 @@
+{
+  "mechanics": [
+    {
+      "action_kind": "admit-flu-patients",
+      "actor_selector": {
+        "categories": [
+          "hospital"
+        ],
+        "components": [
+          "hospital"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the patient group is at the hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the admission quantity is positive",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patients are hospitalized flu patients",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.illness_stage"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "hospitalized"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.patient_group.patient_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital.occupied_beds",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "actor",
+          "path": "components.hospital.available_beds",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The incoming-patient component represents an arrival rate rather than a waiting-patient stock, so admission does not debit a separate queue.",
+        "The action does not refuse an attempt for insufficient beds or daily admission capacity; those resources may become overcommitted.",
+        "The caller must bind the hospitalized flu-patient group as the admission destination."
+      ],
+      "mechanic_id": "admit-flu-patients-v1",
+      "parameters": {
+        "quantity": [
+          1,
+          2,
+          4
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "flu patient",
+            "patient group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "The hospital records admitted patients in the hospitalized group and updates occupied and available beds by the requested quantity.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "quantity is the number of flu patients admitted",
+        "patient_group is the hospitalized destination cohort",
+        "the hospital is the bed holder"
+      ],
+      "tests": [
+        "Admitting one hospitalized flu patient at the hospital increases patient count and occupied beds by one and decreases available beds by one.",
+        "A zero or negative quantity is refused.",
+        "A patient group at another location is refused.",
+        "An attempt larger than available beds is permitted to begin and can expose overcommitment in the bed totals."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "assess-ventilation-need",
+      "actor_selector": {
+        "categories": [
+          "clinical staff",
+          "actor"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the patients are with the clinical staff",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the patient group has patients",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patients have not received ventilation",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.ventilation_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "not ventilated"
+          }
+        },
+        {
+          "label": "the patients are hospitalized",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.illness_stage"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "literal": "recovered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "patient_group",
+          "path": "components.patient_group.ventilation_status",
+          "value": {
+            "literal": "needs ventilation"
+          }
+        }
+      ],
+      "limits": [
+        "The available state cannot encode a stochastic assessment result, so this mechanic represents only an assessment that finds ventilation is needed.",
+        "The ventilation need probability remains unchanged because it describes cohort risk rather than the recorded assessment outcome.",
+        "Assessment does not consume staff capacity because no assessment workload amount is supplied by the action."
+      ],
+      "mechanic_id": "assess-ventilation-need-v1",
+      "parameters": {},
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "flu patient",
+            "patient group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "Clinical staff can assess a colocated hospitalized cohort; this mechanic represents the positive assessment outcome by marking the cohort as needing ventilation.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "ventilation_status records the positive clinical assessment",
+        "ventilation_need_probability remains a background risk characteristic"
+      ],
+      "tests": [
+        "Clinical staff can mark colocated nonempty unventilated patients as needing ventilation.",
+        "An empty patient group is refused.",
+        "A recovered patient group is refused.",
+        "Patients already marked as needing ventilation or ventilated are refused."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "assign-ventilators",
+      "actor_selector": {
+        "categories": [
+          "clinical staff",
+          "actor"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the patients are with the clinical staff",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the assignment quantity is positive",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patients need ventilation",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.ventilation_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "needs ventilation"
+          }
+        },
+        {
+          "label": "the patient group has patients",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "patient_group",
+          "path": "components.patient_group.ventilation_status",
+          "value": {
+            "literal": "ventilated"
+          }
+        }
+      ],
+      "limits": [
+        "The legacy action does not identify a ventilator-stock participant, so it records the patient assignment but cannot update a particular stock's in-use count.",
+        "Use assign-ventilators-by-staff when the selected ventilator stock must also be updated.",
+        "Ventilation status is cohort-level, so it cannot distinguish partially ventilated patients within one group.",
+        "Only single-ventilator assignments are offered to limit cohort-level ambiguity."
+      ],
+      "mechanic_id": "assign-ventilators-v1",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "flu patient",
+            "patient group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "Clinical staff can perform the legacy assignment action, while the patient cohort records that ventilation was assigned.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "the acting clinical staff perform the assignment",
+        "quantity is the number of ventilators represented by the assignment",
+        "ventilated records assignment to the patient cohort",
+        "the staff-operated action with a ventilator participant records equipment use"
+      ],
+      "tests": [
+        "Clinical staff can assign ventilation to a colocated nonempty patient group that needs it.",
+        "Patients not marked as needing ventilation are refused.",
+        "An empty patient group is refused.",
+        "Patients at another location are refused.",
+        "A zero or negative assignment quantity is refused."
+      ],
+      "version": "2.0.0"
+    },
+    {
+      "action_kind": "provide-patient-care",
+      "actor_selector": {
+        "categories": [
+          "clinical staff",
+          "actor"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the patients are with the clinical staff",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the care task count is positive",
+          "left": {
+            "action_field": "task_count"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patient group has patients",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the hospital stay is still in progress",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.length_of_stay_remaining"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patients have not recovered",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.illness_stage"
+            }
+          },
+          "op": "ne",
+          "right": {
+            "literal": "recovered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "actor",
+          "path": "components.clinical_staff.daily_staff_capacity",
+          "value": {
+            "action_field": "task_count"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "patient_group",
+          "path": "components.patient_group.length_of_stay_remaining",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "set",
+          "participant": "patient_group",
+          "path": "components.patient_group.illness_stage",
+          "value": {
+            "literal": "recovering"
+          }
+        }
+      ],
+      "limits": [
+        "The attempt is not refused when requested tasks exceed remaining daily staff capacity; the capacity total can expose overcommitment.",
+        "One care action advances the cohort stay by one day regardless of task count because no task-to-stay conversion is represented.",
+        "Recovery probability and mortality risks are not resolved because effects cannot express stochastic outcomes."
+      ],
+      "mechanic_id": "provide-patient-care-v1",
+      "parameters": {
+        "task_count": [
+          1,
+          10,
+          30,
+          60
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "flu patient",
+            "patient group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "Clinical staff spend the requested daily capacity on a colocated patient group, advance its stay by one day, and mark it as recovering.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "task_count consumes daily staff capacity",
+        "care advances length_of_stay_remaining by one day",
+        "recovering identifies a cared-for cohort eligible for discharge when its stay reaches zero"
+      ],
+      "tests": [
+        "Providing positive care to a colocated nonempty cohort consumes the requested staff capacity and reduces remaining stay by one.",
+        "A zero or negative task count is refused.",
+        "Care is refused when no stay remains or the cohort is recovered.",
+        "Care exceeding remaining staff capacity is allowed to begin and can make daily capacity negative."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "discharge-recovered-patients",
+      "actor_selector": {
+        "categories": [
+          "hospital"
+        ],
+        "components": [
+          "hospital"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the patients are at the hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the discharge quantity is positive",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patients are recovering",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.illness_stage"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "recovering"
+          }
+        },
+        {
+          "label": "the hospital stay is complete",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.length_of_stay_remaining"
+            }
+          },
+          "op": "lte",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patient group has patients",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "patient_group",
+          "path": "components.patient_group.patient_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "actor",
+          "path": "components.hospital.occupied_beds",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.hospital.available_beds",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The attempt is not refused when quantity exceeds patient count, occupied beds, or daily discharge capacity; resulting overcommitment remains visible.",
+        "The cohort illness stage is retained because a partial cohort discharge cannot be represented separately.",
+        "Ventilators are released by an autonomous stock process rather than by this action because the ventilator stock is not an action participant."
+      ],
+      "mechanic_id": "discharge-recovered-patients-v1",
+      "parameters": {
+        "quantity": [
+          1,
+          2,
+          4
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "flu patient",
+            "patient group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "The hospital removes recovered patients whose represented stay is complete and releases the corresponding beds.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "quantity is the number of patients discharged",
+        "completed stay requires length_of_stay_remaining at or below zero",
+        "released patients free occupied beds"
+      ],
+      "tests": [
+        "Discharging one recovering patient with no stay remaining decreases patient count and occupied beds and increases available beds.",
+        "Patients with remaining stay are refused.",
+        "Patients not marked recovering are refused.",
+        "A discharge larger than the cohort is permitted to begin and can expose inconsistent totals."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "order-ventilators",
+      "actor_selector": {
+        "categories": [
+          "ventilator",
+          "medical equipment"
+        ],
+        "components": [
+          "ventilator_stock"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the supplier can serve the hospital location",
+          "left": {
+            "participant": {
+              "name": "supplier",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the order quantity is positive",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the order is within the supplier's daily maximum",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "lte",
+          "right": {
+            "participant": {
+              "name": "supplier",
+              "path": "components.supplier_stock.maximum_order_quantity_per_day"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "supplier",
+          "path": "components.supplier_stock.available_ventilators",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.ventilator_stock.owned_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "actor",
+          "path": "components.ventilator_stock.functional_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The action does not refuse an attempt for insufficient supplier stock; shortage is exposed by the supplier total.",
+        "No pending-order quantity or delivery clock is represented, so colocated fulfillment is recorded immediately despite the supplier's descriptive lead-time field.",
+        "The maximum order quantity is enforced as an ordering rule rather than a success-resource check."
+      ],
+      "mechanic_id": "order-ventilators-v1",
+      "parameters": {
+        "quantity": [
+          1,
+          5,
+          10
+        ]
+      },
+      "participants": {
+        "supplier": {
+          "categories": [
+            "supplier",
+            "actor"
+          ],
+          "components": [
+            "supplier_stock"
+          ]
+        }
+      },
+      "rationale": "The hospital ventilator stock acquires ordered units from the selected supplier, while the supplier's available stock falls by the same quantity.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "quantity transfers ventilator stock from supplier availability to hospital ownership",
+        "maximum_order_quantity_per_day is a permissibility limit",
+        "ordered units enter functional stock on represented fulfillment"
+      ],
+      "tests": [
+        "An order within the daily maximum reduces supplier stock and increases owned and functional hospital ventilators equally.",
+        "A zero or negative order is refused.",
+        "An order above the supplier's daily maximum is refused.",
+        "An order within the maximum remains permissible when supplier stock is lower than the order."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "repair-ventilators",
+      "actor_selector": {
+        "categories": [
+          "clinical staff",
+          "actor"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the ventilators are with the clinical staff",
+          "left": {
+            "participant": {
+              "name": "ventilators",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the repair quantity is positive",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "a hospital ventilator is not functional",
+          "left": {
+            "participant": {
+              "name": "ventilators",
+              "path": "components.ventilator_stock.functional_count"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "ventilators",
+              "path": "components.ventilator_stock.owned_count"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "ventilators",
+          "path": "components.ventilator_stock.functional_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "actor",
+          "path": "components.clinical_staff.daily_staff_capacity",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "Only one ventilator can be repaired per action, preventing repair above owned count when at least one unit is failed.",
+        "The represented repair_time cannot be scheduled because no repair-progress state exists, so restoration is immediate.",
+        "The attempt is not refused for insufficient staff capacity."
+      ],
+      "mechanic_id": "repair-ventilators-v1",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "ventilators": {
+          "categories": [
+            "ventilator",
+            "medical equipment"
+          ],
+          "components": [
+            "ventilator_stock"
+          ]
+        }
+      },
+      "rationale": "Clinical staff expend capacity to restore one failed hospital ventilator to functional stock.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "a failed ventilator is represented by owned_count exceeding functional_count",
+        "repair returns one unit to functional_count",
+        "repair work consumes clinical staff capacity"
+      ],
+      "tests": [
+        "When functional count is below owned count, repairing one adds one functional ventilator and consumes one staff-capacity unit.",
+        "Repair is refused when every owned ventilator is functional.",
+        "Ventilators at another location are refused.",
+        "Repair remains permissible when daily staff capacity is zero."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "assign-ventilators-by-staff-v1",
+      "version": "1.1.0",
+      "action_kind": "assign-ventilators-by-staff",
+      "rationale": "Clinical staff can assign a colocated ventilator only when the selected stock has a functional unit not already in use.",
+      "actor_selector": {
+        "categories": [
+          "clinical staff",
+          "actor"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "flu patient",
+            "patient group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        },
+        "ventilators": {
+          "categories": [
+            "ventilator",
+            "medical equipment"
+          ],
+          "components": [
+            "ventilator_stock"
+          ]
+        }
+      },
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "checks": [
+        {
+          "label": "the ventilators are with the clinical staff",
+          "left": {
+            "participant": {
+              "name": "ventilators",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the patients are with the clinical staff",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the assignment quantity is positive",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patients need ventilation",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.ventilation_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "needs ventilation"
+          }
+        },
+        {
+          "label": "the patient group has patients",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "a functional ventilator is free",
+          "left": {
+            "participant": {
+              "name": "ventilators",
+              "path": "components.ventilator_stock.functional_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "participant": {
+              "name": "ventilators",
+              "path": "components.ventilator_stock.in_use_count"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "ventilators",
+          "path": "components.ventilator_stock.in_use_count",
+          "op": "add",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "participant": "patient_group",
+          "path": "components.patient_group.ventilation_status",
+          "op": "set",
+          "value": {
+            "literal": "ventilated"
+          }
+        }
+      ],
+      "limits": [
+        "Ventilation status is cohort-level, so it cannot distinguish partially ventilated patients within one group.",
+        "Only single-ventilator assignments are offered to match the free-unit check.",
+        "The legacy assign-ventilators action cannot inspect ventilator stock because it has no ventilator participant."
+      ],
+      "tests": [
+        "Clinical staff can assign one colocated ventilator when functional count exceeds in-use count.",
+        "Assignment increases the selected ventilator stock's in-use count and marks the patients ventilated.",
+        "Assignment is refused when functional count equals in-use count.",
+        "Assignment is refused when functional count is zero.",
+        "Patients not marked as needing ventilation are refused.",
+        "Ventilators or patients at another location are refused."
+      ],
+      "semantic_bindings": [
+        "the acting clinical staff perform the assignment",
+        "ventilators is the equipment stock used by the staff",
+        "functional_count exceeding in_use_count means one functional ventilator is free",
+        "quantity is the number of ventilators placed in use",
+        "ventilated records assignment to the patient cohort"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "checks": [],
+      "effects": [
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.clinical_staff.available_staff",
+          "value": {
+            "participant": {
+              "name": "it",
+              "path": "components.clinical_staff.staff_count"
+            }
+          }
+        },
+        {
+          "op": "set",
+          "participant": "it",
+          "path": "components.clinical_staff.daily_staff_capacity",
+          "value": {
+            "literal": 120
+          }
+        }
+      ],
+      "process_id": "restore-daily-staff-capacity",
+      "rationale": "Each round begins a new staffing period, restoring available staff and daily work capacity so care work can continue indefinitely.",
+      "selector": {
+        "categories": [
+          "clinical staff",
+          "actor"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the supplier has less than normal stock",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.supplier_stock.available_ventilators"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "literal": 20
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.supplier_stock.available_ventilators",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "supplier-restocks-ventilators",
+      "rationale": "The supplier replenishes one ventilator per round while below its normal stock level, sustaining future hospital orders.",
+      "selector": {
+        "categories": [
+          "supplier",
+          "actor"
+        ],
+        "components": [
+          "supplier_stock"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the ventilators have a positive failure rate",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.ventilator_stock.failure_rate"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "a functional ventilator is not in use",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.ventilator_stock.functional_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "participant": {
+              "name": "it",
+              "path": "components.ventilator_stock.in_use_count"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.ventilator_stock.functional_count",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "functional-ventilators-fail",
+      "rationale": "A positive represented failure rate creates recurring repair demand; one unassigned functional ventilator fails during each coarse failure round.",
+      "selector": {
+        "categories": [
+          "ventilator",
+          "medical equipment"
+        ],
+        "components": [
+          "ventilator_stock"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "a ventilator is in use",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.ventilator_stock.in_use_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.ventilator_stock.in_use_count",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "ventilator-use-cycle-completes",
+      "rationale": "One ventilation assignment completes per round, returning an in-use unit to available functional service and allowing future assignments.",
+      "selector": {
+        "categories": [
+          "ventilator",
+          "medical equipment"
+        ],
+        "components": [
+          "ventilator_stock"
+        ]
+      }
+    },
+    {
+      "process_id": "unventilated-patients-die",
+      "rationale": "Each tick, one patient dies when the cohort needs ventilation, remains unventilated, and has a positive represented mortality risk.",
+      "selector": {
+        "categories": [
+          "flu patient",
+          "patient group"
+        ],
+        "components": [
+          "patient_group"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the patients need ventilation",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.ventilation_status"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "needs ventilation"
+          }
+        },
+        {
+          "label": "the patient group has patients",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the patients face a risk of death without ventilation",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.daily_death_risk_without_needed_ventilation"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "it",
+          "path": "components.patient_group.patient_count",
+          "op": "subtract",
+          "value": {
+            "literal": 1
+          }
+        }
+      ]
+    }
+  ],
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": null
+}

@@ -1,0 +1,214 @@
+{
+  "behavior_anomalies": [
+    {
+      "quote": "t0 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->60; hospitalized-flu-patients.patient_group.illness_stage hospitalized->recovering; hospitalized-flu-patients.patient_group.length_of_stay_remaining 7->6",
+      "why": "Hospitalized patients receive care and progress despite hospital occupied_beds having started at zero, with no logged admission or increase in occupancy."
+    },
+    {
+      "quote": "t2 clinical-staff did assess-ventilation-need-v1: hospitalized-flu-patients.patient_group.ventilation_status not ventilated->needs ventilation",
+      "why": "A patient develops a ventilation need despite zero initial occupied beds and no logged admission establishing an occupied patient population."
+    },
+    {
+      "quote": "t6 clinical-staff did assign-ventilators-by-staff-v1: hospital-ventilators.ventilator_stock.in_use_count 0->1; hospitalized-flu-patients.patient_group.ventilation_status needs ventilation->ventilated",
+      "why": "A hospitalized patient is assigned a ventilator even though occupancy began at zero and no increase in occupied beds is shown."
+    },
+    {
+      "quote": "t6 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\nt6 clinical-staff did assign-ventilators-by-staff-v1: hospital-ventilators.ventilator_stock.in_use_count 0->1; hospitalized-flu-patients.patient_group.ventilation_status needs ventilation->ventilated",
+      "why": "A ventilator is assigned and the patient becomes ventilated immediately after functional_count reaches zero. This is physically implausible because no functional ventilator is available, and in_use_count increases to one despite zero usable units."
+    },
+    {
+      "quote": "t7 process ventilator-use-cycle-completes: hospital-ventilators.ventilator_stock.in_use_count 1->0",
+      "why": "The log completes a ventilator-use cycle for a patient whose ventilator assignment occurred while functional_count was zero, without recording that the patient lost ventilation or otherwise accounting for the unavailable equipment."
+    },
+    {
+      "quote": "t2 process ventilator-use-cycle-completes: hospital-ventilators.ventilator_stock.in_use_count 1->0",
+      "why": "The only ventilator is released, but the patient previously changed to `ventilated` and no corresponding transition away from ventilated status is recorded. The patient therefore remains ventilated with zero ventilators in use."
+    },
+    {
+      "quote": "t9 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0",
+      "why": "All functional ventilators are exhausted while the patient remains recorded as ventilated, yet no loss of ventilation or other consequence follows. Subsequent patient-care actions continue without resolving this impossible resource dependency."
+    },
+    {
+      "quote": "t6 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0",
+      "why": "The ventilator stock reaches zero, but the patient previously assigned a ventilator remains implicitly ventilated. No loss of ventilation, deterioration, transfer, or death is recorded."
+    },
+    {
+      "quote": "t10 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->119; hospitalized-flu-patients.patient_group.length_of_stay_remaining 1->0",
+      "why": "The patient group's stay reaches zero while its ventilation status is never changed from ventilated. The patient therefore continues to depend on ventilation without a corresponding discharge, recovery, or death transition."
+    },
+    {
+      "quote": "t9 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\nt9 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->119; hospitalized-flu-patients.patient_group.length_of_stay_remaining 5->4",
+      "why": "The hospital has zero functional ventilators, yet the patient previously marked ventilated continues receiving care and progressing toward recovery; no loss of ventilation or deterioration occurs."
+    },
+    {
+      "quote": "t9 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0",
+      "why": "Functional ventilators are exhausted, but no consequence for the patient still marked ventilated appears. The log continues patient care and recovery afterward, despite no ventilator support."
+    },
+    {
+      "quote": "t2 process ventilator-use-cycle-completes: hospital-ventilators.ventilator_stock.in_use_count 1->0",
+      "why": "The ventilator use ends, but the patient status is never changed from ventilated. The patient later progresses from hospitalized to recovering and reaches zero remaining stay without any documented discharge or ventilation-status transition."
+    },
+    {
+      "quote": "t22 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0",
+      "why": "The functional ventilator resource reaches zero while a patient is already recorded as ventilated, but no loss of ventilation, deterioration, or other consequence for the dependent patient appears."
+    },
+    {
+      "quote": "t25 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->119; hospitalized-flu-patients.patient_group.length_of_stay_remaining 4->3",
+      "why": "After repeated zero-functional-ventilator states, the ventilated patient continues receiving care and progressing toward discharge without any modeled consequence of having no functional ventilator available."
+    }
+  ],
+  "counts": {
+    "advisory": 6,
+    "blocking": 12,
+    "depletable_stocks": 4,
+    "rules": 12,
+    "rules_fired": 8
+  },
+  "extreme_conditions": [
+    {
+      "identical_to_baseline": false,
+      "stock": "hospital.hospital.occupied_beds",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": false,
+      "stock": "hospital-ventilators.ventilator_stock.functional_count",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": true,
+      "stock": "hospital-ventilators.ventilator_stock.in_use_count",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": false,
+      "stock": "medical-equipment-supplier.supplier_stock.available_ventilators",
+      "went_negative_from_zero": false
+    }
+  ],
+  "findings": [
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'patients needing ventilation' could not be matched to a state field.",
+      "stock": "patients needing ventilation"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model's stock 'unmet ventilation demand' could not be matched to a state field.",
+      "stock": "unmet ventilation demand"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule admit-flu-patients-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule discharge-recovered-patients-v1 can never be offered: its actor selector {'categories': ['hospital'], 'components': ['hospital']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "discharge-recovered-patients-v1"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule order-ventilators-v1 can never be offered: its actor selector {'categories': ['ventilator', 'medical equipment'], 'components': ['ventilator_stock']} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "order-ventilators-v1"
+    },
+    {
+      "blocking": true,
+      "check": "conservation",
+      "finding": "rule supplier-restocks-ventilators creates supplier_stock.available_ventilators from nothing; elsewhere that quantity only moves between things, so it must come from a stock that loses it.",
+      "rule": "supplier-restocks-ventilators"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule admit-flu-patients-v1 never fired in 12 random runs.",
+      "rule": "admit-flu-patients-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule discharge-recovered-patients-v1 never fired in 12 random runs.",
+      "rule": "discharge-recovered-patients-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule order-ventilators-v1 never fired in 12 random runs.",
+      "rule": "order-ventilators-v1"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule supplier-restocks-ventilators never fired in 12 random runs.",
+      "rule": "supplier-restocks-ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with hospital-ventilators in_use_count set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "hospital-ventilators.ventilator_stock.in_use_count"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with hospital occupied_beds at zero: Hospitalized patients receive care and progress despite hospital occupied_beds having started at zero, with no logged admission or increase in occupancy. (run log: \"t0 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->60; hospitalized-flu-patients.patient_group.illness_stage hospitalized->recovering; hospitalized-flu-patients.patient_group.length_of_stay_remaining 7->6\") ALSO: A patient develops a ventilation need despite zero initial occupied beds and no logged admission establishing an occupied patient population. (run log: \"t2 clinical-staff did assess-ventilation-need-v1: hospitalized-flu-patients.patient_group.ventilation_status not ventilated->needs ventilation\") ALSO: A hospitalized patient is assigned a ventilator even though occupancy began at zero and no increase in occupied beds is shown. (run log: \"t6 clinical-staff did assign-ventilators-by-staff-v1: hospital-ventilators.ventilator_stock.in_use_count 0->1; hospitalized-flu-patients.patient_group.ventilation_status needs ventilation->ventilated\")",
+      "rule": "hospital.hospital.occupied_beds",
+      "stock": "hospital.hospital.occupied_beds"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with hospital-ventilators functional_count at zero: A ventilator is assigned and the patient becomes ventilated immediately after functional_count reaches zero. This is physically implausible because no functional ventilator is available, and in_use_count increases to one despite zero usable units. (run log: \"t6 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\nt6 clinical-staff did assign-ventilators-by-staff-v1: hospital-ventilators.ventilator_stock.in_use_count 0->1; hospitalized-flu-patients.patient_group.ventilation_status needs ventilation->ventilated\") ALSO: The log completes a ventilator-use cycle for a patient whose ventilator assignment occurred while functional_count was zero, without recording that the patient lost ventilation or otherwise accounting for the unavailable equipment. (run log: \"t7 process ventilator-use-cycle-completes: hospital-ventilators.ventilator_stock.in_use_count 1->0\")",
+      "rule": "hospital-ventilators.ventilator_stock.functional_count",
+      "stock": "hospital-ventilators.ventilator_stock.functional_count"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'admit-flu-patients' is repeated: The only ventilator is released, but the patient previously changed to `ventilated` and no corresponding transition away from ventilated status is recorded. The patient therefore remains ventilated with zero ventilators in use. (run log: \"t2 process ventilator-use-cycle-completes: hospital-ventilators.ventilator_stock.in_use_count 1->0\") ALSO: All functional ventilators are exhausted while the patient remains recorded as ventilated, yet no loss of ventilation or other consequence follows. Subsequent patient-care actions continue without resolving this impossible resource dependency. (run log: \"t9 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\")",
+      "rule": "repeat-admit-flu-patients",
+      "stock": "repeat-admit-flu-patients"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'assess-ventilation-need' is repeated: The ventilator stock reaches zero, but the patient previously assigned a ventilator remains implicitly ventilated. No loss of ventilation, deterioration, transfer, or death is recorded. (run log: \"t6 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\") ALSO: The patient group's stay reaches zero while its ventilation status is never changed from ventilated. The patient therefore continues to depend on ventilation without a corresponding discharge, recovery, or death transition. (run log: \"t10 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->119; hospitalized-flu-patients.patient_group.length_of_stay_remaining 1->0\")",
+      "rule": "repeat-assess-ventilation-need",
+      "stock": "repeat-assess-ventilation-need"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'assign-ventilators' is repeated: The hospital has zero functional ventilators, yet the patient previously marked ventilated continues receiving care and progressing toward recovery; no loss of ventilation or deterioration occurs. (run log: \"t9 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\nt9 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->119; hospitalized-flu-patients.patient_group.length_of_stay_remaining 5->4\")",
+      "rule": "repeat-assign-ventilators",
+      "stock": "repeat-assign-ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'discharge-recovered-patients' is repeated: Functional ventilators are exhausted, but no consequence for the patient still marked ventilated appears. The log continues patient care and recovery afterward, despite no ventilator support. (run log: \"t9 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\") ALSO: The ventilator use ends, but the patient status is never changed from ventilated. The patient later progresses from hospitalized to recovering and reaches zero remaining stay without any documented discharge or ventilation-status transition. (run log: \"t2 process ventilator-use-cycle-completes: hospital-ventilators.ventilator_stock.in_use_count 1->0\")",
+      "rule": "repeat-discharge-recovered-patients",
+      "stock": "repeat-discharge-recovered-patients"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'repair-ventilators' is repeated: The functional ventilator resource reaches zero while a patient is already recorded as ventilated, but no loss of ventilation, deterioration, or other consequence for the dependent patient appears. (run log: \"t22 process functional-ventilators-fail: hospital-ventilators.ventilator_stock.functional_count 1->0\") ALSO: After repeated zero-functional-ventilator states, the ventilated patient continues receiving care and progressing toward discharge without any modeled consequence of having no functional ventilator available. (run log: \"t25 clinical-staff did provide-patient-care-v1: clinical-staff.clinical_staff.daily_staff_capacity 120->119; hospitalized-flu-patients.patient_group.length_of_stay_remaining 4->3\")",
+      "rule": "repeat-repair-ventilators",
+      "stock": "repeat-repair-ventilators"
+    }
+  ],
+  "seconds": 175.6,
+  "seeds": 6,
+  "step_seconds": {
+    "guided_runs": 64.9,
+    "random_runs": 3.4,
+    "total": 175.6
+  },
+  "ticks": 80
+}
