@@ -21,7 +21,11 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 sys.path[:0] = [str(REPO), str(REPO / "src"), str(HERE)]
 
-from checks import run_checks  # noqa: E402
+from checks import static_checks  # noqa: E402
+
+# The game master compares blocking findings before and after a proposed rule, so it uses the same check both times:
+# the checks that need no simulation. The simulated checks (run_checks) took over 4 minutes per call on the
+# generated Waltzman world (26 entities, 10 agents; 2026-10-08) even at 2 runs of 16 ticks, before any agent acted.
 from rule_writer import propose_rule  # noqa: E402
 from world_substrate.action_authoring import (  # noqa: E402
     CausalModel,
@@ -38,7 +42,7 @@ class MidRunGameMaster:
                  scenario: str, trace_id: str):
         self.bundle, self.causal, self.stocks = bundle, causal, stocks
         self.scenario, self.trace_id = scenario, trace_id
-        self.baseline = run_checks(bundle, causal, stocks=stocks)["counts"]["blocking"]
+        self.baseline = static_checks(bundle, causal, stocks)["counts"]["blocking"]
         self.written: list[dict[str, Any]] = []
 
     def _install(self, engine: Any, new_bundle: dict[str, Any], new_causal: dict[str, Any]) -> list[str]:
@@ -68,7 +72,7 @@ class MidRunGameMaster:
             new_bundle, new_causal, rec = propose_rule(self.bundle, self.causal, problem, trace_id=trace,
                                                        model=RULE_MODEL, model_justification=RULE_MODEL_WHY)
             record["proposal"] = rec["proposal"]
-            report = run_checks(new_bundle, new_causal, stocks=self.stocks)
+            report = static_checks(new_bundle, new_causal, self.stocks)
             new_ids = {c.get("rule", {}).get("mechanic_id") or c.get("rule", {}).get("process_id")
                        for c in rec["proposal"].get("changes", [])}
             own = [f for f in report["findings"] if f["blocking"] and (f.get("rule") in new_ids or f["check"] == "conservation")]
