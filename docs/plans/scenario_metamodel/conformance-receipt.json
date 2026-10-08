@@ -1,0 +1,503 @@
+{
+  "schema_version": "planning-method-conformance-receipt.v1",
+  "record_type": "planning_method_conformance_receipt",
+  "receipt_id": "RECEIPT-scenario_metamodel-cbf927eaf79f",
+  "plan": {
+    "plan_ref": "docs/plans/scenario_metamodel.md",
+    "plan_sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+  },
+  "path_decision": {
+    "ref": "docs/plans/scenario_metamodel/path-decision.json",
+    "sha256": "b80a74d93fb61cc41ded87083ffb4d483e772a8a2370120a6c4bfa150d5cfeef",
+    "selected_path": "durable_solo",
+    "classified_path": "durable_solo",
+    "errors": []
+  },
+  "route": "durable_solo",
+  "profile": {
+    "profile_id": "bounded-design",
+    "revision": "bounded-design@6",
+    "path": "contracts/method-conformance/profiles/bounded-design.v1.json",
+    "sha256": "0b8b1ff4860f7caf400897ba1a7ddae85a227b15ce17c8a2f7412d6d2dc825e5"
+  },
+  "compiler": {
+    "path": "scripts/method_conformance/compiler.py",
+    "sha256": "97e8810884e9875e02d9729fc9b18010173f4daf881423ec2da8a1baa186b502"
+  },
+  "activation": {
+    "facts_ref": "docs/plans/scenario_metamodel/activation-facts.json",
+    "facts_sha256": "eb79304f13e63849f3dcdbb2624ec43387fcc4997a9ecc5db8184c624da0e0f0",
+    "facts": {
+      "shared_mechanism": true,
+      "empirical_comparison_proposed": false,
+      "llm_central": true,
+      "irreversible_or_spend_action": true,
+      "crosses_system_boundary": false,
+      "deploys": false,
+      "multiple_writers": false,
+      "consequential_boundary": false,
+      "inline_prototype": false
+    },
+    "fact_origins": {
+      "shared_mechanism": "declared:derived_current_boundary",
+      "empirical_comparison_proposed": "declared:derived_current_boundary",
+      "llm_central": "declared:derived_current_boundary",
+      "irreversible_or_spend_action": "declared:derived_current_boundary",
+      "crosses_system_boundary": "default:not_declared",
+      "deploys": "default:not_declared",
+      "multiple_writers": "derived:path_decision.concurrent_writers",
+      "consequential_boundary": "derived:path_decision.persistent_migration|consequential_external_mutation",
+      "inline_prototype": "derived:classified_path==prototype"
+    },
+    "overlays": [
+      {
+        "overlay_id": "OV-PRIOR-ART",
+        "activation_fact": "shared_mechanism",
+        "active": true,
+        "reason": "shared_mechanism=true (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-EMPIRICAL-COMPARISON",
+        "activation_fact": "empirical_comparison_proposed",
+        "active": false,
+        "reason": "empirical_comparison_proposed=false (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-LLM-CENTRAL",
+        "activation_fact": "llm_central",
+        "active": true,
+        "reason": "llm_central=true (declared:derived_current_boundary)"
+      },
+      {
+        "overlay_id": "OV-MULTIPLE-WRITERS",
+        "activation_fact": "multiple_writers",
+        "active": false,
+        "reason": "multiple_writers=false (derived:path_decision.concurrent_writers)"
+      },
+      {
+        "overlay_id": "OV-CONSEQUENTIAL-BOUNDARY",
+        "activation_fact": "consequential_boundary",
+        "active": false,
+        "reason": "consequential_boundary=false (derived:path_decision.persistent_migration|consequential_external_mutation)"
+      },
+      {
+        "overlay_id": "OV-INLINE-PROTOTYPE",
+        "activation_fact": "inline_prototype",
+        "active": false,
+        "reason": "inline_prototype=false (derived:classified_path==prototype)"
+      },
+      {
+        "overlay_id": "OV-SYSTEM-BOUNDARY",
+        "activation_fact": "crosses_system_boundary",
+        "active": false,
+        "reason": "crosses_system_boundary=false (default:not_declared)"
+      },
+      {
+        "overlay_id": "OV-DEPLOYMENT",
+        "activation_fact": "deploys",
+        "active": false,
+        "reason": "deploys=false (default:not_declared)"
+      }
+    ]
+  },
+  "checklist": {
+    "checklist_id": "method-conformance.bounded-design",
+    "revision": "sha256:e4b378804e3aca8cb63b9120f17e22b0ee192f257bf05d46baaa495a4768b37a",
+    "definition_sha256": "e04bec9853f7c7f04cd40a518347cc68499a0de64d2d30e9aa8abb371134a8e1",
+    "bundle_ref": "docs/plans/scenario_metamodel/checklist.json",
+    "bundle_sha256": "bd79aa672ed1b1f39194023c86c80880fb79fda44e4f1b604a9b0035821639d7",
+    "coverage": "complete",
+    "definition_matches_recompilation": true
+  },
+  "items": [
+    {
+      "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#outcome-and-boundaries",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/23f44ffc1992/CORE-ACTOR-RESULT-EXAMPLE",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence names the served actors as “Brian, and the agents that build worlds” and states the desired result: one documented metamodel from which generated worlds are compiled. It gives a concrete, user-visible example: a commitment changes from conditional to met when its issue is resolved, with the event ID shown in the scenario replay state panel.",
+        "reused": false
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-ROUTE",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "structural",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel/path-decision.json",
+          "sha256": "b80a74d93fb61cc41ded87083ffb4d483e772a8a2370120a6c4bfa150d5cfeef"
+        }
+      ],
+      "semantic": null,
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-SUCCESS-DISPROOF",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#outcome-and-boundaries",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/23f44ffc1992/CORE-SUCCESS-DISPROOF",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The plan explicitly defines success evidence as M1–M5, including mapping tests, Engine tests, recorded commitment and issue events, screenshots, and assessment evidence. It also gives concrete disproof conditions: more than half of scenario kinds mapping to “none” in both systems, or no commitment or issue state change in the agents’ run.",
+        "reused": false
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-TRACE-REVIEW",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#acceptance-checks",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/23f44ffc1992/CORE-TRACE-REVIEW",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "Every criterion names the run or test whose full trace is examined, identifies where the trace or evidence lives, and specifies observations beyond the final outcome. M1 explicitly states the no-model-run exemption and its reason, while M2–M5 specify trace details such as state hashes, event IDs, before/after failures, decision records, and gate conditions.",
+        "reused": false
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-SYSTEM-MODEL",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#outcome-and-boundaries",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/23f44ffc1992/CORE-SYSTEM-MODEL",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence provides the system-model link and explicitly names each added, changed, or relied-on element by kind. For every listed element, the trace review states what the examined run must show, including required files, events, screenshots, mappings, or test output.",
+        "reused": false
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-AUTHORITY-NONGOALS",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#outcome-and-boundaries",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/23f44ffc1992/CORE-AUTHORITY-NONGOALS",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly states that Brian holds authority, identifies the implementing agent’s decision scope and Brian’s required approvals, and lists explicit non-goals including changing other repositories, the public World Builder, OneSim adoption, a Waltzman demo screen, and tuning until a mechanism appears.",
+        "reused": false
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-IRREVERSIBLE-SPEND",
+      "effect": "blocking",
+      "applicability_mode": "conditional",
+      "condition_fact": "irreversible_or_spend_action",
+      "condition_value": true,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#spend-and-irreversible-actions",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/cb337ea71bce/CORE-IRREVERSIBLE-SPEND",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The proposed spend explicitly names its authorizer (Brian), boundary ($2 cap from `spend.py`), and containment mechanisms, including the startup guard, per-tick log checks, attempt limit, and per-call budget. The evidence states that no irreversible actions are proposed.",
+        "reused": true
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-UNCERTAINTIES",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#uncertainties",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/cb337ea71bce/CORE-UNCERTAINTIES",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly states it is the complete list of material uncertainties and lists three uncertainties. Each has both an owner and specific resolving evidence (M1 mapping table, M4 spec, or M4 events).",
+        "reused": true
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "CORE-ACTIVATION-FACTS",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#activation-facts",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/23f44ffc1992/CORE-ACTIVATION-FACTS",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The only potentially false declaration, `empirical_comparison_proposed: false`, is supported: the plan specifies a single Waltzman rerun and acceptance/regression checks, not an A/B test, benchmark, bake-off, or experiment comparing alternatives. The other triggered facts—`shared_mechanism`, `llm_central`, and `irreversible_or_spend_action`—are declared true.",
+        "reused": false
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-PRIOR-ART-DISPOSITION",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#prior-art-and-parallel-implementation-check",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/4ea39ac8fba6/OV-PRIOR-ART-DISPOSITION",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly identifies existing ownership, internal lineage, and external prior art, and provides a disposition for every listed candidate using reuse, extend, compose, or bounded exception. It also documents the parallel-implementation check, including the grep result and scope of changed files.",
+        "reused": true
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-PRIOR-ART-PARALLEL-CHECK",
+      "effect": "advisory",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#prior-art-and-parallel-implementation-check",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/4ea39ac8fba6/OV-PRIOR-ART-PARALLEL-CHECK",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence names a concrete structural check: a grep for `typed-graph.json` under `docs/model/` that finds exactly one file, directly detecting a duplicate schema/metamodel implementation. It also corroborates this with a `git diff --stat` scope check.",
+        "reused": true
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-LLM-CALL-BOUNDARY",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#model-calls",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/cb337ea71bce/OV-LLM-CALL-BOUNDARY",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence explicitly describes the call graph and outputs at each stage, including ScenarioSpecV1, validated action-signature lists, causal models, Attempts, and JSON change lists. It also explicitly states that every call goes through `llm_client` with an `any-scenario-` trace ID, providing the tracing mechanism.",
+        "reused": true
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-LLM-AUTHORITY-PROMOTION",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/scenario_metamodel.md#spend-and-irreversible-actions",
+          "sha256": "cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/scenario_metamodel/cb337ea71bce/OV-LLM-AUTHORITY-PROMOTION",
+        "model": "openrouter/openai/gpt-5.6-luna",
+        "verdict": "pass",
+        "materiality": "non_material",
+        "missing": null,
+        "rationale": "The evidence names OpenRouter as the provider and Brian as the spend authorizer. It also states that before promotion, a fresh run of Waltzman’s text must show commitment and issue-state changes with Engine event IDs.",
+        "reused": true
+      },
+      "suggested_action": null
+    }
+  ],
+  "item_counts": {
+    "pass": 13,
+    "unresolved": 0,
+    "not_applicable": 0,
+    "unavailable": 0,
+    "missing": 0
+  },
+  "semantic_verifier": {
+    "kind": "llm_client",
+    "available": true,
+    "model": "openrouter/openai/gpt-5.6-luna",
+    "task": "company_planning.method_conformance.semantic_item_review"
+  },
+  "conformance_report": {
+    "schema_version": "1.0",
+    "record_type": "planning_conformance_report",
+    "report_id": "REPORT-scenario_metamodel-cbf927eaf79f",
+    "snapshot_ref": "SNAPSHOT-scenario_metamodel",
+    "snapshot_revision": "sha256:bd79aa672ed1b1f39194023c86c80880fb79fda44e4f1b604a9b0035821639d7",
+    "packet_ref": "docs/plans/scenario_metamodel.md",
+    "packet_revision": "sha256:cbf927eaf79fcc0f32326e8db8afec2718af37a00cdf86f703899a507192fdd5",
+    "structural_status": "pass",
+    "semantic_review_status": "complete",
+    "diagnostics": [],
+    "route": "durable_solo",
+    "adoption_readiness": "ready_for_contributor",
+    "limitations": [
+      "Semantic verdicts judge only the cited plan excerpt against the item statement; they do not judge product strategy."
+    ]
+  },
+  "advisory_deviations": [],
+  "result": "pass",
+  "reason_codes": [],
+  "actionable_summary": [
+    "pass: 13 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
+  ],
+  "limitations": [
+    "Semantic verdicts judge only the cited plan excerpt against the item statement; they do not judge product strategy."
+  ],
+  "caller": {
+    "client": "claude-code",
+    "session": "55a7bcf4-391a-4f04-9516-3c0e91fe91c8"
+  },
+  "started_at": "2026-10-08T23:37:36Z",
+  "completed_at": "2026-10-08T23:37:57Z",
+  "duration_ms": 21036
+}

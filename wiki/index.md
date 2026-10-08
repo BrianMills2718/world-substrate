@@ -19,6 +19,7 @@ Canonical general world-substrate engine: typed state, registered deterministic 
 - [Roadmap](../roadmap/README.md)
 - [Documentation routing](../docs/AGENTS.md)
 - [Describe-any-scenario: YuLan-OneSim comparison on the Waltzman scenario](../spikes/any-scenario-2026-10/evidence/onesim-comparison.md)
+- [Plan: one scenario metamodel joined from existing pieces](../docs/plans/scenario_metamodel.md) and its [/goal launcher](../docs/plans/scenario-metamodel.goal.md)
 
 ## Coverage and unknowns
 
