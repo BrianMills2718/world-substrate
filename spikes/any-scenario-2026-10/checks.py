@@ -297,7 +297,7 @@ def attempt_findings(bundle: dict[str, Any], causal: dict[str, Any]) -> list[dic
     return out
 
 
-def conservation_findings(causal: dict[str, Any]) -> list[dict[str, Any]]:
+def conservation_findings(causal: dict[str, Any], stocks: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
     """Conservation (Petri-net P-invariant style): a quantity that existing rules only ever move between
     entities (an add paired with a subtract of the same amount in one rule) must not be created from nothing."""
     def amount(eff: dict[str, Any]) -> str:
@@ -317,7 +317,11 @@ def conservation_findings(causal: dict[str, Any]) -> list[dict[str, Any]]:
         subs = {amount(e) for e in r.get("effects", []) if e.get("op") == "subtract"}
         for e in r.get("effects", []):
             if e.get("op") == "add" and e.get("path") in conserved and amount(e) not in subs:
-                out.append({"check": "conservation", "blocking": True, "rule": rid,
+                # An open system has declared inflows (arrivals, deliveries): when the conceptual model says this
+                # stock rises from outside, an unpaired add may be that inflow. Report it, but do not block.
+                declared_inflow = any(r.get("field") and r["field"].split(".", 1)[1] == e["path"].removeprefix("components.")
+                                      and r.get("has_inflows") for r in (stocks or []))
+                out.append({"check": "conservation", "blocking": not declared_inflow, "rule": rid,
                             "finding": f"rule {rid} creates {e['path'].removeprefix('components.')} from nothing; elsewhere "
                                        "that quantity only moves between things, so it must come from a stock that loses it."})
     return out
@@ -359,7 +363,7 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
                stocks: list[dict[str, Any]] | None = None, anomaly_review: Any = None,
                coverage: list[dict[str, Any]] | None = None, consequence_check: Any = None) -> dict[str, Any]:
     t0 = time.time()
-    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal) + unresolved_findings(causal) + outflow_findings(coverage, causal) + co_located_findings(bundle, causal)
+    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal, stocks) + unresolved_findings(causal) + outflow_findings(coverage, causal) + co_located_findings(bundle, causal)
     base = [simulate(bundle, causal, seed=s, ticks=ticks) for s in range(seeds)]
     # boundedness / conservation
     steps: dict[str, float] = {}
