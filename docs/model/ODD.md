@@ -1,6 +1,6 @@
 # World Substrate as a software system: an ODD-style model
 
-Status: implemented-system description at commit `d18ead6` (2026-10-06). It describes what the code does, not target architecture. Machine-readable twin: [world_substrate_model.toml](world_substrate_model.toml), checked against the code by `tests/test_system_model.py`. What each view shows of this model: [VIEW_COVERAGE.md](VIEW_COVERAGE.md).
+Status: implemented-system description at commit `d18ead6` (2026-10-06); the any-scenario pipeline, information items and linked process participants added at `2e409ab` (2026-10-08). It describes what the code does, not target architecture. Machine-readable twin: [world_substrate_model.toml](world_substrate_model.toml), checked against the code by `tests/test_system_model.py`. What each view shows of this model: [VIEW_COVERAGE.md](VIEW_COVERAGE.md).
 
 **Two levels, kept apart.** World Substrate *hosts* world models: Kitchen, Orchard, Repair Bay, Waltzman, each with its own entities, rules and outcomes. This document is **not** about any of those worlds. It models the *software system that holds them*: what it stores (worlds, rule proposals, approvals, runs, logs), the processes that change what it stores, and the records each process writes. A "rule" below is a stored object the system compiles and enforces; what a particular rule means inside a particular world is out of scope.
 
@@ -20,6 +20,8 @@ Questions the system is built to answer, for a person or an investigating agent:
 6. Which exact law ran? (frozen mechanic profile id, world fingerprint)
 7. What happened in a visitor's session, what did it cost, and what failed? (run log, budget ledger)
 8. What changes if one parameter changes? (native-coordination comparison)
+9. For a scenario described in plain words (any-scenario pipeline): what conceptual model was written, which checks failed and which repairs were kept, what each resident believed, attempted and expected, and which rules were written mid-run? (`model.json`, `checks.json`, `attempts.jsonl`, `summary.json`)
+10. Which kinds of things can a world represent at all, and which path can produce each? (section 4.1)
 
 ## 2. Expected observable patterns (if the system works)
 
@@ -46,6 +48,8 @@ Each pattern is something a check or a person could observe. VIEW_COVERAGE.md re
 - The approval gate.
 - The Engine: one canonical world per run, atomic commit or refusal, declared write scopes enforced, read scopes recorded, causal events.
 - The run loop that offers actions, takes one choice per actor per round and advances processes; the read-only projections and existing renderers; the World Builder pages and API; run log and budget ledger.
+- Information items and their per-recipient delivery (`src/world_substrate/information.py`), applied by `Engine.observe` to every world.
+- The describe-any-scenario pipeline spike (`spikes/any-scenario-2026-10/`, [Decision 007](../decisions/007-any-scenario-path.md)): offline scripts that reuse the World Builder generators, compiler and Engine. Not deployed; nothing on the World Builder path calls it. Its residents run on Concordia (`gdm-concordia==2.4.0`), which is outside.
 
 **Outside** (hosted on commodity runtimes, or simply not ours):
 
@@ -78,6 +82,51 @@ Full field lists with sources are in the model file's `[[entities]]`. In plain w
 | RunLogEntry | one line per logged request | who, what, result summary, cost, errors |
 | BudgetLedger | spent and reserved LLM dollars today | fails closed when unreadable |
 | Job | an in-memory background request | lost on restart |
+| InformationItem | a represented piece of information (`information` component) | content, source, channel, visibility, active |
+| Delivery | one item's delivery to one recipient (`delivery` component) | info id, recipient, status, delivered tick |
+| OddModel | the pipeline's conceptual model of a scenario (ODD) | entities with quantitative state, per-tick processes, decisions, sensing, stocks, assumptions |
+| ScenarioModel | `model.json`: what the modeling step decided | scenario text, ODD, stock map, repairs, final check counts, not-modeled list, trace ids |
+| SensingMap | `sensing.json`: per actor, the fields it can observe | enforced by the run script, not the Engine |
+| StockFlows | `flows.json`: every numeric field with the rules that raise, lower or set it | derived, no LLM |
+| CheckReport | `checks.json`: layer-1 checks by simulation | findings (blocking / advisory) per check |
+| RuleChange | 1-3 rule changes an LLM proposes, compiled before use | repair rounds (kept or reverted), mid-run rules or rulings |
+| Resident | one Concordia LLM agent per actor | last 6 observations, scenario briefing; in memory only |
+| Attempt | one resident decision (`attempts.jsonl` row) | belief, cited observations, decision, expected and observed effect, what was performed |
+| ScenarioRun | one pipeline run folder | events, attempts, ticks, final view, summary, after-run rules |
+
+`CausalModel` processes may also name **linked participants** (`DeclaredProcess.participants`, `src/world_substrate/action_authoring.py:264`, PR #136): extra entities resolved from the matching entity `it` by a link (`owner_of_it`, `owned_by_it`, `co_located`, or `ref:<component>.<field>`; `PROCESS_LINKS`, `:669`), so one process event can change `it` and the linked entities together (a driver moving with the vehicle). Each combination of linked entities is one binding (`_link_bindings`, `:733`); if any link resolves to nothing, the process does not apply to that `it`. Link reads are derived like any other read (`_link_reads`, `:696`).
+
+### 4.1 Kinds of things a world can represent, and which path can produce each
+
+The machine-readable twin is `[[world_kinds]]` in the model file (the test checks every row gives every path). "Fixed template" means the path only fills a fixed shape.
+
+| Kind | World Builder generators | Native-coordination draft | Any-scenario pipeline | Hand-authored reference worlds |
+| --- | --- | --- | --- | --- |
+| Entity with typed components | yes (bundle `components`, `scripts/scaffold_world.py:56`) | fixed template | yes (same bundle generator) | yes (`register_component`, e.g. `reference_worlds/waltzman/components.py:58`) |
+| Action (checks + effects) | yes | fixed template (`examples/native_coordination/coordination-causal-v0.json`, 4 mechanics) | yes | yes (Python mechanics) |
+| Process (the world changes by itself) | yes | no (the fixed causal model has 0 processes) | yes | yes (Python processes, e.g. `reference_worlds/workshop/probe.py:39`) |
+| Process with linked participants | yes (offered in the process schema, `scripts/generate_causal_model.py:266`) | no | yes (evidence `evidence/linked/`) | no (Python mechanics write what they like; the declared form is not used) |
+| Relationship, as an `entity_ref` field or `owner_ref` | yes (`scripts/generate_world_bundle.py:53`, `:56`) | fixed template | yes | yes |
+| Information item + per-recipient delivery | no | fixed template (`scripts/native_coordination_authoring.py:91`, `:519`) | no | yes (Waltzman, `reference_worlds/waltzman/mechanics.py:198`) |
+| Per-actor sensing map (field-level observation filter) | no | no | yes (`sensing.json`, applied in `run_scenario.py`) | no |
+| Person with a behavioral profile | no | no | no | no |
+| Scheduled moment | no | no | no | no |
+
+So a world the any-scenario pipeline generates contains **only entities with components, plus actions and processes** (and a terminal): its actors are entities with the `actor` category and world-local components (for example Waltzman's `governance_participant`), and its residents are briefed with the scenario text alone. There is **no person-with-profile kind and no information-item kind** in it: neither generator mentions information items, and no pipeline file uses `information.py`. `information.py` provides information items to worlds that are written by hand (Waltzman) or filled from the fixed native-coordination template. Whatever path built a world, `Engine.observe` shows an actor only entities at its own location (or itself), and among those hides an `information` entity until it is delivered to that actor or public, and a `delivery` entity from everyone but its recipient and the item's source (`engine.py:235-262`, `information.py:57-102`).
+
+### 4.2 Comparison with donor schemas
+
+Cybernetic Influence v3's world schema, `GeneralSimulationProposalV1` (`cybernetic_influence_v3/src/cybernetic_influence/general_simulation/authoring_models.py:284`, read at `16b1791`), against what World Substrate holds:
+
+| Donor kind | Donor field | World Substrate | Where |
+| --- | --- | --- | --- |
+| People with behavioral profiles (values, goals, beliefs, decision tendencies, social perceptions, current state, capabilities, limitations; plus position, disposition, memories) | `people: GeneralPersonDraft` (`:38`, profile `:25`) | **Lacks.** An actor is an entity with the `actor` category and components; pipeline residents get the scenario text as their only briefing (`run_scenario.py:119-129`); Waltzman's `ResidentState` is role + organization (`reference_worlds/waltzman/components.py:11`). | — |
+| World records with public and hidden state and an actor visibility list | `world_records` (`:52`) | **Partly.** Entities with components are the records, but there is no per-field hidden state and no visibility list. Visibility is co-location (`Engine.observe`), information delivery, and in the pipeline a per-actor field list enforced by the run script. | `engine.py:235`, `information.py:95`, `run_scenario.py:210-211` |
+| Information representations with recipients and hidden provenance | `information_extension.representations` (`:113`) | **Has, for hand-authored and template worlds; no hidden provenance.** `InformationState` (content, source, channel, visibility, topic, `derived_from_info_id`, active) plus one `DeliveryState` per recipient. Not produced by the World Builder generators or the pipeline. | `information.py:21`, `:34` |
+| Sensing rules (an observer reveals hidden keys of a subject into an output record for recipients) | `sensing_rules` (`:156`) | **Partly.** No sensing rule or hidden keys. The pipeline's `sensing.json` is a static per-actor list of observable fields, mapped by an LLM from the ODD and applied by `run_scenario.py`, not by the Engine. | `model_scenario.py:110`, `run_scenario.py:210` |
+| Scheduled moments (minute, injects, active components) | `schedule` (`:147`) | **Lacks.** Time is an integer tick; processes apply every tick their checks hold; the generic future-event scheduler is not integrated (root `AGENTS.md`). | — |
+| Relationships (two or more participants with a description) | `relationship_extension` (`:136`) | **Partly.** No relationship kind. `entity_ref` fields and `owner_ref` link entities, and linked process participants follow those links (`owner_of_it`, `owned_by_it`, `co_located`, `ref:`). | `action_authoring.py:669-741` |
+| Coverage report (per requested behavior: exact / coarse / descriptive / unsupported, with compiler evidence) | `ExecutionCoverageReportV1` (`:477`) | **Partly.** No per-request coverage classification. The nearest are the compiler-derived `CausalReview` (reads, writes, limits), the bundle generator's `not_modeled` list, the pipeline's `CheckReport` (including ODD outflow coverage), and Waltzman's hand-built causal adequacy report. | `action_authoring.py:402`, `scripts/generate_world_bundle.py:62`, `checks.py:335`, `reference_worlds/waltzman/adequacy.py` |
 
 ## 5. Processes and scheduling
 
@@ -99,6 +148,16 @@ There is no global clock in the service: everything is request-driven. Inside a 
 | render | after each run; offline | SceneProfile, Frames | HTML only |
 | compare | POST `/compare-native-coordination` | Comparison | comparison-change record |
 | observe | every logged request; GET `/health`, `/runs`, `/jobs/*` | RunLogEntry, BudgetLedger, Job | run-log line, ledger |
+| deliver_information | a `communicate` attempt (Waltzman, native coordination) | InformationItem, Delivery | one engine event |
+| model_scenario | by hand: `model_scenario.py --name --text` | OddModel, Bundle, CausalModel, ScenarioModel, SensingMap, StockFlows | `model.json`, `bundle.json`, `causal.json`, `flows.json`, `sensing.json`, `checks.json` |
+| check_scenario | each repair round; mid-run; `checks.py` CLI | CheckReport | `checks.json`, `checks.r<N>.json` |
+| repair_rules | inside model_scenario, up to 8 rounds | CausalModel, Bundle, RuleChange | `causal.r<N>.json`, `checks.r<N>.json` |
+| run_scenario | by hand: `run_scenario.py --model-dir` | World, Entity, Resident, Attempt, ScenarioRun | `events.jsonl`, `attempts.jsonl`, `ticks.json`, `final_world.json`, `summary.json` |
+| midrun_rule | each unlisted attempt in a run | RuleChange, CausalModel, Bundle, World | `causal_after_run.json`, `bundle_after_run.json`; an `unsupported_action` event for a ruling |
+| render_scenario | by hand: `render_run.py <run dir>` | SceneProfile | `trace.json`, `frames.html` |
+| extreme_probe | by hand: `c2_extreme.py` | CheckReport | `c2-<stamp>.json` |
+
+**Tick order inside `run_scenario`** (`spikes/any-scenario-2026-10/run_scenario.py:148-290`): each actor in bundle order is offered `Engine.discover` actions; its observation is cut to the fields in `sensing.json`; it is woken only if a categorical field or its offered kinds changed, or an earlier attempt awaits its observed effect. A woken resident returns an Attempt: an offered action goes through `Engine.submit`; `unlisted` goes to the game master; `continue` does nothing. Then `Engine.advance(1)` (with the clock process registered). The run ends at the terminal, after `quiet_ticks` (default 25) ticks with no material change, at `max_ticks` (200) or past the run budget.
 
 **Round order inside `run`** (`scripts/run_authored_world.py:215-401`): each actor in a rotating order (`:324-325`) is shown its offered actions (`Engine.discover`), minus any allowed move that would change nothing (each is previewed on a scratch copy, `:144-162`), the policy picks one (scripted: the first offered, `:165-169`; LLM: chosen by the model, in parallel), then the picks are submitted in order. A pick that lost to an earlier actor (`stale_revision`) is re-decided once against the new state (`:345-368`). After all actors, `Engine.advance(1)` runs due processes (`:387`). The run stops at the turn limit or when the finish line holds.
 
@@ -160,6 +219,18 @@ Each rule below is enforced by the cited code.
 
 **8.15 Living-scene frames** (`src/world_substrate/living_scene.py:38-49`, `:380-405`, `:532`). Feedback accepts every engine status (plus three legacy names) and exposes check labels and verdicts only, never operands; a frame shows effects only for events whose rule has a declared visual. Renderer placement: an actor's latest `actor.move_to` sets its point; actors with the same target share one point (`scripts/render_living_scene.py:129`, `scripts/render_composed_living_scene.py:106`; issue #106, G9).
 
+**8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:248`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:553`).
+
+**8.17 Linked process participants** (`action_authoring.py:672-741`). Names other than `it`/`actor`; each `{link, selector}`; link one of `PROCESS_LINKS` or `ref:<component>.<field>` naming an `entity_ref` field. Bindings are the product of each link's candidates; an empty link drops the binding. Effects may target any participant by name.
+
+**8.18 Pipeline modeling** (`spikes/any-scenario-2026-10/model_scenario.py`). The ODD is condensed by `odd_brief` and appended to the scenario text, cut so the whole stays under the bundle generator's 2,000-character limit (`:434`); the brief is not saved. Mechanics use `ATTEMPT_GUIDANCE` (checks say only whether an actor may begin; processes play out feasibility) and the stronger rule model. `build_engine` compiles and installs; a reject stops the step. Repairs: keep a candidate when its count of stable blocking findings (all except `extreme_conditions` and `behavior_anomaly`, which are LLM-judged) falls, or when it fixes the targeted finding with at most two new ones; return the best model seen (`:329-392`). Sensing and stock mappings are LLM outputs validated client-side against the bundle's fields (`:137`, `:174-176`).
+
+**8.19 Mid-run rules** (`spikes/any-scenario-2026-10/midrun.py:59-110`). A proposed rule passes when the whole model's blocking findings do not exceed the run's starting count and no blocking finding names the new rule or is a conservation finding. A pass installs new actions and processes into the running Engine's registry and submits the attempt; a fail submits a `gm-ruling` action that the Engine records as `unsupported_action`. Either way the record goes to `summary.json` `rules_written_mid_run`. No person approves before or after (G14).
+
 ## 9. Issue #106 and this model
 
 Issue #106 (actors that move to the same place stack on one point) **does show up as a coverage gap**: G9 in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The frame data holds every actor; the renderers draw several of them on one pixel, so a view hides an element the model says is present. It was reproduced in both renderers with a copy of the neutral render fixture. Fixed 2026-10-06 under #106 (see G9).
+
+## 10. The any-scenario pipeline and this model
+
+The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its evidence folders (`truck`, `hospital`, `linked`, `waltzman` under `spikes/any-scenario-2026-10/evidence/`), the substrate component kinds (`information`, `delivery`) and the process link kinds are checked against the code by `tests/test_system_model.py`. Its two views (`scenario_replay`, `scenario_state_panel`) and gaps G12-G16 are in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The pipeline is a spike under an adopted plan (`docs/plans/scenario_actors_kept.md` changes `odd_brief` and `model.json`); when it changes a record, the drift test fails until this model is updated. Plan for this extension: [system_model_pipeline.md](../plans/system_model_pipeline.md).

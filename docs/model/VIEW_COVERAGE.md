@@ -1,6 +1,6 @@
 # View coverage: what each World Substrate view shows of the system model
 
-Status: observed evidence, 2026-10-06. Probes ran at commit `2dd1503`; line numbers are updated to `d18ead6` (#117, which drops no-op moves from the offer), and G1, G2 and G7 were re-checked on `d18ead6` with the same results (the deployed pages at `https://brianmills.dev/world-builder/`, `play/` and `build/` were byte-identical to this commit's sources that day, and the API reported `build_commit 2dd1503`).
+Status: observed evidence, 2026-10-06. Probes ran at commit `2dd1503`; line numbers are updated to `d18ead6` (#117, which drops no-op moves from the offer), and G1, G2 and G7 were re-checked on `d18ead6` with the same results (the deployed pages at `https://brianmills.dev/world-builder/`, `play/` and `build/` were byte-identical to this commit's sources that day, and the API reported `build_commit 2dd1503`). The two any-scenario views and gaps G12-G16 were added 2026-10-08 at `2e409ab`, probed on the retained Waltzman run (`spikes/any-scenario-2026-10/evidence/waltzman/run/frames.html`) served locally and read in a browser (Playwright).
 
 The model is [ODD.md](ODD.md) and [world_substrate_model.toml](world_substrate_model.toml). This page asks one question per model element: can a person looking at each view see it? Values: **shown**, **partial**, **hidden** (on purpose, with the reason), **missing**, **n/a** (that view is not about this element). The same table is in the model file's `coverage` rows; `tests/test_system_model.py` checks that every row names a declared element and gives every view.
 
@@ -15,38 +15,47 @@ The model is [ODD.md](ODD.md) and [world_substrate_model.toml](world_substrate_m
 | `living_scene` | Living Scene v1 renderer over a live projection | `scripts/render_living_scene.py` | offline HTML |
 | `composed_living_scene` | Composed living-scene renderer with inspector; native-coordination runs and comparisons in `build`; agent_ecology3's Living view | `scripts/render_composed_living_scene.py` | inside build; offline HTML |
 | `owner_run_log` | Owner-only run-log reader | `GET /runs` (`scripts/world_builder_service.py:532`), `scripts/world_builder_runs.py` | owner password |
+| `scenario_replay` | Any-scenario run replay (`frames.html`): a pipeline run converted to a contested-run/v3 trace (`to_trace`) and drawn by the same renderer as `round_replay` | `spikes/any-scenario-2026-10/render_run.py:116` -> `scripts/render_scene_replay.py` | offline HTML in a run folder |
+| `scenario_state_panel` | Panel under the scenario replay: per round, the non-clock Engine events (id, rule, status, state changes) and every entity's fields after the round, replayed from `events.jsonl` | `render_run.py:99` (`add_state_panel`), data from `state_rounds` (`:68`) | same page |
 
 Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play/`, `build/`); the API runs on the personal VPS from `deploy/vps/Dockerfile`. The other public URLs (`/waltzman/`, `/world-substrate-visualization/`) are not built by this repository's `deploy/` and were not checked here.
 
 ## Coverage table
 
-| Model element | home | build | play | round_replay | living_scene | composed_living_scene | owner_run_log |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Description | shown | shown | n/a | n/a | n/a | n/a | shown |
-| AuthoringBundle | partial | shown | n/a | partial | n/a | n/a | shown |
-| CausalReview (compiler-derived authority) | partial (G5) | partial (G3) | n/a | n/a | n/a | n/a | partial (G4) |
-| MechanicProfile (frozen id) | missing (G7) | missing (G7) | missing | missing | n/a | n/a | shown (G7 fixed) |
-| Approval | partial (G6) | partial (G6) | n/a | n/a | n/a | n/a | partial (G6) |
-| Run (trace) | partial (G1) | partial (G1) | partial | partial | n/a | n/a | partial (G1) |
-| event `accepted` | shown | partial | shown | shown | shown | shown | partial |
-| event `precondition_failed` | shown | partial | partial | partial | partial | partial | partial |
-| event `stale_revision` | partial | partial | partial | partial | partial | partial | partial |
-| event `scope_violation` | partial | partial | partial | partial | partial | partial | partial |
-| event `invalid_action` | partial | partial | partial | partial | partial | partial | partial |
-| event `unsupported_action` | partial | partial | partial | partial | partial | partial | partial |
-| process-made changes (`advance`) | shown | partial | partial | missing (G8) | partial | partial | partial |
-| run row `no_action` (waited) | shown | partial | n/a | partial | n/a | n/a | shown |
-| run row `nothing_left` (lost a race) | shown | partial | n/a | partial | n/a | n/a | shown |
-| World (state, positions) | partial | partial | partial | partial | shown (G9, G10 fixed) | shown (G9, G10 fixed) | partial |
-| LivingSceneFrame | n/a | partial | n/a | n/a | partial | partial | n/a |
-| Comparison | n/a | shown | n/a | n/a | n/a | partial | missing (G4) |
-| RunLogEntry | hidden | hidden | n/a | n/a | n/a | n/a | shown |
-| BudgetLedger | partial | partial | n/a | n/a | n/a | n/a | partial |
+| Model element | home | build | play | round_replay | living_scene | composed_living_scene | owner_run_log | scenario_replay | scenario_state_panel |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Description | shown | shown | n/a | n/a | n/a | n/a | shown | n/a | n/a |
+| AuthoringBundle | partial | shown | n/a | partial | n/a | n/a | shown | partial (G12) | partial (G12) |
+| CausalReview (compiler-derived authority) | partial (G5) | partial (G3) | n/a | n/a | n/a | n/a | partial (G4) | n/a | n/a |
+| MechanicProfile (frozen id) | missing (G7) | missing (G7) | missing | missing | n/a | n/a | shown (G7 fixed) | missing (G7) | missing (G7) |
+| Approval | partial (G6) | partial (G6) | n/a | n/a | n/a | n/a | partial (G6) | n/a (G14) | n/a (G14) |
+| Run (trace) | partial (G1) | partial (G1) | partial | partial | n/a | n/a | partial (G1) | n/a | n/a |
+| event `accepted` | shown | partial | shown | shown | shown | shown | partial | shown | shown |
+| event `precondition_failed` | shown | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
+| event `stale_revision` | partial | partial | partial | partial | partial | partial | partial | n/a | n/a |
+| event `scope_violation` | partial | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
+| event `invalid_action` | partial | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
+| event `unsupported_action` | partial | partial | partial | partial | partial | partial | partial | partial (G15, G16) | partial (G15, G16) |
+| process-made changes (`advance`) | shown | partial | partial | missing (G8) | partial | partial | partial | missing (G8) | shown |
+| run row `no_action` (waited) | shown | partial | n/a | partial | n/a | n/a | shown | partial (G16) | n/a |
+| run row `nothing_left` (lost a race) | shown | partial | n/a | partial | n/a | n/a | shown | n/a | n/a |
+| World (state, positions) | partial | partial | partial | partial | shown (G9, G10 fixed) | shown (G9, G10 fixed) | partial | partial (G12) | shown |
+| LivingSceneFrame | n/a | partial | n/a | n/a | partial | partial | n/a | n/a | n/a |
+| Comparison | n/a | shown | n/a | n/a | n/a | partial | missing (G4) | n/a | n/a |
+| RunLogEntry | hidden | hidden | n/a | n/a | n/a | n/a | shown | n/a | n/a |
+| BudgetLedger | partial | partial | n/a | n/a | n/a | n/a | partial | n/a | n/a |
+| ScenarioModel (`model.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
+| CheckReport (`checks.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
+| Attempt (`attempts.jsonl`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | partial (G16) | n/a |
+| RuleChange (mid-run rule or ruling) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | partial (G16) | partial (G16) |
 
 Notes on the rows:
 
 - **Refusal events, all views.** The living-scene renderers accept every engine status (`src/world_substrate/living_scene.py:38`) but show feedback only when the scene profile declares a visual for that rule (`living_scene.py:415`), and only check labels and verdicts, never operands (on purpose: operands can be actor-scoped evidence, `living_scene.py:394`). Authored-world views see refusals only through the transcript's `refused_because` check labels (`scripts/run_authored_world.py:375`), never the event itself (G1). Hence "partial".
 - **RunLogEntry is hidden from visitors on purpose**: it holds other visitors' worlds and salted client fingerprints; only the owner reads it (`world_builder_service.py:499`).
+- **The seven World Builder views never read pipeline output** (no file under `scripts/`, `src/`, `deploy/` names `any-scenario`), so the pipeline-only rows are `n/a` there. The pipeline's own spend cap is `spikes/any-scenario-2026-10/spend.py`, not the BudgetLedger.
+- **`stale_revision` cannot occur on the pipeline path**: each resident submits the offered action right after its own `Engine.discover`, and the game master submits at `engine.world.revision` (`midrun.py:91`, `:99`).
+- **InformationItem, Delivery and linked process participants** have no row: no view here was probed for them. Information items appear only in hand-authored Waltzman and native-coordination worlds; linked participants only change which entities a process event touches, and their effects reach the views as ordinary event `changes`.
 - **BudgetLedger** reaches visitors only as an error message when the day's budget is used up (`world_builder_home.html:288`) and as cost receipts in `build`.
 
 ## Gaps
@@ -128,9 +137,40 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Code:** live play asks for one round at a time; between rounds the world state lives in the browser and comes back as `continue_from` (`world_builder_home.html:582`). The server checks that the snapshot's `world_id`, `content_id`, `rule_versions` and `engine_id` match the bundle (`run_authored_world.py:233-242`) but not that the entity state equals the previous round's `final_snapshot` (which the run log retains, `world_builder_service.py:366`).
 - **Reproduced: no.** Read from code only; no edited snapshot was sent. This is a boundary finding, not a view gap: a visitor can only change their own world, but a logged run is not proof that round N+1 started where round N ended.
 
+### G12. Scenario views show only what the run touched, not the world that was built
+
+- **Model:** a pipeline run's world is the generated bundle plus causal model (`bundle.json`, `causal.json`): its name, components, every action and every process.
+- **View:** the replay draws the transcript `to_trace` builds from attempts (`render_run.py:25`); the state panel lists entities by label with their field values (`render_run.py:68`). Neither names the world, its components, actions nobody attempted or processes that never fired.
+- **Reproduced: yes.** Waltzman run page: actions `cast-vote`, `activate-system` (attempted) present; `submit-concern`, `hold-meeting` (never attempted) absent; component `governance_participant` absent; world label and summary absent; processes `tally-country-approval` and `apply-weekly-activated-system-wear` (fired) present, `apply-weekly-unresolved-concern-pressure` (never fired) absent. The state panel showed every entity's fields after each round.
+
+### G13. No view shows the layer-1 scenario model or its check report
+
+- **Model:** Decision 007 layer 1 produces a checked model (ODD, stock map, repairs, check findings; `model.json`, `checks.json`) that "the person approves ... in plain words".
+- **View:** `render_run.py` reads only `summary.json`, `attempts.jsonl`, `ticks.json`, `events.jsonl` and the bundle/causal model; no page renders `model.json` or `checks.json`.
+- **Reproduced: yes.** The Waltzman run page contains neither the scenario text nor any check finding (0 matches for `blocking`/`finding`).
+
+### G14. The pipeline has no approval step before a run and no keep-or-drop step after it
+
+- **Model:** Decision 007 item 1: "The person approves the model in plain words"; item 3: "After the run, the person keeps or drops each new rule for future runs." Decision 006's pre-run approval (P4) is amended only for rules written mid-run.
+- **Code:** `run_scenario.run` builds the Engine from whatever `bundle.json`/`causal.json` are in the model folder (`run_scenario.py:148-171`); no spike file checks or records an approval, and no file implements keep-or-drop (the only mention is the docstring at `midrun.py:11`).
+- **Reproduced: no.** Read from code. A boundary finding, like G11, not a view gap: it marks the Approval row `n/a (G14)` in the scenario views.
+
+### G15. Scenario views show a refusal's status but never the check that failed
+
+- **Model:** a refused event carries `checks` with each check's label and verdict (engine event record, ODD 8.4).
+- **View:** `to_trace` sets every row's `refused_because` to `[]` (`render_run.py:50`, `:56`); `state_rounds` keeps only `event_id`, `rule_id`, `status` and `changes` (`render_run.py:93`).
+- **Reproduced: partly.** The Waltzman page's embedded panel data has no `checks` key and shows the three `unsupported_action` events by status only. That run had no `precondition_failed` event, so the loss of failed-check labels was not observed on a page, only read from code.
+
+### G16. Scenario replay drops most of each attempt and the game master's ruling; "continue" shows as `no_action`
+
+- **Model:** an Attempt records belief, cited observations, decision, expected effect, unlisted intent, what was performed and the observed effect; a game-master ruling records the intent, the proposed rule and why it failed (`summary.json` `rules_written_mid_run`).
+- **View:** `to_trace` keeps only the belief (as `said`), the performed action and its status (`render_run.py:44-52`); a `continue` decision has no `action_record`, so it becomes `no_action`, the same as a resident that was not woken (`:49`, `:55`).
+- **Reproduced: yes.** Waltzman run (10 attempts: 6 offered, 3 unlisted, 1 continue): in the browser the page text contained the belief "Country A currently supports activation" but not the unlisted intent ("Propose a time-boxed ..."), not the ruling reason ("No rule could be added ..."), not any expected effect or cited observation, and not the rules id `12d71aa7843fec08` (G7); the transcript data held exactly one `no_action` row, the `continue` attempt.
+
 ## Not verified
 
 - `/waltzman/` and `/world-substrate-visualization/` (not deployed from this repository).
 - LLM-policy runs (`policy: llm`) and live LLM generation: every probe used scripted moves and canned generation responses, so no model money was spent and LLM-specific fields (`said`, `said_on_retry`) were not exercised.
 - The `owner_run_log` view through the deployed service (owner password not used); its row values come from the local run log written by the same code.
+- Scenario views on runs other than the Waltzman run (truck, hospital and linked runs keep no `frames.html` in evidence; their PNG frames were not re-read).
 - How `play` treats non-accepted statuses in each retained replay (it embeds older renders; marked "partial" from `render_scene_replay.py:237`).
