@@ -65,14 +65,19 @@ def _changes(event: dict[str, Any]) -> str:
 
 def _dead_end(engine: Any, actors: list[str], model: Any, action: dict[str, Any]) -> bool:
     """One-step lookahead on a copy: does this action leave nobody able to act and nothing due?"""
-    probe = deepcopy(engine)
-    probe.submit(dict(action, controller="checks-lookahead"))
-    adv = probe.advance(1)
-    if model.terminal is not None and model.terminal.reached(probe.world):
-        return False
-    if [e for e in adv["events"] if e["rule_id"] != CLOCK]:
-        return False
-    return not any(probe.discover(a)["available"] for a in actors)
+    # Snapshot and restore with the Engine's own World.clone (what Engine.advance uses to roll back a tick);
+    # deep-copying the whole Engine cost ~80% of check time on the hospital world (profiled 2026-10-08).
+    saved = engine.world.clone()
+    try:
+        engine.submit(dict(action, controller="checks-lookahead"))
+        adv = engine.advance(1)
+        if model.terminal is not None and model.terminal.reached(engine.world):
+            return False
+        if [e for e in adv["events"] if e["rule_id"] != CLOCK]:
+            return False
+        return not any(engine.discover(a)["available"] for a in actors)
+    finally:
+        engine.world = saved
 
 
 def simulate(bundle: dict[str, Any], causal: dict[str, Any], *, seed: int, ticks: int,
@@ -387,7 +392,7 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
     fired = set().union(*(r["fired"] for r in base))
     # reachability: random runs that avoid one-step dead ends (PDDL2.1/ENHSP cannot express processes)
     t_base = time.time() - t0
-    guided = [simulate(bundle, causal, seed=100 + s, ticks=ticks * 2, guided=True) for s in range(2 * seeds)]
+    guided = [simulate(bundle, causal, seed=100 + s, ticks=ticks * 2, guided=True) for s in range(4)]  # 4 suffice for reachability; 12 cost most of a round
     t_guided = time.time() - t0 - t_base
     fired |= set().union(*(r["fired"] for r in guided))
     if causal.get("terminal") and not any(r["reached"] for r in [*base, *guided]):
@@ -398,7 +403,7 @@ def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6
     for rule in rules:  # liveness, over random and guided runs
         if rule not in fired:
             findings.append({"check": "liveness", "blocking": False, "rule": rule,
-                             "finding": f"rule {rule} never fired in {2 * seeds} random runs."})
+                             "finding": f"rule {rule} never fired in {seeds + len(guided)} random runs."})
     stuck_runs = sorted({m for r in [*base, *guided] for m in r["stuck"]})
     dead = [r["deadlock_at"] for r in base if r["deadlock_at"] is not None]
     if dead:
