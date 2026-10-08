@@ -203,84 +203,101 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
     quiet = 0
     tick_rows: list[dict[str, Any]] = []
     ended = "max_ticks"
+    failure: BaseException | None = None
+    spend_at_start = plan_spend_total()[1]
     t_run = time.time()
-    for _ in range(max_ticks):
-        n_events_before = len(events)
-        tick = engine.world.tick
-        woke = False
-        for a in actors:
-            page = engine.discover(a)
-            offered = page["available"]
-            fields = flat_fields(page["observation"])
-            if sensing is not None:  # observation authority: only what the ODD says this actor can sense
-                fields = {k: v for k, v in fields.items() if k in set(sensing.get(a, []))}
-            sig = wake_signature(fields, offered)
-            prev_sig, last_tick_sig[a] = last_tick_sig[a], sig
-            if sig == prev_sig and a not in pending_expect:  # nothing changed and no attempt awaiting its outcome
-                continue
-            woke = True
-            changed = {k: [last_fields[a].get(k), v] for k, v in fields.items() if last_fields[a].get(k) != v}
-            if a in pending_expect:  # observed effect of the previous attempt, from this observation only
-                pending_expect[a]["observed_effect"] = {
-                    k: v for k, v in changed.items() if isinstance(v[1], (str, bool))} or "no categorical change"
-                pending_expect.pop(a)
-            last_sig[a], last_fields[a] = sig, fields
-            obs_text = (f"Tick {tick}. What you observe: " + json.dumps(fields, sort_keys=True)
-                        + "\nChanged since you last looked: " + json.dumps(changed, sort_keys=True))
-            residents[a].observe(obs_text)
-            menu = [describe_action(r, labels) for r in offered]
-            spec = entity_lib.ActionSpec(
-                call_to_action="Offered actions (index: action): " + json.dumps(dict(enumerate(menu))),
-                output_type=entity_lib.OutputType.FREE)
-            raw = residents[a].act(spec)
-            attempt = json.loads(raw)
-            record = {"tick": tick, "actor": a, "brief": acts[a].brief, "belief": attempt["belief"], "belief_as_of": tick,
-                      "cited_observations": attempt["cited_observations"], "decision": attempt["choice"],
-                      "expected_effect": attempt["expected_effect"], "offered": menu}
-            if attempt["choice"] == "offered" and attempt.get("offered_index") is not None \
-                    and 0 <= attempt["offered_index"] < len(offered):
-                action = dict(offered[attempt["offered_index"]]["action"], controller="llm-resident")
-                outcome = engine.submit(action)
-                ev = outcome["event"]
-                events.append(ev)
-                record["performed"] = {"action": menu[attempt["offered_index"]], "status": outcome["status"],
-                                       "event_id": ev["event_id"], "action_record": action}
-            elif attempt["choice"] == "unlisted":
-                record["unlisted_intent"] = attempt.get("unlisted_intent")
-                if unlisted_handler is not None:
-                    record["performed"] = unlisted_handler(engine, a, attempt.get("unlisted_intent") or "", events)
+    # Events and attempts are written after every tick, and a failure (for example the provider refusing calls when
+    # credit runs out) still writes everything gathered plus a summary naming the error, then re-raises. On
+    # 2026-10-08 a run that reached tick 10 lost every event because these files were written only at the end.
+    try:
+        for _ in range(max_ticks):
+            n_events_before = len(events)
+            tick = engine.world.tick
+            woke = False
+            for a in actors:
+                page = engine.discover(a)
+                offered = page["available"]
+                fields = flat_fields(page["observation"])
+                if sensing is not None:  # observation authority: only what the ODD says this actor can sense
+                    fields = {k: v for k, v in fields.items() if k in set(sensing.get(a, []))}
+                sig = wake_signature(fields, offered)
+                prev_sig, last_tick_sig[a] = last_tick_sig[a], sig
+                if sig == prev_sig and a not in pending_expect:  # nothing changed and no attempt awaiting its outcome
+                    continue
+                woke = True
+                changed = {k: [last_fields[a].get(k), v] for k, v in fields.items() if last_fields[a].get(k) != v}
+                if a in pending_expect:  # observed effect of the previous attempt, from this observation only
+                    pending_expect[a]["observed_effect"] = {
+                        k: v for k, v in changed.items() if isinstance(v[1], (str, bool))} or "no categorical change"
+                    pending_expect.pop(a)
+                last_sig[a], last_fields[a] = sig, fields
+                obs_text = (f"Tick {tick}. What you observe: " + json.dumps(fields, sort_keys=True)
+                            + "\nChanged since you last looked: " + json.dumps(changed, sort_keys=True))
+                residents[a].observe(obs_text)
+                menu = [describe_action(r, labels) for r in offered]
+                spec = entity_lib.ActionSpec(
+                    call_to_action="Offered actions (index: action): " + json.dumps(dict(enumerate(menu))),
+                    output_type=entity_lib.OutputType.FREE)
+                raw = residents[a].act(spec)
+                attempt = json.loads(raw)
+                record = {"tick": tick, "actor": a, "brief": acts[a].brief, "belief": attempt["belief"], "belief_as_of": tick,
+                          "cited_observations": attempt["cited_observations"], "decision": attempt["choice"],
+                          "expected_effect": attempt["expected_effect"], "offered": menu}
+                if attempt["choice"] == "offered" and attempt.get("offered_index") is not None \
+                        and 0 <= attempt["offered_index"] < len(offered):
+                    action = dict(offered[attempt["offered_index"]]["action"], controller="llm-resident")
+                    outcome = engine.submit(action)
+                    ev = outcome["event"]
+                    events.append(ev)
+                    record["performed"] = {"action": menu[attempt["offered_index"]], "status": outcome["status"],
+                                           "event_id": ev["event_id"], "action_record": action}
+                elif attempt["choice"] == "unlisted":
+                    record["unlisted_intent"] = attempt.get("unlisted_intent")
+                    if unlisted_handler is not None:
+                        record["performed"] = unlisted_handler(engine, a, attempt.get("unlisted_intent") or "", events)
+                    else:
+                        record["performed"] = {"status": "no_rule", "event_id": None}
                 else:
-                    record["performed"] = {"status": "no_rule", "event_id": None}
-            else:
-                record["performed"] = {"status": "continue", "event_id": None}
-            attempts.append(record)
-            if record["performed"].get("event_id"):  # only real attempts await an observed outcome
-                pending_expect[a] = record
-            print(f"[tick {tick}] {labels[a]}: {record['decision']} -> {record['performed']}", flush=True)
-        adv = engine.advance(1)
-        events.extend(adv.get("events", []))
-        tick_rows.append({"tick": tick, "world_changes": [e["rule_id"] for e in adv.get("events", [])
-                                                           if e["rule_id"] != ClockAdvanceProcess.rule_id]})
-        if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
-            ended = "terminal"
-            break
-        material = [e for e in adv.get("events", []) if e.get("rule_id") != ClockAdvanceProcess.rule_id]
-        # progress = the world changed (a process event, or an attempt whose event changed component state);
-        # a resident repeating an action that changes nothing is not progress (audit finding: 178 such calls)
-        changed_by_attempt = any(any(".components." in c["path"] for c in e.get("changes", []))
-                                 for e in events[n_events_before:] if e.get("causal_bearer", {}).get("kind") != "process")
-        quiet = 0 if (material or changed_by_attempt) else quiet + 1
-        if quiet >= quiet_ticks:
-            ended = "quiescent"
-            break
-        cost = sum(x.cost for x in acts.values())
-        if cost > run_budget:
-            ended = "run_budget"
-            break
+                    record["performed"] = {"status": "continue", "event_id": None}
+                attempts.append(record)
+                if record["performed"].get("event_id"):  # only real attempts await an observed outcome
+                    pending_expect[a] = record
+                print(f"[tick {tick}] {labels[a]}: {record['decision']} -> {record['performed']}", flush=True)
+            adv = engine.advance(1)
+            events.extend(adv.get("events", []))
+            (out / "events.jsonl").write_text("".join(json.dumps(e, sort_keys=True) + "\n" for e in events))
+            (out / "attempts.jsonl").write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in attempts))
+            tick_rows.append({"tick": tick, "world_changes": [e["rule_id"] for e in adv.get("events", [])
+                                                               if e["rule_id"] != ClockAdvanceProcess.rule_id]})
+            if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
+                ended = "terminal"
+                break
+            material = [e for e in adv.get("events", []) if e.get("rule_id") != ClockAdvanceProcess.rule_id]
+            # progress = the world changed (a process event, or an attempt whose event changed component state);
+            # a resident repeating an action that changes nothing is not progress (audit finding: 178 such calls)
+            changed_by_attempt = any(any(".components." in c["path"] for c in e.get("changes", []))
+                                     for e in events[n_events_before:] if e.get("causal_bearer", {}).get("kind") != "process")
+            quiet = 0 if (material or changed_by_attempt) else quiet + 1
+            if quiet >= quiet_ticks:
+                ended = "quiescent"
+                break
+            # Budget from the call logs, so game-master rule writing counts too: on 2026-10-08 it spent $3.30 in one
+            # run while this check summed only the residents' $0.23. The plan cap is checked every tick as well.
+            spent = plan_spend_total()[1]
+            if spent - spend_at_start > run_budget:
+                ended = "run_budget"
+                break
+            if spent > CAP:
+                ended = "plan_spend_cap"
+                break
+    except Exception as error:  # write what the run gathered, then fail loudly
+        failure = error
+        ended = f"error: {type(error).__name__}: {str(error)[:300]}"
     cost = sum(x.cost for x in acts.values())
     summary = {"resident_model": resident_model, "conditions_changed": applied, "situation_briefing": situation, "run_id": run_id, "trace_id": trace_id, "profile_id": profile_id, "ended": ended,
                "final_tick": engine.world.tick, "events": len(events), "attempts": len(attempts),
                "resident_calls": sum(x.calls for x in acts.values()), "cost": cost,
+               "run_spend_from_logs": round(plan_spend_total()[1] - spend_at_start, 4),
                "seconds": round(time.time() - t_run, 1), "plan_spend_after": plan_spend_total()[1]}
     (out / "events.jsonl").write_text("\n".join(json.dumps(e, sort_keys=True) for e in events) + "\n")
     (out / "attempts.jsonl").write_text("\n".join(json.dumps(r, sort_keys=True) for r in attempts) + "\n")
@@ -292,6 +309,8 @@ def run(model_dir: Path, *, max_ticks: int, run_budget: float, quiet_ticks: int,
     (out / "ticks.json").write_text(json.dumps(tick_rows))
     (out / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     print("[done] " + json.dumps(summary, sort_keys=True))
+    if failure is not None:
+        raise failure
     return out
 
 

@@ -140,6 +140,11 @@ The system model's files, its drift test and VIEW_COVERAGE are updated in the sa
 - **Spend:** OpenRouter model calls under Brian's key.
   - **Authorizer:** Brian, 2026-10-08. The cap is $2, measured from `spend.py` at the plan's start.
   - **Raising the cap:** needs his explicit yes.
+  - **Containment**, as enforced in code since 2026-10-08, after one run overshot the cap by $1.86 because game-master calls were not counted:
+    - `model_scenario.py` and `run_scenario.py` refuse to start when `spend.py`'s logged total plus the run budget exceeds `CAP`;
+    - during an agent run, spend is re-read from the call logs every tick, and the run stops (`ended: run_budget` or `plan_spend_cap`) when the run's logged spend exceeds its budget or the plan total exceeds `CAP`;
+    - the game master is limited to 6 rule-writing attempts per run (`midrun.GM_MAX_ATTEMPTS`);
+    - every model call goes through `llm_client` with a per-call `max_budget`.
   - **Expected cost:** about $0.60 to $1.20.
 - **Irreversible actions:** none. There is no deploy and no outreach.
 - **Promotion condition:** nothing is shown to Waltzman or deployed from this plan. Before any promotion, a fresh pipeline run of his text on a real model, with trace ids reported, must have an agent run showing at least three of the four mechanisms with Engine event ids.
@@ -232,3 +237,20 @@ To be written from the recorded run (S6).
   - Generated processes double-counted the meeting countdown.
   - All three are repaired and tested against the recorded files: `RecordedPipelineRepairTests`, with evidence in `evidence/waltzman-spec/pipeline1/`.
 - **Deviation from the declared diff scope:** `src/world_substrate/engine.py`. `Engine.discover` now checks the read-only view once per page and re-runs hook by hook only when it changed, which is 12 times faster with the same errors. Also changed: `spikes/any-scenario-2026-10/checks.py` (`static_checks`) and `midrun.py`. These are needed to run 10 agents. The project gate passes 572 of 572.
+- **Pipeline run 2** (`waltzman-spec-20261008T174927`, `--from-spec`, after the audit repairs): every behavior is now covered by a rule that changes its records. Its simulated check was stopped after about 25 minutes. `checks.json` holds the static checks: 1 blocking finding, liveness on `authorize-supported-ready-deployment`.
+- **Agent run on pipeline run 2** (`run-20261008T181230`): it crashed at tick 10 when OpenRouter credit ran out. The run folder is empty, because events were written only at the end. The progress log is kept at `evidence/waltzman-spec/run1-crashed/members.log`. In it:
+  - all four groups delivered their concerns to their own country at tick 0 (`e00002`-`e00005`);
+  - the countries made support conditional at tick 1 (`e00011`-`e00014`);
+  - meetings were held each tick;
+  - Country Two reopened a settled issue at tick 10.
+
+  Those event ids appear only in the log; the Engine's change records are lost.
+- **Spend over the cap:**
+  - The game master's rule writing cost $3.30 (32 calls) in that run.
+  - The run budget counted only the residents' $0.23.
+  - The plan total reached $11.45 against the $9.59 cap: $1.86 over, without Brian's yes.
+- **Fixed:**
+  - the run budget now comes from the call logs, and the plan cap is checked every tick;
+  - the game master is limited to 6 rule-writing attempts per run;
+  - events and attempts are written every tick, and a failure writes a summary naming the error, then re-raises (verified with a failing model id).
+- **Blocked:** S5 and S6 need one more agent run. That needs more credit on the OpenRouter account ($0.57 left) and Brian's yes to raise the cap.
