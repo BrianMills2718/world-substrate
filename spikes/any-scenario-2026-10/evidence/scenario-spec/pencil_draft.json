@@ -1,0 +1,1768 @@
+{
+  "draft_id": "draft_49524bf20017",
+  "target_kind": "general_world_v2",
+  "revision": 2,
+  "status": "approved",
+  "messages": [
+    {
+      "message_id": "5a865cf1-bb85-4a23-8121-9a10b8956718",
+      "content": "a pencil manufuatring and logistics chain",
+      "source": "conversation",
+      "edit_digest": null,
+      "model": "openrouter/openai/gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "assistant_summary": "Generated Pencil Manufacturing and Logistics Chain. Coverage resolved 6 requested behaviors; 0 block approval.",
+      "result_status": "ready_for_review",
+      "trace_ids": [
+        "draft_49524bf20017/general-v2/revision/1/attempt/1",
+        "draft_49524bf20017/general-v2/revision/1/attempt/2",
+        "draft_49524bf20017/general-v2/revision/1/attempt/2/dependency-review"
+      ]
+    }
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "trace_id": "draft_49524bf20017/general-v2/revision/1/attempt/1",
+      "status": "repair",
+      "message": "Material behavior 'assess_chain_outcome_request' has unsupported causal closure (unsupported authority); ambiguous registry match at score 3: bounded_person_action@1, information_delivery@1",
+      "observed_cost": 0.0764535
+    },
+    {
+      "attempt": 2,
+      "trace_id": "draft_49524bf20017/general-v2/revision/1/attempt/2",
+      "status": "accepted",
+      "message": "The separated semantic proposal compiled after 0 retained deterministic correction(s); dependency completeness review follows.",
+      "observed_cost": 0.0551759
+    },
+    {
+      "attempt": 2,
+      "trace_id": "draft_49524bf20017/general-v2/revision/1/attempt/2/dependency-review",
+      "status": "accepted",
+      "message": "All stated prerequisites for exact actions are enforced by their bound contracts or by contract selection. Inspection reads cedar_lot_quality; manufacturing reads all declared input stocks and can execute only when Maya selects the authorized transformation; transport guards source quantity, route operational status, and destination receiving state, and can execute only when Owen selects it. The remaining decision and review requests are intentionally bounded/coarse and do not require exact dependency enforcement.",
+      "observed_cost": 0.020136
+    }
+  ],
+  "authoring_summary": "Generated Pencil Manufacturing and Logistics Chain. Coverage resolved 6 requested behaviors; 0 block approval.",
+  "proposal": {
+    "bundle_version": 2,
+    "authored_study_id": "pencil_manufacturing_logistics_study",
+    "scenario": {
+      "scenario_spec_version": 2,
+      "scenario_id": "pencil_manufacturing_logistics_chain",
+      "title": "Pencil Manufacturing and Logistics Chain",
+      "description": "A factory can inspect cedar condition, convert finite raw-material stocks into finished pencils, and dispatch part of the finished stock to a retail warehouse.",
+      "people": [
+        {
+          "entity_id": "maya_chen",
+          "label": "Maya Chen",
+          "position": "Production manager",
+          "disposition": "Practical and quality-conscious, with a preference for completing viable batches without wasting scarce inputs.",
+          "memories": [
+            "Previous batches using marginally conditioned wood produced avoidable defects."
+          ],
+          "behavioral_profile": {
+            "values": [
+              "Product quality and responsible material use."
+            ],
+            "goals": [
+              "Complete a viable pencil batch while avoiding preventable defects."
+            ],
+            "beliefs": [
+              "Wood-condition findings should inform whether production begins."
+            ],
+            "decision_tendencies": [
+              "Reviews inspection findings and available inputs before deciding whether to attempt a batch."
+            ],
+            "social_perceptions": [
+              "Regards the inspector's direct findings as important while retaining production judgment."
+            ],
+            "current_state": [
+              "Ready to evaluate the pending cedar lot."
+            ],
+            "capabilities": [
+              "Can interpret inspection results and decide whether to attempt an authorized production batch."
+            ],
+            "limitations": [
+              "Cannot directly observe the hidden condition of the cedar lot without an inspection finding."
+            ]
+          }
+        },
+        {
+          "entity_id": "elena_ruiz",
+          "label": "Elena Ruiz",
+          "position": "Quality inspector",
+          "disposition": "Methodical and cautious about material conditions that can affect machining and finishing.",
+          "memories": [
+            "Wood moisture variation has previously caused warping during pencil production."
+          ],
+          "behavioral_profile": {
+            "values": [
+              "Accurate inspection and traceable quality findings."
+            ],
+            "goals": [
+              "Determine and communicate the cedar lot's canonical condition."
+            ],
+            "beliefs": [
+              "Direct inspection is more reliable than assumptions based on delivery paperwork."
+            ],
+            "decision_tendencies": [
+              "Performs the prescribed inspection before reporting a finding."
+            ],
+            "social_perceptions": [
+              "Expects production staff to consider documented findings before using the lot."
+            ],
+            "current_state": [
+              "Available to inspect the staged cedar slats."
+            ],
+            "capabilities": [
+              "Can perform the declared inspection of the cedar-quality record."
+            ],
+            "limitations": [
+              "Cannot authorize manufacturing or dispatch shipments."
+            ]
+          }
+        },
+        {
+          "entity_id": "owen_brooks",
+          "label": "Owen Brooks",
+          "position": "Logistics coordinator",
+          "disposition": "Schedule-focused but unwilling to dispatch unavailable stock or use an inoperable route.",
+          "memories": [
+            "Dispatches made before production completion have previously caused missed delivery commitments."
+          ],
+          "behavioral_profile": {
+            "values": [
+              "Reliable delivery and accurate custody records."
+            ],
+            "goals": [
+              "Dispatch a feasible quantity of finished pencils to the retail warehouse."
+            ],
+            "beliefs": [
+              "A shipment should be attempted only when finished stock, an operational route, and an open destination are available."
+            ],
+            "decision_tendencies": [
+              "Checks inventory, route, and receiving information before initiating transport."
+            ],
+            "social_perceptions": [
+              "Relies on production records for finished-stock availability."
+            ],
+            "current_state": [
+              "Waiting for a possible finished-pencil batch."
+            ],
+            "capabilities": [
+              "Can decide whether to dispatch and can operate the declared shipment movement."
+            ],
+            "limitations": [
+              "Cannot create finished pencils or bypass transport preconditions."
+            ]
+          }
+        }
+      ],
+      "world_records": [
+        {
+          "record_id": "factory_custodian",
+          "kind": "facility_custodian",
+          "label": "Pencil factory",
+          "public_state": [
+            {
+              "key": "operating_state",
+              "value": "available"
+            }
+          ],
+          "hidden_state": [],
+          "visible_to_actor_ids": [
+            "maya_chen",
+            "elena_ruiz",
+            "owen_brooks"
+          ]
+        },
+        {
+          "record_id": "retail_warehouse_custodian",
+          "kind": "facility_custodian",
+          "label": "Retail warehouse",
+          "public_state": [
+            {
+              "key": "receiving_state",
+              "value": "open"
+            }
+          ],
+          "hidden_state": [],
+          "visible_to_actor_ids": [
+            "maya_chen",
+            "owen_brooks"
+          ]
+        },
+        {
+          "record_id": "cedar_lot_quality",
+          "kind": "material_quality_record",
+          "label": "Cedar slat lot quality",
+          "public_state": [
+            {
+              "key": "lot_id",
+              "value": "cedar_lot_01"
+            }
+          ],
+          "hidden_state": [
+            {
+              "key": "dryness_assessment",
+              "value": "acceptable_with_monitoring"
+            }
+          ],
+          "visible_to_actor_ids": [
+            "elena_ruiz",
+            "maya_chen"
+          ]
+        },
+        {
+          "record_id": "cedar_inspection_finding",
+          "kind": "inspection_finding",
+          "label": "Cedar inspection finding",
+          "public_state": [
+            {
+              "key": "dryness_assessment",
+              "value": null
+            }
+          ],
+          "hidden_state": [],
+          "visible_to_actor_ids": [
+            "elena_ruiz",
+            "maya_chen"
+          ]
+        },
+        {
+          "record_id": "factory_inventory",
+          "kind": "inventory_ledger",
+          "label": "Factory material and finished-goods inventory",
+          "public_state": [
+            {
+              "key": "cedar_slats_available",
+              "value": 1000
+            },
+            {
+              "key": "graphite_cores_available",
+              "value": 1000
+            },
+            {
+              "key": "adhesive_units_available",
+              "value": 1000
+            },
+            {
+              "key": "pencils_available",
+              "value": 0
+            }
+          ],
+          "hidden_state": [],
+          "visible_to_actor_ids": [
+            "maya_chen",
+            "elena_ruiz",
+            "owen_brooks"
+          ]
+        },
+        {
+          "record_id": "shipment_arrival",
+          "kind": "shipment_arrival_record",
+          "label": "Retail pencil shipment arrival",
+          "public_state": [
+            {
+              "key": "shipment_quantity",
+              "value": 0
+            },
+            {
+              "key": "usable_quantity",
+              "value": 0
+            },
+            {
+              "key": "arrival_minute",
+              "value": 0
+            },
+            {
+              "key": "status",
+              "value": "pending"
+            }
+          ],
+          "hidden_state": [],
+          "visible_to_actor_ids": [
+            "maya_chen",
+            "owen_brooks"
+          ]
+        }
+      ],
+      "active_systems": [
+        {
+          "system_id": "pencil_production_line",
+          "subject_refs": [
+            "factory_custodian",
+            "cedar_slats_stock",
+            "graphite_cores_stock",
+            "adhesive_stock",
+            "factory_pencil_stock"
+          ],
+          "behavior_summary": "Converts bounded raw-material quantities into a bounded quantity of finished pencils when an authorized operator attempts the declared transformation.",
+          "representation_strategy": "detailed",
+          "causal_responsibility_tags": [
+            "physical_pencil_conversion"
+          ]
+        },
+        {
+          "system_id": "road_freight_system",
+          "subject_refs": [
+            "factory_pencil_stock",
+            "retail_pencil_stock",
+            "factory_to_retail_route"
+          ],
+          "behavior_summary": "Moves a bounded finished-pencil quantity between declared custodians when route, receiving, and stock preconditions permit the transport to commit.",
+          "representation_strategy": "detailed",
+          "causal_responsibility_tags": [
+            "routed_finished_goods_movement"
+          ]
+        }
+      ],
+      "component_requests": [
+        {
+          "request_id": "inspect_cedar_lot_request",
+          "subject_refs": [
+            "elena_ruiz",
+            "cedar_lot_quality",
+            "cedar_inspection_finding"
+          ],
+          "behavior_description": "Elena attempts the declared inspection that reveals the scoped hidden dryness assessment in the minimal inspection output record.",
+          "required_reads": [
+            "cedar_lot_quality"
+          ],
+          "desired_effects": [
+            "Write the revealed dryness_assessment to cedar_inspection_finding for Elena and Maya."
+          ],
+          "fidelity_need": "exact",
+          "causally_material": true,
+          "fidelity_material": true,
+          "transition_contract_ids": [
+            "inspect_cedar_lot"
+          ]
+        },
+        {
+          "request_id": "production_decision_request",
+          "subject_refs": [
+            "maya_chen",
+            "cedar_inspection_finding",
+            "factory_inventory"
+          ],
+          "behavior_description": "Maya interprets the retained inspection finding and available material inventory, then decides whether to attempt the bounded pencil batch.",
+          "required_reads": [
+            "cedar_inspection_finding",
+            "factory_inventory"
+          ],
+          "desired_effects": [
+            "Produce Maya's contestable decision to attempt or defer manufacturing without directly changing canonical inventory."
+          ],
+          "fidelity_need": "bounded",
+          "causally_material": true,
+          "fidelity_material": true,
+          "transition_contract_ids": []
+        },
+        {
+          "request_id": "manufacture_pencils_request",
+          "subject_refs": [
+            "maya_chen",
+            "cedar_slats_stock",
+            "graphite_cores_stock",
+            "adhesive_stock",
+            "factory_pencil_stock"
+          ],
+          "behavior_description": "If Maya attempts production, operate the exact bounded resource transformation for one pencil batch.",
+          "required_reads": [
+            "cedar_slats_stock",
+            "graphite_cores_stock",
+            "adhesive_stock"
+          ],
+          "desired_effects": [
+            "Consume one batch of inputs, create finished pencils in factory custody, and update the exact public inventory mirrors."
+          ],
+          "fidelity_need": "exact",
+          "causally_material": true,
+          "fidelity_material": true,
+          "transition_contract_ids": [
+            "manufacture_pencil_batch"
+          ]
+        },
+        {
+          "request_id": "dispatch_decision_request",
+          "subject_refs": [
+            "owen_brooks",
+            "factory_inventory",
+            "factory_to_retail_route",
+            "retail_warehouse_custodian"
+          ],
+          "behavior_description": "Owen reviews finished-stock availability, route state, and destination receiving state, then decides whether to attempt dispatch.",
+          "required_reads": [
+            "factory_inventory",
+            "factory_to_retail_route",
+            "retail_warehouse_custodian"
+          ],
+          "desired_effects": [
+            "Produce Owen's contestable decision to attempt or defer shipment without directly changing custody."
+          ],
+          "fidelity_need": "bounded",
+          "causally_material": true,
+          "fidelity_material": true,
+          "transition_contract_ids": []
+        },
+        {
+          "request_id": "transport_pencils_request",
+          "subject_refs": [
+            "owen_brooks",
+            "factory_pencil_stock",
+            "retail_pencil_stock",
+            "factory_to_retail_route",
+            "retail_warehouse_custodian",
+            "shipment_arrival"
+          ],
+          "behavior_description": "If Owen attempts dispatch, move 500 finished pencils from factory custody to retail-warehouse custody through the declared directed route.",
+          "required_reads": [
+            "factory_pencil_stock",
+            "factory_to_retail_route",
+            "retail_warehouse_custodian"
+          ],
+          "desired_effects": [
+            "Reduce factory finished stock, increase retail finished stock, and write the exact arrival quantity, usable quantity, arrival minute, and arrived status."
+          ],
+          "fidelity_need": "exact",
+          "causally_material": true,
+          "fidelity_material": true,
+          "transition_contract_ids": [
+            "transport_pencils_to_retail"
+          ]
+        },
+        {
+          "request_id": "maya_outcome_review_request",
+          "subject_refs": [
+            "maya_chen",
+            "factory_inventory",
+            "shipment_arrival",
+            "retail_pencil_stock"
+          ],
+          "behavior_description": "Maya reviews the retained canonical inventories and shipment-arrival record and forms her own bounded assessment of whether manufacturing and delivery occurred; this request does not deliver a message or mutate world state.",
+          "required_reads": [
+            "factory_inventory",
+            "shipment_arrival",
+            "retail_pencil_stock"
+          ],
+          "desired_effects": [
+            "Produce Maya's concise, nonbinding assessment grounded in retained canonical state."
+          ],
+          "fidelity_need": "bounded",
+          "causally_material": false,
+          "fidelity_material": true,
+          "transition_contract_ids": []
+        }
+      ],
+      "spatial_extension": {
+        "places": [
+          {
+            "place_id": "pencil_factory_site",
+            "label": "Pencil factory site",
+            "state": [
+              {
+                "key": "site_type",
+                "value": "manufacturing"
+              }
+            ]
+          },
+          {
+            "place_id": "retail_warehouse_site",
+            "label": "Retail warehouse site",
+            "state": [
+              {
+                "key": "site_type",
+                "value": "distribution"
+              }
+            ]
+          }
+        ],
+        "placements": [
+          {
+            "record_id": "factory_custodian",
+            "place_id": "pencil_factory_site"
+          },
+          {
+            "record_id": "retail_warehouse_custodian",
+            "place_id": "retail_warehouse_site"
+          },
+          {
+            "record_id": "cedar_lot_quality",
+            "place_id": "pencil_factory_site"
+          },
+          {
+            "record_id": "factory_inventory",
+            "place_id": "pencil_factory_site"
+          },
+          {
+            "record_id": "shipment_arrival",
+            "place_id": "retail_warehouse_site"
+          }
+        ],
+        "links": [
+          {
+            "link_id": "factory_to_retail_route",
+            "origin_place_id": "pencil_factory_site",
+            "destination_place_id": "retail_warehouse_site",
+            "operational": true,
+            "public_state": [
+              {
+                "key": "travel_time_minutes",
+                "value": 90
+              }
+            ],
+            "hidden_state": [],
+            "visible_to_actor_ids": [
+              "maya_chen",
+              "owen_brooks"
+            ]
+          }
+        ]
+      },
+      "information_extension": null,
+      "resource_extension": {
+        "stocks": [
+          {
+            "resource_id": "cedar_slats_stock",
+            "quantity": 1000.0,
+            "custodian_id": "factory_custodian",
+            "conserved": true
+          },
+          {
+            "resource_id": "graphite_cores_stock",
+            "quantity": 1000.0,
+            "custodian_id": "factory_custodian",
+            "conserved": true
+          },
+          {
+            "resource_id": "adhesive_stock",
+            "quantity": 1000.0,
+            "custodian_id": "factory_custodian",
+            "conserved": true
+          },
+          {
+            "resource_id": "factory_pencil_stock",
+            "quantity": 0.0,
+            "custodian_id": "factory_custodian",
+            "conserved": true
+          },
+          {
+            "resource_id": "retail_pencil_stock",
+            "quantity": 0.0,
+            "custodian_id": "retail_warehouse_custodian",
+            "conserved": true
+          }
+        ]
+      },
+      "relationship_extension": {
+        "relationships": [
+          {
+            "relationship_id": "production_quality_coordination",
+            "participant_refs": [
+              "maya_chen",
+              "elena_ruiz"
+            ],
+            "description": "Elena supplies a scoped inspection finding that Maya considers in her independent production decision.",
+            "material_to_question": true
+          },
+          {
+            "relationship_id": "production_logistics_coordination",
+            "participant_refs": [
+              "maya_chen",
+              "owen_brooks"
+            ],
+            "description": "Owen relies on retained finished-stock records rather than assuming production succeeded.",
+            "material_to_question": true
+          }
+        ]
+      },
+      "sensing_rules": [
+        {
+          "rule_id": "inspect_cedar_lot",
+          "subject_ref": "cedar_lot_quality",
+          "observer_ids": [
+            "elena_ruiz"
+          ],
+          "reveal_hidden_keys": [
+            "dryness_assessment"
+          ],
+          "output_record_id": "cedar_inspection_finding",
+          "result_recipient_ids": [
+            "elena_ruiz",
+            "maya_chen"
+          ]
+        }
+      ],
+      "resource_transformations": [
+        {
+          "transformation_id": "manufacture_pencil_batch",
+          "operator_ids": [
+            "maya_chen"
+          ],
+          "input_resource_quantities": [
+            {
+              "resource_id": "cedar_slats_stock",
+              "quantity": 1000.0
+            },
+            {
+              "resource_id": "graphite_cores_stock",
+              "quantity": 1000.0
+            },
+            {
+              "resource_id": "adhesive_stock",
+              "quantity": 1000.0
+            }
+          ],
+          "output_resource_id": "factory_pencil_stock",
+          "output_quantity": 1000.0,
+          "maximum_batches": 1,
+          "public_inventory_record_id": "factory_inventory",
+          "public_inventory_input_fields": [
+            {
+              "resource_id": "cedar_slats_stock",
+              "field": "cedar_slats_available"
+            },
+            {
+              "resource_id": "graphite_cores_stock",
+              "field": "graphite_cores_available"
+            },
+            {
+              "resource_id": "adhesive_stock",
+              "field": "adhesive_units_available"
+            }
+          ],
+          "public_inventory_output_field": "pencils_available"
+        }
+      ],
+      "resource_transports": [
+        {
+          "transport_id": "transport_pencils_to_retail",
+          "operator_ids": [
+            "owen_brooks"
+          ],
+          "source_resource_id": "factory_pencil_stock",
+          "destination_resource_id": "retail_pencil_stock",
+          "source_custodian_id": "factory_custodian",
+          "destination_custodian_id": "retail_warehouse_custodian",
+          "quantity": 500.0,
+          "origin_place_id": "pencil_factory_site",
+          "destination_place_id": "retail_warehouse_site",
+          "allowed_route_ids": [
+            "factory_to_retail_route"
+          ],
+          "arrival_record_id": "shipment_arrival",
+          "arrival_quantity_key": "shipment_quantity",
+          "usable_quantity_key": "usable_quantity",
+          "arrival_minute_key": "arrival_minute",
+          "arrival_status_key": "status",
+          "arrival_status_value": "arrived",
+          "required_preconditions": [
+            {
+              "record_type": "resource",
+              "record_id": "factory_pencil_stock",
+              "field": "quantity",
+              "comparison": "greater_than_or_equal",
+              "expected": 500
+            },
+            {
+              "record_type": "route",
+              "record_id": "factory_to_retail_route",
+              "field": "operational",
+              "comparison": "equals",
+              "expected": true
+            },
+            {
+              "record_type": "record",
+              "record_id": "retail_warehouse_custodian",
+              "field": "state.receiving_state",
+              "comparison": "equals",
+              "expected": "open"
+            }
+          ]
+        }
+      ],
+      "fidelity_assumptions": [
+        "One production batch consumes 1000 cedar slats, 1000 graphite cores, and 1000 adhesive units to produce 1000 finished pencils.",
+        "Packaging labor, electrical consumption, machine wear, and intra-factory handling are omitted because they do not alter the first-run inspection, production, or dispatch decisions.",
+        "The road route represents freight movement at exact stock-and-arrival fidelity; vehicle internals and traffic variation are omitted.",
+        "A committed transport makes all 500 moved pencils usable at the destination; damage and partial loss are outside this compact first draft.",
+        "The hidden cedar assessment is canonical inspection ground truth, but its interpretation does not compel Maya to start production."
+      ],
+      "declared_invariants": [
+        "No conserved resource stock may become negative.",
+        "Finished pencils may be created only by the declared manufacturing transformation and within its batch limit.",
+        "Transport cannot commit unless the source holds at least 500 pencils, the directed route is operational, and the destination receiving state is open.",
+        "Resource custody changes only through the declared transport, while physical location follows the placement of each custodian record.",
+        "The cedar lot's hidden dryness assessment is not public before the declared sensing rule records its scoped output.",
+        "Inspection, production judgment, manufacturing, dispatch judgment, transport, and outcome review remain separate causal responsibilities."
+      ]
+    },
+    "default_run": {
+      "run_spec_version": 2,
+      "run_id": "draft_49524bf20017_run",
+      "scenario_digest": "abbe1f586641765a1b3d7a95f7c7224992b70dc8d5ff7244eb9ea381467c98d8",
+      "execution_mode": "reference",
+      "cognition_mode": "integrated",
+      "model": null,
+      "reasoning_effort": null,
+      "per_call_budget": null,
+      "per_run_budget": null,
+      "starting_checkpoint_id": null,
+      "horizon_minutes": 180,
+      "scheduled_moments": [
+        {
+          "moment_id": "resolve_cedar_condition",
+          "minute": 0,
+          "description": "Elena may inspect the staged cedar lot so its hidden dryness assessment can become an explicit scoped finding for production review.",
+          "external_inject_representation_ids": [],
+          "active_component_request_ids": [
+            "inspect_cedar_lot_request"
+          ],
+          "active_transition_contract_ids": [
+            "inspect_cedar_lot"
+          ]
+        },
+        {
+          "moment_id": "attempt_pencil_production",
+          "minute": 30,
+          "description": "Maya reviews the retained inspection finding and inventory, decides whether to attempt the batch, and may operate the bounded manufacturing transformation.",
+          "external_inject_representation_ids": [],
+          "active_component_request_ids": [
+            "production_decision_request",
+            "manufacture_pencils_request"
+          ],
+          "active_transition_contract_ids": [
+            "manufacture_pencil_batch"
+          ]
+        },
+        {
+          "moment_id": "attempt_retail_dispatch",
+          "minute": 60,
+          "description": "Owen reviews finished stock, route state, and destination receiving state, decides whether to dispatch, and may attempt the exact movement of 500 pencils.",
+          "external_inject_representation_ids": [],
+          "active_component_request_ids": [
+            "dispatch_decision_request",
+            "transport_pencils_request"
+          ],
+          "active_transition_contract_ids": [
+            "transport_pencils_to_retail"
+          ]
+        },
+        {
+          "moment_id": "assess_canonical_outcome",
+          "minute": 180,
+          "description": "Maya reviews the retained canonical factory inventory, destination stock, and shipment-arrival state after the route's travel interval and forms a nonbinding assessment.",
+          "external_inject_representation_ids": [],
+          "active_component_request_ids": [
+            "maya_outcome_review_request"
+          ],
+          "active_transition_contract_ids": []
+        }
+      ],
+      "termination_conditions": [
+        "Terminate after Maya's minute-180 outcome review is completed.",
+        "Terminate earlier only if no remaining scheduled request or declared transition can execute."
+      ],
+      "seed_or_provider_seed_status": null
+    },
+    "analyses": [],
+    "unresolved_questions": [],
+    "analyst_question": null,
+    "legacy_presentation_question": null
+  },
+  "coverage": {
+    "registry_digest": "bb59b63554371f0b32bb8ce70ceff63b41c26c03e4db5dd54be8e82986b57eae",
+    "items": [
+      {
+        "request_id": "inspect_cedar_lot_request",
+        "classification": "exact",
+        "resolved_component_ref": "transition_contracts:inspect_cedar_lot",
+        "what_can_change": [
+          "only the state changes declared by its exact transition contracts"
+        ],
+        "what_cannot_change": [
+          "state outside its exact transition-contract grammar"
+        ],
+        "assumptions": [
+          "the actor must still select the contract and pass validation"
+        ],
+        "blocking": false,
+        "compiler_evidence": [
+          "matched trusted registry triggers: attempt",
+          "bound exact transition contracts: inspect_cedar_lot"
+        ],
+        "causal_closure": "exact",
+        "dependency_enforcement": [
+          {
+            "dependency_ref": "cedar_lot_quality",
+            "enforcement": "exact_read",
+            "transition_contract_ids": [
+              "inspect_cedar_lot"
+            ],
+            "compiler_evidence": [
+              "read as an exact transition precondition or input"
+            ]
+          }
+        ],
+        "unenforced_dependency_refs": []
+      },
+      {
+        "request_id": "production_decision_request",
+        "classification": "coarse_llm",
+        "resolved_component_ref": "bounded_person_action@1",
+        "what_can_change": [
+          "private memory",
+          "semantic action intent"
+        ],
+        "what_cannot_change": [
+          "canonical world state directly"
+        ],
+        "assumptions": [
+          "LLM role behavior is synthetic and not a calibrated human model"
+        ],
+        "blocking": false,
+        "compiler_evidence": [
+          "matched trusted registry triggers: decide, interpret"
+        ],
+        "causal_closure": "coarse",
+        "dependency_enforcement": [
+          {
+            "dependency_ref": "cedar_inspection_finding",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          },
+          {
+            "dependency_ref": "factory_inventory",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          }
+        ],
+        "unenforced_dependency_refs": [
+          "cedar_inspection_finding",
+          "factory_inventory"
+        ]
+      },
+      {
+        "request_id": "manufacture_pencils_request",
+        "classification": "exact",
+        "resolved_component_ref": "transition_contracts:manufacture_pencil_batch",
+        "what_can_change": [
+          "only the state changes declared by its exact transition contracts"
+        ],
+        "what_cannot_change": [
+          "state outside its exact transition-contract grammar"
+        ],
+        "assumptions": [
+          "the actor must still select the contract and pass validation"
+        ],
+        "blocking": false,
+        "compiler_evidence": [
+          "matched trusted registry triggers: attempt",
+          "bound exact transition contracts: manufacture_pencil_batch"
+        ],
+        "causal_closure": "exact",
+        "dependency_enforcement": [
+          {
+            "dependency_ref": "cedar_slats_stock",
+            "enforcement": "exact_read",
+            "transition_contract_ids": [
+              "manufacture_pencil_batch"
+            ],
+            "compiler_evidence": [
+              "read as an exact transition precondition or input"
+            ]
+          },
+          {
+            "dependency_ref": "graphite_cores_stock",
+            "enforcement": "exact_read",
+            "transition_contract_ids": [
+              "manufacture_pencil_batch"
+            ],
+            "compiler_evidence": [
+              "read as an exact transition precondition or input"
+            ]
+          },
+          {
+            "dependency_ref": "adhesive_stock",
+            "enforcement": "exact_read",
+            "transition_contract_ids": [
+              "manufacture_pencil_batch"
+            ],
+            "compiler_evidence": [
+              "read as an exact transition precondition or input"
+            ]
+          }
+        ],
+        "unenforced_dependency_refs": []
+      },
+      {
+        "request_id": "dispatch_decision_request",
+        "classification": "coarse_llm",
+        "resolved_component_ref": "joint_semantic_adjudication@1",
+        "what_can_change": [
+          "registered canonical records through validated transactions"
+        ],
+        "what_cannot_change": [
+          "unregistered state",
+          "actor private memory"
+        ],
+        "assumptions": [
+          "one bounded LLM authority adjudicates the same-moment intent batch"
+        ],
+        "blocking": false,
+        "compiler_evidence": [
+          "bounded semantic behavior was not promoted to an exact structural component",
+          "matched trusted registry triggers: attempt, decision"
+        ],
+        "causal_closure": "coarse",
+        "dependency_enforcement": [
+          {
+            "dependency_ref": "factory_inventory",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          },
+          {
+            "dependency_ref": "factory_to_retail_route",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          },
+          {
+            "dependency_ref": "retail_warehouse_custodian",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          }
+        ],
+        "unenforced_dependency_refs": [
+          "factory_inventory",
+          "factory_to_retail_route",
+          "retail_warehouse_custodian"
+        ]
+      },
+      {
+        "request_id": "transport_pencils_request",
+        "classification": "exact",
+        "resolved_component_ref": "transition_contracts:transport_pencils_to_retail",
+        "what_can_change": [
+          "only the state changes declared by its exact transition contracts"
+        ],
+        "what_cannot_change": [
+          "state outside its exact transition-contract grammar"
+        ],
+        "assumptions": [
+          "the actor must still select the contract and pass validation"
+        ],
+        "blocking": false,
+        "compiler_evidence": [
+          "matched trusted registry triggers: move, route",
+          "bound exact transition contracts: transport_pencils_to_retail"
+        ],
+        "causal_closure": "exact",
+        "dependency_enforcement": [
+          {
+            "dependency_ref": "factory_pencil_stock",
+            "enforcement": "exact_read",
+            "transition_contract_ids": [
+              "transport_pencils_to_retail"
+            ],
+            "compiler_evidence": [
+              "read as an exact transition precondition or input"
+            ]
+          },
+          {
+            "dependency_ref": "factory_to_retail_route",
+            "enforcement": "exact_read",
+            "transition_contract_ids": [
+              "transport_pencils_to_retail"
+            ],
+            "compiler_evidence": [
+              "read as an exact transition precondition or input"
+            ]
+          },
+          {
+            "dependency_ref": "retail_warehouse_custodian",
+            "enforcement": "exact_read",
+            "transition_contract_ids": [
+              "transport_pencils_to_retail"
+            ],
+            "compiler_evidence": [
+              "read as an exact transition precondition or input"
+            ]
+          }
+        ],
+        "unenforced_dependency_refs": []
+      },
+      {
+        "request_id": "maya_outcome_review_request",
+        "classification": "coarse_llm",
+        "resolved_component_ref": "bounded_person_action@1",
+        "what_can_change": [
+          "private memory",
+          "semantic action intent"
+        ],
+        "what_cannot_change": [
+          "canonical world state directly"
+        ],
+        "assumptions": [
+          "LLM role behavior is synthetic and not a calibrated human model"
+        ],
+        "blocking": false,
+        "compiler_evidence": [
+          "bounded semantic behavior was not promoted to an exact structural component",
+          "matched trusted registry triggers: assess"
+        ],
+        "causal_closure": "coarse",
+        "dependency_enforcement": [
+          {
+            "dependency_ref": "factory_inventory",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          },
+          {
+            "dependency_ref": "shipment_arrival",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          },
+          {
+            "dependency_ref": "retail_pencil_stock",
+            "enforcement": "coarse_llm",
+            "transition_contract_ids": [],
+            "compiler_evidence": [
+              "available only to coarse LLM adjudication"
+            ]
+          }
+        ],
+        "unenforced_dependency_refs": [
+          "factory_inventory",
+          "shipment_arrival",
+          "retail_pencil_stock"
+        ]
+      }
+    ],
+    "blocking_request_ids": []
+  },
+  "configuration_graph": {
+    "contract": "general-configuration-graph.v1",
+    "nodes": [
+      {
+        "id": "maya_chen",
+        "type": "person",
+        "kind": "person",
+        "label": "Maya Chen",
+        "description": "Production manager"
+      },
+      {
+        "id": "elena_ruiz",
+        "type": "person",
+        "kind": "person",
+        "label": "Elena Ruiz",
+        "description": "Quality inspector"
+      },
+      {
+        "id": "owen_brooks",
+        "type": "person",
+        "kind": "person",
+        "label": "Owen Brooks",
+        "description": "Logistics coordinator"
+      },
+      {
+        "id": "factory_custodian",
+        "type": "record",
+        "kind": "record",
+        "label": "Pencil factory",
+        "semantic_kind": "facility_custodian"
+      },
+      {
+        "id": "retail_warehouse_custodian",
+        "type": "record",
+        "kind": "record",
+        "label": "Retail warehouse",
+        "semantic_kind": "facility_custodian"
+      },
+      {
+        "id": "cedar_lot_quality",
+        "type": "record",
+        "kind": "record",
+        "label": "Cedar slat lot quality",
+        "semantic_kind": "material_quality_record"
+      },
+      {
+        "id": "cedar_inspection_finding",
+        "type": "record",
+        "kind": "record",
+        "label": "Cedar inspection finding",
+        "semantic_kind": "inspection_finding"
+      },
+      {
+        "id": "factory_inventory",
+        "type": "record",
+        "kind": "record",
+        "label": "Factory material and finished-goods inventory",
+        "semantic_kind": "inventory_ledger"
+      },
+      {
+        "id": "shipment_arrival",
+        "type": "record",
+        "kind": "record",
+        "label": "Retail pencil shipment arrival",
+        "semantic_kind": "shipment_arrival_record"
+      },
+      {
+        "id": "pencil_production_line",
+        "type": "active_system",
+        "kind": "active_system",
+        "label": "Pencil Production Line",
+        "description": "Converts bounded raw-material quantities into a bounded quantity of finished pencils when an authorized operator attempts the declared transformation."
+      },
+      {
+        "id": "road_freight_system",
+        "type": "active_system",
+        "kind": "active_system",
+        "label": "Road Freight System",
+        "description": "Moves a bounded finished-pencil quantity between declared custodians when route, receiving, and stock preconditions permit the transport to commit."
+      },
+      {
+        "id": "pencil_factory_site",
+        "type": "place",
+        "kind": "place",
+        "label": "Pencil factory site"
+      },
+      {
+        "id": "retail_warehouse_site",
+        "type": "place",
+        "kind": "place",
+        "label": "Retail warehouse site"
+      },
+      {
+        "id": "factory_to_retail_route",
+        "type": "route",
+        "kind": "route",
+        "label": "Factory To Retail Route"
+      },
+      {
+        "id": "cedar_slats_stock",
+        "type": "resource",
+        "kind": "resource",
+        "label": "Cedar Slats Stock",
+        "quantity": 1000.0
+      },
+      {
+        "id": "graphite_cores_stock",
+        "type": "resource",
+        "kind": "resource",
+        "label": "Graphite Cores Stock",
+        "quantity": 1000.0
+      },
+      {
+        "id": "adhesive_stock",
+        "type": "resource",
+        "kind": "resource",
+        "label": "Adhesive Stock",
+        "quantity": 1000.0
+      },
+      {
+        "id": "factory_pencil_stock",
+        "type": "resource",
+        "kind": "resource",
+        "label": "Factory Pencil Stock",
+        "quantity": 0.0
+      },
+      {
+        "id": "retail_pencil_stock",
+        "type": "resource",
+        "kind": "resource",
+        "label": "Retail Pencil Stock",
+        "quantity": 0.0
+      },
+      {
+        "id": "production_quality_coordination",
+        "type": "relationship",
+        "kind": "relationship",
+        "label": "Production Quality Coordination",
+        "description": "Elena supplies a scoped inspection finding that Maya considers in her independent production decision."
+      },
+      {
+        "id": "production_logistics_coordination",
+        "type": "relationship",
+        "kind": "relationship",
+        "label": "Production Logistics Coordination",
+        "description": "Owen relies on retained finished-stock records rather than assuming production succeeded."
+      },
+      {
+        "id": "inspect_cedar_lot",
+        "type": "mechanism",
+        "kind": "mechanism",
+        "label": "Inspect Cedar Lot",
+        "mechanism_kind": "sensing"
+      },
+      {
+        "id": "manufacture_pencil_batch",
+        "type": "mechanism",
+        "kind": "mechanism",
+        "label": "Manufacture Pencil Batch",
+        "mechanism_kind": "resource_transformation"
+      },
+      {
+        "id": "transport_pencils_to_retail",
+        "type": "mechanism",
+        "kind": "mechanism",
+        "label": "Transport Pencils To Retail",
+        "mechanism_kind": "resource_transport"
+      }
+    ],
+    "edges": [
+      {
+        "id": "access:factory_custodian:maya_chen",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "factory_custodian",
+        "target": "maya_chen",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:factory_custodian:elena_ruiz",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "factory_custodian",
+        "target": "elena_ruiz",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:factory_custodian:owen_brooks",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "factory_custodian",
+        "target": "owen_brooks",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:retail_warehouse_custodian:maya_chen",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "retail_warehouse_custodian",
+        "target": "maya_chen",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:retail_warehouse_custodian:owen_brooks",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "retail_warehouse_custodian",
+        "target": "owen_brooks",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:cedar_lot_quality:elena_ruiz",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "cedar_lot_quality",
+        "target": "elena_ruiz",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:cedar_lot_quality:maya_chen",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "cedar_lot_quality",
+        "target": "maya_chen",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:cedar_inspection_finding:elena_ruiz",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "cedar_inspection_finding",
+        "target": "elena_ruiz",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:cedar_inspection_finding:maya_chen",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "cedar_inspection_finding",
+        "target": "maya_chen",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:factory_inventory:maya_chen",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "factory_inventory",
+        "target": "maya_chen",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:factory_inventory:elena_ruiz",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "factory_inventory",
+        "target": "elena_ruiz",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:factory_inventory:owen_brooks",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "factory_inventory",
+        "target": "owen_brooks",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:shipment_arrival:maya_chen",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "shipment_arrival",
+        "target": "maya_chen",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "access:shipment_arrival:owen_brooks",
+        "type": "authorized_access",
+        "kind": "authorized_access",
+        "source": "shipment_arrival",
+        "target": "owen_brooks",
+        "label": "may observe",
+        "directed": true
+      },
+      {
+        "id": "system:pencil_production_line:factory_custodian",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "factory_custodian",
+        "target": "pencil_production_line",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "system:pencil_production_line:cedar_slats_stock",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "cedar_slats_stock",
+        "target": "pencil_production_line",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "system:pencil_production_line:graphite_cores_stock",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "graphite_cores_stock",
+        "target": "pencil_production_line",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "system:pencil_production_line:adhesive_stock",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "adhesive_stock",
+        "target": "pencil_production_line",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "system:pencil_production_line:factory_pencil_stock",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "factory_pencil_stock",
+        "target": "pencil_production_line",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "system:road_freight_system:factory_pencil_stock",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "factory_pencil_stock",
+        "target": "road_freight_system",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "system:road_freight_system:retail_pencil_stock",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "retail_pencil_stock",
+        "target": "road_freight_system",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "system:road_freight_system:factory_to_retail_route",
+        "type": "causal_responsibility",
+        "kind": "causal_responsibility",
+        "source": "factory_to_retail_route",
+        "target": "road_freight_system",
+        "label": "modeled by",
+        "directed": true
+      },
+      {
+        "id": "placement:factory_custodian",
+        "type": "placement",
+        "kind": "placement",
+        "source": "factory_custodian",
+        "target": "pencil_factory_site",
+        "label": "located at",
+        "directed": true
+      },
+      {
+        "id": "placement:retail_warehouse_custodian",
+        "type": "placement",
+        "kind": "placement",
+        "source": "retail_warehouse_custodian",
+        "target": "retail_warehouse_site",
+        "label": "located at",
+        "directed": true
+      },
+      {
+        "id": "placement:cedar_lot_quality",
+        "type": "placement",
+        "kind": "placement",
+        "source": "cedar_lot_quality",
+        "target": "pencil_factory_site",
+        "label": "located at",
+        "directed": true
+      },
+      {
+        "id": "placement:factory_inventory",
+        "type": "placement",
+        "kind": "placement",
+        "source": "factory_inventory",
+        "target": "pencil_factory_site",
+        "label": "located at",
+        "directed": true
+      },
+      {
+        "id": "placement:shipment_arrival",
+        "type": "placement",
+        "kind": "placement",
+        "source": "shipment_arrival",
+        "target": "retail_warehouse_site",
+        "label": "located at",
+        "directed": true
+      },
+      {
+        "id": "route-origin:factory_to_retail_route",
+        "type": "route_origin",
+        "kind": "route_origin",
+        "source": "pencil_factory_site",
+        "target": "factory_to_retail_route",
+        "label": "origin",
+        "directed": true
+      },
+      {
+        "id": "route-destination:factory_to_retail_route",
+        "type": "route_destination",
+        "kind": "route_destination",
+        "source": "factory_to_retail_route",
+        "target": "retail_warehouse_site",
+        "label": "destination",
+        "directed": true
+      },
+      {
+        "id": "custody:cedar_slats_stock",
+        "type": "custody",
+        "kind": "custody",
+        "source": "cedar_slats_stock",
+        "target": "factory_custodian",
+        "label": "held by",
+        "directed": true
+      },
+      {
+        "id": "custody:graphite_cores_stock",
+        "type": "custody",
+        "kind": "custody",
+        "source": "graphite_cores_stock",
+        "target": "factory_custodian",
+        "label": "held by",
+        "directed": true
+      },
+      {
+        "id": "custody:adhesive_stock",
+        "type": "custody",
+        "kind": "custody",
+        "source": "adhesive_stock",
+        "target": "factory_custodian",
+        "label": "held by",
+        "directed": true
+      },
+      {
+        "id": "custody:factory_pencil_stock",
+        "type": "custody",
+        "kind": "custody",
+        "source": "factory_pencil_stock",
+        "target": "factory_custodian",
+        "label": "held by",
+        "directed": true
+      },
+      {
+        "id": "custody:retail_pencil_stock",
+        "type": "custody",
+        "kind": "custody",
+        "source": "retail_pencil_stock",
+        "target": "retail_warehouse_custodian",
+        "label": "held by",
+        "directed": true
+      },
+      {
+        "id": "relationship:production_quality_coordination:maya_chen",
+        "type": "relationship_participant",
+        "kind": "relationship_participant",
+        "source": "maya_chen",
+        "target": "production_quality_coordination",
+        "label": "participates in",
+        "directed": true
+      },
+      {
+        "id": "relationship:production_quality_coordination:elena_ruiz",
+        "type": "relationship_participant",
+        "kind": "relationship_participant",
+        "source": "elena_ruiz",
+        "target": "production_quality_coordination",
+        "label": "participates in",
+        "directed": true
+      },
+      {
+        "id": "relationship:production_logistics_coordination:maya_chen",
+        "type": "relationship_participant",
+        "kind": "relationship_participant",
+        "source": "maya_chen",
+        "target": "production_logistics_coordination",
+        "label": "participates in",
+        "directed": true
+      },
+      {
+        "id": "relationship:production_logistics_coordination:owen_brooks",
+        "type": "relationship_participant",
+        "kind": "relationship_participant",
+        "source": "owen_brooks",
+        "target": "production_logistics_coordination",
+        "label": "participates in",
+        "directed": true
+      },
+      {
+        "id": "sense-read:inspect_cedar_lot",
+        "type": "mechanism_read",
+        "kind": "mechanism_read",
+        "source": "cedar_lot_quality",
+        "target": "inspect_cedar_lot",
+        "label": "reads hidden state",
+        "directed": true
+      },
+      {
+        "id": "sense-write:inspect_cedar_lot",
+        "type": "mechanism_write",
+        "kind": "mechanism_write",
+        "source": "inspect_cedar_lot",
+        "target": "cedar_inspection_finding",
+        "label": "writes finding",
+        "directed": true
+      },
+      {
+        "id": "sense-actor:inspect_cedar_lot:elena_ruiz",
+        "type": "capability",
+        "kind": "capability",
+        "source": "elena_ruiz",
+        "target": "inspect_cedar_lot",
+        "label": "may attempt",
+        "directed": true
+      },
+      {
+        "id": "sense-result:inspect_cedar_lot:elena_ruiz",
+        "type": "result_recipient",
+        "kind": "result_recipient",
+        "source": "inspect_cedar_lot",
+        "target": "elena_ruiz",
+        "label": "may inform",
+        "directed": true
+      },
+      {
+        "id": "sense-result:inspect_cedar_lot:maya_chen",
+        "type": "result_recipient",
+        "kind": "result_recipient",
+        "source": "inspect_cedar_lot",
+        "target": "maya_chen",
+        "label": "may inform",
+        "directed": true
+      },
+      {
+        "id": "transform-actor:manufacture_pencil_batch:maya_chen",
+        "type": "capability",
+        "kind": "capability",
+        "source": "maya_chen",
+        "target": "manufacture_pencil_batch",
+        "label": "may attempt",
+        "directed": true
+      },
+      {
+        "id": "transform-input:manufacture_pencil_batch:cedar_slats_stock",
+        "type": "resource_input",
+        "kind": "resource_input",
+        "source": "cedar_slats_stock",
+        "target": "manufacture_pencil_batch",
+        "label": "consumed by",
+        "directed": true
+      },
+      {
+        "id": "transform-input:manufacture_pencil_batch:graphite_cores_stock",
+        "type": "resource_input",
+        "kind": "resource_input",
+        "source": "graphite_cores_stock",
+        "target": "manufacture_pencil_batch",
+        "label": "consumed by",
+        "directed": true
+      },
+      {
+        "id": "transform-input:manufacture_pencil_batch:adhesive_stock",
+        "type": "resource_input",
+        "kind": "resource_input",
+        "source": "adhesive_stock",
+        "target": "manufacture_pencil_batch",
+        "label": "consumed by",
+        "directed": true
+      },
+      {
+        "id": "transform-output:manufacture_pencil_batch",
+        "type": "resource_output",
+        "kind": "resource_output",
+        "source": "manufacture_pencil_batch",
+        "target": "factory_pencil_stock",
+        "label": "produces",
+        "directed": true
+      },
+      {
+        "id": "transform-record:manufacture_pencil_batch",
+        "type": "mechanism_write",
+        "kind": "mechanism_write",
+        "source": "manufacture_pencil_batch",
+        "target": "factory_inventory",
+        "label": "updates inventory",
+        "directed": true
+      },
+      {
+        "id": "transport-actor:transport_pencils_to_retail:owen_brooks",
+        "type": "capability",
+        "kind": "capability",
+        "source": "owen_brooks",
+        "target": "transport_pencils_to_retail",
+        "label": "may attempt",
+        "directed": true
+      },
+      {
+        "id": "transport-source:transport_pencils_to_retail",
+        "type": "resource_input",
+        "kind": "resource_input",
+        "source": "factory_pencil_stock",
+        "target": "transport_pencils_to_retail",
+        "label": "moved by",
+        "directed": true
+      },
+      {
+        "id": "transport-destination:transport_pencils_to_retail",
+        "type": "resource_output",
+        "kind": "resource_output",
+        "source": "transport_pencils_to_retail",
+        "target": "retail_pencil_stock",
+        "label": "moves into",
+        "directed": true
+      },
+      {
+        "id": "transport-arrival:transport_pencils_to_retail",
+        "type": "mechanism_write",
+        "kind": "mechanism_write",
+        "source": "transport_pencils_to_retail",
+        "target": "shipment_arrival",
+        "label": "records arrival",
+        "directed": true
+      },
+      {
+        "id": "transport-route:transport_pencils_to_retail:factory_to_retail_route",
+        "type": "permitted_route",
+        "kind": "permitted_route",
+        "source": "factory_to_retail_route",
+        "target": "transport_pencils_to_retail",
+        "label": "may carry",
+        "directed": true
+      }
+    ],
+    "diagnostics": [],
+    "isolated_node_ids": [],
+    "component_count": 1,
+    "components": [
+      [
+        "adhesive_stock",
+        "cedar_inspection_finding",
+        "cedar_lot_quality",
+        "cedar_slats_stock",
+        "elena_ruiz",
+        "factory_custodian",
+        "factory_inventory",
+        "factory_pencil_stock",
+        "factory_to_retail_route",
+        "graphite_cores_stock",
+        "inspect_cedar_lot",
+        "manufacture_pencil_batch",
+        "maya_chen",
+        "owen_brooks",
+        "pencil_factory_site",
+        "pencil_production_line",
+        "production_logistics_coordination",
+        "production_quality_coordination",
+        "retail_pencil_stock",
+        "retail_warehouse_custodian",
+        "retail_warehouse_site",
+        "road_freight_system",
+        "shipment_arrival",
+        "transport_pencils_to_retail"
+      ]
+    ]
+  },
+  "diagnostics": [],
+  "approval": {
+    "approved_from_revision": 1,
+    "proposal_kind": "general_world_v2",
+    "bundle_digest": "6587390cb67308eb31ea26a59963e8e63c6642f23b5a22be64b3b8bfbbe6f96f",
+    "scenario_digest": "abbe1f586641765a1b3d7a95f7c7224992b70dc8d5ff7244eb9ea381467c98d8",
+    "run_spec_digest": "98dd60ec2fe434ab172b63f7e23e8940530b51ea093fabc1a730beaad2f87efc",
+    "registry_digest": "bb59b63554371f0b32bb8ce70ceff63b41c26c03e4db5dd54be8e82986b57eae",
+    "world_spec_digest": "5a0cadd496accb160c0debf2e636630b8cd05c7f624bcee9a96fcc0e803b05ad",
+    "approved_at": "2026-10-07T21:47:05.471945+00:00"
+  },
+  "created_at": "2026-10-07T20:19:11.589672+00:00",
+  "updated_at": "2026-10-07T21:47:05.471981+00:00"
+}
