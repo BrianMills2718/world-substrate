@@ -1,0 +1,561 @@
+{
+  "final_check_counts": {
+    "advisory": 3,
+    "blocking": 21,
+    "depletable_stocks": 4,
+    "rules": 12,
+    "rules_fired": 10
+  },
+  "guidance": "Separate permissibility from feasibility. An action's checks say only whether the actor is allowed or positioned to begin it (rules of the game, location, possession). Never check whether the attempt will succeed: do not refuse an action because a resource is too low to finish it. Starting a multi-step activity sets the actor's or object's activity state. Autonomous processes then advance that activity every tick, consume or produce stocks, and switch the activity to a stopped or failed state when a needed stock runs out, or to a finished state when it completes. Every numeric stock needs a process or action for each way it can rise and each way it can fall.",
+  "not_modeled": [
+    "Individual patient identities",
+    "Individual ventilator identities",
+    "Average ventilator treatment duration of 7 days",
+    "Average nonventilated time to recovery or death of 5 days",
+    "Daily mortality risk without required ventilation of 0.25",
+    "Daily mortality risk with ventilation of 0.05",
+    "Ventilator daily failure probability of 0.005",
+    "Ventilator repair time of 2 days"
+  ],
+  "odd": {
+    "actor_decisions": [
+      {
+        "actor": "Clinical_staff",
+        "allowed_only_when": [
+          "Admission is allowed only when an unoccupied staffed bed and sufficient daily admission capacity are available.",
+          "Starting ventilation is allowed only when the patient requires ventilation, an operational ventilator is available, and sufficient trained staff capacity exists.",
+          "Stopping ventilation is allowed only when the patient has recovered, died, or the allocation policy authorizes reassignment."
+        ],
+        "may_attempt": [
+          "Assess newly arriving and hospitalized patients for severity and whether ventilation is clinically indicated.",
+          "Admit a patient to an available hospital bed.",
+          "Start ventilation for a patient who requires ventilation.",
+          "Stop ventilation when a patient recovers, dies, or is judged unlikely to benefit under the allocation policy."
+        ]
+      },
+      {
+        "actor": "Ventilator_allocation_committee",
+        "allowed_only_when": [
+          "Allocation decisions occur at most once per day.",
+          "A ventilator can be assigned only to an admitted patient assessed as requiring ventilation.",
+          "Reassignment is allowed only under the selected allocation policy and after clinical review.",
+          "An order can be placed only when the requested quantity is a nonnegative integer and the supplier order channel is available."
+        ],
+        "may_attempt": [
+          "Rank patients requesting ventilation by clinical priority and waiting time.",
+          "Assign available ventilators to the highest-ranked eligible patients.",
+          "Reassign a ventilator from a current patient when the allocation policy permits reassignment.",
+          "Choose the hospital's ventilator-order quantity."
+        ]
+      },
+      {
+        "actor": "Supplier",
+        "allowed_only_when": [
+          "Daily shipments cannot exceed maximum daily shipment capacity.",
+          "A shipment cannot occur before the order lead time has elapsed.",
+          "Only ordered ventilators can be shipped."
+        ],
+        "may_attempt": [
+          "Ship ventilators whose order lead time has elapsed.",
+          "Accept new orders into the order backlog."
+        ]
+      }
+    ],
+    "assumptions": [
+      "The simulation starts with 40 staffed beds, of which 32 are occupied and 8 are available.",
+      "The hospital initially owns 6 ventilators, all 6 are operational, and 4 are initially in use.",
+      "The initial hospitalized population is 32 patients; 15% of flu patients are estimated to require ventilation, giving an initial estimate of 3 such patients, while the initial 4 ventilator users represent pre-existing critical patients.",
+      "The flu surge produces an estimated 6 new patient arrivals per day.",
+      "The hospital can admit at most 8 patients per day, even when beds are available.",
+      "The hospital has an estimated 60 clinical staff members, with 48 available per day before illness or absence.",
+      "Daily staff absence is estimated at 5%.",
+      "Each staff member can assess 8 patients per day, and one staff member can safely manage 4 ventilated patients.",
+      "Average ventilator treatment duration is estimated at 7 days.",
+      "Average nonventilated time to recovery or death is estimated at 5 days.",
+      "Daily mortality risk is estimated at 5% for a patient receiving required ventilation and 25% for a patient requiring but not receiving ventilation.",
+      "Each operational ventilator has an estimated 0.5% probability of failing per day.",
+      "Ventilator repair takes an estimated 2 days.",
+      "The supplier can ship at most 2 ventilators per day, and the estimated order lead time is 7 days.",
+      "Ventilators are treated as interchangeable except for operational status and availability.",
+      "Patients are admitted in arrival order unless clinical staff or the allocation committee applies a different eligibility rule.",
+      "The allocation committee reviews ventilator demand once per day.",
+      "The default allocation policy prioritizes clinical urgency and then longer waiting time; alternative policies may be substituted.",
+      "Patient arrivals, treatment durations, deaths, recoveries, staff absences, and equipment failures are stochastic processes.",
+      "A patient can occupy at most one bed and use at most one ventilator.",
+      "There is no explicit external transfer capacity unless added as a scenario parameter.",
+      "Orders are integer quantities, deliveries cannot exceed the supplier's daily shipment capacity, and failed ventilators are unavailable until repaired.",
+      "The model does not represent detailed physiology, individual clinician preferences, financial costs, or ventilator compatibility.",
+      "All rates expressed per day are applied once per 1-day tick."
+    ],
+    "entities": [
+      {
+        "kind": "place",
+        "name": "Hospital",
+        "state": [
+          {
+            "initial": 40,
+            "unit": "beds",
+            "variable": "total_beds"
+          },
+          {
+            "initial": 32,
+            "unit": "beds",
+            "variable": "occupied_beds"
+          },
+          {
+            "initial": 8,
+            "unit": "beds",
+            "variable": "available_beds"
+          },
+          {
+            "initial": 6,
+            "unit": "ventilators",
+            "variable": "ventilators_owned"
+          },
+          {
+            "initial": 4,
+            "unit": "ventilators",
+            "variable": "ventilators_in_use"
+          },
+          {
+            "initial": 2,
+            "unit": "ventilators",
+            "variable": "ventilators_available"
+          },
+          {
+            "initial": 40,
+            "unit": "patients",
+            "variable": "staffed_bed_capacity"
+          },
+          {
+            "initial": 8,
+            "unit": "patients_per_day",
+            "variable": "daily_admission_capacity"
+          },
+          {
+            "initial": 0,
+            "unit": "ventilators",
+            "variable": "cumulative_ventilator_orders"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Patient",
+        "state": [
+          {
+            "initial": 32,
+            "unit": "patients",
+            "variable": "patient_count"
+          },
+          {
+            "initial": 6,
+            "unit": "patients_per_day",
+            "variable": "flu_surge_arrival_rate"
+          },
+          {
+            "initial": 0.15,
+            "unit": "dimensionless_fraction",
+            "variable": "flu_patients_requiring_ventilation_fraction"
+          },
+          {
+            "initial": 3,
+            "unit": "patients",
+            "variable": "patients_requiring_ventilation"
+          },
+          {
+            "initial": 4,
+            "unit": "patients",
+            "variable": "patients_on_ventilators"
+          },
+          {
+            "initial": 0,
+            "unit": "patients",
+            "variable": "patients_waiting_for_ventilation"
+          },
+          {
+            "initial": 0,
+            "unit": "patients",
+            "variable": "patients_recovering"
+          },
+          {
+            "initial": 0,
+            "unit": "patients",
+            "variable": "patients_discharged"
+          },
+          {
+            "initial": 0,
+            "unit": "patients",
+            "variable": "patients_dead"
+          },
+          {
+            "initial": 7,
+            "unit": "days",
+            "variable": "average_ventilator_treatment_duration"
+          },
+          {
+            "initial": 5,
+            "unit": "days",
+            "variable": "average_nonventilated_time_to_recovery_or_death"
+          },
+          {
+            "initial": 0.25,
+            "unit": "probability_per_day",
+            "variable": "daily_mortality_risk_without_required_ventilation"
+          },
+          {
+            "initial": 0.05,
+            "unit": "probability_per_day",
+            "variable": "daily_mortality_risk_with_ventilation"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Clinical_staff",
+        "state": [
+          {
+            "initial": 60,
+            "unit": "staff_members",
+            "variable": "staff_count"
+          },
+          {
+            "initial": 48,
+            "unit": "staff_members_per_day",
+            "variable": "staff_available_per_day"
+          },
+          {
+            "initial": 0.05,
+            "unit": "probability_per_day",
+            "variable": "staff_absence_rate"
+          },
+          {
+            "initial": 8,
+            "unit": "patients_per_staff_member_per_day",
+            "variable": "patients_assessed_per_staff_member_per_day"
+          },
+          {
+            "initial": 384,
+            "unit": "patients_per_day",
+            "variable": "assessment_capacity"
+          },
+          {
+            "initial": 4,
+            "unit": "ventilated_patients_per_staff_member",
+            "variable": "ventilator_management_capacity_per_staff_member"
+          }
+        ]
+      },
+      {
+        "kind": "object",
+        "name": "Ventilator",
+        "state": [
+          {
+            "initial": 6,
+            "unit": "ventilators",
+            "variable": "total_count"
+          },
+          {
+            "initial": 6,
+            "unit": "ventilators",
+            "variable": "operational_count"
+          },
+          {
+            "initial": 4,
+            "unit": "ventilators",
+            "variable": "in_use_count"
+          },
+          {
+            "initial": 2,
+            "unit": "ventilators",
+            "variable": "available_count"
+          },
+          {
+            "initial": 0.005,
+            "unit": "probability_per_day",
+            "variable": "daily_failure_probability"
+          },
+          {
+            "initial": 2,
+            "unit": "days",
+            "variable": "repair_time"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Supplier",
+        "state": [
+          {
+            "initial": 0,
+            "unit": "ventilators",
+            "variable": "order_backlog"
+          },
+          {
+            "initial": 2,
+            "unit": "ventilators_per_day",
+            "variable": "maximum_daily_shipments"
+          },
+          {
+            "initial": 7,
+            "unit": "days",
+            "variable": "order_lead_time"
+          }
+        ]
+      },
+      {
+        "kind": "actor",
+        "name": "Ventilator_allocation_committee",
+        "state": [
+          {
+            "initial": 1,
+            "unit": "reviews_per_day",
+            "variable": "allocation_review_frequency"
+          },
+          {
+            "initial": "clinical_priority_with_tie_breaking_by_waiting_time",
+            "unit": "categorical_policy",
+            "variable": "allocation_rule"
+          }
+        ]
+      }
+    ],
+    "processes_each_tick": [
+      "New flu patients arrive at the current flu-surge arrival rate, subject to available beds and daily admission capacity.",
+      "Patients who require ventilation are identified according to disease progression and the current fraction requiring ventilation.",
+      "Patients on ventilators consume ventilator capacity and receive treatment for the current day.",
+      "Patients receiving ventilation recover, remain in treatment, or die according to treatment duration and mortality risks.",
+      "Patients requiring ventilation but not receiving it remain on the waiting list and face the nonventilated mortality risk.",
+      "Recovered patients leave beds and ventilators, and discharged patients reduce hospital occupancy.",
+      "Staff absences reduce available staffing and may reduce the number of patients that can be assessed or safely managed.",
+      "Each operational ventilator has a daily failure probability; failed ventilators leave service until repaired.",
+      "Supplier orders progress through the lead-time pipeline and delivered ventilators increase the operational ventilator stock.",
+      "Patients who cannot be admitted because all beds or admission capacity are occupied remain outside the hospital as unmet demand.",
+      "Hospital occupancy, ventilator use, waiting demand, deaths, discharges, repairs, and fulfilled orders are recorded at the end of each tick."
+    ],
+    "purpose": "The simulation answers how ventilator-allocation rules and ventilator-ordering decisions affect survival, hospital capacity, and unmet ventilator demand during a flu surge.",
+    "sensing": [
+      {
+        "actor": "Clinical_staff",
+        "can_observe": [
+          "Patient symptoms, severity, ventilation requirement, current treatment, waiting time, and vital-status category.",
+          "Occupied beds, available beds, operational ventilators, ventilators in use, and equipment failures.",
+          "Available staffing and current staffing workload."
+        ],
+        "cannot_observe": [
+          "The exact future arrival rate of patients.",
+          "The exact future duration of each patient's illness.",
+          "The exact future mortality outcome of any patient.",
+          "Supplier delivery outcomes before shipment occurs."
+        ]
+      },
+      {
+        "actor": "Ventilator_allocation_committee",
+        "can_observe": [
+          "All assessed patients' clinical priority categories and waiting times.",
+          "Current ventilator inventory, use, failures, repairs, and pending orders.",
+          "Current hospital occupancy and staff capacity."
+        ],
+        "cannot_observe": [
+          "Patients' exact future treatment duration or survival probability.",
+          "Unannounced future patient arrivals.",
+          "Unobserved supplier disruptions."
+        ]
+      },
+      {
+        "actor": "Supplier",
+        "can_observe": [
+          "Accepted orders, order ages, backlog, and shipment capacity."
+        ],
+        "cannot_observe": [
+          "The hospital's patients' clinical conditions.",
+          "The hospital's future ventilator demand beyond submitted orders."
+        ]
+      }
+    ],
+    "stocks": [
+      {
+        "inflows": [
+          "Patient admissions"
+        ],
+        "outflows": [
+          "Patient discharges",
+          "Patient deaths",
+          "Patient transfers out"
+        ],
+        "stock": "hospital_beds_occupied"
+      },
+      {
+        "inflows": [
+          "New ventilator deliveries",
+          "Repaired ventilators returning to service"
+        ],
+        "outflows": [
+          "Ventilator failures",
+          "Permanent equipment retirement"
+        ],
+        "stock": "operational_ventilators"
+      },
+      {
+        "inflows": [
+          "Ventilator assignments to patients requiring ventilation"
+        ],
+        "outflows": [
+          "Patient recovery",
+          "Patient death",
+          "Ventilator failure",
+          "Clinical discontinuation of ventilation"
+        ],
+        "stock": "ventilators_in_use"
+      },
+      {
+        "inflows": [
+          "New admitted patients requiring ventilation when no ventilator is available",
+          "Patients whose assigned ventilator is removed or fails"
+        ],
+        "outflows": [
+          "Ventilator assignment",
+          "Patient recovery",
+          "Patient death",
+          "Transfer out"
+        ],
+        "stock": "patients_waiting_for_ventilation"
+      },
+      {
+        "inflows": [
+          "Hospital ventilator orders"
+        ],
+        "outflows": [
+          "Ventilator shipments"
+        ],
+        "stock": "supplier_order_backlog"
+      },
+      {
+        "inflows": [
+          "Patient admissions"
+        ],
+        "outflows": [
+          "Patient discharges",
+          "Patient deaths",
+          "Patient transfers out"
+        ],
+        "stock": "patients_alive_and_hospitalized"
+      },
+      {
+        "inflows": [
+          "Deaths among ventilated patients",
+          "Deaths among patients waiting for ventilation",
+          "Deaths among other hospitalized patients"
+        ],
+        "outflows": [],
+        "stock": "cumulative_patient_deaths"
+      },
+      {
+        "inflows": [
+          "Patients recovering and leaving the hospital"
+        ],
+        "outflows": [],
+        "stock": "cumulative_patient_discharges"
+      }
+    ],
+    "time_step": "1 tick = 1 hospital day."
+  },
+  "repairs": [
+    {
+      "blocking_after": 21,
+      "candidate_blocking": 21,
+      "change": "add_process+add_process",
+      "cost": 0.055982,
+      "finding": "with flu-patients waiting_for_ventilation set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "kept": true,
+      "round": 1,
+      "target_id": "None,None",
+      "trace": "any-scenario-hospital-repair1-20261007T233245",
+      "why": "These processes make waiting_for_ventilation drive adverse patient progression and make order_backlog drive autonomous order fulfillment, so exhausting either stock changes subsequent world behavior."
+    },
+    {
+      "blocking_after": 21,
+      "candidate_blocking": 21,
+      "change": "add_process+replace_process",
+      "cost": 0.1258555,
+      "finding": "with flu-patients waiting_for_ventilation set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "kept": false,
+      "round": 2,
+      "target_id": "None,fulfill-one-backlogged-ventilator-order",
+      "trace": "any-scenario-hospital-repair2-20261007T233245",
+      "why": "Adding one process and replacing an existing process keeps the total at six while making empty ventilation demand and an exhausted supplier backlog produce represented follow-up behavior."
+    },
+    {
+      "blocking_after": 21,
+      "candidate_blocking": 26,
+      "change": "replace_process+add_process",
+      "cost": 0.0689516,
+      "finding": "with medical-supplier order_backlog set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "kept": false,
+      "round": 3,
+      "target_id": "ongoing-clinical-deterioration,None",
+      "trace": "any-scenario-hospital-repair3-20261007T233245",
+      "why": "Replacing one process and adding only one keeps the process total at six while making empty ventilation and supplier queues cause represented transitions."
+    }
+  ],
+  "scenario_text": "A 40-bed hospital with 6 ventilators faces a flu surge; staff decide who gets ventilated and whether to order more.",
+  "stock_map": [
+    {
+      "field": "hospital.hospital.occupied_beds",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "hospital_beds_occupied"
+    },
+    {
+      "field": "ventilator-inventory.ventilator_inventory.operational_count",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "operational_ventilators"
+    },
+    {
+      "field": "ventilator-inventory.ventilator_inventory.in_use_count",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "ventilators_in_use"
+    },
+    {
+      "field": "flu-patients.patient_group.waiting_for_ventilation",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "patients_waiting_for_ventilation"
+    },
+    {
+      "field": "medical-supplier.supplier.order_backlog",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "supplier_order_backlog"
+    },
+    {
+      "field": "flu-patients.patient_group.patient_count",
+      "has_inflows": true,
+      "has_outflows": true,
+      "stock": "patients_alive_and_hospitalized"
+    },
+    {
+      "field": "flu-patients.patient_group.dead",
+      "has_inflows": true,
+      "has_outflows": false,
+      "stock": "cumulative_patient_deaths"
+    },
+    {
+      "field": "flu-patients.patient_group.discharged",
+      "has_inflows": true,
+      "has_outflows": false,
+      "stock": "cumulative_patient_discharges"
+    }
+  ],
+  "traces": {
+    "anomaly": "any-scenario-hospital-anomaly-20261007T233245",
+    "bundle": "any-scenario-hospital-bundle-20261007T233245",
+    "mechanics": "any-scenario-hospital-mechanics-20261007T233245",
+    "odd": "any-scenario-hospital-odd-20261007T233245",
+    "sensing": "any-scenario-hospital-sensing-20261007T233245",
+    "stocks": "any-scenario-hospital-stocks-20261007T233245"
+  },
+  "world_kind": "ongoing"
+}

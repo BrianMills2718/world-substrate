@@ -337,11 +337,29 @@ def outflow_findings(coverage: list[dict[str, Any]] | None, causal: dict[str, An
     return out
 
 
+def co_located_findings(bundle: dict[str, Any], causal: dict[str, Any]) -> list[dict[str, Any]]:
+    """A co_located link means nothing when every entity shares one location: it then binds every entity its
+    selector matches, wherever it 'really' is (e.g. a refuel completing at any mile). Advisory: the rule's own
+    checks may still pin the place (the truck world compares route positions)."""
+    places = {e.get("location") or bundle["world"].get("location") for e in bundle["entities"]}
+    if len(places) > 1:
+        return []
+    out = []
+    for p in causal.get("processes", []):
+        for name, row in (p.get("participants") or {}).items():
+            if row.get("link") == "co_located":
+                out.append({"check": "liveness", "blocking": False, "rule": p["process_id"],
+                            "finding": f"process {p['process_id']} links {name} by co_located, but every entity shares the "
+                                       f"one location {next(iter(places))!r}, so the link binds every matching entity; "
+                                       "pin the place with a check (e.g. equal positions) or use a ref: link."})
+    return out
+
+
 def run_checks(bundle: dict[str, Any], causal: dict[str, Any], *, seeds: int = 6, ticks: int = 80,
                stocks: list[dict[str, Any]] | None = None, anomaly_review: Any = None,
                coverage: list[dict[str, Any]] | None = None, consequence_check: Any = None) -> dict[str, Any]:
     t0 = time.time()
-    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal) + unresolved_findings(causal) + outflow_findings(coverage, causal)
+    findings: list[dict[str, Any]] = structure_findings(causal, stocks or []) + selector_findings(bundle, causal) + attempt_findings(bundle, causal) + conservation_findings(causal) + unresolved_findings(causal) + outflow_findings(coverage, causal) + co_located_findings(bundle, causal)
     base = [simulate(bundle, causal, seed=s, ticks=ticks) for s in range(seeds)]
     # boundedness / conservation
     steps: dict[str, float] = {}

@@ -1,0 +1,300 @@
+{
+  "behavior_anomalies": [
+    {
+      "quote": "t7 process progress-recovering-patients: flu-patients.patient_group.discharged 0->1; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.recovering 2->1",
+      "why": "The patient count reaches zero, yet one recovering patient remains and the recovery process continues. The zero census does not produce the expected empty dependent states."
+    },
+    {
+      "quote": "t7 allocation-committee did allocate-one-available-ventilator: flu-patients.patient_group.on_ventilators 3->4; flu-patients.patient_group.waiting_for_ventilation 1->0; ventilator-inventory.ventilator_inventory.available_count 8->7; ventilator-inventory.ventilator_inventory.in_use_count 3->4",
+      "why": "Ventilation is allocated to a patient-dependent state immediately after patient_count becomes zero, while the log has not admitted a new patient."
+    },
+    {
+      "quote": "t9 process progress-recovering-patients: flu-patients.patient_group.discharged 1->2; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.recovering 2->1",
+      "why": "Again, patient_count reaches zero while a recovering patient remains, and patient progression continues despite the zero census."
+    },
+    {
+      "quote": "t11 process progress-recovering-patients: flu-patients.patient_group.discharged 2->3; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.recovering 1->0",
+      "why": "The patient count reaches zero while a patient is still being processed as recovering in the same transition; the model permits patient-dependent processing at an empty census."
+    },
+    {
+      "quote": "t19 process progress-recovering-patients: flu-patients.patient_group.discharged 3->4; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.recovering 3->2",
+      "why": "Two recovering patients remain after patient_count becomes zero, showing that dependent patient states persist after the census is exhausted."
+    },
+    {
+      "quote": "t24 clinical-staff did release-one-completed-ventilator: flu-patients.patient_group.on_ventilators 1->0; flu-patients.patient_group.recovering 1->2; ventilator-inventory.ventilator_inventory.available_count 24->25; ventilator-inventory.ventilator_inventory.in_use_count 1->0",
+      "why": "The final ventilated patient is released into recovery, leaving recovering patients despite the previously zero patient census; this is a patient-dependent transition with no corresponding patient count."
+    },
+    {
+      "quote": "t1 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 1->0; ventilator-inventory.ventilator_inventory.available_count 2->3; ventilator-inventory.ventilator_inventory.operational_count 6->7; ventilator-inventory.ventilator_inventory.total_count 6->7",
+      "why": "If in_use_count started at zero and the hospital initially had 6 operational ventilators, all 6 should have been available before the shipment. An available count of 2 implies 4 ventilators were already in use, contradicting the stated initial condition."
+    },
+    {
+      "quote": "t8 clinical-staff did admit-represented-flu-patient: flu-patients.patient_group.patient_count 40->41",
+      "why": "The 40-bed hospital admits a 41st patient, exceeding its stated bed capacity."
+    },
+    {
+      "quote": "t32 clinical-staff did admit-represented-flu-patient: flu-patients.patient_group.patient_count 64->65",
+      "why": "Admissions continue until the hospital census reaches 65, far beyond the stated 40-bed capacity."
+    },
+    {
+      "quote": "t21 clinical-staff did release-one-completed-ventilator: flu-patients.patient_group.on_ventilators 1->0; flu-patients.patient_group.recovering 0->1; ventilator-inventory.ventilator_inventory.available_count 20->21; ventilator-inventory.ventilator_inventory.in_use_count 1->0",
+      "why": "The ventilated population falls to zero and the in-use ventilator count is zero, but the log never assigns any of the abundant available ventilators to patients afterward. Meanwhile, patients requiring ventilation continue increasing, reaching 26 by t34, without corresponding allocation, deterioration-to-death, or other consequence for this unmet demand."
+    },
+    {
+      "quote": "t27 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 1->0; ventilator-inventory.ventilator_inventory.available_count 23->24; ventilator-inventory.ventilator_inventory.operational_count 27->28; ventilator-inventory.ventilator_inventory.total_count 27->28\nt27 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 26->27; flu-patients.patient_group.patient_count 6->5; flu-patients.patient_group.waiting_for_ventilation 1->0",
+      "why": "The run has 24 available ventilators while patients continue to wait for ventilation and die. Across the log, available_count only increases as ventilators arrive; no allocation or use ever reduces it, even though patients repeatedly require ventilation. This makes the ventilator dynamics physically implausible."
+    },
+    {
+      "quote": "t6 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 2->1; ventilator-inventory.ventilator_inventory.available_count 9->10; ventilator-inventory.ventilator_inventory.operational_count 10->11; ventilator-inventory.ventilator_inventory.total_count 10->11\nt6 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 0->1; flu-patients.patient_group.patient_count 30->29; flu-patients.patient_group.waiting_for_ventilation 1->0",
+      "why": "A waiting patient dies immediately after the hospital has 10 available ventilators. The log shows no allocation or utilization of those available ventilators, which is physically and socially implausible for a hospital deciding who gets ventilated."
+    },
+    {
+      "quote": "t28 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 2->1; ventilator-inventory.ventilator_inventory.available_count 32->33; ventilator-inventory.ventilator_inventory.operational_count 32->33; ventilator-inventory.ventilator_inventory.total_count 32->33\nt28 allocation-committee did place-one-ventilator-order: medical-supplier.supplier.order_backlog 0->1; medical-supplier.supplier.received_orders 0->1; ventilator-inventory.ventilator_inventory.orders_placed 0->1",
+      "why": "The committee continues placing orders despite 33 available ventilators, zero ventilators in use since t9, and only 22 patients requiring ventilation at t28. The repeated ordering is disconnected from allocation or demand and drives inventory upward without an apparent operational cause."
+    },
+    {
+      "quote": "t4 clinical-staff did assess-one-flu-patient: flu-patients.patient_group.requiring_ventilation 7->6; flu-patients.patient_group.waiting_for_ventilation 0->1",
+      "why": "The hospital has eight available ventilators and zero in use immediately before this assessment, yet a patient is moved into the waiting-for-ventilation group rather than being placed on an available ventilator. This is followed by repeated deaths of waiting patients while inventory continues to grow."
+    }
+  ],
+  "counts": {
+    "advisory": 3,
+    "blocking": 21,
+    "depletable_stocks": 4,
+    "rules": 12,
+    "rules_fired": 10
+  },
+  "extreme_conditions": [
+    {
+      "consequence": {
+        "expected": "Patients lacking the resource would suffer harm and potentially die; clinical operations dependent on patients may also have no patients to treat.",
+        "observed": true,
+        "votes": [
+          {
+            "expected": "Patients lacking the resource would suffer harm and potentially die; clinical operations dependent on patients may also have no patients to treat.",
+            "observed": true,
+            "quote": "t29 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 0->1; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.waiting_for_ventilation 1->0"
+          },
+          {
+            "expected": "Flu-patient care and surge operations would stop because there are no patients to treat.",
+            "observed": false,
+            "quote": ""
+          },
+          {
+            "expected": "With zero flu patients, there would be no patients for the hospital to treat or ventilate, so patient-care activity would stop.",
+            "observed": true,
+            "quote": "t7 process progress-recovering-patients: flu-patients.patient_group.discharged 0->1; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.recovering 2->1"
+          }
+        ]
+      },
+      "identical_to_baseline": false,
+      "stock": "flu-patients.patient_group.patient_count",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": true,
+      "stock": "flu-patients.patient_group.waiting_for_ventilation",
+      "went_negative_from_zero": false
+    },
+    {
+      "consequence": {
+        "expected": "Patients needing ventilation cannot be ventilated and some die.",
+        "observed": true,
+        "votes": [
+          {
+            "expected": "Patients needing ventilation cannot be ventilated and some die.",
+            "observed": true,
+            "quote": "t1 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 0->1; flu-patients.patient_group.patient_count 32->31; flu-patients.patient_group.waiting_for_ventilation 1->0"
+          },
+          {
+            "expected": "Patients requiring ventilation cannot be ventilated, leading to waiting patients deteriorating and dying.",
+            "observed": true,
+            "quote": "t1 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 0->1; flu-patients.patient_group.patient_count 32->31; flu-patients.patient_group.waiting_for_ventilation 1->0"
+          },
+          {
+            "expected": "Patients needing ventilation would go without it, deteriorate, and some would die.",
+            "observed": true,
+            "quote": "t1 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 0->1; flu-patients.patient_group.patient_count 32->31; flu-patients.patient_group.waiting_for_ventilation 1->0"
+          }
+        ]
+      },
+      "identical_to_baseline": false,
+      "stock": "ventilator-inventory.ventilator_inventory.in_use_count",
+      "went_negative_from_zero": false
+    },
+    {
+      "identical_to_baseline": true,
+      "stock": "medical-supplier.supplier.order_backlog",
+      "went_negative_from_zero": false
+    }
+  ],
+  "findings": [
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'hospital_beds_occupied' falls, but no rule ever decreases hospital.hospital.occupied_beds.",
+      "stock": "hospital_beds_occupied"
+    },
+    {
+      "blocking": false,
+      "check": "structure",
+      "finding": "the conceptual model says 'hospital_beds_occupied' rises, but no rule ever increases hospital.hospital.occupied_beds.",
+      "stock": "hospital_beds_occupied"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'operational_ventilators' falls, but no rule ever decreases ventilator-inventory.ventilator_inventory.operational_count.",
+      "stock": "operational_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "liveness",
+      "finding": "rule advance-one-hospital-day can never be offered: its actor selector {'categories': ['time', 'ongoing-process'], 'components': []} matches only entities that cannot act; the actor must be an entity in category 'actor' (put the object it uses in participants).",
+      "rule": "advance-one-hospital-day"
+    },
+    {
+      "blocking": true,
+      "check": "conservation",
+      "finding": "rule place-one-ventilator-order creates ventilator_inventory.orders_placed from nothing; elsewhere that quantity only moves between things, so it must come from a stock that loses it.",
+      "rule": "place-one-ventilator-order"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'hospital_beds_occupied' falls by 'Patient transfers out', but no rule implements that outflow.",
+      "rule": "Patient transfers out",
+      "stock": "hospital_beds_occupied"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'operational_ventilators' falls by 'Ventilator failures', but no rule implements that outflow.",
+      "rule": "Ventilator failures",
+      "stock": "operational_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'operational_ventilators' falls by 'Permanent equipment retirement', but no rule implements that outflow.",
+      "rule": "Permanent equipment retirement",
+      "stock": "operational_ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators_in_use' falls by 'Patient death', but no rule implements that outflow.",
+      "rule": "Patient death",
+      "stock": "ventilators_in_use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'ventilators_in_use' falls by 'Ventilator failure', but no rule implements that outflow.",
+      "rule": "Ventilator failure",
+      "stock": "ventilators_in_use"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients_waiting_for_ventilation' falls by 'Patient recovery', but no rule implements that outflow.",
+      "rule": "Patient recovery",
+      "stock": "patients_waiting_for_ventilation"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients_waiting_for_ventilation' falls by 'Transfer out', but no rule implements that outflow.",
+      "rule": "Transfer out",
+      "stock": "patients_waiting_for_ventilation"
+    },
+    {
+      "blocking": true,
+      "check": "structure",
+      "finding": "the conceptual model says 'patients_alive_and_hospitalized' falls by 'Patient transfers out', but no rule implements that outflow.",
+      "rule": "Patient transfers out",
+      "stock": "patients_alive_and_hospitalized"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule allocate-one-available-ventilator never fired in 12 random runs.",
+      "rule": "allocate-one-available-ventilator"
+    },
+    {
+      "blocking": false,
+      "check": "liveness",
+      "finding": "rule advance-one-hospital-day never fired in 12 random runs.",
+      "rule": "advance-one-hospital-day"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with flu-patients waiting_for_ventilation set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "flu-patients.patient_group.waiting_for_ventilation"
+    },
+    {
+      "blocking": true,
+      "check": "extreme_conditions",
+      "finding": "with medical-supplier order_backlog set to zero the world behaves as if nothing were missing (identical runs): a rule for what happens when it runs out is missing.",
+      "stock": "medical-supplier.supplier.order_backlog"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with flu-patients patient_count at zero: The patient count reaches zero, yet one recovering patient remains and the recovery process continues. The zero census does not produce the expected empty dependent states. (run log: \"t7 process progress-recovering-patients: flu-patients.patient_group.discharged 0->1; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.recovering 2->1\") ALSO: Ventilation is allocated to a patient-dependent state immediately after patient_count becomes zero, while the log has not admitted a new patient. (run log: \"t7 allocation-committee did allocate-one-available-ventilator: flu-patients.patient_group.on_ventilators 3->4; flu-patients.patient_group.waiting_for_ventilation 1->0; ventilator-inventory.ventilator_inventory.available_count 8->7; ventilator-inventory.ventilator_inventory.in_use_count 3->4\") ALSO: Again, patient_count reaches zero while a recovering patient remains, and patient progression continues despite the zero census. (run log: \"t9 process progress-recovering-patients: flu-patients.patient_group.discharged 1->2; flu-patients.patient_group.patient_count 1->0; flu-patients.patient_group.recovering 2->1\")",
+      "rule": "flu-patients.patient_group.patient_count",
+      "stock": "flu-patients.patient_group.patient_count"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "with ventilator-inventory in_use_count at zero: If in_use_count started at zero and the hospital initially had 6 operational ventilators, all 6 should have been available before the shipment. An available count of 2 implies 4 ventilators were already in use, contradicting the stated initial condition. (run log: \"t1 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 1->0; ventilator-inventory.ventilator_inventory.available_count 2->3; ventilator-inventory.ventilator_inventory.operational_count 6->7; ventilator-inventory.ventilator_inventory.total_count 6->7\")",
+      "rule": "ventilator-inventory.ventilator_inventory.in_use_count",
+      "stock": "ventilator-inventory.ventilator_inventory.in_use_count"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'admit-flu-patients' is repeated: The 40-bed hospital admits a 41st patient, exceeding its stated bed capacity. (run log: \"t8 clinical-staff did admit-represented-flu-patient: flu-patients.patient_group.patient_count 40->41\") ALSO: Admissions continue until the hospital census reaches 65, far beyond the stated 40-bed capacity. (run log: \"t32 clinical-staff did admit-represented-flu-patient: flu-patients.patient_group.patient_count 64->65\")",
+      "rule": "repeat-admit-flu-patients",
+      "stock": "repeat-admit-flu-patients"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'allocate-ventilator' is repeated: The ventilated population falls to zero and the in-use ventilator count is zero, but the log never assigns any of the abundant available ventilators to patients afterward. Meanwhile, patients requiring ventilation continue increasing, reaching 26 by t34, without corresponding allocation, deterioration-to-death, or other consequence for this unmet demand. (run log: \"t21 clinical-staff did release-one-completed-ventilator: flu-patients.patient_group.on_ventilators 1->0; flu-patients.patient_group.recovering 0->1; ventilator-inventory.ventilator_inventory.available_count 20->21; ventilator-inventory.ventilator_inventory.in_use_count 1->0\")",
+      "rule": "repeat-allocate-ventilator",
+      "stock": "repeat-allocate-ventilator"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'assess-patients' is repeated: The run has 24 available ventilators while patients continue to wait for ventilation and die. Across the log, available_count only increases as ventilators arrive; no allocation or use ever reduces it, even though patients repeatedly require ventilation. This makes the ventilator dynamics physically implausible. (run log: \"t27 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 1->0; ventilator-inventory.ventilator_inventory.available_count 23->24; ventilator-inventory.ventilator_inventory.operational_count 27->28; ventilator-inventory.ventilator_inventory.total_count 27->28\nt27 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 26->27; flu-patients.patient_group.patient_count 6->5; flu-patients.patient_group.waiting_for_ventilation 1->0\")",
+      "rule": "repeat-assess-patients",
+      "stock": "repeat-assess-patients"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'order-ventilators' is repeated: A waiting patient dies immediately after the hospital has 10 available ventilators. The log shows no allocation or utilization of those available ventilators, which is physically and socially implausible for a hospital deciding who gets ventilated. (run log: \"t6 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 2->1; ventilator-inventory.ventilator_inventory.available_count 9->10; ventilator-inventory.ventilator_inventory.operational_count 10->11; ventilator-inventory.ventilator_inventory.total_count 10->11\nt6 process progress-unventilated-waiting-patients: flu-patients.patient_group.dead 0->1; flu-patients.patient_group.patient_count 30->29; flu-patients.patient_group.waiting_for_ventilation 1->0\") ALSO: The committee continues placing orders despite 33 available ventilators, zero ventilators in use since t9, and only 22 patients requiring ventilation at t28. The repeated ordering is disconnected from allocation or demand and drives inventory upward without an apparent operational cause. (run log: \"t28 process receive-in-transit-ventilator: medical-supplier.supplier.orders_in_transit 2->1; ventilator-inventory.ventilator_inventory.available_count 32->33; ventilator-inventory.ventilator_inventory.operational_count 32->33; ventilator-inventory.ventilator_inventory.total_count 32->33\nt28 allocation-committee did place-one-ventilator-order: medical-supplier.supplier.order_backlog 0->1; medical-supplier.supplier.received_orders 0->1; ventilator-inventory.ventilator_inventory.orders_placed 0->1\")",
+      "rule": "repeat-order-ventilators",
+      "stock": "repeat-order-ventilators"
+    },
+    {
+      "blocking": true,
+      "check": "behavior_anomaly",
+      "finding": "when 'release-ventilator' is repeated: The hospital has eight available ventilators and zero in use immediately before this assessment, yet a patient is moved into the waiting-for-ventilation group rather than being placed on an available ventilator. This is followed by repeated deaths of waiting patients while inventory continues to grow. (run log: \"t4 clinical-staff did assess-one-flu-patient: flu-patients.patient_group.requiring_ventilation 7->6; flu-patients.patient_group.waiting_for_ventilation 0->1\")",
+      "rule": "repeat-release-ventilator",
+      "stock": "repeat-release-ventilator"
+    }
+  ],
+  "seconds": 1049.0,
+  "seeds": 6,
+  "step_seconds": {
+    "guided_runs": 668.5,
+    "random_runs": 9.4,
+    "total": 1049.0
+  },
+  "ticks": 80
+}

@@ -1,0 +1,1486 @@
+{
+  "mechanics": [
+    {
+      "action_kind": "admit-flu-patients",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "clinical-staff"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the admission is for one patient",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the flu patients are at the same hospital as the clinical staff",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the flu patients belong to the clinical staff's hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "ownership.owner_ref"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.patient_group.patient_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The action cannot update occupied or available beds because the hospital is not an action participant.",
+        "The represented state has no separate arrival queue, so patient_count serves as the admitted census.",
+        "Admission quantity is conservatively limited to one patient per action.",
+        "Bed availability and daily admission capacity are not enforceable through this action's participants."
+      ],
+      "mechanic_id": "admit-represented-flu-patient",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "patients",
+            "patient-group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "Clinical staff may add a represented arriving patient to the hospital patient census. The action is limited to one patient because the action has no hospital participant through which bed and daily admission limits could be updated safely.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "patient_group denotes the represented flu-patient census",
+        "quantity denotes newly admitted patients",
+        "clinical-staff role performs admission"
+      ],
+      "tests": [
+        "Clinical staff can admit one co-located flu patient group belonging to the same hospital.",
+        "A quantity of zero or two is refused.",
+        "A patient group at another location is refused.",
+        "A patient group belonging to another hospital is refused.",
+        "A successful admission increases patient_count by one and changes no bed stock."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "assess-patients",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "clinical-staff"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the assessment is for one patient",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the flu patients are at the same hospital as the clinical staff",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the flu patients belong to the clinical staff's hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "ownership.owner_ref"
+            }
+          }
+        },
+        {
+          "label": "a flu patient still needs ventilation assessment",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.requiring_ventilation"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "patient_group",
+          "path": "components.patient_group.requiring_ventilation",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.patient_group.waiting_for_ventilation",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The represented fields do not distinguish unassessed patients from clinically identified ventilation candidates beyond requiring_ventilation.",
+        "Assessment capacity is represented on clinical staff but has no per-day consumption field, so it is not decremented.",
+        "The action models only the ventilation-need result and not other clinical findings.",
+        "Assessment quantity is limited to one patient per action."
+      ],
+      "mechanic_id": "assess-one-flu-patient",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "patients",
+            "patient-group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "Clinical staff assess one represented patient already marked as requiring ventilation and move that patient into the represented waiting-for-ventilation state.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "requiring_ventilation denotes identified candidates awaiting assessment transition",
+        "waiting_for_ventilation denotes assessed patients awaiting equipment",
+        "quantity denotes assessed patients"
+      ],
+      "tests": [
+        "Clinical staff can assess one co-located patient when requiring_ventilation is positive.",
+        "Assessment is refused when requiring_ventilation is zero.",
+        "A quantity other than one is refused.",
+        "Success subtracts one from requiring_ventilation and adds one to waiting_for_ventilation.",
+        "Assessment at another hospital is refused."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "allocate-ventilator",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "committee"
+        ],
+        "components": [
+          "committee"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the allocation is for one ventilator",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the flu patients are at the committee's hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the ventilator inventory is at the committee's hospital",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the flu patients belong to the committee's hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "ownership.owner_ref"
+            }
+          }
+        },
+        {
+          "label": "the ventilator inventory belongs to the committee's hospital",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "ownership.owner_ref"
+            }
+          }
+        },
+        {
+          "label": "a flu patient is waiting for ventilation",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.waiting_for_ventilation"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "label": "an available ventilator can be assigned",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "components.ventilator_inventory.available_count"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "patient_group",
+          "path": "components.patient_group.waiting_for_ventilation",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.patient_group.on_ventilators",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "ventilator_inventory",
+          "path": "components.ventilator_inventory.available_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "ventilator_inventory",
+          "path": "components.ventilator_inventory.in_use_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The allocation policy text is represented but cannot be evaluated against individual patients because patients are aggregated.",
+        "The committee review day is not changed because assigning equipment does not itself advance time.",
+        "Ventilator management capacity has no consumable daily-use field and is not decremented.",
+        "Allocation quantity is limited to one to preserve aggregate stock boundaries."
+      ],
+      "mechanic_id": "allocate-one-available-ventilator",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "patients",
+            "patient-group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        },
+        "ventilator_inventory": {
+          "categories": [
+            "object",
+            "ventilator-inventory"
+          ],
+          "components": [
+            "ventilator_inventory"
+          ]
+        }
+      },
+      "rationale": "The allocation committee assigns one available operational ventilator to one represented patient already waiting for ventilation, transferring both patient and inventory counts atomically.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "waiting_for_ventilation is allocation demand",
+        "available_count is assignable ventilator supply",
+        "in_use_count and on_ventilators increase together",
+        "committee role performs allocation review"
+      ],
+      "tests": [
+        "Allocation succeeds for one waiting patient with one available ventilator at the same hospital.",
+        "Allocation is refused when no patient is waiting.",
+        "Allocation is refused when available_count is zero.",
+        "Allocation is refused for an inventory belonging to another hospital.",
+        "Success moves one patient onto ventilation and moves one ventilator from available to in use."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "release-ventilator",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "clinical-staff"
+        ],
+        "components": [
+          "clinical_staff"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the release is for one ventilator",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the flu patients are at the same hospital as the clinical staff",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the ventilator inventory is at the same hospital as the clinical staff",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the flu patients belong to the clinical staff's hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "ownership.owner_ref"
+            }
+          }
+        },
+        {
+          "label": "the ventilator inventory belongs to the clinical staff's hospital",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "ownership.owner_ref"
+            }
+          }
+        },
+        {
+          "label": "a flu patient is currently on a ventilator",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.on_ventilators"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "label": "an in-use ventilator is recorded",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "components.ventilator_inventory.in_use_count"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "patient_group",
+          "path": "components.patient_group.on_ventilators",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.patient_group.recovering",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "ventilator_inventory",
+          "path": "components.ventilator_inventory.in_use_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "ventilator_inventory",
+          "path": "components.ventilator_inventory.available_count",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The represented state has no treatment timer, so the action relies on the description's assertion that treatment has ended.",
+        "The released ventilator is treated as operational because no action field reports a failure during release.",
+        "Ventilator management capacity is not consumed because no per-day usage stock is represented.",
+        "Release quantity is limited to one patient and ventilator pair."
+      ],
+      "mechanic_id": "release-one-completed-ventilator",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "patient_group": {
+          "categories": [
+            "patients",
+            "patient-group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        },
+        "ventilator_inventory": {
+          "categories": [
+            "object",
+            "ventilator-inventory"
+          ],
+          "components": [
+            "ventilator_inventory"
+          ]
+        }
+      },
+      "rationale": "Clinical staff release one ventilator after a represented patient's ventilation period ends, moving the patient to recovery and returning the operational ventilator to availability.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "on_ventilators and in_use_count are paired active-treatment stocks",
+        "recovering is the post-ventilation patient state",
+        "available_count receives the released operational ventilator"
+      ],
+      "tests": [
+        "Clinical staff can release one recorded in-use ventilator from one ventilated patient.",
+        "Release is refused when on_ventilators is zero.",
+        "Release is refused when in_use_count is zero.",
+        "Release at a different hospital is refused.",
+        "Success moves one patient to recovering and one ventilator to available."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "order-ventilators",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "committee"
+        ],
+        "components": [
+          "committee"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the order is for one ventilator",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the ventilator inventory is at the committee's hospital",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the ventilator inventory belongs to the committee's hospital",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "ownership.owner_ref"
+            }
+          }
+        },
+        {
+          "label": "the supplier is reachable from the committee's location",
+          "left": {
+            "participant": {
+              "name": "supplier",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "ventilator_inventory",
+          "path": "components.ventilator_inventory.orders_placed",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "supplier",
+          "path": "components.supplier.received_orders",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "supplier",
+          "path": "components.supplier.order_backlog",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "No budget, price, or supplier production stock is represented, so ordering does not consume funds or equipment.",
+        "received_orders and order_backlog both rise because one is a receipt count and the other is unshipped demand.",
+        "The supplier has no ownership value, so authorization is based on the committee role, inventory ownership, and represented location.",
+        "Order quantity is limited to one ventilator per action."
+      ],
+      "mechanic_id": "place-one-ventilator-order",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "supplier": {
+          "categories": [
+            "actor",
+            "supplier"
+          ],
+          "components": [
+            "supplier"
+          ]
+        },
+        "ventilator_inventory": {
+          "categories": [
+            "object",
+            "ventilator-inventory"
+          ],
+          "components": [
+            "ventilator_inventory"
+          ]
+        }
+      },
+      "rationale": "The hospital allocation committee places one represented ventilator order, increasing the hospital's outstanding order count and the supplier's received backlog.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "orders_placed is the hospital's outstanding procurement count",
+        "received_orders records supplier-side accepted orders",
+        "order_backlog is supplier-side unshipped demand",
+        "committee role places hospital orders"
+      ],
+      "tests": [
+        "The committee can order one ventilator for its hospital inventory from the co-located represented supplier.",
+        "A quantity other than one is refused.",
+        "An inventory belonging to another hospital is refused.",
+        "A supplier at another represented location is refused.",
+        "Success adds one to orders_placed, received_orders, and order_backlog."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "ship-ventilators",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "supplier"
+        ],
+        "components": [
+          "supplier"
+        ]
+      },
+      "checks": [
+        {
+          "label": "the named supplier is the medical supplier taking this action",
+          "left": {
+            "entity_id": "supplier"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "actor"
+          }
+        },
+        {
+          "label": "the shipment is for one ventilator",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the hospital inventory is at the supplier's represented shipping location",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "supplier",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the supplier has an unshipped ventilator order",
+          "left": {
+            "participant": {
+              "name": "supplier",
+              "path": "components.supplier.order_backlog"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "label": "the supplier has a received order to ship",
+          "left": {
+            "participant": {
+              "name": "supplier",
+              "path": "components.supplier.received_orders"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "label": "the hospital has an outstanding ventilator order",
+          "left": {
+            "participant": {
+              "name": "ventilator_inventory",
+              "path": "components.ventilator_inventory.orders_placed"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "label": "the shipment is within the supplier's daily shipment size",
+          "left": {
+            "participant": {
+              "name": "supplier",
+              "path": "components.supplier.maximum_daily_shipments"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "supplier",
+          "path": "components.supplier.order_backlog",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "supplier",
+          "path": "components.supplier.received_orders",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "supplier",
+          "path": "components.supplier.orders_in_transit",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "ventilator_inventory",
+          "path": "components.ventilator_inventory.orders_placed",
+          "value": {
+            "action_field": "quantity"
+          }
+        }
+      ],
+      "limits": [
+        "The represented state has no per-day shipment counter, so maximum_daily_shipments limits shipment size rather than cumulative actions in a day.",
+        "Shipment does not immediately increase hospital equipment; an autonomous delivery process receives in-transit ventilators.",
+        "No supplier equipment inventory is represented, so shipment consumes order backlog rather than a supplier stock.",
+        "Shipment quantity is limited to one ventilator."
+      ],
+      "mechanic_id": "ship-one-ordered-ventilator",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "supplier": {
+          "categories": [
+            "actor",
+            "supplier"
+          ],
+          "components": [
+            "supplier"
+          ]
+        },
+        "ventilator_inventory": {
+          "categories": [
+            "object",
+            "ventilator-inventory"
+          ],
+          "components": [
+            "ventilator_inventory"
+          ]
+        }
+      },
+      "rationale": "The represented supplier ships one outstanding ventilator order, removing it from unshipped demand and placing it in transit for autonomous delivery to the hospital inventory.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "order_backlog is unshipped supplier demand",
+        "orders_in_transit is shipped equipment awaiting receipt",
+        "orders_placed is the hospital's outstanding procurement count",
+        "supplier role performs shipment"
+      ],
+      "tests": [
+        "The represented supplier can ship one matched outstanding order.",
+        "Shipment is refused when order_backlog is zero.",
+        "Shipment is refused when received_orders or hospital orders_placed is zero.",
+        "A different supplier cannot ship through the named supplier field.",
+        "Success decreases the matched order counts and increases orders_in_transit by one."
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "action_kind": "advance-hospital-day",
+      "actor_selector": {
+        "categories": [
+          "time",
+          "ongoing-process"
+        ],
+        "components": []
+      },
+      "checks": [
+        {
+          "label": "time advances by one day",
+          "left": {
+            "action_field": "quantity"
+          },
+          "op": "eq",
+          "right": {
+            "literal": 1
+          }
+        },
+        {
+          "label": "the hospital day is at the represented hospital",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "hospital",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the flu patients are at the represented hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "hospital",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the flu patients belong to the represented hospital",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "ownership.owner_ref"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "place:hospital"
+          }
+        },
+        {
+          "label": "the daily flu arrival rate is not negative",
+          "left": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.daily_arrival_rate"
+            }
+          },
+          "op": "gte",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "hospital",
+          "path": "components.hospital.current_day",
+          "value": {
+            "action_field": "quantity"
+          }
+        },
+        {
+          "op": "add",
+          "participant": "patient_group",
+          "path": "components.patient_group.patient_count",
+          "value": {
+            "participant": {
+              "name": "patient_group",
+              "path": "components.patient_group.daily_arrival_rate"
+            }
+          }
+        }
+      ],
+      "limits": [
+        "The action advances exactly one day because multiplication by multiple days is not represented.",
+        "The represented state has no separate arrival queue, so recurring arrivals increase patient_count directly.",
+        "Bed occupancy, admissions, staff availability, and committee review dates are not automatically reset because no safe derived expressions are available.",
+        "The hospital ownership check uses its represented place reference because the hospital itself has no ownership value."
+      ],
+      "mechanic_id": "advance-one-hospital-day",
+      "parameters": {
+        "quantity": [
+          1
+        ]
+      },
+      "participants": {
+        "hospital": {
+          "categories": [
+            "place",
+            "hospital"
+          ],
+          "components": [
+            "hospital"
+          ]
+        },
+        "patient_group": {
+          "categories": [
+            "patients",
+            "patient-group"
+          ],
+          "components": [
+            "patient_group"
+          ]
+        }
+      },
+      "rationale": "The ongoing hospital-day role advances the represented hospital clock by one day and adds the patient group's represented daily arrival rate to the continuing flu census.",
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "semantic_bindings": [
+        "current_day is the hospital clock",
+        "daily_arrival_rate is recurring flu demand",
+        "patient_count receives daily arrivals",
+        "ongoing-process role advances time"
+      ],
+      "tests": [
+        "The hospital day can advance the co-located hospital by one day.",
+        "A quantity other than one is refused.",
+        "A patient group at another location is refused.",
+        "Success increments current_day by one.",
+        "Success adds exactly daily_arrival_rate to patient_count."
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "processes": [
+    {
+      "checks": [
+        {
+          "label": "a flu patient is recovering",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.recovering"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the active flu census includes that recovering patient",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.patient_group.recovering",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.patient_group.discharged",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.patient_group.patient_count",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "progress-recovering-patients",
+      "rationale": "Each round, one represented recovering patient completes recovery and leaves the active patient census, allowing recovery and discharge stocks to cycle as ventilated patients are released.",
+      "selector": {
+        "categories": [
+          "patients",
+          "patient-group"
+        ],
+        "components": [
+          "patient_group"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the flu patient census is not empty",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "not every active flu patient currently requires ventilation assessment",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.requiring_ventilation"
+            }
+          },
+          "op": "lt",
+          "right": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.patient_count"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.patient_group.requiring_ventilation",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "ongoing-clinical-deterioration",
+      "rationale": "Each round, one active patient can newly enter the represented ventilation-need pool while that pool remains below the active census, sustaining clinical demand during the ongoing surge.",
+      "selector": {
+        "categories": [
+          "patients",
+          "patient-group"
+        ],
+        "components": [
+          "patient_group"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "a shipped ventilator is still in transit",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.supplier.orders_in_transit"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.supplier.orders_in_transit",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "inventory",
+          "path": "components.ventilator_inventory.total_count",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "inventory",
+          "path": "components.ventilator_inventory.operational_count",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "inventory",
+          "path": "components.ventilator_inventory.available_count",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "participants": {
+        "inventory": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "object",
+              "ventilator-inventory"
+            ],
+            "components": [
+              "ventilator_inventory"
+            ]
+          }
+        }
+      },
+      "process_id": "receive-in-transit-ventilator",
+      "rationale": "Each round, one shipped ventilator in transit reaches the co-located hospital inventory and becomes an operational available unit in the same physical transition.",
+      "selector": {
+        "categories": [
+          "actor",
+          "supplier"
+        ],
+        "components": [
+          "supplier"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "a flu patient is waiting for ventilation",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.waiting_for_ventilation"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the active flu census includes that waiting patient",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.patient_group.patient_count"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.patient_group.waiting_for_ventilation",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.patient_group.dead",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.patient_group.patient_count",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "process_id": "progress-unventilated-waiting-patients",
+      "rationale": "Each round, one represented patient who remains waiting for ventilation dies and leaves the active patient census, making an exhausted waiting pool stop this adverse progression.",
+      "selector": {
+        "categories": [
+          "patients",
+          "patient-group"
+        ],
+        "components": [
+          "patient_group"
+        ]
+      }
+    },
+    {
+      "checks": [
+        {
+          "label": "the medical supplier has a backlogged ventilator order",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.supplier.order_backlog"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the medical supplier has a received order to fulfill",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.supplier.received_orders"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the hospital has an outstanding ventilator order",
+          "left": {
+            "participant": {
+              "name": "inventory",
+              "path": "components.ventilator_inventory.orders_placed"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        },
+        {
+          "label": "the medical supplier can ship at least one ventilator today",
+          "left": {
+            "participant": {
+              "name": "it",
+              "path": "components.supplier.maximum_daily_shipments"
+            }
+          },
+          "op": "gt",
+          "right": {
+            "literal": 0
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.supplier.order_backlog",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "it",
+          "path": "components.supplier.received_orders",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "add",
+          "participant": "it",
+          "path": "components.supplier.orders_in_transit",
+          "value": {
+            "literal": 1
+          }
+        },
+        {
+          "op": "subtract",
+          "participant": "inventory",
+          "path": "components.ventilator_inventory.orders_placed",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "participants": {
+        "inventory": {
+          "link": "co_located",
+          "selector": {
+            "categories": [
+              "object",
+              "ventilator-inventory"
+            ],
+            "components": [
+              "ventilator_inventory"
+            ]
+          }
+        }
+      },
+      "process_id": "fulfill-one-backlogged-ventilator-order",
+      "rationale": "Each round, the supplier advances one matched backlogged order into transit while the hospital's corresponding outstanding order is cleared in the same transition.",
+      "selector": {
+        "categories": [
+          "actor",
+          "supplier"
+        ],
+        "components": [
+          "supplier"
+        ]
+      }
+    }
+  ],
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": null
+}

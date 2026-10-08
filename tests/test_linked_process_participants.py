@@ -145,6 +145,19 @@ class GeneratedTruckTests(unittest.TestCase):  # L4, from the recorded generated
         self.assertEqual(summary["ended"], "terminal")
 
 
+class CoLocatedCheckTests(unittest.TestCase):
+    def test_co_located_link_is_flagged_when_every_entity_shares_one_location(self):
+        sys.path.insert(0, str(REPO / "spikes/any-scenario-2026-10"))
+        from checks import co_located_findings
+        causal = json.loads((LINKED_TRUCK / "causal.json").read_text())
+        bundle = json.loads((LINKED_TRUCK / "bundle.json").read_text())
+        found = co_located_findings(bundle, causal)
+        self.assertTrue(found and all(not f["blocking"] for f in found))
+        other = deepcopy(bundle)
+        other["entities"][0]["location"] = "elsewhere"
+        self.assertEqual(co_located_findings(other, causal), [])
+
+
 LINKED_HOSPITAL = REPO / "spikes/any-scenario-2026-10/evidence/linked/hospital"
 
 
@@ -171,6 +184,35 @@ class GeneratedHospitalTests(unittest.TestCase):  # L5, from the recorded genera
         self.assertTrue(down("entities.hospital.components.hospital_state.occupied_beds"))
         self.assertTrue(down("entities.hospital.components.hospital_state.ventilators_in_use"))
         self.assertEqual(deaths[0]["status"], "accepted")
+
+
+PIPELINE_HOSPITAL = REPO / "spikes/any-scenario-2026-10/evidence/linked/hospital-pipeline"
+
+
+class PipelineHospitalTests(unittest.TestCase):
+    """The hospital pipeline alone (run hospital-20261007T233245, --max-repairs 3): a negative result.
+
+    The automatic loop added a death process, but without links, so it cannot lower beds or free a ventilator,
+    and the 'ventilators_in_use falls by Patient death' finding was still blocking at the end.
+    """
+
+    def test_automatic_repair_added_a_death_process_without_links(self):
+        model = json.loads((PIPELINE_HOSPITAL / "model.json").read_text())
+        kept = [r for r in model["repairs"] if r.get("kept")]
+        self.assertEqual([r["trace"] for r in kept], ["any-scenario-hospital-repair1-20261007T233245"])
+        causal = json.loads((PIPELINE_HOSPITAL / "causal.json").read_text())
+        death = next(p for p in causal["processes"] if p["process_id"] == "progress-unventilated-waiting-patients")
+        self.assertFalse(death.get("participants"))
+        self.assertEqual({e["participant"] for e in death["effects"]}, {"it"})
+        self.assertIn("components.patient_group.dead", {e["path"] for e in death["effects"]})
+
+    def test_no_process_frees_a_ventilator_on_death_and_the_finding_remains(self):
+        causal = json.loads((PIPELINE_HOSPITAL / "causal.json").read_text())
+        paths = {e["path"] for p in causal["processes"] for e in p["effects"] if e["op"] == "subtract"}
+        self.assertFalse({p for p in paths if "in_use" in p or "occupied" in p})
+        checks = json.loads((PIPELINE_HOSPITAL / "checks.json").read_text())
+        self.assertIn("the conceptual model says 'ventilators_in_use' falls by 'Patient death', but no rule implements "
+                      "that outflow.", {f["finding"] for f in checks["findings"] if f["blocking"]})
 
 
 if __name__ == "__main__":
