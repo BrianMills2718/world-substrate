@@ -1,0 +1,25 @@
+{
+  "_fallback_own_fields_only": [
+    "clinical-staff",
+    "allocation-committee",
+    "medical-supplier"
+  ],
+  "allocation-committee": [
+    "Ventilator allocation committee.allocation_policy",
+    "Ventilator allocation committee.allocation_review_frequency",
+    "Ventilator allocation committee.next_review_day"
+  ],
+  "clinical-staff": [
+    "Clinical staff.absence_rate",
+    "Clinical staff.assessment_capacity",
+    "Clinical staff.available_per_day",
+    "Clinical staff.staff_count",
+    "Clinical staff.ventilator_management_capacity"
+  ],
+  "medical-supplier": [
+    "Medical equipment supplier.maximum_daily_shipments",
+    "Medical equipment supplier.order_backlog",
+    "Medical equipment supplier.orders_in_transit",
+    "Medical equipment supplier.received_orders"
+  ]
+}

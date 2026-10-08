@@ -321,26 +321,35 @@ def flows(bundle: dict[str, Any], causal: dict[str, Any]) -> dict[str, Any]:
     return {"stocks": stocks}
 
 
-def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: str):
+def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: str, odd=None, scenario: str = "",
+                max_repairs: int | None = None):
     """Checks, then rule-writer repairs (keep only improvements). Returns (bundle, causal, report, repairs)."""
     repairs = []
-    report = run_checks(bundle, causal, stocks=stocks, anomaly_review=reviewer)
+    def checks_for(b, c, tag):
+        coverage = outflow_coverage(odd, c, trace_id=f"any-scenario-{name}-coverage-{tag}-{stamp}")[0] if odd else None
+        consequence = consequence_checker(scenario, trace_id=f"any-scenario-{name}-extreme-{tag}-{stamp}") if scenario else None
+        return run_checks(b, c, stocks=stocks, anomaly_review=reviewer, coverage=coverage, consequence_check=consequence)
+
+    report = checks_for(bundle, causal, "r0")
     (out / "causal.r0.json").write_text(json.dumps(causal, indent=2, sort_keys=True))
     (out / "checks.r0.json").write_text(json.dumps(report, indent=2, sort_keys=True))
     print(f"[step] checks r0 blocking={report['counts']['blocking']} advisory={report['counts']['advisory']}", flush=True)
     best = (report["counts"]["blocking"], 0, bundle, causal, report)
-    for n in range(1, MAX_REPAIRS + 1):  # one rule at a time: propose -> compile -> check -> keep or revert
+    for n in range(1, (max_repairs or MAX_REPAIRS) + 1):  # propose -> compile -> check -> keep or revert
         blocking = [f for f in report["findings"] if f["blocking"]]
         if not blocking:
             break
-        order = ["liveness", "reachability", "attempt_vs_outcome", "boundedness", "extreme_conditions",
-                 "behavior_anomaly", "structure"]  # fix what stops the world running before what refines it
+        # missing consequences first (what the world fails to mean), then what stops it running, then refinements
+        order = ["extreme_conditions", "structure", "liveness", "reachability", "attempt_vs_outcome", "boundedness",
+                 "behavior_anomaly"]
         blocking.sort(key=lambda f: order.index(f["check"]) if f["check"] in order else len(order))
         target = blocking[0] if not repairs or repairs[-1].get("kept") or len(blocking) == 1 else blocking[min(1, len(blocking) - 1)]
         repair_trace = f"any-scenario-{name}-repair{n}-{stamp}"
         t3 = time.time()
         try:
-            cand_bundle, candidate, rec = propose_rule(bundle, causal, target["finding"], trace_id=repair_trace,
+            same_kind = [f["finding"] for f in blocking if f["check"] == target["check"]]
+            problem = ("Automatic model checks found these problems; fix them: " + " ".join(same_kind))[:3900]
+            cand_bundle, candidate, rec = propose_rule(bundle, causal, problem, trace_id=repair_trace,
                                                        guidance=ATTEMPT_GUIDANCE, model=RULE_MODEL,
                                                        model_justification=RULE_MODEL_WHY)
         except ValueError as error:
@@ -348,7 +357,7 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
                             "error": str(error)})
             print(f"[step] repair {n} trace={repair_trace} no compilable rule: {error}", flush=True)
             continue
-        cand_report = run_checks(cand_bundle, candidate, stocks=stocks, anomaly_review=reviewer)
+        cand_report = checks_for(cand_bundle, candidate, f"r{n}")
         (out / f"causal.r{n}.json").write_text(json.dumps(candidate, indent=2, sort_keys=True))
         (out / f"checks.r{n}.json").write_text(json.dumps(cand_report, indent=2, sort_keys=True))
         same = lambda f: f["check"] == target["check"] and f.get("rule") == target.get("rule") and f.get("stock") == target.get("stock")
@@ -379,6 +388,7 @@ def main() -> int:
     ap.add_argument("--text", required=True)
     ap.add_argument("--kind", default="task", choices=("task", "ongoing", "open"))
     ap.add_argument("--out-root", default=str(HERE / "runs"))
+    ap.add_argument("--max-repairs", type=int, default=None)
     ap.add_argument("--repair-dir", type=Path, help="rerun checks + repairs on an existing model dir (no regeneration)")
     args = ap.parse_args()
     if args.repair_dir:
@@ -430,7 +440,8 @@ def main() -> int:
     for name_, value in {"bundle": bundle, "causal": causal, "model": early}.items():  # resumable with --repair-dir
         (out / f"{name_}.json").write_text(json.dumps(value, indent=2, sort_keys=True))
     reviewer = anomaly_reviewer(args.text, trace_id=f"any-scenario-{args.name}-anomaly-{stamp}")
-    bundle, causal, report, repairs = repair_loop(bundle, causal, stocks, reviewer, out, args.name, stamp)
+    bundle, causal, report, repairs = repair_loop(bundle, causal, stocks, reviewer, out, args.name, stamp,
+                                                  odd=odd, scenario=args.text, max_repairs=args.max_repairs)
     (out / "checks.json").write_text(json.dumps(report, indent=2, sort_keys=True))
     t2 = time.time()
     sensing_trace = f"any-scenario-{args.name}-sensing-{stamp}"
