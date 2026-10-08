@@ -20,6 +20,16 @@ What is extracted, and from where:
   ``do_GET``/``do_POST`` in scripts/world_builder_service.py.
 - Run log: the ``LOGGED_PATHS`` tuple and the paths ``_result_summary`` keeps a
   specific summary for.
+- Any-scenario pipeline records (spikes/any-scenario-2026-10/): every
+  ``(<dir> / <name>).write_text(...)`` call. ``<name>`` is a string literal, an
+  f-string (each ``{...}`` becomes ``*``; an f-string ``{n}.json`` whose ``n``
+  is the loop target of ``for n, v in {<dict literal>}.items()`` expands to the
+  dict's keys), or ``args.<opt>`` (resolved to that option's argparse default).
+- The pipeline's ``Attempt`` record fields (``class Attempt`` in
+  run_scenario.py) and the evidence folders under the spike's ``evidence/``.
+- Substrate-provided component kinds: ``register_component("<kind>", ...)``
+  calls in src/world_substrate/ (information items and deliveries), and the
+  linked-participant link kinds in ``PROCESS_LINKS`` (action_authoring.py).
 
 Line numbers in the model are documentation; the test enforces file and
 function, so a drifted line is a documentation fix, not a failure.
@@ -41,6 +51,10 @@ ENGINE = ROOT / "src" / "world_substrate" / "engine.py"
 RUN_LOOP = ROOT / "scripts" / "run_authored_world.py"
 SERVICE = ROOT / "scripts" / "world_builder_service.py"
 SCHEMA_ROOTS = ("src", "scripts", "reference_worlds")
+PIPELINE = ROOT / "spikes" / "any-scenario-2026-10"
+SUBSTRATE = ROOT / "src" / "world_substrate"
+ACTION_AUTHORING = SUBSTRATE / "action_authoring.py"
+RECORD_TABLES = ("engine_events", "engine_commands", "run_row_statuses", "records", "pipeline_records")
 SCHEMA_RE = re.compile(r"^world-(?:substrate|builder)-[a-z0-9-]+/v[0-9]+$")
 COVERAGE_VALUES = {"shown", "partial", "hidden", "missing", "n/a"}
 
@@ -176,6 +190,100 @@ def run_log_paths() -> tuple[set[str], set[str]]:
     return logged, summarised
 
 
+def _argparse_defaults(tree: ast.Module) -> dict[str, str]:
+    """``--opt`` -> literal default, from ``add_argument`` calls."""
+    out: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "add_argument":
+            option = _str(node.args[0]) if node.args else None
+            default = next((_str(k.value) for k in node.keywords if k.arg == "default"), None)
+            if option and option.startswith("--") and default:
+                out[option[2:].replace("-", "_")] = default
+    return out
+
+
+def _loop_keys(tree: ast.Module, node: ast.AST, name: str) -> list[str] | None:
+    """Keys of ``{...}`` when ``node`` sits in ``for name, _ in {...}.items()``."""
+    for loop in ast.walk(tree):
+        if not isinstance(loop, ast.For) or not (loop.lineno <= node.lineno <= (loop.end_lineno or loop.lineno)):  # type: ignore[attr-defined]
+            continue
+        target = loop.target
+        first = target.elts[0] if isinstance(target, ast.Tuple) and target.elts else target
+        it = loop.iter
+        if (
+            isinstance(first, ast.Name) and first.id == name
+            and isinstance(it, ast.Call) and isinstance(it.func, ast.Attribute) and it.func.attr == "items"
+            and isinstance(it.func.value, ast.Dict)
+        ):
+            return [k for k in (_str(key) for key in it.func.value.keys) if k]
+    return None
+
+
+def _record_names(tree: ast.Module, node: ast.AST, defaults: dict[str, str]) -> list[str]:
+    if (name := _str(node)) is not None:
+        return [name]
+    if isinstance(node, ast.JoinedStr):
+        parts = node.values
+        if (
+            len(parts) == 2 and isinstance(parts[0], ast.FormattedValue) and isinstance(parts[0].value, ast.Name)
+            and (keys := _loop_keys(tree, node, parts[0].value.id)) is not None
+        ):
+            suffix = _str(parts[1]) or ""
+            return [k + suffix for k in keys]
+        return ["".join(_str(p) or "*" for p in parts)]
+    if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and node.value.id == "args":
+        if node.attr in defaults:
+            return [defaults[node.attr]]
+    raise AssertionError(f"cannot resolve a record name written at line {node.lineno}: {ast.dump(node)}")  # type: ignore[attr-defined]
+
+
+def pipeline_records() -> dict[str, list[dict[str, Any]]]:
+    """File records the any-scenario pipeline writes: ``(<dir> / <name>).write_text(...)``."""
+    found: dict[str, list[dict[str, Any]]] = {}
+    for path in sorted(PIPELINE.glob("*.py")):
+        tree = _parse(path)
+        defaults = _argparse_defaults(tree)
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                and node.func.attr in {"write_text", "write_bytes"}
+            ):
+                receiver = node.func.value
+                assert isinstance(receiver, ast.BinOp) and isinstance(receiver.op, ast.Div), (
+                    f"{_rel(path)}:{node.lineno}: pipeline writes must be (<dir> / <name>).write_text(...)")
+                for name in _record_names(tree, receiver.right, defaults):
+                    _sites(found, name, path, tree, node.lineno)
+    return found
+
+
+def attempt_fields() -> list[str]:
+    tree = _parse(PIPELINE / "run_scenario.py")
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == "Attempt":
+            return [s.target.id for s in node.body if isinstance(s, ast.AnnAssign) and isinstance(s.target, ast.Name)]
+    raise AssertionError("class Attempt not found in run_scenario.py")
+
+
+def substrate_component_kinds() -> dict[str, list[dict[str, Any]]]:
+    found: dict[str, list[dict[str, Any]]] = {}
+    for path in sorted(SUBSTRATE.rglob("*.py")):
+        tree = _parse(path)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "register_component":
+                kind = _str(node.args[0]) if node.args else None
+                if kind:
+                    _sites(found, kind, path, tree, node.lineno)
+    return found
+
+
+def process_links() -> list[str]:
+    for node in ast.walk(_parse(ACTION_AUTHORING)):
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "PROCESS_LINKS" for t in node.targets):
+            assert isinstance(node.value, ast.Tuple)
+            return [v for v in (_str(e) for e in node.value.elts) if v]
+    raise AssertionError("PROCESS_LINKS not found")
+
+
 def load_model() -> dict[str, Any]:
     with MODEL_PATH.open("rb") as handle:
         return tomllib.load(handle)
@@ -222,13 +330,43 @@ class SystemModelMatchesCode(unittest.TestCase):
         self.assertEqual(set(run_log["logged_paths"]), logged)
         self.assertEqual(set(run_log["summarised_paths"]), summarised)
 
+    def test_pipeline_records(self) -> None:
+        # code_names: one model row may stand for several literal names in code
+        # (causal.r0.json for the first check round and causal.r*.json for repairs).
+        rows = self.model["pipeline_records"]
+        expanded = [dict(row, code_name=code) for row in rows for code in row.get("code_names", [row["name"]])]
+        self.assertEqual(len({r["name"] for r in rows}), len(rows), "duplicate pipeline record names in the model")
+        self._compare("pipeline record", expanded, pipeline_records())
+
+    def test_attempt_record_fields(self) -> None:
+        self.assertEqual(self.model["pipeline"]["attempt_fields"], attempt_fields(),
+                         "Attempt fields in run_scenario.py differ from the model")
+
+    def test_pipeline_evidence_folders(self) -> None:
+        on_disk = sorted(p.name for p in (PIPELINE / "evidence").iterdir() if p.is_dir())
+        self.assertEqual(sorted(e["folder"] for e in self.model["pipeline"]["evidence"]), on_disk,
+                         "evidence folders on disk differ from the model")
+
+    def test_substrate_component_kinds(self) -> None:
+        self._compare("substrate component kind", self.model["substrate_component_kinds"], substrate_component_kinds())
+
+    def test_process_links(self) -> None:
+        self.assertEqual(self.model["linked_participants"]["links"], process_links(), "PROCESS_LINKS differs from the model")
+
+    def test_world_kinds_name_declared_paths(self) -> None:
+        paths = {p["name"] for p in self.model["producing_paths"]}
+        for kind in self.model["world_kinds"]:
+            self.assertEqual(set(kind["paths"]), paths, f"world kind {kind['kind']!r} must give every producing path")
+            for path, value in kind["paths"].items():
+                self.assertIn(value, {"yes", "no", "fixed template"}, f"{kind['kind']} / {path}: {value!r}")
+
     def test_model_is_internally_consistent(self) -> None:
         processes = {p["name"]: p for p in self.model["processes"]}
         self.assertEqual(len(processes), len(self.model["processes"]), "duplicate process names")
         entities = {e["name"] for e in self.model["entities"]}
         written = {
             row["name"]
-            for table in ("engine_events", "engine_commands", "run_row_statuses", "records")
+            for table in RECORD_TABLES
             for row in self.model[table]
         }
         for process in processes.values():
@@ -236,7 +374,7 @@ class SystemModelMatchesCode(unittest.TestCase):
                 self.assertIn(name, written, f"process {process['name']} writes undeclared {name!r}")
             for name in process.get("changes", []):
                 self.assertIn(name, entities, f"process {process['name']} changes undeclared entity {name!r}")
-        for table in ("engine_events", "engine_commands", "run_row_statuses", "records"):
+        for table in RECORD_TABLES:
             for row in self.model[table]:
                 for process in row.get("written_by", []):
                     self.assertIn(process, processes, f"{row['name']} names unknown process {process}")
@@ -249,7 +387,7 @@ class SystemModelMatchesCode(unittest.TestCase):
             | {p["name"] for p in self.model["processes"]}
             | {
                 row["name"]
-                for table in ("engine_events", "engine_commands", "run_row_statuses", "records")
+                for table in RECORD_TABLES
                 for row in self.model[table]
             }
         )

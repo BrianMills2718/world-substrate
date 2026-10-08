@@ -10,20 +10,29 @@
 #     schemas found in code equal the ones declared here, both ways, with the
 #     same writer file + function;
 #   - World Builder API routes and run-log paths equal the ones declared here;
-#   - processes, records, coverage rows and gaps refer only to declared names.
-# Line numbers are as of commit d18ead6 (2026-10-06). The test enforces file and
-# function, not line, so a drifted line is a documentation fix, not a failure.
+#   - processes, records, coverage rows and gaps refer only to declared names;
+#   - any-scenario pipeline file records (spikes/any-scenario-2026-10/) equal the
+#     ones declared in [[pipeline_records]], both ways, same writer file + function;
+#     the Attempt fields and the evidence folders equal [pipeline];
+#   - substrate component kinds (register_component in src/world_substrate/) and
+#     the linked-participant link kinds (PROCESS_LINKS) equal the ones declared here.
+# Line numbers are as of commit d18ead6 (2026-10-06) for the World Builder path and
+# 2e409ab (2026-10-08) for the pipeline, information and linked-participant rows.
+# The test enforces file and function, not line, so a drifted line is a
+# documentation fix, not a failure.
 
 schema = "world-substrate-system-model/v1"
-system = "World Substrate (governed-rules layer + World Builder authoring/review/run path)"
-as_of_commit = "d18ead6"
+system = "World Substrate (governed-rules layer + World Builder authoring/review/run path + any-scenario pipeline spike)"
+as_of_commit = "2e409ab"
 
 # scope of a record:
 #   product   - written on the public World Builder path (Decision 006 scope)
 #   reference - written by reference-world / native-coordination tooling kept
 #               and maintained, not extended (Decision 006 item 3)
 #   probe     - written by a historical milestone probe or experiment script
-scopes = ["product", "reference", "probe"]
+#   pipeline  - written by the describe-any-scenario pipeline spike
+#               (spikes/any-scenario-2026-10/, Decision 007), offline, not deployed
+scopes = ["product", "reference", "probe", "pipeline"]
 
 # ---------------------------------------------------------------- entities ---
 
@@ -45,7 +54,7 @@ name = "CausalModel"
 what = "Proposed executable law for one bundle: action mechanics (checks, effects), optional processes (changes the world makes by itself), optional terminal (finish line)."
 source = "src/world_substrate/action_authoring.py:361"
 schema = "world-substrate-causal-model/v0"
-state = ["mechanics[] (one per bundle action kind, exactly)", "processes[] (at most 6)", "terminal | null"]
+state = ["mechanics[] (one per bundle action kind, exactly)", "processes[] (at most 6), each optionally with linked participants {name: {link, selector}} (DeclaredProcess.participants, action_authoring.py:264; links in PROCESS_LINKS, :669, plus ref:<component>.<field>)", "terminal | null"]
 
 [[entities]]
 name = "CausalReview"
@@ -140,6 +149,79 @@ name = "Job"
 what = "In-memory background job for long requests (build, AI run) so the page can poll past the 100-second proxy limit. Lost on restart."
 source = "scripts/world_builder_service.py:564"
 state = ["job_id", "created", "status running | done", "captured response"]
+
+# Information items (src/world_substrate/information.py). Substrate-provided
+# component kinds; the Engine's observation filter applies them to any world
+# whose entities carry components named "information" / "delivery".
+
+[[entities]]
+name = "InformationItem"
+what = "A represented piece of information as a canonical entity: content with a source and a channel. Only worlds that choose to represent information have one: the hand-authored Waltzman world and the fixed native-coordination draft template. Generated worlds (World Builder, any-scenario pipeline) have none."
+source = "src/world_substrate/information.py:21"
+state = ["content, source_id, channel_id, topic", "visibility: direct | public (anything else is never visible)", "active (false until delivered; the source alone sees an inactive item)", "derived_from_info_id"]
+
+[[entities]]
+name = "Delivery"
+what = "Delivery lineage of one InformationItem to one recipient; one Delivery entity per recipient. A direct item becomes visible to an actor only through a delivered Delivery naming that actor (Engine.observe, engine.py:248)."
+source = "src/world_substrate/information.py:34"
+state = ["info_id, recipient_id, channel_id", "status: pending | delivered | observed", "delivered_tick"]
+
+# Describe-any-scenario pipeline (spikes/any-scenario-2026-10/, Decision 007).
+# Offline scripts; nothing here is deployed or reachable from the World Builder.
+
+[[entities]]
+name = "OddModel"
+what = "The conceptual model one LLM call writes from the scenario text before any rule exists (ODD protocol): entities with quantitative state, per-tick processes, actor decisions, sensing, stocks with inflows/outflows, assumptions. Handed to the bundle generator only as the odd_brief text, cut to fit the generator's 2,000-character description limit (model_scenario.py:434; MAX_DESCRIPTION_CHARS, scripts/generate_world_bundle.py:29); the brief itself is not saved, only the full ODD in model.json."
+source = "spikes/any-scenario-2026-10/model_scenario.py:72"
+state = ["purpose, time_step", "entities[] {name, kind actor|object|place, state[] {variable, unit, initial}}", "processes_each_tick[]", "actor_decisions[] {actor, may_attempt, allowed_only_when}", "sensing[] {actor, can_observe, cannot_observe}", "stocks[] {stock, inflows, outflows}", "assumptions[]"]
+
+[[entities]]
+name = "ScenarioModel"
+what = "Everything the modeling step decided for one scenario (model.json): the scenario text, the ODD, the stock map, every repair round, the final check counts, what the bundle generator said it did not model, and every trace id."
+source = "spikes/any-scenario-2026-10/model_scenario.py:463"
+state = ["scenario_text, world_kind", "odd (OddModel)", "stock_map[] {stock, field | null, has_inflows, has_outflows}", "repairs[] (RuleChange rows with kept true/false)", "final_check_counts", "not_modeled[] (from generate_world_bundle)", "guidance (ATTEMPT_GUIDANCE)", "traces {odd, bundle, mechanics, sensing, stocks, anomaly}"]
+
+[[entities]]
+name = "SensingMap"
+what = "Per actor, the exact bundle fields it can observe (sensing.json), mapped from the ODD's plain-language sensing by one LLM call and validated client-side. Enforced by run_scenario.py on each observation, not by the Engine."
+source = "spikes/any-scenario-2026-10/model_scenario.py:110"
+state = ["{actor_id: [label.field, ...]}", "_fallback_own_fields_only: actors the mapping left out (they sense only their own entity)"]
+
+[[entities]]
+name = "StockFlows"
+what = "Stock-and-flow view derived mechanically from bundle + causal model (flows.json): every numeric component path with the rules that add to, subtract from or set it."
+source = "spikes/any-scenario-2026-10/model_scenario.py:305"
+state = ["stocks{component.field: {initial{entity: value}, inflows[], outflows[], sets[]}}"]
+
+[[entities]]
+name = "CheckReport"
+what = "Layer-1 checks on a compiled model by simulation through the ordinary Engine (checks.json; checks.r<N>.json per repair round): structure, liveness, attempt_vs_outcome, conservation, boundedness, reachability, deadlock, extreme_conditions, behavior_anomaly."
+source = "spikes/any-scenario-2026-10/checks.py:367"
+state = ["counts {blocking, advisory, rules, rules_fired, depletable_stocks}", "findings[] {check, blocking, stock | rule, finding}", "extreme_conditions[], behavior_anomalies[]", "seeds, ticks, seconds, step_seconds"]
+
+[[entities]]
+name = "RuleChange"
+what = "One to three rule changes an LLM proposes in the rule language (replace_mechanic, add_process, replace_process, add_action), merged into a copy and compiled (rule_writer.propose_rule). Used by the layer-1 repair loop (kept only if checks improve) and by the mid-run game master (installed into the running Engine if checks pass, else a one-off ruling)."
+source = "spikes/any-scenario-2026-10/rule_writer.py:53"
+state = ["proposal {changes[], why, change, target_id}", "repair rows: round, trace, finding, kept, candidate_blocking, blocking_after, cost", "mid-run rows (summary.rules_written_mid_run): intent, trace_id, proposal, checks, status, event_id, written_mid_run, rules_installed | ruling"]
+
+[[entities]]
+name = "Resident"
+what = "One LLM agent per actor entity, a Concordia EntityAgentWithLogging whose acting component makes one typed llm_client call returning an Attempt. Briefed with the scenario text only (no profile). Wakes only when a categorical observed field or its offered actions change, or an attempt awaits its outcome. In memory only."
+source = "spikes/any-scenario-2026-10/run_scenario.py:107"
+state = ["ObservationLog: last 6 observations (run_scenario.py:84)", "situation briefing (scenario text)", "cost, calls"]
+
+[[entities]]
+name = "Attempt"
+what = "One resident decision per wake, in the observation-to-action vocabulary (attempts.jsonl row). The LLM returns the Attempt fields; the runner adds tick, actor, belief_as_of, offered, performed and, from the next observation, observed_effect."
+source = "spikes/any-scenario-2026-10/run_scenario.py:50"
+state = ["LLM fields: see [pipeline].attempt_fields", "record: tick, actor, belief, belief_as_of, cited_observations, decision (offered | continue | unlisted), expected_effect, offered[], unlisted_intent, performed {action, status, event_id, action_record} | {status continue | no_rule | ruling ...}, observed_effect"]
+
+[[entities]]
+name = "ScenarioRun"
+what = "One run of a generated model with residents (a run-<stamp>/ folder inside the model folder): every Engine event, every attempt, per-tick process changes, the final observed world, a summary, and the bundle/causal model after mid-run rules."
+source = "spikes/any-scenario-2026-10/run_scenario.py:148"
+state = ["events.jsonl (every Engine event: submits, advance, game-master rulings)", "attempts.jsonl", "ticks.json [{tick, world_changes}]", "final_world.json (Engine.observe of the first actor)", "summary.json {run_id, trace_id, profile_id, ended terminal|quiescent|max_ticks|run_budget, final_tick, events, attempts, resident_calls, cost, conditions_changed, situation_briefing, resident_model, rules_written_mid_run}", "bundle_after_run.json, causal_after_run.json (only when the game master is on)"]
 
 # --------------------------------------------------------------- processes ---
 
@@ -287,6 +369,78 @@ changes = ["Run"]
 writes = ["world-substrate-m3-authoring/v0", "world-substrate-m4-spill/v0", "world-substrate-replay-receipt/v1", "world-substrate-policy-run/v0", "world-substrate-policy-comparison/v0", "world-substrate-authoring-experiment/v0", "world-substrate-jev-estimator-probe/v0"]
 schedule = "offline, by hand"
 
+[[processes]]
+name = "deliver_information"
+what = "An actor delivers an InformationItem to a recipient: the rule activates the item and marks the recipient's Delivery delivered, as one Engine transition (act). From then on Engine.observe shows the item to that recipient. Hand-authored Waltzman rule and the fixed native-coordination 'communicate' mechanic; no generator proposes it."
+source = "reference_worlds/waltzman/mechanics.py:198"
+routes = []
+changes = ["InformationItem", "Delivery"]
+writes = []
+schedule = "per submitted communicate attempt; reference worlds and native-coordination runs only (examples/native_coordination/coordination-causal-v0.json, coordination.action.communicate)"
+
+[[processes]]
+name = "model_scenario"
+what = "Pipeline layer 1: scenario text -> OddModel (one LLM call) -> odd_brief appended to the text -> generate_world_bundle -> generate_causal_model (ATTEMPT_GUIDANCE, stronger rule model) -> build_engine compiles and installs (raises on a reject) -> stock map (one LLM call) -> early model.json -> check_scenario + repair_rules -> sensing map (one LLM call) -> flows -> final files. No approval step (G14)."
+source = "spikes/any-scenario-2026-10/model_scenario.py:395"
+routes = []
+changes = ["OddModel", "AuthoringBundle", "CausalModel", "ScenarioModel", "SensingMap", "StockFlows"]
+writes = ["bundle.json", "causal.json", "model.json", "flows.json", "sensing.json", "checks.json"]
+schedule = "offline, by hand (python3 spikes/any-scenario-2026-10/model_scenario.py --name N --text T); --repair-dir reruns checks and repairs on a saved model; refuses to start when spend.py's plan total is within $0.25 of CAP"
+
+[[processes]]
+name = "check_scenario"
+what = "checks.run_checks: static findings (structure, selectors, attempt-vs-outcome, conservation, outflow coverage, co-location) plus seeded random runs through the ordinary Engine (boundedness, reachability, liveness, deadlock), extreme-conditions runs (each depletable stock at zero, judged by a 3-vote LLM consequence check) and an LLM behavior-anomaly review."
+source = "spikes/any-scenario-2026-10/checks.py:367"
+routes = []
+changes = ["CheckReport"]
+writes = ["checks.json", "checks.rN.json"]
+schedule = "inside model_scenario (every repair round) and midrun; standalone CLI checks.py --model-dir"
+
+[[processes]]
+name = "repair_rules"
+what = "repair_loop: up to MAX_REPAIRS (8) rounds of propose (rule_writer, one targeted blocking finding) -> compile -> check -> keep if stable blocking findings fall (or the target is fixed with at most two new ones), else revert; returns the best model seen."
+source = "spikes/any-scenario-2026-10/model_scenario.py:329"
+routes = []
+changes = ["CausalModel", "AuthoringBundle", "RuleChange", "CheckReport"]
+writes = ["causal.rN.json", "checks.rN.json"]
+schedule = "inside model_scenario"
+
+[[processes]]
+name = "run_scenario"
+what = "Pipeline layer 2: build_engine from the model folder (optional --set condition changes), register the clock process, then per tick each Resident is woken only on a changed observation (filtered by SensingMap), returns an Attempt, and an offered attempt goes through Engine.submit; an unlisted attempt goes to the game master; then Engine.advance(1). Stops at the terminal, after quiet_ticks with no change, at max_ticks or at the run budget."
+source = "spikes/any-scenario-2026-10/run_scenario.py:148"
+routes = []
+changes = ["World", "Entity", "Resident", "Attempt", "ScenarioRun"]
+writes = ["events.jsonl", "attempts.jsonl", "ticks.json", "final_world.json", "summary.json", "causal_after_run.json", "bundle_after_run.json", "accepted", "unsupported_action"]
+schedule = "offline, by hand; Concordia gdm-concordia==2.4.0; refuses to start when plan spend + run budget > CAP"
+
+[[processes]]
+name = "midrun_rule"
+what = "Pipeline layer 3, MidRunGameMaster: for an unlisted attempt, rule_writer proposes general rule(s); run_checks on the whole model; pass (blocking <= baseline, none on the new rule, no conservation finding) -> rules installed into the RUNNING Engine registry and the attempt submitted; fail -> a 'gm-ruling' submit that the Engine records as unsupported_action, with the reason kept in the run record."
+source = "spikes/any-scenario-2026-10/midrun.py:59"
+routes = []
+changes = ["RuleChange", "CausalModel", "AuthoringBundle", "World"]
+writes = ["causal_after_run.json", "bundle_after_run.json", "unsupported_action"]
+schedule = "inside run_scenario, once per unlisted attempt (unless --no-gm)"
+
+[[processes]]
+name = "render_scenario"
+what = "render_run.py: converts a run folder into a world-substrate-contested-run/v3 trace (to_trace) and renders it with the World Builder's round replay (run_authored_world.render_run, bootstrapped scene), then inserts a state panel built by replaying events.jsonl onto the bundle's initial values (state_rounds)."
+source = "spikes/any-scenario-2026-10/render_run.py:116"
+routes = []
+changes = ["SceneProfile"]
+writes = ["trace.json", "frames.html"]
+schedule = "offline, by hand, after a run"
+
+[[processes]]
+name = "extreme_probe"
+what = "c2_extreme.py: runs the checks on a model and on the same model with one named harm rule removed, and reports whether outflow coverage and the extreme-conditions review tell them apart."
+source = "spikes/any-scenario-2026-10/c2_extreme.py:32"
+routes = []
+changes = ["CheckReport"]
+writes = ["c2-*.json"]
+schedule = "offline, by hand"
+
 # ------------------------------------------------- engine event statuses -----
 # Every attempted transition writes one event dict into World.events
 # (engine.py:505 builds it): event_id, causal_bearer, semantic_binding,
@@ -297,7 +451,7 @@ schedule = "offline, by hand"
 [[engine_events]]
 name = "accepted"
 meaning = "An action or a due process committed; revision advanced."
-written_by = ["act", "advance"]
+written_by = ["act", "advance", "run_scenario"]
 writers = [
   { file = "src/world_substrate/engine.py", function = "apply", line = 695 },
   { file = "src/world_substrate/engine.py", function = "_apply_process", line = 856 },
@@ -311,8 +465,8 @@ writers = [{ file = "src/world_substrate/engine.py", function = "_reject_invalid
 
 [[engine_events]]
 name = "unsupported_action"
-meaning = "No installed rule for this action kind."
-written_by = ["act"]
+meaning = "No installed rule for this action kind. The pipeline's game master records a failed mid-run rule as one ('gm-ruling', midrun.py)."
+written_by = ["act", "run_scenario", "midrun_rule"]
 writers = [{ file = "src/world_substrate/engine.py", function = "apply", line = 577 }]
 
 [[engine_events]]
@@ -632,6 +786,244 @@ writers = [
   { file = "scripts/run_jev_estimator_probe.py", function = "dry_run", line = 267 },
 ]
 
+# ------------------------------------------------- any-scenario pipeline records --
+# Files the pipeline writes into a model folder (runs/<name>-<stamp>/) or a run
+# folder inside it (run-<stamp>/). No schema_version field: the file name is the
+# record's identity. code_names: the literal names in code when one row stands for
+# several (round 0 is written literally; repair rounds use an f-string).
+
+[[pipeline_records]]
+name = "model.json"
+scope = "pipeline"
+meaning = "ScenarioModel. Written early (resumable with --repair-dir), then final."
+written_by = ["model_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+
+[[pipeline_records]]
+name = "bundle.json"
+scope = "pipeline"
+meaning = "The AuthoringBundle (world-substrate-authoring-bundle/v0) after repairs."
+written_by = ["model_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+
+[[pipeline_records]]
+name = "causal.json"
+scope = "pipeline"
+meaning = "The CausalModel (world-substrate-causal-model/v0) after repairs."
+written_by = ["model_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+
+[[pipeline_records]]
+name = "flows.json"
+scope = "pipeline"
+meaning = "StockFlows."
+written_by = ["model_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+
+[[pipeline_records]]
+name = "sensing.json"
+scope = "pipeline"
+meaning = "SensingMap."
+written_by = ["model_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 476 }]
+
+[[pipeline_records]]
+name = "checks.json"
+scope = "pipeline"
+meaning = "CheckReport of the returned model (model_scenario) or of any model folder (checks.py CLI, --out default)."
+written_by = ["model_scenario", "check_scenario"]
+writers = [
+  { file = "spikes/any-scenario-2026-10/model_scenario.py", function = "main", line = 457 },
+  { file = "spikes/any-scenario-2026-10/checks.py", function = "main", line = 512 },
+]
+
+[[pipeline_records]]
+name = "causal.rN.json"
+code_names = ["causal.r0.json", "causal.r*.json"]
+scope = "pipeline"
+meaning = "The causal model checked in repair round N (r0 = as generated); kept even when the round was reverted."
+written_by = ["repair_rules"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "repair_loop", line = 369 }]
+
+[[pipeline_records]]
+name = "checks.rN.json"
+code_names = ["checks.r0.json", "checks.r*.json"]
+scope = "pipeline"
+meaning = "CheckReport of repair round N."
+written_by = ["repair_rules", "check_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/model_scenario.py", function = "repair_loop", line = 370 }]
+
+[[pipeline_records]]
+name = "c2-*.json"
+scope = "pipeline"
+meaning = "Extreme-conditions probe result: full model vs model without the named harm rule."
+written_by = ["extreme_probe"]
+writers = [{ file = "spikes/any-scenario-2026-10/c2_extreme.py", function = "main", line = 85 }]
+
+[[pipeline_records]]
+name = "events.jsonl"
+scope = "pipeline"
+meaning = "Every Engine event of the run, one JSON object per line (the engine event record, ODD 8.4), including clock and game-master ruling events."
+written_by = ["run_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/run_scenario.py", function = "run", line = 280 }]
+
+[[pipeline_records]]
+name = "attempts.jsonl"
+scope = "pipeline"
+meaning = "Every Attempt of the run, one per line."
+written_by = ["run_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/run_scenario.py", function = "run", line = 281 }]
+
+[[pipeline_records]]
+name = "final_world.json"
+scope = "pipeline"
+meaning = "Engine.observe of the first actor at the end: that actor's view, not the whole world."
+written_by = ["run_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/run_scenario.py", function = "run", line = 282 }]
+
+[[pipeline_records]]
+name = "causal_after_run.json"
+scope = "pipeline"
+meaning = "The causal model including rules written mid-run (only with the game master on)."
+written_by = ["run_scenario", "midrun_rule"]
+writers = [{ file = "spikes/any-scenario-2026-10/run_scenario.py", function = "run", line = 285 }]
+
+[[pipeline_records]]
+name = "bundle_after_run.json"
+scope = "pipeline"
+meaning = "The bundle including actions added mid-run (only with the game master on)."
+written_by = ["run_scenario", "midrun_rule"]
+writers = [{ file = "spikes/any-scenario-2026-10/run_scenario.py", function = "run", line = 286 }]
+
+[[pipeline_records]]
+name = "ticks.json"
+scope = "pipeline"
+meaning = "Per tick, the process rules that changed the world (clock excluded)."
+written_by = ["run_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/run_scenario.py", function = "run", line = 287 }]
+
+[[pipeline_records]]
+name = "summary.json"
+scope = "pipeline"
+meaning = "ScenarioRun summary, including the frozen rules id (profile_id) and rules_written_mid_run."
+written_by = ["run_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/run_scenario.py", function = "run", line = 288 }]
+
+[[pipeline_records]]
+name = "trace.json"
+scope = "pipeline"
+meaning = "The run converted to world-substrate-contested-run/v3 for the round replay (to_trace)."
+written_by = ["render_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/render_run.py", function = "main", line = 132 }]
+
+[[pipeline_records]]
+name = "frames.html"
+scope = "pipeline"
+meaning = "The scenario replay page with its state panel (views scenario_replay, scenario_state_panel)."
+written_by = ["render_scenario"]
+writers = [{ file = "spikes/any-scenario-2026-10/render_run.py", function = "main", line = 135 }]
+
+[pipeline]
+root = "spikes/any-scenario-2026-10"
+decision = "docs/decisions/007-any-scenario-path.md"
+# Fields of the Attempt record the resident's LLM call returns (run_scenario.py:50).
+attempt_fields = ["belief", "cited_observations", "choice", "offered_index", "unlisted_intent", "expected_effect"]
+# LLM calls (all through llm_client, trace ids prefixed any-scenario-; spend.py sums them against CAP):
+# world-substrate-odd-modeling, the World Builder's bundle and mechanics generators,
+# world-substrate-stock-map, -outflow-coverage, -extreme-conditions, -behavior-anomaly,
+# -rule-writer, -sensing-map, -resident-attempt.
+
+# Retained evidence folders (spikes/any-scenario-2026-10/evidence/<folder>). Copies of
+# model and run folders, some files gzipped or renamed by hand (frame-*.png, *.log).
+[[pipeline.evidence]]
+folder = "truck"
+holds = "Truck scenario: model files, run/ (events, attempts, summary, after-run bundle and causal model with a mid-run tow rule), resident-models/ (two other resident model families)"
+
+[[pipeline.evidence]]
+folder = "hospital"
+holds = "Hospital scenario: generated/ (model with checks), full/ (model plus c2 extreme-conditions results), run/"
+
+[[pipeline.evidence]]
+folder = "linked"
+holds = "Linked process participants (PR #136): truck/ and hospital/ models and runs, hospital-pipeline/ and hospital-pipeline-attempts/ (per-round causal and checks files)"
+
+[[pipeline.evidence]]
+folder = "waltzman"
+holds = "Waltzman scenario: model files, pipeline and gate logs, run/ with frames.html (the scenario_replay view probed for VIEW_COVERAGE)"
+
+# ------------------------------------------- substrate kinds a world can carry --
+
+[[substrate_component_kinds]]
+name = "information"
+meaning = "InformationItem (InformationState)."
+writers = [{ file = "src/world_substrate/information.py", function = "<module>", line = 44 }]
+
+[[substrate_component_kinds]]
+name = "delivery"
+meaning = "Delivery (DeliveryState)."
+writers = [{ file = "src/world_substrate/information.py", function = "<module>", line = 45 }]
+
+# How a process resolves a linked participant from its matching entity `it`
+# (action_authoring.py:669); "ref:<component>.<field>" (an entity_ref field on it) is
+# accepted in addition.
+[linked_participants]
+source = "src/world_substrate/action_authoring.py:264 (DeclaredProcess.participants), :672 (_process_participants), :733 (_link_bindings)"
+links = ["owner_of_it", "owned_by_it", "co_located"]
+
+# Which path can produce each kind of thing a world can represent. Values: yes | no
+# | fixed template (only the template's own fixed shape). Evidence per cell: ODD.md 4.1.
+[[producing_paths]]
+name = "world_builder"
+what = "LLM generators behind /generate-world and /generate-mechanics, plus /build edits"
+
+[[producing_paths]]
+name = "native_coordination_draft"
+what = "POST /generate-draft: bounded draft filled into a fixed bundle template, run under the fixed coordination-causal-v0 mechanics"
+
+[[producing_paths]]
+name = "any_scenario_pipeline"
+what = "spikes/any-scenario-2026-10 (model_scenario + mid-run rules)"
+
+[[producing_paths]]
+name = "hand_authored"
+what = "reference_worlds/* Python packs (registered components, Python mechanics and processes)"
+
+[[world_kinds]]
+kind = "entity with typed components"
+paths = { world_builder = "yes", native_coordination_draft = "fixed template", any_scenario_pipeline = "yes", hand_authored = "yes" }
+
+[[world_kinds]]
+kind = "action (checks + effects)"
+paths = { world_builder = "yes", native_coordination_draft = "fixed template", any_scenario_pipeline = "yes", hand_authored = "yes" }
+
+[[world_kinds]]
+kind = "process (changes the world makes by itself)"
+paths = { world_builder = "yes", native_coordination_draft = "no", any_scenario_pipeline = "yes", hand_authored = "yes" }
+
+[[world_kinds]]
+kind = "process with linked participants"
+paths = { world_builder = "yes", native_coordination_draft = "no", any_scenario_pipeline = "yes", hand_authored = "no" }
+
+[[world_kinds]]
+kind = "relationship as an entity_ref field or owner_ref"
+paths = { world_builder = "yes", native_coordination_draft = "fixed template", any_scenario_pipeline = "yes", hand_authored = "yes" }
+
+[[world_kinds]]
+kind = "information item + per-recipient delivery"
+paths = { world_builder = "no", native_coordination_draft = "fixed template", any_scenario_pipeline = "no", hand_authored = "yes" }
+
+[[world_kinds]]
+kind = "per-actor sensing map (field-level observation filter)"
+paths = { world_builder = "no", native_coordination_draft = "no", any_scenario_pipeline = "yes", hand_authored = "no" }
+
+[[world_kinds]]
+kind = "person with a behavioral profile"
+paths = { world_builder = "no", native_coordination_draft = "no", any_scenario_pipeline = "no", hand_authored = "no" }
+
+[[world_kinds]]
+kind = "scheduled moment"
+paths = { world_builder = "no", native_coordination_draft = "no", any_scenario_pipeline = "no", hand_authored = "no" }
+
 # ------------------------------------------------------------------ run log --
 
 [run_log]
@@ -682,89 +1074,115 @@ name = "owner_run_log"
 what = "Owner-only reader of the run log (GET /runs, scripts/world_builder_runs.py)."
 source = "scripts/world_builder_service.py:532"
 
+[[views]]
+name = "scenario_replay"
+what = "The any-scenario run replay (frames.html): a run folder converted to a contested-run/v3 trace and drawn by the World Builder's round replay renderer. Offline evidence page; not deployed."
+source = "spikes/any-scenario-2026-10/render_run.py:116 (to_trace :25) -> scripts/run_authored_world.py render_run -> scripts/render_scene_replay.py"
+
+[[views]]
+name = "scenario_state_panel"
+what = "The panel render_run inserts under the scenario replay: per round, the non-clock Engine events (id, rule, status, state changes) and every entity's fields after the round, replayed from events.jsonl."
+source = "spikes/any-scenario-2026-10/render_run.py:99 (add_state_panel; data from state_rounds :68)"
+
 # Coverage: shown | partial | hidden (deliberately, reason in VIEW_COVERAGE.md) |
 # missing | n/a (the view is not about this element). Detail and evidence per
 # row live in VIEW_COVERAGE.md.
 
 [[coverage]]
 element = "Description"
-views = { home = "shown", build = "shown", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+views = { home = "shown", build = "shown", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "AuthoringBundle"
-views = { home = "partial", build = "shown", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+views = { home = "partial", build = "shown", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "partial", scenario_state_panel = "partial" }
 
 [[coverage]]
 element = "CausalReview"
-views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "MechanicProfile"
-views = { home = "missing", build = "missing", play = "missing", round_replay = "missing", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+views = { home = "missing", build = "missing", play = "missing", round_replay = "missing", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "missing", scenario_state_panel = "missing" }
 
 [[coverage]]
 element = "Approval"
-views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "Run"
-views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "accepted"
-views = { home = "shown", build = "partial", play = "shown", round_replay = "shown", living_scene = "shown", composed_living_scene = "shown", owner_run_log = "partial" }
+views = { home = "shown", build = "partial", play = "shown", round_replay = "shown", living_scene = "shown", composed_living_scene = "shown", owner_run_log = "partial", scenario_replay = "shown", scenario_state_panel = "shown" }
 
 [[coverage]]
 element = "precondition_failed"
-views = { home = "shown", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+views = { home = "shown", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "partial", scenario_state_panel = "partial" }
 
 [[coverage]]
 element = "stale_revision"
-views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "scope_violation"
-views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "partial", scenario_state_panel = "partial" }
 
 [[coverage]]
 element = "invalid_action"
-views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "partial", scenario_state_panel = "partial" }
 
 [[coverage]]
 element = "unsupported_action"
-views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "partial", scenario_state_panel = "partial" }
 
 [[coverage]]
 element = "advance"
-views = { home = "shown", build = "partial", play = "partial", round_replay = "missing", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial" }
+views = { home = "shown", build = "partial", play = "partial", round_replay = "missing", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "missing", scenario_state_panel = "shown" }
 
 [[coverage]]
 element = "no_action"
-views = { home = "shown", build = "partial", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+views = { home = "shown", build = "partial", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "partial", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "nothing_left"
-views = { home = "shown", build = "partial", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+views = { home = "shown", build = "partial", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "World"
-views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "shown", composed_living_scene = "shown", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "shown", composed_living_scene = "shown", owner_run_log = "partial", scenario_replay = "partial", scenario_state_panel = "shown" }
 
 [[coverage]]
 element = "LivingSceneFrame"
-views = { home = "n/a", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "n/a" }
+views = { home = "n/a", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "n/a", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "Comparison"
-views = { home = "n/a", build = "shown", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "partial", owner_run_log = "missing" }
+views = { home = "n/a", build = "shown", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "partial", owner_run_log = "missing", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "RunLogEntry"
-views = { home = "hidden", build = "hidden", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown" }
+views = { home = "hidden", build = "hidden", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "BudgetLedger"
-views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial" }
+views = { home = "partial", build = "partial", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "partial", scenario_replay = "n/a", scenario_state_panel = "n/a" }
+
+[[coverage]]
+element = "ScenarioModel"
+views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "n/a", scenario_replay = "missing", scenario_state_panel = "n/a" }
+
+[[coverage]]
+element = "CheckReport"
+views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "n/a", scenario_replay = "missing", scenario_state_panel = "n/a" }
+
+[[coverage]]
+element = "Attempt"
+views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "n/a", scenario_replay = "partial", scenario_state_panel = "n/a" }
+
+[[coverage]]
+element = "RuleChange"
+views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "n/a", scenario_replay = "partial", scenario_state_panel = "partial" }
 
 # --------------------------------------------------------------------- gaps --
 # Each is described with file:line evidence and reproduction status in
@@ -835,4 +1253,34 @@ status = "fixed"
 id = "G11"
 title = "Continued live rounds trust client-held world state"
 reproduced = "no"
+status = "open"
+
+[[gaps]]
+id = "G12"
+title = "Scenario views show only what the run touched, not the world that was built"
+reproduced = "yes"
+status = "open"
+
+[[gaps]]
+id = "G13"
+title = "No view shows the layer-1 scenario model or its check report"
+reproduced = "yes"
+status = "open"
+
+[[gaps]]
+id = "G14"
+title = "The pipeline has no approval step before a run and no keep-or-drop step after it"
+reproduced = "no"
+status = "open"
+
+[[gaps]]
+id = "G15"
+title = "Scenario views show a refusal's status but never the check that failed"
+reproduced = "partly"
+status = "open"
+
+[[gaps]]
+id = "G16"
+title = "Scenario replay drops most of each attempt and the game master's ruling; 'continue' shows as no_action"
+reproduced = "yes"
 status = "open"

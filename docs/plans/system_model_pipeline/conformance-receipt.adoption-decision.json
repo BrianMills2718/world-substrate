@@ -1,0 +1,15 @@
+{
+  "schema_version": "method-adoption-decision.v1",
+  "record_type": "method_adoption_decision",
+  "decision": "adopted",
+  "plan_ref": "docs/plans/system_model_pipeline.md",
+  "plan_sha256": "f5bab9b71720d42690fa1bb2ca7a79f61868e9ecc56c49385af76ea8bab128e5",
+  "receipt_ref": "docs/plans/system_model_pipeline/conformance-receipt.json",
+  "receipt_sha256": "1ead8970e816fa5463a563b955f9d6dd68aaf37efb7a435aaddfc58ec0ded4f4",
+  "receipt_result": "pass",
+  "reason_codes": [],
+  "summary": [
+    "pass: 8 items evidenced, 1 confirmed not applicable, 0 advisory deviation(s)"
+  ],
+  "decided_at": "2026-10-08T18:56:16Z"
+}
