@@ -1,0 +1,150 @@
+# Machine-checkable trace from the system model (docs/model/ODD.md) to code and tests.
+# Each rule names exactly one owner path, at least one test written as path::test_name,
+# and the decision record it implements. The AES durable-docs checker verifies that every
+# owner, test function and decision exists, and flags a rule as stale when its owner
+# changes after this file was last committed (or after a rule's reviewed_at commit).
+schema_version: "0.1"
+scope: >-
+  The World Substrate software system (engine, authoring compiler, installer, World Builder
+  service, projection), not any world it hosts. Entities and processes follow ODD.md sections 4, 5 and 8.
+
+entities:
+  - id: ENT-WORLD
+    what: canonical typed world state with a material hash and a revision counter (ODD 4)
+  - id: ENT-ACTION-ENVELOPE
+    what: a policy's submitted intent, validated before any rule runs (ODD 4, 8.1)
+  - id: ENT-RULE-PROPOSAL
+    what: a model-authored mechanics proposal awaiting compiler review (ODD 4, 8.6)
+  - id: ENT-FROZEN-PROFILE
+    what: the reviewed, approved and frozen set of installed rules and processes for one run (ODD 4, 8.7)
+  - id: ENT-EVENT
+    what: a committed or refused transition record with stable id and causal parents (ODD 4, 8.4)
+  - id: ENT-RUN-RECORD
+    what: the durable log of one build or run kept by the World Builder service (ODD 8.11)
+  - id: ENT-INFORMATION-ITEM
+    what: represented information with visibility per observer, kept out of causal parentage (ODD 8.14)
+
+processes:
+  - id: PROC-TRANSITION
+    what: validate an action envelope, run the installed rule, commit all writes or refuse (engine.py transition)
+    enforces: [RULE-ATOMIC-COMMIT-OR-REFUSAL, RULE-WRITE-SCOPE, RULE-CHECKS-ARE-READ-ONLY]
+  - id: PROC-PROCESS-TICK
+    what: run due processes on the shared world clock with rollback on violation (engine.py process tick)
+    enforces: [RULE-WRITE-SCOPE, RULE-CHECKS-ARE-READ-ONLY]
+  - id: PROC-COMPILE-REVIEW
+    what: compile a model proposal into rules with derived authority for human review (action_authoring.py)
+    enforces: [RULE-DERIVED-AUTHORITY]
+  - id: PROC-INSTALL-AND-RUN
+    what: freeze the approved profile and run residents through it (run_authored_world.py)
+    enforces: [RULE-FROZEN-PROFILE]
+  - id: PROC-BUILDER-REQUEST
+    what: serve build, generate, approve and run requests behind approval and budget gates (world_builder_service.py)
+    enforces: [RULE-APPROVAL-BEFORE-RUN, RULE-BUDGET-FAILS-CLOSED, RULE-DURABLE-RUN-RECORD]
+  - id: PROC-LIVE-PROJECTION
+    what: rebuild the live view from snapshot plus canonical event deltas (projection.py)
+    enforces: [RULE-PROJECTION-FROM-CANONICAL-ONLY]
+  - id: PROC-INFORMATION-VISIBILITY
+    what: decide which observer sees which information item (information.py)
+    enforces: [RULE-INFORMATION-IS-NOT-CAUSE]
+
+rules:
+  - id: RULE-ATOMIC-COMMIT-OR-REFUSAL
+    statement: >-
+      A transition either commits every write and increments the world revision once, or is refused
+      (malformed envelope, stale revision) with the material hash unchanged and the refusal recorded.
+    owner: src/world_substrate/engine.py
+    checks:
+      - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
+      - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
+    decisions:
+      - docs/decisions/003-semantic-mechanical-boundary.md
+  - id: RULE-WRITE-SCOPE
+    statement: >-
+      A rule or process may write only the components it declared; reaching undeclared state refuses the
+      action or stops the tick with nothing changed, and the refusal replays identically.
+    owner: src/world_substrate/engine.py
+    checks:
+      - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
+      - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
+      - tests/test_write_scope.py::test_a_refused_scope_violation_replays_identically
+      - tests/test_linked_process_participants.py::test_out_of_scope_linked_write_is_refused_with_nothing_changed
+    decisions:
+      - docs/decisions/003-semantic-mechanical-boundary.md
+  - id: RULE-CHECKS-ARE-READ-ONLY
+    statement: >-
+      Precondition checks and process due-tests only read; one that writes is refused and the tick is rolled back.
+    owner: src/world_substrate/engine.py
+    checks:
+      - tests/test_rule_authority.py::test_checks_are_refused_if_they_write
+      - tests/test_rule_authority.py::test_due_cannot_write_and_the_tick_is_rolled_back
+    decisions:
+      - docs/decisions/003-semantic-mechanical-boundary.md
+  - id: RULE-DERIVED-AUTHORITY
+    statement: >-
+      The authority shown for review is derived by the compiler from the proposed rule, not taken from the
+      model's claims; unknown effect paths and engine-owned fields are rejected before installation.
+    owner: src/world_substrate/action_authoring.py
+    checks:
+      - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
+      - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
+      - tests/test_action_authoring.py::test_engine_owned_cause_id_cannot_be_authored_as_effect
+    decisions:
+      - docs/decisions/006-governed-rules-layer-scope.md
+  - id: RULE-FROZEN-PROFILE
+    statement: >-
+      The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
+    owner: scripts/run_authored_world.py
+    checks:
+      - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
+      - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
+    decisions:
+      - docs/decisions/007-any-scenario-path.md
+  - id: RULE-APPROVAL-BEFORE-RUN
+    statement: >-
+      The World Builder refuses to run mechanics the person has not explicitly approved, and refuses a modified
+      law on the native coordination path.
+    owner: scripts/world_builder_service.py
+    checks:
+      - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
+      - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
+      - tests/test_world_builder_service.py::test_generate_endpoint_returns_compiler_review_not_unchecked_model_output
+    decisions:
+      - docs/decisions/005-native-waltzman-delivery.md
+  - id: RULE-BUDGET-FAILS-CLOSED
+    statement: >-
+      No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
+    owner: scripts/world_builder_service.py
+    checks:
+      - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
+      - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
+      - tests/test_world_builder_service.py::test_daily_budget_caps_next_llm_request_instead_of_overshooting
+    decisions:
+      - docs/decisions/004-product-and-adoption-strategy.md
+  - id: RULE-DURABLE-RUN-RECORD
+    statement: >-
+      Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
+    owner: scripts/world_builder_service.py
+    checks:
+      - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
+      - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
+    decisions:
+      - docs/decisions/002-observability-and-replay.md
+  - id: RULE-PROJECTION-FROM-CANONICAL-ONLY
+    statement: >-
+      The live view is rebuilt only from a canonical snapshot plus event deltas, reconstructs each branch exactly,
+      and keeps stable event ids.
+    owner: src/world_substrate/projection.py
+    checks:
+      - tests/test_waltzman_projection.py::test_snapshot_plus_event_deltas_reconstruct_each_canonical_branch_exactly
+      - tests/test_waltzman_projection.py::test_projection_preserves_stable_event_ids_and_branch_prefix
+    decisions:
+      - docs/decisions/002-observability-and-replay.md
+  - id: RULE-INFORMATION-IS-NOT-CAUSE
+    statement: >-
+      Only authorized observers see an information item's content, and information context never becomes causal parentage.
+    owner: src/world_substrate/information.py
+    checks:
+      - tests/test_living_scene_information_feedback.py::test_authorized_observer_sees_content_and_unauthorized_observer_does_not
+      - tests/test_living_scene_information_feedback.py::test_information_context_does_not_become_causal_parentage
+    decisions:
+      - docs/decisions/003-semantic-mechanical-boundary.md
