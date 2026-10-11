@@ -1,4 +1,10 @@
+---
+description: Observability of every transition is required; exact deterministic replay is not.
+---
+
 # Decision 002: Observability is required; exact replay is not
+
+Governs: RULE-DURABLE-RUN-RECORD, RULE-PROJECTION-FROM-CANONICAL-ONLY
 
 **Status:** accepted  
 **Date:** 2026-09-02  

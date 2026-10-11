@@ -1,4 +1,10 @@
+---
+description: "Describe-any-scenario path: model up front, attempt over time, rules written mid-run."
+---
+
 # Decision 007: "Describe any scenario" path — model up front, attempt over time, rules written mid-run
+
+Governs: RULE-FROZEN-PROFILE, spikes/any-scenario-2026-10
 
 **Status:** accepted
 **Date:** 2026-10-07

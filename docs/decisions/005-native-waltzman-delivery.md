@@ -1,4 +1,10 @@
+---
+description: Deliver Waltzman natively on the World Substrate engine and converge away from the donor.
+---
+
 # Decision 005: Native Waltzman delivery and donor convergence
+
+Governs: RULE-APPROVAL-BEFORE-RUN, scripts/world_builder_service.py
 
 **Status:** accepted
 **Date:** 2026-09-18

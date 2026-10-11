@@ -1,10 +1,13 @@
 ---
+description: Create one canonical repository that owns the general world-substrate initiative.
 status: accepted
 date: 2026-08-31
 decision_owner: user
 ---
 
 # Decision 001: one canonical world-substrate project
+
+Governs: README.md, roadmap/README.md
 
 ## Accepted direction
 

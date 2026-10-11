@@ -1,4 +1,10 @@
+---
+description: Generative-World Builder product direction and the off-the-shelf adoption strategy.
+---
+
 # Decision 004: Product direction and off-the-shelf adoption strategy
+
+Governs: RULE-BUDGET-FAILS-CLOSED, scripts/world_builder_service.py
 
 **Status:** accepted  
 **Date:** 2026-09-07  

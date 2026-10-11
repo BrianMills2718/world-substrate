@@ -1,4 +1,10 @@
+---
+description: World Substrate owns only the governed-rules layer; minds and schedulers run on commodity runtimes.
+---
+
 # Decision 006: World Substrate is the governed-rules layer, hosted on commodity runtimes
+
+Governs: RULE-DERIVED-AUTHORITY, src/world_substrate/action_authoring.py
 
 **Status:** accepted
 **Date:** 2026-10-05

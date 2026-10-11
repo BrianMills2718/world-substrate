@@ -1,4 +1,10 @@
+---
+description: Keep semantic world description separate from the causal mechanics that decide consequences.
+---
+
 # Decision 003: Separate semantic description from causal mechanics
+
+Governs: RULE-ATOMIC-COMMIT-OR-REFUSAL, RULE-WRITE-SCOPE, RULE-CHECKS-ARE-READ-ONLY, RULE-INFORMATION-IS-NOT-CAUSE
 
 **Status:** accepted  
 **Date:** 2026-09-02  

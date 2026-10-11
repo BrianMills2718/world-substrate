@@ -1,3 +1,7 @@
+---
+description: ODD-style model of the World Substrate software system, its entities, processes and enforced rules.
+---
+
 # World Substrate as a software system: an ODD-style model
 
 Status: implemented-system description at commit `d18ead6` (2026-10-06); the any-scenario pipeline, information items and linked process participants added at `2e409ab` (2026-10-08). It describes what the code does, not target architecture. Machine-readable twin: [world_substrate_model.toml](world_substrate_model.toml), checked against the code by `tests/test_system_model.py`. What each view shows of this model: [VIEW_COVERAGE.md](VIEW_COVERAGE.md).
@@ -40,6 +44,40 @@ Each pattern is something a check or a person could observe. VIEW_COVERAGE.md re
 | P9 | Counts a view prints equal counts of the model element they name (allowed = accepted events; refused = refused attempts). | home outcome line (refused = submitted attempts that did not go through; held back by the rules counted separately; fixed 2026-10-06, see G2) |
 
 ## 3. Boundary
+
+**Context (C4 level 1).** The rules each process enforces, with their owner files and tests, are in [trace.yaml](trace.yaml).
+
+```mermaid
+C4Context
+  title World Substrate system context
+  Person(author, "World author", "Describes a world, reviews and approves its rules, watches runs")
+  System(ws, "World Substrate", "Compiler, approval gate, Engine, World Builder service, projections")
+  System_Ext(llm, "LLM providers", "Reached only through llm_client; proposals and move choices")
+  System_Ext(runtimes, "Concordia / Mesa / PDDL", "Resident cognition, grids and sweeps, plan validation")
+  System_Ext(host, "Cloudflare + personal VPS", "Serve the pages and the API")
+  Rel(author, ws, "Describes, approves, inspects")
+  Rel(ws, llm, "Requests proposals and choices")
+  Rel(runtimes, ws, "Submit intents; read observations")
+  Rel(host, ws, "Hosts")
+```
+
+**Containers (C4 level 2).**
+
+```mermaid
+C4Container
+  title World Substrate containers
+  Person(author, "World author")
+  Container(builder, "World Builder service", "scripts/world_builder_service.py", "Approval gate, budget ledger, run log")
+  Container(compiler, "Authoring compiler", "src/world_substrate/action_authoring.py", "Proposal to rules with derived authority")
+  Container(installer, "Installer and run loop", "scripts/run_authored_world.py + profile.py", "Freezes the approved profile, runs residents")
+  Container(engine, "Engine", "src/world_substrate/engine.py", "Atomic commit or refusal, write scopes, events")
+  Container(projection, "Projections", "projection.py, information.py", "Live view and observer visibility from canonical state")
+  Rel(author, builder, "HTTP")
+  Rel(builder, compiler, "Compile and review")
+  Rel(builder, installer, "Run approved mechanics")
+  Rel(installer, engine, "Submit envelopes, tick processes")
+  Rel(engine, projection, "Snapshot and event deltas")
+```
 
 **Inside World Substrate** (Decision 006):
 
