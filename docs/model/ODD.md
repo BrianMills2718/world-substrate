@@ -203,7 +203,7 @@ There is no global clock in the service: everything is request-driven. Inside a 
 
 - **Proposal versus authority.** The LLM proposes structure and law as data; the compiler derives what each rule may read and write; the Engine enforces writes. Model-written source never executes.
 - **Approval before execution.** Nothing runs until a person approves; every run recompiles first.
-- **Atomic commit or refusal.** Each attempt is applied to a detached copy; it commits as one transition or leaves the world untouched with a recorded reason.
+- **Atomic commit or refusal** (RULE-ATOMIC-COMMIT-OR-REFUSAL). Each attempt is applied to a detached copy; it commits as one transition or leaves the world untouched with a recorded reason.
 - **Observation versus truth.** Actors see bounded observations and offered actions; views and analyses are read-only projections. Presentation coordinates are never world state.
 - **Stochasticity.** Scripted runs are deterministic (first offered action, rotating order). LLM proposals and LLM moves are not; their traces live in `llm_client`.
 - **Emergence the system watches for:** a world that lets nobody act (dry run, `world_builder_service.py:785-834`), a world that runs down (`active_at_end`, `run_authored_world.py:427-432`), actors who never act (`idle_actors`, `:433-439`).
@@ -226,20 +226,20 @@ Each rule below is enforced by the cited code.
 
 **8.2 Transition** (`engine.py:558-723`), in order:
 1. revision check: `base_revision` must equal the world's revision (`:566`); false -> `stale_revision` (`:613`);
-2. rule checks run on a detached candidate; if checks mutated it -> `scope_violation` (`:595`); any failed check -> `precondition_failed` (`:617`);
+2. rule checks run on a detached candidate; if checks mutated it -> `scope_violation` (`:595`; checks only read, RULE-CHECKS-ARE-READ-ONLY); any failed check -> `precondition_failed` (`:617`);
 3. the rule applies to the candidate; a write to engine-owned state -> `scope_violation` (`:647`);
-4. revision += 1 (`:667`); the diff must fall inside the rule's declared `write_paths` for the entities named by the attempt (`:669-674`) -> else `scope_violation` (`:678`);
+4. revision += 1 (`:667`); the diff must fall inside the rule's declared `write_paths` for the entities named by the attempt (`:669-674`) -> else `scope_violation` (`:678`; RULE-WRITE-SCOPE);
 5. commit: the candidate replaces the world (`:722`), one `accepted` event (`:695`) and one `action` command (`:716`).
 
 **8.3 Process tick** (`engine.py:762-877`). `advance(n)` writes one `advance` command per tick (`:773`), increments the tick, and applies each due process in declared order on a candidate; each commit writes an `accepted` event (`:856`). An out-of-scope process write raises `ScopeViolation`; `advance` restores the pre-tick world (`:801`) and re-raises, so **no event records the defective process**: the failure surfaces as a request error instead.
 
 **8.4 Event record** (`engine.py:505-556`). Fields: `event_id, causal_bearer, semantic_binding, observation, tick, world_revision, rule_id, rule_version, cause, status, checks, declared_read_paths, declared_write_paths, changes, hash_before, hash_after`, plus `causal_parent_event_ids` when a rule declares hard ancestry and `information_context` when the observation carried information.
 
-**8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 6 processes (`MAX_PROCESSES`, `:27`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer.
+**8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 6 processes (`MAX_PROCESSES`, `:27`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer (RULE-DERIVED-AUTHORITY).
 
-**8.6 Installer and freeze** (`scripts/run_authored_world.py:48-67`, `src/world_substrate/profile.py:110-279`). Each mechanic and process package is validated; any `reject` finding aborts the run. `freeze()` hashes packages + findings (sha256, first 16 hex) and forbids further installs.
+**8.6 Installer and freeze** (`scripts/run_authored_world.py:48-67`, `src/world_substrate/profile.py:110-279`). Each mechanic and process package is validated; any `reject` finding aborts the run. `freeze()` hashes packages + findings (sha256, first 16 hex) and forbids further installs (RULE-FROZEN-PROFILE).
 
-**8.7 Approval gate** (`scripts/world_builder_service.py:997-1006`, `:956-962`). `approved` must be the boolean `true` (else HTTP 409); the bundle is validated and the causal model compiled before any policy or model call. Native-coordination runs and comparisons additionally require the causal model to equal the reviewed shared coordination mechanics, and comparisons change only `gate.required_approvals`.
+**8.7 Approval gate** (`scripts/world_builder_service.py:997-1006`, `:956-962`). `approved` must be the boolean `true` (else HTTP 409; RULE-APPROVAL-BEFORE-RUN); the bundle is validated and the causal model compiled before any policy or model call. Native-coordination runs and comparisons additionally require the causal model to equal the reviewed shared coordination mechanics, and comparisons change only `gate.required_approvals`.
 
 **8.8 Continuation** (`scripts/run_authored_world.py:233-244`). `continue_from` must be a `world-substrate-snapshot/v1` whose `world_id`, `content_id`, `rule_versions` and `engine_id` equal a freshly built engine's; entity state is taken from the snapshot as given (see G11).
 
@@ -249,15 +249,15 @@ Each rule below is enforced by the cited code.
 
 **8.11 Dry run scoring** (`scripts/world_builder_service.py:783-849`). Up to two mechanic attempts; each is run scripted for a fixed number of rounds. Task worlds score 2 if the finish line is reached, else 1; ongoing worlds score 3 (alive, everyone acted), 2 (alive), 1; a run error scores 0. Ties prefer fewer idle actors. The best attempt is returned.
 
-**8.12 Budget** (`scripts/world_builder_service.py:137-220`). Cap $0.50/day for visitors, $5.00 for the owner. Each LLM request reserves up to its own cap (world $0.20, mechanics $0.12, run $0.12) from what remains, then settles to the recorded trace cost; an unreadable cost charges the whole reservation; an unreadable ledger refuses spend.
+**8.12 Budget** (`scripts/world_builder_service.py:137-220`). Cap $0.50/day for visitors, $5.00 for the owner. Each LLM request reserves up to its own cap (world $0.20, mechanics $0.12, run $0.12) from what remains, then settles to the recorded trace cost; an unreadable cost charges the whole reservation; an unreadable ledger refuses spend (RULE-BUDGET-FAILS-CLOSED).
 
-**8.13 Run log** (`scripts/world_builder_service.py:290-402`). One JSON line per response to a logged path, except a `202 Accepted` job start (the job's final response is logged instead). Full artifacts are kept for `/generate-world` (bundle, causal model, dry run) and `/run` (summary, transcript, final snapshot; and the request's bundle and causal model when not continued); `/clarify` and `/surprise` keep their text; other logged paths keep only response key names (G4). A failed write only prints to stdout (`:401-402`).
+**8.13 Run log** (`scripts/world_builder_service.py:290-402`; with 8.8 continuation, RULE-DURABLE-RUN-RECORD). One JSON line per response to a logged path, except a `202 Accepted` job start (the job's final response is logged instead). Full artifacts are kept for `/generate-world` (bundle, causal model, dry run) and `/run` (summary, transcript, final snapshot; and the request's bundle and causal model when not continued); `/clarify` and `/surprise` keep their text; other logged paths keep only response key names (G4). A failed write only prints to stdout (`:401-402`).
 
-**8.14 Live projection** (`src/world_substrate/projection.py:44-77`). Every event must carry a unique nonempty `event_id`; the projection replays all `changes` onto the initial snapshot and stores the result and the last `hash_after`.
+**8.14 Live projection** (`src/world_substrate/projection.py:44-77`). Every event must carry a unique nonempty `event_id`; the projection replays all `changes` onto the initial snapshot and stores the result and the last `hash_after` (RULE-PROJECTION-FROM-CANONICAL-ONLY).
 
 **8.15 Living-scene frames** (`src/world_substrate/living_scene.py:38-49`, `:380-405`, `:532`). Feedback accepts every engine status (plus three legacy names) and exposes check labels and verdicts only, never operands; a frame shows effects only for events whose rule has a declared visual. Renderer placement: an actor's latest `actor.move_to` sets its point; actors with the same target share one point (`scripts/render_living_scene.py:129`, `scripts/render_composed_living_scene.py:106`; issue #106, G9).
 
-**8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:248`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:553`).
+**8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:248`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:553`; RULE-INFORMATION-IS-NOT-CAUSE).
 
 **8.17 Linked process participants** (`action_authoring.py:672-741`). Names other than `it`/`actor`; each `{link, selector}`; link one of `PROCESS_LINKS` or `ref:<component>.<field>` naming an `entity_ref` field. Bindings are the product of each link's candidates; an empty link drops the binding. Effects may target any participant by name.
 
