@@ -4,7 +4,8 @@
 #   app/         this repository at the deployed commit (git archive)
 #   llm_client/  BrianMills2718/llm_client at the pinned revision, .git included
 #
-# The service needs only the standard library plus llm_client. It binds inside the
+# The service needs only the standard library plus llm_client. LLM_CLIENT_TIMEOUT_POLICY=ban: the people-world calls
+# take about 100 s and the client default cuts structured calls at 60 s (2026-10-15); the safety ceiling still applies. It binds inside the
 # container; the edge tunnel reaches it by container name, and the brianmills.dev Worker
 # proxies /world-builder/api/* to it. All mutable state (the persistent daily LLM spend
 # ledger under $HOME/.local/state/world-builder and llm_client observability) lives in /data.
@@ -33,6 +34,7 @@ ENV WORLD_SUBSTRATE_BUILD_COMMIT=${BUILD_COMMIT} \
     LLM_CLIENT_DATA_ROOT=/data/llm_client/logs \
     LLM_CLIENT_DB_PATH=/data/llm_client/llm_observability.db \
     LLM_CLIENT_PROJECT=world-substrate \
+    LLM_CLIENT_TIMEOUT_POLICY=ban \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     HOME=/data/home

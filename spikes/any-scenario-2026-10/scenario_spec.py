@@ -44,7 +44,9 @@ class Person(_Strict):
     label: str = Field(min_length=1)
     position: str = Field(min_length=1)
     disposition: str = Field(min_length=1)
-    memories: list[Statement] = Field(min_length=1)
+    # May be empty: a scenario rarely gives people memories, and the model left this empty in every live build on
+    # 2026-10-15 (validation failures "List should have at least 1 item"); the brief skips an empty list.
+    memories: list[Statement] = Field(default_factory=list)
     behavioral_profile: BehavioralProfile
 
 
