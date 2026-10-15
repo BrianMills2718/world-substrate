@@ -98,6 +98,19 @@ details.more .inner{padding:10px 0 0;display:flex;flex-direction:column;gap:12px
 footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 .wait{font-size:15px}
 .wait .time{font-variant-numeric:tabular-nums}
+.steps-live{list-style:none;padding:0;margin:14px 0 6px;display:flex;flex-direction:column;gap:10px}
+.steps-live li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:start}
+.steps-live .mark{color:var(--ok);font-weight:700;text-align:center}
+.steps-live li.doing .mark{color:var(--muted)}
+.steps-live li.note .mark{color:var(--warn)}
+.steps-live .what{font-weight:600}
+.steps-live li.doing .what{font-weight:400;color:var(--muted)}
+.steps-live .detail{color:var(--muted);font-size:14px;font-weight:400}
+.steps-live .at{color:var(--grey);font-size:13px;font-variant-numeric:tabular-nums}
+.steps-live .items{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.steps-live .items span{border:1px solid var(--line);border-radius:6px;padding:1px 8px;font-size:13px;color:var(--text)}
+@media (prefers-reduced-motion:no-preference){.steps-live li{animation:stepin 220ms ease-out}}
+@keyframes stepin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -122,8 +135,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       <div class="inner">
         <fieldset style="border:0;padding:0;margin:0">
           <div class="kinds">
-            <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task" checked><strong>A task to finish</strong><span>Stops when the job is done.</span></label>
-            <label class="kind" title="No finish line: work keeps arriving, or people live by their own needs, whatever you describe. It plays round by round until you pause it."><input type="radio" name="kind" value="ongoing"><strong>Keeps running</strong><span>No finish line. Plays until you pause it.</span></label>
+            <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task"><strong>A task to finish</strong><span>Stops when the job is done.</span></label>
+            <label class="kind" title="No finish line: work keeps arriving, or people live by their own needs, whatever you describe. It plays round by round until you pause it."><input type="radio" name="kind" value="ongoing" checked><strong>Keeps running</strong><span>No finish line. Plays until you pause it.</span></label>
           </div>
         </fieldset>
         <label class="small" title="Instead of simple first-available moves, an AI picks each person’s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses each person’s moves</label>
@@ -151,7 +164,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   <section class="panel wait" id="stage-working" hidden aria-live="polite">
     <h2><span class="spinner" aria-hidden="true"></span><span id="working-h">Creating simulation…</span> <span id="elapsed" class="muted time">0 s</span></h2>
-    <p class="muted" id="working-line">AI is writing the rules for your world and testing that they let something happen. This usually takes about a minute.</p>
+    <p class="muted small" id="working-line">This usually takes about a minute. Each step appears here as it finishes.</p>
+    <ol class="steps-live" id="build-steps" aria-label="What the builder has done so far"></ol>
     <p class="small"><button type="button" class="linkish" id="cancel-btn" title="Stop waiting and go back to your description; nothing is lost">Cancel</button></p>
   </section>
 
@@ -271,7 +285,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   // Long requests (builds, runs) go through a background job so they are not
   // cut off by the 100-second proxy limit; the page checks back every 2 seconds.
-  async function apiJob(path, body, pollMs = 2000) {
+  async function apiJob(path, body, pollMs = 2000, onProgress = null) {
     const started = await api(path, { ...body, async: true });
     if (!started.job_id) return started;
     for (;;) {
@@ -279,7 +293,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       const res = await fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() });
       let data = null;
       try { data = await res.json(); } catch (e) { data = null; }
-      if (res.ok && data && data.status === "running") continue;
+      if (res.ok && data && data.status === "running") { if (onProgress) onProgress(data.progress || []); continue; }
       if (!res.ok || !data || data.ok === false) {
         const err = new Error((data && data.error) || ("The builder answered with status " + res.status + "."));
         err.status = res.status;
@@ -462,6 +476,29 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     show("review");
   }
 
+  // Build steps from the service, shown as they finish (2026-10-15, Brian: "can we stream this").
+  function renderSteps(steps) {
+    const list = $("build-steps"); list.innerHTML = "";
+    steps.forEach((st, i) => {
+      // A "doing" step is finished once anything comes after it.
+      const doing = st.state === "doing" && i === steps.length - 1;
+      if (st.state === "doing" && !doing) return;
+      const li = document.createElement("li"); li.className = doing ? "doing" : st.state;
+      const mark = document.createElement("span"); mark.className = "mark"; mark.setAttribute("aria-hidden", "true");
+      if (doing) { const sp = document.createElement("span"); sp.className = "spinner"; mark.append(sp); } else mark.textContent = st.state === "note" ? "!" : "✓";
+      const body = document.createElement("div");
+      const what = document.createElement("div"); what.className = "what"; what.textContent = st.step + (doing ? "…" : "");
+      if (st.detail) { const d = document.createElement("span"); d.className = "detail"; d.textContent = " · " + st.detail; what.append(d); }
+      body.append(what);
+      if ((st.items || []).length) {
+        const row = document.createElement("div"); row.className = "items";
+        st.items.forEach((x) => { const c = document.createElement("span"); c.textContent = x; row.append(c); });
+        body.append(row);
+      }
+      const at = document.createElement("span"); at.className = "at"; at.textContent = st.at_s + " s";
+      li.append(mark, body, at); list.append(li);
+    });
+  }
   let buildGen = 0;
   async function build() {
     const description = $("desc").value.trim();
@@ -474,8 +511,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const started = Date.now();
     $("elapsed").textContent = "0 s";
     timer = setInterval(() => { $("elapsed").textContent = Math.round((Date.now() - started) / 1000) + " s"; }, 500);
+    renderSteps([{ state: "doing", step: "Sending your description", at_s: 0 }]);
     try {
-      const data = await apiJob("/generate-world", { description, world_kind: kind() });
+      const data = await apiJob("/generate-world", { description, world_kind: kind() }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
       if (gen !== buildGen) return;
       renderReview(data);
       // Pressing Create simulation is the approval (2026-10-15); the rules stay one click away.

@@ -48,6 +48,17 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # No timed captions pretending to be progress.
         self.assertNotIn("Math.floor(s / 15)", self.page)
 
+    def test_worlds_keep_running_by_default(self):
+        # 2026-10-15: a task default turned Brian's pencil network into one 5-move order (his 2026-10-06 complaint again).
+        self.assertIn('<input type="radio" name="kind" value="ongoing" checked>', self.page)
+        self.assertNotIn('value="task" checked', self.page)
+
+    def test_build_steps_show_while_the_job_runs(self):
+        self.assertIn('id="build-steps"', self.page)
+        self.assertIn("if (onProgress) onProgress(data.progress || []);", self.page)
+        self.assertIn('apiJob("/generate-world", { description, world_kind: kind() }, 1000, (steps) =>', self.page)
+        self.assertIn("function renderSteps(steps)", self.page)
+
     def test_dialogue_and_escape_hatches_sit_behind_disclosures(self):
         self.assertIn(">Not sure what to write? Let the AI ask you a few questions</button>", self.page)
         self.assertIn('api("/clarify", { messages: talk, world_kind: kind() })', self.page)

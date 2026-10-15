@@ -388,6 +388,39 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(payload["bundle"]["world"]["id"], "orchard")
         self.assertTrue(payload["dry_run"]["ok"])
 
+    def test_running_build_job_reports_its_steps_so_far(self):
+        # 2026-10-15, Brian: "can we stream this" - the page shows each build step as it finishes.
+        import threading
+        release = threading.Event()
+
+        def slow_rules(*args, **kwargs):
+            release.wait(5)
+            return (CAUSAL, FakeResult())
+
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, ["a deadline"], FakeResult()),
+        ), patch.object(service, "generate_causal_model", side_effect=slow_rules):
+            status, started = self.post("/generate-world", {"description": "orchard", "async": True})
+            self.assertEqual(status, 202, started)
+            import time
+            for _ in range(100):
+                status, running = self.get(f"/jobs/{started['job_id']}")
+                if any(st["step"] == "Writing the rules" for st in running.get("progress", [])):
+                    break
+                time.sleep(0.05)
+            self.assertEqual(running["status"], "running")
+            steps = running["progress"]
+            found = next(st for st in steps if st["step"] == "Found what exists in your world")
+            self.assertEqual(found["state"], "done")
+            self.assertEqual(found["items"], [e.get("label") or e["id"] for e in BUNDLE["entities"]][:16])
+            self.assertEqual(next(st for st in steps if st["step"] == "Left out of the simulation")["items"], ["a deadline"])
+            self.assertEqual(steps[-1], {**steps[-1], "state": "doing", "step": "Writing the rules"})
+            self.assertGreaterEqual(running["elapsed_s"], 0)
+            release.set()
+            status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 200, payload)
+        self.assertNotIn("progress", payload)
+
     def test_async_job_reports_validation_errors_and_unknown_jobs_404(self):
         status, started = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
                                              "turns": 2, "async": True, "continue_from": "nope"})
