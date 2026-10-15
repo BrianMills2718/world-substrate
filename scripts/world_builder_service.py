@@ -815,7 +815,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         self._progress("doing", "Rewriting the rules with a stronger model",
                                        "the first rules did not pass the test run")
                     try:
-                        generated, _ = generate_causal_model(
+                        try:
+                            generated, _ = generate_causal_model(
                             bundle,
                             model=model if attempt == 0 else RULES_RETRY_MODEL,
                             trace_id=trace_id,
@@ -823,7 +824,21 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             guidance=guidance,
                             model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
                             world_kind=world_kind,
-                        )
+                            )
+                        except Exception as error:
+                            # Matched by name: llm_client is imported lazily, only where calls are made.
+                            if type(error).__name__ != "LLMBudgetExceededError":
+                                raise
+                            # A retry that runs out of this build's AI budget must not throw away
+                            # an earlier attempt that works (2026-10-15: a pencil network lost its
+                            # first rules this way and showed "internal world-builder error").
+                            if best is None:
+                                raise ValueError(
+                                    "This description needed more AI work than one build allows. "
+                                    "Try a shorter or simpler description."
+                                ) from None
+                            self._progress("note", "Out of AI budget for this build", "keeping the earlier rules")
+                            break
                         candidate = _strip_review(generated)
                         candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
                     except (ActionDeclarationError, ValueError, TypeError, KeyError) as error:
