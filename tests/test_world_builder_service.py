@@ -453,6 +453,112 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertNotIn("progress", payload)
 
+    def _people_built(self):
+        return {"bundle": BUNDLE, "causal_model": CAUSAL, "briefs": {"ava": "You are Ava (picker). You want apples."},
+                "people": [{"id": "ava", "label": "Ava", "position": "picker"}], "coverage": {"rows": []},
+                "not_modeled": ["weather"], "dropped_generated_rules": [], "scenario_spec": {}}
+
+    def test_description_about_people_builds_a_people_world(self):
+        # 2026-10-15, Brian approved: Create simulation uses the people path when the description is about people.
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "countries deciding together"),
+        ) as kind, patch.object(service, "prepare_people_world", return_value={}) as people, \
+                patch.object(service, "write_people_rules", return_value=self._people_built()), \
+                patch.object(service, "generate_world_bundle") as things:
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(kind.call_count, 1)
+        self.assertEqual(things.call_count, 0)
+        self.assertEqual(payload["world_def"], "people")
+        self.assertEqual(payload["world_kind"], "ongoing")
+        self.assertEqual(payload["briefs"], {"ava": "You are Ava (picker). You want apples."})
+        self.assertEqual(payload["people"][0]["label"], "Ava")
+        self.assertEqual(payload["not_modeled"], ["weather"])
+        self.assertTrue(payload["dry_run"]["ok"])
+        self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/people/"))
+        self.assertAlmostEqual(people.call_args.kwargs["max_budget"], service.PEOPLE_WORLD_BUDGET)
+
+    def test_description_about_things_keeps_the_things_builder(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "about_people", return_value=(False, "a supply chain"),
+        ), patch.object(service, "prepare_people_world") as people, patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, payload = self.post("/generate-world", {"description": "an orchard", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(people.call_count, 0)
+        self.assertNotEqual(payload.get("world_def"), "people")
+
+    def test_without_world_def_no_kind_call_is_made(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "about_people") as kind, patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, payload = self.post("/generate-world", {"description": "an orchard"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(kind.call_count, 0)
+        status, payload = self.post("/generate-world", {"description": "an orchard", "world_def": "robots"})
+        self.assertEqual(status, 422, payload)
+
+    def test_async_people_build_job_returns_the_people_world(self):
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "write_people_rules", return_value=self._people_built()):
+            status, started = self.post("/generate-world", {"description": "people", "world_def": "auto", "async": True})
+            self.assertEqual(status, 202, started)
+            status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["world_def"], "people")
+
+    def test_people_world_that_goes_in_circles_gets_one_rules_rewrite(self):
+        # 2026-10-15 Waltzman run: from round 4 everyone raised the same concern; the test run must catch that.
+        circling = {"turns": 24, "accepted_actions": 90, "active_at_end": True, "moves_at_end": ["raise-concern"],
+                    "idle_actors": [], "stalled_actors": [], "terminal_reached": False}
+        healthy = {**circling, "moves_at_end": ["raise-concern", "resolve-concern"]}
+        three = {"mechanics": [{"action_kind": k} for k in ("a", "b", "c")], "processes": []}
+        runs = iter([({"summary": circling, "transcript": []}, None, None), ({"summary": healthy, "transcript": []}, None, None)])
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}) as prepare, patch.object(
+            service, "write_people_rules", return_value=self._people_built(),
+        ) as rules, patch.object(service, "run_world", side_effect=lambda *a, **k: next(runs)), patch.object(
+            service.CausalModel, "from_dict", return_value=type("C", (), {"as_review": lambda self: three})(),
+        ):
+            status, payload = self.post("/generate-world", {"description": "people", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(prepare.call_count, 1)  # the people are worked out once
+        self.assertEqual(rules.call_count, 2)
+        self.assertIn("raise-concern", rules.call_args.kwargs["guidance"])
+        self.assertTrue(payload["dry_run_attempts"][0]["circling"])
+        self.assertFalse(payload["dry_run"]["circling"])
+
+    def test_monthly_allowance_stop_is_said_plainly(self):
+        class LLMBudgetExceededError(Exception):
+            pass
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", side_effect=LLMBudgetExceededError(
+            "Project 'world-substrate' has spent $10.0049 of its $10.00 monthly allowance.")):
+            status, payload = self.post("/generate-world", {"description": "people", "world_def": "auto"})
+        self.assertEqual(status, 422, payload)
+        self.assertIn("allowance for this month", payload["error"])
+
+    def test_briefs_are_validated_and_reach_the_ai(self):
+        status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                             "turns": 1, "briefs": {"ava": 5}})
+        self.assertEqual(status, 422, payload)
+        import scripts.run_authored_world as runner
+        seen = []
+        def choose(engine, actor, page, **kwargs):
+            seen.append((actor, kwargs.get("brief")))
+            return None, "wait", 0.0
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(runner, "_llm_choice", side_effect=choose):
+            status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                                 "policy": "llm", "turns": 1, "briefs": {"ava": "You are Ava."}})
+        self.assertEqual(status, 200, payload)
+        self.assertIn(("ava", "You are Ava."), seen)
+
     def test_async_job_reports_validation_errors_and_unknown_jobs_404(self):
         status, started = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
                                              "turns": 2, "async": True, "continue_from": "nope"})
@@ -883,16 +989,17 @@ class WorldBuilderServiceTests(unittest.TestCase):
 
     def test_daily_budget_caps_next_llm_request_instead_of_overshooting(self):
         fake_generated = json.loads(json.dumps(CAUSAL))
-        self.write_budget(spent=0.49)
+        cap = service.DAILY_LLM_BUDGET
+        self.write_budget(spent=cap - 0.01)
         with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
             service, "generate_causal_model", return_value=(fake_generated, FakeResult())
         ) as generate:
             status, payload = self.post("/generate-mechanics", {"bundle": BUNDLE})
         self.assertEqual(status, 200)
         self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], 0.01, places=6)
-        self.assertAlmostEqual(payload["daily_cost_usd"], 0.491, places=6)
+        self.assertAlmostEqual(payload["daily_cost_usd"], cap - 0.009, places=6)
         state = json.loads(self.budget_path.read_text())
-        self.assertAlmostEqual(state["spent_usd"], 0.491, places=6)
+        self.assertAlmostEqual(state["spent_usd"], cap - 0.009, places=6)
         self.assertEqual(state["reserved_usd"], 0.0)
 
     def test_generate_endpoint_returns_compiler_review_not_unchecked_model_output(self):
@@ -934,14 +1041,15 @@ class WorldBuilderServiceTests(unittest.TestCase):
 
     def test_persisted_reservation_reduces_next_available_budget_after_restart(self):
         fake_generated = json.loads(json.dumps(CAUSAL))
-        self.write_budget(spent=0.03, reserved=0.45)
+        cap = service.DAILY_LLM_BUDGET
+        self.write_budget(spent=0.03, reserved=cap - 0.05)
         with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
             service, "generate_causal_model", return_value=(fake_generated, FakeResult())
         ) as generate:
             status, payload = self.post("/generate-mechanics", {"bundle": BUNDLE})
         self.assertEqual(status, 200)
         self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], 0.02, places=6)
-        self.assertAlmostEqual(payload["daily_cost_usd"], 0.481, places=6)
+        self.assertAlmostEqual(payload["daily_cost_usd"], cap - 0.019, places=6)
 
     def test_old_budget_day_resets_without_carrying_stale_reservations(self):
         self.write_budget(spent=0.3, reserved=0.2, day="2000-01-01")

@@ -139,6 +139,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
             <label class="kind" title="No finish line: work keeps arriving, or people live by their own needs, whatever you describe. It plays round by round until you pause it."><input type="radio" name="kind" value="ongoing" checked><strong>Keeps running</strong><span>No finish line. Plays until you pause it.</span></label>
           </div>
         </fieldset>
+        <label class="small" title="People worlds give each person their own goals, beliefs and information, and an AI plays each person. Things worlds are about stock, places and the steps of a job. By default the AI decides from your description.">Simulate as
+          <select id="world-def" title="People worlds give each person their own goals, beliefs and information, and an AI plays each person. Things worlds are about stock, places and the steps of a job.">
+            <option value="auto" selected>Decide from my description</option>
+            <option value="people">People with their own goals</option>
+            <option value="things">Things and the steps of a job</option>
+          </select></label>
         <label class="small" title="Instead of simple first-available moves, an AI picks each person’s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses each person’s moves</label>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
         <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
@@ -175,6 +181,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <p class="small muted">You wrote: “<span id="review-desc"></span>” <button class="secondary small" type="button" id="change-btn" title="Go back and edit your description; nothing is lost">Edit description</button></p>
     <div id="dry-notice"></div>
     <div id="not-modeled"></div>
+    <div id="people-wrap" hidden>
+      <h3 title="Each person is played by an AI that reads only that person's goals, beliefs and what they know">The people</h3>
+      <ul class="small" id="people"></ul>
+    </div>
     <h3>What exists</h3>
     <div class="things" id="things"></div>
     <h3 title="Each action is allowed only when every check in grey holds at that moment. Anything not written here does not happen.">The rules</h3>
@@ -384,6 +394,17 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("review-summary").textContent = b.world.summary;
     $("review-desc").textContent = data.description;
     const assets = (b.presentation && b.presentation.assets) || {}, catAssets = (b.presentation && b.presentation.category_assets) || {};
+    const people = data.people || [];
+    $("people-wrap").hidden = !people.length;
+    $("people").innerHTML = "";
+    people.forEach((person) => {
+      const li = document.createElement("li");
+      const name = document.createElement("strong"); name.textContent = person.label;
+      li.append(name, " — " + person.position);
+      const brief = (data.briefs || {})[String(person.id).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")];
+      if (brief) li.title = brief;
+      $("people").append(li);
+    });
     $("things").innerHTML = "";
     b.entities.forEach((e) => {
       const cat = e.categories.find((c) => catAssets[c]);
@@ -513,9 +534,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     timer = setInterval(() => { $("elapsed").textContent = Math.round((Date.now() - started) / 1000) + " s"; }, 500);
     renderSteps([{ state: "doing", step: "Sending your description", at_s: 0 }]);
     try {
-      const data = await apiJob("/generate-world", { description, world_kind: kind() }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
+      const data = await apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
       if (gen !== buildGen) return;
       renderReview(data);
+      // People worlds are played by AI members, each reading their own brief (2026-10-15).
+      if (data.world_def === "people") $("ai-moves").checked = true;
       // Pressing Create simulation is the approval (2026-10-15); the rules stay one click away.
       if (data.dry_run.ok) startLive();
     } catch (err) {
@@ -671,6 +694,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   async function fetchRounds() {
     const ai = $("ai-moves").checked;
     const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "llm" : "scripted", turns: 1 };
+    if (ai && world.briefs) request.briefs = world.briefs;
     if (live.snapshot) { request.continue_from = live.snapshot; request.turn_offset = live.lastTurn; request.recent = recentMoves(); }
     // Simple moves are instant, so ask directly; AI rounds take a few seconds and go through a job.
     return ai ? apiJob("/run", request, 1000) : api("/run", request);

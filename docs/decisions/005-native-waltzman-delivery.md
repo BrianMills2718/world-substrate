@@ -90,3 +90,9 @@ This decision sets direction; it does not claim that the complete native path is
 Brian, 2026-10-15: "it should just basically be a screen to type in what you want and then i button to create simulation", then "i approve" to running without a review stop. The World Builder page now sends the run straight after generation when the quick test shows the rules let something happen; the generated rules, checks and effects open from "See how it works" during or after the run, and a world whose rules let nobody act still stops on them with the reason. The server is unchanged: `/run` still refuses a body without `approved: true` (RULE-APPROVAL-BEFORE-RUN), and the visitor's press of Create simulation is what sets it. Stopping-rule item 3 ("approve and run it") is met by that press.
 
 **Wrong if:** a visitor runs a world whose rules they could not have read, or a run starts from anything but their own press of Create simulation (or I'm feeling lucky).
+
+## Amendment 2026-10-15: people descriptions are built as people worlds
+
+Brian, 2026-10-15, approving the recommendation to switch Create simulation to the richer scenario-spec path when a description is about people: "yeah thats fine". The page asks the service to decide (`world_def: auto`): one small call says whether the description is about people with their own goals and information or about things and steps. A people world is built through `scripts/people_world.py` (docs/plans/scenario_spec_adoption.md), always keeps running, and is played by AI members, each reading only its own brief. "Simulate as" in Options overrides the decision. The visitor day allowance is $3 (was $0.50).
+
+**Wrong if:** a description mainly about stock and steps is built as a people world (or the reverse) on the examples, or a people world's AI members act against their own brief's stated goals without a rule forcing it.
