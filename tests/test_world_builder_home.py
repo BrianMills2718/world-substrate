@@ -11,30 +11,50 @@ class WorldBuilderHomeTests(unittest.TestCase):
     def setUp(self):
         self.page = HOME.read_text()
 
-    def test_natural_language_flow_uses_generation_then_explicit_approval(self):
+    def test_create_simulation_generates_then_plays_without_a_review_stop(self):
+        # 2026-10-15, Brian: one box and one Create simulation button; pressing it is the approval.
         self.assertIn('apiJob("/generate-world"', self.page)
-        self.assertIn("Approve rules and play", self.page)
         self.assertIn("approved: true", self.page)
-        # Runs are requested only by the live-play loop, after approval.
+        self.assertIn("if (data.dry_run.ok) startLive();", self.page)
+        # Runs are requested only by the live-play loop.
         self.assertEqual(self.page.count('apiJob("/run"'), 1)
         self.assertEqual(self.page.count('api("/run"'), 1)
+        # The rules stay one click away, and rerunning from them is still possible.
+        self.assertIn(">See how it works</button>", self.page)
         self.assertIn('$("approve-btn").addEventListener("click", () => startLive());', self.page)
+        self.assertIn("Run with these rules", self.page)
 
-    def test_surprise_and_dialogue_paths_are_wired(self):
-        # An empty box makes the one start button ask the AI to make a world up.
-        self.assertIn('$("build-btn").addEventListener("click", () => ($("desc").value.trim() ? build() : surprise()));', self.page)
-        self.assertIn('"Surprise me: the AI makes one up"', self.page)
+    def test_one_screen_has_one_primary_action(self):
+        self.assertEqual(self.page.count('id="build-btn"'), 1)
+        self.assertIn(">Create simulation</button>", self.page)
+        self.assertIn('$("build-btn").addEventListener("click", () => build());', self.page)
+        self.assertIn('<label class="field" id="describe-h" for="desc">What should happen?</label>', self.page)
+        # No step bar, no surprise path, no example chips competing with the button.
+        self.assertNotIn('class="steps"', self.page)
+        self.assertNotIn("Surprise me", self.page)
+        # I'm feeling lucky (2026-10-05) stays, quietly, inside Options.
         self.assertIn('api("/surprise"', self.page)
-        self.assertIn("without stopping for review", self.page)
+        self.assertIn('$("surprise-btn").addEventListener("click", () => surprise());', self.page)
+        self.assertNotIn('id="examples"', self.page)
+        self.assertIn(">or try an example</button>", self.page)
+        # An empty box never silently builds the example text.
+        self.assertNotIn('$("desc").value.trim() || $("desc").placeholder', self.page)
+        self.assertIn("Type what should happen first, or try an example.", self.page)
+
+    def test_waiting_is_honest_and_cancellable(self):
+        self.assertIn("Creating simulation…", self.page)
+        self.assertIn('id="cancel-btn"', self.page)
+        self.assertIn("buildGen++", self.page)
+        # No timed captions pretending to be progress.
+        self.assertNotIn("Math.floor(s / 15)", self.page)
+
+    def test_dialogue_and_escape_hatches_sit_behind_disclosures(self):
         self.assertIn(">Not sure what to write? Let the AI ask you a few questions</button>", self.page)
         self.assertIn('api("/clarify", { messages: talk, world_kind: kind() })', self.page)
-        self.assertIn("Use this description and build", self.page)
-
-    def test_tutorial_steps_and_escape_hatches_are_present(self):
-        for step in ("Describe", "Check the rules", "Watch it run"):
-            self.assertIn(step, self.page)
+        self.assertIn("Use this description and create", self.page)
         self.assertIn('href="play/"', self.page)
         self.assertIn('href="build/"', self.page)
+        self.assertIn('title="Optional settings; the defaults work for most descriptions">Options</summary>', self.page)
 
     def test_world_kinds_and_live_play_are_offered(self):
         for label in ("A task to finish", "Keeps running", "⏸ Pause", "▶ Play",
@@ -67,14 +87,6 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("c.title = bad ?", self.page)
         self.assertIn("c.title = \"Use this answer", self.page)
         self.assertIn("const tipTarget = (node) => node && node.closest", self.page)
-
-    def test_one_start_button_says_what_it_will_do(self):
-        # Three start choices only differed in who writes the description (merged 2026-10-06).
-        self.assertEqual(self.page.count('id="build-btn"'), 1)
-        self.assertNotIn('id="lucky-btn"', self.page)
-        self.assertIn('$("build-btn").textContent = has ? "Build my world" : "Surprise me: the AI makes one up";', self.page)
-        # An empty box never silently builds the example text.
-        self.assertNotIn('$("desc").value.trim() || $("desc").placeholder', self.page)
 
     def test_page_script_is_valid_javascript(self):
         # A syntax error stops every handler on the page; the gate must catch it.
@@ -120,7 +132,9 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('id="tip-bubble"', self.page)
         self.assertIn('document.addEventListener("mouseover"', self.page)
         self.assertIn('document.addEventListener("focusin"', self.page)
-        self.assertEqual(self.page.count('class="info" data-tip-for='), 1)
+        # The Create simulation button explains itself; phones still get every tip on long press (2026-10-15).
+        self.assertEqual(self.page.count('class="info" data-tip-for='), 0)
+        self.assertIn('document.addEventListener("touchstart"', self.page)
 
     def test_failure_states_are_written_in_plain_words(self):
         self.assertIn("These rules let nobody act", self.page)

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>World Builder · Brian Mills</title>
-<meta name="description" content="Describe a small world in plain English. AI proposes the rules, you approve them, and a fresh simulation runs under exactly those rules.">
+<meta name="description" content="Type what should happen in a small world and press Create simulation. AI writes the rules, and a fresh simulation runs under exactly those rules, which you can read any time.">
 <style>
 :root{--bg:#0f1417;--panel:#151c20;--line:#314047;--text:#edf1f2;--muted:#a9b5ba;--accent:#f1e8d5;--ink:#1c2326;--ok:#6fa8dc;--warn:#f0a35e;--grey:#7d8a90}
 *{box-sizing:border-box}
@@ -16,13 +16,6 @@ header nav{margin-left:auto;display:flex;gap:16px;font-size:14px;flex-wrap:wrap}
 main{max-width:1040px;margin:0 auto;padding:28px 20px 60px}
 h1{font-size:30px;line-height:1.2;margin:0 0 8px;letter-spacing:-.01em}
 .lede{color:var(--muted);margin:0 0 22px;max-width:720px}
-.steps{display:flex;gap:8px;margin:0 0 6px;flex-wrap:wrap;padding:0;list-style:none}
-.steps button{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
-.steps button .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid var(--muted);font-size:12px;font-weight:700}
-.steps button[aria-current="step"]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
-.steps button[aria-current="step"] .n{border-color:var(--ink)}
-.steps .arrow{color:var(--grey);align-self:center}
-.steps{margin-bottom:18px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
 textarea{width:100%;min-height:110px;resize:vertical;background:#0b1013;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:12px;font:inherit}
 textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -91,42 +84,53 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 button.info{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--muted);background:transparent;color:var(--muted);font:600 12px/1 system-ui,sans-serif;cursor:help;padding:0;margin-left:4px;vertical-align:middle}
 button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var(--accent)}
 [hidden]{display:none!important}
+main{max-width:760px}
+.create{display:flex;flex-direction:column;gap:12px}
+.create label.field{font-weight:700;font-size:17px}
+.create textarea{min-height:140px;font-size:17px}
+.create .row{gap:16px}
+.create .primary{font-size:17px;padding:13px 26px}
+.primary{transition:transform 160ms ease-out}
+.primary:active:not(:disabled){transform:scale(.97)}
+details.more{margin-top:18px;font-size:14px;color:var(--muted)}
+details.more>summary{cursor:pointer;padding:4px 0}
+details.more .inner{padding:10px 0 0;display:flex;flex-direction:column;gap:12px}
+footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
+.wait{font-size:15px}
+.wait .time{font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
 <header>
   <div class="brand">World Builder</div>
-  <nav aria-label="Other views">
-    <a href="play/" title="Replays of worlds that already ran; no waiting and no AI cost">Watch an example run</a>
-    <a href="build/" title="The full form editor for building a world field by field (for experts)">Advanced editor</a>
-  </nav>
 </header>
 <main>
-  <h1 title="You write a situation in plain English. An AI proposes what exists and the rules for what can happen. You check the rules, approve them, and a simulation plays where only those rules decide what happens.">Describe a world. Watch it run by rules you approve.</h1>
-
-  <ol class="steps" aria-label="How it works">
-    <li><button type="button" data-step="1" aria-current="step" title="Step 1: describe a situation in plain English. The AI turns it into the things that exist and what each one can try to do."><span class="n">1</span>Describe</button></li>
-    <li class="arrow" aria-hidden="true">→</li>
-    <li><button type="button" data-step="2" title="Step 2: read the proposed rules: who can do what, only when which checks hold, and what changes. Nothing runs until you approve."><span class="n">2</span>Check the rules</button></li>
-    <li class="arrow" aria-hidden="true">→</li>
-    <li><button type="button" data-step="3" title="Step 3: the world plays round by round. Every attempt is allowed or refused by your approved rules alone, and you can see why."><span class="n">3</span>Watch it run</button></li>
-  </ol>
+  <h1>Simulate any small world</h1>
+  <p class="lede">Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.</p>
 
   <section class="panel" id="stage-describe" aria-labelledby="describe-h">
-    <h2 id="describe-h">What should happen in your world?</h2>
-    <fieldset style="border:0;padding:0;margin:0">
-      <div class="kinds">
-        <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task"><strong>A task to finish</strong><span>Stops when the job is done.</span></label>
-        <label class="kind" title="No finish line: work keeps arriving, or people live by their own needs, whatever you describe. It plays round by round until you pause it."><input type="radio" name="kind" value="ongoing" checked><strong>Keeps running</strong><span>No finish line. Plays until you pause it.</span></label>
+    <div class="create">
+      <label class="field" id="describe-h" for="desc">What should happen?</label>
+      <textarea id="desc" maxlength="2000" title="Who is involved, what they share or use, and what they are trying to get done" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
+      <div class="row">
+        <button class="primary" id="build-btn" type="button" title="AI turns your description into rules, then the simulation starts. You can read the rules any time.">Create simulation</button>
+        <button type="button" class="linkish small" id="example-btn" title="Put an example description in the box; edit it or press Create simulation">or try an example</button>
       </div>
-    </fieldset>
-    <textarea id="desc" aria-label="Your description" maxlength="2000" title="Describe who is involved, what they share or use, and what they are trying to do" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
-    <div class="chips" id="examples"></div>
-    <p class="small"><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you; you build when it looks right">Not sure what to write? Let the AI ask you a few questions</button></p>
-    <div class="row">
-      <span style="display:inline-flex;align-items:center;gap:6px;max-width:100%"><button class="primary" id="build-btn" type="button" title="Builds the world described in the box. You check its rules, then it plays.">Build my world</button><button type="button" class="info" data-tip-for="build-btn" aria-label="What will this button do?" title="What will this button do?">i</button></span>
-      <span class="muted small" id="build-hint"></span>
+      <span class="muted small" id="build-hint" role="status"></span>
     </div>
+    <details class="more"><summary title="Optional settings; the defaults work for most descriptions">Options</summary>
+      <div class="inner">
+        <fieldset style="border:0;padding:0;margin:0">
+          <div class="kinds">
+            <label class="kind" title="A job with a finish line; the run stops when it is done"><input type="radio" name="kind" value="task" checked><strong>A task to finish</strong><span>Stops when the job is done.</span></label>
+            <label class="kind" title="No finish line: work keeps arriving, or people live by their own needs, whatever you describe. It plays round by round until you pause it."><input type="radio" name="kind" value="ongoing"><strong>Keeps running</strong><span>No finish line. Plays until you pause it.</span></label>
+          </div>
+        </fieldset>
+        <label class="small" title="Instead of simple first-available moves, an AI picks each person’s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses each person’s moves</label>
+        <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
+        <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
+      </div>
+    </details>
     <div id="dialogue" hidden>
       <h3>Let’s work it out together</h3>
       <p class="small muted">Answer the questions (click a suggestion or type your own). The description below updates as you go; edit it any time, then build.</p>
@@ -138,23 +142,23 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
       <h3>Description so far</h3>
       <textarea class="so-far" id="so-far" maxlength="2000" title="The description the AI has written with you so far; you can edit it"></textarea>
       <div class="row" style="margin-top:10px">
-        <button class="primary" id="use-btn" type="button" disabled title="Use the description below and build the world from it">Use this description and build</button>
+        <button class="primary" id="use-btn" type="button" disabled title="Use the description below and create the simulation">Use this description and create</button>
         <button class="secondary" id="talk-close" type="button" title="Close the conversation; your description so far is kept below">Close</button>
       </div>
     </div>
-    <div class="status" id="service-status">Checking the builder…</div>
+    <div class="status" id="service-status"></div>
   </section>
 
-  <section class="panel" id="stage-working" hidden aria-live="polite">
-    <h2><span class="spinner" aria-hidden="true"></span>Building your world <span id="elapsed" class="muted">0 s</span></h2>
-    <p class="muted" id="working-line">Writing down what exists in your world…</p>
-    <p class="small muted">Meanwhile you can <a href="play/" title="Replays of worlds that already ran; no waiting and no AI cost">watch an example run</a>.</p>
+  <section class="panel wait" id="stage-working" hidden aria-live="polite">
+    <h2><span class="spinner" aria-hidden="true"></span><span id="working-h">Creating simulation…</span> <span id="elapsed" class="muted time">0 s</span></h2>
+    <p class="muted" id="working-line">AI is writing the rules for your world and testing that they let something happen. This usually takes about a minute.</p>
+    <p class="small"><button type="button" class="linkish" id="cancel-btn" title="Stop waiting and go back to your description; nothing is lost">Cancel</button></p>
   </section>
 
   <section class="panel" id="stage-review" hidden aria-labelledby="review-h">
     <h2 id="review-h"></h2>
     <p class="muted" id="review-summary"></p>
-    <p class="small muted">You wrote: “<span id="review-desc"></span>” <button class="secondary small" type="button" id="change-btn" title="Go back and edit your description; nothing is lost">Change description</button></p>
+    <p class="small muted">You wrote: “<span id="review-desc"></span>” <button class="secondary small" type="button" id="change-btn" title="Go back and edit your description; nothing is lost">Edit description</button></p>
     <div id="dry-notice"></div>
     <div id="not-modeled"></div>
     <h3>What exists</h3>
@@ -169,17 +173,15 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     <p id="goal"></p></div>
     <details><summary title="The exact rule data the simulator runs, for experts">Rule data</summary><pre id="raw"></pre></details>
     <div class="row" style="margin-top:18px">
-      <button class="primary" id="approve-btn" type="button" title="You accept these rules; the world starts playing round by round, and only these rules decide what happens. Pause it any time.">Approve rules and play</button>
-      <label class="small muted" title="Instead of simple first-available moves, an AI picks each person\u2019s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses moves</label>
+      <button class="primary" id="approve-btn" type="button" title="Start the simulation again from round 1 under these rules">Run with these rules</button>
     </div>
   </section>
 
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
     <h2 id="run-h">Your world is running</h2>
-    <div id="lucky-note"></div>
-    <div class="row live-controls">
+        <div class="row live-controls">
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
-      <label class="small muted" title="On: an AI chooses each person\u2019s move (a few seconds per round, costs a little). Off: each person takes the first move the rules allow (instant, free). You can switch while it plays."><input type="checkbox" id="ai-live"> AI chooses each move</label>
+      <label class="small muted" title="On: an AI chooses each person’s move (a few seconds per round, costs a little). Off: each person takes the first move the rules allow (instant, free). You can switch while it plays."><input type="checkbox" id="ai-live"> AI chooses each move</label>
     </div>
     <p class="small muted" id="live-status" role="status"></p>
     <div id="stuck-note"></div>
@@ -195,17 +197,26 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     </details>
 
     <div class="row" style="margin-top:14px">
-      <button class="secondary" type="button" id="rules-btn" title="Read the rules that decide every attempt (the world stays paused while you read)">See the rules</button>
-      <button class="secondary" type="button" id="again-btn" title="Throw away this run and start the same world over from round 1 with the same rules">Start over</button>
-      <button class="secondary" type="button" id="new-btn" title="Go back to the start and describe a different world">Build another world</button>
-      <button class="secondary" type="button" id="download-btn" title="Save this world and its rules as a JSON file you can load in the advanced editor">Download this world</button>
+      <button class="secondary" type="button" id="new-btn" title="Back to your description to change it and create the simulation again">Edit and run again</button>
+      <button class="secondary" type="button" id="rules-btn" title="Read the rules that decide every attempt (the simulation pauses while you read)">See how it works</button>
     </div>
+    <details class="more"><summary title="Restart or save this simulation">More</summary>
+      <div class="inner row">
+        <button class="secondary" type="button" id="again-btn" title="Throw away this run and start the same world over from round 1 with the same rules">Start over</button>
+        <button class="secondary" type="button" id="download-btn" title="Save this world and its rules as a JSON file you can load in the advanced editor">Download this world</button>
+      </div>
+    </details>
   </section>
-  <p class="small muted" style="margin-top:28px">
-    <button type="button" class="secondary small" id="owner-btn" title="For the site owner: enter a password to use the owner allowance instead of the shared public budget">Owner access</button>
-    <span id="owner-state"></span>
-  </p>
 </main>
+<footer class="site">
+  <details class="more"><summary title="Example runs, the expert editor and owner access">More</summary>
+    <div class="inner">
+      <a href="play/" title="Replays of worlds that already ran; no waiting and no AI cost">Watch an example run</a>
+      <a href="build/" title="The full form editor for building a world field by field (for experts)">Advanced editor</a>
+      <span><button type="button" class="secondary small" id="owner-btn" title="For the site owner: enter a password to use the owner allowance instead of the shared public budget">Owner access</button> <span id="owner-state"></span></span>
+    </div>
+  </details>
+</footer>
 <div class="tip-toast" id="tip-toast" role="status" hidden></div>
 <div class="tip-bubble" id="tip-bubble" role="tooltip" hidden></div>
 <script>
@@ -221,22 +232,15 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
   const $ = (id) => document.getElementById(id);
   let world = null, timer = null;
 
-  function setStep(n) {
-    document.querySelectorAll(".steps button").forEach((b) => {
-      if (Number(b.dataset.step) === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
-    });
-  }
   function show(stage) {
     ["describe", "working", "review", "run"].forEach((s) => { $("stage-" + s).hidden = s !== stage; });
-    setStep(stage === "describe" || stage === "working" ? 1 : stage === "review" ? 2 : 3);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  EXAMPLES.forEach((text) => {
-    const chip = document.createElement("button");
-    chip.type = "button"; chip.className = "chip"; chip.textContent = text.length > 60 ? text.slice(0, 57) + "…" : text; chip.title = text;
-    chip.addEventListener("click", () => { $("desc").value = text; refreshBuild(); $("desc").focus(); });
-    $("examples").append(chip);
+  let exampleAt = 0;
+  $("example-btn").addEventListener("click", () => {
+    $("desc").value = EXAMPLES[exampleAt % EXAMPLES.length]; exampleAt++;
+    refreshBuild(); $("desc").focus();
   });
 
   // Owner override: the owner password, if entered, rides on every request and
@@ -299,20 +303,11 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     return msg;
   }
 
-  // One start button (2026-10-06: Brian asked whether three start choices needed
-  // to be different; they only differed in who writes the description). With
-  // text in the box it builds that; with the box empty the AI makes one up.
+  // One button, one name (2026-10-15, Brian: "a screen to type in what you want
+  // and then a button to create simulation"). It always says Create simulation.
   let serviceBlock = "";
-  function setBuildTip(text) {
-    const el = $("build-btn"); el.dataset.tip = text; el.removeAttribute("title"); el.setAttribute("aria-description", text);
-  }
   function refreshBuild() {
-    const has = $("desc").value.trim().length > 0;
     $("build-btn").disabled = Boolean(serviceBlock);
-    $("build-btn").textContent = has ? "Build my world" : "Surprise me: the AI makes one up";
-    setBuildTip(has
-      ? "Builds the world described in the box. You check its rules, then it plays."
-      : "The box is empty, so the AI makes up a world of the kind you picked, builds it and starts playing it straight away.");
     $("build-hint").textContent = serviceBlock;
   }
 
@@ -325,12 +320,10 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
         : (h.owner_error ? h.owner_error : "");
       $("owner-btn").textContent = h.owner ? "Leave owner mode" : "Owner access";
       if (h.owner) {
-        $("service-status").textContent = "Owner mode: the visitor budget does not apply.";
         serviceBlock = ""; refreshBuild();
         return;
       }
       const left = Math.max(0, h.llm_daily_budget_usd - h.llm_daily_committed_usd);
-      $("service-status").textContent = "AI budget left today: $" + left.toFixed(2) + " of $" + h.llm_daily_budget_usd.toFixed(2);
       serviceBlock = left < 0.02 ? "Today’s AI budget is used up; it resets at midnight UTC." : "";
       refreshBuild();
     } catch (err) {
@@ -469,28 +462,50 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     show("review");
   }
 
-  async function build(options) {
-    const auto = Boolean(options && options.auto);
+  let buildGen = 0;
+  async function build() {
     const description = $("desc").value.trim();
-    if (!description) return surprise();
+    if (!description) {
+      $("build-hint").textContent = "Type what should happen first, or try an example.";
+      $("desc").focus(); return;
+    }
+    const gen = ++buildGen;
     show("working");
     const started = Date.now();
-    const lines = ["Writing down what exists in your world…", "Proposing the rules for what can happen…", "Testing that the rules let something happen…"];
-    timer = setInterval(() => {
-      const s = Math.round((Date.now() - started) / 1000);
-      $("elapsed").textContent = s + " s";
-      $("working-line").textContent = lines[Math.min(lines.length - 1, Math.floor(s / 15))];
-    }, 500);
+    $("elapsed").textContent = "0 s";
+    timer = setInterval(() => { $("elapsed").textContent = Math.round((Date.now() - started) / 1000) + " s"; }, 500);
     try {
       const data = await apiJob("/generate-world", { description, world_kind: kind() });
+      if (gen !== buildGen) return;
       renderReview(data);
-      if (auto && data.dry_run.ok) startLive({ lucky: true });
+      // Pressing Create simulation is the approval (2026-10-15); the rules stay one click away.
+      if (data.dry_run.ok) startLive();
     } catch (err) {
+      if (gen !== buildGen) return;
       show("describe");
       const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
       $("service-status").innerHTML = ""; $("service-status").append(n);
-    } finally { clearInterval(timer); }
+    } finally { if (gen === buildGen) clearInterval(timer); }
   }
+  // I'm feeling lucky (Brian, 2026-10-05): the AI writes the description, then it is created like any other.
+  async function surprise() {
+    const gen = ++buildGen;
+    show("working"); $("working-h").textContent = "Inventing a world…";
+    try {
+      const s = await api("/surprise", { world_kind: kind() });
+      if (gen !== buildGen) return;
+      $("desc").value = s.description;
+    } catch (err) {
+      if (gen !== buildGen) return;
+      show("describe");
+      const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
+      $("service-status").innerHTML = ""; $("service-status").append(n);
+      return;
+    } finally { $("working-h").textContent = "Creating simulation…"; }
+    await build();
+  }
+  $("surprise-btn").addEventListener("click", () => surprise());
+  $("cancel-btn").addEventListener("click", () => { buildGen++; clearInterval(timer); show("describe"); });
 
   function attemptButton(a) {
     const t = document.createElement("button"); t.type = "button";
@@ -693,32 +708,11 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
              sincePlay: 0, lastChanged: {} };
     $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
     $("ai-live").checked = $("ai-moves").checked;
-    const note = $("lucky-note"); note.innerHTML = "";
-    if (options && options.lucky) {
-      const n = document.createElement("div"); n.className = "notice info";
-      n.textContent = "Surprise world: “" + world.description + "” Built and started without stopping for review; use See the rules to read exactly what decides every attempt.";
-      note.append(n);
-    }
     show("run");
     play();
   }
 
-  $("build-btn").addEventListener("click", () => ($("desc").value.trim() ? build() : surprise()));
-
-  // Empty box: the AI invents a world, then it is built and played in one go.
-  async function surprise() {
-    show("working"); $("working-line").textContent = "Inventing a surprise world…";
-    try {
-      const s = await api("/surprise", { world_kind: kind() });
-      $("desc").value = s.description; refreshBuild();
-    } catch (err) {
-      show("describe");
-      const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
-      $("service-status").innerHTML = ""; $("service-status").append(n);
-      return;
-    }
-    await build({ auto: true });
-  }
+  $("build-btn").addEventListener("click", () => build());
 
   // Dialogue: the AI asks clarifying questions and keeps a description draft.
   let talk = [];
@@ -812,7 +806,8 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
   function hideTip() { clearTimeout(tipTimer); tipBubble.hidden = true; tipEl = null; }
   const tipTarget = (node) => node && node.closest && node.closest("[title], [data-tip], [data-tip-for]");
   document.addEventListener("mouseover", (e) => { const el = tipTarget(e.target); clearTimeout(tipTimer); if (el) tipTimer = setTimeout(() => showTip(el), 150); else hideTip(); });
-  document.addEventListener("focusin", (e) => { const el = tipTarget(e.target); if (el) showTip(el); });
+  // Typing into the box should not hide the button and example link under a bubble.
+  document.addEventListener("focusin", (e) => { const el = tipTarget(e.target); if (el && el.tagName !== "TEXTAREA") showTip(el); });
   document.addEventListener("focusout", hideTip);
   // Scrolling moves the bubble with its control instead of hiding it.
   window.addEventListener("scroll", () => { if (!tipBubble.hidden && tipEl) showTip(tipEl); }, { passive: true });
@@ -830,8 +825,7 @@ button.info:hover,button.info:focus-visible{border-color:var(--accent);color:var
     }, 450);
   }, { passive: true });
   ["touchend", "touchmove", "touchcancel"].forEach((t) => document.addEventListener(t, () => clearTimeout(pressTimer), { passive: true }));
-  $("desc").addEventListener("input", refreshBuild);
-  setStep(1);
+  $("desc").addEventListener("input", () => { if (!serviceBlock) $("build-hint").textContent = ""; });
   refreshBuild();
   checkService();
 })();

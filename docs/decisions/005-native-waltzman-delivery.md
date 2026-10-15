@@ -84,3 +84,9 @@ This decision sets direction; it does not claim that the complete native path is
 - Generic automatic UI is a product requirement; bespoke generated UI is not.
 - Evaluation is feature acceptance around the promised flow, not a broad benchmark program.
 - Jev/System-One remains available infrastructure for bounded intermediate estimates but is not on the critical path for this release.
+
+## Amendment 2026-10-15: pressing Create simulation is the approval
+
+Brian, 2026-10-15: "it should just basically be a screen to type in what you want and then i button to create simulation", then "i approve" to running without a review stop. The World Builder page now sends the run straight after generation when the quick test shows the rules let something happen; the generated rules, checks and effects open from "See how it works" during or after the run, and a world whose rules let nobody act still stops on them with the reason. The server is unchanged: `/run` still refuses a body without `approved: true` (RULE-APPROVAL-BEFORE-RUN), and the visitor's press of Create simulation is what sets it. Stopping-rule item 3 ("approve and run it") is met by that press.
+
+**Wrong if:** a visitor runs a world whose rules they could not have read, or a run starts from anything but their own press of Create simulation (or I'm feeling lucky).
