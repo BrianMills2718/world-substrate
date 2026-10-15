@@ -8,7 +8,7 @@ The model is [ODD.md](ODD.md) and [world_substrate_model.toml](world_substrate_m
 
 | View | What it is | Source | Where |
 | --- | --- | --- | --- |
-| `home` | World Builder landing page: describe, check the rules, approve, watch it run live one round per request | `scripts/world_builder_home.html` | `https://brianmills.dev/world-builder/` |
+| `home` | World Builder landing page: type a description, press Create simulation, watch it run live one round per request; the rules open from "See how it works" | `scripts/world_builder_home.html` | `https://brianmills.dev/world-builder/` |
 | `build` | World Authoring Studio: edit every bundle section, generate mechanics, approve, run, native-coordination comparison, full request logs | `scripts/world_builder_app.js` via `scripts/render_world_builder.py` | `https://brianmills.dev/world-builder/build/` |
 | `play` | Replay Studio: gallery of retained evidence replays | `scripts/render_replay_studio.py` | `https://brianmills.dev/world-builder/play/` |
 | `round_replay` | The picture of a run inside `home` and `build` (iframe `replay_html`) | `scripts/run_authored_world.py:517` -> `scripts/render_scene_replay.py:442` | inside home/build |

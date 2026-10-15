@@ -3,8 +3,8 @@
 //   cd scripts/e2e && npm install && npx playwright install chromium
 //   node world_builder_e2e.mjs <base> <flow...>      e.g. node world_builder_e2e.mjs https://brianmills.dev task open
 //
-// Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open | pencil (build, approve, watch it play live; continuing worlds are also paused, checked to stay still, and resumed),
-// lucky (empty box: Surprise me), dialogue (Not sure what to write? link, two turns, then build).
+// Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open | pencil (Create simulation, watch it play live with no review stop; continuing worlds are also paused, checked to stay still, and resumed),
+// example (or try an example, then Create simulation), dialogue (Options > Not sure what to write?, two turns, then create).
 // E2E_AI=1 also switches a playing continuing world to AI moves for two rounds (costs a few cents).
 // Screenshots go to $E2E_OUT (default ./out). Spends real model money on the target.
 // Prints one line per step and `RESULT passed=N failed=M`; exits 1 if any flow failed.
@@ -23,12 +23,11 @@ const DESCRIPTIONS = {
 const LONG = 600000;
 
 async function buildAndRun(p, kind, log) {
-  await Promise.race([p.locator('#stage-review').waitFor({ state: 'visible', timeout: LONG }), p.locator('#stage-describe .notice').waitFor({ timeout: LONG })]);
-  if (!(await p.locator('#stage-review').isVisible())) throw new Error('build failed: ' + (await p.textContent('#service-status')));
-  log('review', (await p.textContent('#dry-notice')).trim());
-  if (!(await p.getByRole('button', { name: 'Approve rules and play' }).isEnabled())) throw new Error('approve disabled');
-  await p.getByRole('button', { name: 'Approve rules and play' }).click();
-  await p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG });
+  // Create simulation goes straight to the running world (2026-10-15); the rules open only when they cannot run.
+  await Promise.race([p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG }), p.locator('#stage-review').waitFor({ state: 'visible', timeout: LONG }), p.locator('#stage-describe .notice').waitFor({ timeout: LONG })]);
+  if (await p.locator('#stage-review').isVisible()) throw new Error('rules cannot run: ' + (await p.textContent('#dry-notice')));
+  if (!(await p.locator('#stage-run').isVisible())) throw new Error('build failed: ' + (await p.textContent('#service-status')));
+  log('quick test', (await p.textContent('#dry-notice')).trim());
   // Live play: rounds appear one by one while you watch.
   const round = async () => Number(((await p.textContent('#outcome')).match(/^Round (\d+)/) || [0, 0])[1]);
   const heading = async () => (await p.textContent('#run-h')).trim();
@@ -74,9 +73,10 @@ for (const flow of flows.length ? flows : ['task']) {
   try {
     await p.goto(base + '/world-builder/', { waitUntil: 'networkidle' });
     if (flow in DESCRIPTIONS) {
+      await p.locator('#stage-describe details.more > summary').click();
       await p.check(`input[name="kind"][value="${flow === 'task' ? 'task' : 'ongoing'}"]`);
       await p.fill('#desc', DESCRIPTIONS[flow]);
-      await p.getByRole('button', { name: 'Build my world', exact: true }).click();
+      await p.getByRole('button', { name: 'Create simulation', exact: true }).click();
       await buildAndRun(p, flow === 'task' ? 'task' : 'ongoing', log);
     } else if (flow === 'tooltips') {
       // Costs nothing: hover every visible control and require a visible tooltip bubble.
@@ -94,22 +94,20 @@ for (const flow of flows.length ? flows : ['task']) {
       }
       log('hovered', `${n} controls, ${n - missing.length} showed a tooltip`);
       if (missing.length) throw new Error('no visible tooltip on: ' + missing.join(' | '));
-      // Phones: the info button shows the start button's tip, which says what it will do.
-      await p.locator('.info[data-tip-for="build-btn"]').click();
-      const tapped = (await p.textContent('#tip-bubble')).trim();
-      log('tap info', tapped);
-      if (!/makes up a world/.test(tapped)) throw new Error('info button did not explain the empty-box start button');
-      await p.fill('#desc', 'two cooks');
-      if ((await p.textContent('#build-btn')).trim() !== 'Build my world') throw new Error('button did not change to Build my world after typing');
-      await p.fill('#desc', '');
-      log('button', 'empty box: Surprise me; after typing: Build my world');
-    } else if (flow === 'lucky') {
-      await p.getByRole('button', { name: 'Surprise me: the AI makes one up', exact: true }).click();
-      await p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG });
-      log('surprise', await p.textContent('#lucky-note'));
-      log('run', await p.textContent('#outcome'));
+      // An empty box never builds anything: the button asks for a description instead.
+      await p.getByRole('button', { name: 'Create simulation', exact: true }).click();
+      const hint = (await p.textContent('#build-hint')).trim();
+      log('empty create', hint);
+      if (!/Type what should happen first/.test(hint)) throw new Error('empty box did not ask for a description');
+      if (!(await p.locator('#stage-describe').isVisible())) throw new Error('empty box left the describe screen');
+    } else if (flow === 'example') {
+      await p.getByRole('button', { name: 'or try an example' }).click();
+      log('example', await p.inputValue('#desc'));
+      await p.getByRole('button', { name: 'Create simulation', exact: true }).click();
+      await buildAndRun(p, 'task', log);
     } else if (flow === 'dialogue') {
       await p.fill('#desc', 'some kids and a lemonade stand');
+      await p.locator('#stage-describe details.more > summary').click();
       await p.getByRole('button', { name: 'Not sure what to write? Let the AI ask you a few questions' }).click();
       await p.locator('#chat .bubble.ai').first().waitFor({ timeout: LONG });
       log('ai', await p.locator('#chat .bubble.ai').first().innerText());
@@ -118,7 +116,7 @@ for (const flow of flows.length ? flows : ['task']) {
       await p.getByRole('button', { name: 'Send' }).click();
       await p.locator('#chat .bubble.ai').nth(1).waitFor({ timeout: LONG });
       log('draft', await p.inputValue('#so-far'));
-      await p.getByRole('button', { name: 'Use this description and build' }).click();
+      await p.getByRole('button', { name: 'Use this description and create' }).click();
       await buildAndRun(p, 'task', log);
     } else throw new Error('unknown flow ' + flow);
     if (errors.length) throw new Error('page errors: ' + errors.join(' | '));

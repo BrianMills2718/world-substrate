@@ -26,8 +26,17 @@ def handler(api: str) -> type[http.server.BaseHTTPRequestHandler]:
         def _proxy(self) -> None:
             size = int(self.headers.get("Content-Length") or 0)
             body = self.rfile.read(size) if size else None
-            req = urllib.request.Request(api + self.path, data=body, method=self.command,
-                                         headers={"Content-Type": self.headers.get("Content-Type", "application/json")})
+            headers = {"Content-Type": self.headers.get("Content-Type", "application/json")}
+            # Pass through who is asking, so owner mode and agent labelling work against any API.
+            for name in ("User-Agent", "X-World-Builder-Owner", "X-World-Builder-Client"):
+                if self.headers.get(name):
+                    headers[name] = self.headers[name]
+            if api.startswith("https://"):
+                # The public API accepts only same-origin browser requests (and Cloudflare
+                # refuses urllib's default agent), so speak as a page on that origin.
+                headers.update({"Origin": api, "Referer": api + "/world-builder/", "Sec-Fetch-Site": "same-origin"})
+                headers.setdefault("User-Agent", "Mozilla/5.0 (world-builder dev proxy)")
+            req = urllib.request.Request(api + self.path, data=body, method=self.command, headers=headers)
             try:
                 with urllib.request.urlopen(req, timeout=900) as response:
                     code, data = response.status, response.read()
