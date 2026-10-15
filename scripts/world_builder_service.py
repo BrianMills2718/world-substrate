@@ -272,6 +272,8 @@ def _requested_model(body: dict[str, Any]) -> str:
 # synchronous path; only delivery changes.
 JOB_TTL_SECONDS = 3600
 MAX_JOBS = 200
+MAX_PROGRESS_STEPS = 40
+MAX_PROGRESS_ITEMS = 16
 _JOBS: dict[str, dict[str, Any]] = {}
 _JOBS_LOCK = threading.Lock()
 ASYNC_PATHS = ("/generate-world", "/run")
@@ -435,6 +437,38 @@ class _JobResponder:
     def _error(self, status: int, message: str) -> None:
         self._json(status, {"ok": False, "error": message})
 
+    def _progress(self, state: str, step: str, detail: str = "", items: list[str] | None = None) -> None:
+        """Record one build step so the page can show it while the job runs."""
+        with _JOBS_LOCK:
+            job = _JOBS.get(self.job_id)
+            if job is None:
+                return
+            steps = job.setdefault("progress", [])
+            if len(steps) < MAX_PROGRESS_STEPS:
+                steps.append({
+                    "at_s": round(time.time() - job["created"], 1),
+                    "state": state,
+                    "step": step,
+                    "detail": detail,
+                    "items": [str(x)[:80] for x in (items or [])[:MAX_PROGRESS_ITEMS]],
+                })
+
+
+def _words(name: str) -> str:
+    return str(name).replace("_", " ").replace("-", " ")
+
+
+def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
+    """One plain sentence about a quick test run, for the build progress list."""
+    if not row.get("ok"):
+        return "nobody could act from the starting state"
+    moves = row.get("accepted_actions", 0)
+    rounds = row.get("turns", 0)
+    head = f"{moves} move{'s' if moves != 1 else ''} in {rounds} round{'s' if rounds != 1 else ''}"
+    if world_kind == "task":
+        return head + ("; reached the finish line" if row.get("terminal_reached") else "; did not reach the finish line")
+    return head + ("; still busy at the end" if row.get("active_at_end") else "; went quiet by the end")
+
 
 def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
     """Tell the rules model which actors stopped acting in the dry run, and why (latest reasons first)."""
@@ -477,6 +511,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
     def log_message(self, fmt: str, *args: object) -> None:
         sys.stderr.write("world-builder-api: " + (fmt % args) + "\n")
+
+    def _progress(self, state: str, step: str, detail: str = "", items: list[str] | None = None) -> None:
+        """Build steps are only visible to background jobs, which the page polls."""
 
     def _json(self, status: int, value: dict[str, Any]) -> None:
         _record_response(status, value)
@@ -558,7 +595,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if snapshot is None:
                 self._error(HTTPStatus.NOT_FOUND, "unknown or expired job")
             elif snapshot["status"] == "running":
-                self._json(HTTPStatus.OK, {"ok": True, "status": "running", "job_id": job_id})
+                self._json(HTTPStatus.OK, {
+                    "ok": True, "status": "running", "job_id": job_id,
+                    "elapsed_s": round(time.time() - snapshot["created"], 1),
+                    "progress": [dict(step) for step in snapshot.get("progress", [])],
+                })
             else:
                 self._json(snapshot["http_status"], snapshot["payload"])
             return
@@ -748,15 +789,31 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if budget is None:
                 return
             try:
+                self._progress("doing", "Reading your description")
                 bundle, not_modeled, _ = generate_world_bundle(
                     description, model=model, trace_id=trace_id, max_budget=budget, world_kind=world_kind,
                 )
+                entities = bundle.get("entities") or []
+                action_kinds = [a.get("kind") for a in bundle.get("actions") or [] if a.get("kind")]
+                self._progress(
+                    "done", "Found what exists in your world",
+                    f"{len(entities)} thing{'s' if len(entities) != 1 else ''}, "
+                    f"{len(action_kinds)} kind{'s' if len(action_kinds) != 1 else ''} of action",
+                    [e.get("label") or e.get("id") for e in entities],
+                )
+                if not_modeled:
+                    self._progress("note", "Left out of the simulation", "", [str(x).rstrip(". ") for x in not_modeled])
                 guidance = ""
                 attempts: list[dict[str, Any]] = []
                 # Keep the best attempt: reaching the finish line beats merely
                 # allowing actions, which beats allowing nothing.
                 best: tuple[tuple[int, int], dict[str, Any], CausalModel, dict[str, Any]] | None = None
                 for attempt in range(2):
+                    if attempt == 0:
+                        self._progress("doing", "Writing the rules")
+                    else:
+                        self._progress("doing", "Rewriting the rules with a stronger model",
+                                       "the first rules did not pass the test run")
                     try:
                         generated, _ = generate_causal_model(
                             bundle,
@@ -774,6 +831,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # recover from: hand it to the stronger retry instead of
                         # ending the whole request.
                         attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})
+                        self._progress("note", "Those rules did not fit together", str(error)[:160])
                         if attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
                             if best is None:
                                 raise
@@ -783,6 +841,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             f"{type(error).__name__}: {error}. Return a corrected proposal."
                         )
                         continue
+                    review = candidate_compiled.as_review()
+                    self._progress(
+                        "done",
+                        f"Wrote {len(review['mechanics'])} rule{'s' if len(review['mechanics']) != 1 else ''}"
+                        + (f" and {len(review['processes'])} thing{'s' if len(review['processes']) != 1 else ''} that happen by themselves"
+                           if review.get("processes") else ""),
+                        "with a finish line" if candidate_compiled.terminal is not None else "no finish line",
+                        [_words(m["action_kind"]) for m in review["mechanics"]] + [_words(p["process_id"]) for p in review.get("processes") or []],
+                    )
+                    self._progress("doing", "Test-running the rules with simple moves")
                     try:
                         dry_turns = DRY_RUN_TURNS if world_kind == "task" else DRY_RUN_TURNS_CONTINUING
                         dry, _, _ = run_world(
@@ -859,6 +927,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             "action descriptions."
                         )
                     attempts.append(result_row)
+                    self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
                     # Ties go to the attempt with fewer actors who never acted.
                     rank = (score, -len(set(result_row.get("idle_actors") or []) | set(result_row.get("stalled_actors") or [])))
                     if best is None or rank > best[0]:
