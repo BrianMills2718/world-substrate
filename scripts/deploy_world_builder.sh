@@ -28,7 +28,8 @@ tail -1 "$log"
 echo "== backend"
 vps=$(mktemp -d)
 git -C "$HOME/code/personal-vps" fetch -q origin
-git -C "$HOME/code/personal-vps" archive origin/main apps/world-builder | tar -C "$vps" -xf -
+# deploy.sh also runs ../../host/prune-app-images.sh to drop old image tags on the VPS.
+git -C "$HOME/code/personal-vps" archive origin/main apps/world-builder host/prune-app-images.sh | tar -C "$vps" -xf -
 "$vps/apps/world-builder/deploy.sh" "$repo" "$commit"
 rm -rf "$vps"
 echo "== pages"
