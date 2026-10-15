@@ -21,7 +21,10 @@ log=$(mktemp)
 (cd "$stage" && PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 python scripts/check_project.py >"$log" 2>&1) \
   || { echo "check_project FAILED:" >&2; tail -25 "$log" >&2; exit 1; }
 echo "check_project ok"
-(cd "$stage" && PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pytest python -m pytest tests -p no:cacheprovider -q 2>&1 | tail -1)
+# The spike tests import pydantic (tests/test_scenario_spec.py); without it collection fails and no deploy happens.
+(cd "$stage" && PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pytest --with pydantic python -m pytest tests -p no:cacheprovider -q >"$log" 2>&1) \
+  || { echo "pytest FAILED:" >&2; tail -25 "$log" >&2; exit 1; }
+tail -1 "$log"
 echo "== backend"
 vps=$(mktemp -d)
 git -C "$HOME/code/personal-vps" fetch -q origin
