@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waltzman Demo Versions</title>
+<style>
+:root { --bg:#fbfaf7; --fg:#1d1d1b; --muted:#5c5c57; --card:#ffffff; --line:#dcd9d0; --accent:#1f5fa8; --warn:#b85c00; }
+@media (prefers-color-scheme: dark) { :root { --bg:#161614; --fg:#ecebe6; --muted:#a6a59e; --card:#20201d; --line:#3a3934; --accent:#7fb2ec; --warn:#f0a35a; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, sans-serif; }
+main { max-width:760px; margin:0 auto; padding:32px 16px 48px; }
+h1 { font-size:1.6rem; margin:0 0 4px; }
+.lede { color:var(--muted); margin:0 0 24px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:0 0 14px; }
+.card h2 { font-size:1.1rem; margin:0 0 2px; }
+.card h2 a { color:var(--accent); text-decoration:none; }
+.card h2 a:hover { text-decoration:underline; }
+.tag { display:inline-block; font-size:.78rem; border:1px solid currentColor; border-radius:999px; padding:0 8px; margin-left:6px; vertical-align:2px; }
+.tag.live { color:var(--accent); }
+.tag.old { color:var(--warn); border-style:dashed; }
+.card p { margin:6px 0 0; }
+.card .how { color:var(--muted); font-size:.92rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Waltzman demo versions</h1>
+  <p class="lede">Every version of the Waltzman coordination demo that exists, side by side. Open each to compare.</p>
+
+  <div class="card">
+    <h2><a href="/waltzman/" title="Open the Cybernetic Influence v3 workbench (version 0.13.0)">1. Cybernetic Influence workbench</a><span class="tag live" title="This is the page outreach currently links to">current outreach demo</span></h2>
+    <p>Describe a scenario in plain words, run it fresh, replay and review it. Five worked scenarios, including the 26-agent, four-country case.</p>
+    <p class="how">How outcomes are decided: an AI referee reads what agents say and judges what happens. Large, rich worlds, but effects are not enforced by rules.</p>
+  </div>
+
+  <div class="card">
+    <h2><a href="/waltzman/world-substrate" title="Open the illustrated living-world replay embedded in the workbench">2. Living-world replay (v2)</a><span class="tag live" title="Part of version 1">inside version 1</span></h2>
+    <p>The illustrated "Coordination Hall" scene: a hand-built Waltzman world played back as a blocked baseline and an intervention branch.</p>
+    <p class="how">How outcomes are decided: World Substrate's rule engine, on a world written by hand.</p>
+  </div>
+
+  <div class="card">
+    <h2><a href="/world-substrate-runs/waltzman-native/" title="Open the replay of the 2026-10-08 native World Substrate Waltzman run">3. Native World Substrate run (2026-10-08)</a><span class="tag live" title="Newest version; the long-term product direction">newest</span></h2>
+    <p>The Waltzman scenario text turned automatically into rules, then run with AI members. All four of the paper's mechanisms appear as rule events with ids.</p>
+    <p class="how">Known flaws in this run: its one "deployment blocked" event is invalid (a rule read the wrong counter; fixed since). "Conditional support" and "meetings slowing" are only roughly modelled.</p>
+  </div>
+
+  <div class="card">
+    <h2><a href="/world-builder/" title="Open the World Builder: author a world, approve its rules, run it">4. World Builder</a><span class="tag live" title="The native authoring tool">native authoring tool</span></h2>
+    <p>Build a world yourself: describe it, get proposed rules, approve them, run it and watch. This is the native path's interactive tool; the run in version 3 came from a newer command-line pipeline not yet in it.</p>
+  </div>
+
+  <div class="card">
+    <h2><a href="/world-substrate-visualization/" title="Open the retired standalone prototype">5. Standalone prototype</a><span class="tag old" title="Retired; kept only as design history">retired</span></h2>
+    <p>The earliest synthetic visualization. Kept only as design history; not for showing anyone.</p>
+  </div>
+</main>
+</body>
+</html>
