@@ -156,6 +156,38 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual([a["ok"] for a in payload["dry_run_attempts"]], [False, True])
         self.assertTrue(payload["dry_run"]["ok"])
 
+    def test_retry_out_of_budget_keeps_the_earlier_rules(self):
+        # 2026-10-15: the stronger-model retry hit the per-build budget and the visitor got
+        # "internal world-builder error" although the first rules were usable.
+        class LLMBudgetExceededError(Exception):  # same name as llm_client's, which the service matches
+            pass
+        weak = json.loads(json.dumps(CAUSAL))
+        weak["mechanics"][0]["checks"].append(
+            {"label": "Fruit is rotten", "left": {"participant": {"name": "fruit", "path": "components.fruit.stage"}},
+             "op": "eq", "right": {"literal": "rotten"}}
+        )
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model",
+            side_effect=[(weak, FakeResult()), LLMBudgetExceededError("Budget exceeded for trace t: $0.21 spent >= $0.20 limit")],
+        ):
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(len(payload["dry_run_attempts"]), 1)
+
+    def test_first_attempt_out_of_budget_says_so_plainly(self):
+        class LLMBudgetExceededError(Exception):  # same name as llm_client's, which the service matches
+            pass
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", side_effect=LLMBudgetExceededError("Budget exceeded"),
+        ):
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 422, payload)
+        self.assertIn("more AI work than one build allows", payload["error"])
+
     def test_generate_world_retries_when_dry_run_never_finishes_and_keeps_best(self):
         stuck = {"summary": {"turns": 12, "terminal_reached": False, "accepted_actions": 24}}
         done = {"summary": {"turns": 1, "terminal_reached": True, "accepted_actions": 1}}
