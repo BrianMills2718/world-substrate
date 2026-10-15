@@ -1,0 +1,13 @@
+{
+  // Public replays of native World Substrate runs at brianmills.dev/world-substrate-runs/,
+  // owned by world-substrate. Static pages only, copied from committed run evidence.
+  "name": "world-substrate-native-runs",
+  "account_id": "8edd43859e873330b3b07bada17d183b",
+  "compatibility_date": "2026-10-06",
+  "workers_dev": false,
+  "assets": { "directory": "./dist", "html_handling": "auto-trailing-slash" },
+  "routes": [
+    { "pattern": "brianmills.dev/world-substrate-runs", "zone_name": "brianmills.dev" },
+    { "pattern": "brianmills.dev/world-substrate-runs/*", "zone_name": "brianmills.dev" }
+  ]
+}

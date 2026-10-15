@@ -25,3 +25,10 @@ surfaces:
     url: https://brianmills.dev/world-substrate-visualization/
     note: Earlier synthetic visualization prototype, still deployed as design evidence; superseded by the World Builder and the Waltzman demo (README).
     purpose: Legacy prototype of the living-world view.
+  - id: native-run-replays
+    name: Native run replays and Waltzman version index
+    lifecycle: canonical
+    source_path: deploy/cloudflare/native-runs/
+    url: https://brianmills.dev/world-substrate-runs/
+    tests: deploy/cloudflare/native-runs/build.sh (asserts both pages are non-empty)
+    purpose: Index of every Waltzman demo version, plus the static replay of the 2026-10-08 native World Substrate Waltzman run (spikes/any-scenario-2026-10/evidence/waltzman-spec/run2).
