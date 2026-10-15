@@ -56,7 +56,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
     def test_build_steps_show_while_the_job_runs(self):
         self.assertIn('id="build-steps"', self.page)
         self.assertIn("if (onProgress) onProgress(data.progress || []);", self.page)
-        self.assertIn('apiJob("/generate-world", { description, world_kind: kind() }, 1000, (steps) =>', self.page)
+        self.assertIn('apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value }, 1000, (steps) =>', self.page)
         self.assertIn("function renderSteps(steps)", self.page)
 
     def test_dialogue_and_escape_hatches_sit_behind_disclosures(self):

@@ -55,11 +55,11 @@ class ActionSignatures(BaseModel):
     actions: list[ActionSignature]
 
 
-def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0.20):
+def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0.20, reasoning_effort: str = "medium"):
     from llm_client import call_llm_structured
     spec, result = call_llm_structured(
         model, [{"role": "system", "content": SPEC_SYSTEM}, {"role": "user", "content": text}], ScenarioSpecV1,
-        task="world-substrate-scenario-spec", trace_id=trace_id, max_budget=max_budget, reasoning_effort="medium",
+        task="world-substrate-scenario-spec", trace_id=trace_id, max_budget=max_budget, reasoning_effort=reasoning_effort,
         num_retries=1, model_justification=SPEC_MODEL_WHY)
     return spec, result
 

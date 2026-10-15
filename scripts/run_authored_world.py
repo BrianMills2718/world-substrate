@@ -179,6 +179,7 @@ def _llm_choice(
     trace_id: str,
     max_budget: float,
     recent: list[str],
+    brief: str = "",
 ) -> tuple[dict[str, Any] | None, str, float]:
     from llm_client import call_llm_json_schema, render_prompt
 
@@ -190,6 +191,7 @@ def _llm_choice(
     context = present(engine, actor, page)
     context["recent"] = recent
     context["world_summary"] = world_summary
+    context["brief"] = brief
     messages = render_prompt(REPO / "prompts/generic_world_policy.yaml", **context)
     value, result = call_llm_json_schema(
         model,
@@ -224,6 +226,7 @@ def run_world(
     start_snapshot: dict[str, Any] | None = None,
     turn_offset: int = 0,
     prior_recent: list[dict[str, str]] | None = None,
+    briefs: dict[str, str] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm"}:
         raise ValueError("policy must be scripted or llm")
@@ -308,6 +311,7 @@ def run_world(
                         trace_id=trace_id,
                         max_budget=max_budget,
                         recent=recents[actor],
+                        brief=(briefs or {}).get(actor, ""),
                     )
                     for actor in actors
                 }
@@ -357,6 +361,7 @@ def run_world(
                         trace_id=trace_id,
                         max_budget=max_budget,
                         recent=_recent_for(engine, actor, seen),
+                        brief=(briefs or {}).get(actor, ""),
                     )
                     cost += call_cost
                 if again is None:

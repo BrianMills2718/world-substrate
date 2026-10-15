@@ -32,6 +32,7 @@ from scripts.native_coordination_authoring import (
     generate_native_coordination_draft,
 )
 from scripts.native_coordination_comparison import with_approval_threshold
+from scripts.people_world import about_people, prepare_people_world, write_people_rules
 from scripts.run_authored_world import actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -42,7 +43,9 @@ MAX_BODY_BYTES = 512_000
 DRAFT_BUDGET = 0.08
 MECHANICS_BUDGET = 0.12
 RUN_BUDGET = 0.12
-DAILY_LLM_BUDGET = 0.50
+# Shared visitor allowance per day. Raised from $0.50 to $3 on 2026-10-15 (Brian approved, "yeah thats fine"):
+# a people world costs up to PEOPLE_WORLD_BUDGET to build and its AI members choose every move.
+DAILY_LLM_BUDGET = 3.00
 # Owner override (Brian, 2026-10-05: "i always want to be able to put in a
 # password to override the budget"). A request carrying the owner password in
 # X-World-Builder-Owner skips the shared visitor allowance and per-visitor rate
@@ -70,6 +73,13 @@ def _ledger_cap() -> float:
     return OWNER_DAILY_BUDGET if _is_owner() else DAILY_LLM_BUDGET
 # Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
 WORLD_BUDGET = 0.20
+# A people world (scripts/people_world.py): one stronger-model call for the people, goals and information, one for
+# the rules, a small one for the attempts, at most one compiler-guided rules retry.
+PEOPLE_WORLD_BUDGET = 0.80
+# The small call that decides whether a description is a world of people or of things.
+WORLD_KIND_BUDGET = 0.01
+WORLD_DEFS = ("things", "people", "auto")
+MAX_BRIEF_CHARS = 4000
 # Rules-step retry escalates to a stronger model. Measured 2026-10-05 on six
 # descriptions: default model finished 11/24 builds, this model 6/6, at about
 # $0.037 vs $0.003 per rules call, so it is used only when the cheap attempt
@@ -458,6 +468,14 @@ def _words(name: str) -> str:
     return str(name).replace("_", " ").replace("-", " ")
 
 
+def _budget_message(error: Exception) -> str:
+    """Plain words for an AI budget stop: this build's own allowance, or the service's monthly one."""
+    if "monthly allowance" in str(error):
+        # 2026-10-15: a local build hit llm_client's per-project monthly cap and reported it as "needed more AI work".
+        return "The World Builder has used its AI allowance for this month, so it cannot build new worlds right now."
+    return "This description needed more AI work than one build allows. Try a shorter or simpler description."
+
+
 def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
     """One plain sentence about a quick test run, for the build progress list."""
     if not row.get("ok"):
@@ -613,7 +631,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         responder = _JobResponder(job_id)
         # The handler methods only use _json/_error/_llm_budget on self, so a
         # job runs the exact same code with the responder standing in.
-        responder._llm_budget = WorldBuilderHandler._llm_budget.__get__(responder)
+        for name in ("_llm_budget", "_world_def", "_generate_people_world"):
+            setattr(responder, name, getattr(WorldBuilderHandler, name).__get__(responder))
         target = {"/generate-world": WorldBuilderHandler._generate_world, "/run": WorldBuilderHandler._run}[path]
 
         ledger = _LEDGER.get()
@@ -778,6 +797,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if not isinstance(description, str) or not description.strip():
             raise ValueError("description must be a nonempty string")
         model = _requested_model(body)
+        world_def = body.get("world_def") or "things"
+        if world_def not in WORLD_DEFS:
+            raise ValueError(f"world_def must be one of {list(WORLD_DEFS)}")
+        if world_def == "auto":
+            world_def = self._world_def(client, description)
+            if world_def is None:
+                return
+        if world_def == "people":
+            self._generate_people_world(client, description)
+            return
         world_kind = body.get("world_kind") or "task"
         if world_kind not in WORLD_KINDS:
             raise ValueError(f"world_kind must be one of {list(WORLD_KINDS)}")
@@ -974,6 +1003,143 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             },
         )
 
+    def _world_def(self, client: str, description: str) -> str | None:
+        """People or things? One small call, charged like any other; None means an error was already sent."""
+        trace_id = f"{TRACE_ROOT}/kind/{uuid.uuid4().hex}"
+        with _LLM_LOCK:
+            budget = self._llm_budget(client, WORLD_KIND_BUDGET)
+            if budget is None:
+                return None
+            self._progress("doing", "Deciding whether this is a world of people or of things")
+            try:
+                people, why = about_people(description, trace_id=trace_id, max_budget=budget)
+            except Exception:
+                _settle_failed_call(budget, trace_id)
+                raise
+            _settle_daily_budget(budget, _trace_cost(trace_id))
+        self._progress("done", "A world of people, each with their own goals" if people else "A world of things and steps", why)
+        return "people" if people else "things"
+
+    def _generate_people_world(self, client: str, description: str) -> None:
+        """Description -> people with goals, beliefs and information -> exact rules (scripts/people_world.py).
+
+        Always an ongoing world. AI members choose the moves, each reading their own brief; a scripted dry run
+        checks that someone can act from the starting state.
+        """
+        trace_id = f"{TRACE_ROOT}/people/{uuid.uuid4().hex}"
+        with _LLM_LOCK:
+            budget = self._llm_budget(client, PEOPLE_WORLD_BUDGET)
+            if budget is None:
+                return
+            try:
+                try:
+                    prepared = prepare_people_world(description, trace_id=trace_id, max_budget=budget,
+                                                    progress=self._progress)
+                except Exception as error:
+                    if type(error).__name__ == "LLMBudgetExceededError":  # llm_client is imported lazily
+                        raise ValueError(_budget_message(error)) from None
+                    raise
+                guidance, attempts = "", []
+                best: tuple[int, dict[str, Any], dict[str, Any]] | None = None
+                for attempt in range(2):
+                    try:
+                        built = write_people_rules(prepared, trace_id=trace_id, max_budget=budget,
+                                                   progress=self._progress, guidance=guidance)
+                    except Exception as error:
+                        if type(error).__name__ == "LLMBudgetExceededError":  # llm_client is imported lazily
+                            if best is not None:
+                                self._progress("note", "Out of AI budget for this build", "keeping the earlier rules")
+                                break
+                            raise ValueError(_budget_message(error)) from None
+                        if not isinstance(error, (ActionDeclarationError, BundleError, ValueError, TypeError, KeyError)):
+                            raise
+                        attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})
+                        self._progress("note", "Those rules did not fit together", str(error)[:160])
+                        if attempt == 1 or _trace_cost(trace_id) >= budget - 0.05:
+                            if best is not None:
+                                break
+                            raise
+                        guidance = (
+                            "Your previous proposal was rejected by the local causal compiler: "
+                            f"{type(error).__name__}: {error}. Return a corrected proposal."
+                        )
+                        continue
+                    review = CausalModel.from_dict(built["causal_model"], bundle=built["bundle"]).as_review()
+                    self._progress(
+                        "done", f"Wrote {len(review['mechanics'])} rules and {len(review.get('processes') or [])} things "
+                        "that happen by themselves", "",
+                        [_words(m["action_kind"]) for m in review["mechanics"]] + [_words(p["process_id"]) for p in review.get("processes") or []],
+                    )
+                    self._progress("doing", "Test-running the rules with simple moves")
+                    try:
+                        dry, _, _ = run_world(built["bundle"], built["causal_model"], policy="scripted",
+                                              max_turns=DRY_RUN_TURNS_CONTINUING, trace_id=f"{trace_id}/dry-run-{attempt}")
+                        summary = dry["summary"]
+                        dry_row = {"ok": True, **summary}
+                        # Going in circles: one kind of move is all that still happens although the rules offer
+                        # several (2026-10-15 Waltzman: everyone raised the same concern from round 4 on).
+                        circling = len(review["mechanics"]) >= 3 and len(summary.get("moves_at_end") or []) <= 1
+                        idle = sorted(set(summary.get("idle_actors") or []) | set(summary.get("stalled_actors") or []))
+                        dry_row.update(circling=circling, stalled_actors=summary.get("stalled_actors") or [])
+                        score = 1 + (not circling) + (not idle) + bool(summary.get("active_at_end"))
+                        guidance = ""
+                        if circling:
+                            guidance += (
+                                f" A {DRY_RUN_TURNS_CONTINUING}-round test of your previous rules ended with only "
+                                f"{', '.join(summary.get('moves_at_end') or ['nothing'])} still happening: people "
+                                "repeated one action and nothing else could happen. Add the missing reverse rules and "
+                                "limits so the decision can still move."
+                            )
+                        if idle:
+                            guidance += _idle_guidance(dry, idle, DRY_RUN_TURNS_CONTINUING)
+                    except ValueError as error:
+                        dry_row, score = {"ok": False, "error": str(error)[:300]}, 0
+                        guidance = (
+                            f"A test run of your previous rules failed from the starting state: {error}. Make sure "
+                            "people can act from the starting state."
+                        )
+                    attempts.append(dry_row)
+                    sentence = _dry_run_sentence(dry_row, "ongoing")
+                    if dry_row.get("circling"):
+                        sentence += "; went in circles"
+                    self._progress("done", "Test run: " + sentence)
+                    if best is None or score > best[0]:
+                        best = (score, built, dry_row)
+                    if score >= 4 or attempt == 1 or _trace_cost(trace_id) >= budget - 0.15:
+                        break
+                    self._progress("doing", "Rewriting the rules so the world keeps moving", "the test run went in circles" if dry_row.get("circling") else "some people could not act")
+                assert best is not None
+                _, built, dry_row = best
+                bundle, causal = built["bundle"], built["causal_model"]
+                review = CausalModel.from_dict(causal, bundle=bundle).as_review()
+                trace_cost = _trace_cost(trace_id)
+            except Exception:
+                _settle_failed_call(budget, trace_id)
+                raise
+            daily_cost = _settle_daily_budget(budget, trace_cost)
+        self._json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "description": description,
+                "world_def": "people",
+                "world_kind": "ongoing",
+                "not_modeled": built["not_modeled"],
+                "bundle": bundle,
+                "causal_model": causal,
+                "review": review,
+                "briefs": built["briefs"],
+                "people": built["people"],
+                "coverage": built["coverage"],
+                "dropped_generated_rules": built["dropped_generated_rules"],
+                "dry_run": dry_row,
+                "dry_run_attempts": attempts,
+                "cost_usd": trace_cost,
+                "daily_cost_usd": daily_cost,
+                "trace_id": trace_id,
+            },
+        )
+
     def _generate_draft(self, client: str, body: dict[str, Any]) -> None:
         description = body.get("description")
         if not isinstance(description, str) or not description.strip():
@@ -1127,6 +1293,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                        and all(isinstance(v, str) and 0 < len(v) <= 80 for v in m.values()) for m in recent)
         ):
             raise ValueError(f"recent must be up to {MAX_RECENT_MOVES} {{actor, action}} moves")
+        # People worlds: each person's brief from their own profile, read by the AI choosing that person's moves.
+        briefs = body.get("briefs") or {}
+        if (
+            not isinstance(briefs, dict) or len(briefs) > 24
+            or not all(isinstance(k, str) and 0 < len(k) <= 80 and isinstance(v, str) and len(v) <= MAX_BRIEF_CHARS
+                       for k, v in briefs.items())
+        ):
+            raise ValueError(f"briefs must map up to 24 actor ids to text of at most {MAX_BRIEF_CHARS} characters")
         model = _requested_model(body)
         trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
         if execution_mode == "native_coordination":
@@ -1152,6 +1326,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         bundle, causal, policy=policy, model_name=model,
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
                         start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
+                        briefs=briefs,
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
