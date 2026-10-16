@@ -157,6 +157,16 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
                   [_effect("matter", "components.concern.status", "set", "resolved"),
                    _effect("matter", "components.concern.times_resolved", "add", 1)]),
+        # 2026-10-16 Waltzman inc15g: only the holder could resolve, but many remedies sit with the person the concern
+        # reached (a country obtaining its own authorization). The legal group rightly refused to resolve another
+        # country's gap, so no concern was ever resolved and every country could only keep raising it.
+        _mechanic("resolve-own-concern",
+                  "The person a concern reached makes the remedy on their own side, resolving that concern.",
+                  {"matter": _MATTER_SEL},
+                  [mine, arrived,
+                   _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
+                  [_effect("matter", "components.concern.status", "set", "resolved"),
+                   _effect("matter", "components.concern.times_resolved", "add", 1)]),
         _mechanic("reopen-concern",
                   "The person a resolved concern reached finds the remedy wanting and reopens it while the decision is open.",
                   {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
@@ -172,7 +182,7 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                                   "gte", _ref("decision", "components.group_decision.needed"))],
             [_effect("decision", "components.group_decision.status", "set", "authorized")]))
     fields = {"give-support": ["support", "decision"], "make-support-conditional": ["support", "decision", "matter"],
-              "restore-full-support": ["support", "decision", "matter"], "resolve-concern": ["matter"],
+              "restore-full-support": ["support", "decision", "matter"], "resolve-concern": ["matter"], "resolve-own-concern": ["matter"],
               "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"]}
     actions = [{"kind": m["action_kind"], "description": m["rationale"],
                 "fields": [{"name": f, "type": "entity_ref"} for f in fields[m["action_kind"]]]} for m in mechanics]

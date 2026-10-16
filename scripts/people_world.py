@@ -111,7 +111,9 @@ LIVENESS_GUIDANCE = (
     "places on their support names what would meet it, as a record the remedy changes (that concern resolved, that "
     "issue cleared, that assurance given); restoring support checks that record, so the person can see their "
     "condition was met. Work that is finished stays finished until new information or another person reopens it; "
-    "the person who just finished it does not undo it themselves."
+    "the person who just finished it does not undo it themselves. (7) Never write an action whose only effect is to add "
+    "to a count (for example a tally of concerns raised): repeating it changes a number, not the situation, so people "
+    "repeat it forever. An action changes a named record (this concern, this review, this person's readiness)."
 )
 
 
@@ -127,7 +129,10 @@ ACTION_LIVENESS_GUIDANCE = (
     "fits their position and that they could take more than once over the run; specialist groups need actions that "
     "do their specialist work. List such an action under the behavior whose state it moves back. When several "
     "people share a position (for example member countries), what the description says one of them does is an "
-    "example of what the position allows, not a limit: write the action so any of them can take it."
+    "example of what the position allows, not a limit: write the action so any of them can take it. When "
+    "existing_actions already cover something (a group decision's giving, conditioning and restoring support, "
+    "resolving and reopening concerns, and its deadline settling it), do not propose another action for it; "
+    "propose the practical and specialist work instead."
 )
 
 
@@ -170,7 +175,7 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "
         "rule; keep it as is. When the world has a group decision (entity category `group-decision`), support, concerns "
         "and the decision are exact compiled rules (give-support, make-support-conditional, restore-full-support, "
-        "resolve-concern, reopen-concern, and the deadline processes): rules may read the `support`, `concern` and "
+        "resolve-concern, resolve-own-concern, reopen-concern, and the deadline processes): rules may read the `support`, `concern` and "
         "`group_decision` components but never write them. Scheduled moments are entities in category `moment` whose `occurrences` rises when they "
         "happen; rules may read `ticks_until`, `occurrences` and `happening_now` (true only in the round right after "
         "the moment occurs, which is when people act; `ticks_until` is never 0 then, so to require that a meeting is on, "

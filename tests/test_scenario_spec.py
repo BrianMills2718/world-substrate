@@ -261,6 +261,15 @@ class GroupDecisionTests(unittest.TestCase):
         self._do("country-b", "make-support-conditional", matter=matter)
         self.assertEqual(self._decision()["support"], 1)
 
+    def test_the_person_a_concern_reached_can_resolve_it_on_their_own_side(self):
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertEqual(self._offered("country-c", "resolve-own-concern"), [])  # not the one it reached
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (2, 0))
+
     def test_short_support_postpones_at_the_deadline_then_enough_support_authorizes(self):
         matter = "info-clause-conflict-to-country-b"
         self._do("legal-group", "communicate", recipient="country-b")

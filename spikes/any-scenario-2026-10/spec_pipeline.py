@@ -79,7 +79,9 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
     context = {
         "people": [{"id": p.entity_id, "position": p.position} for p in spec.people],
         "behaviors_to_cover": wanted,
-        "existing_actions": [a["kind"] for a in bundle["actions"]],
+        # Kinds alone hid what the compiled actions do, so the writer re-proposed them (inc15g: its own postpone,
+        # reject and concern-raising actions beside the compiled decision).
+        "existing_actions": [{"kind": a["kind"], "description": a.get("description", "")} for a in bundle["actions"]],
         "entities": [{"id": e["id"], "categories": e["categories"], "components": e["components"]}
                      for e in bundle["entities"] if "information" not in e["categories"]
                      and "delivery" not in e["categories"]],
@@ -89,7 +91,7 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
             "Propose the actions people can attempt so the listed behaviors can happen. An action is something a "
             "person chooses to try (hold a meeting, reopen an issue, attach a condition to support, vote, "
             "deploy); things that happen on their own each tick are processes and are not actions. Do not "
-            "repeat an existing action. Fields name the entities or values the attempt needs (entity_ref for an "
+            "repeat an existing action or propose another that does what one already does. Fields name the entities or values the attempt needs (entity_ref for an "
             "entity); the person attempting it is implied, so never add an actor field. Name in for_behaviors the request_ids each action serves." + (" " + guidance if guidance else ""))},
             {"role": "user", "content": json.dumps(context, indent=2)}],
         ActionSignatures, task="world-substrate-action-signatures", trace_id=trace_id, max_budget=max_budget,
