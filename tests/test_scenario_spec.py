@@ -223,6 +223,24 @@ class GroupDecisionTests(unittest.TestCase):
         generated_max = causal_model_schema(self.bundle)["properties"]["processes"]["maxItems"]
         self.assertLessEqual(len(self.causal["processes"]) + generated_max, MAX_PROCESSES)
 
+    def test_the_rule_writer_is_asked_only_for_actions_no_compiled_rule_covers(self):
+        # 2026-10-16 inc15h (luna): asked for every action, compiled ones included, it returned a mismatched list.
+        from unittest.mock import patch
+        from scripts import people_world
+        bundle = dict(self.bundle, actions=self.bundle["actions"] + [
+            {"kind": "inspect-site", "description": "Inspect a site.", "fields": []}])
+        prepared = {"spec": ScenarioSpecV1.model_validate(_decision_spec()), "bundle": bundle, "compiled": self.causal,
+                    "coverage": {"rows": []}, "sigs": []}
+        seen = []
+
+        def stop(b, **_):
+            seen.extend(a["kind"] for a in b["actions"])
+            raise RuntimeError("stop")
+        with patch.object(people_world, "generate_causal_model", side_effect=stop), \
+                self.assertRaisesRegex(RuntimeError, "stop"):
+            people_world.write_people_rules(prepared, trace_id="t", max_budget=0.0, progress=lambda *a: None)
+        self.assertEqual(seen, ["inspect-site"])
+
     def _decision(self):
         return self.engine.world.entities["activate"].as_dict()["components"]["group_decision"]
 

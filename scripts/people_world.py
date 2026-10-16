@@ -178,7 +178,7 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
     progress("doing", "Writing the rules for what those attempts cause", "this is the longest step")
     rule_guidance = (
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "
-        "rule; keep it as is. When the world has a group decision (entity category `group-decision`), support, concerns "
+        "rule and is not in your list. When the world has a group decision (entity category `group-decision`), support, concerns "
         "and the decision are exact compiled rules (give-support, make-support-conditional, restore-full-support, "
         "resolve-concern, resolve-own-concern, reopen-concern, and the deadline processes): rules may read the `support`, `concern` and "
         "`group_decision` components but never write them. Scheduled moments are entities in category `moment` whose `occurrences` rises when they "
@@ -187,11 +187,18 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
         "check `happening_now` is true). Make these behaviors possible: " + " | ".join(behaviors)
         + (" " + guidance if guidance else "")
     )
-    generated, _ = generate_causal_model(
-        bundle, trace_id=trace_id, guidance=rule_guidance, world_kind="ongoing", reasoning_effort=EFFORT,
-        model=PEOPLE_MODEL, model_justification=PEOPLE_MODEL_WHY, max_budget=max_budget,
-        max_output_tokens=RULES_OUTPUT_TOKENS,
-    )
+    # The writer gets only the actions no compiled rule covers. 2026-10-16 inc15h (luna): asked for one rule per
+    # action including the compiled ones (discarded at merge anyway), it returned a mismatched action list twice and
+    # the build failed. Fewer rules to write also means fewer output tokens.
+    compiled_kinds = {m["action_kind"] for m in compiled["mechanics"]}
+    to_write = {**bundle, "actions": [a for a in bundle["actions"] if a["kind"] not in compiled_kinds]}
+    generated: dict[str, Any] = {"mechanics": [], "processes": [], "terminal": None}
+    if to_write["actions"]:
+        generated, _ = generate_causal_model(
+            to_write, trace_id=trace_id, guidance=rule_guidance, world_kind="ongoing", reasoning_effort=EFFORT,
+            model=PEOPLE_MODEL, model_justification=PEOPLE_MODEL_WHY, max_budget=max_budget,
+            max_output_tokens=RULES_OUTPUT_TOKENS,
+        )
     generated = {k: v for k, v in generated.items() if k != "review"}
     causal, dropped = sp.merge_causal(compiled, generated)
     causal, pinned = sp.pin_named_slots(spec, causal)
