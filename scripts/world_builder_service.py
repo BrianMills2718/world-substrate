@@ -490,8 +490,11 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
     bundle, causal = first["request"]["bundle"], first["request"]["causal_model"]
     build = rows.get(build_trace_id) if build_trace_id else None
     if build is not None and (build["path"] != "/generate-world"
-                              or (build["result"] or {}).get("world_fingerprint") != fingerprint):
-        build = None  # the rules were edited after the build, or another build: show the run without its build
+                              or (build["result"] or {}).get("world_fingerprint") != fingerprint
+                              or build.get("client") != first.get("client")):
+        # The rules were edited after the build, it is another build, or another visitor's build (its description
+        # and briefs are theirs): show the run without a build.
+        build = None
     built = (build or {}).get("result") or {}
     return {
         "schema": SHARE_SCHEMA,
