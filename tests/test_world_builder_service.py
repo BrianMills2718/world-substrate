@@ -589,6 +589,39 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, payload = self.get("/share/doesnotexist")
         self.assertEqual(status, 404, payload)
 
+    def test_readout_cites_only_recorded_events_and_travels_with_the_share(self):
+        from scripts import run_readout
+        ids, transcript = self._scripted_rounds(3)
+        moves = [row for t in transcript for row in t["actors"].values() if row["status"] == "accepted"]
+        self.assertTrue(moves and all(m["event_id"] for m in moves))  # every move names its Engine event
+        real = run_readout.evidence_events(transcript)[0]["event_id"]
+
+        def fake_read(rounds, *, people, model, trace_id, max_budget):
+            self.assertEqual(rounds, transcript)  # read from the server's own log, not the page
+            parsed = {"summary": "Things happened.", "mechanisms": [
+                {"id": "separate-channels", "status": "present", "event_ids": [real, "e99999"], "explanation": "Yes."},
+                {"id": "slowed-meetings", "status": "present", "event_ids": ["e99999"], "explanation": "Invented."},
+            ]}
+            return run_readout.validate_readout("coordination", parsed, run_readout.evidence_events(rounds)), None
+
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(run_readout, "read_run", fake_read):
+            status, payload = self.post("/readout", {"build_trace_id": None, "run_trace_ids": ids})
+        self.assertEqual(status, 200, payload)
+        by_id = {m["id"]: m for m in payload["readout"]["mechanisms"]}
+        self.assertEqual(by_id["separate-channels"]["event_ids"], [real])
+        self.assertEqual(by_id["separate-channels"]["dropped_event_ids"], ["e99999"])
+        self.assertEqual(by_id["slowed-meetings"]["status"], "missing")  # no real event, so not present
+        self.assertEqual(by_id["reopened-issues"]["status"], "missing")
+        with patch.object(service, "_trace_cost", side_effect=AssertionError("a share must not call the AI")):
+            status, shared = self.post("/share", {"run_trace_ids": ids, "readout_trace_id": payload["trace_id"]})
+            self.assertEqual(status, 200, shared)
+            status, record = self.get("/share/" + shared["share_id"])
+        self.assertEqual(record["readout"], payload["readout"])
+        # A readout of other rounds does not travel with the link.
+        status, shared = self.post("/share", {"run_trace_ids": ids[:2], "readout_trace_id": payload["trace_id"]})
+        status, record = self.get("/share/" + shared["share_id"])
+        self.assertNotIn("readout", record)
+
     def test_provider_out_of_credit_is_said_plainly(self):
         # 2026-10-16: the OpenRouter account ran out of credit and the page said "internal world-builder error".
         class LLMQuotaExhaustedError(Exception):

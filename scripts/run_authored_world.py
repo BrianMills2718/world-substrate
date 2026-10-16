@@ -385,6 +385,10 @@ def run_world(
                 # Whether the accepted move actually changed the world.
                 "changed": bool(outcome.get("status") == "accepted" and _state_changes(outcome.get("event") or {})),
                 "blocked_by_rules": blocked_by_rules.get(actor, []),
+                # The Engine event this move made and what it changed, so an analysis of the run (the "What
+                # happened" readout) can cite the exact event behind each claim.
+                "event_id": (outcome.get("event") or {}).get("event_id"),
+                "changes": _state_changes(outcome.get("event") or {}) if outcome.get("status") == "accepted" else [],
             }
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
@@ -395,6 +399,10 @@ def run_world(
                 "turn": turn + turn_offset,
                 # Changes the world made by itself this round (installed processes).
                 "world_changes": [event["rule_id"] for event in advanced.get("events", [])],
+                "world_events": [
+                    {"event_id": event.get("event_id"), "rule_id": event["rule_id"], "changes": _state_changes(event)}
+                    for event in advanced.get("events", [])
+                ],
                 "revision_when_decided": revision,
                 "committed_first": order[0],
                 "actors": rows,
