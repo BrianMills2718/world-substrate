@@ -87,7 +87,10 @@ def _words(value: str) -> str:
 LIVENESS_GUIDANCE = (
     "This world keeps running with people acting every round, so: (1) no action may be repeatable without limit by "
     "the same actor on the same thing; record that it was done (for example a concern's status becomes raised) and "
-    "check that it was not done already. (2) Every state a rule can push one way needs a rule that can push it back "
+    "check that it was not done already, but never forever: something that recurs must clear that record so the "
+    "work can be done again later (a scheduled moment occurring, new information arriving, another person's action, "
+    "a concern being reopened), for example each meeting lets every group report again. A person whose every action "
+    "is done once and never cleared has nothing to do for the rest of the run. (2) Every state a rule can push one way needs a rule that can push it back "
     "(a raised concern can be addressed or resolved, conditional support can become full support again, a postponed "
     "or withheld decision can be reconsidered, a slowed pace can recover). (3) Progress toward the scenario's "
     "decision must stay possible while concerns are open."

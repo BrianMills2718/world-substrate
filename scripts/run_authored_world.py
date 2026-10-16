@@ -133,6 +133,13 @@ def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
     return lines[-6:]
 
 
+def _run_event_id(turn: int, event_id: str | None) -> str | None:
+    """An event id unique across the whole run. Live play runs each round in a fresh Engine restored from the last
+    snapshot, so the Engine's own ids start again every round (2026-10-16 Waltzman: e00001 named 40 different moves,
+    and the readout's checked citations pointed at the wrong ones)."""
+    return f"r{turn}-{event_id}" if event_id else None
+
+
 def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
     """An event's changes minus the engine's own bookkeeping (revision, cause stamps)."""
     return [
@@ -387,7 +394,7 @@ def run_world(
                 "blocked_by_rules": blocked_by_rules.get(actor, []),
                 # The Engine event this move made and what it changed, so an analysis of the run (the "What
                 # happened" readout) can cite the exact event behind each claim.
-                "event_id": (outcome.get("event") or {}).get("event_id"),
+                "event_id": _run_event_id(turn + turn_offset, (outcome.get("event") or {}).get("event_id")),
                 "changes": _state_changes(outcome.get("event") or {}) if outcome.get("status") == "accepted" else [],
             }
             if said_retry is not None:
@@ -400,7 +407,8 @@ def run_world(
                 # Changes the world made by itself this round (installed processes).
                 "world_changes": [event["rule_id"] for event in advanced.get("events", [])],
                 "world_events": [
-                    {"event_id": event.get("event_id"), "rule_id": event["rule_id"], "changes": _state_changes(event)}
+                    {"event_id": _run_event_id(turn + turn_offset, event.get("event_id")), "rule_id": event["rule_id"],
+                     "changes": _state_changes(event)}
                     for event in advanced.get("events", [])
                 ],
                 "revision_when_decided": revision,

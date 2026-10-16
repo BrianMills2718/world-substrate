@@ -75,8 +75,10 @@ def _ledger_cap() -> float:
 # Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
 WORLD_BUDGET = 0.20
 # A people world (scripts/people_world.py): one stronger-model call for the people, goals and information, one for
-# the rules, a small one for the attempts, at most one compiler-guided rules retry.
-PEOPLE_WORLD_BUDGET = 0.80
+# the rules, a small one for the attempts, at most one compiler- or test-run-guided rules retry. 2026-10-16 Waltzman
+# (inc14b): the first rules cost $0.71 of $0.80, so the retry that would have fixed 9 of 10 stalled people never ran;
+# $1.30 leaves room for it.
+PEOPLE_WORLD_BUDGET = 1.30
 # The small call that decides whether a description is a world of people or of things.
 WORLD_KIND_BUDGET = 0.01
 WORLD_DEFS = ("things", "people", "auto")

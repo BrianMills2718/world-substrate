@@ -594,6 +594,10 @@ class WorldBuilderServiceTests(unittest.TestCase):
         ids, transcript = self._scripted_rounds(3)
         moves = [row for t in transcript for row in t["actors"].values() if row["status"] == "accepted"]
         self.assertTrue(moves and all(m["event_id"] for m in moves))  # every move names its Engine event
+        # Each round runs in a fresh Engine, yet ids stay unique across the run (inc14b reused e00001 every round).
+        every = [e["event_id"] for e in run_readout.evidence_events(transcript)] + [m["event_id"] for m in moves]
+        self.assertEqual(len(set(m["event_id"] for m in moves)), len(moves))
+        self.assertTrue(all(i.startswith("r") for i in every))
         real = run_readout.evidence_events(transcript)[0]["event_id"]
 
         def fake_read(rounds, *, people, model, trace_id, max_budget):
