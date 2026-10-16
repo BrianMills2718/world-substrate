@@ -166,7 +166,7 @@ def fast_route() -> Any:
 # people-step call took 42-53 s on some tries and 87-104 s on others, at random, even sorted by throughput (deploy1-6,
 # speed test), and the build has to reach its first round within 150 s. Each copy is charged like any call; the
 # service keeps a reservation for a copy still running when the build ends (unfinished_hedges). 1 turns it off.
-# The general fix belongs in llm_client (BrianMills2718/llm_client issue "hedged requests").
+# The general fix belongs in llm_client (BrianMills2718/llm_client#286).
 HEDGE_COPIES = max(1, int(os.environ.get("WORLD_BUILDER_HEDGE_COPIES") or 2))
 _HEDGES: dict[str, list[Future]] = {}
 _HEDGE_LOCK = threading.Lock()
