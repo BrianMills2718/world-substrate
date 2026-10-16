@@ -46,11 +46,10 @@ in `actions.json`; `./check` then rebuilds `world.json` with the new record's en
 
 Files you edit: `rules.json`, `records.json` (the world's records: `record_id`, `kind`, `label`, `public_state` as
 `[{"key", "value"}]`, `hidden_state`, `visible_to_actor_ids`; a field `x` becomes path `components.<record_id>.x` on
-entity `<record_id with - for _>`), and `actions.json` (only to add or change fields; keep every action kind, and
+entity `<record_id with each _ turned into ->`), and `actions.json` (only to add or change fields; keep every action kind, and
 name an entity field after the record it points to). The rest are read-only:
 - `world.json`: the world, its components (with fields), entities, `initial_builtin_state`, `allowed_state_paths`
   (rebuilt by `./check` from `records.json`).
-- `actions.json`: the actions you write rules for (kind, description, fields).
 - `example_rule.json`: one finished, correct rule from this world, for the exact JSON shape.
 - `compiled_rules.json`: rules that already exist (support, concerns, the decision, meetings, passing information).
   Your rules may read the components they own but never write them.
@@ -275,11 +274,13 @@ def _dead_writes(causal: dict[str, Any], generated_kinds: set[str]) -> list[str]
     rules = [("action", m["action_kind"], m) for m in causal["mechanics"]] + [
         ("process", p["process_id"], p) for p in causal.get("processes") or []]
     reads: dict[str, set[str]] = {}
-    for _, name, rule in rules:
+    for kind_, name, rule in rules:
         written = {e["path"] for e in rule.get("effects") or []}
         for c in rule.get("checks") or []:
             for path in _paths([c.get("left"), c.get("right")]):
-                if path not in written:  # reading what you also write is a guard, not a use
+                # An action that checks a field counts as using it (a next step waiting on this one), even if it
+                # also writes it; a process that writes the field it checks is only resetting it.
+                if kind_ == "action" or path not in written:
                     reads.setdefault(path, set()).add(name)
     problems = []
     for kind_, name, rule in rules:
@@ -315,39 +316,53 @@ def write_rules(ws: Path, *, model: str = HARNESS_MODEL, effort: str = HARNESS_E
     env = {**os.environ, "CODEX_HOME": str(codex_home(ws))}
     if not env.get("OPENROUTER_API_KEY"):
         raise RuntimeError("OPENROUTER_API_KEY is not set")
-    cmd = ["codex", "exec", "--json", "--ephemeral", "--skip-git-repo-check", "--sandbox", "workspace-write",
-           "-C", str(ws), "-m", model, "-c", f"model_reasoning_effort={effort}", TASK]
+    common = ["--json", "--skip-git-repo-check", "-m", model, "-c", f"model_reasoning_effort={effort}",
+              "-c", 'sandbox_mode="workspace-write"']
     started = time.monotonic()
     usage = {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0}
-    timed_out = False
-    with (ws / "codex-events.jsonl").open("a") as log:
-        proc = subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-                                stdin=subprocess.DEVNULL)
-        assert proc.stdout is not None
-        for line in proc.stdout:
-            try:
-                event = json.loads(line)
-            except json.JSONDecodeError:
-                event = {"type": "text", "text": line.rstrip("\n")}
-            log.write(json.dumps({"t": round(time.monotonic() - started, 1), **event}) + "\n")
-            log.flush()
-            if event.get("type") == "turn.completed":
-                for k in usage:
-                    usage[k] += int((event.get("usage") or {}).get(k) or 0)
-            if on_event:
-                on_event(event)
-            if time.monotonic() - started > timeout_s:
-                timed_out = True
-                proc.kill()
-                break
-        proc.wait()
+    timed_out, thread_id, turns, exit_code = False, None, 0, None
+    prompt = TASK
+    # Codex may end its turn before ./check passes (2026-10-16 h6, low effort: it reported the failure and stopped
+    # after 79 s). Resume the same session with the check's output until it passes or the time runs out.
+    while not timed_out:
+        turns += 1
+        cmd = (["codex", "exec", *common, prompt] if thread_id is None
+               else ["codex", "exec", "resume", *common, thread_id, prompt])
+        with (ws / "codex-events.jsonl").open("a") as log:
+            proc = subprocess.Popen(cmd, env=env, cwd=ws, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                    text=True, stdin=subprocess.DEVNULL)
+            assert proc.stdout is not None
+            for line in proc.stdout:
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    event = {"type": "text", "text": line.rstrip("\n")}
+                log.write(json.dumps({"t": round(time.monotonic() - started, 1), "turn": turns, **event}) + "\n")
+                log.flush()
+                if event.get("type") == "thread.started":
+                    thread_id = thread_id or event.get("thread_id")
+                if event.get("type") == "turn.completed":
+                    for k in usage:
+                        usage[k] += int((event.get("usage") or {}).get(k) or 0)
+                if on_event:
+                    on_event(event)
+                if time.monotonic() - started > timeout_s:
+                    timed_out = True
+                    proc.kill()
+                    break
+            exit_code = proc.wait()
+        passed, problems, _ = check(ws)
+        if passed or thread_id is None or time.monotonic() - started > timeout_s - 20:
+            break
+        prompt = ("./check still fails with these problems:\n" + "\n".join(f"- {p}" for p in problems[:20])
+                  + "\nKeep going: fix them with small edits and run ./check again until it prints CHECK PASSED.")
     passed, problems, built = check(ws)
     _log_check(ws, passed, problems)
     price_in, price_out = PRICES.get(model, (0.0, 0.0))
     cost = ((usage["input_tokens"] - usage["cached_input_tokens"]) * price_in
             + usage["cached_input_tokens"] * price_in * 0.25 + usage["output_tokens"] * price_out) / 1e6
     return {"passed": passed, "problems": problems, "built": built, "seconds": round(time.monotonic() - started, 1),
-            "timed_out": timed_out, "exit_code": proc.returncode, "usage": usage, "cost_usd_estimate": round(cost, 4),
+            "timed_out": timed_out, "exit_code": exit_code, "turns": turns, "usage": usage, "cost_usd_estimate": round(cost, 4),
             "model": model, "effort": effort}
 
 
