@@ -168,6 +168,24 @@ def pin_named_slots(spec: ScenarioSpecV1, causal: dict[str, Any]) -> tuple[dict[
     return causal, pinned
 
 
+def fix_moment_due_checks(causal: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """A generated action check "ticks_until == 0" can never pass: the tick that brings a moment to 0 also restarts
+    it, before anyone acts (2026-10-16 Waltzman inc15a: "the weekly meeting is due" kept four countries waiting 40
+    rounds). What the rule means is "the moment is on now", which the compiled `happening_now` field says."""
+    fixed = []
+    for m in causal.get("mechanics", []):
+        for check in m.get("checks") or []:
+            for side, other in (("left", "right"), ("right", "left")):
+                ref = (check.get(side) or {}).get("participant") if isinstance(check.get(side), dict) else None
+                if (isinstance(ref, dict) and ref.get("path") == "components.moment.ticks_until"
+                        and check.get("op") == "eq" and check.get(other) == {"literal": 0}):
+                    check[side] = {"participant": {**ref, "path": "components.moment.happening_now"}}
+                    check[other] = {"literal": True}
+                    fixed.append(f"{m.get('mechanic_id')}: check '{check.get('label')}' reads happening_now "
+                                 "(ticks_until is never 0 when people act)")
+    return causal, fixed
+
+
 def record_fields(spec: ScenarioSpecV1, sigs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Give each action an entity field for every world record or moment its behaviors involve, so its rule can
     change them (the signature call proposes people fields; without these no rule can reach a record)."""

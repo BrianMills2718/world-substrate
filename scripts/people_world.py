@@ -149,7 +149,9 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
     rule_guidance = (
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "
         "rule; keep it as is. Scheduled moments are entities in category `moment` whose `occurrences` rises when they "
-        "happen; rules may read `ticks_until` and `occurrences`. Make these behaviors possible: " + " | ".join(behaviors)
+        "happen; rules may read `ticks_until`, `occurrences` and `happening_now` (true only in the round right after "
+        "the moment occurs, which is when people act; `ticks_until` is never 0 then, so to require that a meeting is on, "
+        "check `happening_now` is true). Make these behaviors possible: " + " | ".join(behaviors)
         + (" " + guidance if guidance else "")
     )
     generated, _ = generate_causal_model(
@@ -159,6 +161,7 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
     generated = {k: v for k, v in generated.items() if k != "review"}
     causal, dropped = sp.merge_causal(compiled, generated)
     causal, pinned = sp.pin_named_slots(spec, causal)
+    causal, due = sp.fix_moment_due_checks(causal)
     build_engine(bundle, causal)  # compile + install: raises if any rule is rejected
     coverage = sp.behavior_coverage(spec, prepared["sigs"], causal, coverage)
     not_modeled = list(spec.unsupported) + [
@@ -171,7 +174,7 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
         "people": [{"id": p.entity_id, "label": p.label, "position": p.position} for p in spec.people],
         "coverage": coverage,
         "not_modeled": not_modeled,
-        "dropped_generated_rules": dropped + [f"slot pinned: {x}" for x in pinned],
+        "dropped_generated_rules": dropped + [f"slot pinned: {x}" for x in pinned] + [f"check fixed: {x}" for x in due],
         "scenario_spec": json.loads(spec.model_dump_json()),
     }
 

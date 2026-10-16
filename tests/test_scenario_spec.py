@@ -149,6 +149,32 @@ class CompilerTests(unittest.TestCase):  # S2
                 ticks.append(self.engine.world.tick)
         self.assertEqual(ticks, [2, 5, 8])
 
+    def test_a_moment_is_happening_only_in_the_round_after_it_occurs(self):
+        # inc15a: every rule gated on "ticks_until == 0" never passed, because the tick that reaches 0 restarts it.
+        from world_substrate.mechanisms.time import ClockAdvanceProcess
+        self.engine.registry.register_process(ClockAdvanceProcess())
+        on = []
+        for _ in range(9):
+            self.engine.advance(1)
+            moment = self.engine.world.entities["weekly-meeting"].as_dict()["components"]["moment"]
+            self.assertNotEqual(moment["ticks_until"], 0)  # what people see when they act
+            if moment["happening_now"]:
+                on.append(self.engine.world.tick)
+        self.assertEqual(on, [2, 5, 8])
+
+    def test_a_meeting_due_check_is_rewritten_to_one_that_can_pass(self):
+        from spec_pipeline import fix_moment_due_checks
+        ref = {"participant": {"name": "weekly_meeting", "path": "components.moment.ticks_until"}}
+        causal = {"mechanics": [{"mechanic_id": "raise", "checks": [
+            {"label": "the weekly meeting is due", "left": ref, "op": "eq", "right": {"literal": 0}},
+            {"label": "the meeting is ahead", "left": ref, "op": "gt", "right": {"literal": 0}}]}]}
+        fixed_causal, fixed = fix_moment_due_checks(causal)
+        due, ahead = fixed_causal["mechanics"][0]["checks"]
+        self.assertEqual(due["left"]["participant"]["path"], "components.moment.happening_now")
+        self.assertEqual(due["right"], {"literal": True})
+        self.assertEqual(ahead["left"]["participant"]["path"], "components.moment.ticks_until")  # untouched
+        self.assertEqual(len(fixed), 1)
+
     def test_coverage_marks_delivery_exact_and_the_rest_for_the_generator(self):
         rows = {r["request_id"]: r["classification"] for r in self.coverage["rows"]}
         # mentioning an item does not make a behavior delivery: the concern slowing a meeting needs its own rules
@@ -179,11 +205,11 @@ class RecordedPipelineRepairTests(unittest.TestCase):
         generated = {**self.recorded,
                      "mechanics": [m for m in self.recorded["mechanics"] if m["action_kind"] != "communicate"],
                      "processes": [p for p in self.recorded["processes"]
-                                   if p["process_id"] not in ("moment-countdown", "moment-occurs")]}
+                                   if p["process_id"] not in ("moment-passes", "moment-countdown", "moment-occurs")]}
         merged, dropped = merge_causal(self.compiled, generated)
         writers = [p["process_id"] for p in merged["processes"]
                    if any(e["path"].startswith("components.moment.") for e in p["effects"])]
-        self.assertEqual(writers, ["moment-countdown", "moment-occurs"])
+        self.assertEqual(writers, ["moment-passes", "moment-countdown", "moment-occurs"])
         self.assertIn("generated process advance-scheduled-moments dropped: it writes what a compiled rule owns",
                       dropped)
 
@@ -280,6 +306,8 @@ class RecordedWaltzmanRunTests(unittest.TestCase):  # S5/S6: claims in the Asses
         recorded = json.loads((RUN2 / "run/bundle_after_run.json").read_text())
         bundle["actions"] = recorded["actions"]
         bundle["components"] = recorded["components"]
+        for entity in bundle["entities"]:  # the recorded run predates the moment's happening_now field
+            entity["components"].get("moment", {}).pop("happening_now", None)
         causal, pinned = pin_named_slots(spec, json.loads((RUN2 / "run/causal_after_run.json").read_text()))
         self.assertIn("block-at-deadline-for-missing-support.activation_decision_deadline -> activation-decision-deadline",
                       pinned)

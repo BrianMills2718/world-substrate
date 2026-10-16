@@ -48,7 +48,11 @@ DELIVERY = {"name": "delivery", "fields": [
 MOMENT = {"name": "moment", "fields": [
     {"name": "ticks_until", "type": "integer", "default": 0},
     {"name": "every_ticks", "type": "integer", "default": -1},
-    {"name": "occurrences", "type": "integer", "default": 0}]}
+    {"name": "occurrences", "type": "integer", "default": 0},
+    # True for the one round right after the moment occurs (the round people act in), false otherwise. ticks_until
+    # is never 0 when people act: the same tick that reaches 0 restarts it (2026-10-16 Waltzman inc15a: four countries
+    # waited 40 rounds for "the weekly meeting is due").
+    {"name": "happening_now", "type": "boolean", "default": False}]}
 COMMUNICATE_ACTION = {"kind": "communicate",
                       "description": "Deliver one represented information item to its declared recipient.",
                       "fields": [{"name": "information", "type": "entity_ref"},
@@ -74,6 +78,12 @@ def _moment_processes() -> list[dict[str, Any]]:
     it = lambda path: {"participant": {"name": "it", "path": f"components.moment.{path}"}}  # noqa: E731
     selector = {"categories": ["moment"], "components": ["moment"]}
     return [
+        # Listed first, so it runs before moment-occurs in a tick: a moment that occurred last tick is over now.
+        {"process_id": "moment-passes", "rationale": "A moment that happened last round is over.",
+         "selector": selector,
+         "checks": [{"label": "the moment is happening", "left": it("happening_now"), "op": "eq", "right": {"literal": True}}],
+         "effects": [{"participant": "it", "path": "components.moment.happening_now", "op": "set",
+                      "value": {"literal": False}}]},
         {"process_id": "moment-countdown", "rationale": "A scheduled moment's countdown falls by one each tick.",
          "selector": selector,
          "checks": [{"label": "the moment is still ahead", "left": it("ticks_until"), "op": "gt", "right": {"literal": 0}}],
@@ -83,6 +93,8 @@ def _moment_processes() -> list[dict[str, Any]]:
          "selector": selector,
          "checks": [{"label": "the moment is due", "left": it("ticks_until"), "op": "eq", "right": {"literal": 0}}],
          "effects": [{"participant": "it", "path": "components.moment.occurrences", "op": "add", "value": {"literal": 1}},
+                     {"participant": "it", "path": "components.moment.happening_now", "op": "set",
+                      "value": {"literal": True}},
                      {"participant": "it", "path": "components.moment.ticks_until", "op": "set",
                       "value": it("every_ticks")}]},
     ]
@@ -119,7 +131,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
     for m in spec.scheduled_moments:
         entities.append({"id": _eid(m.moment_id), "label": m.description[:80], "categories": ["moment", _eid(m.moment_id)],
                          "components": {"moment": {"ticks_until": m.tick, "every_ticks": m.every_ticks or -1,
-                                                   "occurrences": 0}}})
+                                                   "occurrences": 0, "happening_now": False}}})
     bundle = {"schema_version": BUNDLE_SCHEMA,
               "world": {"id": _eid(spec.scenario_id), "label": spec.title, "summary": spec.description[:400],
                         "location": "scenario", "content_version": 1},
