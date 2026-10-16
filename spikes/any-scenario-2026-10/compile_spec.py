@@ -214,6 +214,19 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                                          "resolved")],
                   [_effect("matter", "components.concern.status", "set", "open"),
                    _effect("matter", "components.concern.times_reopened", "add", 1)]),
+        # Anyone can put a matter before the group and anyone can settle one; open matters at a deadline postpone a
+        # decision that has the support (decision-postponed-for-open-matters). 2026-10-16 Waltzman deploy12: the rule
+        # writer, told it may count agenda matters, wrote only own-flag rules again, so meetings could never slow the
+        # decision and the regional health network had no move with any effect in 40 rounds.
+        _mechanic("put-matter-on-agenda",
+                  "Anyone puts a matter before the group while the decision is open; it stays on the agenda until "
+                  "someone settles it.", {"decision": _DECISION_SEL}, [is_open],
+                  [_effect("decision", "components.group_decision.agenda_items", "add", 1)]),
+        _mechanic("settle-agenda-matter", "Anyone settles one of the matters still open on the group's agenda.",
+                  {"decision": _DECISION_SEL},
+                  [is_open, _check("a matter is still open on the agenda",
+                                   _ref("decision", "components.group_decision.agenda_items"), "gt", 0)],
+                  [_effect("decision", "components.group_decision.agenda_items", "subtract", 1)]),
     ]
     if not has_deadline:
         mechanics.append(_mechanic(
@@ -225,7 +238,8 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
     fields = {"give-support": ["support", "decision"], "make-support-conditional": ["support", "decision", "matter"],
               "restore-full-support": ["support", "decision", "matter"], "resolve-concern": ["matter"], "resolve-own-concern": ["matter"],
               "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"],
-              "raise-new-concern": ["matter", "decision"]}
+              "raise-new-concern": ["matter", "decision"], "put-matter-on-agenda": ["decision"],
+              "settle-agenda-matter": ["decision"]}
     actions = [{"kind": m["action_kind"], "description": m["rationale"],
                 "fields": [{"name": f, "type": "entity_ref"} for f in fields[m["action_kind"]]]} for m in mechanics]
     concern_it = lambda path: _ref("it", f"components.concern.{path}")  # noqa: E731
@@ -385,7 +399,7 @@ WORK_CYCLE_TICKS = 4  # the cycle when the scenario has no repeating moment (one
 # A shorter repeating moment does not limit anything: deploy5's weekly meeting (every_ticks 1) cleared every flag each
 # round and all ten people repeated one action for 40 rounds.
 MIN_WORK_CYCLE_TICKS = 3
-RECURRING_COMPILED = ("raise-new-concern",)  # compiled actions limited to once per person per work cycle
+RECURRING_COMPILED = ("raise-new-concern", "put-matter-on-agenda", "settle-agenda-matter")  # compiled actions limited to once per person per work cycle
 
 
 def work_field(kind: str) -> str:

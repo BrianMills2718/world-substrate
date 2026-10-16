@@ -398,6 +398,23 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertIn("decision-authorized-at-last-deadline", self._until_deadline())
         self.assertEqual(self._decision()["status"], "authorized")
 
+    def test_anyone_can_put_a_matter_on_the_agenda_once_a_cycle_and_anyone_can_settle_it(self):
+        # 2026-10-16 deploy12: the writer ignored the agenda, so the moves are compiled; a person outside the
+        # decision (the legal group) holds it up and a decider settles it.
+        from compile_spec import add_work_cycle
+        from world_substrate.mechanisms.time import ClockAdvanceProcess
+        add_work_cycle(ScenarioSpecV1.model_validate(_decision_spec()), self.bundle, self.causal, [])
+        self.engine, _, _ = self.build(self.bundle, self.causal)
+        self.engine.registry.register_process(ClockAdvanceProcess())
+        self._do("legal-group", "put-matter-on-agenda", decision="activate")
+        self.assertEqual(self._decision()["agenda_items"], 1)
+        with self.assertRaises(Exception):
+            self._do("legal-group", "put-matter-on-agenda", decision="activate")
+        self._do("country-b", "settle-agenda-matter", decision="activate")
+        self.assertEqual(self._decision()["agenda_items"], 0)
+        with self.assertRaises(Exception):
+            self._do("country-a", "settle-agenda-matter", decision="activate")
+
     def test_a_generated_move_may_count_matters_on_the_agenda_and_nothing_else(self):
         from spec_pipeline import merge_causal
         add = {"participant": "d", "path": "components.group_decision.agenda_items", "op": "add", "value": {"literal": 1}}
