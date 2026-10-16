@@ -94,6 +94,20 @@ LIVENESS_GUIDANCE = (
 )
 
 
+# 2026-10-15 live Waltzman run (world-builder-live, 31 rounds): the actions covered only the paper's slowing moves
+# (raise a concern, request a delay, withhold support); none fixed a concern, made a readiness true or restored
+# support, so after one delay request each, 7 of 10 members had nothing left to do. Rules cannot add actions, so the
+# reverse moves must be asked for here.
+ACTION_LIVENESS_GUIDANCE = (
+    "This world keeps running for many rounds, so also propose the actions that move things back and forward: for "
+    "every action that raises, blocks, delays, withholds or reopens something, an action someone can take to address, "
+    "resolve, restore or reconsider it (for example addressing a raised concern, making a readiness complete, giving "
+    "full support again, reconsidering a postponed decision). Every person listed must have at least one action that "
+    "fits their position and that they could take more than once over the run; specialist groups need actions that "
+    "do their specialist work. List such an action under the behavior whose state it moves back."
+)
+
+
 def prepare_people_world(description: str, *, trace_id: str, max_budget: float, progress: Progress) -> dict[str, Any]:
     """Description -> ScenarioSpecV1 -> compiled bundle and the attempts people can make (no rules yet)."""
     compile_spec, sp = _pipeline()
@@ -113,7 +127,7 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     bundle, compiled, coverage = compile_spec.compile_spec(spec)
     progress("doing", "Working out what each person can try to do")
     sigs, _ = sp.action_signatures(spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace_id,
-                                   max_budget=max_budget)
+                                   max_budget=max_budget, guidance=ACTION_LIVENESS_GUIDANCE)
     sigs = sp.record_fields(spec, sigs)
     bundle["actions"] = bundle["actions"] + [{k: a[k] for k in ("kind", "description", "fields")} for a in sigs]
     progress("done", "Things people can try", "", [_words(a["kind"]) for a in bundle["actions"]])
