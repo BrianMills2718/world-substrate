@@ -577,7 +577,7 @@ class WorkCycleTests(unittest.TestCase):
 
     def test_a_rule_without_the_limit_gets_it(self):
         from compile_spec import limit_to_work_cycle
-        rule = {"action_kind": "file-report", "checks": [], "effects": []}
+        rule = {"action_kind": "file-report", "actor_selector": {"components": ["member"]}, "checks": [], "effects": []}
         cycle = {"flags": {"file-report": "file_report_done"}}
         limited = limit_to_work_cycle([rule], cycle)[0]
         path = "components.work.file_report_done"
@@ -624,3 +624,57 @@ class HedgedCallTests(unittest.TestCase):
         from scripts import people_world as pw
         with self.assertRaisesRegex(RuntimeError, "boom"):
             pw.hedged("t/three", lambda: (_ for _ in ()).throw(RuntimeError("boom")))
+
+
+class NewConcernTests(unittest.TestCase):
+    """raise-new-concern: concerns keep coming, once per holder per work cycle (deploy7: rounds 11-30 empty)."""
+
+    def test_a_resolved_concern_can_be_raised_again_once_per_cycle(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import REMEDY_TICKS, add_work_cycle, compile_spec
+        from scripts.run_authored_world import build_engine
+        spec = ScenarioSpecV1.model_validate(_decision_spec())
+        bundle, causal, _ = compile_spec(spec)
+        cycle = add_work_cycle(spec, bundle, causal, [])
+        self.assertIn("raise-new-concern", cycle["flags"])
+        engine, _, _ = build_engine(bundle, causal)
+        matter = "info-clause-conflict-to-country-b"
+
+        def offered(actor, kind):
+            return [a["action"] for a in engine.discover(actor)["available"] if a["action"]["kind"] == kind
+                    and a["action"].get("matter", matter) == matter]
+
+        def do(actor, kind):
+            self.assertEqual(engine.submit(dict(offered(actor, kind)[0], controller="test"))["status"], "accepted")
+        do("legal-group", "communicate")
+        self.assertEqual(offered("legal-group", "raise-new-concern"), [])  # still open: nothing new to raise
+        do("country-b", "resolve-own-concern")
+        engine.advance(REMEDY_TICKS)
+        do("legal-group", "raise-new-concern")
+        concern = engine.world.entities[matter].as_dict()["components"]["concern"]
+        self.assertEqual((concern["status"], concern["times_raised"]), ("open", 1))
+        do("country-b", "resolve-own-concern")
+        engine.advance(REMEDY_TICKS)
+        self.assertEqual(offered("legal-group", "raise-new-concern"), [])  # once per work cycle
+        for _ in range(8):
+            if any(e["rule_id"] == "work-cycle-restarts" for e in engine.advance(1)["events"]):
+                break
+        self.assertEqual(len(offered("legal-group", "raise-new-concern")), 1)
+
+
+class ImpossibleCheckTests(unittest.TestCase):
+    def test_two_participants_that_can_never_be_one_entity_lose_their_equality_check(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import drop_impossible_checks
+        bundle = {"entities": [{"id": "m", "categories": ["moment"], "components": {"moment": {}}},
+                               {"id": "r", "categories": ["meeting-pace"], "components": {"meeting_pace": {}}}]}
+        same = {"label": "the record is the meeting", "left": {"action_field": "rec"}, "op": "eq",
+                "right": {"action_field": "mom"}}
+        keep = {"label": "other", "left": {"action_field": "rec"}, "op": "ne", "right": {"literal": ""}}
+        rule = {"action_kind": "meet", "participants": {"rec": {"categories": ["meeting-pace"]},
+                                                        "mom": {"categories": ["moment"]}}, "checks": [same, keep]}
+        out, dropped = drop_impossible_checks([rule], bundle)
+        self.assertEqual(out[0]["checks"], [keep])
+        self.assertEqual(len(dropped), 1)
+        both = {**rule, "participants": {"rec": {"categories": ["moment"]}, "mom": {"categories": ["moment"]}}}
+        self.assertEqual(drop_impossible_checks([both], bundle)[0][0]["checks"], [same, keep])  # possible: kept

@@ -292,9 +292,10 @@ def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -
     spec, bundle, compiled = prepared["spec"], prepared["bundle"], prepared["compiled"]
     coverage = json.loads(json.dumps(prepared["coverage"]))  # behavior_coverage edits rows; keep the prepared copy
     generated = {k: v for k, v in generated.items() if k != "review"}
-    generated["mechanics"] = compile_spec.limit_to_work_cycle(generated.get("mechanics") or [],
-                                                              prepared.get("work_cycle"))
+    generated["mechanics"], impossible = compile_spec.drop_impossible_checks(generated.get("mechanics") or [], bundle)
+    generated["mechanics"] = compile_spec.limit_to_work_cycle(generated["mechanics"], prepared.get("work_cycle"))
     causal, dropped = sp.merge_causal(compiled, generated)
+    dropped = impossible + dropped
     # An action whose whole generated rule was dropped (every effect wrote a compiled component) leaves the world, so
     # bundle and rules still match. 2026-10-16 inc15j (luna): reconsider-settled-issue only set a concern's status,
     # the merge removed it, and the build failed with "action kinds must exactly match the authoring bundle".

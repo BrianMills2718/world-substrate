@@ -72,7 +72,8 @@ CONCERN = {"name": "concern", "fields": [
     {"name": "status", "type": "string", "default": "open"},  # open | remedy_under_way | resolved
     {"name": "remedy_ticks_left", "type": "integer", "default": 0},
     {"name": "times_resolved", "type": "integer", "default": 0},
-    {"name": "times_reopened", "type": "integer", "default": 0}]}
+    {"name": "times_reopened", "type": "integer", "default": 0},
+    {"name": "times_raised", "type": "integer", "default": 0}]}
 GROUP_DECISION = {"name": "group_decision", "fields": [
     {"name": "question", "type": "string", "default": "decision"},
     {"name": "status", "type": "string", "default": "open"},  # open | authorized (deploying) | deployed | suspended | rejected
@@ -188,6 +189,20 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
                   [_effect("matter", "components.concern.status", "set", "remedy_under_way"),
                    _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS)]),
+        # Concerns keep coming: the texts have groups that "each raise small, true but local concerns", not one each.
+        # 2026-10-16 Waltzman deploy7: with each item delivered once, nobody acted in rounds 11-30 once the four
+        # concerns were resolved. Limited to once per work cycle (add_work_cycle).
+        _mechanic("raise-new-concern",
+                  "Whoever holds a resolved concern's information raises a new local concern on the same matter, "
+                  "through the same channel to the same person.",
+                  {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
+                  [_check("the actor holds this information", _ref("matter", "components.information.source_id"), "eq",
+                          {"entity_id": "actor"}), arrived, *unsettled,
+                   _check("the last concern on this matter is resolved", _ref("matter", "components.concern.status"),
+                          "eq", "resolved")],
+                  # what the new concern is stays in the actor's own words (parameters are fixed lists, not text)
+                  [_effect("matter", "components.concern.status", "set", "open"),
+                   _effect("matter", "components.concern.times_raised", "add", 1)]),
         _mechanic("reopen-concern",
                   "The person a resolved concern reached finds the remedy wanting and reopens it.",
                   {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
@@ -205,7 +220,8 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
              _effect("decision", "components.group_decision.deploy_ticks_left", "set", DEPLOY_TICKS)]))
     fields = {"give-support": ["support", "decision"], "make-support-conditional": ["support", "decision", "matter"],
               "restore-full-support": ["support", "decision", "matter"], "resolve-concern": ["matter"], "resolve-own-concern": ["matter"],
-              "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"]}
+              "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"],
+              "raise-new-concern": ["matter", "decision"]}
     actions = [{"kind": m["action_kind"], "description": m["rationale"],
                 "fields": [{"name": f, "type": "entity_ref"} for f in fields[m["action_kind"]]]} for m in mechanics]
     concern_it = lambda path: _ref("it", f"components.concern.{path}")  # noqa: E731
@@ -348,6 +364,7 @@ WORK_CYCLE_TICKS = 4  # the cycle when the scenario has no repeating moment (one
 # A shorter repeating moment does not limit anything: deploy5's weekly meeting (every_ticks 1) cleared every flag each
 # round and all ten people repeated one action for 40 rounds.
 MIN_WORK_CYCLE_TICKS = 3
+RECURRING_COMPILED = ("raise-new-concern",)  # compiled actions limited to once per person per work cycle
 
 
 def work_field(kind: str) -> str:
@@ -359,6 +376,8 @@ def add_work_cycle(spec: ScenarioSpecV1, bundle: dict[str, Any], compiled: dict[
     """Give every person a `work` record (one `<action>_done` flag per generated action) and a compiled process that
     clears it each time the scenario's first repeating moment happens, or every WORK_CYCLE_TICKS when none repeats.
     Edits bundle and compiled in place; returns what the rule writer is told about it, or None without actions."""
+    action_kinds = list(action_kinds) + [m["action_kind"] for m in compiled["mechanics"]
+                                         if m["action_kind"] in RECURRING_COMPILED]
     if not action_kinds:
         return None
     flags = {k: work_field(k) for k in action_kinds}
@@ -389,7 +408,34 @@ def add_work_cycle(spec: ScenarioSpecV1, bundle: dict[str, Any], compiled: dict[
                                    "selector": {"categories": ["moment"], "components": ["moment"]}}},
         "checks": [_check("the work cycle restarts now", _ref("cycle", "components.moment.happening_now"), "eq", True)],
         "effects": [_effect("it", f"components.work.{f}", "set", False) for f in flags.values()]})
-    return {"cycle_id": cycle_id, "cycle_label": cycle_label, "flags": flags}
+    cycle = {"cycle_id": cycle_id, "cycle_label": cycle_label, "flags": flags}
+    compiled["mechanics"] = limit_to_work_cycle(compiled["mechanics"], cycle)
+    return cycle
+
+
+def _matches(entity: dict[str, Any], selector: dict[str, Any]) -> bool:
+    return (set(selector.get("categories") or []) <= set(entity["categories"])
+            and set(selector.get("components") or []) <= set(entity["components"]))
+
+
+def drop_impossible_checks(mechanics: list[dict[str, Any]], bundle: dict[str, Any]) -> tuple[list[dict[str, Any]], list[str]]:
+    """Remove a check that two participants are the same entity when no entity can be both. 2026-10-16 Waltzman
+    deploy7: hold-partnership-meeting and raise-local-concern required a meeting record to equal the meeting moment,
+    so neither was ever possible. Returns (mechanics, what was dropped)."""
+    out, dropped = [], []
+    for m in mechanics:
+        parts = m.get("participants") or {}
+        keep = []
+        for c in m.get("checks") or []:
+            a, b = (c.get("left") or {}).get("action_field"), (c.get("right") or {}).get("action_field")
+            if (c.get("op") == "eq" and a in parts and b in parts and a != b
+                    and not any(_matches(e, parts[a]) and _matches(e, parts[b]) for e in bundle["entities"])):
+                dropped.append(f"check of {m['action_kind']} removed: '{c.get('label')}' could never hold "
+                               f"({a} and {b} are never the same thing)")
+                continue
+            keep.append(c)
+        out.append({**m, "checks": keep} if len(keep) != len(m.get("checks") or []) else m)
+    return out, dropped
 
 
 def limit_to_work_cycle(mechanics: list[dict[str, Any]], cycle: dict[str, Any] | None) -> list[dict[str, Any]]:
@@ -405,6 +451,9 @@ def limit_to_work_cycle(mechanics: list[dict[str, Any]], cycle: dict[str, Any] |
             continue
         path = f"components.work.{flag}"
         m = json.loads(json.dumps(m))
+        components = m.setdefault("actor_selector", {}).setdefault("components", [])
+        if "work" not in components:
+            components.append("work")
         if not any(c.get("left") == _ref("actor", path) for c in m["checks"]):
             m["checks"].append(_check("not already done this work cycle", _ref("actor", path), "eq", False))
         if not any(e.get("participant") == "actor" and e.get("path") == path for e in m["effects"]):
@@ -454,7 +503,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
             if "information" in e["categories"]:
                 recipient = next(x for x in entities if x["id"] == f"delivery-{e['id']}")["components"]["delivery"][
                     "recipient_id"]
-                e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0,
+                e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0, "times_raised": 0,
                                               "times_reopened": 0}
         starting = set(d.supporters_at_start)
         for pid in dict.fromkeys(d.decider_ids):
