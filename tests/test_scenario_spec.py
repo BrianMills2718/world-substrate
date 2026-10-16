@@ -237,7 +237,7 @@ class GroupDecisionTests(unittest.TestCase):
             seen.extend(a["kind"] for a in b["actions"])
             raise RuntimeError("stop")
         with patch.object(people_world, "generate_causal_model", side_effect=stop), \
-                self.assertRaisesRegex(RuntimeError, "stop"):
+                patch.object(people_world, "HEDGE_COPIES", 1), self.assertRaisesRegex(RuntimeError, "stop"):
             people_world.write_people_rules(prepared, trace_id="t", max_budget=0.0, progress=lambda *a: None)
         self.assertEqual(seen, ["inspect-site"])
 
@@ -335,7 +335,7 @@ class GroupDecisionTests(unittest.TestCase):
     def test_concerns_delay_and_block_deployment_after_authorization(self):
         # 2026-10-16 Waltzman stance1: authorization ended the story in round 4; the texts say concerns "delay or
         # block deployment", so an authorized decision deploys over rounds that a reopened concern can stop.
-        from compile_spec import DEPLOY_TICKS
+        from compile_spec import DEPLOY_TICKS, REMEDY_TICKS
         matter = "info-clause-conflict-to-country-b"
         self._do("legal-group", "communicate", recipient="country-b")
         self._do("country-b", "resolve-own-concern", matter=matter)
@@ -356,7 +356,17 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertIn("deployment-progresses", ids)
         self.assertIn("deployment-completes", ids)
         self.assertEqual(self._decision()["status"], "deployed")
-        self.assertEqual(self._offered("country-b", "reopen-concern"), [])  # deployed stays deployed
+        # A concern about the running system suspends it until resolved (deploy6: closed at deployment, the world
+        # went still for 26 rounds).
+        self._do("country-b", "reopen-concern", matter=matter)
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertIn("deployment-suspended", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+        self.assertEqual(self._decision()["status"], "suspended")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.advance(REMEDY_TICKS)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("deployment-resumes", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+        self.assertEqual(self._decision()["status"], "deployed")
 
     def test_short_support_with_no_postponements_left_rejects_at_the_deadline(self):
         self._do("legal-group", "communicate", recipient="country-b")
@@ -575,3 +585,42 @@ class WorkCycleTests(unittest.TestCase):
         self.assertEqual([(e["path"], e["value"]) for e in limited["effects"]], [(path, {"literal": True})])
         self.assertEqual(limit_to_work_cycle([limited], cycle)[0], limited)  # already limited: unchanged
         self.assertEqual(rule["checks"], [])  # the writer's rule is not edited in place
+
+
+class HedgedCallTests(unittest.TestCase):
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+
+    def test_the_first_good_copy_wins_and_a_slow_copy_is_remembered(self):
+        import threading
+        from scripts import people_world as pw
+        release, calls = threading.Event(), []
+
+        def call():
+            calls.append(1)
+            if len(calls) == 1:
+                release.wait(5)
+                return "slow"
+            return "fast"
+        self.assertEqual(pw.hedged("t/one", call), "fast")
+        late = pw.unfinished_hedges("t/one")
+        self.assertEqual(len(late), 1)
+        release.set()
+        self.assertEqual(late[0].result(timeout=5), "slow")
+        self.assertEqual(pw.unfinished_hedges("t/one"), [])
+
+    def test_an_error_in_one_copy_falls_back_to_the_other(self):
+        from scripts import people_world as pw
+        calls = []
+
+        def call():
+            calls.append(1)
+            if len(calls) == 1:
+                raise RuntimeError("first copy failed")
+            return "ok"
+        self.assertEqual(pw.hedged("t/two", call), "ok")
+
+    def test_both_copies_failing_raises(self):
+        from scripts import people_world as pw
+        with self.assertRaisesRegex(RuntimeError, "boom"):
+            pw.hedged("t/three", lambda: (_ for _ in ()).throw(RuntimeError("boom")))

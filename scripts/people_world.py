@@ -11,9 +11,12 @@ this module is the World Builder's entry to them and changes none of their behav
 """
 from __future__ import annotations
 
+import contextvars
 import json
 import os
 import sys
+import threading
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Callable
 
@@ -159,12 +162,49 @@ def fast_route() -> Any:
     return OpenRouterRoutePolicyV1(sort="throughput")
 
 
+# Identical copies of each long build call, sent at once; the first good answer is used. 2026-10-16: the same
+# people-step call took 42-53 s on some tries and 87-104 s on others, at random, even sorted by throughput (deploy1-6,
+# speed test), and the build has to reach its first round within 150 s. Each copy is charged like any call; the
+# service keeps a reservation for a copy still running when the build ends (unfinished_hedges). 1 turns it off.
+# The general fix belongs in llm_client (BrianMills2718/llm_client issue "hedged requests").
+HEDGE_COPIES = max(1, int(os.environ.get("WORLD_BUILDER_HEDGE_COPIES") or 2))
+_HEDGES: dict[str, list[Future]] = {}
+_HEDGE_LOCK = threading.Lock()
+
+
+def hedged(trace_id: str, call: Callable[[], Any]) -> Any:
+    """call() HEDGE_COPIES times at once; return the first that succeeds, raise the first error if none does."""
+    if HEDGE_COPIES < 2:
+        return call()
+    pool = ThreadPoolExecutor(HEDGE_COPIES, thread_name_prefix="hedge")
+    futures = [pool.submit(contextvars.copy_context().run, call) for _ in range(HEDGE_COPIES)]  # keep the caller's context
+    pool.shutdown(wait=False)
+    errors: list[BaseException] = []
+    for done in as_completed(futures):
+        try:
+            result = done.result()
+        except Exception as error:  # the other copy may still succeed
+            errors.append(error)
+            continue
+        with _HEDGE_LOCK:
+            _HEDGES.setdefault(trace_id, []).extend(f for f in futures if f is not done)
+        return result
+    raise errors[0]
+
+
+def unfinished_hedges(trace_id: str) -> list[Future]:
+    """The copies of this build's calls still running (their cost is not in the trace yet); forgets the rest."""
+    with _HEDGE_LOCK:
+        return [f for f in _HEDGES.pop(trace_id, []) if not f.done()]
+
+
 def prepare_people_world(description: str, *, trace_id: str, max_budget: float, progress: Progress) -> dict[str, Any]:
     """Description -> ScenarioSpecV1 -> compiled bundle and the attempts people can make (no rules yet)."""
     compile_spec, sp = _pipeline()
     progress("doing", "Working out who is involved and what each of them wants")
-    spec, _ = sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id, max_budget=max_budget,
-                               reasoning_effort=SPEC_EFFORT, route_policy=fast_route())
+    spec, _ = hedged(trace_id, lambda: sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id,
+                                                        max_budget=max_budget, reasoning_effort=SPEC_EFFORT,
+                                                        route_policy=fast_route()))
     progress("done", f"Found {len(spec.people)} people or groups", "each with goals, beliefs and what they know",
              [p.label for p in spec.people])
     if spec.information_items or spec.scheduled_moments:
@@ -177,9 +217,9 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
         progress("note", "Left out of the simulation", "", [str(x).rstrip(". ") for x in spec.unsupported])
     bundle, compiled, coverage = compile_spec.compile_spec(spec)
     progress("doing", "Working out what each person can try to do")
-    sigs, _ = sp.action_signatures(spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace_id,
-                                   max_budget=max_budget, guidance=ACTION_LIVENESS_GUIDANCE, reasoning_effort=EFFORT,
-                                   route_policy=fast_route())
+    sigs, _ = hedged(trace_id, lambda: sp.action_signatures(
+        spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace_id, max_budget=max_budget,
+        guidance=ACTION_LIVENESS_GUIDANCE, reasoning_effort=EFFORT, route_policy=fast_route()))
     sigs = sp.record_fields(spec, sigs)
     bundle["actions"] = bundle["actions"] + [{k: a[k] for k in ("kind", "description", "fields")} for a in sigs]
     work_cycle = compile_spec.add_work_cycle(spec, bundle, compiled, [a["kind"] for a in sigs])
@@ -200,11 +240,11 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
     to_write = actions_to_write(prepared)
     generated: dict[str, Any] = {"mechanics": [], "processes": [], "terminal": None}
     if to_write["actions"]:
-        generated, _ = generate_causal_model(
+        generated, _ = hedged(trace_id, lambda: generate_causal_model(
             to_write, trace_id=trace_id, guidance=rule_guidance, world_kind="ongoing", reasoning_effort=EFFORT,
             model=PEOPLE_MODEL, model_justification=PEOPLE_MODEL_WHY, max_budget=max_budget,
             max_output_tokens=RULES_OUTPUT_TOKENS, route_policy=fast_route(),
-        )
+        ))
     return assemble_people_world(prepared, generated)
 
 

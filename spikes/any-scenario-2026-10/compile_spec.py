@@ -75,7 +75,7 @@ CONCERN = {"name": "concern", "fields": [
     {"name": "times_reopened", "type": "integer", "default": 0}]}
 GROUP_DECISION = {"name": "group_decision", "fields": [
     {"name": "question", "type": "string", "default": "decision"},
-    {"name": "status", "type": "string", "default": "open"},  # open | authorized (deploying) | deployed | rejected
+    {"name": "status", "type": "string", "default": "open"},  # open | authorized (deploying) | deployed | suspended | rejected
     {"name": "support", "type": "integer", "default": 0},
     {"name": "conditional", "type": "integer", "default": 0},
     {"name": "needed", "type": "integer", "default": 1},
@@ -136,10 +136,10 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
     own = _check("this is the actor's own support", _ref("support", "components.support.holder_id"), "eq",
                  {"entity_id": "actor"})
     is_open = _check("the decision is still open", _ref("decision", "components.group_decision.status"), "eq", "open")
-    # A stance or a concern can still change while an authorized decision deploys (concerns delay or block deployment).
-    unsettled = [_check("the decision is not deployed yet", _ref("decision", "components.group_decision.status"), "ne",
-                        "deployed"),
-                 _check("the decision was not rejected", _ref("decision", "components.group_decision.status"), "ne",
+    # A stance or a concern can still change while an authorized decision deploys (concerns delay or block deployment)
+    # and after it is deployed (a member's concern about the running system can suspend it until resolved). 2026-10-16
+    # Waltzman deploy6: closed at deployment, nobody had any action from round 15 to 40.
+    unsettled = [_check("the decision was not rejected", _ref("decision", "components.group_decision.status"), "ne",
                         "rejected")]
     counts = lambda a, b: [_effect("decision", "components.group_decision.support", a, 1),  # noqa: E731
                            _effect("decision", "components.group_decision.conditional", b, 1)]
@@ -189,7 +189,7 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                   [_effect("matter", "components.concern.status", "set", "remedy_under_way"),
                    _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS)]),
         _mechanic("reopen-concern",
-                  "The person a resolved concern reached finds the remedy wanting and reopens it before the decision is deployed.",
+                  "The person a resolved concern reached finds the remedy wanting and reopens it.",
                   {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
                   [mine, *unsettled, _check("the concern is resolved", _ref("matter", "components.concern.status"), "eq",
                                          "resolved")],
@@ -281,6 +281,17 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                                          _check("deployment is in its last round", it("deploy_ticks_left"), "lte", 1)],
              "effects": [_effect("it", "components.group_decision.status", "set", "deployed"),
                          _effect("it", "components.group_decision.deploy_ticks_left", "set", 0)]},
+            {"process_id": "deployment-suspended",
+             "rationale": "A deployed decision whose full support falls below the threshold is suspended.",
+             "selector": sel, "checks": [_check("the decision is deployed", it("status"), "eq", "deployed"),
+                                         _check("too few deciders still fully support it", it("support"), "lt",
+                                                it("needed"))],
+             "effects": [_effect("it", "components.group_decision.status", "set", "suspended")]},
+            {"process_id": "deployment-resumes",
+             "rationale": "A suspended decision resumes once enough deciders fully support it again.",
+             "selector": sel, "checks": [_check("the decision is suspended", it("status"), "eq", "suspended"), no_wait,
+                                         enough],
+             "effects": [_effect("it", "components.group_decision.status", "set", "deployed")]},
             {"process_id": "deployment-progresses",
              "rationale": "Deployment moves one round closer while no decider's support waits on a concern.",
              "selector": sel, "checks": [deploying, no_wait, enough,

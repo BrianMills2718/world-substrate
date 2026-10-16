@@ -12,6 +12,7 @@ import os
 import re
 import sys
 import threading
+from concurrent.futures import wait as futures_wait
 import time
 import uuid
 from collections import defaultdict, deque
@@ -33,7 +34,7 @@ from scripts.native_coordination_authoring import (
     generate_native_coordination_draft,
 )
 from scripts.native_coordination_comparison import with_approval_threshold
-from scripts.people_world import about_people, prepare_people_world, write_people_rules
+from scripts.people_world import about_people, prepare_people_world, unfinished_hedges, write_people_rules
 from scripts.run_authored_world import actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -236,6 +237,37 @@ def _settle_failed_call(reserved_cap: float, trace_id: str) -> float:
     except Exception:
         recorded = 0.0
     return _settle_daily_budget(reserved_cap, recorded if recorded > 0 else None)
+
+
+# Held for each duplicate build call still running when its build is settled (people_world.hedged), until its real
+# cost is known; the visitor allowance therefore always covers it. A copy costs under $0.01 (2026-10-16 ledger).
+LATE_HEDGE_RESERVE = 0.05
+# A people build rewrites its rules after a weak test run only if it is this early: a rewrite takes 40-85 s and the
+# first round must play within 150 s of pressing Create (goal best-of-all-worlds, C1).
+PEOPLE_REWRITE_BY_S = float(os.environ.get("WORLD_BUILDER_REWRITE_BY_S") or 80)
+
+
+def _settle_late_hedges(trace_id: str, charged: float) -> None:
+    """Keep a reservation for this trace's still-running duplicate calls; charge their cost when they finish."""
+    late = unfinished_hedges(trace_id)
+    if not late:
+        return
+    reserve = LATE_HEDGE_RESERVE * len(late)
+    state = _load_budget_state()  # the caller holds _LLM_LOCK
+    state["reserved_usd"] = float(state["reserved_usd"]) + reserve
+    _write_budget_state(state)
+
+    def settle() -> None:
+        futures_wait(late, timeout=900)
+        try:
+            extra = max(0.0, _trace_cost(trace_id) - charged)
+        except Exception:
+            extra = reserve  # fail closed, like _settle_daily_budget
+        with _LLM_LOCK:
+            _settle_daily_budget(reserve, extra)
+
+    # copy_context: the owner/visitor ledger choice (_LEDGER) lives in a context variable a new thread would lose
+    threading.Thread(target=contextvars.copy_context().run, args=(settle,), name="late-hedges", daemon=True).start()
 
 
 def _trace_cost(trace_id: str) -> float:
@@ -1230,6 +1262,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         checks that someone can act from the starting state.
         """
         trace_id = f"{TRACE_ROOT}/people/{uuid.uuid4().hex}"
+        started = time.monotonic()
         with _LLM_LOCK:
             budget = self._llm_budget(client, PEOPLE_WORLD_BUDGET)
             if budget is None:
@@ -1330,6 +1363,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         best = (score, built, dry_row)
                     if score >= 4 or attempt == 1 or _trace_cost(trace_id) >= budget - 0.15:
                         break
+                    if time.monotonic() - started > PEOPLE_REWRITE_BY_S:
+                        self._progress("note", "Kept these rules", "a rewrite would make the wait too long")
+                        break
                     self._progress("doing", "Rewriting the rules so the world keeps moving", "the test run went in circles" if dry_row.get("circling") else "some people could not act")
                 assert best is not None
                 _, built, dry_row = best
@@ -1338,8 +1374,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 trace_cost = _trace_cost(trace_id)
             except Exception:
                 _settle_failed_call(budget, trace_id)
+                try:
+                    charged = _trace_cost(trace_id)
+                except Exception:
+                    charged = 0.0  # the late copies are then charged in full
+                _settle_late_hedges(trace_id, charged)
                 raise
             daily_cost = _settle_daily_budget(budget, trace_cost)
+            _settle_late_hedges(trace_id, trace_cost)
         self._json(
             HTTPStatus.OK,
             {
