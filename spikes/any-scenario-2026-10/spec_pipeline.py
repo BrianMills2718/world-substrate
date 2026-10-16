@@ -132,7 +132,13 @@ RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
 COMPILED_COMPONENTS = ("information", "delivery", "moment", "support", "concern", "group_decision")  # written only by the compiled rules
 
 
-def _writes_compiled(effect: dict[str, Any]) -> bool:
+# The one compiled field a generated move may write: matters put before a group decision (compile_spec GROUP_DECISION).
+GENERATED_MAY_WRITE = ("components.group_decision.agenda_items",)
+
+
+def _writes_compiled(effect: dict[str, Any], *, by_move: bool = False) -> bool:
+    if by_move and effect["path"] in GENERATED_MAY_WRITE and effect.get("op") in {"add", "subtract"}:
+        return False
     return any(effect["path"].startswith(f"components.{c}.") for c in COMPILED_COMPONENTS)
 
 
@@ -149,7 +155,7 @@ def merge_causal(compiled: dict[str, Any], generated: dict[str, Any]) -> tuple[d
         if m["action_kind"] in kinds:
             dropped.append(f"generated mechanic {m.get('mechanic_id')} dropped: action {m['action_kind']} is compiled")
             continue
-        kept = [e for e in m.get("effects", []) if not _writes_compiled(e)]
+        kept = [e for e in m.get("effects", []) if not _writes_compiled(e, by_move=True)]
         if len(kept) < len(m.get("effects", [])):
             dropped.append(f"generated mechanic {m.get('mechanic_id')}: effects on compiled components removed")
         if not kept:

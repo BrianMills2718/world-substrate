@@ -384,6 +384,31 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertNotIn("vote", [m["action_kind"] for m in merged["mechanics"]])
         self.assertTrue(dropped)
 
+    def test_open_agenda_items_postpone_a_supported_decision_until_none_remain(self):
+        # 2026-10-16 deploy11: every generated move only set its own done flag; matters raised at meetings now hold
+        # a supported decision up at its deadline, until no postponements remain.
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.world.entities["activate"].components["group_decision"].agenda_items = 1
+        limit = self._decision()["max_postponements"]
+        for n in range(1, limit + 1):
+            self.assertIn("decision-postponed-for-open-matters", self._until_deadline())
+            self.assertEqual((self._decision()["status"], self._decision()["postponements"]), ("open", n))
+        self.assertIn("decision-authorized-at-last-deadline", self._until_deadline())
+        self.assertEqual(self._decision()["status"], "authorized")
+
+    def test_a_generated_move_may_count_matters_on_the_agenda_and_nothing_else(self):
+        from spec_pipeline import merge_causal
+        add = {"participant": "d", "path": "components.group_decision.agenda_items", "op": "add", "value": {"literal": 1}}
+        put = {"participant": "d", "path": "components.group_decision.agenda_items", "op": "set", "value": {"literal": 0}}
+        generated = {"mechanics": [{"mechanic_id": "x", "action_kind": "raise-at-meeting", "effects": [add, put]}],
+                     "processes": [{"process_id": "p", "effects": [add]}]}
+        merged, dropped = merge_causal(self.causal, generated)
+        kept = next(m for m in merged["mechanics"] if m["action_kind"] == "raise-at-meeting")
+        self.assertEqual(kept["effects"], [add])
+        self.assertNotIn("p", [p["process_id"] for p in merged["processes"]])
+
     def test_a_decision_naming_undeclared_people_is_refused(self):
         with self.assertRaisesRegex(ValidationError, "undeclared people"):
             ScenarioSpecV1.model_validate(_decision_spec(decider_ids=["country_z"]))

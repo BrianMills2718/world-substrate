@@ -84,7 +84,11 @@ GROUP_DECISION = {"name": "group_decision", "fields": [
     {"name": "max_postponements", "type": "integer", "default": 0},
     {"name": "postpone_ticks", "type": "integer", "default": 1},
     {"name": "deadline_id", "type": "entity_ref", "default": "placeholder"},
-    {"name": "deploy_ticks_left", "type": "integer", "default": 0}]}
+    {"name": "deploy_ticks_left", "type": "integer", "default": 0},
+    # Matters people have put before the decision and not yet settled: the one decision field generated rules write
+    # (add 1 to raise a matter at a meeting, subtract 1 to settle one). 2026-10-16 deploy10/11: with every compiled
+    # field read-only, all 8 generated moves only set their own done flag, so discussing at meetings did nothing.
+    {"name": "agenda_items", "type": "integer", "default": 0}]}
 
 
 def _ref(name: str, path: str) -> dict[str, Any]:
@@ -248,12 +252,22 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                                  "selector": {"categories": ["moment"], "components": ["moment"]}}}
         due = [_check("the decision is still open", it("status"), "eq", "open"),
                _check("the deadline is happening now", _ref("deadline", "components.moment.happening_now"), "eq", True)]
+        agenda_clear = _check("no matters are still open on the agenda", it("agenda_items"), "lte", 0)
+        agenda_open = _check("matters are still open on the agenda", it("agenda_items"), "gt", 0)
         enough = lambda op: _check("enough deciders fully support it" if op == "gte" else  # noqa: E731
                                    "too few deciders fully support it", it("support"), op, it("needed"))
         processes += [
             {"process_id": "decision-authorized-at-deadline",
              "rationale": "At the deadline, enough full support authorizes the decision.", "selector": sel,
-             "participants": deadline, "checks": [*due, enough("gte")],
+             "participants": deadline, "checks": [*due, enough("gte"), agenda_clear],
+             "effects": [_effect("it", "components.group_decision.status", "set", "authorized"),
+                         _effect("it", "components.group_decision.deploy_ticks_left", "set", DEPLOY_TICKS)]},
+            # Open agenda items hold up a decision that has the support until no postponements remain.
+            {"process_id": "decision-authorized-at-last-deadline",
+             "rationale": "At the last deadline, enough full support authorizes the decision even with matters still open.",
+             "selector": sel, "participants": deadline,
+             "checks": [*due, enough("gte"), agenda_open,
+                        _check("no postponements remain", it("postponements"), "gte", it("max_postponements"))],
              "effects": [_effect("it", "components.group_decision.status", "set", "authorized"),
                          _effect("it", "components.group_decision.deploy_ticks_left", "set", DEPLOY_TICKS)]},
             {"process_id": "decision-rejected-at-deadline",
@@ -269,6 +283,13 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
              "selector": sel, "participants": deadline,
              "checks": [*due, enough("lt"), _check("postponements remain", it("postponements"), "lt",
                                                    it("max_postponements"))],
+             "effects": [_effect("it", "components.group_decision.postponements", "add", 1),
+                         _effect("deadline", "components.moment.ticks_until", "set", it("postpone_ticks"))]},
+            {"process_id": "decision-postponed-for-open-matters",
+             "rationale": "At the deadline, matters still open on the agenda postpone a supported decision and set a new deadline.",
+             "selector": sel, "participants": deadline,
+             "checks": [*due, enough("gte"), agenda_open, _check("postponements remain", it("postponements"), "lt",
+                                                                  it("max_postponements"))],
              "effects": [_effect("it", "components.group_decision.postponements", "add", 1),
                          _effect("deadline", "components.moment.ticks_until", "set", it("postpone_ticks"))]},
         ]
@@ -515,7 +536,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                          "categories": ["group-decision", _eid(d.decision_id)],
                          "components": {"group_decision": {
                              "question": d.question, "status": "open", "support": len(starting), "conditional": 0,
-                             "needed": d.support_needed, "postponements": 0,
+                             "needed": d.support_needed, "postponements": 0, "agenda_items": 0,
                              "max_postponements": 0 if d.if_short_at_deadline == "reject" else d.max_postponements,
                              "postpone_ticks": d.postpone_ticks,
                              "deadline_id": _eid(d.deadline_moment_id) if d.deadline_moment_id else _eid(d.decision_id),
