@@ -52,7 +52,9 @@ DAILY_LLM_BUDGET = 3.00
 # X-World-Builder-Owner skips the shared visitor allowance and per-visitor rate
 # limits and spends from a separate owner ledger instead. Unset password: off.
 OWNER_HEADER = "X-World-Builder-Owner"
-OWNER_DAILY_BUDGET = 5.00
+# The owner's own test allowance; WORLD_BUILDER_OWNER_DAILY_BUDGET sets another for a server started with it (the
+# override exists so the owner is never stopped by a budget an agent chose).
+OWNER_DAILY_BUDGET = float(os.environ.get("WORLD_BUILDER_OWNER_DAILY_BUDGET") or 5.00)
 _LEDGER: contextvars.ContextVar[str] = contextvars.ContextVar("world_builder_ledger", default="visitor")
 
 
