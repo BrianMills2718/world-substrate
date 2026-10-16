@@ -96,6 +96,21 @@ class Behavior(_Strict):
     causally_material: bool
 
 
+class GroupDecision(_Strict):
+    """A decision several people must support (not in the donor). Compiled into exact support, concern and deadline
+    rules (compile_spec), because rule writers left it unsettled in every 2026-10-16 Waltzman build: support that
+    only fell, a deadline that lasted one round, a decision that never ended."""
+    decision_id: str = Field(pattern=_ID)
+    question: str = Field(min_length=1, description="What is being decided, in a few words.")
+    decider_ids: list[str] = Field(min_length=1, description="The people whose support counts.")
+    supporters_at_start: list[str] = Field(default_factory=list, description="Deciders who support it at the start.")
+    support_needed: int = Field(ge=1, description="How many deciders' full support settles it.")
+    deadline_moment_id: str | None = Field(default=None, description="The scheduled moment by which it is decided.")
+    if_short_at_deadline: Literal["postpone", "reject"] = "postpone"
+    postpone_ticks: int = Field(default=1, ge=1, description="How far a postponement moves the deadline.")
+    max_postponements: int = Field(default=3, ge=0, description="After this many postponements it is rejected.")
+
+
 class ScenarioSpecV1(_Strict):
     scenario_spec_version: Literal[1] = 1
     scenario_id: str = Field(pattern=_ID)
@@ -110,6 +125,7 @@ class ScenarioSpecV1(_Strict):
     unsupported: list[Statement] = Field(default_factory=list,
                                          description="Parts of the scenario this schema cannot represent, said plainly.")
     unresolved_questions: list[Statement] = Field(default_factory=list)
+    decision: GroupDecision | None = None
 
     @model_validator(mode="after")
     def unique_ids_and_references(self) -> "ScenarioSpecV1":
@@ -140,6 +156,18 @@ class ScenarioSpecV1(_Strict):
         for m in self.scheduled_moments:
             if missing := set(m.participant_ids) - people:
                 raise ValueError(f"scheduled moment {m.moment_id} names undeclared participants {sorted(missing)}")
+        if d := self.decision:
+            if missing := (set(d.decider_ids) | set(d.supporters_at_start)) - people:
+                raise ValueError(f"decision {d.decision_id} names undeclared people {sorted(missing)}")
+            if not set(d.supporters_at_start) <= set(d.decider_ids):
+                raise ValueError(f"decision {d.decision_id}: a starting supporter is not a decider")
+            if d.support_needed > len(set(d.decider_ids)):
+                raise ValueError(f"decision {d.decision_id} needs more support than it has deciders")
+            if d.deadline_moment_id and d.deadline_moment_id not in groups["scheduled moments"]:
+                raise ValueError(f"decision {d.decision_id} names undeclared deadline {d.deadline_moment_id}")
+            if d.decision_id in all_ids:
+                raise ValueError(f"decision id {d.decision_id} is already used")
+            all_ids.append(d.decision_id)
         known = set(all_ids)
         for b in self.behaviors:
             if missing := set(b.subject_refs) - known:

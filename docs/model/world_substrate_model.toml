@@ -54,7 +54,7 @@ name = "CausalModel"
 what = "Proposed executable law for one bundle: action mechanics (checks, effects), optional processes (changes the world makes by itself), optional terminal (finish line)."
 source = "src/world_substrate/action_authoring.py:361"
 schema = "world-substrate-causal-model/v0"
-state = ["mechanics[] (one per bundle action kind, exactly)", "processes[] (at most 6), each optionally with linked participants {name: {link, selector}} (DeclaredProcess.participants, action_authoring.py:264; links in PROCESS_LINKS, :669, plus ref:<component>.<field>)", "terminal | null"]
+state = ["mechanics[] (one per bundle action kind, exactly)", "processes[] (at most 16), each optionally with linked participants {name: {link, selector}} (DeclaredProcess.participants, action_authoring.py:264; links in PROCESS_LINKS, :669, plus ref:<component>.<field>)", "terminal | null"]
 
 [[entities]]
 name = "CausalReview"
@@ -147,7 +147,7 @@ state = ["date", "spent_usd", "reserved_usd", "cap: $3.00 visitors, $5.00 owner"
 [[entities]]
 name = "SharedRun"
 what = "A finished run saved for a link: the world, its rules, review, people and briefs from its build (when the same visitor made it), and every recorded round in order."
-source = "scripts/world_builder_service.py:426"
+source = "scripts/world_builder_service.py:433"
 schema = "world-builder-share/v1"
 state = ["id", "created", "client fingerprint (never returned)", "record (gzip JSON)"]
 
@@ -294,7 +294,7 @@ schedule = "on request; LLM; budget-reserved"
 
 [[processes]]
 name = "compile"
-what = "CausalModel.from_dict validates the proposal against the bundle: schema, action kinds equal bundle kinds, typed paths, selectors, operators, at most 6 processes, unique ids; derives reads/writes. Model-written source is never executed."
+what = "CausalModel.from_dict validates the proposal against the bundle: schema, action kinds equal bundle kinds, typed paths, selectors, operators, at most 16 processes, unique ids; derives reads/writes. Model-written source is never executed."
 source = "src/world_substrate/action_authoring.py:367"
 routes = []
 changes = ["CausalReview"]
@@ -385,11 +385,20 @@ schedule = "every logged request appends one RunLogEntry; every LLM call reserve
 [[processes]]
 name = "share"
 what = "Share link: POST /share names a build id and run ids; the server rebuilds the run from its own run log (one world, rounds 1..N unbroken, status 200, last 3 days) and stores it gzipped in shares.sqlite beside the run log. GET /share/* returns it; the page replays the recorded rounds with no AI call."
-source = "scripts/world_builder_service.py:466"
+source = "scripts/world_builder_service.py:474"
 routes = ["POST /share", "GET /share/*"]
 changes = ["SharedRun"]
 writes = ["world-builder-share/v1"]
 schedule = "on request; no LLM; at most 30 shares per visitor per day"
+
+[[processes]]
+name = "readout"
+what = "\"What happened\" readout: POST /readout names a build id and run ids; the server rebuilds the run from its own run log (as share does), and one light LLM call reads every recorded event that changed the world through a lens (the four coordination mechanisms of the Waltzman paper, data in scripts/run_readout.py). Every cited event id is checked against the recording; a mechanism called present without a real event id is reported missing. The result is logged and travels with a later share of exactly those rounds (readout_trace_id), so a replay shows it with no AI call. Detachable analysis: never changes the world."
+source = "scripts/run_readout.py:122"
+routes = ["POST /readout"]
+changes = ["SharedRun"]
+writes = ["world-builder-readout/v1"]
+schedule = "on request; one LLM call capped at $0.10"
 
 [[processes]]
 name = "reference_tooling"
@@ -634,7 +643,13 @@ writers = [{ file = "scripts/world_builder_service.py", function = "<module>", l
 name = "world-builder-share/v1"
 scope = "product"
 written_by = ["share"]
-writers = [{ file = "scripts/world_builder_service.py", function = "<module>", line = 426 }]
+writers = [{ file = "scripts/world_builder_service.py", function = "<module>", line = 433 }]
+
+[[records]]
+name = "world-builder-readout/v1"
+scope = "product"
+written_by = ["readout"]
+writers = [{ file = "scripts/run_readout.py", function = "<module>", line = 15 }]
 
 [[records]]
 name = "world-substrate-live-projection/v0"
@@ -1098,10 +1113,10 @@ paths = { world_builder = "no", native_coordination_draft = "no", any_scenario_p
 [run_log]
 writer = "scripts/world_builder_service.py:376 (_record_response)"
 file = "<WORLD_BUILDER_RUN_LOG_DIR or ~/.local/state/world-builder/runs>/runs_<UTC date>.jsonl"
-logged_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/generate-draft", "/generate-mechanics", "/compare-native-coordination"]
+logged_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/generate-draft", "/generate-mechanics", "/compare-native-coordination", "/readout"]
 # Paths whose result keeps a real summary. The other logged paths keep only the
 # sorted response key names (world_builder_service.py:374): see gap G4.
-summarised_paths = ["/generate-world", "/run", "/clarify", "/surprise"]
+summarised_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/readout"]
 
 # -------------------------------------------------------------------- views --
 

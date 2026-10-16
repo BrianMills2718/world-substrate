@@ -27,7 +27,7 @@ from world_substrate.action_authoring import CausalModel
 DRAFT_SCHEMA_VERSION = "world-substrate-native-coordination-draft/v0"
 PROPOSAL_SCHEMA_VERSION = "world-substrate-native-coordination-proposal/v0"
 SUPPORTED_FAMILY = "bounded-coordination-v0"
-DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
+DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 DEFAULT_BUDGET = 0.08
 MAX_OUTPUT_TOKENS = 4096
 DEFAULT_CAUSAL = REPO / "examples/native_coordination/coordination-causal-v0.json"

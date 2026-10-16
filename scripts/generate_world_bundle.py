@@ -23,7 +23,7 @@ sys.path.insert(0, str(REPO / "src"))
 
 from scripts.scaffold_world import FIELD_TYPES, SCHEMA_VERSION, BundleError, validate_bundle
 
-DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
+DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 DEFAULT_BUDGET = 0.08
 MAX_BUNDLE_OUTPUT_TOKENS = 16000
 MAX_DESCRIPTION_CHARS = 2000

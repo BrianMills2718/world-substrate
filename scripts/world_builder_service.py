@@ -52,7 +52,9 @@ DAILY_LLM_BUDGET = 3.00
 # X-World-Builder-Owner skips the shared visitor allowance and per-visitor rate
 # limits and spends from a separate owner ledger instead. Unset password: off.
 OWNER_HEADER = "X-World-Builder-Owner"
-OWNER_DAILY_BUDGET = 5.00
+# The owner's own test allowance; WORLD_BUILDER_OWNER_DAILY_BUDGET sets another for a server started with it (the
+# override exists so the owner is never stopped by a budget an agent chose).
+OWNER_DAILY_BUDGET = float(os.environ.get("WORLD_BUILDER_OWNER_DAILY_BUDGET") or 5.00)
 _LEDGER: contextvars.ContextVar[str] = contextvars.ContextVar("world_builder_ledger", default="visitor")
 
 
@@ -75,8 +77,10 @@ def _ledger_cap() -> float:
 # Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
 WORLD_BUDGET = 0.20
 # A people world (scripts/people_world.py): one stronger-model call for the people, goals and information, one for
-# the rules, a small one for the attempts, at most one compiler-guided rules retry.
-PEOPLE_WORLD_BUDGET = 0.80
+# the rules, a small one for the attempts, at most one compiler- or test-run-guided rules retry. 2026-10-16 Waltzman
+# (inc14b): the first rules cost $0.71 of $0.80, so the retry that would have fixed 9 of 10 stalled people never ran;
+# $1.30 leaves room for it.
+PEOPLE_WORLD_BUDGET = 1.30
 # The small call that decides whether a description is a world of people or of things.
 WORLD_KIND_BUDGET = 0.01
 WORLD_DEFS = ("things", "people", "auto")
@@ -85,10 +89,12 @@ MAX_BRIEF_CHARS = 4000
 # descriptions: default model finished 11/24 builds, this model 6/6, at about
 # $0.037 vs $0.003 per rules call, so it is used only when the cheap attempt
 # does not reach its finish line.
-RULES_RETRY_MODEL = "openrouter/openai/gpt-5.6-sol"
+# Since 2026-10-16 the same WORLD_BUILDER_STRONG_MODEL setting as scripts/people_world.py (luna by default, for
+# cost, at Brian's request; sol when sharing with an outside reader).
+RULES_RETRY_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-6-luna"
 RULES_RETRY_JUSTIFICATION = (
-    "World Builder rules retry: the default model's rules did not let the described world "
-    "reach its finish line; the stronger model measured 6/6 vs 11/24 on the same descriptions."
+    "World Builder rules retry: the first rules did not let the described world reach its finish line; "
+    "the retry uses WORLD_BUILDER_STRONG_MODEL (sol measured 6/6 vs luna 11/24 on 2026-10-05)."
 )
 DRY_RUN_TURNS = 12
 # Ongoing/open worlds must stay alive past the first visible run: live, an open
@@ -118,6 +124,8 @@ _DIALOGUE_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
 _AI_RUN_REQUESTS: dict[str, deque[float]] = defaultdict(deque)
 DIALOGUE_REQUESTS_PER_HOUR = 30
 DIALOGUE_BUDGET = 0.02
+# One "What happened" readout reads every recorded event of a run (a 40-round, ten-person run is about 40k tokens).
+READOUT_BUDGET = 0.10
 _LLM_LOCK = threading.Lock()
 
 
@@ -307,7 +315,7 @@ def _prune_jobs() -> None:
 # the run outcome, errors and cost. Read it with GET /runs (owner only) or
 # scripts/world_builder_runs.py.
 LOGGED_PATHS = ("/generate-world", "/run", "/clarify", "/surprise", "/generate-draft",
-                "/generate-mechanics", "/compare-native-coordination")
+                "/generate-mechanics", "/compare-native-coordination", "/readout")
 CLIENT_HEADER = "X-World-Builder-Client"
 _REQUEST: contextvars.ContextVar[dict[str, Any] | None] = contextvars.ContextVar("world_builder_request", default=None)
 _RUN_LOG_LOCK = threading.Lock()
@@ -333,6 +341,9 @@ def _world_fingerprint(bundle: Any, causal: Any) -> str | None:
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
     keep = ("description", "world_kind", "policy", "turns", "turn_offset", "approved", "execution_mode", "async")
     out = {k: body[k] for k in keep if k in body}
+    if path == "/readout":
+        out["run_trace_ids"] = body.get("run_trace_ids")
+        out["build_trace_id"] = body.get("build_trace_id")
     if isinstance(body.get("messages"), list):
         out["messages"] = body["messages"][-6:]
     if path == "/run" and isinstance(body.get("bundle"), dict):
@@ -389,6 +400,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
         }
     if path == "/clarify":
         return {k: value.get(k) for k in ("reply", "questions", "description", "ready")}
+    if path == "/readout":
+        return {"readout": value.get("readout")}
     if path == "/surprise":
         return {k: value.get(k) for k in ("theme", "description")}
     return {"keys": sorted(value)[:20]}
@@ -424,6 +437,7 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
 
 
 SHARE_SCHEMA = "world-builder-share/v1"
+_TRACE_PATTERN = re.compile(rf"{re.escape(TRACE_ROOT)}/[a-z-]+/[0-9a-f]{{32}}")
 MAX_SHARED_RUNS = 500  # rounds are fetched one request at a time, so one run id per round
 SHARES_PER_CLIENT_PER_DAY = 30
 SHARE_LOOKBACK_DAYS = 3
@@ -897,6 +911,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if path == "/share":
                 self._share(client, body)
                 return
+            if path == "/readout":
+                self._readout(client, body)
+                return
             self._error(HTTPStatus.NOT_FOUND, "not found")
         except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
             self._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
@@ -919,11 +936,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             return None
         return cap
 
-    def _dialogue_call(self, client: str, kind: str, call: Any) -> None:
+    def _dialogue_call(self, client: str, kind: str, call: Any, *, budget: float = DIALOGUE_BUDGET) -> None:
         """Run one budgeted dialogue-sized model call and return its payload."""
         trace_id = f"{TRACE_ROOT}/{kind}/{uuid.uuid4().hex}"
+        cap = budget
         with _LLM_LOCK:
-            budget = self._llm_budget(client, DIALOGUE_BUDGET, dialogue=True)
+            budget = self._llm_budget(client, cap, dialogue=True)
             if budget is None:
                 return
             try:
@@ -1229,6 +1247,20 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 self._progress("note", "Out of AI budget for this build", "keeping the earlier rules")
                                 break
                             raise ValueError(_budget_message(error)) from None
+                        if "response truncated" in str(error):
+                            # The rules ran past the answer-length cap (inc15b): ask once for fewer, broader rules,
+                            # and if that fails too, say so plainly instead of "internal error".
+                            attempts.append({"ok": False, "error": "the rules were too long and were cut off"})
+                            self._progress("note", "The rules came out too long and were cut off", "asking for fewer, broader rules")
+                            if attempt == 1 or _trace_cost(trace_id) >= budget - 0.05:
+                                if best is not None:
+                                    break
+                                raise ValueError("The AI's rules for this description came out too long and were cut "
+                                                 "off. Try a shorter description, or press Create simulation again.") from None
+                            guidance = (" Your previous answer was too long and was cut off. Write fewer rules: one "
+                                        "rule may serve several people through its actor selector, and keep each "
+                                        "rationale and limit to one short sentence.")
+                            continue
                         if not isinstance(error, (ActionDeclarationError, BundleError, ValueError, TypeError, KeyError)):
                             raise
                         attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})
@@ -1439,17 +1471,45 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             },
         )
 
-    def _share(self, client: str, body: dict[str, Any]) -> None:
-        """Save a finished run for a link. No AI call: the rounds come from this server's own run log."""
+    @staticmethod
+    def _run_ids(body: dict[str, Any]) -> tuple[list[str], str | None]:
         runs = body.get("run_trace_ids")
         build = body.get("build_trace_id")
-        pattern = re.compile(rf"{re.escape(TRACE_ROOT)}/[a-z-]+/[0-9a-f]{{32}}")
         if (not isinstance(runs, list) or not 0 < len(runs) <= MAX_SHARED_RUNS or len(set(runs)) != len(runs)
-                or not all(isinstance(t, str) and pattern.fullmatch(t) for t in runs)):
+                or not all(isinstance(t, str) and _TRACE_PATTERN.fullmatch(t) for t in runs)):
             raise ValueError(f"run_trace_ids must list 1 to {MAX_SHARED_RUNS} distinct run ids from this service")
-        if build is not None and not (isinstance(build, str) and pattern.fullmatch(build)):
+        if build is not None and not (isinstance(build, str) and _TRACE_PATTERN.fullmatch(build)):
             raise ValueError("build_trace_id must be a build id from this service")
+        return runs, build
+
+    def _readout(self, client: str, body: dict[str, Any]) -> None:
+        """The "What happened" readout of a finished run, read from this server's own run log (one light AI call)."""
+        runs, build = self._run_ids(body)
         record = _assemble_share(build, runs)
+        from scripts.run_readout import read_run
+        model = _requested_model(body)
+
+        def call(trace_id: str, budget: float) -> tuple[dict[str, Any], Any]:
+            readout, result = read_run(record["rounds"], people=record["world"].get("people"), model=model,
+                                       trace_id=trace_id, max_budget=budget)
+            return {"readout": readout}, result
+
+        self._dialogue_call(client, "readout", call, budget=READOUT_BUDGET)
+
+    def _share(self, client: str, body: dict[str, Any]) -> None:
+        """Save a finished run for a link. No AI call: the rounds come from this server's own run log."""
+        runs, build = self._run_ids(body)
+        readout_id = body.get("readout_trace_id")
+        if readout_id is not None and not (isinstance(readout_id, str) and _TRACE_PATTERN.fullmatch(readout_id)):
+            raise ValueError("readout_trace_id must be a readout id from this service")
+        record = _assemble_share(build, runs)
+        if readout_id:
+            # The readout travels with the link only when this server made it for exactly these rounds.
+            logged = _logged_entries({readout_id}).get(readout_id)
+            if (logged and logged["path"] == "/readout"
+                    and logged["request"].get("run_trace_ids") == runs and logged.get("client") == _fingerprint(client)):
+                record["readout"] = (logged.get("result") or {}).get("readout")
+                record["readout_trace_id"] = readout_id
         share_id = _save_share(_fingerprint(client), record)
         if share_id is None:
             self._error(HTTPStatus.TOO_MANY_REQUESTS, "You have shared a lot of runs today; try again tomorrow.")

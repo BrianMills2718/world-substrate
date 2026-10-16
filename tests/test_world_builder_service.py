@@ -478,6 +478,25 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/people/"))
         self.assertAlmostEqual(people.call_args.kwargs["max_budget"], service.PEOPLE_WORLD_BUDGET)
 
+    def test_rules_cut_off_for_length_are_retried_shorter_then_reported_plainly(self):
+        class LLMError(Exception):
+            pass
+        cut = LLMError("LLM response truncated (65955 chars). Increase max_tokens or simplify the prompt.")
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "write_people_rules", side_effect=[cut, self._people_built()]) as rules:
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertIn("too long", rules.call_args_list[1].kwargs["guidance"])
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "write_people_rules", side_effect=[cut, cut]):
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 422, payload)
+        self.assertIn("came out too long", payload["error"])
+
     def test_description_about_things_keeps_the_things_builder(self):
         with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
             service, "about_people", return_value=(False, "a supply chain"),
@@ -588,6 +607,43 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 422, payload)
         status, payload = self.get("/share/doesnotexist")
         self.assertEqual(status, 404, payload)
+
+    def test_readout_cites_only_recorded_events_and_travels_with_the_share(self):
+        from scripts import run_readout
+        ids, transcript = self._scripted_rounds(3)
+        moves = [row for t in transcript for row in t["actors"].values() if row["status"] == "accepted"]
+        self.assertTrue(moves and all(m["event_id"] for m in moves))  # every move names its Engine event
+        # Each round runs in a fresh Engine, yet ids stay unique across the run (inc14b reused e00001 every round).
+        every = [e["event_id"] for e in run_readout.evidence_events(transcript)] + [m["event_id"] for m in moves]
+        self.assertEqual(len(set(m["event_id"] for m in moves)), len(moves))
+        self.assertTrue(all(i.startswith("r") for i in every))
+        real = run_readout.evidence_events(transcript)[0]["event_id"]
+
+        def fake_read(rounds, *, people, model, trace_id, max_budget):
+            self.assertEqual(rounds, transcript)  # read from the server's own log, not the page
+            parsed = {"summary": "Things happened.", "mechanisms": [
+                {"id": "separate-channels", "status": "present", "event_ids": [real, "e99999"], "explanation": "Yes."},
+                {"id": "slowed-meetings", "status": "present", "event_ids": ["e99999"], "explanation": "Invented."},
+            ]}
+            return run_readout.validate_readout("coordination", parsed, run_readout.evidence_events(rounds)), None
+
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(run_readout, "read_run", fake_read):
+            status, payload = self.post("/readout", {"build_trace_id": None, "run_trace_ids": ids})
+        self.assertEqual(status, 200, payload)
+        by_id = {m["id"]: m for m in payload["readout"]["mechanisms"]}
+        self.assertEqual(by_id["separate-channels"]["event_ids"], [real])
+        self.assertEqual(by_id["separate-channels"]["dropped_event_ids"], ["e99999"])
+        self.assertEqual(by_id["slowed-meetings"]["status"], "missing")  # no real event, so not present
+        self.assertEqual(by_id["reopened-issues"]["status"], "missing")
+        with patch.object(service, "_trace_cost", side_effect=AssertionError("a share must not call the AI")):
+            status, shared = self.post("/share", {"run_trace_ids": ids, "readout_trace_id": payload["trace_id"]})
+            self.assertEqual(status, 200, shared)
+            status, record = self.get("/share/" + shared["share_id"])
+        self.assertEqual(record["readout"], payload["readout"])
+        # A readout of other rounds does not travel with the link.
+        status, shared = self.post("/share", {"run_trace_ids": ids[:2], "readout_trace_id": payload["trace_id"]})
+        status, record = self.get("/share/" + shared["share_id"])
+        self.assertNotIn("readout", record)
 
     def test_provider_out_of_credit_is_said_plainly(self):
         # 2026-10-16: the OpenRouter account ran out of credit and the page said "internal world-builder error".

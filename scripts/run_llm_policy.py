@@ -38,7 +38,7 @@ from world_substrate.policy import (
 )
 
 OUTPUT = REPO / "evidence/m5/llm-policy-v0.json"
-DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
+DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 ACTOR = "robinson"
 
 

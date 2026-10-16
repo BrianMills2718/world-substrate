@@ -149,6 +149,32 @@ class CompilerTests(unittest.TestCase):  # S2
                 ticks.append(self.engine.world.tick)
         self.assertEqual(ticks, [2, 5, 8])
 
+    def test_a_moment_is_happening_only_in_the_round_after_it_occurs(self):
+        # inc15a: every rule gated on "ticks_until == 0" never passed, because the tick that reaches 0 restarts it.
+        from world_substrate.mechanisms.time import ClockAdvanceProcess
+        self.engine.registry.register_process(ClockAdvanceProcess())
+        on = []
+        for _ in range(9):
+            self.engine.advance(1)
+            moment = self.engine.world.entities["weekly-meeting"].as_dict()["components"]["moment"]
+            self.assertNotEqual(moment["ticks_until"], 0)  # what people see when they act
+            if moment["happening_now"]:
+                on.append(self.engine.world.tick)
+        self.assertEqual(on, [2, 5, 8])
+
+    def test_a_meeting_due_check_is_rewritten_to_one_that_can_pass(self):
+        from spec_pipeline import fix_moment_due_checks
+        ref = {"participant": {"name": "weekly_meeting", "path": "components.moment.ticks_until"}}
+        causal = {"mechanics": [{"mechanic_id": "raise", "checks": [
+            {"label": "the weekly meeting is due", "left": ref, "op": "eq", "right": {"literal": 0}},
+            {"label": "the meeting is ahead", "left": ref, "op": "gt", "right": {"literal": 0}}]}]}
+        fixed_causal, fixed = fix_moment_due_checks(causal)
+        due, ahead = fixed_causal["mechanics"][0]["checks"]
+        self.assertEqual(due["left"]["participant"]["path"], "components.moment.happening_now")
+        self.assertEqual(due["right"], {"literal": True})
+        self.assertEqual(ahead["left"]["participant"]["path"], "components.moment.ticks_until")  # untouched
+        self.assertEqual(len(fixed), 1)
+
     def test_coverage_marks_delivery_exact_and_the_rest_for_the_generator(self):
         rows = {r["request_id"]: r["classification"] for r in self.coverage["rows"]}
         # mentioning an item does not make a behavior delivery: the concern slowing a meeting needs its own rules
@@ -161,6 +187,169 @@ class CompilerTests(unittest.TestCase):  # S2
 
 
 PIPELINE1 = SPIKE / "evidence/waltzman-spec/pipeline1"  # pipeline run waltzman-spec-20261008T163904 (audit 2026-10-08)
+
+
+def _decision_spec(**decision):
+    spec = json.loads(_two_recipient_spec().model_dump_json())
+    spec["scheduled_moments"].append({"moment_id": "deadline", "tick": 3, "description": "Decision deadline"})
+    spec["decision"] = {"decision_id": "activate", "question": "Activate the system?",
+                        "decider_ids": ["country_b", "country_c"], "supporters_at_start": ["country_b", "country_c"],
+                        "support_needed": 2, "deadline_moment_id": "deadline", "max_postponements": 1,
+                        "postpone_ticks": 2, **decision}
+    return spec
+
+
+class GroupDecisionTests(unittest.TestCase):
+    """The compiled group decision: support moves both ways on a named concern and the deadline settles it.
+    2026-10-16 Waltzman inc15c-e: generated rules left support only falling and the decision never ending."""
+
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import compile_spec
+        from scaffold_world import validate_bundle
+        from scripts.run_authored_world import build_engine
+        from world_substrate.mechanisms.time import ClockAdvanceProcess
+        self.compile, self.build = compile_spec, build_engine
+        self.bundle, self.causal, _ = compile_spec(ScenarioSpecV1.model_validate(_decision_spec()))
+        validate_bundle(self.bundle)
+        self.engine, _, _ = build_engine(self.bundle, self.causal)
+        self.engine.registry.register_process(ClockAdvanceProcess())
+
+    def test_compiled_processes_leave_room_for_a_full_generated_set(self):
+        # 2026-10-16 Waltzman inc15f: 3 moment + 3 deadline processes filled the engine's old bound of 6, so any
+        # generated process made the build fail with "processes must be a list of at most 6".
+        from world_substrate.action_authoring import MAX_PROCESSES
+        from scripts.generate_causal_model import causal_model_schema
+        generated_max = causal_model_schema(self.bundle)["properties"]["processes"]["maxItems"]
+        self.assertLessEqual(len(self.causal["processes"]) + generated_max, MAX_PROCESSES)
+
+    def test_the_rule_writer_is_asked_only_for_actions_no_compiled_rule_covers(self):
+        # 2026-10-16 inc15h (luna): asked for every action, compiled ones included, it returned a mismatched list.
+        from unittest.mock import patch
+        from scripts import people_world
+        bundle = dict(self.bundle, actions=self.bundle["actions"] + [
+            {"kind": "inspect-site", "description": "Inspect a site.", "fields": []}])
+        prepared = {"spec": ScenarioSpecV1.model_validate(_decision_spec()), "bundle": bundle, "compiled": self.causal,
+                    "coverage": {"rows": []}, "sigs": []}
+        seen = []
+
+        def stop(b, **_):
+            seen.extend(a["kind"] for a in b["actions"])
+            raise RuntimeError("stop")
+        with patch.object(people_world, "generate_causal_model", side_effect=stop), \
+                self.assertRaisesRegex(RuntimeError, "stop"):
+            people_world.write_people_rules(prepared, trace_id="t", max_budget=0.0, progress=lambda *a: None)
+        self.assertEqual(seen, ["inspect-site"])
+
+    def test_an_action_whose_rule_only_wrote_compiled_parts_leaves_the_world(self):
+        # 2026-10-16 inc15j (luna): reconsider-settled-issue only set a concern's status; the merge removed its rule
+        # and the build failed because the action had none.
+        import copy
+        from unittest.mock import patch
+        from scripts import people_world
+        bundle = dict(self.bundle, actions=self.bundle["actions"] + [
+            {"kind": "inspect-site", "description": "Inspect a site.", "fields": []}])
+        prepared = {"spec": ScenarioSpecV1.model_validate(_decision_spec()), "bundle": bundle, "compiled": self.causal,
+                    "coverage": {"rows": []}, "sigs": []}
+        writer = next(m for m in self.causal["mechanics"]
+                      if any(e["path"].startswith("components.concern.") for e in m["effects"]))
+        generated = {"mechanics": [dict(copy.deepcopy(writer), action_kind="inspect-site", mechanic_id="inspect-site",
+                                        effects=[e for e in copy.deepcopy(writer["effects"])
+                                                 if e["path"].startswith("components.concern.")])],
+                     "processes": [], "terminal": None}
+        with patch.object(people_world, "generate_causal_model", return_value=(generated, None)):
+            world = people_world.write_people_rules(prepared, trace_id="t", max_budget=0.0, progress=lambda *a: None)
+        self.assertNotIn("inspect-site", [a["kind"] for a in world["bundle"]["actions"]])
+        self.assertTrue(any("inspect-site removed" in d for d in world["dropped_generated_rules"]))
+
+    def _decision(self):
+        return self.engine.world.entities["activate"].as_dict()["components"]["group_decision"]
+
+    def _do(self, actor, kind, **fields):
+        offered = [a["action"] for a in self.engine.discover(actor)["available"] if a["action"]["kind"] == kind]
+        match = [a for a in offered if all(a.get(k) == v for k, v in fields.items())]
+        self.assertTrue(match, f"{actor} is not offered {kind} {fields}; offered {offered}")
+        result = self.engine.submit(dict(match[0], controller="test"))
+        self.assertEqual(result["status"], "accepted", result)
+        return result
+
+    def _offered(self, actor, kind):
+        return [a["action"] for a in self.engine.discover(actor)["available"] if a["action"]["kind"] == kind]
+
+    def _remedy_runs(self, matter):
+        """A started remedy is under way, not done: the concern resolves REMEDY_TICKS rounds later."""
+        from compile_spec import REMEDY_TICKS
+        self.assertEqual(self._offered("country-b", "restore-full-support"), [])
+        self.engine.advance(REMEDY_TICKS)
+        status = self.engine.world.entities[matter].as_dict()["components"]["concern"]["status"]
+        self.assertEqual(status, "resolved")
+
+    def _until_deadline(self):
+        for _ in range(6):
+            events = self.engine.advance(1)["events"]
+            ids = [e["rule_id"] for e in events]
+            if any(i.startswith("decision-") for i in ids):
+                return ids
+        self.fail("the deadline never settled anything")
+
+    def test_support_waits_on_a_received_concern_and_returns_once_it_is_resolved(self):
+        matter = "info-clause-conflict-to-country-b"
+        self.assertEqual(self._offered("country-b", "make-support-conditional"), [])  # nothing received yet
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (1, 1))
+        self.assertEqual(self._offered("country-b", "restore-full-support"), [])  # concern still open
+        self.assertEqual(self._offered("country-c", "resolve-concern"), [])  # only the holder resolves
+        self._do("legal-group", "resolve-concern", matter=matter)
+        self._remedy_runs(matter)
+        self.assertEqual(self._offered("legal-group", "reopen-concern"), [])  # the one who fixed it does not undo it
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (2, 0))
+        self._do("country-b", "reopen-concern", matter=matter)  # and it can fall again
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertEqual(self._decision()["support"], 1)
+
+    def test_the_person_a_concern_reached_can_resolve_it_on_their_own_side(self):
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertEqual(self._offered("country-c", "resolve-own-concern"), [])  # not the one it reached
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self._remedy_runs(matter)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (2, 0))
+
+    def test_short_support_postpones_at_the_deadline_then_enough_support_authorizes(self):
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self._do("legal-group", "resolve-concern", matter=matter)  # the remedy runs while the deadline nears
+        self.assertIn("decision-postponed-at-deadline", self._until_deadline())
+        self.assertEqual((self._decision()["status"], self._decision()["postponements"]), ("open", 1))
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
+        self.assertEqual(self._decision()["status"], "authorized")
+        self.assertEqual(self._offered("country-b", "make-support-conditional"), [])  # settled stays settled
+
+    def test_short_support_with_no_postponements_left_rejects_at_the_deadline(self):
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter="info-clause-conflict-to-country-b")
+        self._until_deadline()
+        self.assertIn("decision-rejected-at-deadline", self._until_deadline())
+        self.assertEqual(self._decision()["status"], "rejected")
+
+    def test_generated_rules_cannot_write_the_decision(self):
+        from spec_pipeline import merge_causal
+        generated = {"mechanics": [{"mechanic_id": "x", "action_kind": "vote", "effects": [
+            {"participant": "d", "path": "components.group_decision.status", "op": "set", "value": {"literal": "authorized"}}]}],
+            "processes": []}
+        merged, dropped = merge_causal(self.causal, generated)
+        self.assertNotIn("vote", [m["action_kind"] for m in merged["mechanics"]])
+        self.assertTrue(dropped)
+
+    def test_a_decision_naming_undeclared_people_is_refused(self):
+        with self.assertRaisesRegex(ValidationError, "undeclared people"):
+            ScenarioSpecV1.model_validate(_decision_spec(decider_ids=["country_z"]))
 
 
 class RecordedPipelineRepairTests(unittest.TestCase):
@@ -179,11 +368,11 @@ class RecordedPipelineRepairTests(unittest.TestCase):
         generated = {**self.recorded,
                      "mechanics": [m for m in self.recorded["mechanics"] if m["action_kind"] != "communicate"],
                      "processes": [p for p in self.recorded["processes"]
-                                   if p["process_id"] not in ("moment-countdown", "moment-occurs")]}
+                                   if p["process_id"] not in ("moment-passes", "moment-countdown", "moment-occurs")]}
         merged, dropped = merge_causal(self.compiled, generated)
         writers = [p["process_id"] for p in merged["processes"]
                    if any(e["path"].startswith("components.moment.") for e in p["effects"])]
-        self.assertEqual(writers, ["moment-countdown", "moment-occurs"])
+        self.assertEqual(writers, ["moment-passes", "moment-countdown", "moment-occurs"])
         self.assertIn("generated process advance-scheduled-moments dropped: it writes what a compiled rule owns",
                       dropped)
 
@@ -193,6 +382,23 @@ class RecordedPipelineRepairTests(unittest.TestCase):
                                                                                    self.model["action_signatures"])}
         self.assertIn("member_support", sigs["make-support-conditional"])
         self.assertIn("meeting_progress", sigs["reopen-settled-issue"])
+
+    def test_generated_actions_never_declare_fields_the_engine_fills(self):
+        # 2026-10-16: an action declared "actor" and the Waltzman build failed with "reserved/duplicate action field".
+        import types
+        from unittest.mock import patch
+        import spec_pipeline
+        bundle, _, coverage = spec_pipeline.compile_spec(self.spec)
+        rows = [r for r in coverage["rows"] if r["classification"] == "to_generate"]
+        self.assertTrue(rows)
+        reply = spec_pipeline.ActionSignatures.model_validate({"actions": [{
+            "kind": "address_concern", "description": "Address a raised concern", "for_behaviors": [rows[0]["request_id"]],
+            "fields": [{"name": "actor", "type": "entity_ref"}, {"name": "concern", "type": "entity_ref"},
+                       {"name": "concern", "type": "entity_ref"}, {"name": "base_revision", "type": "integer"}]}]})
+        fake = types.SimpleNamespace(call_llm_structured=lambda *a, **k: (reply, None))
+        with patch.dict(sys.modules, {"llm_client": fake}):
+            sigs, _ = spec_pipeline.action_signatures(self.spec, bundle, coverage, model="m", trace_id="t")
+        self.assertEqual([f["name"] for f in sigs[0]["fields"]], ["concern"])
 
     def test_coverage_counts_rules_that_change_records_not_names(self):
         from spec_pipeline import behavior_coverage
@@ -263,6 +469,8 @@ class RecordedWaltzmanRunTests(unittest.TestCase):  # S5/S6: claims in the Asses
         recorded = json.loads((RUN2 / "run/bundle_after_run.json").read_text())
         bundle["actions"] = recorded["actions"]
         bundle["components"] = recorded["components"]
+        for entity in bundle["entities"]:  # the recorded run predates the moment's happening_now field
+            entity["components"].get("moment", {}).pop("happening_now", None)
         causal, pinned = pin_named_slots(spec, json.loads((RUN2 / "run/causal_after_run.json").read_text()))
         self.assertIn("block-at-deadline-for-missing-support.activation_decision_deadline -> activation-decision-deadline",
                       pinned)

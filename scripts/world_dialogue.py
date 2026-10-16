@@ -19,7 +19,7 @@ import random
 import uuid
 from typing import Any
 
-DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
+DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 DEFAULT_BUDGET = 0.02
 MAX_OUTPUT_TOKENS = 1200
 MAX_TURNS = 12

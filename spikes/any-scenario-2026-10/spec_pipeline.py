@@ -20,17 +20,22 @@ SPEC_SYSTEM = (
     "You define a simulation world from a plain-language scenario, filling the given schema exactly. "
     "Rules: (1) Every person, group, organisation or country the scenario names or implies as acting is a person, "
     "with a behavioral profile taken from what the scenario says about them; never fold a named group into "
-    "another. (2) Information that the scenario says someone holds or passes on is an information item: its holder "
+    "another. A body the others belong to (a partnership, council, alliance or board) is a person of its own when "
+    "the scenario has it decide, convene, coordinate or deploy, besides its members. (2) Information that the scenario says someone holds or passes on is an information item: its holder "
     "is who has it at the start, its recipients are who it should reach, its channel is the route named or implied "
     "(for example a group's own channel). Make concrete items: a short true statement each, not a category. "
     "(3) Regular events (meetings, reviews, deadlines) are scheduled moments with a tick and, if they repeat, "
     "every_ticks; one tick is one week unless the scenario implies otherwise; a deadline is a moment too. "
-    "(4) Quantities and states that change (support, readiness, time available, decision status, votes) are world "
-    "records with public_state values; visible_to_actor_ids names who can see them. (5) Each behavior the scenario "
+    "(4) Quantities and states that change (readiness, time available, a pace) are world records with public_state "
+    "values; visible_to_actor_ids names who can see them. (5) Each behavior the scenario "
     "says must be possible (raising concerns, meetings slowing, settled issues reopening, support becoming "
     "conditional, delay, deployment) is a behavior whose subject_refs name the people, records, items or moments it "
     "involves. (6) Ids are lowercase with underscores. (7) Anything the schema cannot represent goes in "
-    "`unsupported` in plain words; never drop it silently."
+    "`unsupported` in plain words; never drop it silently. (8) When several people must support a decision (a vote, "
+    "an approval, an activation), fill `decision`: who decides, who supports it at the start, how many must fully "
+    "support it, the deadline moment and what happens if support is short then. Each decider's support, the concerns "
+    "it may wait on (the information items they receive) and the decision's status are then exact compiled records, "
+    "so do not also make world records for support, votes or the decision's status."
 )
 SPEC_MODEL_WHY = ("The scenario spec is the whole world definition; the stronger tier is used for the same reason as "
                   "rule writing (see RULE_MODEL_WHY).")
@@ -65,8 +70,9 @@ def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0
 
 
 def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: dict[str, Any], *, model: str,
-                      trace_id: str, max_budget: float = 0.05):
-    """Action kinds people can attempt for the behaviors the compiler leaves to the generator (validated here)."""
+                      trace_id: str, max_budget: float = 0.05, guidance: str = "", reasoning_effort: str = "low"):
+    """Action kinds people can attempt for the behaviors the compiler leaves to the generator (validated here).
+    ``guidance`` is appended to the instructions (the World Builder adds its keep-running rules)."""
     from llm_client import call_llm_structured
     wanted = [r for r in coverage["rows"] if r["classification"] == "to_generate"]
     if not wanted:
@@ -74,7 +80,9 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
     context = {
         "people": [{"id": p.entity_id, "position": p.position} for p in spec.people],
         "behaviors_to_cover": wanted,
-        "existing_actions": [a["kind"] for a in bundle["actions"]],
+        # Kinds alone hid what the compiled actions do, so the writer re-proposed them (inc15g: its own postpone,
+        # reject and concern-raising actions beside the compiled decision).
+        "existing_actions": [{"kind": a["kind"], "description": a.get("description", "")} for a in bundle["actions"]],
         "entities": [{"id": e["id"], "categories": e["categories"], "components": e["components"]}
                      for e in bundle["entities"] if "information" not in e["categories"]
                      and "delivery" not in e["categories"]],
@@ -84,11 +92,11 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
             "Propose the actions people can attempt so the listed behaviors can happen. An action is something a "
             "person chooses to try (hold a meeting, reopen an issue, attach a condition to support, vote, "
             "deploy); things that happen on their own each tick are processes and are not actions. Do not "
-            "repeat an existing action. Fields name the entities or values the attempt needs (entity_ref for an "
-            "entity). Name in for_behaviors the request_ids each action serves.")},
+            "repeat an existing action or propose another that does what one already does. Fields name the entities or values the attempt needs (entity_ref for an "
+            "entity); the person attempting it is implied, so never add an actor field. Name in for_behaviors the request_ids each action serves." + (" " + guidance if guidance else ""))},
             {"role": "user", "content": json.dumps(context, indent=2)}],
         ActionSignatures, task="world-substrate-action-signatures", trace_id=trace_id, max_budget=max_budget,
-        reasoning_effort="low", num_retries=1)
+        reasoning_effort=reasoning_effort, num_retries=1)
     existing = {a["kind"] for a in bundle["actions"]}
     known = {r["request_id"] for r in wanted}
     out, seen = [], set()
@@ -97,12 +105,22 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
         if kind in existing or kind in seen or not set(a.for_behaviors) & known:
             continue
         seen.add(kind)
+        fields, names = [], set()
+        for f in a.fields:  # the engine supplies who acts and the bookkeeping fields; a repeated name is one field
+            if f.name in RESERVED_ACTION_FIELDS or f.name in names:
+                continue
+            names.add(f.name)
+            fields.append(f.model_dump())
         out.append({"kind": a.kind.replace("_", "-"), "description": a.description,  # bundle kinds use hyphens
-                    "fields": [f.model_dump() for f in a.fields], "for_behaviors": a.for_behaviors})
+                    "fields": fields, "for_behaviors": a.for_behaviors})
     return out, result
 
 
-COMPILED_COMPONENTS = ("information", "delivery", "moment")  # written only by the compiled rules
+# Action fields the engine fills itself (scripts/scaffold_world.py RESERVED_ACTION_FIELDS, which rejects a bundle that
+# declares them). 2026-10-16: a generated action declared "actor" and the whole Waltzman build failed.
+RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
+
+COMPILED_COMPONENTS = ("information", "delivery", "moment", "support", "concern", "group_decision")  # written only by the compiled rules
 
 
 def _writes_compiled(effect: dict[str, Any]) -> bool:
@@ -155,6 +173,24 @@ def pin_named_slots(spec: ScenarioSpecV1, causal: dict[str, Any]) -> tuple[dict[
                     selector["categories"] = [eid]
                     pinned.append(f"{m.get('mechanic_id')}.{slot} -> {eid}")
     return causal, pinned
+
+
+def fix_moment_due_checks(causal: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """A generated action check "ticks_until == 0" can never pass: the tick that brings a moment to 0 also restarts
+    it, before anyone acts (2026-10-16 Waltzman inc15a: "the weekly meeting is due" kept four countries waiting 40
+    rounds). What the rule means is "the moment is on now", which the compiled `happening_now` field says."""
+    fixed = []
+    for m in causal.get("mechanics", []):
+        for check in m.get("checks") or []:
+            for side, other in (("left", "right"), ("right", "left")):
+                ref = (check.get(side) or {}).get("participant") if isinstance(check.get(side), dict) else None
+                if (isinstance(ref, dict) and ref.get("path") == "components.moment.ticks_until"
+                        and check.get("op") == "eq" and check.get(other) == {"literal": 0}):
+                    check[side] = {"participant": {**ref, "path": "components.moment.happening_now"}}
+                    check[other] = {"literal": True}
+                    fixed.append(f"{m.get('mechanic_id')}: check '{check.get('label')}' reads happening_now "
+                                 "(ticks_until is never 0 when people act)")
+    return causal, fixed
 
 
 def record_fields(spec: ScenarioSpecV1, sigs: list[dict[str, Any]]) -> list[dict[str, Any]]:

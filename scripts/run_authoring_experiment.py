@@ -44,7 +44,7 @@ from world_substrate.engine import ScopeViolation
 from world_substrate.profile import MechanicProfile, retrofit_package
 
 OUTPUT = REPO / "evidence/m7/authoring-attempts-v0.json"
-DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
+DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 
 EXAMPLE = json.dumps(
     {

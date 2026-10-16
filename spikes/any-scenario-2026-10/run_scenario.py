@@ -44,7 +44,7 @@ from world_substrate.mechanisms.time import ClockAdvanceProcess  # noqa: E402
 sys.path.insert(0, str(HERE))
 from spend import CAP, plan_spend as plan_spend_total  # noqa: E402
 
-RESIDENT_MODEL = "openrouter/openai/gpt-5.6-luna"
+RESIDENT_MODEL = "openrouter/openai/gpt-6-luna"
 
 
 class Attempt(BaseModel):
