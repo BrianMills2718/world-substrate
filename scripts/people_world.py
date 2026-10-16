@@ -44,9 +44,10 @@ ATTEMPT_GUIDANCE = (
     "needs a process or action for each way it can rise and each way it can fall."
 )
 # Thinking effort of the people, actions and rules calls. "medium" took 105 s (people) and 90 s (rules) on Waltzman's
-# text with sol (2026-10-15). Luna is cheap, so it thinks as hard as it can (Brian, 2026-10-16: "you can also use max
-# thinking for luna"); WORLD_BUILDER_PEOPLE_EFFORT overrides all three, for comparing.
-EFFORT = os.environ.get("WORLD_BUILDER_PEOPLE_EFFORT") or "xhigh"
+# text with sol (2026-10-15). Brian (2026-10-16): "you can also use max thinking for luna"; tried on gpt-6-luna
+# (inc15l): xhigh cost only $0.03 but took 447 s (people), 136 s (actions) and 226 s (rules) against 48/10/38 s at
+# medium, far past the visitor's short wait. WORLD_BUILDER_PEOPLE_EFFORT overrides all three, for comparing.
+EFFORT = os.environ.get("WORLD_BUILDER_PEOPLE_EFFORT") or "medium"
 # A people world's rules name every record slot, so 20-26 rules ran past the plain generator's 16000-token cap
 # (2026-10-16 Waltzman inc15b: "LLM response truncated (65955 chars)"). The build's budget still bounds the cost.
 RULES_OUTPUT_TOKENS = 32000
