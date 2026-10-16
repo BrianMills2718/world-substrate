@@ -255,6 +255,14 @@ class GroupDecisionTests(unittest.TestCase):
     def _offered(self, actor, kind):
         return [a["action"] for a in self.engine.discover(actor)["available"] if a["action"]["kind"] == kind]
 
+    def _remedy_runs(self, matter):
+        """A started remedy is under way, not done: the concern resolves REMEDY_TICKS rounds later."""
+        from compile_spec import REMEDY_TICKS
+        self.assertEqual(self._offered("country-b", "restore-full-support"), [])
+        self.engine.advance(REMEDY_TICKS)
+        status = self.engine.world.entities[matter].as_dict()["components"]["concern"]["status"]
+        self.assertEqual(status, "resolved")
+
     def _until_deadline(self):
         for _ in range(6):
             events = self.engine.advance(1)["events"]
@@ -272,6 +280,7 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertEqual(self._offered("country-b", "restore-full-support"), [])  # concern still open
         self.assertEqual(self._offered("country-c", "resolve-concern"), [])  # only the holder resolves
         self._do("legal-group", "resolve-concern", matter=matter)
+        self._remedy_runs(matter)
         self.assertEqual(self._offered("legal-group", "reopen-concern"), [])  # the one who fixed it does not undo it
         self._do("country-b", "restore-full-support", matter=matter)
         self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (2, 0))
@@ -285,6 +294,7 @@ class GroupDecisionTests(unittest.TestCase):
         self._do("country-b", "make-support-conditional", matter=matter)
         self.assertEqual(self._offered("country-c", "resolve-own-concern"), [])  # not the one it reached
         self._do("country-b", "resolve-own-concern", matter=matter)
+        self._remedy_runs(matter)
         self._do("country-b", "restore-full-support", matter=matter)
         self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (2, 0))
 
@@ -292,9 +302,9 @@ class GroupDecisionTests(unittest.TestCase):
         matter = "info-clause-conflict-to-country-b"
         self._do("legal-group", "communicate", recipient="country-b")
         self._do("country-b", "make-support-conditional", matter=matter)
+        self._do("legal-group", "resolve-concern", matter=matter)  # the remedy runs while the deadline nears
         self.assertIn("decision-postponed-at-deadline", self._until_deadline())
         self.assertEqual((self._decision()["status"], self._decision()["postponements"]), ("open", 1))
-        self._do("legal-group", "resolve-concern", matter=matter)
         self._do("country-b", "restore-full-support", matter=matter)
         self.assertIn("decision-authorized-at-deadline", self._until_deadline())
         self.assertEqual(self._decision()["status"], "authorized")

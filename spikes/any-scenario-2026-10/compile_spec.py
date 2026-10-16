@@ -69,7 +69,8 @@ SUPPORT = {"name": "support", "fields": [
     {"name": "condition_id", "type": "entity_ref", "default": "placeholder"}]}
 CONCERN = {"name": "concern", "fields": [
     {"name": "recipient_id", "type": "entity_ref", "default": "placeholder"},
-    {"name": "status", "type": "string", "default": "open"},  # open | resolved
+    {"name": "status", "type": "string", "default": "open"},  # open | remedy_under_way | resolved
+    {"name": "remedy_ticks_left", "type": "integer", "default": 0},
     {"name": "times_resolved", "type": "integer", "default": 0},
     {"name": "times_reopened", "type": "integer", "default": 0}]}
 GROUP_DECISION = {"name": "group_decision", "fields": [
@@ -99,6 +100,11 @@ def _effect(participant: str, path: str, op: str, value: Any) -> dict[str, Any]:
         value = {"literal": value}
     return {"participant": participant, "path": path, "op": op, "value": value}
 
+
+# A remedy takes this many rounds once started. 2026-10-16 inc15i (luna): with resolving instant, each country declared
+# its own concern fixed in round 2 and nobody had anything left to do; a remedy under way gives the holder and the
+# recipient a stretch in which support can wait on it.
+REMEDY_TICKS = 2
 
 _SUPPORT_SEL = {"categories": ["support"], "components": ["support"]}
 _MATTER_SEL = {"categories": ["information"], "components": ["information", "concern"]}
@@ -150,23 +156,23 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                           "eq", {"entity_id": "matter"}),
                    _check("the concern is resolved", _ref("matter", "components.concern.status"), "eq", "resolved")],
                   [_effect("support", "components.support.stance", "set", "full"), *counts("add", "subtract")]),
-        _mechanic("resolve-concern", "Whoever holds a concern's information makes the remedy, resolving that concern.",
+        _mechanic("resolve-concern", f"Whoever holds a concern's information starts the remedy; {REMEDY_TICKS} rounds later the concern is resolved.",
                   {"matter": _MATTER_SEL},
                   [_check("the actor holds this information", _ref("matter", "components.information.source_id"), "eq",
                           {"entity_id": "actor"}), arrived,
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
-                  [_effect("matter", "components.concern.status", "set", "resolved"),
-                   _effect("matter", "components.concern.times_resolved", "add", 1)]),
+                  [_effect("matter", "components.concern.status", "set", "remedy_under_way"),
+                   _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS)]),
         # 2026-10-16 Waltzman inc15g: only the holder could resolve, but many remedies sit with the person the concern
         # reached (a country obtaining its own authorization). The legal group rightly refused to resolve another
         # country's gap, so no concern was ever resolved and every country could only keep raising it.
         _mechanic("resolve-own-concern",
-                  "The person a concern reached makes the remedy on their own side, resolving that concern.",
+                  f"The person a concern reached starts the remedy on their own side; {REMEDY_TICKS} rounds later it is resolved.",
                   {"matter": _MATTER_SEL},
                   [mine, arrived,
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
-                  [_effect("matter", "components.concern.status", "set", "resolved"),
-                   _effect("matter", "components.concern.times_resolved", "add", 1)]),
+                  [_effect("matter", "components.concern.status", "set", "remedy_under_way"),
+                   _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS)]),
         _mechanic("reopen-concern",
                   "The person a resolved concern reached finds the remedy wanting and reopens it while the decision is open.",
                   {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
@@ -186,7 +192,23 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
               "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"]}
     actions = [{"kind": m["action_kind"], "description": m["rationale"],
                 "fields": [{"name": f, "type": "entity_ref"} for f in fields[m["action_kind"]]]} for m in mechanics]
-    processes = []
+    concern_it = lambda path: _ref("it", f"components.concern.{path}")  # noqa: E731
+    concern_sel = {"categories": ["information"], "components": ["information", "concern"]}
+    under_way = _check("a remedy is under way", concern_it("status"), "eq", "remedy_under_way")
+    # Completion is listed before progress: processes apply in sequence within a tick, so the other order would
+    # finish a remedy one round early.
+    processes = [
+        {"process_id": "remedy-completes", "rationale": "A remedy under way that has run its course resolves the concern.",
+         "selector": concern_sel,
+         "checks": [under_way, _check("the remedy is in its last round", concern_it("remedy_ticks_left"), "lte", 1)],
+         "effects": [_effect("it", "components.concern.status", "set", "resolved"),
+                     _effect("it", "components.concern.remedy_ticks_left", "set", 0),
+                     _effect("it", "components.concern.times_resolved", "add", 1)]},
+        {"process_id": "remedy-progresses", "rationale": "A remedy under way moves one round closer to done.",
+         "selector": concern_sel,
+         "checks": [under_way, _check("the remedy has rounds to go", concern_it("remedy_ticks_left"), "gt", 1)],
+         "effects": [_effect("it", "components.concern.remedy_ticks_left", "subtract", 1)]},
+    ]
     if has_deadline:
         it = lambda path: _ref("it", f"components.group_decision.{path}")  # noqa: E731
         sel = {"categories": ["group-decision"], "components": ["group_decision"]}
@@ -196,7 +218,7 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                _check("the deadline is happening now", _ref("deadline", "components.moment.happening_now"), "eq", True)]
         enough = lambda op: _check("enough deciders fully support it" if op == "gte" else  # noqa: E731
                                    "too few deciders fully support it", it("support"), op, it("needed"))
-        processes = [
+        processes += [
             {"process_id": "decision-authorized-at-deadline",
              "rationale": "At the deadline, enough full support authorizes the decision.", "selector": sel,
              "participants": deadline, "checks": [*due, enough("gte")],
@@ -301,7 +323,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
             if "information" in e["categories"]:
                 recipient = next(x for x in entities if x["id"] == f"delivery-{e['id']}")["components"]["delivery"][
                     "recipient_id"]
-                e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "times_resolved": 0,
+                e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0,
                                               "times_reopened": 0}
         starting = set(d.supporters_at_start)
         for pid in dict.fromkeys(d.decider_ids):
