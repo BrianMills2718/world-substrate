@@ -35,7 +35,11 @@ SPEC_SYSTEM = (
     "an approval, an activation), fill `decision`: who decides, who supports it at the start, how many must fully "
     "support it, the deadline moment and what happens if support is short then. Each decider's support, the concerns "
     "it may wait on (the information items they receive) and the decision's status are then exact compiled records, "
-    "so do not also make world records for support, votes or the decision's status."
+    "so do not also make world records for support, votes or the decision's status. (9) Where the scenario leaves a "
+    "person's position, beliefs or tendencies unstated, give each person a plausible, distinct profile that makes the "
+    "dynamics the scenario describes possible (for example, if concerns are said to make support conditional, the "
+    "deciders who receive them weigh those concerns before supporting, some more cautious than others); never leave a "
+    "decider with no stance, and list every such invented detail in fidelity_assumptions."
 )
 SPEC_MODEL_WHY = ("The scenario spec is the whole world definition; the stronger tier is used for the same reason as "
                   "rule writing (see RULE_MODEL_WHY).")
