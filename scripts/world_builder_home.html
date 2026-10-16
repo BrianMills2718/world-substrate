@@ -111,6 +111,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 .steps-live .items span{border:1px solid var(--line);border-radius:6px;padding:1px 8px;font-size:13px;color:var(--text)}
 @media (prefers-reduced-motion:no-preference){.steps-live li{animation:stepin 220ms ease-out}}
 @keyframes stepin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .share-link { width: 100%; max-width: 560px; margin-top: 6px; font: inherit; }
 </style>
 </head>
 <body>
@@ -223,7 +224,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div class="row" style="margin-top:14px">
       <button class="secondary" type="button" id="new-btn" title="Back to your description to change it and create the simulation again">Edit and run again</button>
       <button class="secondary" type="button" id="rules-btn" title="Read the rules that decide every attempt (the simulation pauses while you read)">See how it works</button>
+      <button class="secondary" type="button" id="share-btn" title="Save this run as it is now and get a link. Anyone who opens it sees these same rounds replayed straight away, with no AI cost. The link shows your description.">Share this run</button>
     </div>
+    <div id="share-out" class="small" role="status"></div>
     <details class="more"><summary title="Restart or save this simulation">More</summary>
       <div class="inner row">
         <button class="secondary" type="button" id="again-btn" title="Throw away this run and start the same world over from round 1 with the same rules">Start over</button>
@@ -463,6 +466,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("raw").textContent = JSON.stringify({ world: b, rules: data.causal_model }, null, 2);
     const dn = $("dry-notice"); dn.innerHTML = "";
     const d = data.dry_run;
+    // A shared run made from edited rules has no build, so no quick test to report.
+    if (!d) { $("approve-btn").disabled = false; show("review"); return; }
     const n = document.createElement("div");
     let warning = null;
     if (d.ok) {
@@ -632,7 +637,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Brian, 2026-10-06: "we should probably have some 'are you still there after
   // 100 moves' that pauses and the user can unpause".
   const CHECK_IN_ROUNDS = 100, STUCK_ROUNDS = 15;
-  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, ROUND_PAUSE_MS = 1500;
+  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, ROUND_PAUSE_MS = 1500, REPLAY_PAUSE_MS = 600;
   let live = null;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   function setTip(el, text) {
@@ -655,7 +660,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   function renderLive() {
     const t = live.totals, n = live.rounds.length;
     const last = n ? live.rounds[n - 1].turn : 0;
-    $("run-h").textContent = live.playing ? "Your world is running" : live.finished ? "Your world reached its finish line" : "Your world is paused";
+    $("run-h").textContent = live.replay ? (live.finished ? "A shared run (end of the recording)" : "A shared run, replayed")
+      : live.playing ? "Your world is running" : live.finished ? "Your world reached its finish line" : "Your world is paused";
     $("outcome").textContent = n
       ? `Round ${last} · ${t.allowed} allowed · ${t.refused} refused${t.held ? ` · ${t.held} held back by the rules` : ""}${t.byItself ? ` · ${t.byItself} by itself` : ""}`
       : "Starting the first round…";
@@ -705,6 +711,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const gen = live.gen;
     const current = () => live && live.gen === gen;
     while (current() && live.playing) {
+      if (!live.buffer.length && live.replay) {
+        live.playing = false; live.finished = true;
+        live.why = `End of the shared run: ${live.rounds.length} rounds, replayed from the recording with no AI calls.`;
+        renderLive(); return;
+      }
       if (!live.buffer.length) {
         let run;
         try { run = await fetchRounds(); }
@@ -715,6 +726,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         if (!current()) return;
         const rounds = run.trace.transcript || [];
         live.snapshot = run.trace.final_snapshot; live.lastTurn = run.summary.last_turn;
+        if (run.trace_id) live.runIds.push(run.trace_id);
         if (run.replay_html) $("replay").srcdoc = run.replay_html;
         if (!rounds.length) {
           live.playing = false;
@@ -739,23 +751,24 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       });
       if (live.endsAt && turn.turn >= live.endsAt) {
         live.finished = true; live.playing = false; live.why = "Finished: the finish line was reached.";
-      } else if (live.quiet >= QUIET_ROUNDS_TO_PAUSE) {
+      } else if (live.quiet >= QUIET_ROUNDS_TO_PAUSE && !live.replay) {
         live.playing = false; live.quiet = 0;
         live.why = `Paused by itself: nothing happened for ${QUIET_ROUNDS_TO_PAUSE} rounds. Open “Why things were refused” to see what is blocking everyone.`;
-      } else if (live.sincePlay >= CHECK_IN_ROUNDS) {
+      } else if (live.sincePlay >= CHECK_IN_ROUNDS && !live.replay) {
         live.playing = false;
         live.why = `Paused after ${CHECK_IN_ROUNDS} rounds. Still watching? Press Play to carry on.`;
       }
       renderLive();
       // Simple moves are instant; pause so each round can be read. AI rounds take long enough already.
-      if (live.playing && !$("ai-moves").checked) await sleep(ROUND_PAUSE_MS);
+      if (live.playing && live.replay) await sleep(REPLAY_PAUSE_MS);
+      else if (live.playing && !$("ai-moves").checked) await sleep(ROUND_PAUSE_MS);
     }
   }
 
   function play() {
     if (!live || live.finished) return;
     live.gen++; live.playing = true; live.sincePlay = 0;
-    live.why = $("ai-moves").checked ? "An AI is choosing each move, so each round takes a few seconds." : "";
+    live.why = live.replay ? "Replaying the recorded rounds; nothing is being decided now." : $("ai-moves").checked ? "An AI is choosing each move, so each round takes a few seconds." : "";
     renderLive(); playLoop();
   }
   function pause() {
@@ -766,9 +779,13 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   function startLive(options) {
     if (!world) return;
-    live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
+    const recorded = (options && options.rounds) || (world.shared && world.shared.rounds) || null;
+    live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: recorded ? recorded.slice() : [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
              totals: { allowed: 0, refused: 0, held: 0, byItself: 0 }, finished: false, endsAt: null, why: "",
-             sincePlay: 0, lastChanged: {} };
+             sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded };
+    $("share-out").textContent = "";
+    $("share-btn").hidden = live.replay; $("ai-live").parentElement.hidden = live.replay;
+    $("replay").closest("details").hidden = live.replay;  // a recording has no picture yet
     $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
     $("ai-live").checked = $("ai-moves").checked;
     show("run");
@@ -776,6 +793,39 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
 
   $("build-btn").addEventListener("click", () => build());
+
+  // Share link (increment 5, docs/plans/best-of-all-worlds.goal.md): the server rebuilds the run from its own log
+  // of the rounds it answered, so a link always shows a real run, and opening one makes no AI call.
+  $("share-btn").addEventListener("click", async () => {
+    if (!live || live.replay) return;
+    const out = $("share-out"); out.innerHTML = "";
+    if (!live.runIds.length) { out.textContent = "Play at least one round first."; return; }
+    pause();
+    const btn = $("share-btn"); btn.disabled = true; btn.textContent = "Saving…";
+    try {
+      const r = await api("/share", { build_trace_id: world.trace_id || null, run_trace_ids: live.runIds });
+      const url = location.origin + location.pathname + "?run=" + encodeURIComponent(r.share_id);
+      const box = document.createElement("input"); box.type = "text"; box.readOnly = true; box.value = url; box.className = "share-link";
+      box.title = "The link to this run; select it to copy";
+      box.addEventListener("focus", () => box.select());
+      out.append(`Saved ${r.rounds} round${r.rounds === 1 ? "" : "s"}. Anyone with this link sees them replayed: `, box);
+      try { await navigator.clipboard.writeText(url); out.append(" (copied)"); } catch (e) { /* clipboard unavailable */ }
+    } catch (err) {
+      out.textContent = plainError(err);
+    } finally { btn.disabled = false; btn.textContent = "Share this run"; }
+  });
+  async function openShared(id) {
+    try {
+      const rec = await api("/share/" + encodeURIComponent(id));
+      renderReview({ ...rec.world, description: rec.world.description || "(not recorded)" });
+      world.shared = rec;
+      $("desc").value = rec.world.description || "";
+      startLive();
+    } catch (err) {
+      const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
+      $("service-status").innerHTML = ""; $("service-status").append(n);
+    }
+  }
 
   // Dialogue: the AI asks clarifying questions and keeps a description draft.
   let talk = [];
@@ -831,7 +881,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("strip").addEventListener("click", () => { $("detail").dataset.touched = "1"; });
   $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
   $("change-btn").addEventListener("click", () => show("describe"));
-  $("approve-btn").addEventListener("click", () => startLive());
+  // A shared run's review leads to a fresh run of the same rules, not the recording again.
+  $("approve-btn").addEventListener("click", () => { if (world) delete world.shared; startLive(); });
   $("again-btn").addEventListener("click", () => startLive());
   $("new-btn").addEventListener("click", () => { if (live) pause(); world = null; show("describe"); });
   $("download-btn").addEventListener("click", () => {
@@ -891,6 +942,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("desc").addEventListener("input", () => { if (!serviceBlock) $("build-hint").textContent = ""; });
   refreshBuild();
   checkService();
+  const sharedRun = new URLSearchParams(location.search).get("run");
+  if (sharedRun) openShared(sharedRun);
 })();
 </script>
 </body>

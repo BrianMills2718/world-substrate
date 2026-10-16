@@ -544,6 +544,51 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 422, payload)
         self.assertIn("allowance for this month", payload["error"])
 
+    def _scripted_rounds(self, n: int):
+        ids, transcript, snap, last = [], [], None, 0
+        causal = self._ongoing_causal()
+        for _ in range(n):
+            body = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1}
+            if snap:
+                body.update(continue_from=snap, turn_offset=last)
+            status, run = self.post("/run", body)
+            self.assertEqual(status, 200, run)
+            ids.append(run["trace_id"]); transcript += run["trace"]["transcript"]
+            snap, last = run["trace"]["final_snapshot"], run["summary"]["last_turn"]
+        return ids, transcript
+
+    def test_shared_run_replays_the_recorded_rounds_without_ai(self):
+        ids, transcript = self._scripted_rounds(3)
+        self.assertEqual([t["turn"] for t in transcript], [1, 2, 3])
+        with patch.object(service, "_trace_cost", side_effect=AssertionError("a share must not call the AI")):
+            status, shared = self.post("/share", {"build_trace_id": None, "run_trace_ids": ids})
+            self.assertEqual(status, 200, shared)
+            self.assertEqual(shared["rounds"], 3)
+            status, record = self.get("/share/" + shared["share_id"])
+        self.assertEqual(status, 200, record)
+        self.assertEqual(record["schema"], service.SHARE_SCHEMA)
+        self.assertEqual(record["rounds"], transcript)  # exactly what the server answered, in order
+        self.assertEqual(record["world"]["bundle"], BUNDLE)
+        self.assertEqual(record["world"]["causal_model"], self._ongoing_causal())
+        self.assertEqual([r["trace_id"] for r in record["runs"]], ids)
+        self.assertTrue(record["world"]["review"]["mechanics"])
+
+    def test_share_refuses_rounds_the_server_did_not_answer_or_a_broken_run(self):
+        ids, _ = self._scripted_rounds(3)
+        fake = service.TRACE_ROOT + "/run/" + "0" * 32
+        status, payload = self.post("/share", {"run_trace_ids": ids + [fake]})
+        self.assertEqual(status, 422, payload)
+        self.assertIn("not in this server", payload["error"])
+        status, payload = self.post("/share", {"run_trace_ids": ids[1:]})  # no round 1
+        self.assertEqual(status, 422, payload)
+        status, payload = self.post("/share", {"run_trace_ids": [ids[0], ids[2]]})  # a gap
+        self.assertEqual(status, 422, payload)
+        self.assertIn("unbroken", payload["error"])
+        status, payload = self.post("/share", {"run_trace_ids": ["not-an-id"]})
+        self.assertEqual(status, 422, payload)
+        status, payload = self.get("/share/doesnotexist")
+        self.assertEqual(status, 404, payload)
+
     def test_provider_out_of_credit_is_said_plainly(self):
         # 2026-10-16: the OpenRouter account ran out of credit and the page said "internal world-builder error".
         class LLMQuotaExhaustedError(Exception):
