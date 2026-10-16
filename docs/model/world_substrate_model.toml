@@ -54,7 +54,7 @@ name = "CausalModel"
 what = "Proposed executable law for one bundle: action mechanics (checks, effects), optional processes (changes the world makes by itself), optional terminal (finish line)."
 source = "src/world_substrate/action_authoring.py:361"
 schema = "world-substrate-causal-model/v0"
-state = ["mechanics[] (one per bundle action kind, exactly)", "processes[] (at most 6), each optionally with linked participants {name: {link, selector}} (DeclaredProcess.participants, action_authoring.py:264; links in PROCESS_LINKS, :669, plus ref:<component>.<field>)", "terminal | null"]
+state = ["mechanics[] (one per bundle action kind, exactly)", "processes[] (at most 16), each optionally with linked participants {name: {link, selector}} (DeclaredProcess.participants, action_authoring.py:264; links in PROCESS_LINKS, :669, plus ref:<component>.<field>)", "terminal | null"]
 
 [[entities]]
 name = "CausalReview"
@@ -294,7 +294,7 @@ schedule = "on request; LLM; budget-reserved"
 
 [[processes]]
 name = "compile"
-what = "CausalModel.from_dict validates the proposal against the bundle: schema, action kinds equal bundle kinds, typed paths, selectors, operators, at most 6 processes, unique ids; derives reads/writes. Model-written source is never executed."
+what = "CausalModel.from_dict validates the proposal against the bundle: schema, action kinds equal bundle kinds, typed paths, selectors, operators, at most 16 processes, unique ids; derives reads/writes. Model-written source is never executed."
 source = "src/world_substrate/action_authoring.py:367"
 routes = []
 changes = ["CausalReview"]

@@ -215,6 +215,14 @@ class GroupDecisionTests(unittest.TestCase):
         self.engine, _, _ = build_engine(self.bundle, self.causal)
         self.engine.registry.register_process(ClockAdvanceProcess())
 
+    def test_compiled_processes_leave_room_for_a_full_generated_set(self):
+        # 2026-10-16 Waltzman inc15f: 3 moment + 3 deadline processes filled the engine's old bound of 6, so any
+        # generated process made the build fail with "processes must be a list of at most 6".
+        from world_substrate.action_authoring import MAX_PROCESSES
+        from scripts.generate_causal_model import causal_model_schema
+        generated_max = causal_model_schema(self.bundle)["properties"]["processes"]["maxItems"]
+        self.assertLessEqual(len(self.causal["processes"]) + generated_max, MAX_PROCESSES)
+
     def _decision(self):
         return self.engine.world.entities["activate"].as_dict()["components"]["group_decision"]
 
