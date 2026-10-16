@@ -87,6 +87,8 @@ def _words(value: str) -> str:
 
 # 2026-10-15 Waltzman run (trace world-builder-e2e/people/d231947f...): raise-concern could repeat every round and no
 # rule resolved a concern or restored support, so from round 4 every member raised the same concern forever.
+# (4): 2026-10-16 local Waltzman run inc15c: only Country One could change its support (actor == country-one), so
+# Countries Two to Four and the health network sat idle for 40 rounds.
 LIVENESS_GUIDANCE = (
     "This world keeps running with people acting every round, so: (1) no action may be repeatable without limit by "
     "the same actor on the same thing; record that it was done (for example a concern's status becomes raised) and "
@@ -96,7 +98,10 @@ LIVENESS_GUIDANCE = (
     "is done once and never cleared has nothing to do for the rest of the run. (2) Every state a rule can push one way needs a rule that can push it back "
     "(a raised concern can be addressed or resolved, conditional support can become full support again, a postponed "
     "or withheld decision can be reconsidered, a slowed pace can recover). (3) Progress toward the scenario's "
-    "decision must stay possible while concerns are open."
+    "decision must stay possible while concerns are open. (4) When several people share a position (for example "
+    "member countries), an action the position allows is open to each of them: check the actor's position, not one "
+    "person's id, unless the description says only that person may do it, and give each of them their own record "
+    "where the action changes one (each member's own support, not only the one the description happens to name)."
 )
 
 
@@ -110,7 +115,9 @@ ACTION_LIVENESS_GUIDANCE = (
     "resolve, restore or reconsider it (for example addressing a raised concern, making a readiness complete, giving "
     "full support again, reconsidering a postponed decision). Every person listed must have at least one action that "
     "fits their position and that they could take more than once over the run; specialist groups need actions that "
-    "do their specialist work. List such an action under the behavior whose state it moves back."
+    "do their specialist work. List such an action under the behavior whose state it moves back. When several "
+    "people share a position (for example member countries), what the description says one of them does is an "
+    "example of what the position allows, not a limit: write the action so any of them can take it."
 )
 
 
