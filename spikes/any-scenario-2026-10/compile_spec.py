@@ -334,6 +334,9 @@ def _moment_processes() -> list[dict[str, Any]]:
 # rule writer marked each group's work done on member.aware ("the represented state cannot clear this record for later
 # scheduled meetings"), every action was spent by round 5 and all ten people did nothing for 35 rounds.
 WORK_CYCLE_TICKS = 4  # the cycle when the scenario has no repeating moment (one tick is one week by default)
+# A shorter repeating moment does not limit anything: deploy5's weekly meeting (every_ticks 1) cleared every flag each
+# round and all ten people repeated one action for 40 rounds.
+MIN_WORK_CYCLE_TICKS = 3
 
 
 def work_field(kind: str) -> str:
@@ -348,7 +351,7 @@ def add_work_cycle(spec: ScenarioSpecV1, bundle: dict[str, Any], compiled: dict[
     if not action_kinds:
         return None
     flags = {k: work_field(k) for k in action_kinds}
-    repeating = [m for m in spec.scheduled_moments if m.every_ticks]
+    repeating = [m for m in spec.scheduled_moments if (m.every_ticks or 0) >= MIN_WORK_CYCLE_TICKS]
     if repeating:
         cycle_id, cycle_label = _eid(repeating[0].moment_id), repeating[0].description
     else:
@@ -376,6 +379,27 @@ def add_work_cycle(spec: ScenarioSpecV1, bundle: dict[str, Any], compiled: dict[
         "checks": [_check("the work cycle restarts now", _ref("cycle", "components.moment.happening_now"), "eq", True)],
         "effects": [_effect("it", f"components.work.{f}", "set", False) for f in flags.values()]})
     return {"cycle_id": cycle_id, "cycle_label": cycle_label, "flags": flags}
+
+
+def limit_to_work_cycle(mechanics: list[dict[str, Any]], cycle: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """Each generated action at most once per person per work cycle: add the check of the actor's own flag and its
+    setting wherever the rule writer left them out (deploy5: 7 of 15 rules had no limit). Returns new mechanics."""
+    if not cycle:
+        return mechanics
+    out = []
+    for m in mechanics:
+        flag = cycle["flags"].get(m["action_kind"])
+        if not flag:
+            out.append(m)
+            continue
+        path = f"components.work.{flag}"
+        m = json.loads(json.dumps(m))
+        if not any(c.get("left") == _ref("actor", path) for c in m["checks"]):
+            m["checks"].append(_check("not already done this work cycle", _ref("actor", path), "eq", False))
+        if not any(e.get("participant") == "actor" and e.get("path") == path for e in m["effects"]):
+            m["effects"].append(_effect("actor", path, "set", True))
+        out.append(m)
+    return out
 
 
 def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:

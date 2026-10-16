@@ -558,3 +558,20 @@ class WorkCycleTests(unittest.TestCase):
         engine, cycle = self._engine(ScenarioSpecV1.model_validate(_minimal()))
         self.assertEqual(cycle["cycle_id"], "work-cycle")
         self._report_again_after_cycle(engine)
+
+    def test_a_meeting_every_round_is_too_short_to_be_the_work_cycle(self):
+        spec = _two_recipient_spec().model_copy(deep=True)
+        spec.scheduled_moments[0].every_ticks = 1
+        _, cycle = self._engine(spec)
+        self.assertEqual(cycle["cycle_id"], "work-cycle")
+
+    def test_a_rule_without_the_limit_gets_it(self):
+        from compile_spec import limit_to_work_cycle
+        rule = {"action_kind": "file-report", "checks": [], "effects": []}
+        cycle = {"flags": {"file-report": "file_report_done"}}
+        limited = limit_to_work_cycle([rule], cycle)[0]
+        path = "components.work.file_report_done"
+        self.assertEqual([c["left"]["participant"]["path"] for c in limited["checks"]], [path])
+        self.assertEqual([(e["path"], e["value"]) for e in limited["effects"]], [(path, {"literal": True})])
+        self.assertEqual(limit_to_work_cycle([limited], cycle)[0], limited)  # already limited: unchanged
+        self.assertEqual(rule["checks"], [])  # the writer's rule is not edited in place

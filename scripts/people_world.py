@@ -248,10 +248,12 @@ def actions_to_write(prepared: dict[str, Any]) -> dict[str, Any]:
 
 def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -> dict[str, Any]:
     """Generated rules + compiled rules -> the finished world. Raises on a rule set the compiler rejects."""
-    _, sp = _pipeline()
+    compile_spec, sp = _pipeline()
     spec, bundle, compiled = prepared["spec"], prepared["bundle"], prepared["compiled"]
     coverage = json.loads(json.dumps(prepared["coverage"]))  # behavior_coverage edits rows; keep the prepared copy
     generated = {k: v for k, v in generated.items() if k != "review"}
+    generated["mechanics"] = compile_spec.limit_to_work_cycle(generated.get("mechanics") or [],
+                                                              prepared.get("work_cycle"))
     causal, dropped = sp.merge_causal(compiled, generated)
     # An action whose whole generated rule was dropped (every effect wrote a compiled component) leaves the world, so
     # bundle and rules still match. 2026-10-16 inc15j (luna): reconsider-settled-issue only set a concern's status,
