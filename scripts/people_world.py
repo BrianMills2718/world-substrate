@@ -151,14 +151,24 @@ ACTION_LIVENESS_GUIDANCE = (
 )
 
 
-def fast_route() -> Any:
-    """Ask OpenRouter for the provider with the highest throughput. 2026-10-16: the same people-step call (about 5,000
-    output tokens) took 98-104 s on the default route and 43-53 s sorted by throughput (speed test,
-    world-builder-test/speed/*), and the build has to reach its first round within 150 s."""
+# OpenAI's own endpoint tiers on OpenRouter, fastest first. 2026-10-16 route test on the people-step prompt
+# (~/code/.scratch/waltzman-demo/route-test/run1.log, two tries each): openai/fast 200 tokens/s (21-27 s), azure
+# 122-130 (36-43 s), openai 97-102 (41 s), openai/flex 35 (121-132 s). Sorting by throughput alone still landed both
+# hedged copies on a slow endpoint (deploy9: 96 and 98 s for the people step). The fast tier costs about twice as
+# much per call (about $0.005 for the people step).
+FAST_OPENAI_ENDPOINTS = ("openai/fast", "azure", "openai")
+
+
+def fast_route(model: str = "") -> Any:
+    """The fastest OpenRouter route for a build call: an OpenAI model only on its fast endpoints (never the slow
+    flex tier), any other model on the provider with the highest throughput. The build has to reach its first
+    round within 150 s."""
     try:
         from llm_client import OpenRouterRoutePolicyV1
     except ImportError:  # only where no model call can run anyway (tests with the calls stubbed)
         return None
+    if "openai/" in model:
+        return OpenRouterRoutePolicyV1(allowed_providers=FAST_OPENAI_ENDPOINTS, sort="throughput")
     return OpenRouterRoutePolicyV1(sort="throughput")
 
 
@@ -204,7 +214,7 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     progress("doing", "Working out who is involved and what each of them wants")
     spec, _ = hedged(trace_id, lambda: sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id,
                                                         max_budget=max_budget, reasoning_effort=SPEC_EFFORT,
-                                                        route_policy=fast_route()))
+                                                        route_policy=fast_route(PEOPLE_MODEL)))
     progress("done", f"Found {len(spec.people)} people or groups", "each with goals, beliefs and what they know",
              [p.label for p in spec.people])
     if spec.information_items or spec.scheduled_moments:
@@ -219,7 +229,7 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     progress("doing", "Working out what each person can try to do")
     sigs, _ = hedged(trace_id, lambda: sp.action_signatures(
         spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace_id, max_budget=max_budget,
-        guidance=ACTION_LIVENESS_GUIDANCE, reasoning_effort=EFFORT, route_policy=fast_route()))
+        guidance=ACTION_LIVENESS_GUIDANCE, reasoning_effort=EFFORT, route_policy=fast_route(DEFAULT_MODEL)))
     sigs = sp.record_fields(spec, sigs)
     bundle["actions"] = bundle["actions"] + [{k: a[k] for k in ("kind", "description", "fields")} for a in sigs]
     work_cycle = compile_spec.add_work_cycle(spec, bundle, compiled, [a["kind"] for a in sigs])
@@ -243,7 +253,7 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
         generated, _ = hedged(trace_id, lambda: generate_causal_model(
             to_write, trace_id=trace_id, guidance=rule_guidance, world_kind="ongoing", reasoning_effort=EFFORT,
             model=PEOPLE_MODEL, model_justification=PEOPLE_MODEL_WHY, max_budget=max_budget,
-            max_output_tokens=RULES_OUTPUT_TOKENS, route_policy=fast_route(),
+            max_output_tokens=RULES_OUTPUT_TOKENS, route_policy=fast_route(PEOPLE_MODEL),
         ))
     return assemble_people_world(prepared, generated)
 
