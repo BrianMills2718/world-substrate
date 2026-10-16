@@ -319,6 +319,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (err.status === 429 && /budget/i.test(msg)) return "Today’s AI budget for this public demo is used up; it resets at midnight UTC. You can still watch an example run. (Owner? Use Owner access at the bottom of the page.)";
     if (err.status === 403 && /owner password/i.test(msg)) { setOwnerKey(""); return msg + " Owner access has been turned off; try again."; }
     if (err.status === 429) return "Too many requests from you in a short time. Wait a minute and try again.";
+    if (/^The (AI service|World Builder cannot)/.test(msg)) return msg;  // the service's own plain AI-provider message
     if (err.status === 503 || /unavailable|could not be reached/i.test(msg)) return "The builder service is not reachable right now. You can still watch an example run.";
     if (/remained invalid/i.test(msg)) {
       const why = msg.split(/repairs?: /).pop().replace(/^(BundleError|ValueError|TypeError|KeyError): /, "");
