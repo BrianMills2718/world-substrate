@@ -8,7 +8,7 @@ from unittest.mock import patch
 from pathlib import Path
 
 from scripts.bootstrap_scene_profile import _entity_binding
-from scripts.run_authored_world import _llm_choice, _runtime_catalog, build_engine, render_run, run_world
+from scripts.run_authored_world import _llm_choice, bookkeeping_fields, _runtime_catalog, build_engine, render_run, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate.action_authoring import ActionDeclarationError
 
@@ -218,6 +218,26 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertEqual(engine.world.entities["scanner-1"].ownership.owner_ref, "actor:dee")
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
 
+
+    def test_a_flag_only_the_move_itself_reads_is_not_an_effect(self):
+        # deploy10, 2026-10-16: "discuss concern at meeting" only set its own
+        # once-per-meeting flag, yet members chose it in 88% of later rounds.
+        rule = lambda mid, kind, reads, writes: types.SimpleNamespace(
+            mechanic_id=mid, action_kind=kind, read_paths=reads, write_paths=writes)
+        model = types.SimpleNamespace(
+            mechanics=[
+                rule("discuss", "discuss", ("entities.<actor>.components.work.discuss_done", "entities.<actor>.components.work"),
+                     ("entities.<actor>.components.work.discuss_done",)),
+                rule("vote", "vote", ("entities.<actor>.components.work.voted",),
+                     ("entities.<actor>.components.work.voted", "entities.<actor>.components.member.note")),
+            ],
+            processes=[types.SimpleNamespace(process_id="tally", read_paths=("entities.<it>.components.work.voted",))],
+            terminal=None,
+        )
+        found = bookkeeping_fields(model)
+        self.assertEqual(found["discuss"], {"components.work.discuss_done"})
+        # Read by another rule, or by nothing at all: still a real effect.
+        self.assertEqual(found["vote"], set())
 
     def test_a_move_still_allowed_after_a_stale_revision_is_not_asked_again(self):
         # Every accepted move bumps the revision, so most AI choices in a round are stale by the time they
