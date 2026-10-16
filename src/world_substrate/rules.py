@@ -3,10 +3,31 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Any, Protocol, runtime_checkable
 
 from .model import World
+
+
+def plain_copy(value: Any) -> Any:
+    """Copy JSON-shaped data (dicts, lists, tuples, scalars) without copy.deepcopy.
+
+    Discovery turns every candidate action and check into a dict, about 180,000 of
+    each in a 24-round test of a ten-person generated world, and copy.deepcopy's
+    generic memo walk took a third of that run (2026-10-16 Waltzman deploy8 build:
+    the 16 s scripted test pushed the build past 150 s). Anything that is not plain
+    data still goes through deepcopy, so the copy is never shared.
+    """
+    kind = type(value)
+    if kind is dict:
+        return {key: plain_copy(item) for key, item in value.items()}
+    if kind is list:
+        return [plain_copy(item) for item in value]
+    if kind is tuple:
+        return tuple(plain_copy(item) for item in value)
+    if value is None or kind in (str, int, float, bool):
+        return value
+    return deepcopy(value)
 
 
 def _require_nonempty_string(value: dict[str, Any], field: str) -> str:
@@ -31,7 +52,12 @@ class Check:
     required: object | None = None
 
     def as_dict(self) -> dict[str, object | None]:
-        return asdict(self)
+        return {
+            "label": self.label,
+            "ok": self.ok,
+            "actual": plain_copy(self.actual),
+            "required": plain_copy(self.required),
+        }
 
 
 @dataclass(frozen=True)

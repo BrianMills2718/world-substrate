@@ -19,7 +19,7 @@ from typing import Any
 
 from .model import Entity, World, owner_ref
 from .profile import MechanicPackage
-from .rules import Check, TypedAction
+from .rules import Check, TypedAction, plain_copy
 
 CAUSAL_MODEL_SCHEMA_VERSION = "world-substrate-causal-model/v0"
 ACTION_MECHANIC_SCHEMA_VERSION = "world-substrate-action-mechanic/v0"
@@ -54,7 +54,7 @@ class DeclaredAction:
     base_revision: int
 
     def as_dict(self) -> dict[str, object]:
-        return deepcopy(self.record)
+        return plain_copy(self.record)
 
 
 @dataclass(frozen=True)

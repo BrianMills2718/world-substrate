@@ -101,6 +101,7 @@ DRY_RUN_TURNS = 12
 # Ongoing/open worlds must stay alive past the first visible run: live, an open
 # village was busy for 12 rounds and then went quiet, so test twice as long.
 DRY_RUN_TURNS_CONTINUING = 24
+DRY_RUN_TURNS_LATE = 8
 WORLD_KINDS = ("task", "ongoing", "open")
 # Live play continues a world one round at a time for as long as the viewer
 # likes; the daily budget, not a round count, is the limit.
@@ -1322,8 +1323,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     )
                     self._progress("doing", "Test-running the rules with simple moves")
                     try:
+                        # Past the rewrite cut-off the test can no longer change the rules, only report on
+                        # them, so a short test is enough (the 24-round one took 16 s on the server).
+                        dry_turns = (DRY_RUN_TURNS_CONTINUING if time.monotonic() - started <= PEOPLE_REWRITE_BY_S
+                                     else DRY_RUN_TURNS_LATE)
                         dry, _, _ = run_world(built["bundle"], built["causal_model"], policy="scripted",
-                                              max_turns=DRY_RUN_TURNS_CONTINUING, trace_id=f"{trace_id}/dry-run-{attempt}")
+                                              max_turns=dry_turns, trace_id=f"{trace_id}/dry-run-{attempt}")
                         summary = dry["summary"]
                         dry_row = {"ok": True, **summary}
                         # Going in circles: one kind of move is all that still happens although the rules offer
@@ -1341,13 +1346,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         guidance = ""
                         if circling:
                             guidance += (
-                                f" A {DRY_RUN_TURNS_CONTINUING}-round test of your previous rules ended with only "
+                                f" A {dry_turns}-round test of your previous rules ended with only "
                                 f"{', '.join(summary.get('moves_at_end') or ['nothing'])} still happening: people "
                                 "repeated one action and nothing else could happen. Add the missing reverse rules and "
                                 "limits so the decision can still move."
                             )
                         if idle:
-                            guidance += _idle_guidance(dry, idle, DRY_RUN_TURNS_CONTINUING)
+                            guidance += _idle_guidance(dry, idle, dry_turns)
                     except ValueError as error:
                         dry_row, score = {"ok": False, "error": str(error)[:300]}, 0
                         guidance = (

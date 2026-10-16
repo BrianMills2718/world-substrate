@@ -219,6 +219,26 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
 
 
+    def test_a_move_still_allowed_after_a_stale_revision_is_not_asked_again(self):
+        # Every accepted move bumps the revision, so most AI choices in a round are stale by the time they
+        # are submitted. A move the rules still allow is retaken at the new revision; only a move that is no
+        # longer allowed costs a second AI call (2026-10-16: 183 one-at-a-time re-asks in 40 rounds).
+        calls = []
+
+        def fake_choice(engine, actor, page, **_):
+            calls.append(actor)
+            rows = page["available"]
+            return (dict(rows[-1]["action"]) if rows else None), "fake", 0.0
+
+        with patch("scripts.run_authored_world._llm_choice", side_effect=fake_choice):
+            trace, _, _ = run_world(self.bundle, self.causal, policy="llm", max_turns=4, trace_id="test/stale")
+        rows = [row for turn in trace["transcript"] for row in turn["actors"].values()]
+        asked_first = sum(len(turn["actors"]) for turn in trace["transcript"])
+        retaken = [row for row in rows if row.get("retried") and not row["lost_what_it_wanted"] and row["status"] == "accepted"]
+        asked_again = [row for row in rows if row.get("retried") and (row["lost_what_it_wanted"] or row["status"] == "nothing_left")]
+        self.assertTrue(retaken)
+        self.assertEqual(len(calls), asked_first + len(asked_again))
+
     def test_policy_view_shows_installed_authored_effects(self):
         from world_substrate.policy import present
 

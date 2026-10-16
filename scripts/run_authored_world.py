@@ -148,6 +148,14 @@ def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+def _same_move(one: dict[str, Any] | None, other: dict[str, Any] | None) -> bool:
+    """The same action, ignoring the world revision it was chosen against."""
+    if one is None or other is None:
+        return one is other
+    drop = ("base_revision", "controller")
+    return {k: v for k, v in one.items() if k not in drop} == {k: v for k, v in other.items() if k not in drop}
+
+
 def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool) -> dict[str, Any]:
     """Drop allowed actions that would change nothing right now.
 
@@ -356,7 +364,14 @@ def run_world(
             if outcome["status"] == "stale_revision":
                 retried = True
                 page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted")
-                if policy == "scripted":
+                # The same move is still allowed after the earlier moves: take it at the new revision
+                # without asking again. Every accepted move bumps the revision, so asking again made
+                # each round a chain of one-at-a-time AI calls (2026-10-16 Waltzman deploy8: 183
+                # re-asks over 40 rounds, up to 9 in one round, about 17 s a round).
+                still = next((row["action"] for row in page.get("available") or [] if _same_move(row["action"], wanted)), None)
+                if still is not None:
+                    again = still
+                elif policy == "scripted":
                     again, said_retry = _scripted_choice(page)
                 else:
                     again, said_retry, call_cost = _llm_choice(
@@ -388,7 +403,7 @@ def run_world(
                     for c in outcome.get("event", {}).get("checks", [])
                     if not c.get("ok") and c.get("label") != "Base revision is current"
                 ],
-                "lost_what_it_wanted": bool(retried and did != wanted),
+                "lost_what_it_wanted": bool(retried and not _same_move(did, wanted)),
                 # Whether the accepted move actually changed the world.
                 "changed": bool(outcome.get("status") == "accepted" and _state_changes(outcome.get("event") or {})),
                 "blocked_by_rules": blocked_by_rules.get(actor, []),
