@@ -19,14 +19,14 @@ from typing import Any
 
 from .model import Entity, World, owner_ref
 from .profile import MechanicPackage
-from .rules import Check, TypedAction
+from .rules import Check, TypedAction, plain_copy
 
 CAUSAL_MODEL_SCHEMA_VERSION = "world-substrate-causal-model/v0"
 ACTION_MECHANIC_SCHEMA_VERSION = "world-substrate-action-mechanic/v0"
 PROCESS_SCHEMA_VERSION = "world-substrate-process-mechanic/v0"
-# Compiled rules (scheduled moments, a group decision's deadline) take up to 6 processes and a generated model may
-# add up to 6 more (generate_causal_model's schema), so the engine bound holds both with room to spare.
-MAX_PROCESSES = 16
+# Compiled rules (scheduled moments, remedies, a group decision's deadline and deployment) take up to 11 processes and
+# a generated model may add more (generate_causal_model's schema), so the engine bound holds both with room to spare.
+MAX_PROCESSES = 24
 MAX_DISCOVERED_ACTIONS = 256
 
 OPS = {
@@ -54,7 +54,7 @@ class DeclaredAction:
     base_revision: int
 
     def as_dict(self) -> dict[str, object]:
-        return deepcopy(self.record)
+        return plain_copy(self.record)
 
 
 @dataclass(frozen=True)

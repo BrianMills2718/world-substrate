@@ -72,17 +72,23 @@ CONCERN = {"name": "concern", "fields": [
     {"name": "status", "type": "string", "default": "open"},  # open | remedy_under_way | resolved
     {"name": "remedy_ticks_left", "type": "integer", "default": 0},
     {"name": "times_resolved", "type": "integer", "default": 0},
-    {"name": "times_reopened", "type": "integer", "default": 0}]}
+    {"name": "times_reopened", "type": "integer", "default": 0},
+    {"name": "times_raised", "type": "integer", "default": 0}]}
 GROUP_DECISION = {"name": "group_decision", "fields": [
     {"name": "question", "type": "string", "default": "decision"},
-    {"name": "status", "type": "string", "default": "open"},  # open | authorized | rejected
+    {"name": "status", "type": "string", "default": "open"},  # open | authorized (deploying) | deployed | suspended | rejected
     {"name": "support", "type": "integer", "default": 0},
     {"name": "conditional", "type": "integer", "default": 0},
     {"name": "needed", "type": "integer", "default": 1},
     {"name": "postponements", "type": "integer", "default": 0},
     {"name": "max_postponements", "type": "integer", "default": 0},
     {"name": "postpone_ticks", "type": "integer", "default": 1},
-    {"name": "deadline_id", "type": "entity_ref", "default": "placeholder"}]}
+    {"name": "deadline_id", "type": "entity_ref", "default": "placeholder"},
+    {"name": "deploy_ticks_left", "type": "integer", "default": 0},
+    # Matters people have put before the decision and not yet settled: the one decision field generated rules write
+    # (add 1 to raise a matter at a meeting, subtract 1 to settle one). 2026-10-16 deploy10/11: with every compiled
+    # field read-only, all 8 generated moves only set their own done flag, so discussing at meetings did nothing.
+    {"name": "agenda_items", "type": "integer", "default": 0}]}
 
 
 def _ref(name: str, path: str) -> dict[str, Any]:
@@ -105,6 +111,16 @@ def _effect(participant: str, path: str, op: str, value: Any) -> dict[str, Any]:
 # its own concern fixed in round 2 and nobody had anything left to do; a remedy under way gives the holder and the
 # recipient a stretch in which support can wait on it.
 REMEDY_TICKS = 2
+# 2026-10-16 Waltzman stance1 (luna): the spec put the deadline 4 rounds out with support already at the threshold, so
+# the decision was authorized in round 4 before any delivered concern could change a stance, and the next 36 rounds
+# circled on one move. A deadline must leave room for a concern to arrive (1), a remedy (REMEDY_TICKS), a reopening
+# and a second remedy: at least this many rounds, whatever the text implied.
+MIN_DECISION_TICKS = 1 + 3 * REMEDY_TICKS + 1
+# Authorizing is not the end: the scenario texts say concerns "delay or block deployment". After authorization the
+# decision deploys over this many rounds; a round passes only while no decider's support is conditional, and full
+# support falling below the threshold withdraws the authorization until the deadline comes round again.
+DEPLOY_TICKS = 6
+RETABLE_TICKS = 6  # rounds from bringing a rejected decision back to deciding it again
 
 _SUPPORT_SEL = {"categories": ["support"], "components": ["support"]}
 _MATTER_SEL = {"categories": ["information"], "components": ["information", "concern"]}
@@ -126,6 +142,11 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
     own = _check("this is the actor's own support", _ref("support", "components.support.holder_id"), "eq",
                  {"entity_id": "actor"})
     is_open = _check("the decision is still open", _ref("decision", "components.group_decision.status"), "eq", "open")
+    # A stance or a concern can still change while an authorized decision deploys (concerns delay or block deployment)
+    # and after it is deployed (a member's concern about the running system can suspend it until resolved). 2026-10-16
+    # Waltzman deploy6: closed at deployment, nobody had any action from round 15 to 40.
+    unsettled = [_check("the decision was not rejected", _ref("decision", "components.group_decision.status"), "ne",
+                        "rejected")]
     counts = lambda a, b: [_effect("decision", "components.group_decision.support", a, 1),  # noqa: E731
                            _effect("decision", "components.group_decision.conditional", b, 1)]
     mine = _check("the concern reached the actor", _ref("matter", "components.concern.recipient_id"), "eq",
@@ -141,7 +162,7 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                    _effect("decision", "components.group_decision.support", "add", 1)]),
         _mechanic("make-support-conditional",
                   "A supporting decider who received an open concern makes its support wait on that concern.", smd,
-                  [own, is_open, mine, arrived,
+                  [own, *unsettled, mine, arrived,
                    _check("the actor fully supports it", _ref("support", "components.support.stance"), "eq", "full"),
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
                   [_effect("support", "components.support.stance", "set", "conditional"),
@@ -149,7 +170,7 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                    *counts("subtract", "add")]),
         _mechanic("restore-full-support",
                   "A decider whose condition's concern is resolved gives full support again.", smd,
-                  [own, is_open,
+                  [own, *unsettled,
                    _check("the actor's support is conditional", _ref("support", "components.support.stance"), "eq",
                           "conditional"),
                    _check("this is the concern the support waits on", _ref("support", "components.support.condition_id"),
@@ -173,23 +194,63 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
                   [_effect("matter", "components.concern.status", "set", "remedy_under_way"),
                    _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS)]),
-        _mechanic("reopen-concern",
-                  "The person a resolved concern reached finds the remedy wanting and reopens it while the decision is open.",
+        # Concerns keep coming: the texts have groups that "each raise small, true but local concerns", not one each.
+        # 2026-10-16 Waltzman deploy7: with each item delivered once, nobody acted in rounds 11-30 once the four
+        # concerns were resolved. Limited to once per work cycle (add_work_cycle).
+        _mechanic("raise-new-concern",
+                  "Whoever holds a resolved concern's information raises a new local concern on the same matter, "
+                  "through the same channel to the same person.",
                   {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
-                  [mine, is_open, _check("the concern is resolved", _ref("matter", "components.concern.status"), "eq",
+                  [_check("the actor holds this information", _ref("matter", "components.information.source_id"), "eq",
+                          {"entity_id": "actor"}), arrived, *unsettled,
+                   _check("the last concern on this matter is resolved", _ref("matter", "components.concern.status"),
+                          "eq", "resolved")],
+                  # what the new concern is stays in the actor's own words (parameters are fixed lists, not text)
+                  [_effect("matter", "components.concern.status", "set", "open"),
+                   _effect("matter", "components.concern.times_raised", "add", 1)]),
+        _mechanic("reopen-concern",
+                  "The person a resolved concern reached finds the remedy wanting and reopens it.",
+                  {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
+                  [mine, *unsettled, _check("the concern is resolved", _ref("matter", "components.concern.status"), "eq",
                                          "resolved")],
                   [_effect("matter", "components.concern.status", "set", "open"),
                    _effect("matter", "components.concern.times_reopened", "add", 1)]),
+        # Anyone can put a matter before the group and anyone can settle one; open matters at a deadline postpone a
+        # decision that has the support (decision-postponed-for-open-matters). 2026-10-16 Waltzman deploy12: the rule
+        # writer, told it may count agenda matters, wrote only own-flag rules again, so meetings could never slow the
+        # decision and the regional health network had no move with any effect in 40 rounds.
+        _mechanic("put-matter-on-agenda",
+                  "Anyone puts a matter before the group while the decision is open; it stays on the agenda until "
+                  "someone settles it.", {"decision": _DECISION_SEL}, [is_open],
+                  [_effect("decision", "components.group_decision.agenda_items", "add", 1)]),
+        _mechanic("settle-agenda-matter", "Anyone settles one of the matters still open on the group's agenda.",
+                  {"decision": _DECISION_SEL},
+                  [is_open, _check("a matter is still open on the agenda",
+                                   _ref("decision", "components.group_decision.agenda_items"), "gt", 0)],
+                  [_effect("decision", "components.group_decision.agenda_items", "subtract", 1)]),
     ]
     if not has_deadline:
         mechanics.append(_mechanic(
             "call-decision", "A decider calls the decision once enough deciders fully support it.", sd,
             [own, is_open, _check("enough deciders fully support it", _ref("decision", "components.group_decision.support"),
                                   "gte", _ref("decision", "components.group_decision.needed"))],
-            [_effect("decision", "components.group_decision.status", "set", "authorized")]))
+            [_effect("decision", "components.group_decision.status", "set", "authorized"),
+             _effect("decision", "components.group_decision.deploy_ticks_left", "set", DEPLOY_TICKS)]))
+    else:
+        # A rejected proposal can be brought back: 2026-10-16 Waltzman deploy13 had one deadline and no postponements,
+        # the decision was rejected in round 8 and, every move needing a decision not rejected, nobody changed
+        # anything in rounds 9-40. decision-back-on-table gives it a new deadline.
+        mechanics.append(_mechanic(
+            "bring-decision-back", f"A decider puts a rejected decision back on the table; it is decided again "
+                                   f"{RETABLE_TICKS} rounds later.", sd,
+            [own, _check("the decision was rejected", _ref("decision", "components.group_decision.status"), "eq",
+                         "rejected")],
+            [_effect("decision", "components.group_decision.status", "set", "back_on_table")]))
     fields = {"give-support": ["support", "decision"], "make-support-conditional": ["support", "decision", "matter"],
               "restore-full-support": ["support", "decision", "matter"], "resolve-concern": ["matter"], "resolve-own-concern": ["matter"],
-              "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"]}
+              "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"],
+              "raise-new-concern": ["matter", "decision"], "put-matter-on-agenda": ["decision"],
+              "settle-agenda-matter": ["decision"], "bring-decision-back": ["support", "decision"]}
     actions = [{"kind": m["action_kind"], "description": m["rationale"],
                 "fields": [{"name": f, "type": "entity_ref"} for f in fields[m["action_kind"]]]} for m in mechanics]
     concern_it = lambda path: _ref("it", f"components.concern.{path}")  # noqa: E731
@@ -216,13 +277,31 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                                  "selector": {"categories": ["moment"], "components": ["moment"]}}}
         due = [_check("the decision is still open", it("status"), "eq", "open"),
                _check("the deadline is happening now", _ref("deadline", "components.moment.happening_now"), "eq", True)]
+        agenda_clear = _check("no matters are still open on the agenda", it("agenda_items"), "lte", 0)
+        agenda_open = _check("matters are still open on the agenda", it("agenda_items"), "gt", 0)
         enough = lambda op: _check("enough deciders fully support it" if op == "gte" else  # noqa: E731
                                    "too few deciders fully support it", it("support"), op, it("needed"))
         processes += [
+            {"process_id": "decision-back-on-table",
+             "rationale": f"A rejected decision brought back is open again, with a new deadline {RETABLE_TICKS} rounds on.",
+             "selector": sel, "participants": deadline,
+             "checks": [_check("the decision was brought back", it("status"), "eq", "back_on_table")],
+             "effects": [_effect("it", "components.group_decision.status", "set", "open"),
+                         _effect("it", "components.group_decision.postponements", "set", 0),
+                         _effect("deadline", "components.moment.ticks_until", "set", RETABLE_TICKS)]},
             {"process_id": "decision-authorized-at-deadline",
              "rationale": "At the deadline, enough full support authorizes the decision.", "selector": sel,
-             "participants": deadline, "checks": [*due, enough("gte")],
-             "effects": [_effect("it", "components.group_decision.status", "set", "authorized")]},
+             "participants": deadline, "checks": [*due, enough("gte"), agenda_clear],
+             "effects": [_effect("it", "components.group_decision.status", "set", "authorized"),
+                         _effect("it", "components.group_decision.deploy_ticks_left", "set", DEPLOY_TICKS)]},
+            # Open agenda items hold up a decision that has the support until no postponements remain.
+            {"process_id": "decision-authorized-at-last-deadline",
+             "rationale": "At the last deadline, enough full support authorizes the decision even with matters still open.",
+             "selector": sel, "participants": deadline,
+             "checks": [*due, enough("gte"), agenda_open,
+                        _check("no postponements remain", it("postponements"), "gte", it("max_postponements"))],
+             "effects": [_effect("it", "components.group_decision.status", "set", "authorized"),
+                         _effect("it", "components.group_decision.deploy_ticks_left", "set", DEPLOY_TICKS)]},
             {"process_id": "decision-rejected-at-deadline",
              "rationale": "At the deadline, too little full support with no postponements left rejects the decision.",
              "selector": sel, "participants": deadline,
@@ -238,6 +317,55 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                                                    it("max_postponements"))],
              "effects": [_effect("it", "components.group_decision.postponements", "add", 1),
                          _effect("deadline", "components.moment.ticks_until", "set", it("postpone_ticks"))]},
+            {"process_id": "decision-postponed-for-open-matters",
+             "rationale": "At the deadline, matters still open on the agenda postpone a supported decision and set a new deadline.",
+             "selector": sel, "participants": deadline,
+             "checks": [*due, enough("gte"), agenda_open, _check("postponements remain", it("postponements"), "lt",
+                                                                  it("max_postponements"))],
+             "effects": [_effect("it", "components.group_decision.postponements", "add", 1),
+                         _effect("deadline", "components.moment.ticks_until", "set", it("postpone_ticks"))]},
+        ]
+    if True:  # deployment after authorization (with or without a deadline)
+        it = lambda path: _ref("it", f"components.group_decision.{path}")  # noqa: E731
+        sel = {"categories": ["group-decision"], "components": ["group_decision"]}
+        deploying = _check("the decision is authorized and deploying", it("status"), "eq", "authorized")
+        no_wait = _check("no decider's support waits on a concern", it("conditional"), "eq", 0)
+        enough = _check("enough deciders still fully support it", it("support"), "gte", it("needed"))
+        # before the deadline rules (processes apply in order within a tick): deployment starts the round after
+        # authorization, and a withdrawal and a new authorization never happen in the same round
+        processes[2:2] = [
+            {"process_id": "authorization-withdrawn",
+             "rationale": "An authorized decision whose full support falls below the threshold goes back to open.",
+             "selector": sel, "checks": [deploying, _check("too few deciders still fully support it", it("support"), "lt",
+                                                           it("needed"))],
+             "effects": [_effect("it", "components.group_decision.status", "set", "open"),
+                         *([_effect("deadline", "components.moment.ticks_until", "set", it("postpone_ticks"))]
+                           if has_deadline else [])],
+             **({"participants": {"deadline": {"link": "ref:group_decision.deadline_id",
+                                               "selector": {"categories": ["moment"], "components": ["moment"]}}}}
+                if has_deadline else {})},
+            {"process_id": "deployment-completes",
+             "rationale": "Deployment finishes when its last round passes with no support waiting on a concern.",
+             "selector": sel, "checks": [deploying, no_wait, enough,
+                                         _check("deployment is in its last round", it("deploy_ticks_left"), "lte", 1)],
+             "effects": [_effect("it", "components.group_decision.status", "set", "deployed"),
+                         _effect("it", "components.group_decision.deploy_ticks_left", "set", 0)]},
+            {"process_id": "deployment-suspended",
+             "rationale": "A deployed decision whose full support falls below the threshold is suspended.",
+             "selector": sel, "checks": [_check("the decision is deployed", it("status"), "eq", "deployed"),
+                                         _check("too few deciders still fully support it", it("support"), "lt",
+                                                it("needed"))],
+             "effects": [_effect("it", "components.group_decision.status", "set", "suspended")]},
+            {"process_id": "deployment-resumes",
+             "rationale": "A suspended decision resumes once enough deciders fully support it again.",
+             "selector": sel, "checks": [_check("the decision is suspended", it("status"), "eq", "suspended"), no_wait,
+                                         enough],
+             "effects": [_effect("it", "components.group_decision.status", "set", "deployed")]},
+            {"process_id": "deployment-progresses",
+             "rationale": "Deployment moves one round closer while no decider's support waits on a concern.",
+             "selector": sel, "checks": [deploying, no_wait, enough,
+                                         _check("deployment has rounds to go", it("deploy_ticks_left"), "gt", 1)],
+             "effects": [_effect("it", "components.group_decision.deploy_ticks_left", "subtract", 1)]},
         ]
     return actions, mechanics, processes
 
@@ -282,6 +410,112 @@ def _moment_processes() -> list[dict[str, Any]]:
     ]
 
 
+# A people world's routine work recurs. 2026-10-16 Waltzman deploy4: with no record a later meeting could clear, the
+# rule writer marked each group's work done on member.aware ("the represented state cannot clear this record for later
+# scheduled meetings"), every action was spent by round 5 and all ten people did nothing for 35 rounds.
+WORK_CYCLE_TICKS = 4  # the cycle when the scenario has no repeating moment (one tick is one week by default)
+# A shorter repeating moment does not limit anything: deploy5's weekly meeting (every_ticks 1) cleared every flag each
+# round and all ten people repeated one action for 40 rounds.
+MIN_WORK_CYCLE_TICKS = 3
+RECURRING_COMPILED = ("raise-new-concern", "put-matter-on-agenda", "settle-agenda-matter",
+                      "bring-decision-back")  # compiled actions limited to once per person per work cycle
+
+
+def work_field(kind: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", kind.lower()).strip("_") + "_done"
+
+
+def add_work_cycle(spec: ScenarioSpecV1, bundle: dict[str, Any], compiled: dict[str, Any],
+                   action_kinds: list[str]) -> dict[str, Any] | None:
+    """Give every person a `work` record (one `<action>_done` flag per generated action) and a compiled process that
+    clears it each time the scenario's first repeating moment happens, or every WORK_CYCLE_TICKS when none repeats.
+    Edits bundle and compiled in place; returns what the rule writer is told about it, or None without actions."""
+    action_kinds = list(action_kinds) + [m["action_kind"] for m in compiled["mechanics"]
+                                         if m["action_kind"] in RECURRING_COMPILED]
+    if not action_kinds:
+        return None
+    flags = {k: work_field(k) for k in action_kinds}
+    repeating = [m for m in spec.scheduled_moments if (m.every_ticks or 0) >= MIN_WORK_CYCLE_TICKS]
+    if repeating:
+        cycle_id, cycle_label = _eid(repeating[0].moment_id), repeating[0].description
+    else:
+        cycle_id, cycle_label = "work-cycle", f"a new work cycle every {WORK_CYCLE_TICKS} rounds"
+        if not any(c["name"] == "moment" for c in bundle["components"]):
+            bundle["components"].append(MOMENT)
+            compiled["processes"][:0] = _moment_processes()
+        bundle["entities"].append({"id": cycle_id, "label": cycle_label, "categories": ["moment", cycle_id],
+                                   "components": {"moment": {"ticks_until": WORK_CYCLE_TICKS,
+                                                             "every_ticks": WORK_CYCLE_TICKS, "occurrences": 0,
+                                                             "happening_now": False}}})
+    bundle["components"].append({"name": "work", "fields": [{"name": "cycle_id", "type": "entity_ref",
+                                                             "default": cycle_id}]
+                                 + [{"name": f, "type": "boolean", "default": False} for f in flags.values()]})
+    for e in bundle["entities"]:
+        if "member" in e["components"]:
+            e["components"]["work"] = {"cycle_id": cycle_id, **{f: False for f in flags.values()}}
+    compiled["processes"].append({  # after moment-occurs, which sets happening_now this tick
+        "process_id": "work-cycle-restarts",
+        "rationale": f"Each time {cycle_label[:60].rstrip('.')} comes round, everyone's record of work done is "
+                     "cleared, so routine work can be done again.",
+        "selector": {"categories": ["member"], "components": ["work"]},
+        "participants": {"cycle": {"link": "ref:work.cycle_id",
+                                   "selector": {"categories": ["moment"], "components": ["moment"]}}},
+        "checks": [_check("the work cycle restarts now", _ref("cycle", "components.moment.happening_now"), "eq", True)],
+        "effects": [_effect("it", f"components.work.{f}", "set", False) for f in flags.values()]})
+    cycle = {"cycle_id": cycle_id, "cycle_label": cycle_label, "flags": flags}
+    compiled["mechanics"] = limit_to_work_cycle(compiled["mechanics"], cycle)
+    return cycle
+
+
+def _matches(entity: dict[str, Any], selector: dict[str, Any]) -> bool:
+    return (set(selector.get("categories") or []) <= set(entity["categories"])
+            and set(selector.get("components") or []) <= set(entity["components"]))
+
+
+def drop_impossible_checks(mechanics: list[dict[str, Any]], bundle: dict[str, Any]) -> tuple[list[dict[str, Any]], list[str]]:
+    """Remove a check that two participants are the same entity when no entity can be both. 2026-10-16 Waltzman
+    deploy7: hold-partnership-meeting and raise-local-concern required a meeting record to equal the meeting moment,
+    so neither was ever possible. Returns (mechanics, what was dropped)."""
+    out, dropped = [], []
+    for m in mechanics:
+        parts = m.get("participants") or {}
+        keep = []
+        for c in m.get("checks") or []:
+            a, b = (c.get("left") or {}).get("action_field"), (c.get("right") or {}).get("action_field")
+            if (c.get("op") == "eq" and a in parts and b in parts and a != b
+                    and not any(_matches(e, parts[a]) and _matches(e, parts[b]) for e in bundle["entities"])):
+                dropped.append(f"check of {m['action_kind']} removed: '{c.get('label')}' could never hold "
+                               f"({a} and {b} are never the same thing)")
+                continue
+            keep.append(c)
+        out.append({**m, "checks": keep} if len(keep) != len(m.get("checks") or []) else m)
+    return out, dropped
+
+
+def limit_to_work_cycle(mechanics: list[dict[str, Any]], cycle: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """Each generated action at most once per person per work cycle: add the check of the actor's own flag and its
+    setting wherever the rule writer left them out (deploy5: 7 of 15 rules had no limit). Returns new mechanics."""
+    if not cycle:
+        return mechanics
+    out = []
+    for m in mechanics:
+        flag = cycle["flags"].get(m["action_kind"])
+        if not flag:
+            out.append(m)
+            continue
+        path = f"components.work.{flag}"
+        m = json.loads(json.dumps(m))
+        components = m.setdefault("actor_selector", {}).setdefault("components", [])
+        if "work" not in components:
+            components.append("work")
+        if not any(c.get("left") == _ref("actor", path) for c in m["checks"]):
+            m["checks"].append(_check("not already done this work cycle", _ref("actor", path), "eq", False))
+        if not any(e.get("participant") == "actor" and e.get("path") == path for e in m["effects"]):
+            m["effects"].append(_effect("actor", path, "set", True))
+        out.append(m)
+    return out
+
+
 def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Return (bundle, causal, coverage). Ids in the world are the spec ids with '_' turned into '-'."""
     entities: list[dict[str, Any]] = []
@@ -323,7 +557,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
             if "information" in e["categories"]:
                 recipient = next(x for x in entities if x["id"] == f"delivery-{e['id']}")["components"]["delivery"][
                     "recipient_id"]
-                e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0,
+                e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0, "times_raised": 0,
                                               "times_reopened": 0}
         starting = set(d.supporters_at_start)
         for pid in dict.fromkeys(d.decider_ids):
@@ -335,10 +569,16 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                          "categories": ["group-decision", _eid(d.decision_id)],
                          "components": {"group_decision": {
                              "question": d.question, "status": "open", "support": len(starting), "conditional": 0,
-                             "needed": d.support_needed, "postponements": 0,
+                             "needed": d.support_needed, "postponements": 0, "agenda_items": 0,
                              "max_postponements": 0 if d.if_short_at_deadline == "reject" else d.max_postponements,
                              "postpone_ticks": d.postpone_ticks,
-                             "deadline_id": _eid(d.deadline_moment_id) if d.deadline_moment_id else _eid(d.decision_id)}}})
+                             "deadline_id": _eid(d.deadline_moment_id) if d.deadline_moment_id else _eid(d.decision_id),
+                             "deploy_ticks_left": 0}}})
+        if d.deadline_moment_id:  # see MIN_DECISION_TICKS
+            for e in entities:
+                mo = e["components"].get("moment")
+                if e["id"] == _eid(d.deadline_moment_id) and mo and mo["ticks_until"] < MIN_DECISION_TICKS:
+                    mo["ticks_until"] = MIN_DECISION_TICKS
         decision_actions, decision_mechanics, decision_processes = _decision_rules(bool(d.deadline_moment_id))
     bundle = {"schema_version": BUNDLE_SCHEMA,
               "world": {"id": _eid(spec.scenario_id), "label": spec.title, "summary": spec.description[:400],

@@ -35,7 +35,11 @@ SPEC_SYSTEM = (
     "an approval, an activation), fill `decision`: who decides, who supports it at the start, how many must fully "
     "support it, the deadline moment and what happens if support is short then. Each decider's support, the concerns "
     "it may wait on (the information items they receive) and the decision's status are then exact compiled records, "
-    "so do not also make world records for support, votes or the decision's status."
+    "so do not also make world records for support, votes or the decision's status. (9) Where the scenario leaves a "
+    "person's position, beliefs or tendencies unstated, give each person a plausible, distinct profile that makes the "
+    "dynamics the scenario describes possible (for example, if concerns are said to make support conditional, the "
+    "deciders who receive them weigh those concerns before supporting, some more cautious than others); never leave a "
+    "decider with no stance, and list every such invented detail in fidelity_assumptions."
 )
 SPEC_MODEL_WHY = ("The scenario spec is the whole world definition; the stronger tier is used for the same reason as "
                   "rule writing (see RULE_MODEL_WHY).")
@@ -60,17 +64,21 @@ class ActionSignatures(BaseModel):
     actions: list[ActionSignature]
 
 
-def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0.20, reasoning_effort: str = "medium"):
+def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0.20, reasoning_effort: str = "medium",
+                  route_policy: Any = None):
+    """``route_policy`` is an llm_client OpenRouterRoutePolicyV1 (the World Builder asks for the fastest provider)."""
     from llm_client import call_llm_structured
     spec, result = call_llm_structured(
         model, [{"role": "system", "content": SPEC_SYSTEM}, {"role": "user", "content": text}], ScenarioSpecV1,
         task="world-substrate-scenario-spec", trace_id=trace_id, max_budget=max_budget, reasoning_effort=reasoning_effort,
-        num_retries=1, model_justification=SPEC_MODEL_WHY)
+        num_retries=1, model_justification=SPEC_MODEL_WHY,
+        **({"openrouter_route_policy": route_policy} if route_policy else {}))
     return spec, result
 
 
 def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: dict[str, Any], *, model: str,
-                      trace_id: str, max_budget: float = 0.05, guidance: str = "", reasoning_effort: str = "low"):
+                      trace_id: str, max_budget: float = 0.05, guidance: str = "", reasoning_effort: str = "low",
+                      route_policy: Any = None):
     """Action kinds people can attempt for the behaviors the compiler leaves to the generator (validated here).
     ``guidance`` is appended to the instructions (the World Builder adds its keep-running rules)."""
     from llm_client import call_llm_structured
@@ -96,7 +104,8 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
             "entity); the person attempting it is implied, so never add an actor field. Name in for_behaviors the request_ids each action serves." + (" " + guidance if guidance else ""))},
             {"role": "user", "content": json.dumps(context, indent=2)}],
         ActionSignatures, task="world-substrate-action-signatures", trace_id=trace_id, max_budget=max_budget,
-        reasoning_effort=reasoning_effort, num_retries=1)
+        reasoning_effort=reasoning_effort, num_retries=1,
+        **({"openrouter_route_policy": route_policy} if route_policy else {}))
     existing = {a["kind"] for a in bundle["actions"]}
     known = {r["request_id"] for r in wanted}
     out, seen = [], set()
@@ -123,7 +132,13 @@ RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
 COMPILED_COMPONENTS = ("information", "delivery", "moment", "support", "concern", "group_decision")  # written only by the compiled rules
 
 
-def _writes_compiled(effect: dict[str, Any]) -> bool:
+# The one compiled field a generated move may write: matters put before a group decision (compile_spec GROUP_DECISION).
+GENERATED_MAY_WRITE = ("components.group_decision.agenda_items",)
+
+
+def _writes_compiled(effect: dict[str, Any], *, by_move: bool = False) -> bool:
+    if by_move and effect["path"] in GENERATED_MAY_WRITE and effect.get("op") in {"add", "subtract"}:
+        return False
     return any(effect["path"].startswith(f"components.{c}.") for c in COMPILED_COMPONENTS)
 
 
@@ -140,7 +155,7 @@ def merge_causal(compiled: dict[str, Any], generated: dict[str, Any]) -> tuple[d
         if m["action_kind"] in kinds:
             dropped.append(f"generated mechanic {m.get('mechanic_id')} dropped: action {m['action_kind']} is compiled")
             continue
-        kept = [e for e in m.get("effects", []) if not _writes_compiled(e)]
+        kept = [e for e in m.get("effects", []) if not _writes_compiled(e, by_move=True)]
         if len(kept) < len(m.get("effects", [])):
             dropped.append(f"generated mechanic {m.get('mechanic_id')}: effects on compiled components removed")
         if not kept:

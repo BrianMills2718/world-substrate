@@ -8,7 +8,7 @@ from unittest.mock import patch
 from pathlib import Path
 
 from scripts.bootstrap_scene_profile import _entity_binding
-from scripts.run_authored_world import _llm_choice, _runtime_catalog, build_engine, render_run, run_world
+from scripts.run_authored_world import _llm_choice, bookkeeping_fields, _runtime_catalog, build_engine, render_run, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate.action_authoring import ActionDeclarationError
 
@@ -218,6 +218,46 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertEqual(engine.world.entities["scanner-1"].ownership.owner_ref, "actor:dee")
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
 
+
+    def test_a_flag_only_the_move_itself_reads_is_not_an_effect(self):
+        # deploy10, 2026-10-16: "discuss concern at meeting" only set its own
+        # once-per-meeting flag, yet members chose it in 88% of later rounds.
+        rule = lambda mid, kind, reads, writes: types.SimpleNamespace(
+            mechanic_id=mid, action_kind=kind, read_paths=reads, write_paths=writes)
+        model = types.SimpleNamespace(
+            mechanics=[
+                rule("discuss", "discuss", ("entities.<actor>.components.work.discuss_done", "entities.<actor>.components.work"),
+                     ("entities.<actor>.components.work.discuss_done",)),
+                rule("vote", "vote", ("entities.<actor>.components.work.voted",),
+                     ("entities.<actor>.components.work.voted", "entities.<actor>.components.member.note")),
+            ],
+            processes=[types.SimpleNamespace(process_id="tally", read_paths=("entities.<it>.components.work.voted",))],
+            terminal=None,
+        )
+        found = bookkeeping_fields(model)
+        self.assertEqual(found["discuss"], {"components.work.discuss_done"})
+        # Read by another rule, or by nothing at all: still a real effect.
+        self.assertEqual(found["vote"], set())
+
+    def test_a_move_still_allowed_after_a_stale_revision_is_not_asked_again(self):
+        # Every accepted move bumps the revision, so most AI choices in a round are stale by the time they
+        # are submitted. A move the rules still allow is retaken at the new revision; only a move that is no
+        # longer allowed costs a second AI call (2026-10-16: 183 one-at-a-time re-asks in 40 rounds).
+        calls = []
+
+        def fake_choice(engine, actor, page, **_):
+            calls.append(actor)
+            rows = page["available"]
+            return (dict(rows[-1]["action"]) if rows else None), "fake", 0.0
+
+        with patch("scripts.run_authored_world._llm_choice", side_effect=fake_choice):
+            trace, _, _ = run_world(self.bundle, self.causal, policy="llm", max_turns=4, trace_id="test/stale")
+        rows = [row for turn in trace["transcript"] for row in turn["actors"].values()]
+        asked_first = sum(len(turn["actors"]) for turn in trace["transcript"])
+        retaken = [row for row in rows if row.get("retried") and not row["lost_what_it_wanted"] and row["status"] == "accepted"]
+        asked_again = [row for row in rows if row.get("retried") and (row["lost_what_it_wanted"] or row["status"] == "nothing_left")]
+        self.assertTrue(retaken)
+        self.assertEqual(len(calls), asked_first + len(asked_again))
 
     def test_policy_view_shows_installed_authored_effects(self):
         from world_substrate.policy import present

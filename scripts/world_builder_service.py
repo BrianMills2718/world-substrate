@@ -12,6 +12,7 @@ import os
 import re
 import sys
 import threading
+from concurrent.futures import wait as futures_wait
 import time
 import uuid
 from collections import defaultdict, deque
@@ -33,7 +34,7 @@ from scripts.native_coordination_authoring import (
     generate_native_coordination_draft,
 )
 from scripts.native_coordination_comparison import with_approval_threshold
-from scripts.people_world import about_people, prepare_people_world, write_people_rules
+from scripts.people_world import about_people, prepare_people_world, unfinished_hedges, write_people_rules
 from scripts.run_authored_world import actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -100,6 +101,7 @@ DRY_RUN_TURNS = 12
 # Ongoing/open worlds must stay alive past the first visible run: live, an open
 # village was busy for 12 rounds and then went quiet, so test twice as long.
 DRY_RUN_TURNS_CONTINUING = 24
+DRY_RUN_TURNS_LATE = 8
 WORLD_KINDS = ("task", "ongoing", "open")
 # Live play continues a world one round at a time for as long as the viewer
 # likes; the daily budget, not a round count, is the limit.
@@ -236,6 +238,37 @@ def _settle_failed_call(reserved_cap: float, trace_id: str) -> float:
     except Exception:
         recorded = 0.0
     return _settle_daily_budget(reserved_cap, recorded if recorded > 0 else None)
+
+
+# Held for each duplicate build call still running when its build is settled (people_world.hedged), until its real
+# cost is known; the visitor allowance therefore always covers it. A copy costs under $0.01 (2026-10-16 ledger).
+LATE_HEDGE_RESERVE = 0.05
+# A people build rewrites its rules after a weak test run only if it is this early: a rewrite takes 40-85 s and the
+# first round must play within 150 s of pressing Create (goal best-of-all-worlds, C1).
+PEOPLE_REWRITE_BY_S = float(os.environ.get("WORLD_BUILDER_REWRITE_BY_S") or 80)
+
+
+def _settle_late_hedges(trace_id: str, charged: float) -> None:
+    """Keep a reservation for this trace's still-running duplicate calls; charge their cost when they finish."""
+    late = unfinished_hedges(trace_id)
+    if not late:
+        return
+    reserve = LATE_HEDGE_RESERVE * len(late)
+    state = _load_budget_state()  # the caller holds _LLM_LOCK
+    state["reserved_usd"] = float(state["reserved_usd"]) + reserve
+    _write_budget_state(state)
+
+    def settle() -> None:
+        futures_wait(late, timeout=900)
+        try:
+            extra = max(0.0, _trace_cost(trace_id) - charged)
+        except Exception:
+            extra = reserve  # fail closed, like _settle_daily_budget
+        with _LLM_LOCK:
+            _settle_daily_budget(reserve, extra)
+
+    # copy_context: the owner/visitor ledger choice (_LEDGER) lives in a context variable a new thread would lose
+    threading.Thread(target=contextvars.copy_context().run, args=(settle,), name="late-hedges", daemon=True).start()
 
 
 def _trace_cost(trace_id: str) -> float:
@@ -616,6 +649,13 @@ class _JobResponder:
 
 def _words(name: str) -> str:
     return str(name).replace("_", " ").replace("-", " ")
+
+
+def _decision_settled(snapshot: Any) -> bool:
+    """True when the world holds a group decision that is deployed or rejected (compile_spec's decision family)."""
+    entities = ((snapshot or {}).get("world") or {}).get("entities") or {}
+    return any(((e.get("components") or {}).get("group_decision") or {}).get("status") in ("deployed", "rejected")
+               for e in entities.values() if isinstance(e, dict))
 
 
 def _budget_message(error: Exception) -> str:
@@ -1223,6 +1263,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         checks that someone can act from the starting state.
         """
         trace_id = f"{TRACE_ROOT}/people/{uuid.uuid4().hex}"
+        started = time.monotonic()
         with _LLM_LOCK:
             budget = self._llm_budget(client, PEOPLE_WORLD_BUDGET)
             if budget is None:
@@ -1282,26 +1323,36 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     )
                     self._progress("doing", "Test-running the rules with simple moves")
                     try:
+                        # Past the rewrite cut-off the test can no longer change the rules, only report on
+                        # them, so a short test is enough (the 24-round one took 16 s on the server).
+                        dry_turns = (DRY_RUN_TURNS_CONTINUING if time.monotonic() - started <= PEOPLE_REWRITE_BY_S
+                                     else DRY_RUN_TURNS_LATE)
                         dry, _, _ = run_world(built["bundle"], built["causal_model"], policy="scripted",
-                                              max_turns=DRY_RUN_TURNS_CONTINUING, trace_id=f"{trace_id}/dry-run-{attempt}")
+                                              max_turns=dry_turns, trace_id=f"{trace_id}/dry-run-{attempt}")
                         summary = dry["summary"]
                         dry_row = {"ok": True, **summary}
                         # Going in circles: one kind of move is all that still happens although the rules offer
                         # several (2026-10-15 Waltzman: everyone raised the same concern from round 4 on).
                         circling = len(review["mechanics"]) >= 3 and len(summary.get("moves_at_end") or []) <= 1
-                        idle = sorted(set(summary.get("idle_actors") or []) | set(summary.get("stalled_actors") or []))
-                        dry_row.update(circling=circling, stalled_actors=summary.get("stalled_actors") or [])
+                        stalled = summary.get("stalled_actors") or []
+                        if _decision_settled(dry.get("final_snapshot")):
+                            # 2026-10-16 Waltzman deploy1: once the decision was deployed the countries had nothing
+                            # left to decide and went quiet in the test's last third; that is the story ending, not
+                            # people stuck, and the 64 s rewrite it triggered pushed the build past 150 s.
+                            stalled = []
+                        idle = sorted(set(summary.get("idle_actors") or []) | set(stalled))
+                        dry_row.update(circling=circling, stalled_actors=stalled)
                         score = 1 + (not circling) + (not idle) + bool(summary.get("active_at_end"))
                         guidance = ""
                         if circling:
                             guidance += (
-                                f" A {DRY_RUN_TURNS_CONTINUING}-round test of your previous rules ended with only "
+                                f" A {dry_turns}-round test of your previous rules ended with only "
                                 f"{', '.join(summary.get('moves_at_end') or ['nothing'])} still happening: people "
                                 "repeated one action and nothing else could happen. Add the missing reverse rules and "
                                 "limits so the decision can still move."
                             )
                         if idle:
-                            guidance += _idle_guidance(dry, idle, DRY_RUN_TURNS_CONTINUING)
+                            guidance += _idle_guidance(dry, idle, dry_turns)
                     except ValueError as error:
                         dry_row, score = {"ok": False, "error": str(error)[:300]}, 0
                         guidance = (
@@ -1317,6 +1368,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         best = (score, built, dry_row)
                     if score >= 4 or attempt == 1 or _trace_cost(trace_id) >= budget - 0.15:
                         break
+                    if time.monotonic() - started > PEOPLE_REWRITE_BY_S:
+                        self._progress("note", "Kept these rules", "a rewrite would make the wait too long")
+                        break
                     self._progress("doing", "Rewriting the rules so the world keeps moving", "the test run went in circles" if dry_row.get("circling") else "some people could not act")
                 assert best is not None
                 _, built, dry_row = best
@@ -1325,8 +1379,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 trace_cost = _trace_cost(trace_id)
             except Exception:
                 _settle_failed_call(budget, trace_id)
+                try:
+                    charged = _trace_cost(trace_id)
+                except Exception:
+                    charged = 0.0  # the late copies are then charged in full
+                _settle_late_hedges(trace_id, charged)
                 raise
             daily_cost = _settle_daily_budget(budget, trace_cost)
+            _settle_late_hedges(trace_id, trace_cost)
         self._json(
             HTTPStatus.OK,
             {

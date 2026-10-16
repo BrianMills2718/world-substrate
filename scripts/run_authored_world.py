@@ -148,7 +148,60 @@ def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
-def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool) -> dict[str, Any]:
+def _same_move(one: dict[str, Any] | None, other: dict[str, Any] | None) -> bool:
+    """The same action, ignoring the world revision it was chosen against."""
+    if one is None or other is None:
+        return one is other
+    drop = ("base_revision", "controller")
+    return {k: v for k, v in one.items() if k not in drop} == {k: v for k, v in other.items() if k not in drop}
+
+
+def _field(path: str) -> str:
+    """"entities.<x>.components.work.done" -> "components.work.done"."""
+    parts = path.split(".")
+    return ".".join(parts[2:]) if parts[:1] == ["entities"] and len(parts) > 2 else path
+
+
+def _paths_in(value: Any) -> set[str]:
+    if isinstance(value, dict):
+        found = {value["path"]} if isinstance(value.get("path"), str) else set()
+        for item in value.values():
+            found |= _paths_in(item)
+        return found
+    if isinstance(value, (list, tuple)):
+        return set().union(*(_paths_in(item) for item in value)) if value else set()
+    return set()
+
+
+def bookkeeping_fields(model: CausalModel) -> dict[str, set[str]]:
+    """Per action kind, the fields it writes that only its own checks ever read.
+
+    A generated move often carries a "not already done this meeting" flag. When
+    that flag is all the move changes and no other rule (nor the ending) reads it,
+    the move does nothing, yet it looked useful to the no-op filter. In one live
+    run members chose such a move ("discuss concern at meeting") in 88% of rounds
+    10-40 (2026-10-16, deploy10). Fields read by any other rule stay real effects;
+    so do fields no rule reads at all, since a person or the readout may.
+    """
+    readers: dict[str, set[str]] = {}
+    def note(rule_id: str, paths: Any) -> None:
+        for path in paths:
+            field = _field(path)
+            if field.count(".") >= 2:  # a field, not just "has this component"
+                readers.setdefault(field, set()).add(rule_id)
+    for m in model.mechanics:
+        note(m.mechanic_id, m.read_paths)
+    for p in model.processes:
+        note(p.process_id, p.read_paths)
+    if model.terminal is not None:
+        note("terminal", _paths_in(list(model.terminal.checks)))
+    return {
+        m.action_kind: {f for f in map(_field, m.write_paths) if readers.get(f) == {m.mechanic_id}}
+        for m in model.mechanics
+    }
+
+
+def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool, bookkeeping: dict[str, set[str]] | None = None) -> dict[str, Any]:
     """Drop allowed actions that would change nothing right now.
 
     A rule can allow a move whose effects leave the world exactly as it was (for
@@ -162,7 +215,8 @@ def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool) -
     for row in page.get("available") or []:
         scratch = Engine(deepcopy(engine.world, {id(engine.world.commands): [], id(engine.world.events): []}), engine.registry)
         outcome = scratch.submit({**row["action"], "controller": "preview"})
-        if outcome.get("status") == "accepted" and _state_changes(outcome["event"]):
+        own = (bookkeeping or {}).get(row["action"].get("kind", ""), set())
+        if outcome.get("status") == "accepted" and any(_field(c.get("path", "")) not in own for c in _state_changes(outcome["event"])):
             useful.append(row)
             if first_only:
                 break
@@ -240,6 +294,7 @@ def run_world(
     if type(max_turns) is not int or not 1 <= max_turns <= MAX_TURNS:
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     engine, causal_model, profile_id = build_engine(bundle, causal_value)
+    bookkeeping = bookkeeping_fields(causal_model)
     if start_snapshot is not None:
         # Keep going: the same approved law over the world state a previous run
         # ended in. Identity and rule versions must match, so a continuation
@@ -267,7 +322,7 @@ def run_world(
         blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
         pages: dict[str, dict[str, Any]] = {}
         for actor in actors:
-            page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted")
+            page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted", bookkeeping=bookkeeping)
             # What the installed rules refused this actor at this moment, and why.
             # Recorded for every policy so a viewer can see refusals even when the
             # policy itself only ever picks allowed actions.
@@ -355,8 +410,15 @@ def run_world(
             said_retry = None
             if outcome["status"] == "stale_revision":
                 retried = True
-                page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted")
-                if policy == "scripted":
+                page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted", bookkeeping=bookkeeping)
+                # The same move is still allowed after the earlier moves: take it at the new revision
+                # without asking again. Every accepted move bumps the revision, so asking again made
+                # each round a chain of one-at-a-time AI calls (2026-10-16 Waltzman deploy8: 183
+                # re-asks over 40 rounds, up to 9 in one round, about 17 s a round).
+                still = next((row["action"] for row in page.get("available") or [] if _same_move(row["action"], wanted)), None)
+                if still is not None:
+                    again = still
+                elif policy == "scripted":
                     again, said_retry = _scripted_choice(page)
                 else:
                     again, said_retry, call_cost = _llm_choice(
@@ -388,7 +450,7 @@ def run_world(
                     for c in outcome.get("event", {}).get("checks", [])
                     if not c.get("ok") and c.get("label") != "Base revision is current"
                 ],
-                "lost_what_it_wanted": bool(retried and did != wanted),
+                "lost_what_it_wanted": bool(retried and not _same_move(did, wanted)),
                 # Whether the accepted move actually changed the world.
                 "changed": bool(outcome.get("status") == "accepted" and _state_changes(outcome.get("event") or {})),
                 "blocked_by_rules": blocked_by_rules.get(actor, []),

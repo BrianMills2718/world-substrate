@@ -1201,3 +1201,39 @@ class IdleActorGuidanceTests(unittest.TestCase):
         self.assertIn("courier (refused: deliver-pencils: The carrier has enough pencils)", text)
         self.assertEqual(text.count("deliver-pencils"), 1)
         self.assertIn("24-round test", text)
+
+
+class LateHedgeSettlementTests(unittest.TestCase):
+    """A duplicate build call still running at settlement keeps a reservation until its cost is charged."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.patch = patch.object(service, "BUDGET_STATE_PATH", Path(self.tmp.name) / "budget.json")
+        self.patch.start()
+
+    def tearDown(self):
+        self.patch.stop()
+        self.tmp.cleanup()
+
+    def test_reserved_while_running_then_charged_its_cost(self):
+        from concurrent.futures import Future
+        late = Future()
+        costs = iter([0.012])
+        with patch.object(service, "unfinished_hedges", return_value=[late]), \
+                patch.object(service, "_trace_cost", side_effect=lambda _t: next(costs)):
+            service._settle_late_hedges("t/late", charged=0.004)
+            state = service._load_budget_state()
+            self.assertAlmostEqual(state["reserved_usd"], service.LATE_HEDGE_RESERVE)
+            late.set_result("done")
+            for _ in range(100):
+                state = service._load_budget_state()
+                if state["reserved_usd"] == 0:
+                    break
+                threading.Event().wait(0.02)
+        self.assertEqual(state["reserved_usd"], 0)
+        self.assertAlmostEqual(state["spent_usd"], 0.008)  # the trace's 0.012 less the 0.004 already charged
+
+    def test_nothing_running_changes_nothing(self):
+        with patch.object(service, "unfinished_hedges", return_value=[]):
+            service._settle_late_hedges("t/none", charged=0.004)
+        self.assertEqual(service._load_budget_state()["reserved_usd"], 0)

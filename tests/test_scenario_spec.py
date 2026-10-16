@@ -237,7 +237,7 @@ class GroupDecisionTests(unittest.TestCase):
             seen.extend(a["kind"] for a in b["actions"])
             raise RuntimeError("stop")
         with patch.object(people_world, "generate_causal_model", side_effect=stop), \
-                self.assertRaisesRegex(RuntimeError, "stop"):
+                patch.object(people_world, "HEDGE_COPIES", 1), self.assertRaisesRegex(RuntimeError, "stop"):
             people_world.write_people_rules(prepared, trace_id="t", max_budget=0.0, progress=lambda *a: None)
         self.assertEqual(seen, ["inspect-site"])
 
@@ -285,7 +285,8 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertEqual(status, "resolved")
 
     def _until_deadline(self):
-        for _ in range(6):
+        from compile_spec import MIN_DECISION_TICKS
+        for _ in range(MIN_DECISION_TICKS + 2):
             events = self.engine.advance(1)["events"]
             ids = [e["rule_id"] for e in events]
             if any(i.startswith("decision-") for i in ids):
@@ -331,12 +332,65 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertEqual(self._decision()["status"], "authorized")
         self.assertEqual(self._offered("country-b", "make-support-conditional"), [])  # settled stays settled
 
+    def test_concerns_delay_and_block_deployment_after_authorization(self):
+        # 2026-10-16 Waltzman stance1: authorization ended the story in round 4; the texts say concerns "delay or
+        # block deployment", so an authorized decision deploys over rounds that a reopened concern can stop.
+        from compile_spec import DEPLOY_TICKS, REMEDY_TICKS
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
+        self.assertEqual((self._decision()["status"], self._decision()["deploy_ticks_left"]), ("authorized", DEPLOY_TICKS))
+        self._do("country-b", "reopen-concern", matter=matter)
+        self._do("country-b", "make-support-conditional", matter=matter)
+        ids = [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertIn("authorization-withdrawn", ids)  # full support fell below the threshold
+        self.assertEqual(self._decision()["status"], "open")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.advance(2)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
+        ids = []
+        for _ in range(DEPLOY_TICKS + 1):
+            ids += [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertIn("deployment-progresses", ids)
+        self.assertIn("deployment-completes", ids)
+        self.assertEqual(self._decision()["status"], "deployed")
+        # A concern about the running system suspends it until resolved (deploy6: closed at deployment, the world
+        # went still for 26 rounds).
+        self._do("country-b", "reopen-concern", matter=matter)
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertIn("deployment-suspended", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+        self.assertEqual(self._decision()["status"], "suspended")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.advance(REMEDY_TICKS)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("deployment-resumes", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+        self.assertEqual(self._decision()["status"], "deployed")
+
     def test_short_support_with_no_postponements_left_rejects_at_the_deadline(self):
         self._do("legal-group", "communicate", recipient="country-b")
         self._do("country-b", "make-support-conditional", matter="info-clause-conflict-to-country-b")
         self._until_deadline()
         self.assertIn("decision-rejected-at-deadline", self._until_deadline())
         self.assertEqual(self._decision()["status"], "rejected")
+
+    def test_a_rejected_decision_brought_back_is_decided_again_at_a_new_deadline(self):
+        # 2026-10-16 Waltzman deploy13: rejected in round 8 with nothing anyone could change in rounds 9-40.
+        from compile_spec import REMEDY_TICKS
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self._until_deadline()
+        self.assertIn("decision-rejected-at-deadline", self._until_deadline())
+        self.assertEqual(self._offered("legal-group", "bring-decision-back"), [])  # only deciders
+        self._do("country-b", "bring-decision-back", decision="activate")
+        self.assertIn("decision-back-on-table", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+        self.assertEqual((self._decision()["status"], self._decision()["postponements"]), ("open", 0))
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.advance(REMEDY_TICKS)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
 
     def test_generated_rules_cannot_write_the_decision(self):
         from spec_pipeline import merge_causal
@@ -346,6 +400,48 @@ class GroupDecisionTests(unittest.TestCase):
         merged, dropped = merge_causal(self.causal, generated)
         self.assertNotIn("vote", [m["action_kind"] for m in merged["mechanics"]])
         self.assertTrue(dropped)
+
+    def test_open_agenda_items_postpone_a_supported_decision_until_none_remain(self):
+        # 2026-10-16 deploy11: every generated move only set its own done flag; matters raised at meetings now hold
+        # a supported decision up at its deadline, until no postponements remain.
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.world.entities["activate"].components["group_decision"].agenda_items = 1
+        limit = self._decision()["max_postponements"]
+        for n in range(1, limit + 1):
+            self.assertIn("decision-postponed-for-open-matters", self._until_deadline())
+            self.assertEqual((self._decision()["status"], self._decision()["postponements"]), ("open", n))
+        self.assertIn("decision-authorized-at-last-deadline", self._until_deadline())
+        self.assertEqual(self._decision()["status"], "authorized")
+
+    def test_anyone_can_put_a_matter_on_the_agenda_once_a_cycle_and_anyone_can_settle_it(self):
+        # 2026-10-16 deploy12: the writer ignored the agenda, so the moves are compiled; a person outside the
+        # decision (the legal group) holds it up and a decider settles it.
+        from compile_spec import add_work_cycle
+        from world_substrate.mechanisms.time import ClockAdvanceProcess
+        add_work_cycle(ScenarioSpecV1.model_validate(_decision_spec()), self.bundle, self.causal, [])
+        self.engine, _, _ = self.build(self.bundle, self.causal)
+        self.engine.registry.register_process(ClockAdvanceProcess())
+        self._do("legal-group", "put-matter-on-agenda", decision="activate")
+        self.assertEqual(self._decision()["agenda_items"], 1)
+        with self.assertRaises(Exception):
+            self._do("legal-group", "put-matter-on-agenda", decision="activate")
+        self._do("country-b", "settle-agenda-matter", decision="activate")
+        self.assertEqual(self._decision()["agenda_items"], 0)
+        with self.assertRaises(Exception):
+            self._do("country-a", "settle-agenda-matter", decision="activate")
+
+    def test_a_generated_move_may_count_matters_on_the_agenda_and_nothing_else(self):
+        from spec_pipeline import merge_causal
+        add = {"participant": "d", "path": "components.group_decision.agenda_items", "op": "add", "value": {"literal": 1}}
+        put = {"participant": "d", "path": "components.group_decision.agenda_items", "op": "set", "value": {"literal": 0}}
+        generated = {"mechanics": [{"mechanic_id": "x", "action_kind": "raise-at-meeting", "effects": [add, put]}],
+                     "processes": [{"process_id": "p", "effects": [add]}]}
+        merged, dropped = merge_causal(self.causal, generated)
+        kept = next(m for m in merged["mechanics"] if m["action_kind"] == "raise-at-meeting")
+        self.assertEqual(kept["effects"], [add])
+        self.assertNotIn("p", [p["process_id"] for p in merged["processes"]])
 
     def test_a_decision_naming_undeclared_people_is_refused(self):
         with self.assertRaisesRegex(ValidationError, "undeclared people"):
@@ -482,3 +578,162 @@ class RecordedWaltzmanRunTests(unittest.TestCase):  # S5/S6: claims in the Asses
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class WorkCycleTests(unittest.TestCase):
+    """compile_spec.add_work_cycle: routine work recurs (2026-10-16 Waltzman deploy4 went still after round 5)."""
+
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+
+    def _engine(self, spec):
+        from compile_spec import add_work_cycle, compile_spec
+        from scripts.run_authored_world import build_engine
+        bundle, causal, _ = compile_spec(spec)
+        bundle["actions"].append({"kind": "file-report", "description": "File a routine report.", "fields": []})
+        cycle = add_work_cycle(spec, bundle, causal, ["file-report"])
+        flag = "components.work.file_report_done"
+        causal["mechanics"].append({
+            "schema_version": "world-substrate-action-mechanic/v0", "mechanic_id": "file-report", "version": "1",
+            "action_kind": "file-report", "rationale": "Once per cycle.",
+            "actor_selector": {"categories": ["member"], "components": ["work"]}, "participants": {}, "parameters": {},
+            "checks": [{"label": "not filed this cycle", "left": {"participant": {"name": "actor", "path": flag}},
+                        "op": "eq", "right": {"literal": False}}],
+            "effects": [{"participant": "actor", "path": flag, "op": "set", "value": {"literal": True}}],
+            "limits": ["test"], "tests": ["test"], "semantic_bindings": ["test"]})
+        engine, _, _ = build_engine(bundle, causal)
+        return engine, cycle
+
+    def _offered(self, engine):
+        return [a["action"] for a in engine.discover("legal-group")["available"] if a["action"]["kind"] == "file-report"]
+
+    def _report_again_after_cycle(self, engine):
+        self.assertEqual(engine.submit(dict(self._offered(engine)[0], controller="test"))["status"], "accepted")
+        self.assertEqual(self._offered(engine), [])
+        for _ in range(8):
+            if any(e["rule_id"] == "work-cycle-restarts" for e in engine.advance(1)["events"]):
+                break
+        else:
+            self.fail("the work cycle never restarted")
+        self.assertEqual(len(self._offered(engine)), 1)
+
+    def test_the_scenarios_repeating_meeting_clears_done_work(self):
+        engine, cycle = self._engine(_two_recipient_spec())
+        self.assertEqual(cycle["cycle_id"], "weekly-meeting")
+        self.assertEqual(cycle["flags"], {"file-report": "file_report_done"})
+        self._report_again_after_cycle(engine)
+
+    def test_without_a_repeating_moment_a_work_cycle_is_added(self):
+        engine, cycle = self._engine(ScenarioSpecV1.model_validate(_minimal()))
+        self.assertEqual(cycle["cycle_id"], "work-cycle")
+        self._report_again_after_cycle(engine)
+
+    def test_a_meeting_every_round_is_too_short_to_be_the_work_cycle(self):
+        spec = _two_recipient_spec().model_copy(deep=True)
+        spec.scheduled_moments[0].every_ticks = 1
+        _, cycle = self._engine(spec)
+        self.assertEqual(cycle["cycle_id"], "work-cycle")
+
+    def test_a_rule_without_the_limit_gets_it(self):
+        from compile_spec import limit_to_work_cycle
+        rule = {"action_kind": "file-report", "actor_selector": {"components": ["member"]}, "checks": [], "effects": []}
+        cycle = {"flags": {"file-report": "file_report_done"}}
+        limited = limit_to_work_cycle([rule], cycle)[0]
+        path = "components.work.file_report_done"
+        self.assertEqual([c["left"]["participant"]["path"] for c in limited["checks"]], [path])
+        self.assertEqual([(e["path"], e["value"]) for e in limited["effects"]], [(path, {"literal": True})])
+        self.assertEqual(limit_to_work_cycle([limited], cycle)[0], limited)  # already limited: unchanged
+        self.assertEqual(rule["checks"], [])  # the writer's rule is not edited in place
+
+
+class HedgedCallTests(unittest.TestCase):
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+
+    def test_the_first_good_copy_wins_and_a_slow_copy_is_remembered(self):
+        import threading
+        from scripts import people_world as pw
+        release, calls = threading.Event(), []
+
+        def call():
+            calls.append(1)
+            if len(calls) == 1:
+                release.wait(5)
+                return "slow"
+            return "fast"
+        self.assertEqual(pw.hedged("t/one", call), "fast")
+        late = pw.unfinished_hedges("t/one")
+        self.assertEqual(len(late), 1)
+        release.set()
+        self.assertEqual(late[0].result(timeout=5), "slow")
+        self.assertEqual(pw.unfinished_hedges("t/one"), [])
+
+    def test_an_error_in_one_copy_falls_back_to_the_other(self):
+        from scripts import people_world as pw
+        calls = []
+
+        def call():
+            calls.append(1)
+            if len(calls) == 1:
+                raise RuntimeError("first copy failed")
+            return "ok"
+        self.assertEqual(pw.hedged("t/two", call), "ok")
+
+    def test_both_copies_failing_raises(self):
+        from scripts import people_world as pw
+        with self.assertRaisesRegex(RuntimeError, "boom"):
+            pw.hedged("t/three", lambda: (_ for _ in ()).throw(RuntimeError("boom")))
+
+
+class NewConcernTests(unittest.TestCase):
+    """raise-new-concern: concerns keep coming, once per holder per work cycle (deploy7: rounds 11-30 empty)."""
+
+    def test_a_resolved_concern_can_be_raised_again_once_per_cycle(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import REMEDY_TICKS, add_work_cycle, compile_spec
+        from scripts.run_authored_world import build_engine
+        spec = ScenarioSpecV1.model_validate(_decision_spec())
+        bundle, causal, _ = compile_spec(spec)
+        cycle = add_work_cycle(spec, bundle, causal, [])
+        self.assertIn("raise-new-concern", cycle["flags"])
+        engine, _, _ = build_engine(bundle, causal)
+        matter = "info-clause-conflict-to-country-b"
+
+        def offered(actor, kind):
+            return [a["action"] for a in engine.discover(actor)["available"] if a["action"]["kind"] == kind
+                    and a["action"].get("matter", matter) == matter]
+
+        def do(actor, kind):
+            self.assertEqual(engine.submit(dict(offered(actor, kind)[0], controller="test"))["status"], "accepted")
+        do("legal-group", "communicate")
+        self.assertEqual(offered("legal-group", "raise-new-concern"), [])  # still open: nothing new to raise
+        do("country-b", "resolve-own-concern")
+        engine.advance(REMEDY_TICKS)
+        do("legal-group", "raise-new-concern")
+        concern = engine.world.entities[matter].as_dict()["components"]["concern"]
+        self.assertEqual((concern["status"], concern["times_raised"]), ("open", 1))
+        do("country-b", "resolve-own-concern")
+        engine.advance(REMEDY_TICKS)
+        self.assertEqual(offered("legal-group", "raise-new-concern"), [])  # once per work cycle
+        for _ in range(8):
+            if any(e["rule_id"] == "work-cycle-restarts" for e in engine.advance(1)["events"]):
+                break
+        self.assertEqual(len(offered("legal-group", "raise-new-concern")), 1)
+
+
+class ImpossibleCheckTests(unittest.TestCase):
+    def test_two_participants_that_can_never_be_one_entity_lose_their_equality_check(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import drop_impossible_checks
+        bundle = {"entities": [{"id": "m", "categories": ["moment"], "components": {"moment": {}}},
+                               {"id": "r", "categories": ["meeting-pace"], "components": {"meeting_pace": {}}}]}
+        same = {"label": "the record is the meeting", "left": {"action_field": "rec"}, "op": "eq",
+                "right": {"action_field": "mom"}}
+        keep = {"label": "other", "left": {"action_field": "rec"}, "op": "ne", "right": {"literal": ""}}
+        rule = {"action_kind": "meet", "participants": {"rec": {"categories": ["meeting-pace"]},
+                                                        "mom": {"categories": ["moment"]}}, "checks": [same, keep]}
+        out, dropped = drop_impossible_checks([rule], bundle)
+        self.assertEqual(out[0]["checks"], [keep])
+        self.assertEqual(len(dropped), 1)
+        both = {**rule, "participants": {"rec": {"categories": ["moment"]}, "mom": {"categories": ["moment"]}}}
+        self.assertEqual(drop_impossible_checks([both], bundle)[0][0]["checks"], [same, keep])  # possible: kept

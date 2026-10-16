@@ -444,6 +444,7 @@ def generate_causal_model(
     model_justification: str | None = None,
     world_kind: str = "task",
     max_output_tokens: int = MAX_MECHANICS_OUTPUT_TOKENS,
+    route_policy: Any = None,
 ) -> tuple[dict[str, Any], Any]:
     bundle = validate_bundle(bundle)
     if world_kind not in WORLD_KINDS:
@@ -498,6 +499,8 @@ def generate_causal_model(
             num_retries=1,
             # The shared client requires a stated reason for any non-default route.
             **({"model_justification": model_justification} if model_justification else {}),
+            # An llm_client OpenRouterRoutePolicyV1, e.g. the World Builder's fastest-provider route.
+            **({"openrouter_route_policy": route_policy} if route_policy else {}),
         )
         try:
             parsed = safe_json_loads(result.content)
