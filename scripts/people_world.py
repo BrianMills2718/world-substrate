@@ -105,7 +105,7 @@ LIVENESS_GUIDANCE = (
     "member countries), an action the position allows is open to each of them: check the actor's position, not one "
     "person's id, unless the description says only that person may do it, and give each of them their own record "
     "where the action changes one (each member's own support, not only the one the description happens to name). (5) "
-    "A deadline must settle by itself: write a process that, when the deadline arrives, applies the description's rule "
+    "A deadline that the group decision does not already settle must settle by itself: write a process that, when the deadline arrives, applies the description's rule "
     "for the decision (for example authorized when enough support exists, otherwise postponed with a new deadline, or "
     "rejected), so the outcome never waits on someone choosing to act in that one round. (6) A condition someone "
     "places on their support names what would meet it, as a record the remedy changes (that concern resolved, that "
@@ -168,7 +168,10 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
     progress("doing", "Writing the rules for what those attempts cause", "this is the longest step")
     rule_guidance = (
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "
-        "rule; keep it as is. Scheduled moments are entities in category `moment` whose `occurrences` rises when they "
+        "rule; keep it as is. When the world has a group decision (entity category `group-decision`), support, concerns "
+        "and the decision are exact compiled rules (give-support, make-support-conditional, restore-full-support, "
+        "resolve-concern, reopen-concern, and the deadline processes): rules may read the `support`, `concern` and "
+        "`group_decision` components but never write them. Scheduled moments are entities in category `moment` whose `occurrences` rises when they "
         "happen; rules may read `ticks_until`, `occurrences` and `happening_now` (true only in the round right after "
         "the moment occurs, which is when people act; `ticks_until` is never 0 then, so to require that a meeting is on, "
         "check `happening_now` is true). Make these behaviors possible: " + " | ".join(behaviors)

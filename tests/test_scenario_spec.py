@@ -189,6 +189,103 @@ class CompilerTests(unittest.TestCase):  # S2
 PIPELINE1 = SPIKE / "evidence/waltzman-spec/pipeline1"  # pipeline run waltzman-spec-20261008T163904 (audit 2026-10-08)
 
 
+def _decision_spec(**decision):
+    spec = json.loads(_two_recipient_spec().model_dump_json())
+    spec["scheduled_moments"].append({"moment_id": "deadline", "tick": 3, "description": "Decision deadline"})
+    spec["decision"] = {"decision_id": "activate", "question": "Activate the system?",
+                        "decider_ids": ["country_b", "country_c"], "supporters_at_start": ["country_b", "country_c"],
+                        "support_needed": 2, "deadline_moment_id": "deadline", "max_postponements": 1,
+                        "postpone_ticks": 2, **decision}
+    return spec
+
+
+class GroupDecisionTests(unittest.TestCase):
+    """The compiled group decision: support moves both ways on a named concern and the deadline settles it.
+    2026-10-16 Waltzman inc15c-e: generated rules left support only falling and the decision never ending."""
+
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+        from compile_spec import compile_spec
+        from scaffold_world import validate_bundle
+        from scripts.run_authored_world import build_engine
+        from world_substrate.mechanisms.time import ClockAdvanceProcess
+        self.compile, self.build = compile_spec, build_engine
+        self.bundle, self.causal, _ = compile_spec(ScenarioSpecV1.model_validate(_decision_spec()))
+        validate_bundle(self.bundle)
+        self.engine, _, _ = build_engine(self.bundle, self.causal)
+        self.engine.registry.register_process(ClockAdvanceProcess())
+
+    def _decision(self):
+        return self.engine.world.entities["activate"].as_dict()["components"]["group_decision"]
+
+    def _do(self, actor, kind, **fields):
+        offered = [a["action"] for a in self.engine.discover(actor)["available"] if a["action"]["kind"] == kind]
+        match = [a for a in offered if all(a.get(k) == v for k, v in fields.items())]
+        self.assertTrue(match, f"{actor} is not offered {kind} {fields}; offered {offered}")
+        result = self.engine.submit(dict(match[0], controller="test"))
+        self.assertEqual(result["status"], "accepted", result)
+        return result
+
+    def _offered(self, actor, kind):
+        return [a["action"] for a in self.engine.discover(actor)["available"] if a["action"]["kind"] == kind]
+
+    def _until_deadline(self):
+        for _ in range(6):
+            events = self.engine.advance(1)["events"]
+            ids = [e["rule_id"] for e in events]
+            if any(i.startswith("decision-") for i in ids):
+                return ids
+        self.fail("the deadline never settled anything")
+
+    def test_support_waits_on_a_received_concern_and_returns_once_it_is_resolved(self):
+        matter = "info-clause-conflict-to-country-b"
+        self.assertEqual(self._offered("country-b", "make-support-conditional"), [])  # nothing received yet
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (1, 1))
+        self.assertEqual(self._offered("country-b", "restore-full-support"), [])  # concern still open
+        self.assertEqual(self._offered("country-c", "resolve-concern"), [])  # only the holder resolves
+        self._do("legal-group", "resolve-concern", matter=matter)
+        self.assertEqual(self._offered("legal-group", "reopen-concern"), [])  # the one who fixed it does not undo it
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (2, 0))
+        self._do("country-b", "reopen-concern", matter=matter)  # and it can fall again
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertEqual(self._decision()["support"], 1)
+
+    def test_short_support_postpones_at_the_deadline_then_enough_support_authorizes(self):
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self.assertIn("decision-postponed-at-deadline", self._until_deadline())
+        self.assertEqual((self._decision()["status"], self._decision()["postponements"]), ("open", 1))
+        self._do("legal-group", "resolve-concern", matter=matter)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
+        self.assertEqual(self._decision()["status"], "authorized")
+        self.assertEqual(self._offered("country-b", "make-support-conditional"), [])  # settled stays settled
+
+    def test_short_support_with_no_postponements_left_rejects_at_the_deadline(self):
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter="info-clause-conflict-to-country-b")
+        self._until_deadline()
+        self.assertIn("decision-rejected-at-deadline", self._until_deadline())
+        self.assertEqual(self._decision()["status"], "rejected")
+
+    def test_generated_rules_cannot_write_the_decision(self):
+        from spec_pipeline import merge_causal
+        generated = {"mechanics": [{"mechanic_id": "x", "action_kind": "vote", "effects": [
+            {"participant": "d", "path": "components.group_decision.status", "op": "set", "value": {"literal": "authorized"}}]}],
+            "processes": []}
+        merged, dropped = merge_causal(self.causal, generated)
+        self.assertNotIn("vote", [m["action_kind"] for m in merged["mechanics"]])
+        self.assertTrue(dropped)
+
+    def test_a_decision_naming_undeclared_people_is_refused(self):
+        with self.assertRaisesRegex(ValidationError, "undeclared people"):
+            ScenarioSpecV1.model_validate(_decision_spec(decider_ids=["country_z"]))
+
+
 class RecordedPipelineRepairTests(unittest.TestCase):
     """Defects the audit found in that run, checked against its recorded files."""
 

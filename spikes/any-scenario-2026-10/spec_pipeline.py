@@ -25,12 +25,16 @@ SPEC_SYSTEM = (
     "(for example a group's own channel). Make concrete items: a short true statement each, not a category. "
     "(3) Regular events (meetings, reviews, deadlines) are scheduled moments with a tick and, if they repeat, "
     "every_ticks; one tick is one week unless the scenario implies otherwise; a deadline is a moment too. "
-    "(4) Quantities and states that change (support, readiness, time available, decision status, votes) are world "
-    "records with public_state values; visible_to_actor_ids names who can see them. (5) Each behavior the scenario "
+    "(4) Quantities and states that change (readiness, time available, a pace) are world records with public_state "
+    "values; visible_to_actor_ids names who can see them. (5) Each behavior the scenario "
     "says must be possible (raising concerns, meetings slowing, settled issues reopening, support becoming "
     "conditional, delay, deployment) is a behavior whose subject_refs name the people, records, items or moments it "
     "involves. (6) Ids are lowercase with underscores. (7) Anything the schema cannot represent goes in "
-    "`unsupported` in plain words; never drop it silently."
+    "`unsupported` in plain words; never drop it silently. (8) When several people must support a decision (a vote, "
+    "an approval, an activation), fill `decision`: who decides, who supports it at the start, how many must fully "
+    "support it, the deadline moment and what happens if support is short then. Each decider's support, the concerns "
+    "it may wait on (the information items they receive) and the decision's status are then exact compiled records, "
+    "so do not also make world records for support, votes or the decision's status."
 )
 SPEC_MODEL_WHY = ("The scenario spec is the whole world definition; the stronger tier is used for the same reason as "
                   "rule writing (see RULE_MODEL_WHY).")
@@ -113,7 +117,7 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
 # declares them). 2026-10-16: a generated action declared "actor" and the whole Waltzman build failed.
 RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
 
-COMPILED_COMPONENTS = ("information", "delivery", "moment")  # written only by the compiled rules
+COMPILED_COMPONENTS = ("information", "delivery", "moment", "support", "concern", "group_decision")  # written only by the compiled rules
 
 
 def _writes_compiled(effect: dict[str, Any]) -> bool:
