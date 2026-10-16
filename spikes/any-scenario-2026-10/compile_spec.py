@@ -120,6 +120,7 @@ MIN_DECISION_TICKS = 1 + 3 * REMEDY_TICKS + 1
 # decision deploys over this many rounds; a round passes only while no decider's support is conditional, and full
 # support falling below the threshold withdraws the authorization until the deadline comes round again.
 DEPLOY_TICKS = 6
+RETABLE_TICKS = 6  # rounds from bringing a rejected decision back to deciding it again
 
 _SUPPORT_SEL = {"categories": ["support"], "components": ["support"]}
 _MATTER_SEL = {"categories": ["information"], "components": ["information", "concern"]}
@@ -235,11 +236,21 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                                   "gte", _ref("decision", "components.group_decision.needed"))],
             [_effect("decision", "components.group_decision.status", "set", "authorized"),
              _effect("decision", "components.group_decision.deploy_ticks_left", "set", DEPLOY_TICKS)]))
+    else:
+        # A rejected proposal can be brought back: 2026-10-16 Waltzman deploy13 had one deadline and no postponements,
+        # the decision was rejected in round 8 and, every move needing a decision not rejected, nobody changed
+        # anything in rounds 9-40. decision-back-on-table gives it a new deadline.
+        mechanics.append(_mechanic(
+            "bring-decision-back", f"A decider puts a rejected decision back on the table; it is decided again "
+                                   f"{RETABLE_TICKS} rounds later.", sd,
+            [own, _check("the decision was rejected", _ref("decision", "components.group_decision.status"), "eq",
+                         "rejected")],
+            [_effect("decision", "components.group_decision.status", "set", "back_on_table")]))
     fields = {"give-support": ["support", "decision"], "make-support-conditional": ["support", "decision", "matter"],
               "restore-full-support": ["support", "decision", "matter"], "resolve-concern": ["matter"], "resolve-own-concern": ["matter"],
               "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"],
               "raise-new-concern": ["matter", "decision"], "put-matter-on-agenda": ["decision"],
-              "settle-agenda-matter": ["decision"]}
+              "settle-agenda-matter": ["decision"], "bring-decision-back": ["support", "decision"]}
     actions = [{"kind": m["action_kind"], "description": m["rationale"],
                 "fields": [{"name": f, "type": "entity_ref"} for f in fields[m["action_kind"]]]} for m in mechanics]
     concern_it = lambda path: _ref("it", f"components.concern.{path}")  # noqa: E731
@@ -271,6 +282,13 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
         enough = lambda op: _check("enough deciders fully support it" if op == "gte" else  # noqa: E731
                                    "too few deciders fully support it", it("support"), op, it("needed"))
         processes += [
+            {"process_id": "decision-back-on-table",
+             "rationale": f"A rejected decision brought back is open again, with a new deadline {RETABLE_TICKS} rounds on.",
+             "selector": sel, "participants": deadline,
+             "checks": [_check("the decision was brought back", it("status"), "eq", "back_on_table")],
+             "effects": [_effect("it", "components.group_decision.status", "set", "open"),
+                         _effect("it", "components.group_decision.postponements", "set", 0),
+                         _effect("deadline", "components.moment.ticks_until", "set", RETABLE_TICKS)]},
             {"process_id": "decision-authorized-at-deadline",
              "rationale": "At the deadline, enough full support authorizes the decision.", "selector": sel,
              "participants": deadline, "checks": [*due, enough("gte"), agenda_clear],
@@ -399,7 +417,8 @@ WORK_CYCLE_TICKS = 4  # the cycle when the scenario has no repeating moment (one
 # A shorter repeating moment does not limit anything: deploy5's weekly meeting (every_ticks 1) cleared every flag each
 # round and all ten people repeated one action for 40 rounds.
 MIN_WORK_CYCLE_TICKS = 3
-RECURRING_COMPILED = ("raise-new-concern", "put-matter-on-agenda", "settle-agenda-matter")  # compiled actions limited to once per person per work cycle
+RECURRING_COMPILED = ("raise-new-concern", "put-matter-on-agenda", "settle-agenda-matter",
+                      "bring-decision-back")  # compiled actions limited to once per person per work cycle
 
 
 def work_field(kind: str) -> str:

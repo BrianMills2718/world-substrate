@@ -375,6 +375,23 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertIn("decision-rejected-at-deadline", self._until_deadline())
         self.assertEqual(self._decision()["status"], "rejected")
 
+    def test_a_rejected_decision_brought_back_is_decided_again_at_a_new_deadline(self):
+        # 2026-10-16 Waltzman deploy13: rejected in round 8 with nothing anyone could change in rounds 9-40.
+        from compile_spec import REMEDY_TICKS
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "make-support-conditional", matter=matter)
+        self._until_deadline()
+        self.assertIn("decision-rejected-at-deadline", self._until_deadline())
+        self.assertEqual(self._offered("legal-group", "bring-decision-back"), [])  # only deciders
+        self._do("country-b", "bring-decision-back", decision="activate")
+        self.assertIn("decision-back-on-table", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+        self.assertEqual((self._decision()["status"], self._decision()["postponements"]), ("open", 0))
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.advance(REMEDY_TICKS)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
+
     def test_generated_rules_cannot_write_the_decision(self):
         from spec_pipeline import merge_causal
         generated = {"mechanics": [{"mechanic_id": "x", "action_kind": "vote", "effects": [
