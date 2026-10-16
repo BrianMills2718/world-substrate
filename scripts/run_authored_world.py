@@ -27,7 +27,7 @@ from world_substrate.policy import CHOICE_SCHEMA, WAIT, present, resolve_choice
 from world_substrate.profile import MechanicProfile
 from world_substrate.rules import RuleRegistry
 
-DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
+DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 DEFAULT_POLICY_BUDGET = 0.12
 MAX_TURNS = 30
 MAX_BLOCKED_RECORDED = 3

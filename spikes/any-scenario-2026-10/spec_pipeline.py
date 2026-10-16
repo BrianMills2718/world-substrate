@@ -70,7 +70,7 @@ def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0
 
 
 def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: dict[str, Any], *, model: str,
-                      trace_id: str, max_budget: float = 0.05, guidance: str = ""):
+                      trace_id: str, max_budget: float = 0.05, guidance: str = "", reasoning_effort: str = "low"):
     """Action kinds people can attempt for the behaviors the compiler leaves to the generator (validated here).
     ``guidance`` is appended to the instructions (the World Builder adds its keep-running rules)."""
     from llm_client import call_llm_structured
@@ -96,7 +96,7 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
             "entity); the person attempting it is implied, so never add an actor field. Name in for_behaviors the request_ids each action serves." + (" " + guidance if guidance else ""))},
             {"role": "user", "content": json.dumps(context, indent=2)}],
         ActionSignatures, task="world-substrate-action-signatures", trace_id=trace_id, max_budget=max_budget,
-        reasoning_effort="low", num_retries=1)
+        reasoning_effort=reasoning_effort, num_retries=1)
     existing = {a["kind"] for a in bundle["actions"]}
     known = {r["request_id"] for r in wanted}
     out, seen = [], set()

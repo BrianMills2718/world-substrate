@@ -91,7 +91,7 @@ MAX_BRIEF_CHARS = 4000
 # does not reach its finish line.
 # Since 2026-10-16 the same WORLD_BUILDER_STRONG_MODEL setting as scripts/people_world.py (luna by default, for
 # cost, at Brian's request; sol when sharing with an outside reader).
-RULES_RETRY_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-5.6-luna"
+RULES_RETRY_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-6-luna"
 RULES_RETRY_JUSTIFICATION = (
     "World Builder rules retry: the first rules did not let the described world reach its finish line; "
     "the retry uses WORLD_BUILDER_STRONG_MODEL (sol measured 6/6 vs luna 11/24 on 2026-10-05)."

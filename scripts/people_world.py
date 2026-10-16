@@ -21,12 +21,13 @@ from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
 from scripts.run_authored_world import build_engine
 
 PIPELINE = Path(__file__).resolve().parents[1] / "spikes/any-scenario-2026-10"
-# Brian, 2026-10-16: "we need to switch to gpt luna for everything ... because the bills you are running up is too
+# Brian, 2026-10-16: "we need to switch to gpt6 luna for everything ... because the bills you are running up is too
 # high. we can switch to sol when we share with waltzman". One setting, WORLD_BUILDER_STRONG_MODEL, picks the model
 # for the people and their rules (and the rules retry in world_builder_service); set it to
 # openrouter/openai/gpt-5.6-sol to go back. On 2026-10-07 eight luna rule attempts failed where sol succeeded, before
-# the compiled decision and moments existed; whether luna now suffices is what the next runs test.
-PEOPLE_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-5.6-luna"
+# the compiled decision and moments existed; whether luna now suffices is what the next runs test. gpt-6-luna since
+# 2026-10-16 (Brian asked for "gpt6 luna"; half the price of gpt-5.6-luna, and llm_client's default).
+PEOPLE_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-6-luna"
 PEOPLE_MODEL_WHY = (
     "World Builder people world: the scenario spec and its rules are the whole world definition; the model is set "
     "by WORLD_BUILDER_STRONG_MODEL (luna by default for cost, sol for shared demos)."
@@ -42,9 +43,10 @@ ATTEMPT_GUIDANCE = (
     "state when a needed stock runs out, or to a finished state when it completes. Every numeric stock "
     "needs a process or action for each way it can rise and each way it can fall."
 )
-# Thinking effort of the two stronger-model calls. "medium" took 105 s (people) and 90 s (rules) on Waltzman's text
-# (2026-10-15); WORLD_BUILDER_PEOPLE_EFFORT overrides both, for comparing.
-EFFORT = os.environ.get("WORLD_BUILDER_PEOPLE_EFFORT") or "medium"
+# Thinking effort of the people, actions and rules calls. "medium" took 105 s (people) and 90 s (rules) on Waltzman's
+# text with sol (2026-10-15). Luna is cheap, so it thinks as hard as it can (Brian, 2026-10-16: "you can also use max
+# thinking for luna"); WORLD_BUILDER_PEOPLE_EFFORT overrides all three, for comparing.
+EFFORT = os.environ.get("WORLD_BUILDER_PEOPLE_EFFORT") or "xhigh"
 # A people world's rules name every record slot, so 20-26 rules ran past the plain generator's 16000-token cap
 # (2026-10-16 Waltzman inc15b: "LLM response truncated (65955 chars)"). The build's budget still bounds the cost.
 RULES_OUTPUT_TOKENS = 32000
@@ -160,7 +162,7 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     bundle, compiled, coverage = compile_spec.compile_spec(spec)
     progress("doing", "Working out what each person can try to do")
     sigs, _ = sp.action_signatures(spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace_id,
-                                   max_budget=max_budget, guidance=ACTION_LIVENESS_GUIDANCE)
+                                   max_budget=max_budget, guidance=ACTION_LIVENESS_GUIDANCE, reasoning_effort=EFFORT)
     sigs = sp.record_fields(spec, sigs)
     bundle["actions"] = bundle["actions"] + [{k: a[k] for k in ("kind", "description", "fields")} for a in sigs]
     progress("done", "Things people can try", "", [_words(a["kind"]) for a in bundle["actions"]])

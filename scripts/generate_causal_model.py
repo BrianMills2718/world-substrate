@@ -25,7 +25,7 @@ from world_substrate.action_authoring import (
     CausalModel,
 )
 
-DEFAULT_MODEL = "openrouter/openai/gpt-5.6-luna"
+DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 DEFAULT_BUDGET = 0.12
 MAX_MECHANICS_OUTPUT_TOKENS = 16000
 
