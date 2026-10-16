@@ -101,14 +101,14 @@ came back, came back unused, or the expectation was wrong.
 ## Non-gating next actions
 
 - Brian's own look at the live page; Waltzman's reaction; any outreach.
-- The laptop's llm_client monthly cap for world-substrate ($10, reached 2026-10-15): local real runs wait for Brian to
-  raise it; live runs on the VPS (its own $40 cap) are the route meanwhile.
 - llm_client#283 (default 60 s cutoff on long calls) is the shared library's to fix; the VPS image already sets
   `LLM_CLIENT_TIMEOUT_POLICY=ban` (#158).
 - The shared AI lock: a build blocks other visitors' AI rounds while it runs; fix only if it blocks C1.
 
 ## Current state (2026-10-16)
 
+- Laptop llm_client monthly cap for world-substrate raised to $40 (Brian approved 2026-10-16); local real runs are
+  available again.
 - Live at `031dce5`: people descriptions build people worlds (#157), no 60 s cutoff and empty memories allowed (#158).
 - Waltzman on the live site: build 331 s; 30 AI rounds with no single-move loop; late rounds narrow to "hold meeting" and
   "request decision delay"; in the quick test 5 of 10 members stopped being able to act
@@ -123,6 +123,6 @@ Canonical example: pasting Rand Waltzman's scenario into https://brianmills.dev/
 Forbidden substitutes: the hand-authored Waltzman world or native-coordination template presented as generated; hand-edited specs, rules or runs; scripted moves presented as AI; laptop runs presented as live; mechanisms marked present without event ids; rerunning until a behavior appears and reporting only that run; older screenshots; Waltzman-specific code paths.
 Boundaries: world-substrate and its own deploy only; Cybernetic Influence v3 read-only; merge after scripts/check_project.py exits 0 on the committed change, then deploy and confirm the live commit; publish-checker before share links first go live; visitor allowance stays $3/day, tests use the owner allowance, no new spend route without Brian's yes; no outreach to Waltzman; never restart WSL.
 Done when: checks C1-C6 in docs/plans/best-of-all-worlds.goal.md pass on the live site at a named commit, each reported with its browser run log, llm_client trace ids, Engine event ids and the list of every run made. Judge each criterion from the full trace of the run it names (session, tool and LLM calls, commits, check output, messages), not from a reported status or final output alone.
-Stop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence or safe next action; report the blocker, owner, and resume event; a stop at a boundary above (new spend, outreach, a destructive server change) is a correct terminal when reported with the request made. Do not gate on: Brian's review of the page; Waltzman's reaction or any outreach; the laptop's llm_client monthly cap; llm_client#283; Simudyne.
+Stop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence or safe next action; report the blocker, owner, and resume event; a stop at a boundary above (new spend, outreach, a destructive server change) is a correct terminal when reported with the request made. Do not gate on: Brian's review of the page; Waltzman's reaction or any outreach; llm_client#283; Simudyne.
 Revalidate after three increments or about four hours; report outcome/enabling/process progress and whether to retain, replace, or clear this goal. If it is misaligned, stop substantive execution and return control; do not label strategic misalignment a technical blocker.
 ```
