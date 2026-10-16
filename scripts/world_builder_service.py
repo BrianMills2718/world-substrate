@@ -476,6 +476,36 @@ def _budget_message(error: Exception) -> str:
     return "This description needed more AI work than one build allows. Try a shorter or simpler description."
 
 
+# llm_client errors with a plain meaning for a visitor, by class name (llm_client is imported lazily). 2026-10-16: the
+# shared OpenRouter account ran out of credit and the page said "internal world-builder error".
+_PROVIDER_FAILURES = {
+    "LLMQuotaExhaustedError": (HTTPStatus.SERVICE_UNAVAILABLE,
+                               "The AI service behind the World Builder has run out of credit, so it cannot build "
+                               "worlds or choose AI moves right now. Simple moves still work."),
+    "LLMRateLimitError": (HTTPStatus.SERVICE_UNAVAILABLE,
+                          "The AI service behind the World Builder is busy. Try again in a minute."),
+    "LLMTransientError": (HTTPStatus.SERVICE_UNAVAILABLE,
+                          "The AI service behind the World Builder did not answer. Try again in a minute."),
+    "LLMAuthError": (HTTPStatus.SERVICE_UNAVAILABLE,
+                     "The World Builder cannot reach its AI service right now (its access was refused)."),
+}
+
+
+def _provider_failure(error: BaseException) -> tuple[HTTPStatus, str] | None:
+    """A plain status and message for an AI-provider failure anywhere in the error's cause chain, else None."""
+    seen: set[int] = set()
+    current: BaseException | None = error
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        name = type(current).__name__
+        if name == "LLMBudgetExceededError":
+            return HTTPStatus.UNPROCESSABLE_ENTITY, _budget_message(current)
+        if name in _PROVIDER_FAILURES:
+            return _PROVIDER_FAILURES[name]
+        current = current.__cause__ or current.__context__
+    return None
+
+
 def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
     """One plain sentence about a quick test run, for the build progress list."""
     if not row.get("ok"):
@@ -645,9 +675,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 target(responder, client, body)
             except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
                 responder._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
-            except Exception as error:  # pragma: no cover - final job boundary
+            except Exception as error:  # final job boundary
                 print(f"world-builder-api: job {job_id} error: {type(error).__name__}: {str(error)[:300]}", flush=True)
-                responder._error(HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")
+                plain = _provider_failure(error)
+                responder._error(*(plain or (HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")))
             with _JOBS_LOCK:
                 job = _JOBS.get(job_id)
                 if job is not None and job["status"] == "running":
@@ -723,9 +754,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             self._error(HTTPStatus.NOT_FOUND, "not found")
         except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
             self._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
-        except Exception as error:  # pragma: no cover - final process boundary
+        except Exception as error:  # final process boundary
             self.log_message("internal error: %s: %s", type(error).__name__, str(error)[:300])
-            self._error(HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")
+            plain = _provider_failure(error)
+            self._error(*(plain or (HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")))
 
     def _llm_budget(self, client: str, requested_cap: float, *, dialogue: bool = False, ai_run: bool = False) -> float | None:
         if not _rate_ok(client, llm=True, dialogue=dialogue, ai_run=ai_run):

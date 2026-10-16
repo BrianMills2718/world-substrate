@@ -544,6 +544,30 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 422, payload)
         self.assertIn("allowance for this month", payload["error"])
 
+    def test_provider_out_of_credit_is_said_plainly(self):
+        # 2026-10-16: the OpenRouter account ran out of credit and the page said "internal world-builder error".
+        class LLMQuotaExhaustedError(Exception):
+            pass
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", side_effect=LLMQuotaExhaustedError(
+                "OpenrouterException - Insufficient credits")):
+            status, payload = self.post("/generate-world", {"description": "people", "world_def": "auto"})
+        self.assertEqual(status, 503, payload)
+        self.assertIn("run out of credit", payload["error"])
+        self.assertNotIn("internal", payload["error"])
+        import scripts.run_authored_world as runner
+        def choose(engine, actor, page, **kwargs):
+            try:
+                raise LLMQuotaExhaustedError("Insufficient credits")
+            except LLMQuotaExhaustedError as inner:
+                raise RuntimeError("policy call failed") from inner
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(runner, "_llm_choice", side_effect=choose):
+            status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                                 "policy": "llm", "turns": 1})
+        self.assertEqual(status, 503, payload)
+        self.assertIn("run out of credit", payload["error"])
+
     def test_briefs_are_validated_and_reach_the_ai(self):
         status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
                                              "turns": 1, "briefs": {"ava": 5}})
