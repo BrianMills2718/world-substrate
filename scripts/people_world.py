@@ -21,10 +21,15 @@ from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
 from scripts.run_authored_world import build_engine
 
 PIPELINE = Path(__file__).resolve().parents[1] / "spikes/any-scenario-2026-10"
-PEOPLE_MODEL = "openrouter/openai/gpt-5.6-sol"
+# Brian, 2026-10-16: "we need to switch to gpt luna for everything ... because the bills you are running up is too
+# high. we can switch to sol when we share with waltzman". One setting, WORLD_BUILDER_STRONG_MODEL, picks the model
+# for the people and their rules (and the rules retry in world_builder_service); set it to
+# openrouter/openai/gpt-5.6-sol to go back. On 2026-10-07 eight luna rule attempts failed where sol succeeded, before
+# the compiled decision and moments existed; whether luna now suffices is what the next runs test.
+PEOPLE_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-5.6-luna"
 PEOPLE_MODEL_WHY = (
-    "World Builder people world: the scenario spec and its rules are the whole world definition; on 2026-10-07 eight "
-    "gpt-5.6-luna rule attempts produced rules that repairs could not fix, so the stronger tier writes them."
+    "World Builder people world: the scenario spec and its rules are the whole world definition; the model is set "
+    "by WORLD_BUILDER_STRONG_MODEL (luna by default for cost, sol for shared demos)."
 )
 # Same wording as the spike's ATTEMPT_GUIDANCE (spikes/any-scenario-2026-10/model_scenario.py), kept here so the
 # service does not import that script's command-line module.

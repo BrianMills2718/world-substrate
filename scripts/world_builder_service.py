@@ -89,10 +89,12 @@ MAX_BRIEF_CHARS = 4000
 # descriptions: default model finished 11/24 builds, this model 6/6, at about
 # $0.037 vs $0.003 per rules call, so it is used only when the cheap attempt
 # does not reach its finish line.
-RULES_RETRY_MODEL = "openrouter/openai/gpt-5.6-sol"
+# Since 2026-10-16 the same WORLD_BUILDER_STRONG_MODEL setting as scripts/people_world.py (luna by default, for
+# cost, at Brian's request; sol when sharing with an outside reader).
+RULES_RETRY_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-5.6-luna"
 RULES_RETRY_JUSTIFICATION = (
-    "World Builder rules retry: the default model's rules did not let the described world "
-    "reach its finish line; the stronger model measured 6/6 vs 11/24 on the same descriptions."
+    "World Builder rules retry: the first rules did not let the described world reach its finish line; "
+    "the retry uses WORLD_BUILDER_STRONG_MODEL (sol measured 6/6 vs luna 11/24 on 2026-10-05)."
 )
 DRY_RUN_TURNS = 12
 # Ongoing/open worlds must stay alive past the first visible run: live, an open
