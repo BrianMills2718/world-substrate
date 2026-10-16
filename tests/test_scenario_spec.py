@@ -285,7 +285,8 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertEqual(status, "resolved")
 
     def _until_deadline(self):
-        for _ in range(6):
+        from compile_spec import MIN_DECISION_TICKS
+        for _ in range(MIN_DECISION_TICKS + 2):
             events = self.engine.advance(1)["events"]
             ids = [e["rule_id"] for e in events]
             if any(i.startswith("decision-") for i in ids):
@@ -330,6 +331,32 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertIn("decision-authorized-at-deadline", self._until_deadline())
         self.assertEqual(self._decision()["status"], "authorized")
         self.assertEqual(self._offered("country-b", "make-support-conditional"), [])  # settled stays settled
+
+    def test_concerns_delay_and_block_deployment_after_authorization(self):
+        # 2026-10-16 Waltzman stance1: authorization ended the story in round 4; the texts say concerns "delay or
+        # block deployment", so an authorized decision deploys over rounds that a reopened concern can stop.
+        from compile_spec import DEPLOY_TICKS
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
+        self.assertEqual((self._decision()["status"], self._decision()["deploy_ticks_left"]), ("authorized", DEPLOY_TICKS))
+        self._do("country-b", "reopen-concern", matter=matter)
+        self._do("country-b", "make-support-conditional", matter=matter)
+        ids = [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertIn("authorization-withdrawn", ids)  # full support fell below the threshold
+        self.assertEqual(self._decision()["status"], "open")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self.engine.advance(2)
+        self._do("country-b", "restore-full-support", matter=matter)
+        self.assertIn("decision-authorized-at-deadline", self._until_deadline())
+        ids = []
+        for _ in range(DEPLOY_TICKS + 1):
+            ids += [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertIn("deployment-progresses", ids)
+        self.assertIn("deployment-completes", ids)
+        self.assertEqual(self._decision()["status"], "deployed")
+        self.assertEqual(self._offered("country-b", "reopen-concern"), [])  # deployed stays deployed
 
     def test_short_support_with_no_postponements_left_rejects_at_the_deadline(self):
         self._do("legal-group", "communicate", recipient="country-b")
