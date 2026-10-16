@@ -89,6 +89,9 @@ def _words(value: str) -> str:
 # rule resolved a concern or restored support, so from round 4 every member raised the same concern forever.
 # (4): 2026-10-16 local Waltzman run inc15c: only Country One could change its support (actor == country-one), so
 # Countries Two to Four and the health network sat idle for 40 rounds.
+# (5), (6): 2026-10-16 local Waltzman run inc15d: all ten acted every round, but addressing a concern only reset the
+# meeting pace, so no record ever showed a country's condition met and none restored its support in 30 rounds; and
+# the decision could end only if the partnership chose to reject in the one round the deadline was happening.
 LIVENESS_GUIDANCE = (
     "This world keeps running with people acting every round, so: (1) no action may be repeatable without limit by "
     "the same actor on the same thing; record that it was done (for example a concern's status becomes raised) and "
@@ -101,7 +104,14 @@ LIVENESS_GUIDANCE = (
     "decision must stay possible while concerns are open. (4) When several people share a position (for example "
     "member countries), an action the position allows is open to each of them: check the actor's position, not one "
     "person's id, unless the description says only that person may do it, and give each of them their own record "
-    "where the action changes one (each member's own support, not only the one the description happens to name)."
+    "where the action changes one (each member's own support, not only the one the description happens to name). (5) "
+    "A deadline must settle by itself: write a process that, when the deadline arrives, applies the description's rule "
+    "for the decision (for example authorized when enough support exists, otherwise postponed with a new deadline, or "
+    "rejected), so the outcome never waits on someone choosing to act in that one round. (6) A condition someone "
+    "places on their support names what would meet it, as a record the remedy changes (that concern resolved, that "
+    "issue cleared, that assurance given); restoring support checks that record, so the person can see their "
+    "condition was met. Work that is finished stays finished until new information or another person reopens it; "
+    "the person who just finished it does not undo it themselves."
 )
 
 
