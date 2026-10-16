@@ -86,7 +86,7 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
             "person chooses to try (hold a meeting, reopen an issue, attach a condition to support, vote, "
             "deploy); things that happen on their own each tick are processes and are not actions. Do not "
             "repeat an existing action. Fields name the entities or values the attempt needs (entity_ref for an "
-            "entity). Name in for_behaviors the request_ids each action serves." + (" " + guidance if guidance else ""))},
+            "entity); the person attempting it is implied, so never add an actor field. Name in for_behaviors the request_ids each action serves." + (" " + guidance if guidance else ""))},
             {"role": "user", "content": json.dumps(context, indent=2)}],
         ActionSignatures, task="world-substrate-action-signatures", trace_id=trace_id, max_budget=max_budget,
         reasoning_effort="low", num_retries=1)
@@ -98,10 +98,20 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
         if kind in existing or kind in seen or not set(a.for_behaviors) & known:
             continue
         seen.add(kind)
+        fields, names = [], set()
+        for f in a.fields:  # the engine supplies who acts and the bookkeeping fields; a repeated name is one field
+            if f.name in RESERVED_ACTION_FIELDS or f.name in names:
+                continue
+            names.add(f.name)
+            fields.append(f.model_dump())
         out.append({"kind": a.kind.replace("_", "-"), "description": a.description,  # bundle kinds use hyphens
-                    "fields": [f.model_dump() for f in a.fields], "for_behaviors": a.for_behaviors})
+                    "fields": fields, "for_behaviors": a.for_behaviors})
     return out, result
 
+
+# Action fields the engine fills itself (scripts/scaffold_world.py RESERVED_ACTION_FIELDS, which rejects a bundle that
+# declares them). 2026-10-16: a generated action declared "actor" and the whole Waltzman build failed.
+RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
 
 COMPILED_COMPONENTS = ("information", "delivery", "moment")  # written only by the compiled rules
 

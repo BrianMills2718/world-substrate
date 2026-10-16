@@ -194,6 +194,23 @@ class RecordedPipelineRepairTests(unittest.TestCase):
         self.assertIn("member_support", sigs["make-support-conditional"])
         self.assertIn("meeting_progress", sigs["reopen-settled-issue"])
 
+    def test_generated_actions_never_declare_fields_the_engine_fills(self):
+        # 2026-10-16: an action declared "actor" and the Waltzman build failed with "reserved/duplicate action field".
+        import types
+        from unittest.mock import patch
+        import spec_pipeline
+        bundle, _, coverage = spec_pipeline.compile_spec(self.spec)
+        rows = [r for r in coverage["rows"] if r["classification"] == "to_generate"]
+        self.assertTrue(rows)
+        reply = spec_pipeline.ActionSignatures.model_validate({"actions": [{
+            "kind": "address_concern", "description": "Address a raised concern", "for_behaviors": [rows[0]["request_id"]],
+            "fields": [{"name": "actor", "type": "entity_ref"}, {"name": "concern", "type": "entity_ref"},
+                       {"name": "concern", "type": "entity_ref"}, {"name": "base_revision", "type": "integer"}]}]})
+        fake = types.SimpleNamespace(call_llm_structured=lambda *a, **k: (reply, None))
+        with patch.dict(sys.modules, {"llm_client": fake}):
+            sigs, _ = spec_pipeline.action_signatures(self.spec, bundle, coverage, model="m", trace_id="t")
+        self.assertEqual([f["name"] for f in sigs[0]["fields"]], ["concern"])
+
     def test_coverage_counts_rules_that_change_records_not_names(self):
         from spec_pipeline import behavior_coverage
         cov = behavior_coverage(self.spec, self.model["action_signatures"], self.recorded, deepcopy(self.coverage))
