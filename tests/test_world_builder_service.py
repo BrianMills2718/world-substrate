@@ -1096,6 +1096,18 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 409)
         self.assertIn("approved", payload["error"])
 
+    def test_run_with_a_rule_that_does_not_fit_the_world_is_refused_in_plain_words(self):
+        tampered = json.loads(json.dumps(CAUSAL))
+        tampered["mechanics"][0]["effects"][0]["path"] = "components.no_such_part.value"
+        status, payload = self.post(
+            "/run",
+            {"bundle": BUNDLE, "causal_model": tampered, "policy": "scripted", "approved": True},
+        )
+        self.assertEqual(status, 422)
+        self.assertTrue(payload["error"].startswith("These rules were refused before anything ran"))
+        self.assertIn("components.no_such_part.value", payload["error"])
+        self.assertNotIn("internal world-builder error", payload["error"])
+
     def test_public_post_requires_same_origin(self):
         status, _ = self.post(
             "/run",

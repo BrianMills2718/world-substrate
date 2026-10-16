@@ -1585,7 +1585,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if not isinstance(causal, dict):
             raise ValueError("causal_model must be an object")
         # Compile before any policy/model call. This is the install authority gate.
-        CausalModel.from_dict(causal, bundle=bundle)
+        try:
+            CausalModel.from_dict(causal, bundle=bundle)
+        except ActionDeclarationError as error:
+            # 2026-10-16: a rejected rule reached the page as the gate's raw "unsupported or unknown state path: ...".
+            raise ValueError(f"These rules were refused before anything ran, so nothing changed: one rule does not "
+                             f"fit this world (the rule check said: {str(error)[:200]}). Build the world again "
+                             f"or start from an example.") from None
         execution_mode = str(body.get("execution_mode") or "authored_world")
         if execution_mode not in {"authored_world", "native_coordination"}:
             raise ValueError("execution_mode must be authored_world or native_coordination")
