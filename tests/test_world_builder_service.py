@@ -478,6 +478,25 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/people/"))
         self.assertAlmostEqual(people.call_args.kwargs["max_budget"], service.PEOPLE_WORLD_BUDGET)
 
+    def test_rules_cut_off_for_length_are_retried_shorter_then_reported_plainly(self):
+        class LLMError(Exception):
+            pass
+        cut = LLMError("LLM response truncated (65955 chars). Increase max_tokens or simplify the prompt.")
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "write_people_rules", side_effect=[cut, self._people_built()]) as rules:
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertIn("too long", rules.call_args_list[1].kwargs["guidance"])
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "write_people_rules", side_effect=[cut, cut]):
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 422, payload)
+        self.assertIn("came out too long", payload["error"])
+
     def test_description_about_things_keeps_the_things_builder(self):
         with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
             service, "about_people", return_value=(False, "a supply chain"),

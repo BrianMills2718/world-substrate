@@ -1243,6 +1243,20 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 self._progress("note", "Out of AI budget for this build", "keeping the earlier rules")
                                 break
                             raise ValueError(_budget_message(error)) from None
+                        if "response truncated" in str(error):
+                            # The rules ran past the answer-length cap (inc15b): ask once for fewer, broader rules,
+                            # and if that fails too, say so plainly instead of "internal error".
+                            attempts.append({"ok": False, "error": "the rules were too long and were cut off"})
+                            self._progress("note", "The rules came out too long and were cut off", "asking for fewer, broader rules")
+                            if attempt == 1 or _trace_cost(trace_id) >= budget - 0.05:
+                                if best is not None:
+                                    break
+                                raise ValueError("The AI's rules for this description came out too long and were cut "
+                                                 "off. Try a shorter description, or press Create simulation again.") from None
+                            guidance = (" Your previous answer was too long and was cut off. Write fewer rules: one "
+                                        "rule may serve several people through its actor selector, and keep each "
+                                        "rationale and limit to one short sentence.")
+                            continue
                         if not isinstance(error, (ActionDeclarationError, BundleError, ValueError, TypeError, KeyError)):
                             raise
                         attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})

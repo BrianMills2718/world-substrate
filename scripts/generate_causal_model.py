@@ -443,6 +443,7 @@ def generate_causal_model(
     guidance: str = "",
     model_justification: str | None = None,
     world_kind: str = "task",
+    max_output_tokens: int = MAX_MECHANICS_OUTPUT_TOKENS,
 ) -> tuple[dict[str, Any], Any]:
     bundle = validate_bundle(bundle)
     if world_kind not in WORLD_KINDS:
@@ -492,7 +493,7 @@ def generate_causal_model(
             task="world-substrate-mechanic-authoring",
             trace_id=trace_id,
             max_budget=max_budget,
-            max_tokens=MAX_MECHANICS_OUTPUT_TOKENS,
+            max_tokens=max_output_tokens,
             reasoning_effort=reasoning_effort,
             num_retries=1,
             # The shared client requires a stated reason for any non-default route.

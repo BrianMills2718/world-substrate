@@ -40,6 +40,9 @@ ATTEMPT_GUIDANCE = (
 # Thinking effort of the two stronger-model calls. "medium" took 105 s (people) and 90 s (rules) on Waltzman's text
 # (2026-10-15); WORLD_BUILDER_PEOPLE_EFFORT overrides both, for comparing.
 EFFORT = os.environ.get("WORLD_BUILDER_PEOPLE_EFFORT") or "medium"
+# A people world's rules name every record slot, so 20-26 rules ran past the plain generator's 16000-token cap
+# (2026-10-16 Waltzman inc15b: "LLM response truncated (65955 chars)"). The build's budget still bounds the cost.
+RULES_OUTPUT_TOKENS = 32000
 KIND_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
@@ -157,6 +160,7 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
     generated, _ = generate_causal_model(
         bundle, trace_id=trace_id, guidance=rule_guidance, world_kind="ongoing", reasoning_effort=EFFORT,
         model=PEOPLE_MODEL, model_justification=PEOPLE_MODEL_WHY, max_budget=max_budget,
+        max_output_tokens=RULES_OUTPUT_TOKENS,
     )
     generated = {k: v for k, v in generated.items() if k != "review"}
     causal, dropped = sp.merge_causal(compiled, generated)
