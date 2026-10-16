@@ -21,7 +21,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual(self.page.count('api("/run"'), 1)
         # The rules stay one click away, and rerunning from them is still possible.
         self.assertIn(">See how it works</button>", self.page)
-        self.assertIn('$("approve-btn").addEventListener("click", () => startLive());', self.page)
+        self.assertIn('$("approve-btn").addEventListener("click", () => { if (world) delete world.shared; startLive(); });', self.page)
         self.assertIn("Run with these rules", self.page)
 
     def test_one_screen_has_one_primary_action(self):

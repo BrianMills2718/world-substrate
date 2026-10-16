@@ -9,6 +9,7 @@ import hmac
 import json
 import math
 import os
+import re
 import sys
 import threading
 import time
@@ -368,6 +369,11 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "world_fingerprint": _world_fingerprint(bundle, value.get("causal_model")),
             "bundle": bundle,
             "causal_model": value.get("causal_model"),
+            # What a shared run shows beside its rounds (increment 5, best-of-all-worlds.goal.md).
+            "world_def": value.get("world_def"),
+            "world_kind": value.get("world_kind"),
+            "people": value.get("people"),
+            "briefs": value.get("briefs"),
         }
     if path == "/run":
         trace = value.get("trace") or {}
@@ -415,6 +421,133 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
             handle.write(line)
     except Exception as error:  # observability must never break the request
         print(f"world-builder-api: run log write failed: {type(error).__name__}: {error}", flush=True)
+
+
+SHARE_SCHEMA = "world-builder-share/v1"
+MAX_SHARED_RUNS = 500  # rounds are fetched one request at a time, so one run id per round
+SHARES_PER_CLIENT_PER_DAY = 30
+SHARE_LOOKBACK_DAYS = 3
+_SHARE_LOCK = threading.Lock()
+
+
+def _share_db() -> Path:
+    return Path(os.environ.get("WORLD_BUILDER_SHARE_DB") or _run_log_dir().parent / "shares.sqlite")
+
+
+def _share_connect():
+    import sqlite3
+    path = _share_db()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    db = sqlite3.connect(path)
+    db.execute("CREATE TABLE IF NOT EXISTS shares (id TEXT PRIMARY KEY, created TEXT NOT NULL, client TEXT NOT NULL, "
+               "record BLOB NOT NULL)")
+    return db
+
+
+def _logged_entries(trace_ids: set[str]) -> dict[str, dict[str, Any]]:
+    """The run-log entries (recent days) whose trace id is wanted, by trace id."""
+    found: dict[str, dict[str, Any]] = {}
+    for path in sorted(_run_log_dir().glob("runs_*.jsonl"), reverse=True)[:SHARE_LOOKBACK_DAYS]:
+        with open(path) as handle:
+            for line in handle:
+                if not any(t in line for t in trace_ids - set(found)):
+                    continue
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if row.get("trace_id") in trace_ids and int(row.get("status") or 0) == 200:
+                    found[row["trace_id"]] = row
+        if len(found) == len(trace_ids):
+            break
+    return found
+
+
+def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dict[str, Any]:
+    """A finished run rebuilt from the server's own run log, never from what the page sends: every round is the
+    recorded result of a /run this service answered, in order, on one world and one rule set."""
+    wanted = set(run_trace_ids) | ({build_trace_id} if build_trace_id else set())
+    rows = _logged_entries(wanted)
+    missing = [t for t in run_trace_ids if t not in rows]
+    if missing:
+        raise ValueError(f"{len(missing)} of the {len(run_trace_ids)} rounds are not in this server's recent run log, "
+                         "so this run cannot be shared")
+    runs = sorted((rows[t] for t in run_trace_ids), key=lambda r: (r["result"].get("summary") or {}).get("first_turn") or 0)
+    first = runs[0]
+    if first["path"] != "/run" or first["request"].get("continued") or not isinstance(first["request"].get("bundle"), dict):
+        raise ValueError("a shared run must start from round 1 of its world")
+    fingerprint = first["request"].get("world_fingerprint")
+    rounds: list[dict[str, Any]] = []
+    last = 0
+    for row in runs:
+        if row["path"] != "/run" or row["request"].get("world_fingerprint") != fingerprint:
+            raise ValueError("those rounds come from different worlds or rules")
+        transcript = row["result"].get("transcript") or []
+        if transcript and transcript[0].get("turn") != last + 1:
+            raise ValueError("those rounds are not one unbroken run")
+        rounds += transcript
+        last = (row["result"].get("summary") or {}).get("last_turn") or last
+    bundle, causal = first["request"]["bundle"], first["request"]["causal_model"]
+    build = rows.get(build_trace_id) if build_trace_id else None
+    if build is not None and (build["path"] != "/generate-world"
+                              or (build["result"] or {}).get("world_fingerprint") != fingerprint):
+        build = None  # the rules were edited after the build, or another build: show the run without its build
+    built = (build or {}).get("result") or {}
+    return {
+        "schema": SHARE_SCHEMA,
+        "created": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "world": {
+            "description": (build or {}).get("request", {}).get("description"),
+            "world_def": built.get("world_def"),
+            "world_kind": built.get("world_kind"),
+            "people": built.get("people"),
+            "briefs": built.get("briefs"),
+            "dry_run": built.get("dry_run"),
+            "bundle": bundle,
+            "causal_model": causal,
+            "review": CausalModel.from_dict(causal, bundle=validate_bundle(bundle)).as_review(),
+            "trace_id": build_trace_id if build is not None else None,
+        },
+        "rounds": rounds,
+        "runs": [{"trace_id": r["trace_id"], "mover": r["result"].get("mover"), "policy": r["request"].get("policy"),
+                  "first_turn": (r["result"].get("summary") or {}).get("first_turn"),
+                  "last_turn": (r["result"].get("summary") or {}).get("last_turn"), "cost_usd": r.get("cost_usd")}
+                 for r in runs],
+        "world_fingerprint": fingerprint,
+    }
+
+
+def _save_share(client: str, record: dict[str, Any]) -> str | None:
+    """Store one shared run; None when this visitor already shared too many today."""
+    import gzip
+    import secrets
+    with _SHARE_LOCK:
+        db = _share_connect()
+        try:
+            today = time.strftime("%Y-%m-%d", time.gmtime())
+            (count,) = db.execute("SELECT COUNT(*) FROM shares WHERE client = ? AND created >= ?",
+                                  (client, today)).fetchone()
+            if count >= SHARES_PER_CLIENT_PER_DAY and not _is_owner():
+                return None
+            share_id = secrets.token_urlsafe(9)
+            db.execute("INSERT INTO shares VALUES (?, ?, ?, ?)", (share_id, record["created"], client,
+                       gzip.compress(json.dumps(record, separators=(",", ":")).encode())))
+            db.commit()
+            return share_id
+        finally:
+            db.close()
+
+
+def _load_share(share_id: str) -> dict[str, Any] | None:
+    import gzip
+    if not re.fullmatch(r"[A-Za-z0-9_-]{6,32}", share_id):
+        return None
+    db = _share_connect()
+    try:
+        row = db.execute("SELECT record FROM shares WHERE id = ?", (share_id,)).fetchone()
+    finally:
+        db.close()
+    return json.loads(gzip.decompress(row[0])) if row else None
 
 
 def _recent_runs(limit: int) -> list[dict[str, Any]]:
@@ -635,6 +768,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         request.pop(heavy, None)
             self._json(HTTPStatus.OK, {"ok": True, "runs": rows})
             return
+        if path.startswith("/share/"):
+            record = _load_share(path[len("/share/"):])
+            if record is None:
+                self._error(HTTPStatus.NOT_FOUND, "That shared run does not exist (check the link).")
+                return
+            self._json(HTTPStatus.OK, {"ok": True, **record})
+            return
         if path.startswith("/jobs/"):
             job_id = path[len("/jobs/"):]
             with _JOBS_LOCK:
@@ -750,6 +890,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 return
             if path == "/run":
                 self._run(client, body)
+                return
+            if path == "/share":
+                self._share(client, body)
                 return
             self._error(HTTPStatus.NOT_FOUND, "not found")
         except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
@@ -1292,6 +1435,23 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "trace_id": trace_id,
             },
         )
+
+    def _share(self, client: str, body: dict[str, Any]) -> None:
+        """Save a finished run for a link. No AI call: the rounds come from this server's own run log."""
+        runs = body.get("run_trace_ids")
+        build = body.get("build_trace_id")
+        pattern = re.compile(rf"{re.escape(TRACE_ROOT)}/[a-z-]+/[0-9a-f]{{32}}")
+        if (not isinstance(runs, list) or not 0 < len(runs) <= MAX_SHARED_RUNS or len(set(runs)) != len(runs)
+                or not all(isinstance(t, str) and pattern.fullmatch(t) for t in runs)):
+            raise ValueError(f"run_trace_ids must list 1 to {MAX_SHARED_RUNS} distinct run ids from this service")
+        if build is not None and not (isinstance(build, str) and pattern.fullmatch(build)):
+            raise ValueError("build_trace_id must be a build id from this service")
+        record = _assemble_share(build, runs)
+        share_id = _save_share(_fingerprint(client), record)
+        if share_id is None:
+            self._error(HTTPStatus.TOO_MANY_REQUESTS, "You have shared a lot of runs today; try again tomorrow.")
+            return
+        self._json(HTTPStatus.OK, {"ok": True, "share_id": share_id, "rounds": len(record["rounds"])})
 
     def _run(self, client: str, body: dict[str, Any]) -> None:
         if body.get("approved") is not True:
