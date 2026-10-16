@@ -107,6 +107,10 @@ came back, came back unused, or the expectation was wrong.
 
 ## Current state (2026-10-16)
 
+- Route change (Brian, 2026-10-16): the build moves into an agent harness (Codex on OpenRouter gpt-6-luna) that
+  drafts, runs the compiler and dry run, and makes small edits until they pass; see
+  [Decision 008](../decisions/008-build-worlds-in-an-agent-harness.md). Bare one-shot calls plus hand-written retries
+  were the source of the repeated build failures (inc15f–inc15l).
 - Laptop llm_client monthly cap for world-substrate raised to $40 (Brian approved 2026-10-16); local real runs are
   available again.
 - Live at `031dce5`: people descriptions build people worlds (#157), no 60 s cutoff and empty memories allowed (#158).
