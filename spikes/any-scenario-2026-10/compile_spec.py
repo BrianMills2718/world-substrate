@@ -330,6 +330,54 @@ def _moment_processes() -> list[dict[str, Any]]:
     ]
 
 
+# A people world's routine work recurs. 2026-10-16 Waltzman deploy4: with no record a later meeting could clear, the
+# rule writer marked each group's work done on member.aware ("the represented state cannot clear this record for later
+# scheduled meetings"), every action was spent by round 5 and all ten people did nothing for 35 rounds.
+WORK_CYCLE_TICKS = 4  # the cycle when the scenario has no repeating moment (one tick is one week by default)
+
+
+def work_field(kind: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", kind.lower()).strip("_") + "_done"
+
+
+def add_work_cycle(spec: ScenarioSpecV1, bundle: dict[str, Any], compiled: dict[str, Any],
+                   action_kinds: list[str]) -> dict[str, Any] | None:
+    """Give every person a `work` record (one `<action>_done` flag per generated action) and a compiled process that
+    clears it each time the scenario's first repeating moment happens, or every WORK_CYCLE_TICKS when none repeats.
+    Edits bundle and compiled in place; returns what the rule writer is told about it, or None without actions."""
+    if not action_kinds:
+        return None
+    flags = {k: work_field(k) for k in action_kinds}
+    repeating = [m for m in spec.scheduled_moments if m.every_ticks]
+    if repeating:
+        cycle_id, cycle_label = _eid(repeating[0].moment_id), repeating[0].description
+    else:
+        cycle_id, cycle_label = "work-cycle", f"a new work cycle every {WORK_CYCLE_TICKS} rounds"
+        if not any(c["name"] == "moment" for c in bundle["components"]):
+            bundle["components"].append(MOMENT)
+            compiled["processes"][:0] = _moment_processes()
+        bundle["entities"].append({"id": cycle_id, "label": cycle_label, "categories": ["moment", cycle_id],
+                                   "components": {"moment": {"ticks_until": WORK_CYCLE_TICKS,
+                                                             "every_ticks": WORK_CYCLE_TICKS, "occurrences": 0,
+                                                             "happening_now": False}}})
+    bundle["components"].append({"name": "work", "fields": [{"name": "cycle_id", "type": "entity_ref",
+                                                             "default": cycle_id}]
+                                 + [{"name": f, "type": "boolean", "default": False} for f in flags.values()]})
+    for e in bundle["entities"]:
+        if "member" in e["components"]:
+            e["components"]["work"] = {"cycle_id": cycle_id, **{f: False for f in flags.values()}}
+    compiled["processes"].append({  # after moment-occurs, which sets happening_now this tick
+        "process_id": "work-cycle-restarts",
+        "rationale": f"Each time {cycle_label[:60].rstrip('.')} comes round, everyone's record of work done is "
+                     "cleared, so routine work can be done again.",
+        "selector": {"categories": ["member"], "components": ["work"]},
+        "participants": {"cycle": {"link": "ref:work.cycle_id",
+                                   "selector": {"categories": ["moment"], "components": ["moment"]}}},
+        "checks": [_check("the work cycle restarts now", _ref("cycle", "components.moment.happening_now"), "eq", True)],
+        "effects": [_effect("it", f"components.work.{f}", "set", False) for f in flags.values()]})
+    return {"cycle_id": cycle_id, "cycle_label": cycle_label, "flags": flags}
+
+
 def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Return (bundle, causal, coverage). Ids in the world are the spec ids with '_' turned into '-'."""
     entities: list[dict[str, Any]] = []

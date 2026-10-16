@@ -618,6 +618,13 @@ def _words(name: str) -> str:
     return str(name).replace("_", " ").replace("-", " ")
 
 
+def _decision_settled(snapshot: Any) -> bool:
+    """True when the world holds a group decision that is deployed or rejected (compile_spec's decision family)."""
+    entities = ((snapshot or {}).get("world") or {}).get("entities") or {}
+    return any(((e.get("components") or {}).get("group_decision") or {}).get("status") in ("deployed", "rejected")
+               for e in entities.values() if isinstance(e, dict))
+
+
 def _budget_message(error: Exception) -> str:
     """Plain words for an AI budget stop: this build's own allowance, or the service's monthly one."""
     if "monthly allowance" in str(error):
@@ -1289,8 +1296,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # Going in circles: one kind of move is all that still happens although the rules offer
                         # several (2026-10-15 Waltzman: everyone raised the same concern from round 4 on).
                         circling = len(review["mechanics"]) >= 3 and len(summary.get("moves_at_end") or []) <= 1
-                        idle = sorted(set(summary.get("idle_actors") or []) | set(summary.get("stalled_actors") or []))
-                        dry_row.update(circling=circling, stalled_actors=summary.get("stalled_actors") or [])
+                        stalled = summary.get("stalled_actors") or []
+                        if _decision_settled(dry.get("final_snapshot")):
+                            # 2026-10-16 Waltzman deploy1: once the decision was deployed the countries had nothing
+                            # left to decide and went quiet in the test's last third; that is the story ending, not
+                            # people stuck, and the 64 s rewrite it triggered pushed the build past 150 s.
+                            stalled = []
+                        idle = sorted(set(summary.get("idle_actors") or []) | set(stalled))
+                        dry_row.update(circling=circling, stalled_actors=stalled)
                         score = 1 + (not circling) + (not idle) + bool(summary.get("active_at_end"))
                         guidance = ""
                         if circling:

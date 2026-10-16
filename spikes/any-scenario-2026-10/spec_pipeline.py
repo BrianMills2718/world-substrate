@@ -64,17 +64,21 @@ class ActionSignatures(BaseModel):
     actions: list[ActionSignature]
 
 
-def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0.20, reasoning_effort: str = "medium"):
+def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0.20, reasoning_effort: str = "medium",
+                  route_policy: Any = None):
+    """``route_policy`` is an llm_client OpenRouterRoutePolicyV1 (the World Builder asks for the fastest provider)."""
     from llm_client import call_llm_structured
     spec, result = call_llm_structured(
         model, [{"role": "system", "content": SPEC_SYSTEM}, {"role": "user", "content": text}], ScenarioSpecV1,
         task="world-substrate-scenario-spec", trace_id=trace_id, max_budget=max_budget, reasoning_effort=reasoning_effort,
-        num_retries=1, model_justification=SPEC_MODEL_WHY)
+        num_retries=1, model_justification=SPEC_MODEL_WHY,
+        **({"openrouter_route_policy": route_policy} if route_policy else {}))
     return spec, result
 
 
 def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: dict[str, Any], *, model: str,
-                      trace_id: str, max_budget: float = 0.05, guidance: str = "", reasoning_effort: str = "low"):
+                      trace_id: str, max_budget: float = 0.05, guidance: str = "", reasoning_effort: str = "low",
+                      route_policy: Any = None):
     """Action kinds people can attempt for the behaviors the compiler leaves to the generator (validated here).
     ``guidance`` is appended to the instructions (the World Builder adds its keep-running rules)."""
     from llm_client import call_llm_structured
@@ -100,7 +104,8 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
             "entity); the person attempting it is implied, so never add an actor field. Name in for_behaviors the request_ids each action serves." + (" " + guidance if guidance else ""))},
             {"role": "user", "content": json.dumps(context, indent=2)}],
         ActionSignatures, task="world-substrate-action-signatures", trace_id=trace_id, max_budget=max_budget,
-        reasoning_effort=reasoning_effort, num_retries=1)
+        reasoning_effort=reasoning_effort, num_retries=1,
+        **({"openrouter_route_policy": route_policy} if route_policy else {}))
     existing = {a["kind"] for a in bundle["actions"]}
     known = {r["request_id"] for r in wanted}
     out, seen = [], set()

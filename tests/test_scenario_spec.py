@@ -509,3 +509,52 @@ class RecordedWaltzmanRunTests(unittest.TestCase):  # S5/S6: claims in the Asses
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class WorkCycleTests(unittest.TestCase):
+    """compile_spec.add_work_cycle: routine work recurs (2026-10-16 Waltzman deploy4 went still after round 5)."""
+
+    def setUp(self):
+        sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
+
+    def _engine(self, spec):
+        from compile_spec import add_work_cycle, compile_spec
+        from scripts.run_authored_world import build_engine
+        bundle, causal, _ = compile_spec(spec)
+        bundle["actions"].append({"kind": "file-report", "description": "File a routine report.", "fields": []})
+        cycle = add_work_cycle(spec, bundle, causal, ["file-report"])
+        flag = "components.work.file_report_done"
+        causal["mechanics"].append({
+            "schema_version": "world-substrate-action-mechanic/v0", "mechanic_id": "file-report", "version": "1",
+            "action_kind": "file-report", "rationale": "Once per cycle.",
+            "actor_selector": {"categories": ["member"], "components": ["work"]}, "participants": {}, "parameters": {},
+            "checks": [{"label": "not filed this cycle", "left": {"participant": {"name": "actor", "path": flag}},
+                        "op": "eq", "right": {"literal": False}}],
+            "effects": [{"participant": "actor", "path": flag, "op": "set", "value": {"literal": True}}],
+            "limits": ["test"], "tests": ["test"], "semantic_bindings": ["test"]})
+        engine, _, _ = build_engine(bundle, causal)
+        return engine, cycle
+
+    def _offered(self, engine):
+        return [a["action"] for a in engine.discover("legal-group")["available"] if a["action"]["kind"] == "file-report"]
+
+    def _report_again_after_cycle(self, engine):
+        self.assertEqual(engine.submit(dict(self._offered(engine)[0], controller="test"))["status"], "accepted")
+        self.assertEqual(self._offered(engine), [])
+        for _ in range(8):
+            if any(e["rule_id"] == "work-cycle-restarts" for e in engine.advance(1)["events"]):
+                break
+        else:
+            self.fail("the work cycle never restarted")
+        self.assertEqual(len(self._offered(engine)), 1)
+
+    def test_the_scenarios_repeating_meeting_clears_done_work(self):
+        engine, cycle = self._engine(_two_recipient_spec())
+        self.assertEqual(cycle["cycle_id"], "weekly-meeting")
+        self.assertEqual(cycle["flags"], {"file-report": "file_report_done"})
+        self._report_again_after_cycle(engine)
+
+    def test_without_a_repeating_moment_a_work_cycle_is_added(self):
+        engine, cycle = self._engine(ScenarioSpecV1.model_validate(_minimal()))
+        self.assertEqual(cycle["cycle_id"], "work-cycle")
+        self._report_again_after_cycle(engine)
