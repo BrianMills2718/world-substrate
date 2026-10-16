@@ -174,12 +174,26 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
                        guidance: str = "") -> dict[str, Any]:
     """The rules for what people's attempts cause, merged with the compiled ones. Raises on a rule set the compiler
     rejects, like the plain generator."""
-    _, sp = _pipeline()
-    spec, bundle, compiled = prepared["spec"], prepared["bundle"], prepared["compiled"]
-    coverage = json.loads(json.dumps(prepared["coverage"]))  # behavior_coverage edits rows; keep the prepared copy
-    behaviors = [r["behavior"] for r in coverage["rows"] if r["classification"] == "to_generate"]
     progress("doing", "Writing the rules for what those attempts cause", "this is the longest step")
-    rule_guidance = (
+    rule_guidance = rules_guidance(prepared, guidance)
+    # The writer gets only the actions no compiled rule covers. 2026-10-16 inc15h (luna): asked for one rule per
+    # action including the compiled ones (discarded at merge anyway), it returned a mismatched action list twice and
+    # the build failed. Fewer rules to write also means fewer output tokens.
+    to_write = actions_to_write(prepared)
+    generated: dict[str, Any] = {"mechanics": [], "processes": [], "terminal": None}
+    if to_write["actions"]:
+        generated, _ = generate_causal_model(
+            to_write, trace_id=trace_id, guidance=rule_guidance, world_kind="ongoing", reasoning_effort=EFFORT,
+            model=PEOPLE_MODEL, model_justification=PEOPLE_MODEL_WHY, max_budget=max_budget,
+            max_output_tokens=RULES_OUTPUT_TOKENS,
+        )
+    return assemble_people_world(prepared, generated)
+
+
+def rules_guidance(prepared: dict[str, Any], guidance: str = "") -> str:
+    """What the rule writer is told beyond the response contract (also the harness workspace's instructions)."""
+    behaviors = [r["behavior"] for r in prepared["coverage"]["rows"] if r["classification"] == "to_generate"]
+    return (
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "
         "rule and is not in your list. When the world has a group decision (entity category `group-decision`), support, concerns "
         "and the decision are exact compiled rules (give-support, make-support-conditional, restore-full-support, "
@@ -190,18 +204,19 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
         "check `happening_now` is true). Make these behaviors possible: " + " | ".join(behaviors)
         + (" " + guidance if guidance else "")
     )
-    # The writer gets only the actions no compiled rule covers. 2026-10-16 inc15h (luna): asked for one rule per
-    # action including the compiled ones (discarded at merge anyway), it returned a mismatched action list twice and
-    # the build failed. Fewer rules to write also means fewer output tokens.
-    compiled_kinds = {m["action_kind"] for m in compiled["mechanics"]}
-    to_write = {**bundle, "actions": [a for a in bundle["actions"] if a["kind"] not in compiled_kinds]}
-    generated: dict[str, Any] = {"mechanics": [], "processes": [], "terminal": None}
-    if to_write["actions"]:
-        generated, _ = generate_causal_model(
-            to_write, trace_id=trace_id, guidance=rule_guidance, world_kind="ongoing", reasoning_effort=EFFORT,
-            model=PEOPLE_MODEL, model_justification=PEOPLE_MODEL_WHY, max_budget=max_budget,
-            max_output_tokens=RULES_OUTPUT_TOKENS,
-        )
+
+
+def actions_to_write(prepared: dict[str, Any]) -> dict[str, Any]:
+    """The bundle with only the actions no compiled rule covers: what the rule writer must give rules to."""
+    compiled_kinds = {m["action_kind"] for m in prepared["compiled"]["mechanics"]}
+    return {**prepared["bundle"], "actions": [a for a in prepared["bundle"]["actions"] if a["kind"] not in compiled_kinds]}
+
+
+def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -> dict[str, Any]:
+    """Generated rules + compiled rules -> the finished world. Raises on a rule set the compiler rejects."""
+    _, sp = _pipeline()
+    spec, bundle, compiled = prepared["spec"], prepared["bundle"], prepared["compiled"]
+    coverage = json.loads(json.dumps(prepared["coverage"]))  # behavior_coverage edits rows; keep the prepared copy
     generated = {k: v for k, v in generated.items() if k != "review"}
     causal, dropped = sp.merge_causal(compiled, generated)
     # An action whose whole generated rule was dropped (every effect wrote a compiled component) leaves the world, so
