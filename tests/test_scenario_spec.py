@@ -241,6 +241,27 @@ class GroupDecisionTests(unittest.TestCase):
             people_world.write_people_rules(prepared, trace_id="t", max_budget=0.0, progress=lambda *a: None)
         self.assertEqual(seen, ["inspect-site"])
 
+    def test_an_action_whose_rule_only_wrote_compiled_parts_leaves_the_world(self):
+        # 2026-10-16 inc15j (luna): reconsider-settled-issue only set a concern's status; the merge removed its rule
+        # and the build failed because the action had none.
+        import copy
+        from unittest.mock import patch
+        from scripts import people_world
+        bundle = dict(self.bundle, actions=self.bundle["actions"] + [
+            {"kind": "inspect-site", "description": "Inspect a site.", "fields": []}])
+        prepared = {"spec": ScenarioSpecV1.model_validate(_decision_spec()), "bundle": bundle, "compiled": self.causal,
+                    "coverage": {"rows": []}, "sigs": []}
+        writer = next(m for m in self.causal["mechanics"]
+                      if any(e["path"].startswith("components.concern.") for e in m["effects"]))
+        generated = {"mechanics": [dict(copy.deepcopy(writer), action_kind="inspect-site", mechanic_id="inspect-site",
+                                        effects=[e for e in copy.deepcopy(writer["effects"])
+                                                 if e["path"].startswith("components.concern.")])],
+                     "processes": [], "terminal": None}
+        with patch.object(people_world, "generate_causal_model", return_value=(generated, None)):
+            world = people_world.write_people_rules(prepared, trace_id="t", max_budget=0.0, progress=lambda *a: None)
+        self.assertNotIn("inspect-site", [a["kind"] for a in world["bundle"]["actions"]])
+        self.assertTrue(any("inspect-site removed" in d for d in world["dropped_generated_rules"]))
+
     def _decision(self):
         return self.engine.world.entities["activate"].as_dict()["components"]["group_decision"]
 

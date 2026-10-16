@@ -201,6 +201,14 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
         )
     generated = {k: v for k, v in generated.items() if k != "review"}
     causal, dropped = sp.merge_causal(compiled, generated)
+    # An action whose whole generated rule was dropped (every effect wrote a compiled component) leaves the world, so
+    # bundle and rules still match. 2026-10-16 inc15j (luna): reconsider-settled-issue only set a concern's status,
+    # the merge removed it, and the build failed with "action kinds must exactly match the authoring bundle".
+    ruled = {m["action_kind"] for m in causal["mechanics"]}
+    unruled = [a["kind"] for a in bundle["actions"] if a["kind"] not in ruled]
+    if unruled:
+        bundle = {**bundle, "actions": [a for a in bundle["actions"] if a["kind"] in ruled]}
+        dropped = dropped + [f"action {k} removed: its rule only wrote what compiled rules own" for k in unruled]
     causal, pinned = sp.pin_named_slots(spec, causal)
     causal, due = sp.fix_moment_due_checks(causal)
     build_engine(bundle, causal)  # compile + install: raises if any rule is rejected
