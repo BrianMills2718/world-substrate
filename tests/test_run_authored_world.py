@@ -192,7 +192,7 @@ class RepairBayLiveProofTests(unittest.TestCase):
             {
                 "turns": 5, "terminal_reached": True, "accepted_actions": 10,
                 "world_changes": 0, "active_at_end": True, "idle_actors": ["dee"],
-                "stalled_actors": ["ava", "dee"], "moves_at_end": ["handoff-tool", "repair"],
+                "stalled_actors": ["ava", "dee"], "moves_at_end": ["handoff-tool", "repair"], "never_offered": {},
                 "first_turn": 1, "last_turn": 5,
             },
         )
@@ -370,6 +370,16 @@ class RepairBayLiveProofTests(unittest.TestCase):
         text = "\n".join(m["content"] for m in messages)
         self.assertIn("Your memory (what you saw and did, newest last):\nRound 1: you believed: x", text)
         self.assertIn("say what you expect it to change", text)
+
+    def test_summary_names_a_declared_move_nobody_was_ever_offered(self):
+        # #166: the pencil wholesaler's only move needed stock no rule ever brought to it.
+        causal = json.loads(json.dumps(self.causal))
+        mechanic = next(m for m in causal["mechanics"] if m["action_kind"] == "repair")
+        mechanic["checks"] = list(mechanic.get("checks") or []) + [
+            {"label": "Machine is in an impossible state", "left": {"participant": {"name": "machine", "path": "components.machine.status"}},
+             "op": "eq", "right": {"literal": "no-such-status"}}]
+        trace, _, _ = run_world(self.bundle, causal, policy="scripted", max_turns=5)
+        self.assertIn("repair", trace["summary"]["never_offered"])
 
     def test_repair_bay_fresh_replay_is_graphical(self):
         trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=12)

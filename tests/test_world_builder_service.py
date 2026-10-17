@@ -376,6 +376,25 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("carrier (refused: deliver: The carrier has pencils)", guidance)
         self.assertEqual(payload["dry_run"]["idle_actors"], ["shop"])
 
+    def test_ongoing_world_with_a_move_never_possible_gets_a_rewrite(self):
+        # #166 (live pencil run Mwm_BaGMiMD1): move-pencil-stock was never possible and nothing flagged it.
+        def alive(never):
+            return {"summary": {"turns": 24, "terminal_reached": False, "accepted_actions": 40, "active_at_end": True,
+                                "idle_actors": [], "never_offered": never}, "transcript": []}
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(self._ongoing_causal(), FakeResult()),
+        ) as mechanics, patch.object(
+            service, "run_world", side_effect=[(alive({"move-pencil-stock": ""}), None, None), (alive({}), None, None)],
+        ):
+            status, payload = self.post("/generate-world", {"description": "pencils", "world_kind": "ongoing"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertIn("never possible for anyone: move-pencil-stock", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertEqual(payload["dry_run_attempts"][0]["never_offered"], ["move-pencil-stock"])
+        self.assertEqual(payload["dry_run"]["never_offered"], [])
+
     def test_unknown_world_kind_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:
             status, _ = self.post("/generate-world", {"description": "orchard", "world_kind": "endless"})
