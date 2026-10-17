@@ -22,6 +22,7 @@ RUN pip install --no-cache-dir -e /opt/llm_client \
     && git config --system --add safe.directory /opt/llm_client
 # Concordia plays the people in people worlds (scripts/concordia_residents.py; Decision 006). Pinned to the
 # version the October 8 resident loop ran on (spikes/any-scenario-2026-10/run_scenario.py).
+# Keep in step with CONCORDIA in scripts/deploy_world_builder.sh (the deploy gate tests with it).
 RUN pip install --no-cache-dir gdm-concordia==2.4.0
 
 COPY app /opt/app
