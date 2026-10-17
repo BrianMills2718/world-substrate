@@ -187,6 +187,10 @@ class WorldBuilderServiceTests(unittest.TestCase):
             status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
         self.assertEqual(status, 422, payload)
         self.assertIn("more AI work than one build allows", payload["error"])
+        failed = [row for row in self.run_log() if row["path"] == "/generate-world"][-1]
+        self.assertEqual(failed["status"], 422)
+        self.assertTrue(failed["trace_id"].startswith(service.TRACE_ROOT + "/"), failed)
+        self.assertEqual(failed["trace_id"], failed["trace_ids"][-1])
 
     def test_generate_world_retries_when_dry_run_never_finishes_and_keeps_best(self):
         stuck = {"summary": {"turns": 12, "terminal_reached": False, "accepted_actions": 24}}

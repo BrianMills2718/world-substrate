@@ -440,6 +440,15 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
     return {"keys": sorted(value)[:20]}
 
 
+def _new_trace_id(kind: str) -> str:
+    """A fresh llm_client trace id, remembered on the current request so its run-log line names it even on failure."""
+    trace_id = f"{TRACE_ROOT}/{kind}/{uuid.uuid4().hex}"
+    request = _REQUEST.get()
+    if request is not None:
+        request.setdefault("trace_ids", []).append(trace_id)
+    return trace_id
+
+
 def _record_response(status: int, value: dict[str, Any]) -> None:
     request = _REQUEST.get()
     if request is None or request["path"] not in LOGGED_PATHS:
@@ -454,7 +463,9 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
         "allowance": request.get("allowance"),
         "client": request["client"],
         "job_id": request.get("job_id"),
-        "trace_id": value.get("trace_id"),
+        # 2026-10-16: a build stopped by its budget logged trace_id None although llm_client had traced it.
+        "trace_id": value.get("trace_id") or (request.get("trace_ids") or [None])[-1],
+        "trace_ids": request.get("trace_ids") or [],
         "cost_usd": value.get("cost_usd"),
         "request": request["summary"],
         "result": _result_summary(request["path"], int(status), value),
@@ -978,7 +989,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
     def _dialogue_call(self, client: str, kind: str, call: Any, *, budget: float = DIALOGUE_BUDGET) -> None:
         """Run one budgeted dialogue-sized model call and return its payload."""
-        trace_id = f"{TRACE_ROOT}/{kind}/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id(kind)
         cap = budget
         with _LLM_LOCK:
             budget = self._llm_budget(client, cap, dialogue=True)
@@ -1048,7 +1059,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             raise ValueError(f"world_kind must be one of {list(WORLD_KINDS)}")
         if world_kind == "open":
             world_kind = "ongoing"  # older name for the same kind
-        trace_id = f"{TRACE_ROOT}/world/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id("world")
         with _LLM_LOCK:
             budget = self._llm_budget(client, WORLD_BUDGET)
             if budget is None:
@@ -1241,7 +1252,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
     def _world_def(self, client: str, description: str) -> str | None:
         """People or things? One small call, charged like any other; None means an error was already sent."""
-        trace_id = f"{TRACE_ROOT}/kind/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id("kind")
         with _LLM_LOCK:
             budget = self._llm_budget(client, WORLD_KIND_BUDGET)
             if budget is None:
@@ -1262,7 +1273,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         Always an ongoing world. AI members choose the moves, each reading their own brief; a scripted dry run
         checks that someone can act from the starting state.
         """
-        trace_id = f"{TRACE_ROOT}/people/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id("people")
         started = time.monotonic()
         with _LLM_LOCK:
             budget = self._llm_budget(client, PEOPLE_WORLD_BUDGET)
@@ -1417,7 +1428,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if len(description) > 8000:
             raise ValueError("description must be at most 8000 characters")
         model = _requested_model(body)
-        trace_id = f"{TRACE_ROOT}/draft/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id("draft")
         with _LLM_LOCK:
             budget = self._llm_budget(client, DRAFT_BUDGET)
             if budget is None:
@@ -1452,7 +1463,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
     def _generate(self, client: str, body: dict[str, Any]) -> None:
         bundle = validate_bundle(body.get("bundle"))
         model = _requested_model(body)
-        trace_id = f"{TRACE_ROOT}/mechanics/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id("mechanics")
         guidance = body.get("guidance") or ""
         if not isinstance(guidance, str):
             raise ValueError("guidance must be a string")
@@ -1510,7 +1521,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         required = body.get("required_approvals")
         comparison_bundle, change = with_approval_threshold(baseline, required)
         CausalModel.from_dict(causal, bundle=comparison_bundle)
-        trace_id = f"{TRACE_ROOT}/comparison/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id("comparison")
         native = run_native_coordination(comparison_bundle, causal)
         trace = native["trace"]
         compiled = native["causal_model"]
@@ -1623,7 +1634,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         ):
             raise ValueError(f"briefs must map up to 24 actor ids to text of at most {MAX_BRIEF_CHARS} characters")
         model = _requested_model(body)
-        trace_id = f"{TRACE_ROOT}/run/{uuid.uuid4().hex}"
+        trace_id = _new_trace_id("run")
         if execution_mode == "native_coordination":
             shared_causal = json.loads(NATIVE_COORDINATION_CAUSAL.read_text())
             if causal != shared_causal:
