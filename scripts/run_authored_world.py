@@ -466,7 +466,10 @@ def run_world(
                                                {**present(engine, actor, page), "recent": _recent_for(engine, actor, seen),
                                                 "world_summary": bundle["world"]["summary"],
                                                 "brief": (briefs or {}).get(actor, "")})
-                    beliefs[actor] = attempt
+                    if attempt.get("belief") is not None:
+                        # Nothing left to choose keeps the belief behind the first choice (2026-10-17 live run
+                        # bhE4uvdDzg78: 12 of 202 attempted moves lost it).
+                        beliefs[actor] = attempt
                     choice = resolve_choice(page, attempt.get("action_id") or WAIT, attempt.get("reasoning") or "")
                     again = dict(choice.action) if choice.kind == "action" and choice.action is not None else None
                     said_retry = attempt.get("reasoning")

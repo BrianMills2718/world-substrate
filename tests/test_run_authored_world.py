@@ -346,6 +346,10 @@ class RepairBayLiveProofTests(unittest.TestCase):
                                   start_snapshot=one["final_snapshot"], turn_offset=1,
                                   resident_memory=one["resident_memory"])
         self.assertEqual(two["transcript"][0]["turn"], 2)
+        # Someone whose choice was taken first and had nothing left still shows the belief behind the choice.
+        rows = [row for t in one["transcript"] + two["transcript"] for row in t["actors"].values() if row["wanted"]]
+        self.assertIn("nothing_left", [row["status"] for row in rows])
+        self.assertTrue(all(row["belief"] and row["expects"] for row in rows), rows)
         self.assertTrue(prompts)
         for _, kwargs in prompts:
             self.assertIn("Round 1: you believed: The apple is ripe", kwargs["memory"])
