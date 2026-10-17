@@ -24,6 +24,11 @@ from world_substrate.action_authoring import CausalModel, CompiledActionMechanic
 from world_substrate.engine import ENGINE_OWNED_PATHS, Engine
 from world_substrate.model import Entity, LocationState, OwnershipState, PortableState, World
 from world_substrate.policy import CHOICE_SCHEMA, WAIT, present, resolve_choice
+
+# Concordia residents (scripts/concordia_residents.py, imported lazily: Concordia is a live-play dependency).
+MOVER = "llm-resident (Concordia)"
+MEMORY_ITEMS = 12  # notes each resident remembers: a round's news and its own move are one note each
+MEMORY_ITEM_CHARS = 600
 from world_substrate.profile import MechanicProfile
 from world_substrate.rules import RuleRegistry
 
@@ -288,9 +293,10 @@ def run_world(
     turn_offset: int = 0,
     prior_recent: list[dict[str, str]] | None = None,
     briefs: dict[str, str] | None = None,
+    resident_memory: dict[str, list[str]] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
-    if policy not in {"scripted", "llm"}:
-        raise ValueError("policy must be scripted or llm")
+    if policy not in {"scripted", "llm", "resident"}:
+        raise ValueError("policy must be scripted, llm or resident")
     if type(max_turns) is not int or not 1 <= max_turns <= MAX_TURNS:
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     engine, causal_model, profile_id = build_engine(bundle, causal_value)
@@ -312,6 +318,15 @@ def run_world(
     transcript: list[dict[str, Any]] = []
     seen: dict[str, int] = {}
     cost = 0.0
+    residents = None
+    if policy == "resident":
+        # Concordia residents play the people (increment 2, best-of-all-worlds.goal.md): each keeps its own memory,
+        # carried between one-round requests, and names its belief and expected effect with every move.
+        from scripts.concordia_residents import Residents
+
+        residents = Residents(actors, model=model_name, trace_id=trace_id, max_budget=max_budget,
+                              memory=resident_memory)
+    beliefs: dict[str, dict[str, Any]] = {}
 
     for turn in range(1, max_turns + 1):
         if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
@@ -347,6 +362,30 @@ def run_world(
             pages[actor] = page
             if policy == "scripted":
                 intents[actor], reasons[actor] = _scripted_choice(page)
+        if policy == "resident":
+            recents = {actor: _recent_for(engine, actor, seen) for actor in actors}
+            if turn == 1 and prior_recent:
+                for actor in actors:
+                    earlier = [f"{'you' if m['actor'] == actor else m['actor']}: {m['action']}" for m in prior_recent]
+                    recents[actor] = (earlier + recents[actor])[-6:]
+
+            def _resident_turn(actor: str) -> dict[str, Any]:
+                page = pages[actor]
+                context = present(engine, actor, page)
+                context.update(recent=recents[actor], world_summary=bundle["world"]["summary"],
+                               brief=(briefs or {}).get(actor, ""))
+                residents.observe(actor, f"Round {turn + turn_offset}. What just happened: "
+                                  + ("; ".join(recents[actor]) or "nothing new") + ".")
+                return residents.choose(actor, [row["action_id"] for row in page["available"]], context)
+
+            with ThreadPoolExecutor(max_workers=len(actors)) as pool:
+                futures = {actor: pool.submit(contextvars.copy_context().run, _resident_turn, actor) for actor in actors}
+                for actor in actors:
+                    attempt = futures[actor].result()
+                    beliefs[actor] = attempt
+                    choice = resolve_choice(pages[actor], attempt.get("action_id") or WAIT, attempt.get("reasoning") or "")
+                    intents[actor] = dict(choice.action) if choice.kind == "action" and choice.action is not None else None
+                    reasons[actor] = attempt.get("reasoning") or ""
         if policy == "llm":
             # Every actor chooses against the same world revision before anything
             # is submitted, so the choices are independent: ask in parallel. A
@@ -420,6 +459,17 @@ def run_world(
                     again = still
                 elif policy == "scripted":
                     again, said_retry = _scripted_choice(page)
+                elif policy == "resident":
+                    residents.observe(actor, f"Round {turn + turn_offset}: your choice was no longer allowed after "
+                                      "earlier moves this round; choose again.")
+                    attempt = residents.choose(actor, [r["action_id"] for r in page.get("available") or []],
+                                               {**present(engine, actor, page), "recent": _recent_for(engine, actor, seen),
+                                                "world_summary": bundle["world"]["summary"],
+                                                "brief": (briefs or {}).get(actor, "")})
+                    beliefs[actor] = attempt
+                    choice = resolve_choice(page, attempt.get("action_id") or WAIT, attempt.get("reasoning") or "")
+                    again = dict(choice.action) if choice.kind == "action" and choice.action is not None else None
+                    said_retry = attempt.get("reasoning")
                 else:
                     again, said_retry, call_cost = _llm_choice(
                         engine,
@@ -462,6 +512,20 @@ def run_world(
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
             rows[actor] = row
+        if residents is not None:
+            for actor in actors:
+                row, attempt = rows[actor], beliefs.get(actor) or {}
+                row["belief"], row["expects"] = attempt.get("belief"), attempt.get("expected_effect")
+                did = (row.get("did") or {}).get("kind") or "waited"
+                result = row["status"] + ("" if row.get("changed") or row["status"] != "accepted" else ", changed nothing")
+                if row.get("refused_because"):
+                    result += " (" + "; ".join(row["refused_because"])[:160] + ")"
+                # The resident's own record of this move, kept in its Concordia memory for the next rounds.
+                if row["belief"] is None:
+                    residents.observe(actor, f"Round {turn + turn_offset}: nothing was open to you, so you waited.")
+                else:
+                    residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You did {did}, "
+                                      f"expecting: {row['expects']} Result: {result}.")
         advanced = engine.advance(1)
         transcript.append(
             {
@@ -489,8 +553,9 @@ def run_world(
         "schema_version": "world-substrate-contested-run/v3",
         "world": bundle["world"]["id"],
         "actors": actors,
-        "model": model_name if policy == "llm" else "scripted-first-available",
-        "cost_usd": round(cost, 6),
+        "model": (f"{MOVER} {model_name}" if policy == "resident" else model_name if policy == "llm"
+                  else "scripted-first-available"),
+        "cost_usd": round(cost + (residents.cost() if residents is not None else 0.0), 6),
         "mechanic_profile_id": profile_id,
         "summary": {
             "turns": len(transcript),
@@ -542,6 +607,9 @@ def run_world(
         # Where a "keep going" continuation resumes.
         "final_snapshot": engine.world.snapshot(),
     }
+    if residents is not None:
+        # Each resident's Concordia memory after this request; live play sends it back with the next round.
+        trace["resident_memory"] = residents.memory_state()
     return trace, engine, causal_model
 
 

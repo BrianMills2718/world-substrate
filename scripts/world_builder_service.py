@@ -35,7 +35,7 @@ from scripts.native_coordination_authoring import (
 )
 from scripts.native_coordination_comparison import with_approval_threshold
 from scripts.people_world import about_people, prepare_people_world, unfinished_hedges, write_people_rules
-from scripts.run_authored_world import actor_ids, build_engine, render_run, run_world
+from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
@@ -424,6 +424,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
         return {
             "summary": value.get("summary"),
             "mover": trace.get("model"),
+            # Concordia residents' memories after the round (policy resident), the state each person decided from.
+            "resident_memory": trace.get("resident_memory"),
             # The frozen rules identity (MechanicProfile.freeze()): same id, same
             # installed law. Gap G7 (docs/model/VIEW_COVERAGE.md): it was dropped.
             "mechanic_profile_id": trace.get("mechanic_profile_id"),
@@ -1633,6 +1635,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                        for k, v in briefs.items())
         ):
             raise ValueError(f"briefs must map up to 24 actor ids to text of at most {MAX_BRIEF_CHARS} characters")
+        # Concordia residents' memories from the previous round (trace.resident_memory), so each person remembers.
+        resident_memory = body.get("resident_memory") or {}
+        if (
+            not isinstance(resident_memory, dict) or len(resident_memory) > 24
+            or not all(isinstance(k, str) and 0 < len(k) <= 80 and isinstance(v, list) and len(v) <= MEMORY_ITEMS
+                       and all(isinstance(x, str) and len(x) <= MEMORY_ITEM_CHARS for x in v)
+                       for k, v in resident_memory.items())
+        ):
+            raise ValueError(f"resident_memory must map up to 24 actor ids to up to {MEMORY_ITEMS} notes of at most "
+                             f"{MEMORY_ITEM_CHARS} characters")
         model = _requested_model(body)
         trace_id = _new_trace_id("run")
         if execution_mode == "native_coordination":
@@ -1648,7 +1660,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             compiled = native["causal_model"]
             replay = native["html"]
             daily_cost = None
-        elif policy == "llm":
+        elif policy in {"llm", "resident"}:
             with _LLM_LOCK:
                 budget = self._llm_budget(client, RUN_BUDGET, ai_run=True)
                 if budget is None:
@@ -1658,7 +1670,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         bundle, causal, policy=policy, model_name=model,
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
                         start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
-                        briefs=briefs,
+                        briefs=briefs, resident_memory=resident_memory,
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:

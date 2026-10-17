@@ -4,7 +4,7 @@
 #   app/         this repository at the deployed commit (git archive)
 #   llm_client/  BrianMills2718/llm_client at the pinned revision, .git included
 #
-# The service needs only the standard library plus llm_client. LLM_CLIENT_TIMEOUT_POLICY=ban: the people-world calls
+# The service needs the standard library, llm_client and Concordia (people-world residents). LLM_CLIENT_TIMEOUT_POLICY=ban: the people-world calls
 # take about 100 s and the client default cuts structured calls at 60 s (2026-10-15); the safety ceiling still applies. It binds inside the
 # container; the edge tunnel reaches it by container name, and the brianmills.dev Worker
 # proxies /world-builder/api/* to it. All mutable state (the persistent daily LLM spend
@@ -20,6 +20,9 @@ RUN useradd --uid 10001 --create-home --shell /usr/sbin/nologin app
 COPY llm_client /opt/llm_client
 RUN pip install --no-cache-dir -e /opt/llm_client \
     && git config --system --add safe.directory /opt/llm_client
+# Concordia plays the people in people worlds (scripts/concordia_residents.py; Decision 006). Pinned to the
+# version the October 8 resident loop ran on (spikes/any-scenario-2026-10/run_scenario.py).
+RUN pip install --no-cache-dir gdm-concordia==2.4.0
 
 COPY app /opt/app
 WORKDIR /opt/app

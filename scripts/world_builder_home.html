@@ -190,7 +190,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div id="dry-notice"></div>
     <div id="not-modeled"></div>
     <div id="people-wrap" hidden>
-      <h3 title="Each person is played by an AI that reads only that person's goals, beliefs and what they know">The people</h3>
+      <h3 title="Each person is played by a Concordia AI resident that remembers its own moves and reads only that person's goals, beliefs and what they know">The people</h3>
       <ul class="small" id="people"></ul>
     </div>
     <h3>What exists</h3>
@@ -601,6 +601,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       else if (kind === "waited") text = `Round ${a.turn}: ${who} waited — none of the rules allowed anything for them right then.`;
       else if ((a.row.refused_because || []).length) text = `Round ${a.turn}: ${who} tried to ${act}. Refused, because this check was false: ` + a.row.refused_because.map((r) => typeof r === "string" ? r : r.label || JSON.stringify(r)).join("; ");
       else text = `Round ${a.turn}: ${who} wanted to ${act}, but someone else acted first in the same round and it was no longer possible.`;
+      if (kind === "waited" && a.row.belief) text = `Round ${a.turn}: ${who} chose to wait.`;
+      // Concordia residents say what they believed and what they expected the move to change.
+      if (a.row.belief) text += ` They believed: ${a.row.belief}` + (a.row.expects ? ` They expected: ${a.row.expects}` : "");
     }
     t.setAttribute("aria-label", text); t.title = text;
     t.addEventListener("click", () => { $("detail").textContent = text; });
@@ -709,8 +712,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   async function fetchRounds() {
     const ai = $("ai-moves").checked;
-    const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "llm" : "scripted", turns: 1 };
-    if (ai && world.briefs) request.briefs = world.briefs;
+    // People worlds are played by Concordia residents, each with its own memory carried from round to round.
+    const residents = ai && world.briefs;
+    const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: residents ? "resident" : ai ? "llm" : "scripted", turns: 1 };
+    if (residents) { request.briefs = world.briefs; if (live.memory) request.resident_memory = live.memory; }
     if (live.snapshot) { request.continue_from = live.snapshot; request.turn_offset = live.lastTurn; request.recent = recentMoves(); }
     // Simple moves are instant, so ask directly; AI rounds take a few seconds and go through a job.
     return ai ? apiJob("/run", request, 1000) : api("/run", request);
@@ -737,6 +742,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         if (!current()) return;
         const rounds = run.trace.transcript || [];
         live.snapshot = run.trace.final_snapshot; live.lastTurn = run.summary.last_turn;
+        if (run.trace.resident_memory) live.memory = run.trace.resident_memory;
         if (run.trace_id) live.runIds.push(run.trace_id);
         if (run.replay_html) $("replay").srcdoc = run.replay_html;
         if (!rounds.length) {
