@@ -105,7 +105,23 @@ came back, came back unused, or the expectation was wrong.
   `LLM_CLIENT_TIMEOUT_POLICY=ban` (#158).
 - The shared AI lock: a build blocks other visitors' AI rounds while it runs; fix only if it blocks C1.
 
-## Current state (2026-10-16)
+## Current state (2026-10-17)
+
+- C1-C6 checked on the live site, every run listed with trace ids in
+  [evidence/best-of-all-worlds/RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) (raw browser logs and share records
+  in `~/code/.scratch/waltzman-demo/` c1-c5). C1 and C2 at `784e66d`, C3-C5 at `79f46fd`; live now `87d3986` (#164 plain
+  rules-rejection message, #165 failed runs log their trace id; neither touches building or rounds).
+- C1: build streamed, round 1 by ~122 s, 10/10 act in round 1, authorized only by the deadline rule (r8-e00024), all
+  four mechanisms with event ids; share `OzydbZ8mNbdZ`. C2: 28/28 cited events match the trace. C3: share replays
+  259/259 rounds with no password and no AI call. C4: pencil builds as things, 26 rounds, 7 distinct moves every
+  round, but one move is never possible (#166). C5: plain messages for a rules rejection and two budget stops.
+- Not done: increment 2. Live people moves come from a direct gpt-6-luna choice given each person's brief
+  (`policy: llm`, `mover: openrouter/openai/gpt-6-luna` in every run record); the Concordia resident loop
+  (`spikes/any-scenario-2026-10/run_scenario.py`) is not hosted behind `/run`, and the moves' `belief`/`expects` are
+  empty. The outcome's "played by Concordia AI members" is therefore not yet true on the live site.
+- Open: #166 (moves that never become possible).
+
+## Previous state (2026-10-16)
 
 - Route change (Brian, 2026-10-16): the build moves into an agent harness (Codex on OpenRouter gpt-6-luna) that
   drafts, runs the compiler and dry run, and makes small edits until they pass; see

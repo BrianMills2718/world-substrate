@@ -1,0 +1,39 @@
+build trace world-builder-live/people/f7ad85c14c614157846e7815b31c7875 people ['partnership', 'country_a', 'country_b', 'country_c', 'country_d', 'regional_health_network', 'technical_group', 'legal_group', 'logistics_group', 'community_group']
+runs 259 first world-builder-live/run/74db3aade99b47d28e2ed1e84c033434 last world-builder-live/run/92afcc75e9204e2596c6d53ef1bb6431 mover openrouter/openai/gpt-6-luna
+first accepted round: {'community_group': None, 'country_a': None, 'country_b': None, 'country_c': None, 'country_d': None, 'legal_group': None, 'logistics_group': None, 'partnership': 1, 'regional_health_network': None, 'technical_group': None}
+rounds 1-10: 76 real moves, 15 distinct, top [('put-matter-on-agenda', 13), ('prepare-national-deployment', 10), ('resolve-own-concern', 9)]
+rounds 11-20: 26 real moves, 6 distinct, top [('resolve-own-concern', 8), ('raise-new-concern', 6), ('resolve-concern', 4)]
+rounds 21-30: 15 real moves, 4 distinct, top [('resolve-own-concern', 7), ('raise-new-concern', 4), ('reopen-concern', 3)]
+rounds 31-40: 20 real moves, 6 distinct, top [('raise-new-concern', 6), ('resolve-concern', 4), ('resolve-own-concern', 4)]
+rounds 41-50: 18 real moves, 6 distinct, top [('raise-new-concern', 7), ('resolve-own-concern', 4), ('resolve-concern', 3)]
+rounds 51-60: 20 real moves, 6 distinct, top [('raise-new-concern', 7), ('resolve-own-concern', 6), ('resolve-concern', 3)]
+rounds 101-110: 21 real moves, 6 distinct, top [('raise-new-concern', 6), ('resolve-own-concern', 5), ('resolve-concern', 4)]
+rounds 151-160: 14 real moves, 6 distinct, top [('resolve-own-concern', 5), ('raise-new-concern', 4), ('resolve-concern', 2)]
+rounds 201-210: 20 real moves, 6 distinct, top [('raise-new-concern', 6), ('resolve-concern', 4), ('resolve-own-concern', 4)]
+rounds 251-260: 13 real moves, 4 distinct, top [('raise-new-concern', 6), ('resolve-own-concern', 4), ('resolve-concern', 2)]
+communicate 4 [('r1-e00001', 'community-group'), ('r1-e00011', 'legal-group'), ('r1-e00013', 'logistics-group'), ('r1-e00019', 'technical-group')]
+resolve-concern 11 [('r2-e00001', 'community-group'), ('r5-e00001', 'community-group'), ('r11-e00001', 'community-group'), ('r14-e00005', 'legal-group'), ('r18-e00006', 'logistics-group')]
+resolve-own-concern 28 [('r2-e00003', 'country-a'), ('r2-e00007', 'country-c'), ('r2-e00009', 'country-d'), ('r5-e00003', 'country-a'), ('r5-e00007', 'country-c')]
+make-support-conditional 4 [('r14-e00001', 'country-c'), ('r18-e00003', 'country-d'), ('r32-e00003', 'country-c'), ('r34-e00003', 'country-d')]
+restore-full-support 4 [('r16-e00003', 'country-c'), ('r20-e00006', 'country-d'), ('r37-e00003', 'country-c'), ('r37-e00005', 'country-d')]
+give-support 2 [('r4-e00007', 'country-c'), ('r4-e00009', 'country-d')]
+reopen-concern 11 [('r7-e00007', 'country-d'), ('r10-e00003', 'country-c'), ('r13-e00001', 'country-c'), ('r14-e00003', 'country-d'), ('r17-e00001', 'country-c')]
+put-matter-on-agenda 13 [('r1-e00007', 'country-c'), ('r1-e00015', 'partnership'), ('r3-e00001', 'community-group'), ('r3-e00003', 'country-b'), ('r3-e00005', 'country-d')]
+bring-decision-back 0 []
+r 8 r8-e00024 decision-authorized-at-last-deadline
+r 16 r16-e00009 deployment-completes
+r 34 r34-e00011 deployment-suspended
+r 37 r37-e00010 deployment-resumes
+r 103 r103-e00011 deployment-suspended
+r 105 r105-e00006 deployment-resumes
+r 139 r139-e00009 deployment-suspended
+r 143 r143-e00011 deployment-resumes
+r 176 r176-e00013 deployment-suspended
+r 179 r179-e00012 deployment-resumes
+r 195 r195-e00011 deployment-suspended
+r 197 r197-e00008 deployment-resumes
+first accepted move (any) / first real change: {'community-group': (1, 1), 'country-a': (1, 1), 'country-b': (1, 1), 'country-c': (1, 1), 'country-d': (1, 1), 'legal-group': (1, 1), 'logistics-group': (1, 1), 'partnership': (1, 1), 'regional-health-network': (1, 1), 'technical-group': (1, 1)}
+rounds 1-40 distinct real moves: 17 [('resolve-own-concern', 28), ('raise-new-concern', 24), ('put-matter-on-agenda', 13), ('resolve-concern', 11), ('reopen-concern', 11), ('prepare-national-deployment', 10), ('settle-agenda-matter', 8), ('communicate', 4), ('coordinate-cross-border-preparations', 4), ('make-support-conditional', 4), ('restore-full-support', 4), ('review-legal-readiness', 3), ('stage-deployment-logistics', 3), ('coordinate-deployment-preparations', 3), ('assess-technical-readiness', 3), ('give-support', 2), ('undertake-community-preparations', 2)]
+sample move keys: ['wanted', 'did', 'status', 'retried', 'said', 'refused_because', 'lost_what_it_wanted', 'changed', 'blocked_by_rules', 'event_id', 'changes']
+{"said": "I do not support activation without legal safeguards, so I will put the decision on the agenda for scrutiny rather than endorse it now.", "belief": null, "expects": null, "wanted": {"actor": "country-c", "kind": "put-matter-on-agenda", "base_revision": 0, "controller": "unselected", "decision": "activate-early-warning-system"}}
+readout: {"schema": "world-builder-readout/v1", "lens": "coordination", "title": "How coordination slowed (the four mechanisms of the Waltzman paper)", "summary": "The partnership considered an early-warning system while members and advisers repeatedly raised translation, legal-review, backup-power, and timestamp concerns. It authorized and deployed the system, but concerns and conditional support continued to recur; deployment was later suspended and then resumed.", "mechanisms": [{"id": "separate-channels", "name": "Local concerns through separate channels", "status": "present", "event_ids": ["r1-e00001", "r1-e00011", "r1-e00013", "r1-e00019"], "events": [{"event_id": "r1-e00001", "round": 1, "by": "community-group", "move": "communicate", "changed": "entities.country-b.components.member.aware: false -> true; entities.delivery-info-community-translation-concern-to-country-b.components.delivery.status: pending -> delivered; entities.info-community-translation-concern-to-country-b.components.information.active: false -> true"}, {"event_id": "r1-e00011", "round": 1, "by": "legal-group", "move": "communicate", "changed": "entities.country-c.components.member.aware: false -> true; entities.delivery-info-legal-local-review-concern-to-country-c.components.delivery.status: pending -> delivered; entities.info-legal-local-review-concern-to-country-c.components.information.active: false -> true"}, {"event_id": "r1-e00013", "round": 1, "by": "logistics-group", "move": "communicate", "changed": "entities.country-d.components.member.aware: false -> true; entities.delivery-info-logistics-backup-power-concern-to-country-d.components.delivery.status: pending -> delivered; entities.info-logistics-backup-power-concern-to-country-d.components.information.active: false -> true"}, {"event_id": "r1-e00019", "round": 1, "by": "technical-group", "move": "communicate", "changed": "entities.country-a.components.member.aware: false -> true; entities.delivery-info-technical-timestamp-concern-to-country-a.components.delivery.status: pending -> delivered; entities.info-technical-timestamp-concern-to-country-a.components.information.active: false -> true"}], "explanation": "The community group sent the translation concern to Country B, the legal group sent the review concern to Country C, the logistics group sent the power concern to Country D, and the technical group sent the timestamp concern to Country A. Each concern traveled through its own route to a particular member.", "missing_reason":

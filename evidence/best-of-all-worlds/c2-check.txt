@@ -1,0 +1,109 @@
+readout trace: world-builder-live/readout/ae05d5e8a51d4d009e95f378acb74c55
+summary: The partnership considered an early-warning system while members and advisers repeatedly raised translation, legal-review, backup-power, and timestamp concerns. It authorized and deployed the system, but concerns and conditional support continued to recur; deployment was later suspended and then resumed.
+
+== separate-channels (Local concerns through separate channels) status=present
+   explanation: The community group sent the translation concern to Country B, the legal group sent the review concern to Country C, the logistics group sent the power concern to Country D, and the technical group sent the timestamp concern to Country A. Each concern traveled through its own route to a particular member.
+   r1-e00001 r1 community-group communicate -> MATCH
+      changed: entities.country-b.components.member.aware: false -> true; entities.delivery-info-community-translation-concern-to-country-b.components.delivery.status: pending -> delivered; entities.info-community-translation-concern-t
+   r1-e00011 r1 legal-group communicate -> MATCH
+      changed: entities.country-c.components.member.aware: false -> true; entities.delivery-info-legal-local-review-concern-to-country-c.components.delivery.status: pending -> delivered; entities.info-legal-local-review-concern-to-coun
+   r1-e00013 r1 logistics-group communicate -> MATCH
+      changed: entities.country-d.components.member.aware: false -> true; entities.delivery-info-logistics-backup-power-concern-to-country-d.components.delivery.status: pending -> delivered; entities.info-logistics-backup-power-concern
+   r1-e00019 r1 technical-group communicate -> MATCH
+      changed: entities.country-a.components.member.aware: false -> true; entities.delivery-info-technical-timestamp-concern-to-country-a.components.delivery.status: pending -> delivered; entities.info-technical-timestamp-concern-to-co
+
+== slowed-meetings (Slowed meetings) status=present
+   explanation: Members repeatedly added items to the activation agenda, including a crowded agenda in round 6, while the deadline approached. The decision was authorized only at the deadline, after multiple meeting cycles and agenda actions.
+   r3-e00001 r3 community-group put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 0 -> 1; entities.community-group.components.work.put_matter_on_agenda_done: false -> true
+   r3-e00003 r3 country-b put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 1 -> 2; entities.country-b.components.work.put_matter_on_agenda_done: false -> true
+   r3-e00005 r3 country-d put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 2 -> 3; entities.country-d.components.work.put_matter_on_agenda_done: false -> true
+   r3-e00007 r3 legal-group put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 3 -> 4; entities.legal-group.components.work.put_matter_on_agenda_done: false -> true
+   r3-e00009 r3 regional-health-network put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 4 -> 5; entities.regional-health-network.components.work.put_matter_on_agenda_done: false -> true
+   r3-e00011 r3 technical-group put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 5 -> 6; entities.technical-group.components.work.put_matter_on_agenda_done: false -> true
+   r6-e00005 r6 country-b put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 5 -> 6; entities.country-b.components.work.put_matter_on_agenda_done: false -> true
+   r6-e00013 r6 partnership put-matter-on-agenda -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.agenda_items: 8 -> 9; entities.partnership.components.work.put_matter_on_agenda_done: false -> true
+
+== reopened-issues (Reopened settled issues) status=present
+   explanation: Settled concerns were repeatedly put back up for discussion: for example, Country D reopened the resolved backup-power concern, and Country C repeatedly reopened the resolved legal-review concern. Other groups also raised resolved concerns again.
+   r4-e00001 r4 community-group raise-new-concern -> MATCH
+      changed: entities.community-group.components.work.raise_new_concern_done: false -> true; entities.info-community-translation-concern-to-country-b.components.concern.status: resolved -> open; entities.info-community-translation-co
+   r7-e00007 r7 country-d reopen-concern -> MATCH
+      changed: entities.info-logistics-backup-power-concern-to-country-d.components.concern.status: resolved -> open; entities.info-logistics-backup-power-concern-to-country-d.components.concern.times_reopened: 0 -> 1
+   r10-e00003 r10 country-c reopen-concern -> MATCH
+      changed: entities.info-legal-local-review-concern-to-country-c.components.concern.status: resolved -> open; entities.info-legal-local-review-concern-to-country-c.components.concern.times_reopened: 0 -> 1
+   r13-e00001 r13 country-c reopen-concern -> MATCH
+      changed: entities.info-legal-local-review-concern-to-country-c.components.concern.status: resolved -> open; entities.info-legal-local-review-concern-to-country-c.components.concern.times_reopened: 1 -> 2
+   r17-e00001 r17 country-c reopen-concern -> MATCH
+      changed: entities.info-legal-local-review-concern-to-country-c.components.concern.status: resolved -> open; entities.info-legal-local-review-concern-to-country-c.components.concern.times_reopened: 2 -> 3
+   r31-e00001 r31 country-c reopen-concern -> MATCH
+      changed: entities.info-legal-local-review-concern-to-country-c.components.concern.status: resolved -> open; entities.info-legal-local-review-concern-to-country-c.components.concern.times_reopened: 5 -> 6
+   r65-e00001 r65 country-c reopen-concern -> MATCH
+      changed: entities.info-legal-local-review-concern-to-country-c.components.concern.status: resolved -> open; entities.info-legal-local-review-concern-to-country-c.components.concern.times_reopened: 8 -> 9
+   r95-e00003 r95 country-d reopen-concern -> MATCH
+      changed: entities.info-logistics-backup-power-concern-to-country-d.components.concern.status: resolved -> open; entities.info-logistics-backup-power-concern-to-country-d.components.concern.times_reopened: 6 -> 7
+
+== conditional-support (Conditional support delaying deployment) status=present
+   explanation: Country C, Country D, and later Country A made support conditional on unresolved legal, logistics, or technical concerns, reducing the partnership's recorded support. Country C and Country D's conditions coincided with deployment being suspended; members later restored full support when their concerns were recorded as resolved.
+   r14-e00001 r14 country-c make-support-conditional -> MISMATCH
+      readout: {'event_id': 'r14-e00001', 'round': 14, 'by': 'country-c', 'move': 'make-support-conditional', 'changed': 'entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-c.components.support.condition_id: country-c -> info-legal-local-review-concern-to-co...; entities.support-country-c.components.support.stance: full -> conditional'} 
+      trace: {'round': 14, 'by': 'country-c', 'move': 'make-support-conditional', 'changed': 'entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-c.components.support.condition_id: "country-c" -> "info-legal-local-review-concern-to-country-c"; entities.support-country-c.components.support.stance: "full" -> "conditional"', 'kind': 'actor'}
+   r18-e00003 r18 country-d make-support-conditional -> MISMATCH
+      readout: {'event_id': 'r18-e00003', 'round': 18, 'by': 'country-d', 'move': 'make-support-conditional', 'changed': 'entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-d.components.support.condition_id: country-d -> info-logistics-backup-power-concern-t...; entities.support-country-d.components.support.stance: full -> conditional'} 
+      trace: {'round': 18, 'by': 'country-d', 'move': 'make-support-conditional', 'changed': 'entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-d.components.support.condition_id: "country-d" -> "info-logistics-backup-power-concern-to-country-d"; entities.support-country-d.components.support.stance: "full" -> "conditional"', 'kind': 'actor'}
+   r32-e00003 r32 country-c make-support-conditional -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-c.components.support.stance
+   r34-e00003 r34 country-d make-support-conditional -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.conditional: 1 -> 2; entities.activate-early-warning-system.components.group_decision.support: 4 -> 3; entities.support-country-d.components.support.stance
+   r71-e00003 r71 country-a make-support-conditional -> MISMATCH
+      readout: {'event_id': 'r71-e00003', 'round': 71, 'by': 'country-a', 'move': 'make-support-conditional', 'changed': 'entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-a.components.support.condition_id: country-a -> info-technical-timestamp-concern-to-c...; entities.support-country-a.components.support.stance: full -> conditional'} 
+      trace: {'round': 71, 'by': 'country-a', 'move': 'make-support-conditional', 'changed': 'entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-a.components.support.condition_id: "country-a" -> "info-technical-timestamp-concern-to-country-a"; entities.support-country-a.components.support.stance: "full" -> "conditional"', 'kind': 'actor'}
+   r85-e00001 r85 country-c make-support-conditional -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-c.components.support.stance
+   r88-e00003 r88 country-d make-support-conditional -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-d.components.support.stance
+   r102-e00005 r102 country-d make-support-conditional -> MATCH
+      changed: entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-d.components.support.stance
+
+C2: 25/28 cited events match the run trace
+r14-e00001 truncation-only difference: True
+r18-e00003 truncation-only difference: True
+r71-e00003 truncation-only difference: True
+r3 r3-e00015 remedy-completes
+r6 r6-e00021 remedy-completes
+r8 r8-e00024 decision-authorized-at-last-deadline
+r9 r9-e00004 remedy-completes
+r12 r12-e00006 remedy-completes
+r13 r13-e00005 remedy-completes
+r15 r15-e00011 remedy-completes
+r16 r16-e00007 remedy-completes
+r16 r16-e00009 deployment-completes
+r16 r16-e00003 country-c restore-full-support
+r17 r17-e00007 remedy-completes
+r19 r19-e00007 remedy-completes
+r20 r20-e00010 remedy-completes
+r20 r20-e00006 country-d restore-full-support
+r21 r21-e00008 remedy-completes
+r22 r22-e00008 remedy-completes
+r23 r23-e00006 remedy-completes
+r24 r24-e00005 remedy-completes
+r26 r26-e00004 remedy-completes
+r29 r29-e00006 remedy-completes
+r30 r30-e00004 remedy-completes
+r33 r33-e00011 remedy-completes
+r34 r34-e00009 remedy-completes
+r34 r34-e00011 deployment-suspended
+r35 r35-e00008 remedy-completes
+r36 r36-e00006 remedy-completes
+r37 r37-e00009 remedy-completes
+r37 r37-e00010 deployment-resumes
+r37 r37-e00003 country-c restore-full-support
+r37 r37-e00005 country-d restore-full-support
+r39 r39-e00005 remedy-completes
