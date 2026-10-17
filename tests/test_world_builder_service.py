@@ -688,6 +688,29 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertIn(("ava", "You are Ava."), seen)
 
+    def test_resident_policy_carries_memory_and_records_belief_in_the_run_log(self):
+        status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                             "policy": "resident", "turns": 1, "resident_memory": {"ava": ["x" * 601]}})
+        self.assertEqual(status, 422, payload)
+        self.assertIn("resident_memory", payload["error"])
+        import scripts.concordia_residents as concordia
+        asked = []
+        def choose(residents, actor, offered, context):
+            asked.append((actor, residents.memory[actor].get_state()["items"]))
+            return {"belief": "Ava believes the apple is free.", "action_id": offered[0],
+                    "expected_effect": "Ava holds the apple.", "reasoning": "her goal"}
+        with patch.object(service, "_trace_cost", return_value=0.0), patch.object(concordia.Residents, "choose", choose):
+            status, payload = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
+                                                 "policy": "resident", "turns": 1, "briefs": {"ava": "You are Ava."},
+                                                 "resident_memory": {"ava": ["Round 0: you believed: earlier"]}})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(asked[0][1][0], "Round 0: you believed: earlier")
+        row = payload["trace"]["transcript"][0]["actors"]["ava"]
+        self.assertEqual((row["belief"], row["expects"]), ("Ava believes the apple is free.", "Ava holds the apple."))
+        self.assertTrue(payload["trace"]["model"].startswith("llm-resident (Concordia)"))
+        logged = service._recent_runs(1)[0]["result"]
+        self.assertTrue(any("you believed: Ava believes" in n for n in logged["resident_memory"]["ava"]))
+
     def test_async_job_reports_validation_errors_and_unknown_jobs_404(self):
         status, started = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True,
                                              "turns": 2, "async": True, "continue_from": "nope"})

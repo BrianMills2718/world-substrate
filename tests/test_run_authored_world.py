@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import sys
 import types
@@ -170,7 +171,7 @@ class AuthoredWorldRunTests(unittest.TestCase):
     def test_live_runner_caps_turns_and_policy_modes(self):
         with self.assertRaisesRegex(ValueError, "between 1 and 30"):
             run_world(self.bundle, self.causal, max_turns=31)
-        with self.assertRaisesRegex(ValueError, "scripted or llm"):
+        with self.assertRaisesRegex(ValueError, "scripted, llm or resident"):
             run_world(self.bundle, self.causal, policy="random")
 
 
@@ -303,6 +304,68 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertEqual(reasoning, "choose offered action")
         self.assertEqual(cost, 0.001)
         self.assertEqual(captured["max_tokens"], 512)
+
+    def test_concordia_residents_name_belief_and_expected_effect_and_remember_between_rounds(self):
+        prompts = []
+        fake = types.ModuleType("llm_client")
+
+        def render_prompt(path, **kwargs):
+            prompts.append((Path(path).name, kwargs))
+            return [{"role": "user", "content": "fixture"}]
+
+        def call_llm_json_schema(model, messages, schema, **kwargs):
+            self.assertEqual(kwargs["task"], "world-builder-concordia-resident")
+            self.assertEqual(schema["required"], ["belief", "action_id", "expected_effect", "reasoning"])
+            action_id = schema["properties"]["action_id"]["enum"][0]
+            return ({"belief": "The apple is ripe and nobody holds it.", "action_id": action_id,
+                     "expected_effect": "I will hold the apple.", "reasoning": "it is my goal"},
+                    types.SimpleNamespace(cost=0.001))
+
+        fake.render_prompt = render_prompt
+        fake.call_llm_json_schema = call_llm_json_schema
+        bundle, causal = load_bundle(BUNDLE_PATH), json.loads(CAUSAL_PATH.read_text())
+        # Import Concordia outside patch.dict: leaving it drops modules first imported inside (numpy cannot reload).
+        import scripts.concordia_residents  # noqa: F401
+        with patch.dict(sys.modules, {"llm_client": fake}):
+            first, _, _ = run_world(bundle, causal, policy="resident", model_name="fixture-model",
+                                    max_turns=1, trace_id="fixture-trace", briefs={"ava": "Ava wants the apple."})
+            row = first["transcript"][0]["actors"]["ava"]
+            self.assertEqual(row["belief"], "The apple is ripe and nobody holds it.")
+            self.assertEqual(row["expects"], "I will hold the apple.")
+            self.assertEqual(first["model"], "llm-resident (Concordia) fixture-model")
+            memory = first["resident_memory"]["ava"]
+            self.assertTrue(any("you believed: The apple is ripe" in note for note in memory), memory)
+            self.assertEqual(prompts[0][0], "concordia_resident_policy.yaml")
+            self.assertIn("Ava wants the apple.", [kwargs["brief"] for _, kwargs in prompts])
+            # Live play asks one round per request: the next request restores each resident's memory, and the
+            # resident reads its own earlier belief and move (repair bay keeps going after round 1).
+            bay, bay_causal = load_bundle(REPAIR_BUNDLE_PATH), json.loads(REPAIR_CAUSAL_PATH.read_text())
+            one, _, _ = run_world(bay, bay_causal, policy="resident", model_name="fixture-model", max_turns=1)
+            prompts.clear()
+            two, _, _ = run_world(bay, bay_causal, policy="resident", model_name="fixture-model", max_turns=1,
+                                  start_snapshot=one["final_snapshot"], turn_offset=1,
+                                  resident_memory=one["resident_memory"])
+        self.assertEqual(two["transcript"][0]["turn"], 2)
+        self.assertTrue(prompts)
+        for _, kwargs in prompts:
+            self.assertIn("Round 1: you believed: The apple is ripe", kwargs["memory"])
+        for actor, notes in one["resident_memory"].items():
+            self.assertEqual(two["resident_memory"][actor][: len(notes)], notes)
+
+    @unittest.skipUnless(importlib.util.find_spec("llm_client"), "llm_client renders the prompt")
+
+    def test_concordia_resident_prompt_renders_memory_and_asks_for_belief(self):
+        from llm_client import render_prompt
+
+        from world_substrate.policy import present
+
+        engine, _, _ = build_engine(load_bundle(BUNDLE_PATH), json.loads(CAUSAL_PATH.read_text()))
+        context = present(engine, "ava", engine.discover("ava"))
+        messages = render_prompt(REPO / "prompts/concordia_resident_policy.yaml", **context, recent=[],
+                                 world_summary="orchard", brief="", memory="Round 1: you believed: x")
+        text = "\n".join(m["content"] for m in messages)
+        self.assertIn("Your memory (what you saw and did, newest last):\nRound 1: you believed: x", text)
+        self.assertIn("say what you expect it to change", text)
 
     def test_repair_bay_fresh_replay_is_graphical(self):
         trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=12)
