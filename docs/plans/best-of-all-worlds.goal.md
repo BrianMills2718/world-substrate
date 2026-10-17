@@ -115,10 +115,15 @@ came back, came back unused, or the expectation was wrong.
   four mechanisms with event ids; share `OzydbZ8mNbdZ`. C2: 28/28 cited events match the trace. C3: share replays
   259/259 rounds with no password and no AI call. C4: pencil builds as things, 26 rounds, 7 distinct moves every
   round, but one move is never possible (#166). C5: plain messages for a rules rejection and two budget stops.
-- Not done: increment 2. Live people moves come from a direct gpt-6-luna choice given each person's brief
-  (`policy: llm`, `mover: openrouter/openai/gpt-6-luna` in every run record); the Concordia resident loop
-  (`spikes/any-scenario-2026-10/run_scenario.py`) is not hosted behind `/run`, and the moves' `belief`/`expects` are
-  empty. The outcome's "played by Concordia AI members" is therefore not yet true on the live site.
+- Increment 2 done (2026-10-17, live at `abf9b05`): people in people worlds are Concordia residents
+  (`scripts/concordia_residents.py`, ported from the October 8 loop; #168, #169 gate, #170). Each is a Concordia
+  `EntityAgentWithLogging` with its own memory carried between one-round requests and an acting step that names its
+  belief, an offered action and the expected effect; the game master stays off. Live Waltzman visitor runs
+  `bhE4uvdDzg78` (32b2d34) and `umwwKYrbOVGR` (abf9b05): every run's mover is `llm-resident (Concordia)`; at abf9b05
+  98/98 attempted moves name belief and expected effect; C2 49/49 and 46/46; C3 replays with no AI call.
+- Judged: in `umwwKYrbOVGR` activity falls after deployment completes in round 29 (2-3 real moves per 10 rounds);
+  the residents' beliefs say why (deployed, concerns resolved). That is the world reaching its end, not repetition
+  of one move; `bhE4uvdDzg78` kept 6-8 distinct moves per 10 rounds through round 45.
 - Open: #166 (moves that never become possible).
 
 ## Previous state (2026-10-16)
