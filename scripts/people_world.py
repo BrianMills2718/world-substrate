@@ -107,6 +107,9 @@ def _words(value: str) -> str:
 # (5), (6): 2026-10-16 local Waltzman run inc15d: all ten acted every round, but addressing a concern only reset the
 # meeting pace, so no record ever showed a country's condition met and none restored its support in 30 rounds; and
 # the decision could end only if the partnership chose to reject in the one round the deadline was happening.
+# (8): 2026-10-17 live Waltzman run umwwKYrbOVGR (Concordia residents): after deployment completed in round 29 nothing
+# new reached anyone, so the residents rightly waited ("the system is deployed, my concern is resolved"): 2-3 moves
+# per 10 rounds, 2 kinds, for the last 16 rounds.
 LIVENESS_GUIDANCE = (
     "This world keeps running with people acting every round, so: (1) no action may be repeatable without limit by "
     "the same actor on the same thing; record that it was done (for example a concern's status becomes raised) and "
@@ -128,7 +131,13 @@ LIVENESS_GUIDANCE = (
     "condition was met. Work that is finished stays finished until new information or another person reopens it; "
     "the person who just finished it does not undo it themselves. (7) Never write an action whose only effect is to add "
     "to a count (for example a tally of concerns raised): repeating it changes a number, not the situation, so people "
-    "repeat it forever. An action changes a named record (this concern, this review, this person's readiness)."
+    "repeat it forever. An action changes a named record (this concern, this review, this person's readiness). (8) "
+    "Reaching or carrying out the decision does not end this world: write what follows it. Once the decision is in "
+    "effect it is operated and reviewed, so write a process that, at a recurring scheduled moment after it takes "
+    "effect (for example a periodic review or reporting cycle), brings new information to the people: it reopens "
+    "each specialist group's work and lets local issues surface again, so concerns can be raised, sent, resolved and "
+    "reopened and support can change while the decision is in effect, and write rules by which enough open concerns "
+    "or withdrawn support suspend or revise it and their remedy resumes it."
 )
 
 

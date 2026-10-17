@@ -718,7 +718,9 @@ def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
     head = f"{moves} move{'s' if moves != 1 else ''} in {rounds} round{'s' if rounds != 1 else ''}"
     if world_kind == "task":
         return head + ("; reached the finish line" if row.get("terminal_reached") else "; did not reach the finish line")
-    return head + ("; still busy at the end" if row.get("active_at_end") else "; went quiet by the end")
+    never = row.get("never_offered") or []
+    return (head + ("; still busy at the end" if row.get("active_at_end") else "; went quiet by the end")
+            + (f"; never possible: {', '.join(_words(k) for k in never)}" if never else ""))
 
 
 def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
@@ -1163,8 +1165,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             # Going in circles: one kind of move is all that still happens
                             # although the rules offer several.
                             circling = len(candidate_compiled.mechanics) >= 3 and len(summary.get("moves_at_end") or []) <= 1
-                            # Best: alive with every actor still taking part and the work moving; then alive; then not.
-                            score = (3 if not idle and not circling else 2) if alive else 1
+                            # A declared move nobody was ever offered (#166, pencil: the wholesaler's only move).
+                            never = summary.get("never_offered") or {}
+                            # Best: alive with every actor still taking part, every move possible at some point and the
+                            # work moving; then alive; then not.
+                            score = (3 if not idle and not circling and not never else 2) if alive else 1
                             guidance = "" if alive else (
                                 f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                 f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -1184,7 +1189,17 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                     "(for example a rule to put a shared tool back), and that each step's output is "
                                     "what the next step's checks need."
                                 )
+                            if never:
+                                guidance += (
+                                    f" In the {dry_turns}-round test these moves were never possible for anyone: "
+                                    + "; ".join(f"{kind} ({why or 'nothing it applies to ever existed, or no actor ever held what it needs'})"
+                                                for kind, why in never.items())
+                                    + ". For each, make sure some other action or a process produces what its checks "
+                                    "need (for example, if goods must be at the next stop before they can move on, give "
+                                    "someone an action that brings them there)."
+                                )
                             result_row["stalled_actors"] = summary.get("stalled_actors") or []
+                            result_row["never_offered"] = sorted(never)
                             result_row["circling"] = circling
                             finishes = None
                         else:

@@ -327,6 +327,10 @@ def run_world(
         residents = Residents(actors, model=model_name, trace_id=trace_id, max_budget=max_budget,
                               memory=resident_memory)
     beliefs: dict[str, dict[str, Any]] = {}
+    # Every move the rules offered anyone at some point, and why each other move was refused, so a build's test run
+    # can name a move that never once became possible (#166: the pencil wholesaler's only move never could).
+    offered_kinds: set[str] = set()
+    refused_why: dict[str, str] = {}
 
     for turn in range(1, max_turns + 1):
         if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
@@ -337,7 +341,16 @@ def run_world(
         blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
         pages: dict[str, dict[str, Any]] = {}
         for actor in actors:
-            page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted", bookkeeping=bookkeeping)
+            raw = engine.discover(actor)
+            offered_kinds.update(row["action"].get("kind", "") for row in raw.get("available") or [])
+            for row in raw.get("blocked") or []:
+                kind = row["action"].get("kind", "")
+                if kind not in refused_why:
+                    failed = [c for c in row.get("checks") or [] if c.get("ok") is False]
+                    refused_why[kind] = "; ".join(
+                        f"{c.get('label')}: was {c.get('actual')!r}, needed {c.get('required')!r}" for c in failed[:2]
+                    ) or row.get("reason", "")
+            page = _without_no_ops(engine, raw, first_only=policy == "scripted", bookkeeping=bookkeeping)
             # What the installed rules refused this actor at this moment, and why.
             # Recorded for every policy so a viewer can see refusals even when the
             # policy itself only ever picks allowed actions.
@@ -603,6 +616,10 @@ def run_world(
                 for t in transcript[-max(1, len(transcript) // 3):]
                 for row in t["actors"].values() if row.get("changed")
             }),
+            "never_offered": {
+                kind: refused_why.get(kind, "")
+                for kind in sorted({getattr(m, "action_kind", "") for m in causal_model.mechanics} - offered_kinds - {""})
+            },
             "first_turn": turn_offset + 1,
             "last_turn": turn_offset + len(transcript),
         },
