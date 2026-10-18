@@ -380,6 +380,22 @@ class RepairBayLiveProofTests(unittest.TestCase):
              "op": "eq", "right": {"literal": "no-such-status"}}]
         trace, _, _ = run_world(self.bundle, causal, policy="scripted", max_turns=5)
         self.assertIn("repair", trace["summary"]["never_offered"])
+        why = trace["summary"]["never_offered"]["repair"]
+        self.assertIn("Machine is in an impossible state: was", why)
+        self.assertNotIn("is the", why.split(";")[0].lower())  # the closest refusal, not another actor's role check
+
+    def test_a_never_possible_move_names_what_raises_the_state_it_needs(self):
+        # 2026-10-18 live pencil ML-LqyMAzAYo: slats were only ever added to the miller's own stock.
+        from scripts.run_authored_world import _never_why
+        causal = {"mechanics": [
+            {"action_kind": "mill-slats", "checks": [], "effects": [
+                {"participant": "actor", "path": "components.stock.slats", "op": "add", "value": {"literal": 1}}]},
+            {"action_kind": "assemble", "checks": [
+                {"label": "enough slats", "left": {"participant": {"name": "actor", "path": "components.stock.slats"}},
+                 "op": "gte", "right": {"literal": 1}}], "effects": []}]}
+        why = _never_why("assemble", [{"label": "enough slats", "actual": 0, "required": 1}], causal)
+        self.assertIn("stock.slats is raised only by mill-slats (on its actor)", why)
+        self.assertIn("no action ever brings stock.slats to this actor", why)
 
     def test_repair_bay_fresh_replay_is_graphical(self):
         trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=12)
