@@ -154,6 +154,10 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
     # A stance or a concern can still change while an authorized decision deploys (concerns delay or block deployment)
     # and after it is deployed (a member's concern about the running system can suspend it until resolved). 2026-10-16
     # Waltzman deploy6: closed at deployment, nobody had any action from round 15 to 40.
+    agenda_time = [_check("the decision is not rejected", _ref("decision", "components.group_decision.status"), "ne",
+                          "rejected"),
+                   _check("the decision is not waiting to be brought back",
+                          _ref("decision", "components.group_decision.status"), "ne", "back_on_table")]
     unsettled = [_check("the decision was not rejected", _ref("decision", "components.group_decision.status"), "ne",
                         "rejected")]
     counts = lambda a, b: [_effect("decision", "components.group_decision.support", a, 1),  # noqa: E731
@@ -228,13 +232,16 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
         # decision that has the support (decision-postponed-for-open-matters). 2026-10-16 Waltzman deploy12: the rule
         # writer, told it may count agenda matters, wrote only own-flag rules again, so meetings could never slow the
         # decision and the regional health network had no move with any effect in 40 rounds.
+        # 2026-10-18 live Waltzman WtCqXpKjI3Bs: with the agenda closed once the decision was in effect, 185 of 250
+        # choices in rounds 21-45 were waits (reopening a resolved concern was nearly the only move). A decision in
+        # effect still meets; open matters then hold up its operating review (operating-review-held).
         _mechanic("put-matter-on-agenda",
-                  "Anyone puts a matter before the group while the decision is open; it stays on the agenda until "
-                  "someone settles it.", {"decision": _DECISION_SEL}, [is_open],
+                  "Anyone puts a matter before the group while the decision is open or in effect; it stays on the "
+                  "agenda until someone settles it.", {"decision": _DECISION_SEL}, [*agenda_time],
                   [_effect("decision", "components.group_decision.agenda_items", "add", 1)]),
         _mechanic("settle-agenda-matter", "Anyone settles one of the matters still open on the group's agenda.",
                   {"decision": _DECISION_SEL},
-                  [is_open, _check("a matter is still open on the agenda",
+                  [*agenda_time, _check("a matter is still open on the agenda",
                                    _ref("decision", "components.group_decision.agenda_items"), "gt", 0)],
                   [_effect("decision", "components.group_decision.agenda_items", "subtract", 1)]),
     ]
@@ -380,7 +387,8 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
         # The operating review, in this order within a tick: the countdown, then the review reads the decision and
         # examines concerns, then the next review is scheduled (so all of a decision's concerns see the same review).
         in_effect = _check("the decision is in effect", it("status"), "eq", "deployed")
-        review_now = lambda r: _check("an operating review is held now", r("review_ticks_left"), "eq", 1)  # noqa: E731
+        review_now = lambda r: [_check("an operating review is due now", r("review_ticks_left"), "eq", 1),  # noqa: E731
+                                _check("no matters are still open on the agenda", r("agenda_items"), "lte", 0)]
         reviewed = lambda path: _ref("decision", f"components.group_decision.{path}")  # noqa: E731
         processes += [
             {"process_id": "operating-review-nears", "rationale": "The next operating review of the decision in effect "
@@ -393,12 +401,13 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
              "selector": concern_sel,
              "participants": {"decision": {"link": "ref:concern.decision_id", "selector": _DECISION_SEL}},
              "checks": [_check("the concern is resolved", concern_it("status"), "eq", "resolved"),
-                        _check("the decision is in effect", reviewed("status"), "eq", "deployed"), review_now(reviewed)],
+                        _check("the decision is in effect", reviewed("status"), "eq", "deployed"), *review_now(reviewed)],
              "effects": [_effect("it", "components.concern.status", "set", "open"),
                          _effect("it", "components.concern.times_reviewed", "add", 1)]},
             {"process_id": "operating-review-held",
-             "rationale": f"An operating review of the decision in effect is held; the next is {REVIEW_TICKS} rounds on.",
-             "selector": sel, "checks": [in_effect, review_now(it)],
+             "rationale": f"An operating review of the decision in effect is held once no matters are open on the "
+                          f"agenda; the next is {REVIEW_TICKS} rounds on.",
+             "selector": sel, "checks": [in_effect, *review_now(it)],
              "effects": [_effect("it", "components.group_decision.review_ticks_left", "set", REVIEW_TICKS)]},
         ]
     return actions, mechanics, processes
