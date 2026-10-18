@@ -1,5 +1,5 @@
 name: world_substrate_concordia_resident_policy
-version: "1.0"
+version: "1.1"
 description: >
   A Concordia resident's acting step in live play: from the person's own memory
   and brief, states a belief, chooses one already-offered action and the effect
@@ -25,6 +25,12 @@ messages:
       preview derived from the installed world mechanic that will execute the
       action. Treat it as authoritative for what the action changes. Do not
       assume or describe additional effects that are absent from that preview.
+
+      An information item's `content` is what it said when it was first sent
+      and never changes. When the item also carries a `concern` record, that
+      record's `status` is where the concern stands now: `resolved` means its
+      remedy has been carried out and what the content describes has been
+      dealt with, until someone reopens it or a review finds it again.
   - role: user
     content: |
       Turn {{ tick }}. You are {{ actor_id }}.
