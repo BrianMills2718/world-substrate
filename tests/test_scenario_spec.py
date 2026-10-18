@@ -368,6 +368,26 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertIn("deployment-resumes", [e["rule_id"] for e in self.engine.advance(1)["events"]])
         self.assertEqual(self._decision()["status"], "deployed")
 
+    def test_operating_reviews_reopen_resolved_concerns_while_the_decision_is_in_effect(self):
+        # 2026-10-18 live Waltzman _q9oVz-QlJ3S: after deployment nothing new reached anyone and the residents waited.
+        from compile_spec import DEPLOY_TICKS, REVIEW_TICKS
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self._until_deadline()
+        self.engine.advance(DEPLOY_TICKS + 1)
+        self.assertEqual(self._decision()["status"], "deployed")
+        concern = lambda: self.engine.world.entities[matter].as_dict()["components"]["concern"]  # noqa: E731
+        self.assertEqual(concern()["status"], "resolved")
+        ids = []
+        for _ in range(REVIEW_TICKS):
+            ids += [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertIn("operating-review-reexamines-concern", ids)
+        self.assertIn("operating-review-held", ids)
+        self.assertEqual((concern()["status"], concern()["times_reviewed"]), ("open", 1))
+        self._do("country-b", "make-support-conditional", matter=matter)  # the review can move support again
+        self.assertIn("deployment-suspended", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+
     def test_short_support_with_no_postponements_left_rejects_at_the_deadline(self):
         self._do("legal-group", "communicate", recipient="country-b")
         self._do("country-b", "make-support-conditional", matter="info-clause-conflict-to-country-b")

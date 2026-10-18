@@ -24,9 +24,9 @@ from .rules import Check, TypedAction, plain_copy
 CAUSAL_MODEL_SCHEMA_VERSION = "world-substrate-causal-model/v0"
 ACTION_MECHANIC_SCHEMA_VERSION = "world-substrate-action-mechanic/v0"
 PROCESS_SCHEMA_VERSION = "world-substrate-process-mechanic/v0"
-# Compiled rules (scheduled moments, remedies, a group decision's deadline and deployment) take up to 11 processes and
-# a generated model may add more (generate_causal_model's schema), so the engine bound holds both with room to spare.
-MAX_PROCESSES = 24
+# Compiled rules (scheduled moments, remedies, a group decision's deadline, deployment and operating review) take up to
+# 17 processes and a generated model may add more (generate_causal_model's schema), so the engine bound holds both with room to spare.
+MAX_PROCESSES = 28
 MAX_DISCOVERED_ACTIONS = 256
 
 OPS = {
