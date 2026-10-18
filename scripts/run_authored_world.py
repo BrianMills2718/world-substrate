@@ -125,6 +125,22 @@ def actor_ids(engine: Engine, model: CausalModel) -> list[str]:
     return actors
 
 
+# Other people's `work` records (compile_spec.add_work_cycle: one done-flag per action) are bookkeeping that limits
+# repeats, not something a person sees or acts on. 2026-10-18 live Waltzman 1nEGWZzSwHFA: nine of them were 4,500 of
+# a resident prompt's 15,000 characters.
+PRIVATE_TO_HOLDER = ("work",)
+
+
+def _view(engine: Engine, actor: str, page: dict[str, Any]) -> dict[str, Any]:
+    """present() without other people's private bookkeeping records."""
+    entities = {
+        eid: (rec if eid == actor else {**rec, "components": {k: v for k, v in (rec.get("components") or {}).items()
+                                                               if k not in PRIVATE_TO_HOLDER}})
+        for eid, rec in page["observation"]["entities"].items()
+    }
+    return present(engine, actor, {**page, "observation": {**page["observation"], "entities": entities}})
+
+
 def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
     start = seen.get(actor, 0)
     lines: list[str] = []
@@ -254,7 +270,7 @@ def _llm_choice(
         return None, "wait: no offered action", 0.0
     schema = json.loads(json.dumps(CHOICE_SCHEMA))
     schema["properties"]["action_id"]["enum"] = offered + [WAIT]
-    context = present(engine, actor, page)
+    context = _view(engine, actor, page)
     context["recent"] = recent
     context["world_summary"] = world_summary
     context["brief"] = brief
@@ -384,7 +400,7 @@ def run_world(
 
             def _resident_turn(actor: str) -> dict[str, Any]:
                 page = pages[actor]
-                context = present(engine, actor, page)
+                context = _view(engine, actor, page)
                 context.update(recent=recents[actor], world_summary=bundle["world"]["summary"],
                                brief=(briefs or {}).get(actor, ""))
                 residents.observe(actor, f"Round {turn + turn_offset}. What just happened: "
@@ -476,7 +492,7 @@ def run_world(
                     residents.observe(actor, f"Round {turn + turn_offset}: your choice was no longer allowed after "
                                       "earlier moves this round; choose again.")
                     attempt = residents.choose(actor, [r["action_id"] for r in page.get("available") or []],
-                                               {**present(engine, actor, page), "recent": _recent_for(engine, actor, seen),
+                                               {**_view(engine, actor, page), "recent": _recent_for(engine, actor, seen),
                                                 "world_summary": bundle["world"]["summary"],
                                                 "brief": (briefs or {}).get(actor, "")})
                     if attempt.get("belief") is not None:

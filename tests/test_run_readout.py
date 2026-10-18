@@ -22,6 +22,14 @@ class ReadoutTest(unittest.TestCase):
         self.assertIn("False -> True", events[0]["changed"].replace("false", "False").replace("true", "True"))
         self.assertEqual(events[1]["by"], "the world (a rule)")
 
+    def test_long_change_lists_are_cut_at_whole_changes(self):
+        changes = [{"path": f"entities.info-logistics-concern-{i}.components.concern.status", "before": "resolved",
+                    "after": "open"} for i in range(9)]
+        text = run_readout._change_text(changes)
+        kept = text.split("; and ")[0].split("; ")
+        self.assertTrue(all(k.endswith("resolved -> open") for k in kept))
+        self.assertTrue(text.endswith(f"; and {9 - len(kept)} more changes"))
+
     def test_claims_without_a_recorded_event_are_missing(self):
         events = run_readout.evidence_events(ROUNDS)
         parsed = {"summary": "s", "mechanisms": [

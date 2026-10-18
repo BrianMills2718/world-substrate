@@ -392,3 +392,19 @@ class RepairBayLiveProofTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ResidentViewTests(unittest.TestCase):
+    def test_other_peoples_work_records_are_not_shown(self):
+        # 2026-10-18 live Waltzman 1nEGWZzSwHFA: nine other people's done-flags were 30% of a resident prompt.
+        from scripts import run_authored_world as raw
+        page = {"observation": {"entities": {
+            "ana": {"label": "Ana", "components": {"member": {"role": "x"}, "work": {"a_done": True}}},
+            "ben": {"label": "Ben", "components": {"member": {"role": "y"}, "work": {"a_done": False}}}}}}
+        seen = {}
+        with patch.object(raw, "present", lambda engine, actor, p: seen.update(p) or {}):
+            raw._view(None, "ana", page)
+        entities = seen["observation"]["entities"]
+        self.assertIn("work", entities["ana"]["components"])
+        self.assertEqual(set(entities["ben"]["components"]), {"member"})
+        self.assertIn("work", page["observation"]["entities"]["ben"]["components"])  # the engine's page is untouched

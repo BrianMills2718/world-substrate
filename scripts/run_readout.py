@@ -44,8 +44,17 @@ def _short(value: Any) -> str:
     return text if len(text) <= 40 else text[:37] + "..."
 
 
-def _change_text(changes: list[dict[str, Any]]) -> str:
-    return "; ".join(f"{c.get('path')}: {_short(c.get('before'))} -> {_short(c.get('after'))}" for c in changes)[:400]
+def _change_text(changes: list[dict[str, Any]], limit: int = 400) -> str:
+    """Whole changes up to about `limit` characters, then how many more. 2026-10-18 live Waltzman 1nEGWZzSwHFA: a
+    plain [:400] cut a claim mid-path ("entities.info-logi"), so the readout showed a change no event made."""
+    parts = [f"{c.get('path')}: {_short(c.get('before'))} -> {_short(c.get('after'))}" for c in changes]
+    kept: list[str] = []
+    for part in parts:
+        if kept and len("; ".join(kept + [part])) > limit:
+            break
+        kept.append(part)
+    more = len(parts) - len(kept)
+    return "; ".join(kept) + (f"; and {more} more change{'s' if more > 1 else ''}" if more else "")
 
 
 def evidence_events(rounds: list[dict[str, Any]]) -> list[dict[str, Any]]:
