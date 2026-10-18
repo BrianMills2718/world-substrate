@@ -30,6 +30,12 @@ class ReadoutTest(unittest.TestCase):
         self.assertTrue(all(k.endswith("resolved -> open") for k in kept))
         self.assertTrue(text.endswith(f"; and {9 - len(kept)} more changes"))
 
+    def test_entity_ids_in_changes_are_shown_whole(self):
+        target = "info-logistics-backup-power-concern-to-country-3"
+        text = run_readout._change_text([{"path": "entities.support-country-3.components.support.condition_id",
+                                          "before": "country-3", "after": target}])
+        self.assertEqual(text, f"entities.support-country-3.components.support.condition_id: country-3 -> {target}")
+
     def test_claims_without_a_recorded_event_are_missing(self):
         events = run_readout.evidence_events(ROUNDS)
         parsed = {"summary": "s", "mechanisms": [
