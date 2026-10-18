@@ -388,6 +388,26 @@ class GroupDecisionTests(unittest.TestCase):
         self._do("country-b", "make-support-conditional", matter=matter)  # the review can move support again
         self.assertIn("deployment-suspended", [e["rule_id"] for e in self.engine.advance(1)["events"]])
 
+    def test_a_decision_in_effect_still_meets_and_open_matters_hold_up_its_review(self):
+        # 2026-10-18 live Waltzman WtCqXpKjI3Bs: the agenda closed at deployment and rounds 21-45 were mostly waits.
+        from compile_spec import DEPLOY_TICKS, REVIEW_TICKS
+        matter = "info-clause-conflict-to-country-b"
+        self._do("legal-group", "communicate", recipient="country-b")
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self._until_deadline()
+        self.engine.advance(DEPLOY_TICKS + 1)
+        self.assertEqual(self._decision()["status"], "deployed")
+        self._do("legal-group", "put-matter-on-agenda")
+        ids = []
+        for _ in range(REVIEW_TICKS + 2):
+            ids += [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertNotIn("operating-review-held", ids)  # the open matter holds the review
+        self.assertEqual(self._decision()["review_ticks_left"], 1)
+        self._do("country-b", "settle-agenda-matter")
+        ids = [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertIn("operating-review-reexamines-concern", ids)
+        self.assertIn("operating-review-held", ids)
+
     def test_short_support_with_no_postponements_left_rejects_at_the_deadline(self):
         self._do("legal-group", "communicate", recipient="country-b")
         self._do("country-b", "make-support-conditional", matter="info-clause-conflict-to-country-b")
