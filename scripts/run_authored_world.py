@@ -296,6 +296,33 @@ def _llm_choice(
     )
 
 
+def _never_why(kind: str, failed: list[dict[str, Any]], causal_value: dict[str, Any]) -> str:
+    """Why a move was never possible: its closest refusal's failed checks, each with what raises the state it reads.
+    2026-10-18 live pencil ML-LqyMAzAYo: assemble-pencils needed the assembler's own stock.slats, which only mill-slats
+    raised, on the miller's own stock; nothing carried slats over, and the rewrite was never told so."""
+    mechanics = causal_value.get("mechanics") or []
+    rule = next((m for m in mechanics if m.get("action_kind") == kind), {})
+    reasons = []
+    for c in failed[:2]:
+        text = f"{c.get('label')}: was {c.get('actual')!r}, needed {c.get('required')!r}"
+        left = next(((x.get("left") or {}).get("participant") for x in rule.get("checks") or []
+                     if x.get("label") == c.get("label")), None) or {}
+        path = left.get("path", "")
+        if path.startswith("components."):
+            raises = lambda e: e.get("path") == path and e.get("op") in ("add", "set")  # noqa: E731
+            raisers = [f"{m['action_kind']} (on its {e.get('participant')})" for m in mechanics if m is not rule
+                       for e in m.get("effects") or [] if raises(e)]
+            raisers += [f"process {p['process_id']}" for p in causal_value.get("processes") or []
+                        for e in p.get("effects") or [] if raises(e)]
+            field = path.removeprefix("components.")
+            text += (f"; {field} is raised only by " + ", ".join(dict.fromkeys(raisers)) if raisers
+                     else f"; nothing ever raises {field}")
+            if raisers and left.get("name") == "actor" and all(r.endswith("(on its actor)") for r in raisers):
+                text += f", each on the one who does it, so no action ever brings {field} to this actor"
+        reasons.append(text)
+    return "; ".join(reasons)
+
+
 def run_world(
     bundle: dict[str, Any],
     causal_value: dict[str, Any],
@@ -346,7 +373,7 @@ def run_world(
     # Every move the rules offered anyone at some point, and why each other move was refused, so a build's test run
     # can name a move that never once became possible (#166: the pencil wholesaler's only move never could).
     offered_kinds: set[str] = set()
-    refused_why: dict[str, str] = {}
+    refused_why: dict[str, list[dict[str, Any]]] = {}
 
     for turn in range(1, max_turns + 1):
         if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
@@ -361,11 +388,11 @@ def run_world(
             offered_kinds.update(row["action"].get("kind", "") for row in raw.get("available") or [])
             for row in raw.get("blocked") or []:
                 kind = row["action"].get("kind", "")
-                if kind not in refused_why:
-                    failed = [c for c in row.get("checks") or [] if c.get("ok") is False]
-                    refused_why[kind] = "; ".join(
-                        f"{c.get('label')}: was {c.get('actual')!r}, needed {c.get('required')!r}" for c in failed[:2]
-                    ) or row.get("reason", "")
+                failed = [c for c in row.get("checks") or [] if c.get("ok") is False]
+                # Keep the refusal that came closest (fewest failed checks): the first one seen is usually another
+                # person's ("this worker assembles pencils: was 'grows timber'"), which says nothing about the gap.
+                if failed and (kind not in refused_why or len(failed) < len(refused_why[kind])):
+                    refused_why[kind] = failed
             page = _without_no_ops(engine, raw, first_only=policy == "scripted", bookkeeping=bookkeeping)
             # What the installed rules refused this actor at this moment, and why.
             # Recorded for every policy so a viewer can see refusals even when the
@@ -633,7 +660,7 @@ def run_world(
                 for row in t["actors"].values() if row.get("changed")
             }),
             "never_offered": {
-                kind: refused_why.get(kind, "")
+                kind: _never_why(kind, refused_why.get(kind) or [], causal_value)
                 for kind in sorted({getattr(m, "action_kind", "") for m in causal_model.mechanics} - offered_kinds - {""})
             },
             "first_turn": turn_offset + 1,
