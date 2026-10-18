@@ -128,7 +128,12 @@ DIALOGUE_REQUESTS_PER_HOUR = 30
 DIALOGUE_BUDGET = 0.02
 # One "What happened" readout reads every recorded event of a run (a 40-round, ten-person run is about 40k tokens).
 READOUT_BUDGET = 0.10
-_LLM_LOCK = threading.Lock()
+# 2026-10-18 live Waltzman fYUjOhb2z1VC: one lock held for every whole build and round made the site run one AI job
+# at a time, so round 1 waited ~100 s behind another visitor's build (C1: within 150 s). Ledger updates are atomic
+# under _BUDGET_LOCK and every job reserves its whole cap first, so concurrent jobs cannot overspend.
+AI_JOBS_AT_ONCE = int(os.environ.get("WORLD_BUILDER_AI_JOBS_AT_ONCE") or 4)
+_AI_SLOTS = threading.BoundedSemaphore(AI_JOBS_AT_ONCE)
+_BUDGET_LOCK = threading.RLock()
 
 
 def _prune(queue: deque[float], window: float) -> None:
@@ -202,26 +207,28 @@ def _daily_cost() -> float:
 
 
 def _reserve_daily_budget(requested_cap: float) -> float | None:
-    state = _load_budget_state()
-    committed = float(state["spent_usd"] + state["reserved_usd"])
-    remaining = max(0.0, _ledger_cap() - committed)
-    if remaining <= 0.0001:
-        return None
-    cap = min(float(requested_cap), remaining)
-    state["reserved_usd"] = float(state["reserved_usd"] + cap)
-    _write_budget_state(state)
-    return cap
+    with _BUDGET_LOCK:
+        state = _load_budget_state()
+        committed = float(state["spent_usd"] + state["reserved_usd"])
+        remaining = max(0.0, _ledger_cap() - committed)
+        if remaining <= 0.0001:
+            return None
+        cap = min(float(requested_cap), remaining)
+        state["reserved_usd"] = float(state["reserved_usd"] + cap)
+        _write_budget_state(state)
+        return cap
 
 
 def _settle_daily_budget(reserved_cap: float, actual_cost: float | None) -> float:
-    state = _load_budget_state()
-    state["reserved_usd"] = max(0.0, float(state["reserved_usd"]) - float(reserved_cap))
-    # If a call or accounting read fails after reservation, charge the whole
-    # reservation. This intentionally fails closed until the next calendar day.
-    charged = float(reserved_cap if actual_cost is None else max(0.0, actual_cost))
-    state["spent_usd"] = float(state["spent_usd"] + charged)
-    _write_budget_state(state)
-    return float(state["spent_usd"] + state["reserved_usd"])
+    with _BUDGET_LOCK:
+        state = _load_budget_state()
+        state["reserved_usd"] = max(0.0, float(state["reserved_usd"]) - float(reserved_cap))
+        # If a call or accounting read fails after reservation, charge the whole
+        # reservation. This intentionally fails closed until the next calendar day.
+        charged = float(reserved_cap if actual_cost is None else max(0.0, actual_cost))
+        state["spent_usd"] = float(state["spent_usd"] + charged)
+        _write_budget_state(state)
+        return float(state["spent_usd"] + state["reserved_usd"])
 
 
 def _settle_failed_call(reserved_cap: float, trace_id: str) -> float:
@@ -254,9 +261,10 @@ def _settle_late_hedges(trace_id: str, charged: float) -> None:
     if not late:
         return
     reserve = LATE_HEDGE_RESERVE * len(late)
-    state = _load_budget_state()  # the caller holds _LLM_LOCK
-    state["reserved_usd"] = float(state["reserved_usd"]) + reserve
-    _write_budget_state(state)
+    with _BUDGET_LOCK:
+        state = _load_budget_state()
+        state["reserved_usd"] = float(state["reserved_usd"]) + reserve
+        _write_budget_state(state)
 
     def settle() -> None:
         futures_wait(late, timeout=900)
@@ -264,8 +272,7 @@ def _settle_late_hedges(trace_id: str, charged: float) -> None:
             extra = max(0.0, _trace_cost(trace_id) - charged)
         except Exception:
             extra = reserve  # fail closed, like _settle_daily_budget
-        with _LLM_LOCK:
-            _settle_daily_budget(reserve, extra)
+        _settle_daily_budget(reserve, extra)
 
     # copy_context: the owner/visitor ledger choice (_LEDGER) lives in a context variable a new thread would lose
     threading.Thread(target=contextvars.copy_context().run, args=(settle,), name="late-hedges", daemon=True).start()
@@ -995,7 +1002,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         """Run one budgeted dialogue-sized model call and return its payload."""
         trace_id = _new_trace_id(kind)
         cap = budget
-        with _LLM_LOCK:
+        with _AI_SLOTS:
             budget = self._llm_budget(client, cap, dialogue=True)
             if budget is None:
                 return
@@ -1064,7 +1071,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if world_kind == "open":
             world_kind = "ongoing"  # older name for the same kind
         trace_id = _new_trace_id("world")
-        with _LLM_LOCK:
+        with _AI_SLOTS:
             budget = self._llm_budget(client, WORLD_BUDGET)
             if budget is None:
                 return
@@ -1270,7 +1277,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
     def _world_def(self, client: str, description: str) -> str | None:
         """People or things? One small call, charged like any other; None means an error was already sent."""
         trace_id = _new_trace_id("kind")
-        with _LLM_LOCK:
+        with _AI_SLOTS:
             budget = self._llm_budget(client, WORLD_KIND_BUDGET)
             if budget is None:
                 return None
@@ -1292,7 +1299,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         """
         trace_id = _new_trace_id("people")
         started = time.monotonic()
-        with _LLM_LOCK:
+        with _AI_SLOTS:
             budget = self._llm_budget(client, PEOPLE_WORLD_BUDGET)
             if budget is None:
                 return
@@ -1446,7 +1453,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             raise ValueError("description must be at most 8000 characters")
         model = _requested_model(body)
         trace_id = _new_trace_id("draft")
-        with _LLM_LOCK:
+        with _AI_SLOTS:
             budget = self._llm_budget(client, DRAFT_BUDGET)
             if budget is None:
                 return
@@ -1486,7 +1493,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             raise ValueError("guidance must be a string")
         # Serialize public LLM calls so two concurrent requests cannot both see
         # the same remaining daily budget and oversubscribe it.
-        with _LLM_LOCK:
+        with _AI_SLOTS:
             budget = self._llm_budget(client, MECHANICS_BUDGET)
             if budget is None:
                 return
@@ -1676,7 +1683,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             replay = native["html"]
             daily_cost = None
         elif policy in {"llm", "resident"}:
-            with _LLM_LOCK:
+            with _AI_SLOTS:
                 budget = self._llm_budget(client, RUN_BUDGET, ai_run=True)
                 if budget is None:
                     return

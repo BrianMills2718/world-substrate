@@ -1234,6 +1234,29 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], 0.02, places=6)
         self.assertAlmostEqual(payload["daily_cost_usd"], cap - 0.019, places=6)
 
+    def test_two_visitors_ai_jobs_run_at_once_and_settle_one_ledger(self):
+        # 2026-10-18 live Waltzman fYUjOhb2z1VC: round 1 waited ~100 s behind another visitor's build.
+        both_running = threading.Barrier(2, timeout=3)
+
+        def generate(*args, **kwargs):
+            both_running.wait()  # breaks (and the request fails) if the second job cannot start until the first ends
+            return json.loads(json.dumps(CAUSAL)), FakeResult()
+
+        results = []
+        with patch.object(service, "_trace_cost", return_value=0.001), patch.object(
+            service, "generate_causal_model", side_effect=generate
+        ):
+            threads = [threading.Thread(target=lambda: results.append(self.post("/generate-mechanics", {"bundle": BUNDLE})))
+                       for _ in range(2)]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+        self.assertEqual(sorted(status for status, _ in results), [200, 200])
+        state = json.loads(self.budget_path.read_text())
+        self.assertAlmostEqual(state["spent_usd"], 0.002, places=6)
+        self.assertEqual(state["reserved_usd"], 0.0)
+
     def test_old_budget_day_resets_without_carrying_stale_reservations(self):
         self.write_budget(spent=0.3, reserved=0.2, day="2000-01-01")
         self.assertEqual(service._daily_cost(), 0.0)
