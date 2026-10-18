@@ -109,7 +109,8 @@ def _words(value: str) -> str:
 # the decision could end only if the partnership chose to reject in the one round the deadline was happening.
 # (8): 2026-10-17 live Waltzman run umwwKYrbOVGR (Concordia residents): after deployment completed in round 29 nothing
 # new reached anyone, so the residents rightly waited ("the system is deployed, my concern is resolved"): 2-3 moves
-# per 10 rounds, 2 kinds, for the last 16 rounds.
+# per 10 rounds, 2 kinds, for the last 16 rounds. Rules cannot write concerns or the decision, so the review itself is
+# compiled (compile_spec REVIEW_TICKS, 2026-10-18 _q9oVz-QlJ3S).
 LIVENESS_GUIDANCE = (
     "This world keeps running with people acting every round, so: (1) no action may be repeatable without limit by "
     "the same actor on the same thing; record that it was done (for example a concern's status becomes raised) and "
@@ -133,11 +134,9 @@ LIVENESS_GUIDANCE = (
     "to a count (for example a tally of concerns raised): repeating it changes a number, not the situation, so people "
     "repeat it forever. An action changes a named record (this concern, this review, this person's readiness). (8) "
     "Reaching or carrying out the decision does not end this world: write what follows it. Once the decision is in "
-    "effect it is operated and reviewed, so write a process that, at a recurring scheduled moment after it takes "
-    "effect (for example a periodic review or reporting cycle), brings new information to the people: it reopens "
-    "each specialist group's work and lets local issues surface again, so concerns can be raised, sent, resolved and "
-    "reopened and support can change while the decision is in effect, and write rules by which enough open concerns "
-    "or withdrawn support suspend or revise it and their remedy resumes it."
+    "effect a compiled operating review reopens its resolved concerns every few rounds; write the specialist and "
+    "practical work that goes on around it (monitoring, reporting, operating, reviewing), limited by the work cycle, "
+    "so each group has something real to do while the decision is in effect."
 )
 
 

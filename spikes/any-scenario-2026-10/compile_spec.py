@@ -73,7 +73,9 @@ CONCERN = {"name": "concern", "fields": [
     {"name": "remedy_ticks_left", "type": "integer", "default": 0},
     {"name": "times_resolved", "type": "integer", "default": 0},
     {"name": "times_reopened", "type": "integer", "default": 0},
-    {"name": "times_raised", "type": "integer", "default": 0}]}
+    {"name": "times_raised", "type": "integer", "default": 0},
+    {"name": "times_reviewed", "type": "integer", "default": 0},
+    {"name": "decision_id", "type": "entity_ref", "default": "placeholder"}]}
 GROUP_DECISION = {"name": "group_decision", "fields": [
     {"name": "question", "type": "string", "default": "decision"},
     {"name": "status", "type": "string", "default": "open"},  # open | authorized (deploying) | deployed | suspended | rejected
@@ -85,6 +87,7 @@ GROUP_DECISION = {"name": "group_decision", "fields": [
     {"name": "postpone_ticks", "type": "integer", "default": 1},
     {"name": "deadline_id", "type": "entity_ref", "default": "placeholder"},
     {"name": "deploy_ticks_left", "type": "integer", "default": 0},
+    {"name": "review_ticks_left", "type": "integer", "default": 0},  # rounds to the next operating review (deployed)
     # Matters people have put before the decision and not yet settled: the one decision field generated rules write
     # (add 1 to raise a matter at a meeting, subtract 1 to settle one). 2026-10-16 deploy10/11: with every compiled
     # field read-only, all 8 generated moves only set their own done flag, so discussing at meetings did nothing.
@@ -120,6 +123,12 @@ MIN_DECISION_TICKS = 1 + 3 * REMEDY_TICKS + 1
 # decision deploys over this many rounds; a round passes only while no decider's support is conditional, and full
 # support falling below the threshold withdraws the authorization until the deadline comes round again.
 DEPLOY_TICKS = 6
+# A decision in effect is operated and reviewed: every REVIEW_TICKS rounds an operating review examines each resolved
+# concern again and opens it until someone answers it. 2026-10-18 live Waltzman run _q9oVz-QlJ3S (Concordia residents):
+# after deployment in round 20 every resident waited ("reopening a resolved concern without new evidence would not
+# serve my goal"), 1 real move in rounds 21-30. Generated rules cannot write concerns or the decision, so asking the
+# rule writer for a review (people_world LIVENESS_GUIDANCE 8) could not supply it.
+REVIEW_TICKS = 6
 RETABLE_TICKS = 6  # rounds from bringing a rejected decision back to deciding it again
 
 _SUPPORT_SEL = {"categories": ["support"], "components": ["support"]}
@@ -349,7 +358,8 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
              "selector": sel, "checks": [deploying, no_wait, enough,
                                          _check("deployment is in its last round", it("deploy_ticks_left"), "lte", 1)],
              "effects": [_effect("it", "components.group_decision.status", "set", "deployed"),
-                         _effect("it", "components.group_decision.deploy_ticks_left", "set", 0)]},
+                         _effect("it", "components.group_decision.deploy_ticks_left", "set", 0),
+                         _effect("it", "components.group_decision.review_ticks_left", "set", REVIEW_TICKS)]},
             {"process_id": "deployment-suspended",
              "rationale": "A deployed decision whose full support falls below the threshold is suspended.",
              "selector": sel, "checks": [_check("the decision is deployed", it("status"), "eq", "deployed"),
@@ -366,6 +376,30 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
              "selector": sel, "checks": [deploying, no_wait, enough,
                                          _check("deployment has rounds to go", it("deploy_ticks_left"), "gt", 1)],
              "effects": [_effect("it", "components.group_decision.deploy_ticks_left", "subtract", 1)]},
+        ]
+        # The operating review, in this order within a tick: the countdown, then the review reads the decision and
+        # examines concerns, then the next review is scheduled (so all of a decision's concerns see the same review).
+        in_effect = _check("the decision is in effect", it("status"), "eq", "deployed")
+        review_now = lambda r: _check("an operating review is held now", r("review_ticks_left"), "eq", 1)  # noqa: E731
+        reviewed = lambda path: _ref("decision", f"components.group_decision.{path}")  # noqa: E731
+        processes += [
+            {"process_id": "operating-review-nears", "rationale": "The next operating review of the decision in effect "
+             "comes one round closer.", "selector": sel,
+             "checks": [in_effect, _check("the review is still ahead", it("review_ticks_left"), "gt", 1)],
+             "effects": [_effect("it", "components.group_decision.review_ticks_left", "subtract", 1)]},
+            {"process_id": "operating-review-reexamines-concern",
+             "rationale": "An operating review examines a resolved concern again against what running the decision has "
+                          "shown; it is open again until its holder or the person it reached answers it.",
+             "selector": concern_sel,
+             "participants": {"decision": {"link": "ref:concern.decision_id", "selector": _DECISION_SEL}},
+             "checks": [_check("the concern is resolved", concern_it("status"), "eq", "resolved"),
+                        _check("the decision is in effect", reviewed("status"), "eq", "deployed"), review_now(reviewed)],
+             "effects": [_effect("it", "components.concern.status", "set", "open"),
+                         _effect("it", "components.concern.times_reviewed", "add", 1)]},
+            {"process_id": "operating-review-held",
+             "rationale": f"An operating review of the decision in effect is held; the next is {REVIEW_TICKS} rounds on.",
+             "selector": sel, "checks": [in_effect, review_now(it)],
+             "effects": [_effect("it", "components.group_decision.review_ticks_left", "set", REVIEW_TICKS)]},
         ]
     return actions, mechanics, processes
 
@@ -558,7 +592,8 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                 recipient = next(x for x in entities if x["id"] == f"delivery-{e['id']}")["components"]["delivery"][
                     "recipient_id"]
                 e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0, "times_raised": 0,
-                                              "times_reopened": 0}
+                                              "times_reopened": 0, "times_reviewed": 0,
+                                              "decision_id": _eid(d.decision_id)}
         starting = set(d.supporters_at_start)
         for pid in dict.fromkeys(d.decider_ids):
             entities.append({"id": f"support-{_eid(pid)}", "label": f"Support of {pid}", "categories": ["support"],
@@ -573,7 +608,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                              "max_postponements": 0 if d.if_short_at_deadline == "reject" else d.max_postponements,
                              "postpone_ticks": d.postpone_ticks,
                              "deadline_id": _eid(d.deadline_moment_id) if d.deadline_moment_id else _eid(d.decision_id),
-                             "deploy_ticks_left": 0}}})
+                             "deploy_ticks_left": 0, "review_ticks_left": 0}}})
         if d.deadline_moment_id:  # see MIN_DECISION_TICKS
             for e in entities:
                 mo = e["components"].get("moment")
