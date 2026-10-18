@@ -39,9 +39,12 @@ LENSES: dict[str, dict[str, Any]] = {
 }
 
 
-def _short(value: Any) -> str:
+def _short(value: Any, limit: int = 160) -> str:
+    """A value as the trace has it; only a very long one (a list or record) is cut. 2026-10-18 live Waltzman
+    WtCqXpKjI3Bs: a 40-character cut clipped entity ids ("info-logistics-backup-power-concern-t..."), so a reader
+    could not find the claimed change in the trace."""
     text = value if isinstance(value, str) else json.dumps(value, separators=(",", ":"), default=str)
-    return text if len(text) <= 40 else text[:37] + "..."
+    return text if len(text) <= limit else text[: limit - 3] + "..."
 
 
 def _change_text(changes: list[dict[str, Any]], limit: int = 400) -> str:
