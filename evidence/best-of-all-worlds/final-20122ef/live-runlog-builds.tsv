@@ -1,0 +1,36 @@
+#keys ['allowance', 'client', 'cost_usd', 'job_id', 'path', 'request', 'result', 'status', 'trace_id', 'trace_ids', 'ts', 'who']
+2026-10-17T00:30:49Z	/generate-world	200	visitor	None	world-builder-live/people/3e8fca747b7d4e90b126f3cfd58a41b9	0.050840830000000004	
+2026-10-17T00:38:22Z	/readout	200	visitor	None	world-builder-live/readout/29840ad4f5ce4601b828081b08b59d20	0.0036882	
+2026-10-17T00:44:29Z	/generate-world	200	visitor	None	world-builder-live/people/ac3fe5e7b40146e2a07f1a3aa0e8a9d7	0.05470796	
+2026-10-17T00:50:14Z	/readout	200	visitor	None	world-builder-live/readout/1cdf8ddd860e4f179d44bbb332cf8997	0.0025142	
+2026-10-18T21:58:19Z	/generate-world	200	visitor	None	world-builder-live/people/a6d4c6267d7c433e903fafb4578ec2c4	0.060342330000000007	
+2026-10-18T22:02:26Z	/readout	200	visitor	None	world-builder-live/readout/629e9a47a621472c9f59d9a5e4438584	0.0024449	
+2026-10-18T22:03:58Z	/generate-world	200	visitor	None	world-builder-live/world/751de7a470634bedbeea46158d179826	0.009730800000000001	
+2026-10-18T22:05:26Z	/readout	200	visitor	None	world-builder-live/readout/49aeaffc283248779d3c131dd33deedf	0.0017336	
+2026-10-18T22:14:19Z	/generate-world	200	visitor	None	world-builder-live/people/45b3fae5eb344457a66302df334f9706	0.05070894	
+2026-10-18T22:18:14Z	/readout	200	visitor	None	world-builder-live/readout/a9a1ff06767342a69014674e1611f0ce	0.002095	
+2026-10-18T22:19:33Z	/generate-world	200	visitor	None	world-builder-live/world/7520de1a079a40bbaf65bf31316e6b06	0.010332299999999999	
+2026-10-18T22:21:03Z	/readout	200	visitor	None	world-builder-live/readout/4ef728aba0c242228f9dfcd8534fc492	0.0021002	
+2026-10-18T22:26:40Z	/generate-world	200	visitor	None	world-builder-live/people/7d492bc70cec49c691e6d255f6d84275	0.05875253999999999	
+2026-10-18T22:31:40Z	/readout	200	visitor	None	world-builder-live/readout/22872ce307c74dfabc4ff36dda6a6059	0.0029427	
+2026-10-18T22:45:51Z	/generate-world	200	visitor	None	world-builder-live/world/55c54dc84b8841c4928f132d6106cdc6	0.013191274999999999	
+2026-10-18T22:47:22Z	/readout	200	visitor	None	world-builder-live/readout/ff248b04126e4397977d38b701336198	0.0011723	
+2026-10-18T22:54:39Z	/generate-world	200	visitor	None	world-builder-live/people/6a45a755bdc94e1e8c80dc934e05f81a	0.05579334	
+2026-10-18T23:00:44Z	/readout	200	visitor	None	world-builder-live/readout/cf136ed72ed34d159de6b38b558ee4df	0.0037113	
+2026-10-18T23:10:22Z	/generate-world	200	visitor	None	world-builder-live/people/3a438b55d923471595ba1bf5873445e1	0.056485759999999996	
+2026-10-18T23:11:56Z	/generate-world	200	visitor	None	world-builder-live/world/d53aa911dcdb47b4b4f3469cca1defa9	0.011785025000000001	
+2026-10-18T23:13:38Z	/generate-world	200	visitor	None	world-builder-live/people/6cd372b0cd8045c78267d81af091cf0c	0.05122874000000001	
+2026-10-18T23:14:26Z	/generate-world	200	visitor	None	world-builder-live/world/041a992be4ed4b9895c64672f6346cda	0.0055301	
+2026-10-18T23:15:40Z	/readout	200	visitor	None	world-builder-live/readout/a4f82d0aa3844ab19c2735ed64d6db94	0.0016816	
+2026-10-18T23:22:05Z	/readout	200	visitor	None	world-builder-live/readout/7362ecf307b14d6a9c75b95025da5d71	0.0034943	
+2026-10-18T23:28:39Z	/generate-world	200	visitor	None	world-builder-live/people/7968db0d0c174da2a4ec7144c4f1008c	0.046774760000000005	
+2026-10-18T23:30:16Z	/generate-world	200	visitor	None	world-builder-live/world/aedeff32fa7841c68e8aa0f5d877803c	0.012713324999999998	
+2026-10-18T23:31:29Z	/readout	200	visitor	None	world-builder-live/readout/c83a8923928843589f4fee1163da9017	0.0008413	
+2026-10-18T23:39:29Z	/readout	200	visitor	None	world-builder-live/readout/ac95ceef12474fc786145a54e39f56aa	0.0038445	
+2026-10-18T23:54:52Z	/generate-world	200	visitor	None	world-builder-live/world/9ea3afb6dd32459faceec20b9df82924	0.0143807	
+2026-10-18T23:55:08Z	/generate-world	200	visitor	None	world-builder-live/people/bbbe71c8c8d44238a4e25acbe0251311	0.07788814999999999	
+2026-10-18T23:55:54Z	/readout	200	visitor	None	world-builder-live/readout/a2b98677051a416a94aaa7c487526093	0.0010438	
+2026-10-19T00:01:53Z	/readout	200	visitor	None	world-builder-live/readout/8c69ff87f871434289d112a9f0473414	0.0034273	
+2026-10-19T00:10:38Z	/generate-world	422	visitor	None	world-builder-live/world/3bac7221d2834482a14af883b9ff5e47		
+2026-10-19T00:10:39Z	/generate-world	200	visitor	None	world-builder-live/people/30dd8f5945294690b84997518fb8116a	0.05790334	
+#run calls {('visitor', 200): 601, ('visitor', 422): 6}

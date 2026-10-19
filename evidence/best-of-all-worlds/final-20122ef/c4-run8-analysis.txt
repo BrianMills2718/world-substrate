@@ -1,0 +1,7 @@
+share-CvkDNW9waHiG.json world-builder-live/world/9ea3afb6dd32459faceec20b9df82924 ongoing movers {'scripted-first-available': 26}
+rounds 1-10: 20 moves, 2 distinct {'place-order': 10, 'gather-timber': 10}
+rounds 11-20: 20 moves, 2 distinct {'place-order': 10, 'gather-timber': 10}
+rounds 21-30: 12 moves, 2 distinct {'place-order': 6, 'gather-timber': 6}
+dry run: {'idle_actors': ['carrier', 'lead-works', 'pencil-factory'], 'never_offered': ['extract-material', 'fill-order', 'make-lead', 'make-pencils', 'move-stock'], 'moves_at_end': ['gather-timber', 'place-order']}
+first event ids [(1, 'school-customers', 'r1-e00001'), (1, 'timber-yard', 'r1-e00003'), (2, 'school-customers', 'r2-e00001'), (2, 'timber-yard', 'r2-e00003'), (3, 'school-customers', 'r3-e00001')]
+world events {'timber-regrowth': 26, 'mined-material-regrowth': 26, 'metal-regrowth': 26, 'paint-regrowth': 26, 'school-demand': 26}

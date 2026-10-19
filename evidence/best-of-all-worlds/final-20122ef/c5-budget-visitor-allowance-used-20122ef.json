@@ -1,0 +1,20 @@
+{
+ "started": "2026-10-19T00:21:19.559Z",
+ "api": "test container wb-c5-budget via 127.0.0.1:18814",
+ "phases": {
+  "visitor-allowance-used-20122ef": {
+   "owner": false,
+   "message": "",
+   "page_has_internal_error": false,
+   "calls": [
+    {
+     "at": "0.6",
+     "m": "GET",
+     "path": "/world-builder/api/health",
+     "status": 200,
+     "body": "{\"ok\":true,\"service\":\"world-builder\",\"build_commit\":\"20122ef72ade6b2bbbe4c0430dad003527676210\",\"owner\":false,\"llm_daily_budget_usd\":3.0,\"llm_daily_committed_usd\":3.0}"
+    }
+   ]
+  }
+ }
+}

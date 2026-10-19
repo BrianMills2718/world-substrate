@@ -1,0 +1,7 @@
+share-xNX6oCJNzwxK.json world-builder-live/world/299ad248382d414ba7b65867475a002f ongoing movers {'scripted-first-available': 26}
+rounds 1-10: 47 moves, 5 distinct {'cut-timber': 10, 'mine-graphite': 10, 'make-cores': 9, 'assemble-pencils': 9, 'mill-slats': 9}
+rounds 11-20: 50 moves, 5 distinct {'make-cores': 10, 'cut-timber': 10, 'mine-graphite': 10, 'assemble-pencils': 10, 'mill-slats': 10}
+rounds 21-30: 30 moves, 5 distinct {'make-cores': 6, 'cut-timber': 6, 'mine-graphite': 6, 'assemble-pencils': 6, 'mill-slats': 6}
+dry run: {'idle_actors': ['pencil-carrier', 'school-customer', 'shopkeeper'], 'never_offered': ['deliver-pencils', 'sell-pencils'], 'moves_at_end': ['assemble-pencils', 'cut-timber', 'make-cores', 'mill-slats', 'mine-graphite']}
+first event ids [(1, 'forest-cutter', 'r1-e00001'), (1, 'graphite-miner', 'r1-e00003'), (2, 'core-maker', 'r2-e00001'), (2, 'forest-cutter', 'r2-e00003'), (2, 'graphite-miner', 'r2-e00005')]
+world events {'recurring-orders': 26, 'renewable-production-inputs': 26, 'renewable-core-input': 26, 'renewable-assembly-inputs': 26}

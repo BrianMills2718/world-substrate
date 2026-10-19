@@ -105,7 +105,25 @@ came back, came back unused, or the expectation was wrong.
   `LLM_CLIENT_TIMEOUT_POLICY=ban` (#158).
 - The shared AI lock: a build blocks other visitors' AI rounds while it runs; fix only if it blocks C1.
 
-## Current state (2026-10-17)
+## Current state (2026-10-19)
+
+- C1-C6 pass on the live site at one commit, `20122ef` (live page and backend confirmed by the deploy script). Every run
+  of the final increment, with trace ids, is in
+  [evidence/best-of-all-worlds/RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) ("Final increment live runs"); logs and
+  analyses in [evidence/best-of-all-worlds/final-20122ef/](../../evidence/best-of-all-worlds/final-20122ef/).
+- C1-C3: Waltzman run c1r13, share `iHoA-8UItGra`: round 1 at 112 s, all ten people act in round 1, 11-14 distinct moves
+  in every 10-round window over 45 rounds, four concerns delivered on four separate channels, concerns resolved, support
+  made conditional and restored, decision status changed 9 times by rule events only, readout 4/4 mechanisms with event
+  ids (53/53 claimed changes match the trace), share replays 45/45 rounds with no AI call.
+- C4: pencil run c4-run10, share `xNX6oCJNzwxK`: things world, 26 rounds, 5 distinct moves every window. Open gap (#179):
+  delivering and selling pencils never become possible, so 3 of 8 actors stay idle.
+- C5: forced rules rejection (c4-run10) and forced visitor and owner budget stops (test container on the live image) each
+  show a plain message.
+- Fixes this increment: #177 agenda meets while the decision is in effect, #178 readout shows whole values, #180 AI jobs
+  run at once with one locked budget ledger (round 1 went from ~220 s to 112 s), #181 owner budget message, #182 up to
+  four guided rules attempts for things worlds, #183 a dry run that selects no actor guides the next rewrite.
+
+## Previous state (2026-10-17)
 
 - C1-C6 checked on the live site, every run listed with trace ids in
   [evidence/best-of-all-worlds/RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) (raw browser logs and share records

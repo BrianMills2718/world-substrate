@@ -1,0 +1,34 @@
+{
+ "started": "2026-10-19T00:25:05.018Z",
+ "api": "test container wb-c5-budget via 127.0.0.1:18814",
+ "phases": {
+  "owner-allowance-0.0001-20122ef": {
+   "owner": true,
+   "message": "Your owner AI allowance for today is used up; it resets at midnight UTC. You can still watch an example run. Your owner AI allowance for today is used up; it resets at midnight UTC. You can still watch an example run.",
+   "page_has_internal_error": false,
+   "calls": [
+    {
+     "at": "0.6",
+     "m": "GET",
+     "path": "/world-builder/api/health",
+     "status": 200,
+     "body": "{\"ok\":true,\"service\":\"world-builder\",\"build_commit\":\"20122ef72ade6b2bbbe4c0430dad003527676210\",\"owner\":true,\"owner_daily_budget_usd\":0.0001,\"owner_daily_committed_usd\":0.0,\"llm_daily_budget_usd\":3.0,\"llm_daily_committed_usd\":3.0}"
+    },
+    {
+     "at": "1.4",
+     "m": "POST",
+     "path": "/world-builder/api/generate-world",
+     "status": 202,
+     "body": "{\"ok\":true,\"status\":\"running\",\"job_id\":\"d1e7601935d54ba490ee29f3b1b27531\"}"
+    },
+    {
+     "at": "2.7",
+     "m": "GET",
+     "path": "/world-builder/api/jobs/d1e7601935d54ba490ee29f3b1b27531",
+     "status": 429,
+     "body": "{\"ok\":false,\"error\":\"daily World Builder LLM budget reached ($0.000/$0.00)\"}"
+    }
+   ]
+  }
+ }
+}
