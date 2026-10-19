@@ -1,0 +1,10 @@
+('r8-e00010', 'decision-authorized-at-deadline', 'world', 'open', 'authorized')
+('r14-e00008', 'deployment-completes', 'world', 'authorized', 'deployed')
+('r15-e00011', 'deployment-suspended', 'world', 'deployed', 'suspended')
+('r20-e00007', 'deployment-resumes', 'world', 'suspended', 'deployed')
+('r23-e00009', 'deployment-suspended', 'world', 'deployed', 'suspended')
+('r26-e00009', 'deployment-resumes', 'world', 'suspended', 'deployed')
+('r33-e00018', 'deployment-suspended', 'world', 'deployed', 'suspended')
+('r41-e00017', 'deployment-resumes', 'world', 'suspended', 'deployed')
+('r45-e00016', 'deployment-suspended', 'world', 'deployed', 'suspended')
+status changes: 9 by people: 0

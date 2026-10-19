@@ -1,0 +1,21 @@
+[2.5s] pressing Create simulation
+[3.1s] step: Sending your description… 0 s
+[5.1s] step: Reading your description… 1.8 s
+[22.4s] step: ! Left out of the simulation The geographic locations and distances between suppliers, workshops, and the sho Money, prices, and business costs Specific pencil 
+[22.4s] step: Writing the rules… 17.3 s
+[42.8s] step: ✓ Test run: nobody could act from the starting state 39.3 s
+[42.8s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 39.3 s
+[61.8s] step: Test-running the rules with simple moves… 57.5 s
+[62.8s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 58.8 s
+[95.2s] notice: causal model selects no actors in this world
+[95.2s] run stage visible
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForTimeout: Target page, context or browser has been closed
+    at /home/brian/code/.scratch/waltzman-demo/c4/c4live.mjs:41:11 {
+  log: []
+}
+
+Node.js v24.16.0

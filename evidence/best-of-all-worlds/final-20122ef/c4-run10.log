@@ -1,0 +1,44 @@
+[2.1s] pressing Create simulation
+[2.4s] step: Sending your description… 0 s
+[8.4s] step: Reading your description… 3.4 s
+[24.7s] step: ! Left out of the simulation Transport distances and travel time Prices, money, and payment Timber and graphite availability limits Pencil quality and product v
+[24.7s] step: Writing the rules… 20.1 s
+[58.8s] step: ✓ Test run: 48 moves in 24 rounds; still busy at the end; never possible: assemble pencils, deliver pencils, make cores, mill slats, sell pencils 55.2 s
+[58.8s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 55.2 s
+[80.8s] step: Test-running the rules with simple moves… 75.3 s
+[81.9s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 77 s
+[98.0s] step: Test-running the rules with simple moves… 94.9 s
+[103.8s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 97.8 s
+[140.3s] round 1: forest-cutter=cut-timber, graphite-miner=mine-graphite
+[140.7s] run stage visible
+[142.3s] round 2: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[144.0s] round 3: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[145.9s] round 4: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[147.6s] round 5: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[149.3s] round 6: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[151.1s] round 7: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[152.8s] round 8: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[154.6s] round 9: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[156.5s] round 10: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[158.6s] round 11: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[160.3s] round 12: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[162.1s] round 13: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[163.8s] round 14: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[167.3s] round 15: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[169.1s] round 16: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[170.9s] round 17: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[172.6s] round 18: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[174.4s] round 19: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[176.2s] round 20: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[177.9s] round 21: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[179.7s] round 22: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[181.4s] round 23: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[183.3s] round 24: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[185.1s] round 25: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[187.0s] round 26: core-maker=make-cores, forest-cutter=cut-timber, graphite-miner=mine-graphite, pencil-assembler=assemble-pencils, sawmill-worker=mill-slats
+[225.9s] readout 200
+[230.2s] share {"ok":true,"share_id":"xNX6oCJNzwxK","rounds":26}
+[230.9s] tampered /run: cut-timber
+[232.0s] C5 page message: Paused: These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example.
+[232.0s] saved c4-run10.json
+exit=0

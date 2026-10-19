@@ -1,0 +1,12 @@
+[9.0s] pressing Create simulation
+[9.2s] step: Sending your description… 0 s
+[17.1s] step: Working out who is involved and what each of them wants… 5.4 s
+[44.6s] step: ✓ Found what is known and when things happen · 4 pieces of information, 2 scheduled moments weekly partnership meeting activation decision deadline One particip
+[44.6s] step: Working out what each person can try to do… 33.7 s
+[61.5s] step: Writing the rules for what those attempts cause… · this is the longest step 49.7 s
+[95.6s] step: Test-running the rules with simple moves… 84 s
+[115.5s] run stage visible
+[575.3s] readout 200
+[577.7s] share {"ok":true,"share_id":"iHoA-8UItGra","rounds":45}
+[578.4s] saved c1r-run13.json
+exit=0
