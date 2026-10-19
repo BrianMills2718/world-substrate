@@ -28,6 +28,12 @@ class GenerateWorldBundleTests(unittest.TestCase):
         contract = json.loads(_messages("a pencil supply network", "ongoing")[1]["content"])["contract"]
         self.assertTrue(any("entity_ref field naming that other entity" in rule for rule in contract["rules"]))
 
+    def test_contract_asks_for_both_ends_when_the_actor_holds_neither(self):
+        # c4-run12: a sell action that named only the customer could never read the shop's pencils.
+        from scripts.generate_world_bundle import _messages
+        contract = json.loads(_messages("a pencil supply network", "ongoing")[1]["content"])["contract"]
+        self.assertTrue(any("neither is the actor" in rule for rule in contract["rules"]))
+
     def test_contract_examples_are_valid_field_names(self):
         # c4-run11: the rule's own example 'from' failed the identifier check on the first draft.
         import keyword, re
