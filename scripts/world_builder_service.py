@@ -75,8 +75,12 @@ def _ledger_path() -> Path:
 
 def _ledger_cap() -> float:
     return OWNER_DAILY_BUDGET if _is_owner() else DAILY_LLM_BUDGET
-# Description -> structure -> mechanics (+ at most one dry-run-guided mechanics retry).
+# Description -> structure -> mechanics (+ dry-run-guided mechanics retries).
 WORLD_BUDGET = 0.20
+# Rules attempts for a world of things: the first draft plus rewrites, each told what the last test run showed,
+# until a test run passes. #179, 2026-10-18 (pencil c4-run7/run8): one rewrite still left 5 of 7 moves never
+# possible and was accepted anyway; a rules call costs about $0.005, so four fit WORLD_BUDGET easily.
+RULES_ATTEMPTS = 4
 # A people world (scripts/people_world.py): one stronger-model call for the people, goals and information, one for
 # the rules, a small one for the attempts, at most one compiler- or test-run-guided rules retry. 2026-10-16 Waltzman
 # (inc14b): the first rules cost $0.71 of $0.80, so the retry that would have fixed 9 of 10 stalled people never ran;
@@ -1095,12 +1099,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 # Keep the best attempt: reaching the finish line beats merely
                 # allowing actions, which beats allowing nothing.
                 best: tuple[tuple[int, int], dict[str, Any], CausalModel, dict[str, Any]] | None = None
-                for attempt in range(2):
+                for attempt in range(RULES_ATTEMPTS):
                     if attempt == 0:
                         self._progress("doing", "Writing the rules")
                     else:
                         self._progress("doing", "Rewriting the rules with a stronger model",
-                                       "the first rules did not pass the test run")
+                                       "the last rules did not pass the test run")
                     try:
                         try:
                             generated, _ = generate_causal_model(
@@ -1134,7 +1138,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # ending the whole request.
                         attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})
                         self._progress("note", "Those rules did not fit together", str(error)[:160])
-                        if attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
+                        if attempt == RULES_ATTEMPTS - 1 or _trace_cost(trace_id) >= budget - 0.01:
                             if best is None:
                                 raise
                             break
@@ -1247,7 +1251,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     rank = (score, -len(set(result_row.get("idle_actors") or []) | set(result_row.get("stalled_actors") or [])))
                     if best is None or rank > best[0]:
                         best = (rank, candidate, candidate_compiled, result_row)
-                    if score >= (2 if world_kind == "task" else 3) or attempt == 1 or _trace_cost(trace_id) >= budget - 0.01:
+                    if score >= (2 if world_kind == "task" else 3) or attempt == RULES_ATTEMPTS - 1 or _trace_cost(trace_id) >= budget - 0.01:
                         break
                 assert best is not None
                 _, causal, compiled, best_row = best
