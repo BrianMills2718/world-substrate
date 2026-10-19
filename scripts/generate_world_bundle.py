@@ -70,9 +70,12 @@ def _contract() -> dict[str, Any]:
             # #179, 2026-10-19 (pencil c4-run10, trace world-builder-live/world/299ad248382d414ba7b65867475a002f):
             # deliver-pencils had only a quantity field, so its rules could change nobody but the carrier and
             # pencils never reached the shop, however often the rules were rewritten.
+            # 2026-10-19 c4-run11 (trace world-builder-live/world/98ca1f40...): naming 'from' as an example made the
+            # first draft fail validation ('from' is a Python keyword), costing one retry.
             "An action that passes something to, or takes something from, another entity (hand over, deliver, "
             "carry to, supply, sell to, buy from) must have an entity_ref field naming that other entity (for "
-            "example 'to', 'from' or 'customer'); rules can only change the actor and the entities its fields name.",
+            "example 'to', 'source' or 'customer'; field names are Python identifiers, so never 'from'); rules can "
+            "only change the actor and the entities its fields name.",
             "Labels and descriptions are plain English a visitor would use (\"Ava\", \"watering can\"), never internal jargon.",
             *SIZE_RULES,
         ],
