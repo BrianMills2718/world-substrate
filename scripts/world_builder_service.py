@@ -762,7 +762,14 @@ def _initial_refusals(bundle: dict[str, Any], causal: dict[str, Any], limit: int
     """Distinct 'action: failed checks' lines for every actor in the starting state."""
     engine, model, _ = build_engine(bundle, causal)
     seen: list[str] = []
-    for actor in actor_ids(engine, model):
+    try:
+        actors = actor_ids(engine, model)
+    except ValueError as error:
+        # 2026-10-19 live pencil build (trace world-builder-live/world/3bac7221d2834482a14af883b9ff5e47): the dry run
+        # failed with this same error, and raising it again here ended the build instead of guiding the next rewrite.
+        return [f"{error}: each mechanic's actor_selector must name categories and components that some entity in "
+                "the world actually has"]
+    for actor in actors:
         for row in engine.discover(actor)["blocked"]:
             line = f"{row['action'].get('kind')}: {row.get('reason', '')}"
             if line not in seen:

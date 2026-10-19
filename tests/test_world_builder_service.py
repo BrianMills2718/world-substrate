@@ -241,6 +241,21 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual([a["ok"] for a in payload["dry_run_attempts"]], [False, True])
         self.assertTrue(payload["dry_run"]["terminal_reached"])
 
+    def test_rules_that_select_no_actor_get_a_rewrite_not_an_error(self):
+        # 2026-10-19 live pencil build: the dry run said "selects no actors" and the guidance step raised it again.
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(CAUSAL, FakeResult()),
+        ) as mechanics, patch.object(
+            service, "run_world", side_effect=[ValueError("causal model selects no actors in this world"),
+                                               ({"summary": {"turns": 1, "terminal_reached": True, "accepted_actions": 1}}, None, None)],
+        ), patch.object(service, "actor_ids", side_effect=ValueError("causal model selects no actors in this world")):
+            status, payload = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 200, payload)
+        self.assertIn("actor_selector must name", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertTrue(payload["dry_run"]["terminal_reached"])
+
     def test_two_compiler_rejections_fail_with_the_reason(self):
         with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
             service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
