@@ -44,6 +44,23 @@ class GenerateWorldBundleTests(unittest.TestCase):
         for name in re.findall(r"'(\w+)'", examples):
             self.assertFalse(keyword.iskeyword(name), name)
 
+    def test_contract_asks_for_one_action_per_kind_of_goods(self):
+        # c4-run13: one carry-goods action with a text 'goods' field could only ever move boards.
+        from scripts.generate_world_bundle import _messages
+        contract = json.loads(_messages("a pencil supply network", "ongoing")[1]["content"])["contract"]
+        self.assertTrue(any("one action per kind of goods" in rule for rule in contract["rules"]))
+
+    def test_redesign_sends_the_previous_structure_and_the_test_run(self):
+        # #187: the structure is redesigned from what the test run showed, not only the rules.
+        module, call = fake_llm(json.dumps(ORCHARD))
+        with patch.dict(sys.modules, {"llm_client": module}):
+            generate_world_bundle("One worker picks a ripe apple.", trace_id="t", max_budget=0.01,
+                                  feedback="pick-apple was never possible for anyone.", previous={"world": {"id": "old"}})
+        messages = call.call_args.args[1]
+        self.assertEqual(messages[2], {"role": "assistant", "content": json.dumps({"world": {"id": "old"}})})
+        self.assertIn("pick-apple was never possible for anyone.", messages[3]["content"])
+        self.assertIn("cannot add actions or fields", messages[3]["content"])
+
     def test_valid_proposal_is_returned_validated(self):
         module, call = fake_llm(json.dumps(ORCHARD))
         with patch.dict(sys.modules, {"llm_client": module}):
