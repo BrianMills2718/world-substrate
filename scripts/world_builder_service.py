@@ -757,7 +757,7 @@ def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
         "to act regularly: make sure some actor's action brings what each one's action needs to where it is "
         "checked (for example, if a carrier must hold goods before delivering, give another actor an action "
         "that loads goods onto the carrier, or let the carrier pick them up itself). A process may renew raw "
-        "materials at their source or bring new demand, but never supply what an action makes."
+        "materials at their source or bring new demand, but never supply what an action makes or move goods between places."
     )
 
 
@@ -795,6 +795,28 @@ def _conjuring_processes(causal: dict[str, Any]) -> list[str]:
                 if not reach or not categories or reach & categories:
                     found.append(f"{process.get('process_id', '?')} adds {target} (made by {kind})")
                     break
+    return found
+
+
+def _moving_processes(causal: dict[str, Any]) -> list[str]:
+    """'process moves field from it to participant' for each process that carries goods between entities.
+
+    2026-10-20 c4-run16 (trace world-builder-live/world/cde24f8929724605bee600215b12e326): move-logs-to-sawmill and
+    four more processes passed every good down the chain each round, so the carrier sat idle and deliver-pencils
+    was never possible. Moving goods is an actor's work; a process may only change what it acts on.
+    """
+    def field(path: str) -> str:
+        return path.split(".", 1)[1] if path.startswith("components.") else path
+
+    found: list[str] = []
+    for process in causal.get("processes") or []:
+        effects = process.get("effects") or []
+        taken = {field(e["path"]) for e in effects if e.get("op") == "subtract" and e.get("participant") == "it"}
+        for effect in effects:
+            target = field(effect["path"])
+            if effect.get("op") == "add" and effect.get("participant") not in (None, "it") and target in taken:
+                found.append(f"{process.get('process_id', '?')} moves {target} to {effect['participant']}")
+                break
     return found
 
 
@@ -1264,7 +1286,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 # Best: alive with every actor still taking part, every move possible at some point and the
                                 # work moving; then alive; then not.
                                 conjuring_found = _conjuring_processes(candidate)
-                                score = (3 if not idle and not circling and not never and not conjuring_found else 2) if alive else 1
+                                moving_found = _moving_processes(candidate)
+                                score = (3 if not idle and not circling and not never and not conjuring_found
+                                         and not moving_found else 2) if alive else 1
                                 guidance = "" if alive else (
                                     f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                     f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -1302,7 +1326,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 result_row["stalled_actors"] = summary.get("stalled_actors") or []
                                 result_row["never_offered"] = sorted(never)
                                 result_row["circling"] = circling
+                                if moving_found:
+                                    guidance += (
+                                        " These processes carry goods from one place to another by themselves, so the "
+                                        "people meant to move them have nothing to do: " + "; ".join(moving_found) + ". "
+                                        "Remove those effects and let an actor's action do the moving."
+                                    )
                                 result_row["conjuring_processes"] = conjuring_found
+                                result_row["moving_processes"] = moving_found
                                 finishes = None
                             else:
                                 finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
@@ -1691,8 +1722,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         model = _requested_model(body)
 
         def call(trace_id: str, budget: float) -> tuple[dict[str, Any], Any]:
-            readout, result = read_run(record["rounds"], people=record["world"].get("people"), model=model,
-                                       trace_id=trace_id, max_budget=budget)
+            people = record["world"].get("people")
+            # #190: a things world has no people to coordinate, so it is read for how goods flowed.
+            readout, result = read_run(record["rounds"], people=people, model=model, trace_id=trace_id,
+                                       max_budget=budget, lens_id="coordination" if people else "flow")
             return {"readout": readout}, result
 
         self._dialogue_call(client, "readout", call, budget=READOUT_BUDGET)

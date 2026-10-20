@@ -484,6 +484,36 @@ class WorldBuilderServiceTests(unittest.TestCase):
                         "effects": [{"participant": "it", "path": "components.inventory.pencils", "op": "add"}]}
         self.assertEqual(service._conjuring_processes({"mechanics": [make], "processes": [shop_restock]}), [])
 
+    def test_moving_process_is_found(self):
+        # c4-run16 share M6CqmOQP-qt5: processes passed logs and pencils down the chain, so the carrier sat idle.
+        move = {"process_id": "move-logs-to-sawmill", "selector": {"categories": ["logger"]},
+                "effects": [{"participant": "it", "path": "components.stock.logs", "op": "subtract"},
+                            {"participant": "sawmill", "path": "components.stock.logs", "op": "add"}]}
+        regrow = {"process_id": "regrow", "selector": {"categories": ["forest"]},
+                  "effects": [{"participant": "it", "path": "components.stock.logs", "op": "add"}]}
+        use_up = {"process_id": "spoil", "selector": {"categories": ["shop"]},
+                  "effects": [{"participant": "it", "path": "components.stock.bread", "op": "subtract"},
+                              {"participant": "bin", "path": "components.stock.waste", "op": "add"}]}
+        self.assertEqual(service._moving_processes({"processes": [move, regrow, use_up]}),
+                         ["move-logs-to-sawmill moves stock.logs to sawmill"])
+
+    def test_moving_process_blocks_the_top_score(self):
+        alive = {"summary": {"turns": 24, "terminal_reached": False, "accepted_actions": 40, "active_at_end": True,
+                             "idle_actors": [], "never_offered": {}}, "transcript": []}
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(self._ongoing_causal(), FakeResult()),
+        ) as mechanics, patch.object(
+            service, "run_world", return_value=(alive, None, None),
+        ), patch.object(service, "_moving_processes", side_effect=[["carry moves stock.logs to mill"], []]):
+            status, payload = self.post("/generate-world", {"description": "pencils", "world_kind": "ongoing"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertIn("carry moves stock.logs to mill", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertEqual(payload["dry_run_attempts"][0]["moving_processes"], ["carry moves stock.logs to mill"])
+        self.assertEqual(payload["dry_run"]["moving_processes"], [])
+
     def test_conjuring_process_blocks_the_top_score(self):
         causal = self._ongoing_causal()
         causal = {**causal, "mechanics": causal["mechanics"], "processes": causal["processes"]}
@@ -750,22 +780,23 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(all(i.startswith("r") for i in every))
         real = run_readout.evidence_events(transcript)[0]["event_id"]
 
-        def fake_read(rounds, *, people, model, trace_id, max_budget):
+        def fake_read(rounds, *, people, model, trace_id, max_budget, lens_id):
             self.assertEqual(rounds, transcript)  # read from the server's own log, not the page
+            self.assertEqual(lens_id, "flow")  # #190: a things world is read for how goods moved
             parsed = {"summary": "Things happened.", "mechanisms": [
-                {"id": "separate-channels", "status": "present", "event_ids": [real, "e99999"], "explanation": "Yes."},
-                {"id": "slowed-meetings", "status": "present", "event_ids": ["e99999"], "explanation": "Invented."},
+                {"id": "goods-made", "status": "present", "event_ids": [real, "e99999"], "explanation": "Yes."},
+                {"id": "goods-handed-on", "status": "present", "event_ids": ["e99999"], "explanation": "Invented."},
             ]}
-            return run_readout.validate_readout("coordination", parsed, run_readout.evidence_events(rounds)), None
+            return run_readout.validate_readout(lens_id, parsed, run_readout.evidence_events(rounds)), None
 
         with patch.object(service, "_trace_cost", return_value=0.0), patch.object(run_readout, "read_run", fake_read):
             status, payload = self.post("/readout", {"build_trace_id": None, "run_trace_ids": ids})
         self.assertEqual(status, 200, payload)
         by_id = {m["id"]: m for m in payload["readout"]["mechanisms"]}
-        self.assertEqual(by_id["separate-channels"]["event_ids"], [real])
-        self.assertEqual(by_id["separate-channels"]["dropped_event_ids"], ["e99999"])
-        self.assertEqual(by_id["slowed-meetings"]["status"], "missing")  # no real event, so not present
-        self.assertEqual(by_id["reopened-issues"]["status"], "missing")
+        self.assertEqual(by_id["goods-made"]["event_ids"], [real])
+        self.assertEqual(by_id["goods-made"]["dropped_event_ids"], ["e99999"])
+        self.assertEqual(by_id["goods-handed-on"]["status"], "missing")  # no real event, so not present
+        self.assertEqual(by_id["demand-met"]["status"], "missing")
         with patch.object(service, "_trace_cost", side_effect=AssertionError("a share must not call the AI")):
             status, shared = self.post("/share", {"run_trace_ids": ids, "readout_trace_id": payload["trace_id"]})
             self.assertEqual(status, 200, shared)
