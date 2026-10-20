@@ -1,0 +1,44 @@
+[1.7s] pressing Create simulation
+[1.8s] step: Sending your description… 0 s
+[9.9s] step: Reading your description… 6.8 s
+[27.0s] step: ! Left out of the simulation Prices and money Distances and travel time Specific timber, graphite, and eraser processing stages Packaging and pencil variations 
+[27.0s] step: Writing the rules… 24.8 s
+[49.5s] step: Test-running the rules with simple moves… 46.3 s
+[50.5s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 47.3 s
+[68.6s] step: ✓ Test run: 72 moves in 24 rounds; still busy at the end; never possible: assemble pencils, carry pencils, make slats, sell pencils 65.8 s
+[68.6s] step: Redesigning what each one can do… · the test run showed steps that could never happen 65.8 s
+[89.8s] step: Writing the rules… 88.2 s
+[109.9s] step: Test-running the rules with simple moves… 108 s
+[120.8s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 117 s
+[141.0s] step: Test-running the rules with simple moves… 138.8 s
+[142.0s] run stage visible
+[142.2s] round 1: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[143.9s] round 2: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[145.7s] round 3: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[148.4s] round 4: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[150.2s] round 5: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[151.9s] round 6: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[153.7s] round 7: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[155.5s] round 8: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[157.2s] round 9: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[159.2s] round 10: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[161.0s] round 11: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[162.7s] round 12: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[164.5s] round 13: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[166.2s] round 14: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[168.0s] round 15: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[169.7s] round 16: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[171.5s] round 17: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[173.2s] round 18: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[175.0s] round 19: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[176.8s] round 20: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[178.5s] round 21: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[181.3s] round 22: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[183.0s] round 23: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[185.0s] round 24: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[186.8s] round 25: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[188.6s] round 26: carrier=carry-pencils, eraser-works=make-erasers, forest-crew=harvest-logs, graphite-mine=supply-graphite, pencil-factory=assemble-pencils, pencil-shop=sell-pencils, sawmill=make-slats
+[200.0s] readout 200
+[202.6s] share {"ok":true,"share_id":"4p5LQlDRNbdf","rounds":26}
+[203.3s] saved c4-run15.json
+exit=0
