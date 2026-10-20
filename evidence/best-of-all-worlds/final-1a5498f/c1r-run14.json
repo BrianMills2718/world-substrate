@@ -1,0 +1,299 @@
+{
+ "started": "2026-10-19T00:39:20.206Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.4",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "7.5",
+   "text": "Working out who is involved and what each of them wants…\n5.7 s"
+  },
+  {
+   "at": "32.4",
+   "text": "✓\nFound what is known and when things happen · 4 pieces of information, 2 scheduled moments\nweekly member meeting\nactivation deadline\nThe northern-border sensor feed has a 20-minute reporting lag during low-bandwid\nThe current draft retention clause does not specify a deletion interval for cros\nThe southern clinic's backup-power test supports six hours of continuous operati\nAt the latest border-district outreach session, residents were not told which ag\n29.6 s"
+  },
+  {
+   "at": "32.4",
+   "text": "Working out what each person can try to do…\n29.6 s"
+  },
+  {
+   "at": "47.3",
+   "text": "Writing the rules for what those attempts cause… · this is the longest step\n43 s"
+  },
+  {
+   "at": "92.5",
+   "text": "Test-running the rules with simple moves…\n88.9 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "100.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "106.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "116.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "132.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "136.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "146.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "150.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "157.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "162.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "166.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "170.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "178.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "181.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "185.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "189.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "207.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "218.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "233.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "239.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "243.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "248.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "261.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "272.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "287.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "291.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "301.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "305.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "309.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "321.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "324.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "328.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "334.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "344.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "348.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "367.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "371.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "378.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "382.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "395.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "412.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "431.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "443.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "453.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "459.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "465.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "479.6",
+   "status": 202,
+   "all": {}
+  }
+ ],
+ "rounds": [],
+ "readout": {
+  "at": "492.5",
+  "status": 503,
+  "body": {
+   "ok": false,
+   "error": "The AI service behind the World Builder is busy. Try again in a minute."
+  }
+ },
+ "share": {
+  "at": "495.2",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "Y0aGlhKKUiPk",
+   "rounds": 45
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/run/b0e719edadb74eefa7f4c49e6839466a",
+  "cost_usd": 0.0040709
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "f365d6b32082fcb5a49e306ab90207dfe8374992",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 0,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0.5460291449999997
+ },
+ "pressed_at": "1.4",
+ "run_stage_at": "100.6",
+ "readout_text": "The AI service behind the World Builder is busy. Try again in a minute.",
+ "outcome": "Round 45 · 118 allowed · 38 refused · 450 held back by the rules · 224 by itself",
+ "finished": "2026-10-19T00:47:35.861Z"
+}

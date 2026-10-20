@@ -1,0 +1,582 @@
+{
+ "started": "2026-10-20T17:11:35.910Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.6",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "8.7",
+   "text": "Working out who is involved and what each of them wants…\n5.6 s"
+  },
+  {
+   "at": "67.9",
+   "text": "✓\nFound what is known and when things happen · 4 pieces of information, 2 scheduled moments\nregular member meeting\nactivation deadline\nA sensor feed at one participating border site has intermittent gaps during sche\nThe draft operating rules do not specify how long one category of shared surveil\nOne participating crossing does not yet have a confirmed trained operator for ev\nThe current draft alert is not available in two languages used by communities ne\n65 s"
+  },
+  {
+   "at": "67.9",
+   "text": "Working out what each person can try to do…\n65 s"
+  },
+  {
+   "at": "83.0",
+   "text": "Writing the rules for what those attempts cause… · this is the longest step\n80.7 s"
+  },
+  {
+   "at": "125.2",
+   "text": "Test-running the rules with simple moves…\n121.8 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "133.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "141.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "158.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "178.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "183.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "196.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "203.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "208.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "215.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "223.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "237.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "241.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "246.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "260.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "263.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "270.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "275.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "283.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "300.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "317.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "331.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "339.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "347.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "376.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "391.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "434.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "446.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "456.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "474.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "486.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "503.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "508.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "538.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "543.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "547.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "557.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "563.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "569.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "586.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "596.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "605.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "632.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "643.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "649.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "656.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "668.8",
+   "status": 202,
+   "all": {}
+  }
+ ],
+ "rounds": [],
+ "readout": {
+  "at": "685.4",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "Country One, Country Two, and Country Three raised concerns about sensor coverage, legal responsibility, and staffing, while community and technical groups raised other local issues through separate channels. The partnership authorized and deployed the warning system, but recurring concerns, conditional support, agenda churn, and extended reviews slowed coordination; the system was later suspended and then resumed, while concerns were raised and reopened again.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "present",
+      "event_ids": [
+       "r1-e00001",
+       "r1-e00013",
+       "r1-e00015",
+       "r1-e00019",
+       "r2-e00016"
+      ],
+      "events": [
+       {
+        "event_id": "r1-e00001",
+        "round": 1,
+        "by": "community-group",
+        "move": "communicate",
+        "changed": "entities.country-four.components.member.aware: false -> true; entities.delivery-info-alert-language-gap-to-country-four.components.delivery.status: pending -> delivered; entities.info-alert-language-gap-to-country-four.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00013",
+        "round": 1,
+        "by": "legal-group",
+        "move": "communicate",
+        "changed": "entities.country-two.components.member.aware: false -> true; entities.delivery-info-legal-retention-question-to-country-two.components.delivery.status: pending -> delivered; entities.info-legal-retention-question-to-country-two.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00015",
+        "round": 1,
+        "by": "logistics-group",
+        "move": "communicate",
+        "changed": "entities.country-three.components.member.aware: false -> true; entities.delivery-info-local-staffing-gap-to-country-three.components.delivery.status: pending -> delivered; entities.info-local-staffing-gap-to-country-three.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00019",
+        "round": 1,
+        "by": "technical-group",
+        "move": "communicate",
+        "changed": "entities.delivery-info-technical-feed-gap-to-regional-health-network.components.delivery.status: pending -> delivered; entities.info-technical-feed-gap-to-regional-health-network.components.information.active: false -> true; entities.regional-health-network.components.member.aware: false -> true"
+       },
+       {
+        "event_id": "r2-e00016",
+        "round": 2,
+        "by": "technical-group",
+        "move": "communicate",
+        "changed": "entities.country-one.components.member.aware: false -> true; entities.delivery-info-technical-feed-gap-to-country-one.components.delivery.status: pending -> delivered; entities.info-technical-feed-gap-to-country-one.components.information.active: false -> true"
+       }
+      ],
+      "explanation": "Community Group informed Country Four about alert language, Legal Group informed Country Two about data retention, and Logistics Group informed Country Three about staffing. Technical Group separately informed the Regional Health Network and Country One about feed reliability.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "present",
+      "event_ids": [
+       "r5-e00005",
+       "r8-e00010",
+       "r16-e00005",
+       "r20-e00011",
+       "r20-e00012",
+       "r25-e00016",
+       "r25-e00017",
+       "r26-e00019"
+      ],
+      "events": [
+       {
+        "event_id": "r5-e00005",
+        "round": 5,
+        "by": "country-three",
+        "move": "make-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-three.components.support.condition_id: country-three -> info-local-staffing-gap-to-country-three; entities.support-country-three.components.support.stance: full -> conditional"
+       },
+       {
+        "event_id": "r8-e00010",
+        "round": 8,
+        "by": "the world (a rule)",
+        "move": "decision-authorized-at-deadline",
+        "changed": "entities.activate-early-warning-system.components.group_decision.deploy_ticks_left: 0 -> 6; entities.activate-early-warning-system.components.group_decision.status: open -> authorized"
+       },
+       {
+        "event_id": "r16-e00005",
+        "round": 16,
+        "by": "the world (a rule)",
+        "move": "deployment-completes",
+        "changed": "entities.activate-early-warning-system.components.group_decision.deploy_ticks_left: 1 -> 0; entities.activate-early-warning-system.components.group_decision.review_ticks_left: 0 -> 6; entities.activate-early-warning-system.components.group_decision.status: authorized -> deployed"
+       },
+       {
+        "event_id": "r20-e00011",
+        "round": 20,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-alert-language-gap-to-country-four.components.concern.status: resolved -> open; entities.info-alert-language-gap-to-country-four.components.concern.times_reviewed: 0 -> 1; entities.info-legal-retention-question-to-country-two.components.concern.status: resolved -> open; entities.info-legal-retention-question-to-country-two.components.concern.times_reviewed: 0 -> 1; and 6 more changes"
+       },
+       {
+        "event_id": "r20-e00012",
+        "round": 20,
+        "by": "the world (a rule)",
+        "move": "operating-review-held",
+        "changed": "entities.activate-early-warning-system.components.group_decision.review_ticks_left: 1 -> 6"
+       },
+       {
+        "event_id": "r25-e00016",
+        "round": 25,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-alert-language-gap-to-country-four.components.concern.status: resolved -> open; entities.info-alert-language-gap-to-country-four.components.concern.times_reviewed: 1 -> 2; entities.info-legal-retention-question-to-country-two.components.concern.status: resolved -> open; entities.info-legal-retention-question-to-country-two.components.concern.times_reviewed: 1 -> 2; and 4 more changes"
+       },
+       {
+        "event_id": "r25-e00017",
+        "round": 25,
+        "by": "the world (a rule)",
+        "move": "operating-review-held",
+        "changed": "entities.activate-early-warning-system.components.group_decision.review_ticks_left: 1 -> 6"
+       },
+       {
+        "event_id": "r26-e00019",
+        "round": 26,
+        "by": "the world (a rule)",
+        "move": "deployment-suspended",
+        "changed": "entities.activate-early-warning-system.components.group_decision.status: deployed -> suspended"
+       }
+      ],
+      "explanation": "Country Three made support conditional over staffing, and the decision was authorized at the deadline before deployment. Reviews later reexamined concerns and reset their review time, and the system was suspended.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "present",
+      "event_ids": [
+       "r4-e00003",
+       "r7-e00009",
+       "r20-e00011",
+       "r25-e00016",
+       "r33-e00001",
+       "r37-e00003",
+       "r43-e00001",
+       "r43-e00005"
+      ],
+      "events": [
+       {
+        "event_id": "r4-e00003",
+        "round": 4,
+        "by": "logistics-group",
+        "move": "raise-new-concern",
+        "changed": "entities.info-local-staffing-gap-to-country-three.components.concern.status: resolved -> open; entities.info-local-staffing-gap-to-country-three.components.concern.times_raised: 0 -> 1; entities.logistics-group.components.work.raise_new_concern_done: false -> true"
+       },
+       {
+        "event_id": "r7-e00009",
+        "round": 7,
+        "by": "logistics-group",
+        "move": "raise-new-concern",
+        "changed": "entities.info-local-staffing-gap-to-country-three.components.concern.status: resolved -> open; entities.info-local-staffing-gap-to-country-three.components.concern.times_raised: 1 -> 2; entities.logistics-group.components.work.raise_new_concern_done: false -> true"
+       },
+       {
+        "event_id": "r20-e00011",
+        "round": 20,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-alert-language-gap-to-country-four.components.concern.status: resolved -> open; entities.info-alert-language-gap-to-country-four.components.concern.times_reviewed: 0 -> 1; entities.info-legal-retention-question-to-country-two.components.concern.status: resolved -> open; entities.info-legal-retention-question-to-country-two.components.concern.times_reviewed: 0 -> 1; and 6 more changes"
+       },
+       {
+        "event_id": "r25-e00016",
+        "round": 25,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-alert-language-gap-to-country-four.components.concern.status: resolved -> open; entities.info-alert-language-gap-to-country-four.components.concern.times_reviewed: 1 -> 2; entities.info-legal-retention-question-to-country-two.components.concern.status: resolved -> open; entities.info-legal-retention-question-to-country-two.components.concern.times_reviewed: 1 -> 2; and 4 more changes"
+       },
+       {
+        "event_id": "r33-e00001",
+        "round": 33,
+        "by": "country-two",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-question-to-country-two.components.concern.status: resolved -> open; entities.info-legal-retention-question-to-country-two.components.concern.times_reopened: 0 -> 1"
+       },
+       {
+        "event_id": "r37-e00003",
+        "round": 37,
+        "by": "country-two",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-question-to-country-two.components.concern.status: resolved -> open; entities.info-legal-retention-question-to-country-two.components.concern.times_reopened: 1 -> 2"
+       },
+       {
+        "event_id": "r43-e00001",
+        "round": 43,
+        "by": "country-two",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-question-to-country-two.components.concern.status: resolved -> open; entities.info-legal-retention-question-to-country-two.components.concern.times_reopened: 3 -> 4"
+       },
+       {
+        "event_id": "r43-e00005",
+        "round": 43,
+        "by": "logistics-group",
+        "move": "raise-new-concern",
+        "changed": "entities.info-local-staffing-gap-to-country-three.components.concern.status: resolved -> open; entities.info-local-staffing-gap-to-country-three.components.concern.times_raised: 9 -> 10; entities.logistics-group.components.work.raise_new_concern_done: false -> true"
+       }
+      ],
+      "explanation": "Logistics Group repeatedly raised staffing concerns after remedies had marked them resolved. Country Two explicitly reopened the settled legal concern, and operating reviews also returned resolved concerns to open status.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "present",
+      "event_ids": [
+       "r5-e00005",
+       "r7-e00005",
+       "r12-e00003",
+       "r12-e00005",
+       "r26-e00005",
+       "r26-e00007",
+       "r26-e00019"
+      ],
+      "events": [
+       {
+        "event_id": "r5-e00005",
+        "round": 5,
+        "by": "country-three",
+        "move": "make-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-three.components.support.condition_id: country-three -> info-local-staffing-gap-to-country-three; entities.support-country-three.components.support.stance: full -> conditional"
+       },
+       {
+        "event_id": "r7-e00005",
+        "round": 7,
+        "by": "country-three",
+        "move": "restore-full-support",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 1 -> 0; entities.activate-early-warning-system.components.group_decision.support: 4 -> 5; entities.support-country-three.components.support.stance: conditional -> full"
+       },
+       {
+        "event_id": "r12-e00003",
+        "round": 12,
+        "by": "country-three",
+        "move": "make-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-three.components.support.stance: full -> conditional"
+       },
+       {
+        "event_id": "r12-e00005",
+        "round": 12,
+        "by": "logistics-group",
+        "move": "resolve-concern",
+        "changed": "entities.info-local-staffing-gap-to-country-three.components.concern.remedy_ticks_left: 0 -> 2; entities.info-local-staffing-gap-to-country-three.components.concern.status: open -> remedy_under_way"
+       },
+       {
+        "event_id": "r26-e00005",
+        "round": 26,
+        "by": "country-one",
+        "move": "make-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-one.components.support.condition_id: country-one -> info-technical-feed-gap-to-country-one; entities.support-country-one.components.support.stance: full -> conditional"
+       },
+       {
+        "event_id": "r26-e00007",
+        "round": 26,
+        "by": "country-two",
+        "move": "make-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 1 -> 2; entities.activate-early-warning-system.components.group_decision.support: 4 -> 3; entities.support-country-two.components.support.stance: full -> conditional"
+       },
+       {
+        "event_id": "r26-e00019",
+        "round": 26,
+        "by": "the world (a rule)",
+        "move": "deployment-suspended",
+        "changed": "entities.activate-early-warning-system.components.group_decision.status: deployed -> suspended"
+       }
+      ],
+      "explanation": "Country Three made support depend on resolving the staffing concern, then restored full support when it was marked resolved. Later Country One and Country Two also made support conditional, and the system was suspended while conditions and concerns were in play.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 365
+   },
+   "cost_usd": 0.0035083,
+   "daily_cost_usd": 0.2714320150000001,
+   "trace_id": "world-builder-live/readout/e84780b4d6a64c108f40ec461e487803"
+  }
+ },
+ "share": {
+  "at": "687.6",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "_-7-ZRvA84QU",
+   "rounds": 45
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/run/247bfe4d11dd4d89b15a56cfa93075dd",
+  "cost_usd": 0.0030001
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "1a5498f59e27e711c3b7d4898eaef187ba2fb543",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 0,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0
+ },
+ "pressed_at": "1.6",
+ "run_stage_at": "133.2",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nCountry One, Country Two, and Country Three raised concerns about sensor coverage, legal responsibility, and staffing, while community and technical groups raised other local issues through separate channels. The partnership authorized and deployed the warning system, but recurring concerns, conditional support, agenda churn, and extended reviews slowed coordination; the system was later suspended and then resumed, while concerns were raised and reopened again.\n\nHappened: Local concerns through separate channels\nCommunity Group informed Country Four about alert language, Legal Group informed Country Two about data retention, and Logistics Group informed Country Three about staffing. Technical Group separately informed the Regional Health Network and Country One about feed reliability.\nRound 1, Community Group: communicate (event r1-e00001)\nRound 1, Legal Group: communicate (event r1-e00013)\nRound 1, Logistics Group: communicate (event r1-e00015)\nRound 1, Technical Group: communicate (event r1-e00019)\nRound 2, Technical Group: communicate (event r2-e00016)\nHappened: Slowed meetings\nCountry Three made support conditional over staffing, and the decision was authorized at the deadline before deployment. Reviews later reexamined concerns and reset their review time, and the system was suspended.\nRound 5, Country Three: make-support-conditional (event r5-e00005)\nRound 8, the world (a rule): decision-authorized-at-deadline (event r8-e00010)\nRound 16, the world (a rule): deployment-completes (event r16-e00005)\nRound 20, the world (a rule): operating-review-reexamines-concern (event r20-e00011)\nRound 20, the world (a rule): operating-review-held (event r20-e00012)\nRound 25, the world (a rule): operating-review-reexamines-concern (event r25-e00016)\nRound 25, the world (a rule): operating-review-held (event r25-e00017)\nRound 26, the world (a rule): deployment-suspended (event r26-e00019)\nHappened: Reopened settled issues\nLogistics Group repeatedly raised staffing concerns after remedies had marked them resolved. Country Two explicitly reopened the settled legal concern, and operating reviews also returned resolved concerns to open status.\nRound 4, Logistics Group: raise-new-concern (event r4-e00003)\nRound 7, Logistics Group: raise-new-concern (event r7-e00009)\nRound 20, the world (a rule): operating-review-reexamines-concern (event r20-e00011)\nRound 25, the world (a rule): operating-review-reexamines-concern (event r25-e00016)\nRound 33, Country Two: reopen-concern (event r33-e00001)\nRound 37, Country Two: reopen-concern (event r37-e00003)\nRound 43, Country Two: reopen-concern (event r43-e00001)\nRound 43, Logistics Group: raise-new-concern (event r43-e00005)\nHappened: Conditional support delaying deployment\nCountry Three made support depend on resolving the staffing concern, then restored full support when it was marked resolved. Later Country One and Country Two also made support conditional, and the system was suspended while conditions and concerns were in play.\nRound 5, Country Three: make-support-conditional (event r5-e00005)\nRound 7, Country Three: restore-full-support (event r7-e00005)\nRound 12, Country Three: make-support-conditional (event r12-e00003)\nRound 12, Logistics Group: resolve-concern (event r12-e00005)\nRound 26, Country One: make-support-conditional (event r26-e00005)\nRound 26, Country Two: make-support-conditional (event r26-e00007)\nRound 26, the world (a rule): deployment-suspended (event r26-e00019)\nRead from 365 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 45 · 154 allowed · 51 refused · 450 held back by the rules · 222 by itself",
+ "finished": "2026-10-20T17:23:05.545Z"
+}

@@ -1,0 +1,1088 @@
+{
+ "started": "2026-10-20T17:11:47.306Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.4",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "6.8",
+   "text": "Reading your description…\n2.9 s"
+  },
+  {
+   "at": "23.9",
+   "text": "!\nLeft out of the simulation\nTransport routes and distances\nPrices and payments\nPencil materials such as erasers, ferrules, paint, and packaging\n21 s"
+  },
+  {
+   "at": "23.9",
+   "text": "Writing the rules…\n21 s"
+  },
+  {
+   "at": "51.5",
+   "text": "✓\nTest run: 48 moves in 24 rounds; still busy at the end; never possible: carry goods, make pencils, process graphite, saw boards, sell pencils\n48.8 s"
+  },
+  {
+   "at": "51.5",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n48.8 s"
+  },
+  {
+   "at": "79.2",
+   "text": "Test-running the rules with simple moves…\n75.2 s"
+  },
+  {
+   "at": "80.2",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n76.6 s"
+  },
+  {
+   "at": "108.8",
+   "text": "Test-running the rules with simple moves…\n104 s"
+  },
+  {
+   "at": "111.8",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n108.2 s"
+  },
+  {
+   "at": "138.0",
+   "text": "Test-running the rules with simple moves…\n134.7 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "138.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/6b01181aeda842769e79fa587b579cca"
+  },
+  {
+   "at": "141.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a1909f3309934eddbc22f400b05d23ec"
+  },
+  {
+   "at": "143.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/af652ece5de44340a4a497e0dd67dfc6"
+  },
+  {
+   "at": "145.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/5128be6aa08549e8bf4f79cf9bac5150"
+  },
+  {
+   "at": "146.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/dd493dbe68374cd1a65286e90144a585"
+  },
+  {
+   "at": "149.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/1fc3c2154ba6435783660edc14e408fe"
+  },
+  {
+   "at": "150.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/5920b7f9077c4ebd8ef94c5c0a63769a"
+  },
+  {
+   "at": "152.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/cfeee002b179438ab2b62642f392ccd4"
+  },
+  {
+   "at": "154.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/9135e5a48425482abb3c527c0debef15"
+  },
+  {
+   "at": "156.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/2f85c45f1a394ae98e4d5de6b5b13db7"
+  },
+  {
+   "at": "157.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/8b64fdea67364cf0a5b4b0514a3db51b"
+  },
+  {
+   "at": "159.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/b3afcd14e6134d72a51f5f86292064a0"
+  },
+  {
+   "at": "161.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/442df5772c1548beb0a84b4b3e7e251f"
+  },
+  {
+   "at": "163.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/dc0e677ee5d249c3bf8f66ff4644c522"
+  },
+  {
+   "at": "164.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/83ccb6d362444e33afccf61226e9de45"
+  },
+  {
+   "at": "166.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/988cdf146c3c4b328abef5aea96f8e8c"
+  },
+  {
+   "at": "168.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/8628d8592bda46c0b3cac62dd1035818"
+  },
+  {
+   "at": "170.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/69e7a6b2e3a5473fa7534e7916a3383a"
+  },
+  {
+   "at": "171.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d3e4b1084751437da01ab6376478503d"
+  },
+  {
+   "at": "175.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/6eca3717ebf8426ea6b72dd5236c81a0"
+  },
+  {
+   "at": "177.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/9e4f396749224af4b80162b369037070"
+  },
+  {
+   "at": "178.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/72b8d3a045584d2f86ed05e48d8abb78"
+  },
+  {
+   "at": "180.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/89027331986f49fa9a8604e6e6ae5550"
+  },
+  {
+   "at": "182.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/bb8a127c8c10437095f02286afc63bbc"
+  },
+  {
+   "at": "184.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/0f85af0c961646febbbc3cebc8b2deed"
+  },
+  {
+   "at": "186.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/19a4ab2a4ba946d0a4a85f5442476a22"
+  },
+  {
+   "at": "202.0",
+   "status": 422,
+   "error": "These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example."
+  }
+ ],
+ "rounds": [
+  {
+   "turn": 1,
+   "at": "138.5",
+   "trace_id": "world-builder-live/run/6b01181aeda842769e79fa587b579cca",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r1-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r1-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r1-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r1-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r1-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "at": "141.5",
+   "trace_id": "world-builder-live/run/a1909f3309934eddbc22f400b05d23ec",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r2-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r2-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r2-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r2-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r2-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 3,
+   "at": "143.3",
+   "trace_id": "world-builder-live/run/af652ece5de44340a4a497e0dd67dfc6",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r3-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r3-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r3-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r3-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r3-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 4,
+   "at": "145.0",
+   "trace_id": "world-builder-live/run/5128be6aa08549e8bf4f79cf9bac5150",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r4-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r4-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r4-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r4-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r4-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 5,
+   "at": "146.8",
+   "trace_id": "world-builder-live/run/dd493dbe68374cd1a65286e90144a585",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r5-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r5-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r5-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r5-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r5-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 6,
+   "at": "149.2",
+   "trace_id": "world-builder-live/run/1fc3c2154ba6435783660edc14e408fe",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r6-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r6-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r6-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r6-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r6-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 7,
+   "at": "150.9",
+   "trace_id": "world-builder-live/run/5920b7f9077c4ebd8ef94c5c0a63769a",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r7-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r7-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r7-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r7-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r7-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 8,
+   "at": "152.7",
+   "trace_id": "world-builder-live/run/cfeee002b179438ab2b62642f392ccd4",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r8-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r8-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r8-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r8-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r8-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 9,
+   "at": "154.4",
+   "trace_id": "world-builder-live/run/9135e5a48425482abb3c527c0debef15",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r9-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r9-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r9-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r9-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r9-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 10,
+   "at": "156.2",
+   "trace_id": "world-builder-live/run/2f85c45f1a394ae98e4d5de6b5b13db7",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r10-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r10-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r10-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r10-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r10-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 11,
+   "at": "157.9",
+   "trace_id": "world-builder-live/run/8b64fdea67364cf0a5b4b0514a3db51b",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r11-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r11-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r11-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r11-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r11-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 12,
+   "at": "159.6",
+   "trace_id": "world-builder-live/run/b3afcd14e6134d72a51f5f86292064a0",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r12-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r12-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r12-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r12-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r12-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 13,
+   "at": "161.4",
+   "trace_id": "world-builder-live/run/442df5772c1548beb0a84b4b3e7e251f",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r13-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r13-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r13-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r13-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r13-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 14,
+   "at": "163.1",
+   "trace_id": "world-builder-live/run/dc0e677ee5d249c3bf8f66ff4644c522",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r14-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r14-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r14-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r14-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r14-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 15,
+   "at": "164.9",
+   "trace_id": "world-builder-live/run/83ccb6d362444e33afccf61226e9de45",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r15-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r15-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r15-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r15-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r15-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 16,
+   "at": "166.6",
+   "trace_id": "world-builder-live/run/988cdf146c3c4b328abef5aea96f8e8c",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r16-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r16-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r16-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r16-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r16-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 17,
+   "at": "168.4",
+   "trace_id": "world-builder-live/run/8628d8592bda46c0b3cac62dd1035818",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r17-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r17-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r17-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r17-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r17-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 18,
+   "at": "170.1",
+   "trace_id": "world-builder-live/run/69e7a6b2e3a5473fa7534e7916a3383a",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r18-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r18-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r18-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r18-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r18-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 19,
+   "at": "171.9",
+   "trace_id": "world-builder-live/run/d3e4b1084751437da01ab6376478503d",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r19-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r19-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r19-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r19-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r19-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 20,
+   "at": "175.1",
+   "trace_id": "world-builder-live/run/6eca3717ebf8426ea6b72dd5236c81a0",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r20-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r20-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r20-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r20-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r20-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 21,
+   "at": "177.0",
+   "trace_id": "world-builder-live/run/9e4f396749224af4b80162b369037070",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r21-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r21-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r21-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r21-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r21-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 22,
+   "at": "178.8",
+   "trace_id": "world-builder-live/run/72b8d3a045584d2f86ed05e48d8abb78",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r22-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r22-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r22-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r22-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r22-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 23,
+   "at": "180.7",
+   "trace_id": "world-builder-live/run/89027331986f49fa9a8604e6e6ae5550",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r23-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r23-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r23-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r23-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r23-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 24,
+   "at": "182.8",
+   "trace_id": "world-builder-live/run/bb8a127c8c10437095f02286afc63bbc",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r24-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r24-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r24-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r24-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r24-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 25,
+   "at": "184.6",
+   "trace_id": "world-builder-live/run/0f85af0c961646febbbc3cebc8b2deed",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r25-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r25-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r25-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r25-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r25-e00006",
+     "customer-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 26,
+   "at": "186.4",
+   "trace_id": "world-builder-live/run/19a4ab2a4ba946d0a4a85f5442476a22",
+   "moves": {
+    "forest-crew": {
+     "kind": "gather-timber",
+     "event_id": "r26-e00001",
+     "changed": true
+    },
+    "graphite-miners": {
+     "kind": "gather-ore",
+     "event_id": "r26-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r26-e00004",
+     "timber-regrowth"
+    ],
+    [
+     "r26-e00005",
+     "ore-renewal"
+    ],
+    [
+     "r26-e00006",
+     "customer-demand"
+    ]
+   ]
+  }
+ ],
+ "readout": {
+  "at": "199.0",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "Forest Crew repeatedly gathered timber and Graphite Miners repeatedly gathered ore, while the world replenished both resources. Customer demand at the bookshop and school increased each round; no coordination or decision process is recorded.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No concerns, communication routes, or decision makers are recorded.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No meeting or review is recorded as delayed, extended, or used without a decision.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No issue is recorded as settled and then undone or returned to discussion.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No conditional support, withheld support, or deployment decision is recorded.",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 130
+   },
+   "cost_usd": 0.0008631,
+   "daily_cost_usd": 0.247249515,
+   "trace_id": "world-builder-live/readout/95b237254f254d87abb3cde8e0f7320d"
+  }
+ },
+ "share": {
+  "at": "201.0",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "l3dbTnEHCbeH",
+   "rounds": 26
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/world/fc37d6151a484cf0b36cf9e5db2f6c72",
+  "cost_usd": 0.0168549
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "1a5498f59e27e711c3b7d4898eaef187ba2fb543",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 1.3000467,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0
+ },
+ "pressed_at": "1.3",
+ "run_stage_at": "139.0",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nForest Crew repeatedly gathered timber and Graphite Miners repeatedly gathered ore, while the world replenished both resources. Customer demand at the bookshop and school increased each round; no coordination or decision process is recorded.\n\nDid not happen: Local concerns through separate channels\nNo concerns, communication routes, or decision makers are recorded.\nDid not happen: Slowed meetings\nNo meeting or review is recorded as delayed, extended, or used without a decision.\nDid not happen: Reopened settled issues\nNo issue is recorded as settled and then undone or returned to discussion.\nDid not happen: Conditional support delaying deployment\nNo conditional support, withheld support, or deployment decision is recorded.\nRead from 130 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 26 · 52 allowed · 0 refused · 130 held back by the rules · 78 by itself",
+ "tampered": {
+  "at": "201.8",
+  "mechanic": "gather-timber"
+ },
+ "c5_rules_message": "Paused: These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example.",
+ "c5_page_has_internal_error": false,
+ "finished": "2026-10-20T17:15:10.254Z"
+}

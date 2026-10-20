@@ -72,3 +72,24 @@ All builds below are on the live site as a visitor, listed from the server's own
 
 Spend: the trace store records $0.543 over 1,172 calls on 2026-10-19 UTC up to the final runs, all on the visitor allowance
 ($3/day). Every test above used the visitor allowance, not the owner allowance the goal names; no other spend route.
+
+# Final set at f365d6b and 1a5498f, owner allowance (2026-10-19/20 UTC)
+
+Every build and readout below is from the server's own request log (`runs_2026-10-19.jsonl` and `runs_2026-10-20.jsonl`
+in the container's state folder); each row shows `allowance: owner`. These are all the runs made after the 20122ef set;
+none was left out. Live llm_client was 2d30c34 for the 1a5498f runs. Evidence files are in
+[final-1a5498f/](final-1a5498f/).
+
+| Run | Commit | Trace ids | Outcome | Evidence |
+| --- | --- | --- | --- | --- |
+| c4-run11 pencil (with C5 tamper) | f365d6b | build world-builder-live/world/98ca1f406fc54d77804558b7d1b2c4c4; readout .../readout/966fd61cb39e4ff28102da396bdd4ff9 | share Ovr3EcllZ_ML; 26 rounds, 8 distinct moves, deliver happened 23 times. Build trace: the 'from' field example made the first structure draft invalid (fixed in #186). Tampered /run refused with the plain message | c4-run11.*, c4-run11-build-trace.txt |
+| c4-run12 pencil | f365d6b | build .../world/0b7b562616cc44caa6aeb69ab200cfd0; readout .../readout/0b5cc9c4ccfa4afdabb2486414202489 | share LEPx6aAqqB93; FAIL: the shopkeeper never acts, because serve-pencil-order names only the customer, not the shop (structure gap; rule rewrites cannot add fields) | c4-run12.*, c4-run12-build-trace.txt, c4-run12-rules-summary.txt |
+| c1r14 Waltzman | f365d6b | build .../people/cfc1cafb0102453380490bae3db45593; readout .../readout/abc4305efbf54c28bbe836bc98aaf8bc (503) | share Y0aGlhKKUiPk; 45 rounds, all Concordia AI, all 10 act in round 1, 5-10 distinct per window. Readout 503: the OpenRouter account was empty and llm_client called the 402 a rate limit (fixed in llm_client #291, 2d30c34). C6 FAIL for this run | c1r-run14.*, c1r14-*.png |
+| **c1r15 Waltzman (C1, C2, C3, C6)** | **1a5498f** | build world-builder-live/people/183b67dd51d64ce588d813168423d93d; first run .../run/2a65a6deb9404fbea1bad57c4a6a8e12 (45 run traces, mover `llm-resident (Concordia) openrouter/openai/gpt-6-luna`); readout .../readout/e84780b4d6a64c108f40ec461e487803 | share _-7-ZRvA84QU. Round 1 finished 139 s after the press (press 17:11:37.5Z, last round-1 call 17:13:56.9Z). All 10 people act in round 1; 7-9 distinct moves in every 10-round window; four concerns delivered on four group channels (r1-e00001/13/15/19, r2-e00016); resolve-own-concern 20, resolve-concern 8; support made conditional 8 times and restored 6 times; decision authorized by rule event r8-e00010 (decision-authorized-at-deadline). Readout 4/4 mechanisms present with event ids; C2 78/78 claimed changes match the trace; C3 replay 45/45 rounds, 0 AI calls. Round-1 full trace read (10 calls): each group's prompt holds only its own concern, the six others none. PASS | c1r-run15-*, c1r15-*.png, share-_-7-ZRvA84QU.json |
+| c4-run13 pencil (with C5 tamper) | 1a5498f | build .../world/fc37d6151a484cf0b36cf9e5db2f6c72; readout .../readout/95b237254f254d87abb3cde8e0f7320d | share l3dbTnEHCbeH; FAIL: only gather-timber and gather-ore happen, 5 workers idle all 26 rounds. Structure gave the middle stages only a quantity field and sell only a customer field; 3 rule rewrites could not connect them. Tampered /run (422 at 17:15:10Z) refused with "Paused: These rules were refused before anything ran..." C5 rules rejection PASS | c4-run13.*, c4-run13-rules-summary.txt |
+| c4-run14 pencil | 1a5498f | build .../world/413738839e4346209389018120a88239; readout .../readout/260c4f1aae7749fea58546fe2d06ceae | share 7_reCn3v_2SR; 28 rounds, 7 distinct moves, no one idle, selling happens. NOT a real pass: process restock-production-inputs adds +1 logs, boards, graphite ore, graphite and pencils to every inventory each round, so goods are created rather than passed along. FAIL in substance | c4-run14.* |
+| **C5 budget, visitor and owner** | **1a5498f** | none (refused before any call) | test container wb-c5-budget on the live image, ledger seeded at the cap: visitor page shows "Today's AI budget is used up; it resets at midnight UTC." with Create disabled and no build request sent; owner page "Your owner AI allowance for today is used up; it resets at midnight UTC. You can still watch an example run." PASS. Container and tunnel removed after | c5-budget-*-1a5498f.* |
+
+C4 root causes, filed as [#187](https://github.com/BrianMills2718/world-substrate/issues/187): rule rewrites cannot repair a
+structure gap (the structure step should be rerun with the dry-run evidence), and the idle-actor guidance invites
+blanket refill processes (a process should not raise a quantity some action produces).

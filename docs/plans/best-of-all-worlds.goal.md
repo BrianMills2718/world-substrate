@@ -105,9 +105,29 @@ came back, came back unused, or the expectation was wrong.
   `LLM_CLIENT_TIMEOUT_POLICY=ban` (#158).
 - The shared AI lock: a build blocks other visitors' AI rounds while it runs; fix only if it blocks C1.
 
-## Current state (2026-10-19)
+## Current state (2026-10-20)
 
-- C1-C6 pass on the live site at one commit, `20122ef` (live page and backend confirmed by the deploy script). Every run
+- Live: world-substrate `1a5498f`, llm_client `2d30c34`. Final set run on the owner allowance; every run, with trace ids,
+  is in [evidence/best-of-all-worlds/RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) ("Final set at f365d6b and
+  1a5498f"), files in [evidence/best-of-all-worlds/final-1a5498f/](../../evidence/best-of-all-worlds/final-1a5498f/).
+- C1, C2, C3, C6 pass: Waltzman run c1r15, share `_-7-ZRvA84QU`: round 1 at 139 s, all ten people act in round 1,
+  7-9 distinct moves in every 10-round window over 45 rounds, four concerns on four group channels, concerns resolved,
+  support conditional and restored, decision authorized by rule event r8-e00010, readout 4/4 mechanisms with event ids
+  (78/78 claimed changes match the trace), share replays 45 rounds with no AI call, no private concern leaks into
+  another person's prompt.
+- C5 passes: forced rules rejection (c4-run13) and forced visitor and owner budget stops each show a plain message.
+- **C4 is not met.** Of the two pencil runs at 1a5498f, c4-run13 narrowed to two moves with five idle workers, and
+  c4-run14 looked busy only because a process created every good from nothing each round. The earlier 20122ef pass
+  (c4-run10) met C4 only by its letter: delivering and selling were never possible. Root causes and proposed fixes:
+  [#187](https://github.com/BrianMills2718/world-substrate/issues/187). Brian approved stopping runs here and reporting
+  every result (2026-10-20); the next step is fixing #187, then one new pencil set.
+- Fixes since 2026-10-19: #185 and #186 (hand-off actions name both ends, field examples are valid names), llm_client
+  #291 (an empty OpenRouter account is reported as out of credit, not "busy").
+
+## Previous state (2026-10-19)
+
+- C1-C6 were reported as passing on the live site at `20122ef`; C4 was later judged a pass by the letter only (see
+  current state) (live page and backend confirmed by the deploy script). Every run
   of the final increment, with trace ids, is in
   [evidence/best-of-all-worlds/RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) ("Final increment live runs"); logs and
   analyses in [evidence/best-of-all-worlds/final-20122ef/](../../evidence/best-of-all-worlds/final-20122ef/).

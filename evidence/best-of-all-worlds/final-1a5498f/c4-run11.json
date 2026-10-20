@@ -1,0 +1,1809 @@
+{
+ "started": "2026-10-19T00:39:21.541Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.0",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "8.1",
+   "text": "Reading your description…\n6 s"
+  },
+  {
+   "at": "46.9",
+   "text": "!\nLeft out of the simulation\nTransport distances and routes\nPrices and payments\nMaterial quality and pencil specifications\n44.2 s"
+  },
+  {
+   "at": "46.9",
+   "text": "Writing the rules…\n44.2 s"
+  },
+  {
+   "at": "72.2",
+   "text": "Test-running the rules with simple moves…\n70.4 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "79.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/f86b83285471447d9a8ec8516a4b6f99"
+  },
+  {
+   "at": "81.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/0037e4c64a0c4440ac389a2281249dde"
+  },
+  {
+   "at": "83.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/9ea81f19002b48dca3f4b3861da4f858"
+  },
+  {
+   "at": "85.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/71599cbefd9d4ce4957c21a84017e742"
+  },
+  {
+   "at": "87.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/e7d3ef84a64e4e9bb83eaafb0f0aab39"
+  },
+  {
+   "at": "89.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d33f7a8018934138bfd588a45bc23c09"
+  },
+  {
+   "at": "91.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/b628f6ecada24e1988df7c4cd65b94f7"
+  },
+  {
+   "at": "93.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/1fd2829c125348188d2fb76bf15be9a2"
+  },
+  {
+   "at": "95.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/202e294a66b44f16a5d83a1f4bf31b31"
+  },
+  {
+   "at": "98.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a116cff0913842f08b57aad4c7173d0a"
+  },
+  {
+   "at": "100.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a3566ead9acc4bc6a8d646fffc033fcc"
+  },
+  {
+   "at": "102.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/4744d05732d04f83b86f6e1f6d153c00"
+  },
+  {
+   "at": "103.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/7f816a9285c3425d9334c85ff7d84ff0"
+  },
+  {
+   "at": "105.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/f8bad394218f41b18cdf0c763bd24891"
+  },
+  {
+   "at": "109.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/e3717c77a3c0462ebb85ecddceae271d"
+  },
+  {
+   "at": "111.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a5cb0dcbeec946f5ad0a7404ca157fd1"
+  },
+  {
+   "at": "113.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/7320e6fb059b42da801b9326f8d1b2e9"
+  },
+  {
+   "at": "115.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/99c79764a15a4b80a1eb3e82f8856409"
+  },
+  {
+   "at": "117.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/7eb5c5253f49416aa1a5c8c053c0738e"
+  },
+  {
+   "at": "119.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/ba3445c8cf504e50a59bf971592249ea"
+  },
+  {
+   "at": "121.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/c2d00e4a77764e19a43941d72df5136d"
+  },
+  {
+   "at": "123.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/268909fa93174fb794f0876c31849ca3"
+  },
+  {
+   "at": "125.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/c475fd0302824b0c8f35c14481c51d59"
+  },
+  {
+   "at": "127.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/065de3051cb0443a9e3ed173061b4d99"
+  },
+  {
+   "at": "129.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/13647d66c3504f28b6ad869edda38b88"
+  },
+  {
+   "at": "131.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/f362e3c496914676b965bb24a7b39c8a"
+  },
+  {
+   "at": "149.9",
+   "status": 422,
+   "error": "These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example."
+  }
+ ],
+ "rounds": [
+  {
+   "turn": 1,
+   "at": "79.6",
+   "trace_id": "world-builder-live/run/f86b83285471447d9a8ec8516a4b6f99",
+   "moves": {
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r1-e00001",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r1-e00003",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r1-e00005",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r1-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r1-e00008",
+     "timber-regrowth"
+    ],
+    [
+     "r1-e00009",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r1-e00010",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "at": "81.5",
+   "trace_id": "world-builder-live/run/0037e4c64a0c4440ac389a2281249dde",
+   "moves": {
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r2-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r2-e00003",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r2-e00005",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r2-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r2-e00009",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r2-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r2-e00012",
+     "timber-regrowth"
+    ],
+    [
+     "r2-e00013",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r2-e00014",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 3,
+   "at": "83.4",
+   "trace_id": "world-builder-live/run/9ea81f19002b48dca3f4b3861da4f858",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r3-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r3-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r3-e00005",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r3-e00007",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r3-e00009",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r3-e00011",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r3-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r3-e00014",
+     "timber-regrowth"
+    ],
+    [
+     "r3-e00015",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r3-e00016",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 4,
+   "at": "85.3",
+   "trace_id": "world-builder-live/run/71599cbefd9d4ce4957c21a84017e742",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r4-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r4-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r4-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r4-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r4-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r4-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r4-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r4-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r4-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r4-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r4-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 5,
+   "at": "87.3",
+   "trace_id": "world-builder-live/run/e7d3ef84a64e4e9bb83eaafb0f0aab39",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r5-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r5-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r5-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r5-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r5-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r5-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r5-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r5-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r5-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r5-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r5-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 6,
+   "at": "89.2",
+   "trace_id": "world-builder-live/run/d33f7a8018934138bfd588a45bc23c09",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r6-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r6-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r6-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r6-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r6-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r6-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r6-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r6-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r6-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r6-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r6-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 7,
+   "at": "91.4",
+   "trace_id": "world-builder-live/run/b628f6ecada24e1988df7c4cd65b94f7",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r7-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r7-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r7-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r7-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r7-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r7-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r7-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r7-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r7-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r7-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r7-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 8,
+   "at": "93.6",
+   "trace_id": "world-builder-live/run/1fd2829c125348188d2fb76bf15be9a2",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r8-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r8-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r8-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r8-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r8-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r8-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r8-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r8-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r8-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r8-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r8-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 9,
+   "at": "95.8",
+   "trace_id": "world-builder-live/run/202e294a66b44f16a5d83a1f4bf31b31",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r9-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r9-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r9-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r9-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r9-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r9-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r9-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r9-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r9-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r9-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r9-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 10,
+   "at": "98.1",
+   "trace_id": "world-builder-live/run/a116cff0913842f08b57aad4c7173d0a",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r10-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r10-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r10-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r10-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r10-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r10-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r10-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r10-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r10-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r10-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r10-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 11,
+   "at": "100.1",
+   "trace_id": "world-builder-live/run/a3566ead9acc4bc6a8d646fffc033fcc",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r11-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r11-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r11-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r11-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r11-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r11-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r11-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r11-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r11-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r11-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r11-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 12,
+   "at": "102.0",
+   "trace_id": "world-builder-live/run/4744d05732d04f83b86f6e1f6d153c00",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r12-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r12-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r12-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r12-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r12-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r12-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r12-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r12-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r12-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r12-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r12-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 13,
+   "at": "103.9",
+   "trace_id": "world-builder-live/run/7f816a9285c3425d9334c85ff7d84ff0",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r13-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r13-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r13-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r13-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r13-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r13-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r13-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r13-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r13-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r13-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r13-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 14,
+   "at": "105.8",
+   "trace_id": "world-builder-live/run/f8bad394218f41b18cdf0c763bd24891",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r14-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r14-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r14-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r14-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r14-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r14-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r14-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r14-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r14-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r14-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r14-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 15,
+   "at": "109.7",
+   "trace_id": "world-builder-live/run/e3717c77a3c0462ebb85ecddceae271d",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r15-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r15-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r15-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r15-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r15-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r15-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r15-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r15-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r15-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r15-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r15-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 16,
+   "at": "111.5",
+   "trace_id": "world-builder-live/run/a5cb0dcbeec946f5ad0a7404ca157fd1",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r16-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r16-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r16-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r16-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r16-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r16-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r16-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r16-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r16-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r16-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r16-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 17,
+   "at": "113.7",
+   "trace_id": "world-builder-live/run/7320e6fb059b42da801b9326f8d1b2e9",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r17-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r17-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r17-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r17-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r17-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r17-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r17-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r17-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r17-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r17-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r17-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 18,
+   "at": "115.8",
+   "trace_id": "world-builder-live/run/99c79764a15a4b80a1eb3e82f8856409",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r18-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r18-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r18-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r18-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r18-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r18-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r18-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r18-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r18-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r18-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r18-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 19,
+   "at": "117.8",
+   "trace_id": "world-builder-live/run/7eb5c5253f49416aa1a5c8c053c0738e",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r19-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r19-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r19-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r19-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r19-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r19-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r19-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r19-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r19-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r19-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r19-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 20,
+   "at": "119.7",
+   "trace_id": "world-builder-live/run/ba3445c8cf504e50a59bf971592249ea",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r20-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r20-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r20-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r20-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r20-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r20-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r20-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r20-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r20-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r20-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r20-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 21,
+   "at": "121.6",
+   "trace_id": "world-builder-live/run/c2d00e4a77764e19a43941d72df5136d",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r21-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r21-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r21-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r21-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r21-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r21-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r21-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r21-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r21-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r21-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r21-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 22,
+   "at": "123.7",
+   "trace_id": "world-builder-live/run/268909fa93174fb794f0876c31849ca3",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r22-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r22-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r22-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r22-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r22-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r22-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r22-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r22-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r22-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r22-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r22-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 23,
+   "at": "125.6",
+   "trace_id": "world-builder-live/run/c475fd0302824b0c8f35c14481c51d59",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r23-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r23-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r23-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r23-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r23-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r23-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r23-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r23-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r23-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r23-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r23-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 24,
+   "at": "127.8",
+   "trace_id": "world-builder-live/run/065de3051cb0443a9e3ed173061b4d99",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r24-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r24-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r24-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r24-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r24-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r24-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r24-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r24-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r24-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r24-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r24-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 25,
+   "at": "129.7",
+   "trace_id": "world-builder-live/run/13647d66c3504f28b6ad869edda38b88",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r25-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r25-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r25-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r25-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r25-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r25-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r25-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r25-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r25-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r25-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r25-e00018",
+     "shop-demand"
+    ]
+   ]
+  },
+  {
+   "turn": 26,
+   "at": "131.8",
+   "trace_id": "world-builder-live/run/f362e3c496914676b965bb24a7b39c8a",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r26-e00001",
+     "changed": true
+    },
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r26-e00003",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-cores",
+     "event_id": "r26-e00005",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r26-e00007",
+     "changed": true
+    },
+    "graphite-refiner": {
+     "kind": "refine-graphite",
+     "event_id": "r26-e00009",
+     "changed": true
+    },
+    "lumber-miller": {
+     "kind": "saw-slats",
+     "event_id": "r26-e00011",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r26-e00013",
+     "changed": true
+    },
+    "pencil-customer": {
+     "kind": "place-order",
+     "event_id": "r26-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r26-e00016",
+     "timber-regrowth"
+    ],
+    [
+     "r26-e00017",
+     "graphite-ore-renewal"
+    ],
+    [
+     "r26-e00018",
+     "shop-demand"
+    ]
+   ]
+  }
+ ],
+ "readout": {
+  "at": "146.4",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "The workers repeatedly gathered timber and graphite, made pencil parts, assembled pencils, and delivered them to the shop. Orders kept accumulating faster than deliveries, with no recorded coordination dispute or decision process slowing the work.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No concerns, communication routes, or decision makers are recorded.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No meetings, reviews, or decision deadlines are recorded.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No settled decision or issue is recorded as being undone or reopened.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No conditional support or deployment decision is recorded.",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 279
+   },
+   "cost_usd": 0.0019364,
+   "daily_cost_usd": 0.40476616499999996,
+   "trace_id": "world-builder-live/readout/966fd61cb39e4ff28102da396bdd4ff9"
+  }
+ },
+ "share": {
+  "at": "148.8",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "Ovr3EcllZ_ML",
+   "rounds": 26
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/world/98ca1f406fc54d77804558b7d1b2c4c4",
+  "cost_usd": 0.008166425
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "f365d6b32082fcb5a49e306ab90207dfe8374992",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 0.01,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0.5460291449999997
+ },
+ "pressed_at": "1.0",
+ "run_stage_at": "80.0",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nThe workers repeatedly gathered timber and graphite, made pencil parts, assembled pencils, and delivered them to the shop. Orders kept accumulating faster than deliveries, with no recorded coordination dispute or decision process slowing the work.\n\nDid not happen: Local concerns through separate channels\nNo concerns, communication routes, or decision makers are recorded.\nDid not happen: Slowed meetings\nNo meetings, reviews, or decision deadlines are recorded.\nDid not happen: Reopened settled issues\nNo settled decision or issue is recorded as being undone or reopened.\nDid not happen: Conditional support delaying deployment\nNo conditional support or deployment decision is recorded.\nRead from 279 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 26 · 201 allowed · 0 refused · 130 held back by the rules · 78 by itself",
+ "tampered": {
+  "at": "149.6",
+  "mechanic": "harvest-timber"
+ },
+ "c5_rules_message": "Paused: These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example.",
+ "c5_page_has_internal_error": false,
+ "finished": "2026-10-19T00:41:52.174Z"
+}
