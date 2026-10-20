@@ -1,0 +1,1756 @@
+{
+ "started": "2026-10-20T20:49:47.299Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.5",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "4.5",
+   "text": "Reading your description…\n1.3 s"
+  },
+  {
+   "at": "18.6",
+   "text": "!\nLeft out of the simulation\nPencil erasers and ferrules\nTransport distances and travel time\nPrices and payments\n16.4 s"
+  },
+  {
+   "at": "18.6",
+   "text": "Writing the rules…\n16.4 s"
+  },
+  {
+   "at": "60.2",
+   "text": "Test-running the rules with simple moves…\n57.3 s"
+  },
+  {
+   "at": "61.2",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n58.1 s"
+  },
+  {
+   "at": "95.2",
+   "text": "Test-running the rules with simple moves…\n91.6 s"
+  },
+  {
+   "at": "97.2",
+   "text": "Redesigning what each one can do… · the test run showed steps that could never happen\n93.7 s"
+  },
+  {
+   "at": "111.4",
+   "text": "Writing the rules…\n107.9 s"
+  },
+  {
+   "at": "139.5",
+   "text": "Test-running the rules with simple moves…\n135.9 s"
+  },
+  {
+   "at": "140.5",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n136.8 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "176.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/4ca11192edc84ad2a182396d30557747"
+  },
+  {
+   "at": "177.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/fd3647f499f848c9a073f9c3ab91134f"
+  },
+  {
+   "at": "179.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/9847ea818d774da690834adf60e9949d"
+  },
+  {
+   "at": "181.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/bc959bb6b04a4581a4666a5a25d77f95"
+  },
+  {
+   "at": "183.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/75c38c24ce804840a0d7ce816d67da11"
+  },
+  {
+   "at": "185.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/58dfc3754127469b97e4c5201c0be738"
+  },
+  {
+   "at": "187.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/81be835788a645ada8d01243227af63a"
+  },
+  {
+   "at": "188.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/88a3f949387c45a59f774de2a9fbb83c"
+  },
+  {
+   "at": "190.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d454ff8c460b43a4b3f1a242deacedd4"
+  },
+  {
+   "at": "192.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/28efdfa7b7f24a848690cc64c44f3ae5"
+  },
+  {
+   "at": "194.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/c49cb135cb884fcfa38596f62706079a"
+  },
+  {
+   "at": "195.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/0c680bf58b804ad7bf0918ccef6e7b75"
+  },
+  {
+   "at": "197.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/3759047c374540af9bbe76e3e7f5964f"
+  },
+  {
+   "at": "199.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/148873b3daec4633944f7e9ff31dc399"
+  },
+  {
+   "at": "201.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/9c0d63965dd44833906017406a40ecc4"
+  },
+  {
+   "at": "203.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/1a69b70d9baa48ee8245a1018302c72d"
+  },
+  {
+   "at": "205.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/3ece5cf613394779b9f255ffd2a10ceb"
+  },
+  {
+   "at": "207.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/71ac7813d9804047828c462c892f6367"
+  },
+  {
+   "at": "210.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/ac173c983902412d87db004b0a920ec9"
+  },
+  {
+   "at": "212.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/73d6fa7f444a4b1b80ec3de156826c77"
+  },
+  {
+   "at": "214.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/bf1301694ecc4996a37035ace46c7816"
+  },
+  {
+   "at": "216.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/638e4a17495540e2b2814b799e1ccead"
+  },
+  {
+   "at": "217.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/43a2c9590a374b9090d4d6666542d69e"
+  },
+  {
+   "at": "219.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/dc46d69b0b9a4e73af429d8a84bbb055"
+  },
+  {
+   "at": "221.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/df1b35cbb0f74badabd5783a188c7ae3"
+  },
+  {
+   "at": "223.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/e5c2999fbf834a5a9e98d4f66b4add26"
+  }
+ ],
+ "rounds": [
+  {
+   "turn": 1,
+   "at": "176.2",
+   "trace_id": "world-builder-live/run/4ca11192edc84ad2a182396d30557747",
+   "moves": {
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r1-e00001",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r1-e00002",
+     "renew-raw-supplies"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "at": "177.9",
+   "trace_id": "world-builder-live/run/fd3647f499f848c9a073f9c3ab91134f",
+   "moves": {
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r2-e00001",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r2-e00003",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r2-e00005",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r2-e00006",
+     "renew-raw-supplies"
+    ],
+    [
+     "r2-e00007",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r2-e00008",
+     "move-graphite-to-core-works"
+    ]
+   ]
+  },
+  {
+   "turn": 3,
+   "at": "179.6",
+   "trace_id": "world-builder-live/run/9847ea818d774da690834adf60e9949d",
+   "moves": {
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r3-e00001",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r3-e00003",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r3-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r3-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r3-e00009",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r3-e00010",
+     "renew-raw-supplies"
+    ],
+    [
+     "r3-e00011",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r3-e00012",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r3-e00013",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r3-e00014",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 4,
+   "at": "181.4",
+   "trace_id": "world-builder-live/run/bc959bb6b04a4581a4666a5a25d77f95",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r4-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r4-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r4-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r4-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r4-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r4-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r4-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r4-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r4-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r4-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r4-e00016",
+     "move-cores-to-assembly"
+    ],
+    [
+     "r4-e00017",
+     "move-pencils-to-finished-store"
+    ]
+   ]
+  },
+  {
+   "turn": 5,
+   "at": "183.5",
+   "trace_id": "world-builder-live/run/75c38c24ce804840a0d7ce816d67da11",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r5-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r5-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r5-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r5-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r5-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r5-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r5-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r5-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r5-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r5-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r5-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 6,
+   "at": "185.3",
+   "trace_id": "world-builder-live/run/58dfc3754127469b97e4c5201c0be738",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r6-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r6-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r6-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r6-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r6-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r6-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r6-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r6-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r6-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r6-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r6-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 7,
+   "at": "187.1",
+   "trace_id": "world-builder-live/run/81be835788a645ada8d01243227af63a",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r7-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r7-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r7-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r7-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r7-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r7-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r7-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r7-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r7-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r7-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r7-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 8,
+   "at": "188.8",
+   "trace_id": "world-builder-live/run/88a3f949387c45a59f774de2a9fbb83c",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r8-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r8-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r8-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r8-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r8-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r8-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r8-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r8-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r8-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r8-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r8-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 9,
+   "at": "190.6",
+   "trace_id": "world-builder-live/run/d454ff8c460b43a4b3f1a242deacedd4",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r9-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r9-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r9-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r9-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r9-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r9-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r9-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r9-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r9-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r9-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r9-e00016",
+     "move-cores-to-assembly"
+    ],
+    [
+     "r9-e00017",
+     "move-pencils-to-finished-store"
+    ]
+   ]
+  },
+  {
+   "turn": 10,
+   "at": "192.4",
+   "trace_id": "world-builder-live/run/28efdfa7b7f24a848690cc64c44f3ae5",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r10-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r10-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r10-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r10-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r10-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r10-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r10-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r10-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r10-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r10-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r10-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 11,
+   "at": "194.2",
+   "trace_id": "world-builder-live/run/c49cb135cb884fcfa38596f62706079a",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r11-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r11-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r11-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r11-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r11-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r11-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r11-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r11-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r11-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r11-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r11-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 12,
+   "at": "195.9",
+   "trace_id": "world-builder-live/run/0c680bf58b804ad7bf0918ccef6e7b75",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r12-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r12-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r12-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r12-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r12-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r12-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r12-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r12-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r12-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r12-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r12-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 13,
+   "at": "197.7",
+   "trace_id": "world-builder-live/run/3759047c374540af9bbe76e3e7f5964f",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r13-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r13-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r13-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r13-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r13-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r13-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r13-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r13-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r13-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r13-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r13-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 14,
+   "at": "199.8",
+   "trace_id": "world-builder-live/run/148873b3daec4633944f7e9ff31dc399",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r14-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r14-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r14-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r14-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r14-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r14-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r14-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r14-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r14-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r14-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r14-e00016",
+     "move-cores-to-assembly"
+    ],
+    [
+     "r14-e00017",
+     "move-pencils-to-finished-store"
+    ]
+   ]
+  },
+  {
+   "turn": 15,
+   "at": "201.5",
+   "trace_id": "world-builder-live/run/9c0d63965dd44833906017406a40ecc4",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r15-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r15-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r15-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r15-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r15-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r15-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r15-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r15-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r15-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r15-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r15-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 16,
+   "at": "203.3",
+   "trace_id": "world-builder-live/run/1a69b70d9baa48ee8245a1018302c72d",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r16-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r16-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r16-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r16-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r16-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r16-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r16-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r16-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r16-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r16-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r16-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 17,
+   "at": "205.1",
+   "trace_id": "world-builder-live/run/3ece5cf613394779b9f255ffd2a10ceb",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r17-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r17-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r17-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r17-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r17-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r17-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r17-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r17-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r17-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r17-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r17-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 18,
+   "at": "207.1",
+   "trace_id": "world-builder-live/run/71ac7813d9804047828c462c892f6367",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r18-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r18-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r18-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r18-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r18-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r18-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r18-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r18-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r18-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r18-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r18-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 19,
+   "at": "210.1",
+   "trace_id": "world-builder-live/run/ac173c983902412d87db004b0a920ec9",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r19-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r19-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r19-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r19-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r19-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r19-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r19-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r19-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r19-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r19-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r19-e00016",
+     "move-cores-to-assembly"
+    ],
+    [
+     "r19-e00017",
+     "move-pencils-to-finished-store"
+    ]
+   ]
+  },
+  {
+   "turn": 20,
+   "at": "212.1",
+   "trace_id": "world-builder-live/run/73d6fa7f444a4b1b80ec3de156826c77",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r20-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r20-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r20-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r20-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r20-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r20-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r20-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r20-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r20-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r20-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r20-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 21,
+   "at": "214.2",
+   "trace_id": "world-builder-live/run/bf1301694ecc4996a37035ace46c7816",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r21-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r21-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r21-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r21-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r21-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r21-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r21-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r21-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r21-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r21-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r21-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 22,
+   "at": "216.0",
+   "trace_id": "world-builder-live/run/638e4a17495540e2b2814b799e1ccead",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r22-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r22-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r22-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r22-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r22-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r22-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r22-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r22-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r22-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r22-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r22-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 23,
+   "at": "217.8",
+   "trace_id": "world-builder-live/run/43a2c9590a374b9090d4d6666542d69e",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r23-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r23-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r23-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r23-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r23-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r23-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r23-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r23-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r23-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r23-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r23-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 24,
+   "at": "219.6",
+   "trace_id": "world-builder-live/run/dc46d69b0b9a4e73af429d8a84bbb055",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r24-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r24-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r24-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r24-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r24-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r24-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r24-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r24-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r24-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r24-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r24-e00016",
+     "move-cores-to-assembly"
+    ],
+    [
+     "r24-e00017",
+     "move-pencils-to-finished-store"
+    ]
+   ]
+  },
+  {
+   "turn": 25,
+   "at": "221.3",
+   "trace_id": "world-builder-live/run/df1b35cbb0f74badabd5783a188c7ae3",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r25-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r25-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r25-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r25-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r25-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r25-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r25-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r25-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r25-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r25-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r25-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  },
+  {
+   "turn": 26,
+   "at": "223.1",
+   "trace_id": "world-builder-live/run/e5c2999fbf834a5a9e98d4f66b4add26",
+   "moves": {
+    "assembler": {
+     "kind": "assemble-pencil",
+     "event_id": "r26-e00001",
+     "changed": true
+    },
+    "core-works": {
+     "kind": "form-core",
+     "event_id": "r26-e00003",
+     "changed": true
+    },
+    "customer-one": {
+     "kind": "place-order",
+     "event_id": "r26-e00005",
+     "changed": true
+    },
+    "logger": {
+     "kind": "gather-logs",
+     "event_id": "r26-e00007",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r26-e00009",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-slats",
+     "event_id": "r26-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r26-e00012",
+     "renew-raw-supplies"
+    ],
+    [
+     "r26-e00013",
+     "move-logs-to-sawmill"
+    ],
+    [
+     "r26-e00014",
+     "move-graphite-to-core-works"
+    ],
+    [
+     "r26-e00015",
+     "move-slats-to-assembly"
+    ],
+    [
+     "r26-e00016",
+     "move-cores-to-assembly"
+    ]
+   ]
+  }
+ ],
+ "readout": {
+  "at": "234.7",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "Customer-one repeatedly placed pencil orders, while the logger, miner, core-works, sawmill, and assembler carried out a recurring production sequence. Pencils entered finished stock periodically, but the events show no discussion or decision process that slowed coordination.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No separate concern-raising channels or differing messages to decision makers are recorded.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "There are no recorded meetings or decision deadlines being delayed, extended, or used up.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No settled item is recorded as undone or put back up for discussion.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No conditional support or withheld support holding back a final decision or deployment is recorded.",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 276
+   },
+   "cost_usd": 0.0021898,
+   "daily_cost_usd": 0.32371002500000007,
+   "trace_id": "world-builder-live/readout/a66c513714ff49818250fbe4f3b853dd"
+  }
+ },
+ "share": {
+  "at": "237.2",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "M6CqmOQP-qt5",
+   "rounds": 26
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/world/cde24f8929724605bee600215b12e326",
+  "cost_usd": 0.030077635
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "b582c79b43fd17696e59bbcb2590edb375eecf1d",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 0.4714772150000001,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0
+ },
+ "pressed_at": "1.4",
+ "run_stage_at": "176.8",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nCustomer-one repeatedly placed pencil orders, while the logger, miner, core-works, sawmill, and assembler carried out a recurring production sequence. Pencils entered finished stock periodically, but the events show no discussion or decision process that slowed coordination.\n\nDid not happen: Local concerns through separate channels\nNo separate concern-raising channels or differing messages to decision makers are recorded.\nDid not happen: Slowed meetings\nThere are no recorded meetings or decision deadlines being delayed, extended, or used up.\nDid not happen: Reopened settled issues\nNo settled item is recorded as undone or put back up for discussion.\nDid not happen: Conditional support delaying deployment\nNo conditional support or withheld support holding back a final decision or deployment is recorded.\nRead from 276 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 26 · 147 allowed · 0 refused · 35 held back by the rules · 129 by itself",
+ "finished": "2026-10-20T20:53:45.318Z"
+}

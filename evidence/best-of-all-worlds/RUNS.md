@@ -93,3 +93,13 @@ none was left out. Live llm_client was 2d30c34 for the 1a5498f runs. Evidence fi
 C4 root causes, filed as [#187](https://github.com/BrianMills2718/world-substrate/issues/187): rule rewrites cannot repair a
 structure gap (the structure step should be rerun with the dry-run evidence), and the idle-actor guidance invites
 blanket refill processes (a process should not raise a quantity some action produces).
+
+# Pencil set at b582c79 (#187 fix), owner allowance (2026-10-20 UTC)
+
+Brian approved one pencil set at b582c79 ("yes", 2026-10-20). Both builds are listed; there were no others. Files in
+[final-b582c79/](final-b582c79/) (no screenshots: the two runs ran at once and wrote the same image names).
+
+| Run | Commit | Trace ids | Outcome | Evidence |
+| --- | --- | --- | --- | --- |
+| **c4-run15 pencil (C4)** | **b582c79** | build world-builder-live/world/4a512f973063455598c2a019aa0e6b39 | share 4p5LQlDRNbdf. The first design left four moves never possible; the structure was redesigned and the new rules passed the test run with no one idle. 26 rounds, 7 distinct moves in every window (harvest-logs, make-slats, supply-graphite, make-erasers, assemble-pencils, carry-pencils, sell-pencils), first events r1-e00001..r1-e00009. Real chain: make-slats uses up logs, assemble-pencils uses up slats, graphite and erasers; carry-pencils moves factory to shop; sell-pencils shop to school. 26 pencils reached the school, factory and shop net 0. Processes only renew logs, graphite and erasers at their suppliers. PASS | c4-run15.*, share-4p5LQlDRNbdf.json |
+| c4-run16 pencil | b582c79 | build .../world/cde24f8929724605bee600215b12e326 | share M6CqmOQP-qt5. Redesign fired; 26 rounds, 6 distinct moves per window, but the carrier is idle and deliver-pencils and buy-pencil were never possible: processes move goods between businesses every round (move-logs-to-sawmill and four more). FAIL in substance -> [#190](https://github.com/BrianMills2718/world-substrate/issues/190) | c4-run16.*, share-M6CqmOQP-qt5.json |

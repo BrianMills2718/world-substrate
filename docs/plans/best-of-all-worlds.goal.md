@@ -121,7 +121,11 @@ came back, came back unused, or the expectation was wrong.
   (c4-run10) met C4 only by its letter: delivering and selling were never possible. Root causes and proposed fixes:
   [#187](https://github.com/BrianMills2718/world-substrate/issues/187). Brian approved stopping runs here and reporting
   every result (2026-10-20); the next step is fixing #187, then one new pencil set.
-- #187 fix (not yet run live, awaiting Brian's yes for one pencil set): an ongoing world whose best rules still leave a
+- Pencil set at `b582c79` (Brian's yes, 2026-10-20): c4-run15 (share `4p5LQlDRNbdf`) is a real supply chain and passes
+  C4; c4-run16 (share `M6CqmOQP-qt5`) fails in substance because processes do the carrier's transport (#190). So C4 now
+  passes on one of two builds. `b582c79` also changed the rules text the Waltzman build uses (`world_kind="ongoing"`), so
+  C1-C3 and C6 evidence at `1a5498f` does not cover `b582c79`; one Waltzman run there awaits Brian's yes.
+- #187 fix (#189, live at `b582c79`): an ongoing world whose best rules still leave a
   step impossible or a worker idle gets its structure redesigned once from the test run; a process that adds a good
   some action makes from other goods blocks the top score and is named in the rewrite guidance; the structure contract
   asks for one carry action per kind of goods. Replayed on the saved pencil runs, the new check flags exactly the runs

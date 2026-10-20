@@ -1,0 +1,43 @@
+[1.4s] pressing Create simulation
+[1.5s] step: Sending your description… 0 s
+[4.5s] step: Reading your description… 1.3 s
+[18.6s] step: ! Left out of the simulation Pencil erasers and ferrules Transport distances and travel time Prices and payments 16.4 s
+[18.6s] step: Writing the rules… 16.4 s
+[60.2s] step: Test-running the rules with simple moves… 57.3 s
+[61.2s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 58.1 s
+[95.2s] step: Test-running the rules with simple moves… 91.6 s
+[97.2s] step: Redesigning what each one can do… · the test run showed steps that could never happen 93.7 s
+[111.4s] step: Writing the rules… 107.9 s
+[139.5s] step: Test-running the rules with simple moves… 135.9 s
+[140.5s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 136.8 s
+[176.2s] round 1: customer-one=place-order
+[176.8s] run stage visible
+[177.9s] round 2: customer-one=place-order, logger=gather-logs, miner=mine-graphite
+[179.6s] round 3: core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[181.4s] round 4: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[183.5s] round 5: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[185.3s] round 6: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[187.1s] round 7: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[188.8s] round 8: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[190.6s] round 9: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[192.4s] round 10: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[194.2s] round 11: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[195.9s] round 12: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[197.7s] round 13: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[199.8s] round 14: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[201.5s] round 15: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[203.3s] round 16: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[205.1s] round 17: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[207.1s] round 18: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[210.1s] round 19: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[212.1s] round 20: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[214.2s] round 21: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[216.0s] round 22: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[217.8s] round 23: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[219.6s] round 24: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[221.3s] round 25: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[223.1s] round 26: assembler=assemble-pencil, core-works=form-core, customer-one=place-order, logger=gather-logs, miner=mine-graphite, sawmill=saw-slats
+[234.7s] readout 200
+[237.2s] share {"ok":true,"share_id":"M6CqmOQP-qt5","rounds":26}
+[238.0s] saved c4-run16.json
+exit=0
