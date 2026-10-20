@@ -1,0 +1,334 @@
+build trace world-builder-live/people/183b67dd51d64ce588d813168423d93d kind ongoing people 10 ['community-group', 'country-four', 'country-one', 'country-three', 'country-two', 'four-country-partnership', 'legal-group', 'logistics-group', 'regional-health-network', 'technical-group']
+rounds 45 first 1 last 45
+runs 45 movers {'llm-resident (Concordia) openrouter/openai/gpt-6-luna': 45} policies {'resident': 45}
+cost 0.1563
+moves attempted 205; accepted 154; attempted moves missing belief or expected effect: 0 []
+first real move per person {'community-group': 1, 'country-four': 1, 'country-one': 1, 'country-three': 1, 'country-two': 1, 'four-country-partnership': 1, 'legal-group': 1, 'logistics-group': 1, 'regional-health-network': 1, 'technical-group': 1} all within 20: True
+rounds 1-10: 47 real moves, 9 distinct, top [('put-matter-on-agenda', 15), ('settle-agenda-matter', 15), ('communicate', 5)]
+rounds 11-20: 18 real moves, 7 distinct, top [('put-matter-on-agenda', 5), ('settle-agenda-matter', 5), ('raise-new-concern', 3)]
+rounds 21-30: 37 real moves, 7 distinct, top [('resolve-own-concern', 9), ('put-matter-on-agenda', 9), ('settle-agenda-matter', 9)]
+rounds 31-40: 29 real moves, 8 distinct, top [('put-matter-on-agenda', 9), ('settle-agenda-matter', 8), ('reopen-concern', 3)]
+rounds 41-50: 23 real moves, 7 distinct, top [('settle-agenda-matter', 9), ('put-matter-on-agenda', 8), ('resolve-own-concern', 2)]
+communicate 5 [('r1-e00001', 'community-group'), ('r1-e00013', 'legal-group'), ('r1-e00015', 'logistics-group'), ('r1-e00019', 'technical-group')]
+deploy-early-warning-system 1 [('r9-e00001', 'four-country-partnership')]
+make-support-conditional 8 [('r5-e00005', 'country-three'), ('r12-e00003', 'country-three'), ('r21-e00007', 'country-two'), ('r26-e00005', 'country-one')]
+put-matter-on-agenda 46 [('r1-e00003', 'country-four'), ('r1-e00005', 'country-one'), ('r1-e00007', 'country-three'), ('r1-e00009', 'country-two')]
+raise-new-concern 10 [('r4-e00003', 'logistics-group'), ('r7-e00009', 'logistics-group'), ('r11-e00001', 'logistics-group'), ('r14-e00003', 'logistics-group')]
+reopen-concern 4 [('r33-e00001', 'country-two'), ('r37-e00003', 'country-two'), ('r40-e00001', 'country-two'), ('r43-e00001', 'country-two')]
+resolve-concern 8 [('r2-e00001', 'community-group'), ('r5-e00009', 'logistics-group'), ('r12-e00005', 'logistics-group'), ('r19-e00001', 'logistics-group')]
+resolve-own-concern 20 [('r2-e00005', 'country-three'), ('r2-e00007', 'country-two'), ('r2-e00014', 'regional-health-network'), ('r3-e00003', 'country-one')]
+restore-full-support 6 [('r7-e00005', 'country-three'), ('r14-e00001', 'country-three'), ('r24-e00003', 'country-two'), ('r28-e00001', 'country-one')]
+settle-agenda-matter 46 [('r2-e00003', 'country-four'), ('r2-e00009', 'four-country-partnership'), ('r2-e00011', 'legal-group'), ('r3-e00005', 'country-three')]
+world 1 r1-e00020 moment-countdown
+world 1 r1-e00021 moment-occurs
+world 2 r2-e00017 moment-passes
+world 2 r2-e00018 moment-countdown
+world 2 r2-e00019 moment-occurs
+world 2 r2-e00020 remedy-progresses
+world 3 r3-e00011 moment-passes
+world 3 r3-e00012 moment-countdown
+world 3 r3-e00013 moment-occurs
+world 3 r3-e00014 remedy-completes
+world 3 r3-e00015 remedy-progresses
+world 4 r4-e00006 moment-passes
+world 4 r4-e00007 moment-countdown
+world 4 r4-e00008 moment-occurs
+world 4 r4-e00009 remedy-completes
+world 4 r4-e00010 work-cycle-restarts
+world 4 r4-e00011 reset-work-at-new-cycle
+world 5 r5-e00010 moment-passes
+world 5 r5-e00011 moment-countdown
+world 5 r5-e00012 moment-occurs
+world 5 r5-e00013 remedy-progresses
+world 6 r6-e00010 moment-passes
+world 6 r6-e00011 moment-countdown
+world 6 r6-e00012 moment-occurs
+world 6 r6-e00013 remedy-completes
+world 7 r7-e00014 moment-passes
+world 7 r7-e00015 moment-countdown
+world 7 r7-e00016 moment-occurs
+world 8 r8-e00006 moment-passes
+world 8 r8-e00007 moment-countdown
+world 8 r8-e00008 moment-occurs
+world 8 r8-e00009 remedy-progresses
+world 8 r8-e00010 decision-authorized-at-deadline
+world 8 r8-e00011 work-cycle-restarts
+world 8 r8-e00012 reset-work-at-new-cycle
+world 9 r9-e00003 moment-passes
+world 9 r9-e00004 moment-countdown
+world 9 r9-e00005 moment-occurs
+world 9 r9-e00006 remedy-completes
+world 9 r9-e00007 deployment-progresses
+world 10 r10-e00001 moment-passes
+world 10 r10-e00002 moment-countdown
+world 10 r10-e00003 moment-occurs
+world 10 r10-e00004 deployment-progresses
+world 11 r11-e00002 moment-passes
+world 11 r11-e00003 moment-countdown
+world 11 r11-e00004 moment-occurs
+world 11 r11-e00005 deployment-progresses
+world 12 r12-e00006 moment-passes
+world 12 r12-e00007 moment-countdown
+world 12 r12-e00008 moment-occurs
+world 12 r12-e00009 remedy-progresses
+world 12 r12-e00010 work-cycle-restarts
+world 12 r12-e00011 reset-work-at-new-cycle
+world 13 r13-e00008 moment-passes
+world 13 r13-e00009 moment-countdown
+world 13 r13-e00010 moment-occurs
+world 13 r13-e00011 remedy-completes
+world 14 r14-e00004 moment-passes
+world 14 r14-e00005 moment-countdown
+world 14 r14-e00006 moment-occurs
+world 14 r14-e00007 deployment-progresses
+world 15 r15-e00006 moment-passes
+world 15 r15-e00007 moment-countdown
+world 15 r15-e00008 moment-occurs
+world 15 r15-e00009 remedy-progresses
+world 15 r15-e00010 deployment-progresses
+world 16 r16-e00001 moment-passes
+world 16 r16-e00002 moment-countdown
+world 16 r16-e00003 moment-occurs
+world 16 r16-e00004 remedy-completes
+world 16 r16-e00005 deployment-completes
+world 16 r16-e00006 operating-review-nears
+world 16 r16-e00007 work-cycle-restarts
+world 16 r16-e00008 reset-work-at-new-cycle
+world 17 r17-e00002 moment-passes
+world 17 r17-e00003 moment-countdown
+world 17 r17-e00004 moment-occurs
+world 17 r17-e00005 operating-review-nears
+world 18 r18-e00008 moment-passes
+world 18 r18-e00009 moment-countdown
+world 18 r18-e00010 moment-occurs
+world 18 r18-e00011 operating-review-nears
+world 19 r19-e00004 moment-passes
+world 19 r19-e00005 moment-countdown
+world 19 r19-e00006 moment-occurs
+world 19 r19-e00007 remedy-progresses
+world 19 r19-e00008 operating-review-nears
+world 20 r20-e00006 moment-passes
+world 20 r20-e00007 moment-countdown
+world 20 r20-e00008 moment-occurs
+world 20 r20-e00009 remedy-completes
+world 20 r20-e00010 operating-review-nears
+world 20 r20-e00011 operating-review-reexamines-concern
+world 20 r20-e00012 operating-review-held
+world 20 r20-e00013 work-cycle-restarts
+world 20 r20-e00014 reset-work-at-new-cycle
+world 21 r21-e00014 moment-passes
+world 21 r21-e00015 moment-countdown
+world 21 r21-e00016 moment-occurs
+world 21 r21-e00017 remedy-progresses
+world 21 r21-e00018 operating-review-nears
+world 22 r22-e00010 moment-passes
+world 22 r22-e00011 moment-countdown
+world 22 r22-e00012 moment-occurs
+world 22 r22-e00013 remedy-completes
+world 22 r22-e00014 remedy-progresses
+world 22 r22-e00015 operating-review-nears
+world 23 r23-e00002 moment-passes
+world 23 r23-e00003 moment-countdown
+world 23 r23-e00004 moment-occurs
+world 23 r23-e00005 remedy-completes
+world 23 r23-e00006 operating-review-nears
+world 24 r24-e00010 moment-passes
+world 24 r24-e00011 moment-countdown
+world 24 r24-e00012 moment-occurs
+world 24 r24-e00013 operating-review-nears
+world 24 r24-e00014 work-cycle-restarts
+world 24 r24-e00015 reset-work-at-new-cycle
+world 25 r25-e00011 moment-passes
+world 25 r25-e00012 moment-countdown
+world 25 r25-e00013 moment-occurs
+world 25 r25-e00014 remedy-progresses
+world 25 r25-e00015 operating-review-nears
+world 25 r25-e00016 operating-review-reexamines-concern
+world 25 r25-e00017 operating-review-held
+world 26 r26-e00014 moment-passes
+world 26 r26-e00015 moment-countdown
+world 26 r26-e00016 moment-occurs
+world 26 r26-e00017 remedy-completes
+world 26 r26-e00018 remedy-progresses
+world 26 r26-e00019 deployment-suspended
+world 27 r27-e00011 moment-passes
+world 27 r27-e00012 moment-countdown
+world 27 r27-e00013 moment-occurs
+world 27 r27-e00014 remedy-completes
+world 27 r27-e00015 remedy-progresses
+world 28 r28-e00009 moment-passes
+world 28 r28-e00010 moment-countdown
+world 28 r28-e00011 moment-occurs
+world 28 r28-e00012 remedy-completes
+world 28 r28-e00013 work-cycle-restarts
+world 28 r28-e00014 reset-work-at-new-cycle
+world 29 r29-e00004 moment-passes
+world 29 r29-e00005 moment-countdown
+world 29 r29-e00006 moment-occurs
+world 29 r29-e00007 remedy-progresses
+world 30 r30-e00009 moment-passes
+world 30 r30-e00010 moment-countdown
+world 30 r30-e00011 moment-occurs
+world 30 r30-e00012 remedy-completes
+world 30 r30-e00013 deployment-resumes
+world 30 r30-e00014 operating-review-nears
+world 31 r31-e00002 moment-passes
+world 31 r31-e00003 moment-countdown
+world 31 r31-e00004 moment-occurs
+world 31 r31-e00005 operating-review-nears
+world 32 r32-e00006 moment-passes
+world 32 r32-e00007 moment-countdown
+world 32 r32-e00008 moment-occurs
+world 32 r32-e00009 operating-review-nears
+world 32 r32-e00010 work-cycle-restarts
+world 32 r32-e00011 reset-work-at-new-cycle
+world 33 r33-e00004 moment-passes
+world 33 r33-e00005 moment-countdown
+world 33 r33-e00006 moment-occurs
+world 33 r33-e00007 operating-review-nears
+world 34 r34-e00010 moment-passes
+world 34 r34-e00011 moment-countdown
+world 34 r34-e00012 moment-occurs
+world 34 r34-e00013 remedy-progresses
+world 34 r34-e00014 deployment-suspended
+world 35 r35-e00013 moment-passes
+world 35 r35-e00014 moment-countdown
+world 35 r35-e00015 moment-occurs
+world 35 r35-e00016 remedy-completes
+world 35 r35-e00017 remedy-progresses
+world 36 r36-e00002 moment-passes
+world 36 r36-e00003 moment-countdown
+world 36 r36-e00004 moment-occurs
+world 36 r36-e00005 remedy-completes
+world 36 r36-e00006 work-cycle-restarts
+world 36 r36-e00007 reset-work-at-new-cycle
+world 37 r37-e00008 moment-passes
+world 37 r37-e00009 moment-countdown
+world 37 r37-e00010 moment-occurs
+world 38 r38-e00014 moment-passes
+world 38 r38-e00015 moment-countdown
+world 38 r38-e00016 moment-occurs
+world 38 r38-e00017 remedy-progresses
+world 39 r39-e00007 moment-passes
+world 39 r39-e00008 moment-countdown
+world 39 r39-e00009 moment-occurs
+world 39 r39-e00010 remedy-completes
+world 39 r39-e00011 remedy-progresses
+world 40 r40-e00004 moment-passes
+world 40 r40-e00005 moment-countdown
+world 40 r40-e00006 moment-occurs
+world 40 r40-e00007 remedy-completes
+world 40 r40-e00008 work-cycle-restarts
+world 40 r40-e00009 reset-work-at-new-cycle
+world 41 r41-e00016 moment-passes
+world 41 r41-e00017 moment-countdown
+world 41 r41-e00018 moment-occurs
+world 41 r41-e00019 remedy-progresses
+world 42 r42-e00009 moment-passes
+world 42 r42-e00010 moment-countdown
+world 42 r42-e00011 moment-occurs
+world 42 r42-e00012 remedy-completes
+world 43 r43-e00006 moment-passes
+world 43 r43-e00007 moment-countdown
+world 43 r43-e00008 moment-occurs
+world 44 r44-e00010 moment-passes
+world 44 r44-e00011 moment-countdown
+world 44 r44-e00012 moment-occurs
+world 44 r44-e00013 remedy-progresses
+world 44 r44-e00014 work-cycle-restarts
+world 44 r44-e00015 reset-work-at-new-cycle
+world 45 r45-e00011 moment-passes
+world 45 r45-e00012 moment-countdown
+world 45 r45-e00013 moment-occurs
+world 45 r45-e00014 remedy-completes
+--- sample beliefs (first accepted move per person) ---
+community-group | communicate | believed: The draft alert is unavailable in two languages used by communities near Country Four, and that concern has not yet been communicated. Country Four is currently unaware, so accessible alerting needs to be brought to its attention. | expected: The language-gap information will be delivered to Country Four and make it aware of the concern.
+country-four | put-matter-on-agenda | believed: The activation decision is open with no agenda items, and the deadline is approaching. As Country Four, I need the partnership to consider activation while keeping community understanding in view. | expected: Putting the activation question on the agenda will add one agenda item and mark my agenda action done.
+country-one | put-matter-on-agenda | believed: The activation decision is open with broad support, but no agenda item has yet been added and I have not assessed local readiness. There is time before the deadline, so I should begin formal deliberation while keeping operational concerns in view. | expected: This will add the activation question to the partnership agenda and mark that I have put it forward.
+country-three | put-matter-on-agenda | believed: The activation decision is open with no agenda items, and the deadline is approaching; I have not yet assessed local staffing or logistics. Putting the decision on the agenda is a practical first step toward deliberation. | expected: The activation decision’s agenda item count will increase by one, and my record will show that I put it on the agenda.
+country-two | put-matter-on-agenda | believed: The activation decision is open with no agenda items, and the deadline is approaching. I need legal responsibilities made explicit before I can support activation fully, but no concerns or reviews are yet on record. | expected: Putting the activation question on the agenda will add one agenda item and mark that I have done so.
+four-country-partnership | put-matter-on-agenda | believed: The activation decision is open with five full-support positions, but no agenda items or completed deliberation; the deadline is approaching. Member concerns can affect readiness, so I need to put the decision before the partnership. | expected: The activation question will gain one agenda item, and my record will show that I put it on the agenda.
+legal-group | communicate | believed: The data-retention question remains open and has not yet been communicated to Country Two. I should make the ambiguity visible to the decision-maker before it complicates implementation. | expected: The retention concern will be delivered to Country Two, making them aware of it.
+logistics-group | communicate | believed: The planned deployment depends on staffing at each crossing, and one crossing lacks a confirmed trained operator for every planned shift. My concern is still pending and has not yet reached Country Three. | expected: The staffing concern will be delivered to Country Three, making the information active and the country aware.
+regional-health-network | put-matter-on-agenda | believed: The activation decision is open, with broad support but no agenda items yet; the deadline is approaching, and member coordination is necessary for implementation. I should begin formal discussion while there is time to consider local concerns. | expected: Putting the activation question on the agenda will add one agenda item and mark that I have done so.
+technical-group | communicate | believed: The system is under consideration, and a known sensor-feed gap during scheduled maintenance could matter to users of early warnings. The concern has not yet been communicated; I can send it to either Country One or the regional health network. | expected: The regional health network will receive the technical limitation and become aware of it.
+--- readout ---
+{
+ "schema": "world-builder-readout/v1",
+ "lens": "coordination",
+ "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+ "summary": "Country One, Country Two, and Country Three raised concerns about sensor coverage, legal responsibility, and staffing, while community and technical groups raised other local issues through separate channels. The partnership authorized and deployed the warning system, but recurring concerns, conditional support, agenda churn, and extended reviews slowed coordination; the system was later suspended and then resumed, while concerns were raised and reopened again.",
+ "mechanisms": [
+  {
+   "id": "separate-channels",
+   "name": "Local concerns through separate channels",
+   "status": "present",
+   "event_ids": [
+    "r1-e00001",
+    "r1-e00013",
+    "r1-e00015",
+    "r1-e00019",
+    "r2-e00016"
+   ],
+   "events": [
+    {
+     "event_id": "r1-e00001",
+     "round": 1,
+     "by": "community-group",
+     "move": "communicate",
+     "changed": "entities.country-four.components.member.aware: false -> true; entities.delivery-info-alert-language-gap-to-country-four.components.delivery.status: pending -> delivered; entities.info-alert-language-gap-to-country-four.components.information.active: false -> true"
+    },
+    {
+     "event_id": "r1-e00013",
+     "round": 1,
+     "by": "legal-group",
+     "move": "communicate",
+     "changed": "entities.country-two.components.member.aware: false -> true; entities.delivery-info-legal-retention-question-to-country-two.components.delivery.status: pending -> delivered; entities.info-legal-retention-question-to-country-two.components.information.active: false -> true"
+    },
+    {
+     "event_id": "r1-e00015",
+     "round": 1,
+     "by": "logistics-group",
+     "move": "communicate",
+     "changed": "entities.country-three.components.member.aware: false -> true; entities.delivery-info-local-staffing-gap-to-country-three.components.delivery.status: pending -> delivered; entities.info-local-staffing-gap-to-country-three.components.information.active: false -> true"
+    },
+    {
+     "event_id": "r1-e00019",
+     "round": 1,
+     "by": "technical-group",
+     "move": "communicate",
+     "changed": "entities.delivery-info-technical-feed-gap-to-regional-health-network.components.delivery.status: pending -> delivered; entities.info-technical-feed-gap-to-regional-health-network.components.information.active: false -> true; entities.regional-health-network.components.member.aware: false -> true"
+    },
+    {
+     "event_id": "r2-e00016",
+     "round": 2,
+     "by": "technical-group",
+     "move": "communicate",
+     "changed": "entities.country-one.components.member.aware: false -> true; entities.delivery-info-technical-feed-gap-to-country-one.components.delivery.status: pending -> delivered; entities.info-technical-feed-gap-to-country-one.components.information.active: false -> true"
+    }
+   ],
+   "explanation": "Community Group informed Country Four about alert language, Legal Group informed Country Two about data retention, and Logistics Group informed Country Three about staffing. Technical Group separately informed the Regional Health Network and Country One about feed reliability.",
+   "missing_reason": "",
+   "dropped_event_ids": []
+  },
+  {
+   "id": "slowed-meetings",
+   "name": "Slowed meetings",
+   "status": "present",
+   "event_ids": [
+    "r5-e00005",
+    "r8-e00010",
+    "r16-e00005",
+    "r20-e00011",
+    "r20-e00012",
+    "r25-e00016",
+    "r25-e00017",
+    "r26-e00019"
+   ],
+   "events": [
+    {
+     "event_id": "r5-e00005",
+     "round": 5,
+     "by": "country-three",
+     "move": "make-support-conditional",
+     "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 5 -> 4; entities.support-country-three.components.support.condition_id: country-three -> info-local-staffing-gap-to-country-three; entities.support-country

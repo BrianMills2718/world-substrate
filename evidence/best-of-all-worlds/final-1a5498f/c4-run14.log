@@ -1,0 +1,45 @@
+[1.7s] pressing Create simulation
+[1.8s] step: Sending your description… 0 s
+[4.8s] step: Reading your description… 1.4 s
+[19.9s] step: ! Left out of the simulation Money and prices Distances and travel time Pencil packaging and other materials Customer arrivals beyond the represented demand 16.
+[19.9s] step: Writing the rules… 16.9 s
+[40.5s] step: Test-running the rules with simple moves… 37.4 s
+[41.5s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 38.3 s
+[70.1s] step: Test-running the rules with simple moves… 66.2 s
+[71.1s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 67.2 s
+[106.8s] step: ✓ Test run: 0 moves in 24 rounds; went quiet by the end; never possible: deliver pencils, harvest logs, make pencils, mill boards, mine graphite ore, process gr
+[106.8s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 103.3 s
+[131.3s] step: Test-running the rules with simple moves… 127.6 s
+[132.0s] round 1: 
+[132.3s] run stage visible
+[133.7s] round 2: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[135.5s] round 3: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[137.2s] round 4: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[139.0s] round 5: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[140.8s] round 6: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[142.5s] round 7: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[144.3s] round 8: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[146.1s] round 9: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[147.8s] round 10: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[149.7s] round 11: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[151.6s] round 12: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[153.5s] round 13: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[156.8s] round 14: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[158.6s] round 15: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[160.4s] round 16: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[162.2s] round 17: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[164.2s] round 18: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[166.2s] round 19: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[168.0s] round 20: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[169.8s] round 21: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[171.9s] round 22: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[173.7s] round 23: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[175.7s] round 24: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[177.9s] round 25: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[179.7s] round 26: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[181.5s] round 27: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[183.3s] round 28: carrier=deliver-pencils, forester=harvest-logs, graphite-miner=mine-graphite-ore, graphite-works=process-graphite, pencil-maker=make-pencils, pencil-shop=sell-pencils, timber-mill=mill-boards
+[196.9s] readout 200
+[199.2s] share {"ok":true,"share_id":"7_reCn3v_2SR","rounds":28}
+[200.0s] saved c4-run14.json
+exit=0

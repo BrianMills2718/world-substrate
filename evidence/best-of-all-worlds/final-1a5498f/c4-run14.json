@@ -1,0 +1,1593 @@
+{
+ "started": "2026-10-20T17:12:05.085Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.8",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "4.8",
+   "text": "Reading your description…\n1.4 s"
+  },
+  {
+   "at": "19.9",
+   "text": "!\nLeft out of the simulation\nMoney and prices\nDistances and travel time\nPencil packaging and other materials\nCustomer arrivals beyond the represented demand\n16.9 s"
+  },
+  {
+   "at": "19.9",
+   "text": "Writing the rules…\n16.9 s"
+  },
+  {
+   "at": "40.5",
+   "text": "Test-running the rules with simple moves…\n37.4 s"
+  },
+  {
+   "at": "41.5",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n38.3 s"
+  },
+  {
+   "at": "70.1",
+   "text": "Test-running the rules with simple moves…\n66.2 s"
+  },
+  {
+   "at": "71.1",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n67.2 s"
+  },
+  {
+   "at": "106.8",
+   "text": "✓\nTest run: 0 moves in 24 rounds; went quiet by the end; never possible: deliver pencils, harvest logs, make pencils, mill boards, mine graphite ore, process graphite, sell pencils\n103.3 s"
+  },
+  {
+   "at": "106.8",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n103.3 s"
+  },
+  {
+   "at": "131.3",
+   "text": "Test-running the rules with simple moves…\n127.6 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "132.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/77ab78017aad4fc99867d1c4bce74b92"
+  },
+  {
+   "at": "133.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/33cc0b0dcc964e348f3320bfa2588228"
+  },
+  {
+   "at": "135.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/382cfbef5300446ba37e6153a47708c1"
+  },
+  {
+   "at": "137.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/e2a847b1c0414575b9747c2a4db680c5"
+  },
+  {
+   "at": "139.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/be4094f0521f48368f1667a4576c2252"
+  },
+  {
+   "at": "140.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/315f53f8a1224385b7ff3b30cb49ea37"
+  },
+  {
+   "at": "142.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/5010cb72e267424882730f5b56280f8e"
+  },
+  {
+   "at": "144.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/04f83df92bcf4c0ba21aec130f90729f"
+  },
+  {
+   "at": "146.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/e1b8ed4b850f4fdf9f774eda73a6b605"
+  },
+  {
+   "at": "147.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a05a388b5707406193ae6a06471c21c6"
+  },
+  {
+   "at": "149.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/ee6ae7b52f0f427b89994a7d7b13d858"
+  },
+  {
+   "at": "151.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/33c7d7ff115847ccabb10669b415d3e7"
+  },
+  {
+   "at": "153.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/14b28346386048389b5a9a51e3a13436"
+  },
+  {
+   "at": "156.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/12287f567cfb48478972c4138a7a5187"
+  },
+  {
+   "at": "158.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/723fb92874ac470e870f0cdecd05db21"
+  },
+  {
+   "at": "160.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/8f662e1cb92e4ae1ac8b535a4bd05756"
+  },
+  {
+   "at": "162.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/6d0444019e0448f4b096aae64b811bf0"
+  },
+  {
+   "at": "164.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/48d119e2578b4ac39b4edafc73f4919e"
+  },
+  {
+   "at": "166.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/672e06742a114886bc68896fe27b03a6"
+  },
+  {
+   "at": "168.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/1129e60d3bdd4338b485ab7c2f5ead1f"
+  },
+  {
+   "at": "169.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/043f6cc563c84a28b7572a2a81f28cf0"
+  },
+  {
+   "at": "171.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/dd9676c8f8d5423fa2cf42f3cd27c705"
+  },
+  {
+   "at": "173.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/3dd22a0f3a244eb7a166fe34edff7542"
+  },
+  {
+   "at": "175.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/09ffb8000c71455aa5b9b9a85c66e0bc"
+  },
+  {
+   "at": "177.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/42673620b2f94c3caa46f2891bd1ae0b"
+  },
+  {
+   "at": "179.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/4c4b8bd4a5ff4cce8457f9be82c251d6"
+  },
+  {
+   "at": "181.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/e867be97638746dc8739a270d6ceda67"
+  },
+  {
+   "at": "183.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/f0e3d481bf9e4de99004ce11297ee2af"
+  }
+ ],
+ "rounds": [
+  {
+   "turn": 1,
+   "at": "132.0",
+   "trace_id": "world-builder-live/run/77ab78017aad4fc99867d1c4bce74b92",
+   "moves": {},
+   "world_events": [
+    [
+     "r1-e00001",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "at": "133.7",
+   "trace_id": "world-builder-live/run/33cc0b0dcc964e348f3320bfa2588228",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r2-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r2-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r2-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r2-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r2-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r2-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r2-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r2-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 3,
+   "at": "135.5",
+   "trace_id": "world-builder-live/run/382cfbef5300446ba37e6153a47708c1",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r3-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r3-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r3-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r3-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r3-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r3-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r3-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r3-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 4,
+   "at": "137.2",
+   "trace_id": "world-builder-live/run/e2a847b1c0414575b9747c2a4db680c5",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r4-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r4-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r4-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r4-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r4-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r4-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r4-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r4-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 5,
+   "at": "139.0",
+   "trace_id": "world-builder-live/run/be4094f0521f48368f1667a4576c2252",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r5-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r5-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r5-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r5-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r5-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r5-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r5-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r5-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 6,
+   "at": "140.8",
+   "trace_id": "world-builder-live/run/315f53f8a1224385b7ff3b30cb49ea37",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r6-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r6-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r6-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r6-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r6-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r6-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r6-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r6-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 7,
+   "at": "142.5",
+   "trace_id": "world-builder-live/run/5010cb72e267424882730f5b56280f8e",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r7-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r7-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r7-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r7-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r7-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r7-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r7-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r7-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 8,
+   "at": "144.3",
+   "trace_id": "world-builder-live/run/04f83df92bcf4c0ba21aec130f90729f",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r8-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r8-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r8-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r8-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r8-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r8-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r8-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r8-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 9,
+   "at": "146.1",
+   "trace_id": "world-builder-live/run/e1b8ed4b850f4fdf9f774eda73a6b605",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r9-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r9-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r9-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r9-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r9-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r9-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r9-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r9-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 10,
+   "at": "147.8",
+   "trace_id": "world-builder-live/run/a05a388b5707406193ae6a06471c21c6",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r10-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r10-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r10-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r10-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r10-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r10-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r10-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r10-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 11,
+   "at": "149.7",
+   "trace_id": "world-builder-live/run/ee6ae7b52f0f427b89994a7d7b13d858",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r11-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r11-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r11-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r11-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r11-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r11-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r11-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r11-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 12,
+   "at": "151.6",
+   "trace_id": "world-builder-live/run/33c7d7ff115847ccabb10669b415d3e7",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r12-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r12-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r12-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r12-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r12-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r12-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r12-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r12-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 13,
+   "at": "153.5",
+   "trace_id": "world-builder-live/run/14b28346386048389b5a9a51e3a13436",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r13-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r13-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r13-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r13-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r13-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r13-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r13-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r13-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 14,
+   "at": "156.8",
+   "trace_id": "world-builder-live/run/12287f567cfb48478972c4138a7a5187",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r14-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r14-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r14-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r14-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r14-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r14-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r14-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r14-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 15,
+   "at": "158.6",
+   "trace_id": "world-builder-live/run/723fb92874ac470e870f0cdecd05db21",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r15-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r15-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r15-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r15-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r15-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r15-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r15-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r15-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 16,
+   "at": "160.4",
+   "trace_id": "world-builder-live/run/8f662e1cb92e4ae1ac8b535a4bd05756",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r16-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r16-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r16-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r16-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r16-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r16-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r16-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r16-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 17,
+   "at": "162.2",
+   "trace_id": "world-builder-live/run/6d0444019e0448f4b096aae64b811bf0",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r17-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r17-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r17-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r17-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r17-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r17-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r17-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r17-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 18,
+   "at": "164.2",
+   "trace_id": "world-builder-live/run/48d119e2578b4ac39b4edafc73f4919e",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r18-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r18-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r18-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r18-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r18-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r18-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r18-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r18-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 19,
+   "at": "166.2",
+   "trace_id": "world-builder-live/run/672e06742a114886bc68896fe27b03a6",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r19-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r19-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r19-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r19-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r19-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r19-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r19-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r19-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 20,
+   "at": "168.0",
+   "trace_id": "world-builder-live/run/1129e60d3bdd4338b485ab7c2f5ead1f",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r20-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r20-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r20-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r20-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r20-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r20-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r20-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r20-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 21,
+   "at": "169.8",
+   "trace_id": "world-builder-live/run/043f6cc563c84a28b7572a2a81f28cf0",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r21-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r21-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r21-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r21-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r21-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r21-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r21-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r21-e00014",
+     "restock-production-inputs"
+    ],
+    [
+     "r21-e00015",
+     "customers-continue-wanting-pencils"
+    ]
+   ]
+  },
+  {
+   "turn": 22,
+   "at": "171.9",
+   "trace_id": "world-builder-live/run/dd9676c8f8d5423fa2cf42f3cd27c705",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r22-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r22-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r22-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r22-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r22-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r22-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r22-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r22-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 23,
+   "at": "173.7",
+   "trace_id": "world-builder-live/run/3dd22a0f3a244eb7a166fe34edff7542",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r23-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r23-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r23-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r23-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r23-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r23-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r23-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r23-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 24,
+   "at": "175.7",
+   "trace_id": "world-builder-live/run/09ffb8000c71455aa5b9b9a85c66e0bc",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r24-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r24-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r24-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r24-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r24-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r24-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r24-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r24-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 25,
+   "at": "177.9",
+   "trace_id": "world-builder-live/run/42673620b2f94c3caa46f2891bd1ae0b",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r25-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r25-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r25-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r25-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r25-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r25-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r25-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r25-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 26,
+   "at": "179.7",
+   "trace_id": "world-builder-live/run/4c4b8bd4a5ff4cce8457f9be82c251d6",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r26-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r26-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r26-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r26-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r26-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r26-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r26-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r26-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 27,
+   "at": "181.5",
+   "trace_id": "world-builder-live/run/e867be97638746dc8739a270d6ceda67",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r27-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r27-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r27-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r27-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r27-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r27-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r27-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r27-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  },
+  {
+   "turn": 28,
+   "at": "183.3",
+   "trace_id": "world-builder-live/run/f0e3d481bf9e4de99004ce11297ee2af",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r28-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-logs",
+     "event_id": "r28-e00003",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r28-e00005",
+     "changed": true
+    },
+    "graphite-works": {
+     "kind": "process-graphite",
+     "event_id": "r28-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "make-pencils",
+     "event_id": "r28-e00009",
+     "changed": true
+    },
+    "pencil-shop": {
+     "kind": "sell-pencils",
+     "event_id": "r28-e00011",
+     "changed": true
+    },
+    "timber-mill": {
+     "kind": "mill-boards",
+     "event_id": "r28-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r28-e00014",
+     "restock-production-inputs"
+    ]
+   ]
+  }
+ ],
+ "readout": {
+  "at": "196.9",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "The forester, graphite miner, graphite works, timber mill, pencil maker, carrier, and pencil shop repeatedly moved materials through the pencil supply chain. Customers’ demand fell to zero, was restored, and the pencil shop continued selling pencils.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No separate concerns, channels, or decision makers are recorded.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No meeting, review, or decision deadline is recorded as delayed or used up.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No settled concern, readiness, or approval is recorded as undone or reopened.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No support condition or withholding of support is recorded.",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 218
+   },
+   "cost_usd": 0.001983,
+   "daily_cost_usd": 0.25608771500000005,
+   "trace_id": "world-builder-live/readout/260c4f1aae7749fea58546fe2d06ceae"
+  }
+ },
+ "share": {
+  "at": "199.2",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "7_reCn3v_2SR",
+   "rounds": 28
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/world/413738839e4346209389018120a88239",
+  "cost_usd": 0.018939025
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "1a5498f59e27e711c3b7d4898eaef187ba2fb543",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 1.5000929,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0
+ },
+ "pressed_at": "1.8",
+ "run_stage_at": "132.3",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nThe forester, graphite miner, graphite works, timber mill, pencil maker, carrier, and pencil shop repeatedly moved materials through the pencil supply chain. Customers’ demand fell to zero, was restored, and the pencil shop continued selling pencils.\n\nDid not happen: Local concerns through separate channels\nNo separate concerns, channels, or decision makers are recorded.\nDid not happen: Slowed meetings\nNo meeting, review, or decision deadline is recorded as delayed or used up.\nDid not happen: Reopened settled issues\nNo settled concern, readiness, or approval is recorded as undone or reopened.\nDid not happen: Conditional support delaying deployment\nNo support condition or withholding of support is recorded.\nRead from 218 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 28 · 189 allowed · 0 refused · 34 held back by the rules · 29 by itself",
+ "finished": "2026-10-20T17:15:25.040Z"
+}

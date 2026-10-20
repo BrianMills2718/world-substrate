@@ -1,0 +1,1884 @@
+{
+ "started": "2026-10-19T00:39:44.694Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.2",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "4.3",
+   "text": "Reading your description…\n1.7 s"
+  },
+  {
+   "at": "43.4",
+   "text": "!\nLeft out of the simulation\nTransport routes and distances\nPrices and payments\nCustomer identities and individual orders\n41.1 s"
+  },
+  {
+   "at": "43.4",
+   "text": "Writing the rules…\n41.1 s"
+  },
+  {
+   "at": "73.5",
+   "text": "Test-running the rules with simple moves…\n72.1 s"
+  },
+  {
+   "at": "75.5",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n73.1 s"
+  },
+  {
+   "at": "103.5",
+   "text": "Test-running the rules with simple moves…\n101.2 s"
+  },
+  {
+   "at": "105.5",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n103.2 s"
+  },
+  {
+   "at": "134.4",
+   "text": "Test-running the rules with simple moves…\n132.6 s"
+  },
+  {
+   "at": "135.5",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n133.7 s"
+  },
+  {
+   "at": "170.4",
+   "text": "Test-running the rules with simple moves…\n168.4 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "172.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/2cbd430128ff424d8536e4d45b71f2cf"
+  },
+  {
+   "at": "174.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/445eef22d8584e109d7fe242108fbbf5"
+  },
+  {
+   "at": "175.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/b213168321e34e6c81420a57ecbad928"
+  },
+  {
+   "at": "177.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/abd4365f7e2a445ca1c817dbd29e0de5"
+  },
+  {
+   "at": "181.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/eb793967e55240cd96f449ef7148bfed"
+  },
+  {
+   "at": "183.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/f938291338ce44aba8cc80f53b0ffc95"
+  },
+  {
+   "at": "184.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/477e390abfdb446bb32bfd4b54471c1a"
+  },
+  {
+   "at": "186.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d138cc67b5094443a5a2668df0c0313e"
+  },
+  {
+   "at": "188.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/98aa7e0263434fd790b3083cdd70631c"
+  },
+  {
+   "at": "190.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d08187beb60a4dd98a95d3b98fd0f944"
+  },
+  {
+   "at": "191.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/5b56c08e5df34c09935d9a1f5131f737"
+  },
+  {
+   "at": "193.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d3406a4aa10a4c4698b1ec33ebdbf56f"
+  },
+  {
+   "at": "195.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/aabf9f61f798458eb914841e4f580bec"
+  },
+  {
+   "at": "197.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/af0a1bd93909493180eaf4e98b437065"
+  },
+  {
+   "at": "198.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d3f5874e4e954442b1754520b2259a54"
+  },
+  {
+   "at": "200.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a83630d74bf2465f8e53329c3994e43f"
+  },
+  {
+   "at": "202.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/b23dc0d1ac824d6394059b1b632e5624"
+  },
+  {
+   "at": "204.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/4dce41d90bdc4cd1a4eb395d54295553"
+  },
+  {
+   "at": "205.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/081ebdba0cb743fe808298b823407071"
+  },
+  {
+   "at": "207.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/f4cdd8a9bb3144bf9074ab704e6e6eac"
+  },
+  {
+   "at": "209.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/c70ebbb145ad4f97a8bf225a37d2716d"
+  },
+  {
+   "at": "213.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/2393f807aeda4e26b48eb821d5dd9e82"
+  },
+  {
+   "at": "215.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/47e8921a8a974d75be6d1af0c6166451"
+  },
+  {
+   "at": "217.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/e5c085d39a20425289f18692388bbc00"
+  },
+  {
+   "at": "219.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/8d80cc3208804bcfbc222519b7e9bb4c"
+  },
+  {
+   "at": "220.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/82f26c50253b44129bf46e8e79f67fd6"
+  }
+ ],
+ "rounds": [
+  {
+   "turn": 1,
+   "at": "172.3",
+   "trace_id": "world-builder-live/run/2cbd430128ff424d8536e4d45b71f2cf",
+   "moves": {
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r1-e00001",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r1-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r1-e00004",
+     "forest-regrowth"
+    ],
+    [
+     "r1-e00005",
+     "mine-replenishment"
+    ],
+    [
+     "r1-e00006",
+     "sawmill-log-supply"
+    ],
+    [
+     "r1-e00007",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r1-e00008",
+     "factory-input-replenishment"
+    ],
+    [
+     "r1-e00009",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "at": "174.0",
+   "trace_id": "world-builder-live/run/445eef22d8584e109d7fe242108fbbf5",
+   "moves": {
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r2-e00001",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r2-e00003",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r2-e00005",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r2-e00007",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r2-e00009",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r2-e00010",
+     "forest-regrowth"
+    ],
+    [
+     "r2-e00011",
+     "mine-replenishment"
+    ],
+    [
+     "r2-e00012",
+     "sawmill-log-supply"
+    ],
+    [
+     "r2-e00013",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r2-e00014",
+     "factory-input-replenishment"
+    ],
+    [
+     "r2-e00015",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 3,
+   "at": "175.8",
+   "trace_id": "world-builder-live/run/b213168321e34e6c81420a57ecbad928",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r3-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r3-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r3-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r3-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r3-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r3-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r3-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r3-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r3-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r3-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r3-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r3-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 4,
+   "at": "177.5",
+   "trace_id": "world-builder-live/run/abd4365f7e2a445ca1c817dbd29e0de5",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r4-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r4-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r4-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r4-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r4-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r4-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r4-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r4-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r4-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r4-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r4-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r4-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 5,
+   "at": "181.1",
+   "trace_id": "world-builder-live/run/eb793967e55240cd96f449ef7148bfed",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r5-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r5-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r5-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r5-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r5-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r5-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r5-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r5-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r5-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r5-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r5-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r5-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 6,
+   "at": "183.0",
+   "trace_id": "world-builder-live/run/f938291338ce44aba8cc80f53b0ffc95",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r6-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r6-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r6-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r6-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r6-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r6-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r6-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r6-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r6-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r6-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r6-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r6-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 7,
+   "at": "184.7",
+   "trace_id": "world-builder-live/run/477e390abfdb446bb32bfd4b54471c1a",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r7-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r7-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r7-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r7-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r7-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r7-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r7-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r7-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r7-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r7-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r7-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r7-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 8,
+   "at": "186.5",
+   "trace_id": "world-builder-live/run/d138cc67b5094443a5a2668df0c0313e",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r8-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r8-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r8-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r8-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r8-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r8-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r8-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r8-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r8-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r8-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r8-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r8-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 9,
+   "at": "188.2",
+   "trace_id": "world-builder-live/run/98aa7e0263434fd790b3083cdd70631c",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r9-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r9-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r9-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r9-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r9-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r9-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r9-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r9-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r9-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r9-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r9-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r9-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 10,
+   "at": "190.0",
+   "trace_id": "world-builder-live/run/d08187beb60a4dd98a95d3b98fd0f944",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r10-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r10-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r10-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r10-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r10-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r10-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r10-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r10-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r10-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r10-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r10-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r10-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 11,
+   "at": "191.8",
+   "trace_id": "world-builder-live/run/5b56c08e5df34c09935d9a1f5131f737",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r11-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r11-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r11-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r11-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r11-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r11-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r11-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r11-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r11-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r11-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r11-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r11-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 12,
+   "at": "193.5",
+   "trace_id": "world-builder-live/run/d3406a4aa10a4c4698b1ec33ebdbf56f",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r12-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r12-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r12-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r12-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r12-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r12-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r12-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r12-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r12-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r12-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r12-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r12-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 13,
+   "at": "195.3",
+   "trace_id": "world-builder-live/run/aabf9f61f798458eb914841e4f580bec",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r13-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r13-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r13-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r13-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r13-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r13-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r13-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r13-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r13-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r13-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r13-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r13-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 14,
+   "at": "197.1",
+   "trace_id": "world-builder-live/run/af0a1bd93909493180eaf4e98b437065",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r14-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r14-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r14-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r14-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r14-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r14-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r14-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r14-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r14-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r14-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r14-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r14-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 15,
+   "at": "198.8",
+   "trace_id": "world-builder-live/run/d3f5874e4e954442b1754520b2259a54",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r15-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r15-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r15-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r15-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r15-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r15-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r15-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r15-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r15-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r15-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r15-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r15-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 16,
+   "at": "200.6",
+   "trace_id": "world-builder-live/run/a83630d74bf2465f8e53329c3994e43f",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r16-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r16-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r16-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r16-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r16-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r16-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r16-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r16-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r16-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r16-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r16-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r16-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 17,
+   "at": "202.4",
+   "trace_id": "world-builder-live/run/b23dc0d1ac824d6394059b1b632e5624",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r17-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r17-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r17-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r17-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r17-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r17-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r17-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r17-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r17-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r17-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r17-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r17-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 18,
+   "at": "204.1",
+   "trace_id": "world-builder-live/run/4dce41d90bdc4cd1a4eb395d54295553",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r18-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r18-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r18-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r18-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r18-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r18-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r18-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r18-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r18-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r18-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r18-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r18-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 19,
+   "at": "205.9",
+   "trace_id": "world-builder-live/run/081ebdba0cb743fe808298b823407071",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r19-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r19-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r19-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r19-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r19-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r19-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r19-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r19-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r19-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r19-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r19-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r19-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 20,
+   "at": "207.7",
+   "trace_id": "world-builder-live/run/f4cdd8a9bb3144bf9074ab704e6e6eac",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r20-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r20-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r20-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r20-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r20-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r20-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r20-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r20-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r20-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r20-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r20-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r20-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 21,
+   "at": "209.5",
+   "trace_id": "world-builder-live/run/c70ebbb145ad4f97a8bf225a37d2716d",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r21-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r21-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r21-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r21-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r21-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r21-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r21-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r21-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r21-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r21-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r21-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r21-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 22,
+   "at": "213.3",
+   "trace_id": "world-builder-live/run/2393f807aeda4e26b48eb821d5dd9e82",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r22-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r22-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r22-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r22-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r22-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r22-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r22-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r22-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r22-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r22-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r22-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r22-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 23,
+   "at": "215.3",
+   "trace_id": "world-builder-live/run/47e8921a8a974d75be6d1af0c6166451",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r23-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r23-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r23-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r23-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r23-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r23-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r23-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r23-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r23-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r23-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r23-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r23-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 24,
+   "at": "217.1",
+   "trace_id": "world-builder-live/run/e5c085d39a20425289f18692388bbc00",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r24-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r24-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r24-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r24-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r24-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r24-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r24-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r24-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r24-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r24-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r24-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r24-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 25,
+   "at": "219.0",
+   "trace_id": "world-builder-live/run/8d80cc3208804bcfbc222519b7e9bb4c",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r25-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r25-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r25-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r25-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r25-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r25-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r25-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r25-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r25-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r25-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r25-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r25-e00017",
+     "shop-orders"
+    ]
+   ]
+  },
+  {
+   "turn": 26,
+   "at": "220.8",
+   "trace_id": "world-builder-live/run/82f26c50253b44129bf46e8e79f67fd6",
+   "moves": {
+    "carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r26-e00001",
+     "changed": true
+    },
+    "core-maker": {
+     "kind": "make-graphite-cores",
+     "event_id": "r26-e00003",
+     "changed": true
+    },
+    "forester": {
+     "kind": "harvest-timber",
+     "event_id": "r26-e00005",
+     "changed": true
+    },
+    "miner": {
+     "kind": "mine-graphite",
+     "event_id": "r26-e00007",
+     "changed": true
+    },
+    "pencil-maker": {
+     "kind": "assemble-pencils",
+     "event_id": "r26-e00009",
+     "changed": true
+    },
+    "sawyer": {
+     "kind": "cut-wood-slats",
+     "event_id": "r26-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r26-e00012",
+     "forest-regrowth"
+    ],
+    [
+     "r26-e00013",
+     "mine-replenishment"
+    ],
+    [
+     "r26-e00014",
+     "sawmill-log-supply"
+    ],
+    [
+     "r26-e00015",
+     "core-workshop-graphite-supply"
+    ],
+    [
+     "r26-e00016",
+     "factory-input-replenishment"
+    ],
+    [
+     "r26-e00017",
+     "shop-orders"
+    ]
+   ]
+  }
+ ],
+ "readout": {
+  "at": "233.6",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "The forester, miner, core-maker, sawyer, pencil-maker, and carrier repeatedly gathered materials, made pencils, and delivered them to the stationery shop. The shop’s pencil stock and waiting orders grew; the events show no coordination dispute or decision delay.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No separate concerns, channels, or decision makers are recorded.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No delayed or unproductive meeting, review, or decision deadline is recorded.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No previously settled item is recorded as reopened.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No conditional support, unmet condition, or resulting hold on a decision or deployment is recorded.",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 307
+   },
+   "cost_usd": 0.0020964,
+   "daily_cost_usd": 0.28391553999999997,
+   "trace_id": "world-builder-live/readout/0b5cc9c4ccfa4afdabb2486414202489"
+  }
+ },
+ "share": {
+  "at": "236.1",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "LEPx6aAqqB93",
+   "rounds": 26
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/world/0b7b562616cc44caa6aeb69ab200cfd0",
+  "cost_usd": 0.026569674999999997
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "f365d6b32082fcb5a49e306ab90207dfe8374992",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 1.5000849,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0.5460291449999997
+ },
+ "pressed_at": "1.2",
+ "run_stage_at": "172.4",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nThe forester, miner, core-maker, sawyer, pencil-maker, and carrier repeatedly gathered materials, made pencils, and delivered them to the stationery shop. The shop’s pencil stock and waiting orders grew; the events show no coordination dispute or decision delay.\n\nDid not happen: Local concerns through separate channels\nNo separate concerns, channels, or decision makers are recorded.\nDid not happen: Slowed meetings\nNo delayed or unproductive meeting, review, or decision deadline is recorded.\nDid not happen: Reopened settled issues\nNo previously settled item is recorded as reopened.\nDid not happen: Conditional support delaying deployment\nNo conditional support, unmet condition, or resulting hold on a decision or deployment is recorded.\nRead from 307 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 26 · 151 allowed · 0 refused · 73 held back by the rules · 156 by itself",
+ "finished": "2026-10-19T00:43:41.600Z"
+}

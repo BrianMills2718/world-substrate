@@ -1,0 +1,10 @@
+an actor in a represented simulated worl | private concerns in prompt: [] | response: {"belief":"The activation decision is open with no agenda items, and the deadline is approaching. I need legal responsib
+an actor in a represented simulated worl | private concerns in prompt: ['logistics-group'] | response: {"belief":"The planned deployment depends on staffing at each crossing, and one crossing lacks a confirmed trained opera
+an actor in a represented simulated worl | private concerns in prompt: ['legal-group'] | response: {"belief":"The data-retention question remains open and has not yet been communicated to Country Two. I should make the 
+an actor in a represented simulated worl | private concerns in prompt: [] | response: {"belief":"The activation decision is open with broad support, but no agenda item has yet been added and I have not asse
+an actor in a represented simulated worl | private concerns in prompt: ['technical-group'] | response: {"belief":"The system is under consideration, and a known sensor-feed gap during scheduled maintenance could matter to u
+an actor in a represented simulated worl | private concerns in prompt: ['community-group'] | response: {"belief":"The draft alert is unavailable in two languages used by communities near Country Four, and that concern has n
+an actor in a represented simulated worl | private concerns in prompt: [] | response: {"belief":"The activation decision is open with no agenda items, and the deadline is approaching. As Country Four, I nee
+an actor in a represented simulated worl | private concerns in prompt: [] | response: {"belief":"The activation decision is open, with broad support but no agenda items yet; the deadline is approaching, and
+an actor in a represented simulated worl | private concerns in prompt: [] | response: {"belief":"The activation decision is open with five full-support positions, but no agenda items or completed deliberati
+an actor in a represented simulated worl | private concerns in prompt: [] | response: {"belief":"The activation decision is open with no agenda items, and the deadline is approaching; I have not yet assesse

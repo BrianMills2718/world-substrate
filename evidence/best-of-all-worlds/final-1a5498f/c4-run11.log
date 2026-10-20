@@ -1,0 +1,39 @@
+[0.9s] pressing Create simulation
+[1.0s] step: Sending your description… 0 s
+[8.1s] step: Reading your description… 6 s
+[46.9s] step: ! Left out of the simulation Transport distances and routes Prices and payments Material quality and pencil specifications 44.2 s
+[46.9s] step: Writing the rules… 44.2 s
+[72.2s] step: Test-running the rules with simple moves… 70.4 s
+[79.6s] round 1: forester=harvest-timber, graphite-refiner=refine-graphite, miner=mine-graphite, pencil-customer=place-order
+[80.0s] run stage visible
+[81.5s] round 2: core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[83.4s] round 3: assembler=assemble-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[85.3s] round 4: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[87.3s] round 5: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[89.2s] round 6: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[91.4s] round 7: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[93.6s] round 8: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[95.8s] round 9: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[98.1s] round 10: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[100.1s] round 11: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[102.0s] round 12: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[103.9s] round 13: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[105.8s] round 14: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[109.7s] round 15: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[111.5s] round 16: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[113.7s] round 17: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[115.8s] round 18: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[117.8s] round 19: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[119.7s] round 20: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[121.6s] round 21: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[123.7s] round 22: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[125.6s] round 23: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[127.8s] round 24: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[129.7s] round 25: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[131.8s] round 26: assembler=assemble-pencils, carrier=deliver-pencils, core-maker=make-cores, forester=harvest-timber, graphite-refiner=refine-graphite, lumber-miller=saw-slats, miner=mine-graphite, pencil-customer=place-order
+[146.4s] readout 200
+[148.8s] share {"ok":true,"share_id":"Ovr3EcllZ_ML","rounds":26}
+[149.6s] tampered /run: harvest-timber
+[150.6s] C5 page message: Paused: These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example.
+[150.6s] saved c4-run11.json
+exit=0

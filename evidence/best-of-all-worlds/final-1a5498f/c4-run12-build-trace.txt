@@ -1,0 +1,1483 @@
+8 calls
+===== 2026-10-19T00:40:11.513591+00:00 openrouter/openai/gpt-6-luna world-substrate-world-authoring cost 0.0018068 tok 1548 3304
+--- last user msg:
+tedly until the situation resolves.",
+      "Represent the state the actions change (e.g. stage, count, location) as component fields with typed defaults.",
+      "Follow world_kind_rule: a task world must be able to finish (represented state from which 'done' can be read); ongoing and open worlds must have state that keeps changing."
+    ]
+  },
+  "example_bundle": {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {
+      "id": "orchard",
+      "label": "Orchard",
+      "summary": "One worker can eventually pick ripe fruit from a represented tree.",
+      "location": "orchard",
+      "content_version": 1
+    },
+    "components": [
+      {
+        "name": "worker",
+        "fields": [
+          {
+            "name": "stamina",
+            "type": "integer",
+            "default": 10
+          }
+        ]
+      },
+      {
+        "name": "fruit",
+        "fields": [
+          {
+            "name": "stage",
+            "type": "string",
+            "default": "ripe"
+          },
+          {
+            "name": "tree_id",
+            "type": "entity_ref",
+            "default": "tree-1"
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "ava",
+        "label": "Ava",
+        "categories": [
+          "worker"
+        ],
+        "components": {
+          "worker": {
+            "stamina": 10
+          }
+        }
+      },
+      {
+        "id": "tree-1",
+        "label": "Apple tree",
+        "categories": [
+          "tree"
+        ],
+        "components": {}
+      },
+      {
+        "id": "apple-1",
+        "label": "Apple",
+        "categories": [
+          "fruit"
+        ],
+        "portable": true,
+        "owner_ref": "place:orchard",
+        "components": {
+          "fruit": {
+            "stage": "ripe",
+            "tree_id": "tree-1"
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "kind": "pick",
+        "description": "Pick one represented fruit.",
+        "fields": [
+          {
+            "name": "fruit",
+            "type": "entity_ref"
+          }
+        ]
+      }
+    ],
+    "presentation": {
+      "assets": {
+        "worker": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1\u200d\ud83c\udf3e"
+        },
+        "fruit": {
+          "kind": "emoji",
+          "value": "\ud83c\udf4e"
+        }
+      },
+      "category_assets": {
+        "worker": "worker",
+        "fruit": "fruit"
+      },
+      "station_roles": {
+        "tree": "source"
+      }
+    }
+  }
+}
+--- response:
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "pencil-supply-network",
+    "label": "Pencil Supply Network",
+    "summary": "Specialists produce, move, and sell pencils through a recurring supply network.",
+    "location": "pencil-supply-network",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "worker",
+      "fields": [
+        {
+          "name": "role",
+          "type": "string",
+          "default": "supplier"
+        }
+      ]
+    },
+    {
+      "name": "stock",
+      "fields": [
+        {
+          "name": "logs",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "wood_slats",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "graphite",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "graphite_cores",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "pencils",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "waiting_orders",
+          "type": "integer",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "forest",
+      "label": "Managed forest",
+      "categories": [
+        "forest",
+        "source"
+      ],
+      "components": {
+        "stock": {
+          "logs": 30,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "forester",
+      "label": "Forester",
+      "categories": [
+        "actor",
+        "forester"
+      ],
+      "components": {
+        "worker": {
+          "role": "harvests timber"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "sawmill",
+      "label": "Sawmill",
+      "categories": [
+        "workstation",
+        "sawmill"
+      ],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "sawyer",
+      "label": "Sawyer",
+      "categories": [
+        "actor",
+        "sawyer"
+      ],
+      "components": {
+        "worker": {
+          "role": "cuts wood slats"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "graphite-mine",
+      "label": "Graphite mine",
+      "categories": [
+        "source",
+        "mine"
+      ],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 30,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "miner",
+      "label": "Miner",
+      "categories": [
+        "actor",
+        "miner"
+      ],
+      "components": {
+        "worker": {
+          "role": "mines graphite"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "core-workshop",
+      "label": "Graphite core workshop",
+      "categories": [
+        "workstation",
+        "core-workshop"
+      ],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "core-maker",
+      "label": "Core maker",
+      "categories": [
+        "actor",
+        "core-maker"
+      ],
+      "components": {
+        "worker": {
+          "role": "makes graphite cores"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "pencil-factory",
+      "label": "Pencil factory",
+      "categories": [
+        "workstation",
+        "factory"
+      ],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "pencil-maker",
+      "label": "Pencil maker",
+      "categories": [
+        "actor",
+        "pencil-maker"
+      ],
+      "components": {
+        "worker": {
+          "role": "assembles pencils"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "carrier",
+      "label": "Pencil carrier",
+      "categories": [
+        "actor",
+        "carrier"
+      ],
+      "components": {
+        "worker": {
+          "role": "moves pencil stock"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "stationery-shop",
+      "label": "Stationery shop",
+      "categories": [
+        "workstation",
+        "shop"
+      ],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 4
+        }
+      }
+    },
+    {
+      "id": "shopkeeper",
+      "label": "Shopkeeper",
+      "categories": [
+        "actor",
+        "shopkeeper"
+      ],
+      "components": {
+        "worker": {
+          "role": "serves pencil customers"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "pencil-customers",
+      "label": "Pencil customers",
+      "categories": [
+        "goal",
+        "customers"
+      ],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "harvest-timber",
+      "description": "Harvest logs from the managed forest.",
+      "fields": [
+        {
+          "name": "source",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "cut-wood-slats",
+      "description": "Cut logs into wood slats at the sawmill.",
+      "fields": [
+        {
+          "name": "mill",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "mine-graphite",
+      "description": "Gather graphite from the mine.",
+      "fields": [
+        {
+          "name": "source",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "make-graphite-cores",
+      "description": "Prepare graphite cores at the core workshop.",
+      "fields": [
+        {
+          "name": "workshop",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "assemble-pencils",
+      "description": "Assemble pencils from wood slats and graphite cores.",
+      "fields": [
+        {
+          "name": "factory",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "deliver-pencils",
+      "description": "Deliver pencil stock from the factory to the stationery shop.",
+      "fields": [
+        {
+          "name": "from",
+          "type": "entity_ref"
+        },
+        {
+          "name": "to",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "serve-pencil-order",
+      "description": "Sell pencils from the stationery shop to customers with waiting orders.",
+      "fields": [
+        {
+          "name": "customer",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "forest": {
+        "kind": "emoji",
+        "value": "🌲"
+      },
+      "worker": {
+        "kind": "emoji",
+        "value": "🧑‍🔧"
+      },
+      "wood": {
+        "kind": "emoji",
+        "value": "🪵"
+      },
+      "graphite": {
+        "kind": "emoji",
+        "value": "⚫"
+      },
+      "factory": {
+        "kind": "emoji",
+        "value": "🏭"
+      },
+      "pencil": {
+        "kind": "emoji",
+        "value": "✏️"
+      },
+      "shop": {
+        "kind": "emoji",
+        "value": "🏪"
+      },
+      "customers": {
+        "kind": "emoji",
+        "value": "👥"
+      }
+    },
+    "category_assets": {
+      "forest": "forest",
+      "forester": "worker",
+      "sawyer": "worker",
+      "miner": "worker",
+      "core-maker": "worker",
+      "pencil-maker": "worker",
+      "carrier": "worker",
+      "shopkeeper": "worker",
+      "sawmill": "wood",
+      "mine": "graphite",
+      "core-workshop": "factory",
+      "factory": "factory",
+      "shop": "shop",
+      "customers": "customers"
+    },
+    "station_roles": {
+      "forest": "source",
+      "mine": "source",
+      "sawmill": "workstation",
+      "core-workshop": "workstation",
+      "factory": "workstation",
+      "shop": "workstation",
+      "customers": "goal"
+    }
+  },
+  "not_modeled": [
+    "Transport routes and distances",
+    "Prices and payments",
+    "Customer identities and individual orders"
+  ]
+}
+===== 2026-10-19T00:40:28.015370+00:00 openrouter/openai/gpt-6-luna world-substrate-world-authoring cost 0.001756375 tok 4389 2771
+--- last user msg:
+The local bundle validator rejected that proposal. Validator error: BundleError: action deliver-pencils field.name must be a Python identifier: 'from'. Return a corrected JSON object only.
+--- response:
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "pencil-supply-network",
+    "label": "Pencil Supply Network",
+    "summary": "Specialists produce, move, and sell pencils through a recurring supply network.",
+    "location": "pencil-supply-network",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "worker",
+      "fields": [
+        {
+          "name": "role",
+          "type": "string",
+          "default": "supplier"
+        }
+      ]
+    },
+    {
+      "name": "stock",
+      "fields": [
+        {
+          "name": "logs",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "wood_slats",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "graphite",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "graphite_cores",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "pencils",
+          "type": "integer",
+          "default": 0
+        },
+        {
+          "name": "waiting_orders",
+          "type": "integer",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "forest",
+      "label": "Managed forest",
+      "categories": ["forest", "source"],
+      "components": {
+        "stock": {
+          "logs": 30,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "forester",
+      "label": "Forester",
+      "categories": ["actor", "forester"],
+      "components": {
+        "worker": {
+          "role": "harvests timber"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "sawmill",
+      "label": "Sawmill",
+      "categories": ["workstation", "sawmill"],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "sawyer",
+      "label": "Sawyer",
+      "categories": ["actor", "sawyer"],
+      "components": {
+        "worker": {
+          "role": "cuts wood slats"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "graphite-mine",
+      "label": "Graphite mine",
+      "categories": ["source", "mine"],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 30,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "miner",
+      "label": "Miner",
+      "categories": ["actor", "miner"],
+      "components": {
+        "worker": {
+          "role": "mines graphite"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "core-workshop",
+      "label": "Graphite core workshop",
+      "categories": ["workstation", "core-workshop"],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "core-maker",
+      "label": "Core maker",
+      "categories": ["actor", "core-maker"],
+      "components": {
+        "worker": {
+          "role": "makes graphite cores"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "pencil-factory",
+      "label": "Pencil factory",
+      "categories": ["workstation", "factory"],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "pencil-maker",
+      "label": "Pencil maker",
+      "categories": ["actor", "pencil-maker"],
+      "components": {
+        "worker": {
+          "role": "assembles pencils"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "carrier",
+      "label": "Pencil carrier",
+      "categories": ["actor", "carrier"],
+      "components": {
+        "worker": {
+          "role": "moves pencil stock"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "stationery-shop",
+      "label": "Stationery shop",
+      "categories": ["workstation", "shop"],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 4
+        }
+      }
+    },
+    {
+      "id": "shopkeeper",
+      "label": "Shopkeeper",
+      "categories": ["actor", "shopkeeper"],
+      "components": {
+        "worker": {
+          "role": "serves pencil customers"
+        },
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    },
+    {
+      "id": "pencil-customers",
+      "label": "Pencil customers",
+      "categories": ["goal", "customers"],
+      "components": {
+        "stock": {
+          "logs": 0,
+          "wood_slats": 0,
+          "graphite": 0,
+          "graphite_cores": 0,
+          "pencils": 0,
+          "waiting_orders": 0
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "harvest-timber",
+      "description": "Harvest logs from the managed forest.",
+      "fields": [
+        {
+          "name": "source",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "cut-wood-slats",
+      "description": "Cut logs into wood slats at the sawmill.",
+      "fields": [
+        {
+          "name": "mill",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "mine-graphite",
+      "description": "Gather graphite from the mine.",
+      "fields": [
+        {
+          "name": "source",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "make-graphite-cores",
+      "description": "Prepare graphite cores at the core workshop.",
+      "fields": [
+        {
+          "name": "workshop",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "assemble-pencils",
+      "description": "Assemble pencils from wood slats and graphite cores.",
+      "fields": [
+        {
+          "name": "factory",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "deliver-pencils",
+      "description": "Deliver pencil stock from the factory to the stationery shop.",
+      "fields": [
+        {
+          "name": "source",
+          "type": "entity_ref"
+        },
+        {
+          "name": "to",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "kind": "serve-pencil-order",
+      "description": "Sell pencils from the stationery shop to customers with waiting orders.",
+      "fields": [
+        {
+          "name": "customer",
+          "type": "entity_ref"
+        },
+        {
+          "name": "quantity",
+          "type": "integer"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "forest": {
+        "kind": "emoji",
+        "value": "🌲"
+      },
+      "worker": {
+        "kind": "emoji",
+        "value": "🧑‍🔧"
+      },
+      "wood": {
+        "kind": "emoji",
+        "value": "🪵"
+      },
+      "graphite": {
+        "kind": "emoji",
+        "value": "⚫"
+      },
+      "factory": {
+        "kind": "emoji",
+        "value": "🏭"
+      },
+      "pencil": {
+        "kind": "emoji",
+        "value": "✏️"
+      },
+      "shop": {
+        "kind": "emoji",
+        "value": "🏪"
+      },
+      "customers": {
+        "kind": "emoji",
+        "value": "👥"
+      }
+    },
+    "category_assets": {
+      "forest": "forest",
+      "forester": "worker",
+      "sawyer": "worker",
+      "miner": "worker",
+      "core-maker": "worker",
+      "pencil-maker": "worker",
+      "carrier": "worker",
+      "shopkeeper": "worker",
+      "sawmill": "wood",
+      "mine": "graphite",
+      "core-workshop": "factory",
+      "factory": "factory",
+      "shop": "shop",
+      "customers": "customers"
+    },
+    "station_roles": {
+      "forest": "source",
+      "mine": "source",
+      "sawmill": "workstation",
+      "core-workshop": "workstation",
+      "factory": "workstation",
+      "shop": "workstation",
+      "customers": "goal"
+    }
+  },
+  "not_modeled": [
+    "Transport routes and distances",
+    "Prices and payments",
+    "Customer identities and individual orders"
+  ]
+}
+===== 2026-10-19T00:40:36.472719+00:00 openrouter/openai/gpt-6-luna world-substrate-mechanic-authoring cost 0.0026086 tok 23341 549
+--- last user msg:
+"lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "path": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "op",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 8,
+                "minItems": 1,
+                "type": "array"
+              },
+              "mode": {
+                "enum": [
+                  "all",
+                  "any"
+                ]
+              },
+              "selector": {
+                "additionalProperties": false,
+                "properties": {
+                  "categories": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "components": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "categories",
+                  "components"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "mode",
+              "selector",
+              "checks"
+            ],
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schema_version",
+      "mechanics",
+      "terminal"
+    ],
+    "type": "object"
+  },
+  "world": {
+    "content_version": 1,
+    "id": "pencil-supply-network",
+    "label": "Pencil Supply Network",
+    "location": "pencil-supply-network",
+    "summary": "Specialists produce, move, and sell pencils through a recurring supply network."
+  },
+  "world_kind": "ongoing"
+}
+--- response:
+{"schema_version":"world-substrate-causal-model/v0","mechanics":[],"terminal":null}
+===== 2026-10-19T00:40:58.862968+00:00 openrouter/openai/gpt-6-luna world-substrate-mechanic-authoring cost 0.004391425 tok 23440 2923
+--- last user msg:
+The local causal compiler rejected that proposal. Compiler error: ActionDeclarationError: causal model mechanics must be a nonempty list. Return a corrected JSON object only. State paths in participant/path and effect/path fields must be copied EXACTLY from allowed_state_paths; do not abbreviate component containers (for example use portable.portable, not portable).
+--- response:
+{"schema_version":"world-substrate-causal-model/v0","mechanics":[{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"harvest-timber","version":"1","action_kind":"harvest-timber","rationale":"A forester harvests a positive quantity of logs that the selected managed forest has in stock.","actor_selector":{"categories":["actor","forester"],"components":["worker","stock"]},"participants":{"source":{"categories":["forest","source"],"components":["stock"]}},"parameters":{"quantity":[1,2,5,10]},"checks":[{"label":"the forester harvests timber","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"harvests timber"}},{"label":"the harvest quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the managed forest has enough logs","left":{"participant":{"name":"source","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}}],"effects":[{"participant":"source","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.logs","op":"add","value":{"action_field":"quantity"}}],"limits":["This changes the forester's log stock; no represented action transfers those logs to the sawmill.","The forest has a finite starting stock and replenishment is modeled separately."],"tests":["A forester harvesting a positive amount no greater than the forest's log stock decreases forest logs and increases forester logs equally.","A non-forester, nonpositive amount, or amount exceeding available forest logs is refused."],"semantic_bindings":["source is the managed forest","quantity is logs harvested","actor is the forester"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"cut-wood-slats","version":"1","action_kind":"cut-wood-slats","rationale":"A sawyer cuts a positive quantity of available sawmill logs into the same quantity of wood slats.","actor_selector":{"categories":["actor","sawyer"],"components":["worker","stock"]},"participants":{"mill":{"categories":["workstation","sawmill"],"components":["stock"]}},"parameters":{"quantity":[1,2,5,10]},"checks":[{"label":"the sawyer cuts wood slats","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"cuts wood slats"}},{"label":"the cutting quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the sawmill has enough logs","left":{"participant":{"name":"mill","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}}],"effects":[{"participant":"mill","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"mill","path":"components.stock.wood_slats","op":"add","value":{"action_field":"quantity"}}],"limits":["The represented action uses logs already at the sawmill; it does not move logs there."],"tests":["A sawyer cutting available logs reduces sawmill logs and adds the same quantity of slats.","A different role, nonpositive quantity, or insufficient sawmill logs is refused."],"semantic_bindings":["mill is the sawmill","quantity is logs cut and slats produced","actor is the sawyer"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"mine-graphite","version":"1","action_kind":"mine-graphite","rationale":"A miner gathers a positive quantity of graphite available at the selected mine.","actor_selector":{"categories":["actor","miner"],"components":["worker","stock"]},"participants":{"source":{"categories":["source","mine"],"components":["stock"]}},"parameters":{"quantity":[1,2,5,10]},"checks":[{"label":"the miner mines graphite","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"mines graphite"}},{"label":"the mining quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the mine has enough graphite","left":{"participant":{"name":"source","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}}],"effects":[{"participant":"source","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.graphite","op":"add","value":{"action_field":"quantity"}}],"limits":["This changes the miner's graphite stock; no represented action transfers it to the core workshop.","The mine has finite starting stock and replenishment is modeled separately."],"tests":["A miner gathering available graphite decreases mine stock and increases miner stock equally.","A different role, nonpositive quantity, or quantity exceeding mine stock is refused."],"semantic_bindings":["source is the graphite mine","quantity is graphite gathered","actor is the miner"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"make-graphite-cores","version":"1","action_kind":"make-graphite-cores","rationale":"A core maker uses available workshop graphite to prepare the same quantity of graphite cores.","actor_selector":{"categories":["actor","core-maker"],"components":["worker","stock"]},"participants":{"workshop":{"categories":["workstation","core-workshop"],"components":["stock"]}},"parameters":{"quantity":[1,2,5,10]},"checks":[{"label":"the worker makes graphite cores","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"makes graphite cores"}},{"label":"the core quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the workshop has enough graphite","left":{"participant":{"name":"workshop","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}}],"effects":[{"participant":"workshop","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"workshop","path":"components.stock.graphite_cores","op":"add","value":{"action_field":"quantity"}}],"limits":["The represented action uses graphite already at the workshop; it does not move graphite there."],"tests":["A core maker converting available workshop graphite reduces graphite and adds the same quantity of cores.","A different role, nonpositive quantity, or insufficient workshop graphite is refused."],"semantic_bindings":["workshop is the graphite core workshop","quantity is graphite used and cores prepared","actor is the core maker"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"assemble-pencils","version":"1","action_kind":"assemble-pencils","rationale":"A pencil maker assembles a positive quantity of pencils using equal quantities of slats and graphite cores in the factory.","actor_selector":{"categories":["actor","pencil-maker"],"components":["worker","stock"]},"participants":{"factory":{"categories":["workstation","factory"],"components":["stock"]}},"parameters":{"quantity":[1,2,5,10]},"checks":[{"label":"the worker assembles pencils","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"assembles pencils"}},{"label":"the pencil quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the factory has enough wood slats","left":{"participant":{"name":"factory","path":"components.stock.wood_slats"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the factory has enough graphite cores","left":{"participant":{"name":"factory","path":"components.stock.graphite_cores"}},"op":"gte","right":{"action_field":"quantity"}}],"effects":[{"participant":"factory","path":"components.stock.wood_slats","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.graphite_cores","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["Assembly requires both inputs already in the factory; no represented action moves inputs there."],"tests":["A pencil maker with sufficient slats and cores consumes equal quantities and adds pencils.","A different role, nonpositive quantity, or insufficient quantity of either input is refused."],"semantic_bindings":["factory is the pencil factory","quantity is pencils assembled and each input used","actor is the pencil maker"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"deliver-pencils","version":"1","action_kind":"deliver-pencils","rationale":"A carrier moves a positive quantity of available pencil stock from the factory to the stationery shop.","actor_selector":{"categories":["actor","carrier"],"components":["worker","stock"]},"participants":{"source":{"categories":["workstation","factory"],"components":["stock"]},"to":{"categories":["workstation","shop"],"components":["stock"]}},"parameters":{"quantity":[1,2,5,10]},"checks":[{"label":"the worker moves pencil stock","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"moves pencil stock"}},{"label":"the delivery quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the factory has enough pencils","left":{"participant":{"name":"source","path":"components.stock.pencils"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the destination is the stationery shop","left":{"entity_id":"to"},"op":"eq","right":{"literal":"stationery-shop"}}],"effects":[{"participant":"source","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"to","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["This transfers pencil stock only; the represented state has no transport capacity or delivery route."],"tests":["A carrier delivering available pencils to the stationery shop subtracts from the factory and adds the same quantity to the shop.","A different role, nonpositive quantity, insufficient factory stock, or other destination is refused."],"semantic_bindings":["source is the pencil factory","to is the stationery shop","quantity is pencils delivered","actor is the carrier"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"serve-pencil-order","version":"1","action_kind":"serve-pencil-order","rationale":"A shopkeeper serves a positive quantity when the stationery shop has both pencils and waiting orders; the served customers place replacement orders.","actor_selector":{"categories":["actor","shopkeeper"],"components":["worker","stock"]},"participants":{"customer":{"categories":["goal","customers"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,5]},"checks":[{"label":"the shopkeeper serves pencil customers","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"serves pencil customers"}},{"label":"the sale quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the stationery shop has enough pencils","left":{"entity_id":"actor"},"op":"eq","right":{"literal":"shopkeeper"}},{"label":"the customer is the pencil customers","left":{"entity_id":"customer"},"op":"eq","right":{"literal":"pencil-customers"}}],"effects":[{"participant":"actor","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"customer","path":"components.stock.waiting_orders","op":"add","value":{"action_field":"quantity"}}],"limits":["The action fields and participants do not provide a reference to the stationery shop, so shop inventory and waiting orders cannot be checked or changed here.","This mechanic therefore conservatively refuses to assume the shopkeeper's stock represents shop stock."],"tests":["The mechanic does not authorize a sale without represented shop stock and waiting orders.","A shopkeeper's own stock is not treated as stationery-shop stock."] ,"semantic_bindings":["customer is the pencil customers","quantity is the order quantity","actor is the shopkeeper"]}],"terminal":null}
+===== 2026-10-19T00:41:28.162394+00:00 openrouter/openai/gpt-6-luna world-substrate-mechanic-authoring cost 0.0042669 tok 23869 3760
+--- last user msg:
+"lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "path": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "op",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 8,
+                "minItems": 1,
+                "type": "array"
+              },
+              "mode": {
+                "enum": [
+                  "all",
+                  "any"
+                ]
+              },
+              "selector": {
+                "additionalProperties": false,
+                "properties": {
+                  "categories": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "components": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "categories",
+                  "components"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "mode",
+              "selector",
+              "checks"
+            ],
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schema_version",
+      "mechanics",
+      "terminal"
+    ],
+    "type": "object"
+  },
+  "world": {
+    "content_version": 1,
+    "id": "pencil-supply-network",
+    "label": "Pencil Supply Network",
+    "location": "pencil-supply-network",
+    "summary": "Specialists produce, move, and sell pencils through a recurring supply network."
+  },
+  "world_kind": "ongoing"
+}
+--- response:
+{"schema_version":"world-substrate-causal-model/v0","mechanics":[{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"harvest-timber","version":"1","action_kind":"harvest-timber","rationale":"The forester harvests logs from the chosen forest source, transferring the requested quantity into the forester's stock.","actor_selector":{"categories":["actor","forester"],"components":["worker","stock"]},"participants":{"source":{"categories":["forest","source"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"The forester harvests timber","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"harvests timber"}},{"label":"The forest has enough logs","left":{"participant":{"name":"source","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"source","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.logs","op":"add","value":{"action_field":"quantity"}}],"limits":["Only a forester with the represented timber-harvesting role can harvest.","Harvesting fails if the selected forest lacks the requested logs."],"tests":["A forester can harvest a positive quantity that is available in a forest; the forest loses that quantity and the forester gains it.","The action is refused for a non-forester, a non-forest source, a nonpositive quantity, or insufficient forest logs."],"semantic_bindings":["source is the managed forest","quantity is the number of logs harvested"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"cut-wood-slats","version":"1","action_kind":"cut-wood-slats","rationale":"The sawyer consumes logs available at the chosen sawmill and produces an equal quantity of wood slats there.","actor_selector":{"categories":["actor","sawyer"],"components":["worker","stock"]},"participants":{"mill":{"categories":["workstation","sawmill"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"The sawyer cuts wood slats","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"cuts wood slats"}},{"label":"The sawmill has enough logs","left":{"participant":{"name":"mill","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"mill","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"mill","path":"components.stock.wood_slats","op":"add","value":{"action_field":"quantity"}}],"limits":["Only a sawyer with the represented wood-slats role can cut logs.","Cutting fails when the sawmill lacks the requested logs."],"tests":["A sawyer can convert available sawmill logs to an equal quantity of slats.","The action is refused for a non-sawyer, a non-sawmill, a nonpositive quantity, or insufficient logs."],"semantic_bindings":["mill is the sawmill where the logs are cut","quantity is the number of logs cut and slats produced"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"mine-graphite","version":"1","action_kind":"mine-graphite","rationale":"The miner gathers graphite from the selected mine, transferring the requested quantity into the miner's stock.","actor_selector":{"categories":["actor","miner"],"components":["worker","stock"]},"participants":{"source":{"categories":["source","mine"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"The miner mines graphite","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"mines graphite"}},{"label":"The mine has enough graphite","left":{"participant":{"name":"source","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"source","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.graphite","op":"add","value":{"action_field":"quantity"}}],"limits":["Only a miner with the represented graphite-mining role can mine.","Mining fails if the selected mine lacks the requested graphite."],"tests":["A miner can gather available graphite; the mine loses the quantity and the miner gains it.","The action is refused for a non-miner, a non-mine source, a nonpositive quantity, or insufficient graphite."],"semantic_bindings":["source is the graphite mine","quantity is the amount of graphite mined"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"make-graphite-cores","version":"1","action_kind":"make-graphite-cores","rationale":"The core maker consumes graphite at the selected workshop and produces the same quantity of graphite cores there.","actor_selector":{"categories":["actor","core-maker"],"components":["worker","stock"]},"participants":{"workshop":{"categories":["workstation","core-workshop"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"The core maker makes graphite cores","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"makes graphite cores"}},{"label":"The workshop has enough graphite","left":{"participant":{"name":"workshop","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"workshop","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"workshop","path":"components.stock.graphite_cores","op":"add","value":{"action_field":"quantity"}}],"limits":["Only a core maker with the represented role can prepare cores.","Core-making fails when the workshop lacks the requested graphite."],"tests":["A core maker can convert available workshop graphite into an equal number of cores.","The action is refused for a non-core-maker, a non-workshop, a nonpositive quantity, or insufficient graphite."],"semantic_bindings":["workshop is the graphite core workshop","quantity is the amount of graphite consumed and cores produced"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"assemble-pencils","version":"1","action_kind":"assemble-pencils","rationale":"The pencil maker consumes equal quantities of wood slats and graphite cores at the selected factory and produces pencils.","actor_selector":{"categories":["actor","pencil-maker"],"components":["worker","stock"]},"participants":{"factory":{"categories":["workstation","factory"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"The pencil maker assembles pencils","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"assembles pencils"}},{"label":"The factory has enough wood slats","left":{"participant":{"name":"factory","path":"components.stock.wood_slats"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The factory has enough graphite cores","left":{"participant":{"name":"factory","path":"components.stock.graphite_cores"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"factory","path":"components.stock.wood_slats","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.graphite_cores","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["Only a pencil maker with the represented assembly role can assemble pencils.","Assembly fails unless the factory has enough of both required inputs."],"tests":["A pencil maker can consume equal available quantities of slats and cores to produce pencils.","The action is refused for a non-pencil-maker, a non-factory, a nonpositive quantity, or insufficient input stock."],"semantic_bindings":["factory is the pencil factory","quantity is the number of pencils assembled and the amount of each input consumed"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"deliver-pencils","version":"1","action_kind":"deliver-pencils","rationale":"The carrier moves pencil stock from the selected factory into the selected shop, subtracting it from the source and adding it to the destination.","actor_selector":{"categories":["actor","carrier"],"components":["worker","stock"]},"participants":{"source":{"categories":["workstation","factory"],"components":["stock"]},"to":{"categories":["workstation","shop"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"The carrier moves pencil stock","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"moves pencil stock"}},{"label":"The factory has enough pencils","left":{"participant":{"name":"source","path":"components.stock.pencils"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"The factory and shop are different places","left":{"action_field":"source"},"op":"ne","right":{"action_field":"to"}}],"effects":[{"participant":"source","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"to","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["Only a carrier with the represented pencil-moving role can deliver.","Delivery fails if the source lacks the requested pencils or the source and destination are the same entity."],"tests":["A carrier can deliver available pencils from a factory to a shop; the source loses and the shop gains the quantity.","The action is refused for a non-carrier, a non-factory source, a non-shop destination, a nonpositive quantity, insufficient stock, or identical endpoints."],"semantic_bindings":["source is the factory holding pencil stock","to is the stationery shop receiving pencil stock","quantity is the number of pencils delivered"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"serve-pencil-order","version":"1","action_kind":"serve-pencil-order","rationale":"The shopkeeper serves a waiting order by removing the sold pencils and one waiting order from the shop, and replenishes customer demand to represent recurring orders.","actor_selector":{"categories":["actor","shopkeeper"],"components":["worker","stock"]},"participants":{"customer":{"categories":["goal","customers"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"The shopkeeper serves pencil customers","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"serves pencil customers"}},{"label":"The shop has enough pencils","left":{"participant":{"name":"customer","path":"components.stock.pencils"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"The shop has a waiting order","left":{"participant":{"name":"customer","path":"components.stock.waiting_orders"}},"op":"gt","right":{"literal":0}},{"label":"The quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"customer","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"customer","path":"components.stock.waiting_orders","op":"subtract","value":{"literal":1}},{"participant":"customer","path":"components.stock.waiting_orders","op":"add","value":{"literal":1}}],"limits":["Only a shopkeeper with the represented customer-serving role can serve an order.","Serving fails if the shop lacks pencils or has no waiting order.","Demand is represented at the customer entity; this action does not transfer pencil stock out of the shop because the action participants do not include the shop."],"tests":["The action is refused when the customer entity has no pencils or no waiting orders.","The action requires a positive quantity and the represented shopkeeper role."],"semantic_bindings":["customer represents the waiting customer orders and, as modeled here, the shop stock is not separately represented among the action participants","quantity is the number of pencils sold"]}],"processes":[{"process_id":"forest-regrowth","rationale":"The managed forest replenishes its represented log resource over time, sustaining timber harvesting.","selector":{"categories":["forest"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.logs","op":"add","value":{"literal":2}}]},{"process_id":"mine-replenishment","rationale":"The represented graphite deposit replenishes gradually so mining can recur.","selector":{"categories":["mine"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.graphite","op":"add","value":{"literal":2}}]},{"process_id":"sawmill-log-supply","rationale":"Logs are replenished at the sawmill to provide the next production step with recurring inputs.","selector":{"categories":["sawmill"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.logs","op":"add","value":{"literal":2}}]},{"process_id":"core-workshop-graphite-supply","rationale":"Graphite is replenished at the core workshop so core-making can continue independently of transport actions not represented in this action set.","selector":{"categories":["core-workshop"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.graphite","op":"add","value":{"literal":2}}]},{"process_id":"factory-input-replenishment","rationale":"The factory receives recurring represented wood slat and graphite core inputs so pencil assembly remains actionable.","selector":{"categories":["factory"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.wood_slats","op":"add","value":{"literal":2}},{"participant":"it","path":"components.stock.graphite_cores","op":"add","value":{"literal":2}}]},{"process_id":"shop-orders","rationale":"Customers continue to place orders, keeping shop demand recurring.","selector":{"categories":["shop"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.waiting_orders","op":"add","value":{"literal":1}}]}],"terminal":null}
+===== 2026-10-19T00:41:59.576347+00:00 openrouter/openai/gpt-6-luna world-substrate-mechanic-authoring cost 0.0043432 tok 23592 3968
+--- last user msg:
+"lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "path": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "op",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 8,
+                "minItems": 1,
+                "type": "array"
+              },
+              "mode": {
+                "enum": [
+                  "all",
+                  "any"
+                ]
+              },
+              "selector": {
+                "additionalProperties": false,
+                "properties": {
+                  "categories": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "components": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "categories",
+                  "components"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "mode",
+              "selector",
+              "checks"
+            ],
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schema_version",
+      "mechanics",
+      "terminal"
+    ],
+    "type": "object"
+  },
+  "world": {
+    "content_version": 1,
+    "id": "pencil-supply-network",
+    "label": "Pencil Supply Network",
+    "location": "pencil-supply-network",
+    "summary": "Specialists produce, move, and sell pencils through a recurring supply network."
+  },
+  "world_kind": "ongoing"
+}
+--- response:
+{"schema_version":"world-substrate-causal-model/v0","mechanics":[{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"harvest-timber","version":"1","action_kind":"harvest-timber","rationale":"Harvesting takes available logs from the named forest and gives them to the forester.","actor_selector":{"categories":["actor","forester"],"components":["worker","stock"]},"participants":{"source":{"categories":["forest","source"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"you harvest timber","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"harvests timber"}},{"label":"the source is a managed forest","left":{"participant":{"name":"source","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"source","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.logs","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the forester role can harvest.","Quantity must be positive and no greater than the forest's available logs."],"tests":["A forester can harvest a positive quantity no larger than the forest stock; logs decrease at the forest and increase in the forester's stock.","A non-forester, zero or negative quantity, or quantity exceeding the forest stock is refused."],"semantic_bindings":["The source is the forest supplying the logs.","The actor is the forester receiving harvested logs."]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"cut-wood-slats","version":"1","action_kind":"cut-wood-slats","rationale":"Cutting consumes logs at the named sawmill and produces an equal quantity of wood slats there.","actor_selector":{"categories":["actor","sawyer"],"components":["worker","stock"]},"participants":{"mill":{"categories":["workstation","sawmill"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"you cut wood slats","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"cuts wood slats"}},{"label":"the sawmill has enough logs","left":{"participant":{"name":"mill","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"mill","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"mill","path":"components.stock.wood_slats","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the sawyer role can cut slats.","One log is consumed for each slat; quantity must be positive and within available logs."],"tests":["A sawyer can cut slats when the sawmill has enough logs; logs decrease and slats increase equally.","Insufficient logs, non-positive quantity, or a different worker role is refused."],"semantic_bindings":["The mill is the sawmill holding the logs and producing slats."]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"mine-graphite","version":"1","action_kind":"mine-graphite","rationale":"Mining removes available graphite from the named mine and gives it to the miner.","actor_selector":{"categories":["actor","miner"],"components":["worker","stock"]},"participants":{"source":{"categories":["source","mine"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"you mine graphite","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"mines graphite"}},{"label":"the mine has enough graphite","left":{"participant":{"name":"source","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"source","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.graphite","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the miner role can mine graphite.","Quantity must be positive and no greater than the mine's available graphite."],"tests":["A miner can gather a positive quantity within the mine stock; mine graphite decreases and miner graphite increases equally.","A different role, non-positive quantity, or quantity exceeding available graphite is refused."],"semantic_bindings":["The source is the mine supplying graphite.","The actor is the miner receiving graphite."]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"make-graphite-cores","version":"1","action_kind":"make-graphite-cores","rationale":"Preparing cores consumes graphite at the workshop and produces an equal quantity of graphite cores there.","actor_selector":{"categories":["actor","core-maker"],"components":["worker","stock"]},"participants":{"workshop":{"categories":["workstation","core-workshop"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"you make graphite cores","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"makes graphite cores"}},{"label":"the workshop has enough graphite","left":{"participant":{"name":"workshop","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"workshop","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"workshop","path":"components.stock.graphite_cores","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the core-maker role can prepare cores.","One unit of graphite is consumed per core; quantity must be positive and within available graphite."],"tests":["A core maker can prepare cores when the workshop has sufficient graphite; graphite decreases and cores increase equally.","Insufficient graphite, non-positive quantity, or a different role is refused."],"semantic_bindings":["The workshop is where graphite is prepared into cores."]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"assemble-pencils","version":"1","action_kind":"assemble-pencils","rationale":"Assembly consumes one wood slat and one graphite core per pencil and adds the pencils to the factory stock.","actor_selector":{"categories":["actor","pencil-maker"],"components":["worker","stock"]},"participants":{"factory":{"categories":["workstation","factory"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"you assemble pencils","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"assembles pencils"}},{"label":"the factory has enough wood slats","left":{"participant":{"name":"factory","path":"components.stock.wood_slats"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the factory has enough graphite cores","left":{"participant":{"name":"factory","path":"components.stock.graphite_cores"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"factory","path":"components.stock.wood_slats","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.graphite_cores","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the pencil-maker role can assemble pencils.","Each pencil consumes one slat and one core; quantity must be positive and both inputs must be available."],"tests":["A pencil maker assembles pencils when both inputs suffice; each input falls and pencil stock rises by the requested quantity.","Assembly is refused if either input is short, quantity is non-positive, or the worker role differs."],"semantic_bindings":["The factory holds the slats and cores and receives assembled pencils."]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"deliver-pencils","version":"1","action_kind":"deliver-pencils","rationale":"Delivery transfers pencil stock from the source to the destination without changing the total quantity.","actor_selector":{"categories":["actor","carrier"],"components":["worker","stock"]},"participants":{"source":{"categories":["workstation","factory"],"components":["stock"]},"to":{"categories":["workstation","shop"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"you move pencil stock","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"moves pencil stock"}},{"label":"the source has enough pencils","left":{"participant":{"name":"source","path":"components.stock.pencils"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}},{"label":"the factory and shop are different places","left":{"action_field":"source"},"op":"ne","right":{"action_field":"to"}}],"effects":[{"participant":"source","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"to","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the carrier role can deliver pencils.","The destination must be a shop, the source must be a factory, and the source must have the requested stock."],"tests":["A carrier delivers a positive available quantity from a factory to a shop; source stock falls and destination stock rises equally.","Delivery is refused for insufficient stock, non-positive quantity, an invalid endpoint, or a different role."],"semantic_bindings":["The source is the factory dispatching pencils.","The destination is the stationery shop receiving pencils.","The actor is the carrier performing the delivery."]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"serve-pencil-order","version":"1","action_kind":"serve-pencil-order","rationale":"Serving a waiting customer order consumes pencils from the shop and reduces the shop's waiting orders by the quantity served.","actor_selector":{"categories":["actor","shopkeeper"],"components":["worker","stock"]},"participants":{"customer":{"categories":["workstation","shop"],"components":["stock"]}},"parameters":{"quantity":[1,2,3,4,5,6,7,8]},"checks":[{"label":"you serve pencil customers","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"serves pencil customers"}},{"label":"the shop has enough pencils","left":{"participant":{"name":"customer","path":"components.stock.pencils"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the shop has enough waiting orders","left":{"participant":{"name":"customer","path":"components.stock.waiting_orders"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gt","right":{"literal":0}}],"effects":[{"participant":"customer","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"customer","path":"components.stock.waiting_orders","op":"subtract","value":{"action_field":"quantity"}}],"limits":["Only the shopkeeper role can serve orders.","Each served order requires one pencil; quantity must be positive and no greater than both available pencils and waiting orders."],"tests":["A shopkeeper can serve the requested number when the shop has sufficient pencils and waiting orders; both stocks decrease equally.","Serving is refused if either stock is insufficient, the quantity is non-positive, or the actor has another role."],"semantic_bindings":["The customer participant refers to the stationery shop whose waiting orders and pencil stock are served."]}],"processes":[{"process_id":"move-logs-to-sawmill","rationale":"Harvested logs are moved from the forester's stock to the sawmill so they can be cut.","selector":{"categories":["actor","forester"],"components":["stock"]},"checks":[],"participants":{"mill":{"link":"co_located","selector":{"categories":["workstation","sawmill"],"components":["stock"]}}},"effects":[{"participant":"it","path":"components.stock.logs","op":"subtract","value":{"participant":{"name":"it","path":"components.stock.logs"}}},{"participant":"mill","path":"components.stock.logs","op":"add","value":{"participant":{"name":"it","path":"components.stock.logs"}}}]},{"process_id":"move-slats-to-factory","rationale":"Slats made at the sawmill are transferred to the pencil factory for assembly.","selector":{"categories":["workstation","sawmill"],"components":["stock"]},"checks":[],"participants":{"factory":{"link":"co_located","selector":{"categories":["workstation","factory"],"components":["stock"]}}},"effects":[{"participant":"it","path":"components.stock.wood_slats","op":"subtract","value":{"participant":{"name":"it","path":"components.stock.wood_slats"}}},{"participant":"factory","path":"components.stock.wood_slats","op":"add","value":{"participant":{"name":"it","path":"components.stock.wood_slats"}}}]},{"process_id":"move-graphite-to-workshop","rationale":"Mined graphite is transferred from the miner's stock to the core workshop for preparation.","selector":{"categories":["actor","miner"],"components":["stock"]},"checks":[],"participants":{"workshop":{"link":"co_located","selector":{"categories":["workstation","core-workshop"],"components":["stock"]}}},"effects":[{"participant":"it","path":"components.stock.graphite","op":"subtract","value":{"participant":{"name":"it","path":"components.stock.graphite"}}},{"participant":"workshop","path":"components.stock.graphite","op":"add","value":{"participant":{"name":"it","path":"components.stock.graphite"}}}]},{"process_id":"move-cores-to-factory","rationale":"Prepared graphite cores are transferred from the workshop to the pencil factory for assembly.","selector":{"categories":["workstation","core-workshop"],"components":["stock"]},"checks":[],"participants":{"factory":{"link":"co_located","selector":{"categories":["workstation","factory"],"components":["stock"]}}},"effects":[{"participant":"it","path":"components.stock.graphite_cores","op":"subtract","value":{"participant":{"name":"it","path":"components.stock.graphite_cores"}}},{"participant":"factory","path":"components.stock.graphite_cores","op":"add","value":{"participant":{"name":"it","path":"components.stock.graphite_cores"}}}]},{"process_id":"arrive-shop-orders","rationale":"Customers continue placing pencil orders at the stationery shop, renewing demand after orders are served.","selector":{"categories":["workstation","shop"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.waiting_orders","op":"add","value":{"literal":1}}]}],"terminal":null}
+===== 2026-10-19T00:42:10.208908+00:00 openrouter/openai/gpt-6-luna world-substrate-mechanic-authoring cost 0.0027377 tok 23947 686
+--- last user msg:
+"lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "path": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "op",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 8,
+                "minItems": 1,
+                "type": "array"
+              },
+              "mode": {
+                "enum": [
+                  "all",
+                  "any"
+                ]
+              },
+              "selector": {
+                "additionalProperties": false,
+                "properties": {
+                  "categories": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "components": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "categories",
+                  "components"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "mode",
+              "selector",
+              "checks"
+            ],
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schema_version",
+      "mechanics",
+      "terminal"
+    ],
+    "type": "object"
+  },
+  "world": {
+    "content_version": 1,
+    "id": "pencil-supply-network",
+    "label": "Pencil Supply Network",
+    "location": "pencil-supply-network",
+    "summary": "Specialists produce, move, and sell pencils through a recurring supply network."
+  },
+  "world_kind": "ongoing"
+}
+--- response:
+{"schema_version":"world-substrate-causal-model/v0","mechanics":[],"processes":[],"terminal":null}
+===== 2026-10-19T00:42:35.316642+00:00 openrouter/openai/gpt-6-luna world-substrate-mechanic-authoring cost 0.004658675 tok 24050 3305
+--- last user msg:
+The local causal compiler rejected that proposal. Compiler error: ActionDeclarationError: causal model mechanics must be a nonempty list. Return a corrected JSON object only. State paths in participant/path and effect/path fields must be copied EXACTLY from allowed_state_paths; do not abbreviate component containers (for example use portable.portable, not portable).
+--- response:
+{"schema_version":"world-substrate-causal-model/v0","mechanics":[{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"harvest-timber","version":"1","action_kind":"harvest-timber","rationale":"The forester harvests available logs from the named forest; harvested logs enter the forester's stock.","actor_selector":{"categories":["actor","forester"],"components":["worker","stock"]},"participants":{"source":{"categories":["forest","source"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,8]},"checks":[{"label":"the forester harvests timber","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"harvests timber"}},{"label":"the forest has enough logs","left":{"participant":{"name":"source","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gte","right":{"literal":1}}],"effects":[{"participant":"source","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.logs","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the forester role may harvest.","The named source must have enough logs; harvesting does not create logs."],"tests":["Harvesting 2 logs from a forest with 30 leaves 28 there and adds 2 to the forester.","A non-forester, zero quantity, or insufficient forest stock is refused."],"semantic_bindings":["source: managed forest","logs: harvested timber"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"cut-wood-slats","version":"1","action_kind":"cut-wood-slats","rationale":"The sawyer consumes logs at the named sawmill and produces the same quantity of wood slats there.","actor_selector":{"categories":["actor","sawyer"],"components":["worker","stock"]},"participants":{"mill":{"categories":["workstation","sawmill"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,8]},"checks":[{"label":"the sawyer cuts wood slats","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"cuts wood slats"}},{"label":"the sawmill has enough logs","left":{"participant":{"name":"mill","path":"components.stock.logs"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gte","right":{"literal":1}}],"effects":[{"participant":"mill","path":"components.stock.logs","op":"subtract","value":{"action_field":"quantity"}},{"participant":"mill","path":"components.stock.wood_slats","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the sawyer role may cut slats.","The sawmill must already hold sufficient logs."],"tests":["Cutting 2 slats with 2 logs consumes 2 logs and adds 2 wood slats.","No slats are produced if logs are insufficient."],"semantic_bindings":["mill: sawmill","wood slats: processed logs"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"mine-graphite","version":"1","action_kind":"mine-graphite","rationale":"The miner extracts available graphite from the named mine into the miner's stock.","actor_selector":{"categories":["actor","miner"],"components":["worker","stock"]},"participants":{"source":{"categories":["source","mine"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,8]},"checks":[{"label":"the miner mines graphite","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"mines graphite"}},{"label":"the mine has enough graphite","left":{"participant":{"name":"source","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gte","right":{"literal":1}}],"effects":[{"participant":"source","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"actor","path":"components.stock.graphite","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the miner role may mine graphite.","The mine must already have sufficient graphite."],"tests":["Mining 3 from a mine with 30 leaves 27 there and adds 3 to the miner.","Mining is refused when the mine has less than the requested quantity."],"semantic_bindings":["source: graphite mine","graphite: mined material"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"make-graphite-cores","version":"1","action_kind":"make-graphite-cores","rationale":"The core maker consumes graphite at the named workshop and produces graphite cores there.","actor_selector":{"categories":["actor","core-maker"],"components":["worker","stock"]},"participants":{"workshop":{"categories":["workstation","core-workshop"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,8]},"checks":[{"label":"the core maker makes graphite cores","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"makes graphite cores"}},{"label":"the workshop has enough graphite","left":{"participant":{"name":"workshop","path":"components.stock.graphite"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gte","right":{"literal":1}}],"effects":[{"participant":"workshop","path":"components.stock.graphite","op":"subtract","value":{"action_field":"quantity"}},{"participant":"workshop","path":"components.stock.graphite_cores","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the core-maker role may make cores.","The workshop must already hold sufficient graphite."],"tests":["Making 2 cores consumes 2 graphite and adds 2 cores.","Making cores is refused if the workshop lacks graphite."],"semantic_bindings":["workshop: graphite core workshop","graphite_cores: prepared cores"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"assemble-pencils","version":"1","action_kind":"assemble-pencils","rationale":"The pencil maker consumes one wood slat and one graphite core per pencil at the factory.","actor_selector":{"categories":["actor","pencil-maker"],"components":["worker","stock"]},"participants":{"factory":{"categories":["workstation","factory"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,8]},"checks":[{"label":"the pencil maker assembles pencils","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"assembles pencils"}},{"label":"the factory has enough wood slats","left":{"participant":{"name":"factory","path":"components.stock.wood_slats"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the factory has enough graphite cores","left":{"participant":{"name":"factory","path":"components.stock.graphite_cores"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gte","right":{"literal":1}}],"effects":[{"participant":"factory","path":"components.stock.wood_slats","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.graphite_cores","op":"subtract","value":{"action_field":"quantity"}},{"participant":"factory","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the pencil-maker role may assemble pencils.","Each pencil requires one slat and one core at the factory."],"tests":["Assembling 2 pencils consumes 2 slats and 2 cores and adds 2 pencils.","Assembly is refused if either input stock is insufficient."],"semantic_bindings":["factory: pencil factory","pencils: assembled goods"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"deliver-pencils","version":"1","action_kind":"deliver-pencils","rationale":"The carrier transfers pencil stock from the named source to the named destination.","actor_selector":{"categories":["actor","carrier"],"components":["worker","stock"]},"participants":{"source":{"categories":["workstation","factory"],"components":["stock"]},"to":{"categories":["workstation","shop"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,8]},"checks":[{"label":"the carrier moves pencil stock","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"moves pencil stock"}},{"label":"the source has enough pencils","left":{"participant":{"name":"source","path":"components.stock.pencils"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gte","right":{"literal":1}},{"label":"the source and shop are different places","left":{"action_field":"source"},"op":"ne","right":{"action_field":"to"}}],"effects":[{"participant":"source","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"to","path":"components.stock.pencils","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the carrier role may deliver pencil stock.","The source must hold the delivered quantity."],"tests":["Delivering 2 pencils subtracts 2 at the source and adds 2 at the shop.","Delivery is refused if the source has too few pencils or source and destination are identical."],"semantic_bindings":["source: factory stock","to: stationery shop stock"]},{"schema_version":"world-substrate-action-mechanic/v0","mechanic_id":"serve-pencil-order","version":"1","action_kind":"serve-pencil-order","rationale":"The shopkeeper sells pencils against waiting customer orders; served orders are replaced by arriving demand.","actor_selector":{"categories":["actor","shopkeeper"],"components":["worker","stock"]},"participants":{"customer":{"categories":["goal","customers"],"components":["stock"]}},"parameters":{"quantity":[1,2,4,8]},"checks":[{"label":"the shopkeeper serves pencil customers","left":{"participant":{"name":"actor","path":"components.worker.role"}},"op":"eq","right":{"literal":"serves pencil customers"}},{"label":"the shop has enough pencils","left":{"participant":{"name":"customer","path":"components.stock.pencils"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the shop has enough waiting orders","left":{"participant":{"name":"customer","path":"components.stock.waiting_orders"}},"op":"gte","right":{"action_field":"quantity"}},{"label":"the quantity is positive","left":{"action_field":"quantity"},"op":"gte","right":{"literal":1}}],"effects":[{"participant":"customer","path":"components.stock.pencils","op":"subtract","value":{"action_field":"quantity"}},{"participant":"customer","path":"components.stock.waiting_orders","op":"subtract","value":{"action_field":"quantity"}},{"participant":"customer","path":"components.stock.waiting_orders","op":"add","value":{"action_field":"quantity"}}],"limits":["Only the shopkeeper role may serve orders.","The shop needs enough pencils and waiting orders; served demand is replenished by new orders."],"tests":["Serving 2 when the shop has at least 2 pencils and orders sells 2 pencils.","Serving is refused when either shop stock or waiting orders are insufficient."],"semantic_bindings":["customer: pencil customers representing the shop's waiting demand and served sales"]}],"processes":[{"process_id":"replenish-raw-materials","rationale":"Managed forest growth and mine replenishment keep the represented raw-material sources renewable.","selector":{"categories":["source"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.logs","op":"add","value":{"literal":1}},{"participant":"it","path":"components.stock.graphite","op":"add","value":{"literal":1}}]},{"process_id":"supply-workstations","rationale":"Recurring internal supply keeps logs and graphite available at their respective processing workstations, and supplies assembly inputs at the factory.","selector":{"categories":["workstation"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.logs","op":"add","value":{"literal":1}},{"participant":"it","path":"components.stock.graphite","op":"add","value":{"literal":1}},{"participant":"it","path":"components.stock.wood_slats","op":"add","value":{"literal":1}},{"participant":"it","path":"components.stock.graphite_cores","op":"add","value":{"literal":1}}]},{"process_id":"arriving-pencil-demand","rationale":"Customers continue to place orders so the shopkeeper has recurring demand.","selector":{"categories":["goal","customers"],"components":["stock"]},"checks":[],"effects":[{"participant":"it","path":"components.stock.waiting_orders","op":"add","value":{"literal":1}}]}],"terminal":null}

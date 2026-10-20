@@ -1,0 +1,45 @@
+[1.3s] pressing Create simulation
+[1.4s] step: Sending your description… 0 s
+[6.8s] step: Reading your description… 2.9 s
+[23.9s] step: ! Left out of the simulation Transport routes and distances Prices and payments Pencil materials such as erasers, ferrules, paint, and packaging 21 s
+[23.9s] step: Writing the rules… 21 s
+[51.5s] step: ✓ Test run: 48 moves in 24 rounds; still busy at the end; never possible: carry goods, make pencils, process graphite, saw boards, sell pencils 48.8 s
+[51.5s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 48.8 s
+[79.2s] step: Test-running the rules with simple moves… 75.2 s
+[80.2s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 76.6 s
+[108.8s] step: Test-running the rules with simple moves… 104 s
+[111.8s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 108.2 s
+[138.0s] step: Test-running the rules with simple moves… 134.7 s
+[138.5s] round 1: forest-crew=gather-timber, graphite-miners=gather-ore
+[139.0s] run stage visible
+[141.5s] round 2: forest-crew=gather-timber, graphite-miners=gather-ore
+[143.3s] round 3: forest-crew=gather-timber, graphite-miners=gather-ore
+[145.0s] round 4: forest-crew=gather-timber, graphite-miners=gather-ore
+[146.8s] round 5: forest-crew=gather-timber, graphite-miners=gather-ore
+[149.2s] round 6: forest-crew=gather-timber, graphite-miners=gather-ore
+[150.9s] round 7: forest-crew=gather-timber, graphite-miners=gather-ore
+[152.7s] round 8: forest-crew=gather-timber, graphite-miners=gather-ore
+[154.4s] round 9: forest-crew=gather-timber, graphite-miners=gather-ore
+[156.2s] round 10: forest-crew=gather-timber, graphite-miners=gather-ore
+[157.9s] round 11: forest-crew=gather-timber, graphite-miners=gather-ore
+[159.6s] round 12: forest-crew=gather-timber, graphite-miners=gather-ore
+[161.4s] round 13: forest-crew=gather-timber, graphite-miners=gather-ore
+[163.1s] round 14: forest-crew=gather-timber, graphite-miners=gather-ore
+[164.9s] round 15: forest-crew=gather-timber, graphite-miners=gather-ore
+[166.6s] round 16: forest-crew=gather-timber, graphite-miners=gather-ore
+[168.4s] round 17: forest-crew=gather-timber, graphite-miners=gather-ore
+[170.1s] round 18: forest-crew=gather-timber, graphite-miners=gather-ore
+[171.9s] round 19: forest-crew=gather-timber, graphite-miners=gather-ore
+[175.1s] round 20: forest-crew=gather-timber, graphite-miners=gather-ore
+[177.0s] round 21: forest-crew=gather-timber, graphite-miners=gather-ore
+[178.8s] round 22: forest-crew=gather-timber, graphite-miners=gather-ore
+[180.7s] round 23: forest-crew=gather-timber, graphite-miners=gather-ore
+[182.8s] round 24: forest-crew=gather-timber, graphite-miners=gather-ore
+[184.6s] round 25: forest-crew=gather-timber, graphite-miners=gather-ore
+[186.4s] round 26: forest-crew=gather-timber, graphite-miners=gather-ore
+[199.0s] readout 200
+[201.0s] share {"ok":true,"share_id":"l3dbTnEHCbeH","rounds":26}
+[201.8s] tampered /run: gather-timber
+[202.8s] C5 page message: Paused: These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example.
+[202.9s] saved c4-run13.json
+exit=0
