@@ -413,12 +413,13 @@ class WorldBuilderServiceTests(unittest.TestCase):
 
     def test_rewrites_continue_until_every_move_is_possible(self):
         # #179 (pencil c4-run7/run8): one rewrite still left five moves never possible and was accepted.
+        # #187: after two rule attempts the structure itself is redesigned from the last test run.
         def alive(never):
             return {"summary": {"turns": 24, "terminal_reached": False, "accepted_actions": 40, "active_at_end": True,
                                 "idle_actors": [], "never_offered": never}, "transcript": []}
         with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
             service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
-        ), patch.object(
+        ) as structure, patch.object(
             service, "generate_causal_model", return_value=(self._ongoing_causal(), FakeResult()),
         ) as mechanics, patch.object(
             service, "run_world", side_effect=[(alive({"make-lead": "", "fill-order": ""}), None, None),
@@ -427,8 +428,80 @@ class WorldBuilderServiceTests(unittest.TestCase):
             status, payload = self.post("/generate-world", {"description": "pencils", "world_kind": "ongoing"})
         self.assertEqual(status, 200, payload)
         self.assertEqual(mechanics.call_count, 3)
-        self.assertIn("never possible for anyone: fill-order", mechanics.call_args_list[2].kwargs["guidance"])
+        self.assertEqual(structure.call_count, 2)
+        self.assertIn("never possible for anyone: fill-order", structure.call_args_list[1].kwargs["feedback"])
+        self.assertEqual(structure.call_args_list[1].kwargs["previous"], BUNDLE)
+        self.assertEqual(mechanics.call_args_list[2].kwargs["guidance"], "")
         self.assertEqual(payload["dry_run"]["never_offered"], [])
+
+    def test_failed_redesign_keeps_the_first_rules(self):
+        alive = {"summary": {"turns": 24, "terminal_reached": False, "accepted_actions": 40, "active_at_end": True,
+                             "idle_actors": [], "never_offered": {"fill-order": ""}}, "transcript": []}
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle",
+            side_effect=[(BUNDLE, [], FakeResult()), ValueError("world proposal remained invalid after 2 repairs")],
+        ) as structure, patch.object(
+            service, "generate_causal_model", return_value=(self._ongoing_causal(), FakeResult()),
+        ) as mechanics, patch.object(service, "run_world", return_value=(alive, None, None)):
+            status, payload = self.post("/generate-world", {"description": "pencils", "world_kind": "ongoing"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(structure.call_count, 2)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertEqual(payload["bundle"], BUNDLE)
+
+    def test_task_worlds_never_redesign_the_structure(self):
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ) as structure, patch.object(
+            service, "generate_causal_model", return_value=(self._ongoing_causal(), FakeResult()),
+        ), patch.object(
+            service, "run_world", return_value=({"summary": {"turns": 12, "terminal_reached": False,
+                                                             "accepted_actions": 3, "active_at_end": True}}, None, None),
+        ):
+            status, _ = self.post("/generate-world", {"description": "pencils", "world_kind": "task"})
+        self.assertEqual(status, 200)
+        self.assertEqual(structure.call_count, 1)
+
+    def test_conjuring_process_is_found(self):
+        # c4-run14 share 7_reCn3v_2SR: a process added the products of three making steps to every inventory.
+        make = {"action_kind": "make-pencils", "actor_selector": {"categories": ["factory"]}, "participants": {},
+                "effects": [{"participant": "actor", "path": "components.inventory.boards", "op": "subtract"},
+                            {"participant": "actor", "path": "components.inventory.pencils", "op": "add"}]}
+        harvest = {"action_kind": "harvest-logs", "actor_selector": {"categories": ["forester"]},
+                   "participants": {"forest": {"categories": ["forest"]}},
+                   "effects": [{"participant": "forest", "path": "components.inventory.logs", "op": "subtract"},
+                               {"participant": "actor", "path": "components.inventory.logs", "op": "add"}]}
+        restock = {"process_id": "restock", "selector": {"categories": [], "components": ["inventory"]},
+                   "effects": [{"participant": "it", "path": "components.inventory.pencils", "op": "add"},
+                               {"participant": "it", "path": "components.inventory.logs", "op": "add"}]}
+        regrow = {"process_id": "regrow", "selector": {"categories": ["forest"]},
+                  "effects": [{"participant": "it", "path": "components.inventory.logs", "op": "add"}]}
+        demand = {"process_id": "demand", "selector": {"categories": ["customers"]},
+                  "effects": [{"participant": "it", "path": "components.demand.pencils", "op": "set"}]}
+        found = service._conjuring_processes({"mechanics": [make, harvest], "processes": [restock, regrow, demand]})
+        self.assertEqual(found, ["restock adds inventory.pencils (made by make-pencils)"])
+        shop_restock = {"process_id": "shop-restock", "selector": {"categories": ["shop"]},
+                        "effects": [{"participant": "it", "path": "components.inventory.pencils", "op": "add"}]}
+        self.assertEqual(service._conjuring_processes({"mechanics": [make], "processes": [shop_restock]}), [])
+
+    def test_conjuring_process_blocks_the_top_score(self):
+        causal = self._ongoing_causal()
+        causal = {**causal, "mechanics": causal["mechanics"], "processes": causal["processes"]}
+        alive = {"summary": {"turns": 24, "terminal_reached": False, "accepted_actions": 40, "active_at_end": True,
+                             "idle_actors": [], "never_offered": {}}, "transcript": []}
+        with patch.object(service, "_trace_cost", return_value=0.006), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(
+            service, "generate_causal_model", return_value=(causal, FakeResult()),
+        ) as mechanics, patch.object(
+            service, "run_world", return_value=(alive, None, None),
+        ), patch.object(service, "_conjuring_processes", side_effect=[["refill adds stock.pencils (made by make)"], []]):
+            status, payload = self.post("/generate-world", {"description": "pencils", "world_kind": "ongoing"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertIn("refill adds stock.pencils", mechanics.call_args_list[1].kwargs["guidance"])
+        self.assertEqual(payload["dry_run_attempts"][0]["conjuring_processes"], ["refill adds stock.pencils (made by make)"])
+        self.assertEqual(payload["dry_run"]["conjuring_processes"], [])
 
     def test_unknown_world_kind_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:

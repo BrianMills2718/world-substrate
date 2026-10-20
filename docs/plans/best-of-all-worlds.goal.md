@@ -121,6 +121,11 @@ came back, came back unused, or the expectation was wrong.
   (c4-run10) met C4 only by its letter: delivering and selling were never possible. Root causes and proposed fixes:
   [#187](https://github.com/BrianMills2718/world-substrate/issues/187). Brian approved stopping runs here and reporting
   every result (2026-10-20); the next step is fixing #187, then one new pencil set.
+- #187 fix (not yet run live, awaiting Brian's yes for one pencil set): an ongoing world whose best rules still leave a
+  step impossible or a worker idle gets its structure redesigned once from the test run; a process that adds a good
+  some action makes from other goods blocks the top score and is named in the rewrite guidance; the structure contract
+  asks for one carry action per kind of goods. Replayed on the saved pencil runs, the new check flags exactly the runs
+  whose goods were conjured (c4-run10, c4-run14 and three earlier) and none of the Waltzman worlds or c4-run11.
 - Fixes since 2026-10-19: #185 and #186 (hand-off actions name both ends, field examples are valid names), llm_client
   #291 (an empty OpenRouter account is reported as out of credit, not "busy").
 

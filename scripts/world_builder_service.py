@@ -81,6 +81,8 @@ WORLD_BUDGET = 0.20
 # until a test run passes. #179, 2026-10-18 (pencil c4-run7/run8): one rewrite still left 5 of 7 moves never
 # possible and was accepted anyway; a rules call costs about $0.005, so four fit WORLD_BUDGET easily.
 RULES_ATTEMPTS = 4
+# Ongoing worlds split RULES_ATTEMPTS across this many structures (#187).
+STRUCTURE_ATTEMPTS = 2
 # A people world (scripts/people_world.py): one stronger-model call for the people, goals and information, one for
 # the rules, a small one for the attempts, at most one compiler- or test-run-guided rules retry. 2026-10-16 Waltzman
 # (inc14b): the first rules cost $0.71 of $0.80, so the retry that would have fixed 9 of 10 stalled people never ran;
@@ -752,10 +754,48 @@ def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
     )
     return (
         f" In the {turns}-round test these actors stopped being able to do anything (or never could): {detail}. Every actor role must be able "
-        "to act regularly: make sure some other actor's action or a process produces what each one's action "
-        "needs (for example, if a carrier must hold goods before delivering, give another actor an action "
-        "that loads goods onto the carrier, or let the carrier pick them up itself)."
+        "to act regularly: make sure some actor's action brings what each one's action needs to where it is "
+        "checked (for example, if a carrier must hold goods before delivering, give another actor an action "
+        "that loads goods onto the carrier, or let the carrier pick them up itself). A process may renew raw "
+        "materials at their source or bring new demand, but never supply what an action makes."
     )
+
+
+def _conjuring_processes(causal: dict[str, Any]) -> list[str]:
+    """'process adds field (made by action)' for each process that creates a good some action makes from others.
+
+    2026-10-20 c4-run14 (trace world-builder-live/world/41373883...): restock-production-inputs added boards,
+    graphite and pencils to every inventory each round, so every worker looked busy while nothing flowed.
+    An action makes a field when it adds to it while using up a different field; a process may still renew
+    gathered raw materials or demand. A process collides only when its selector could reach the entity
+    the making action adds to (shared category, or either side names none).
+    """
+    def field(path: str) -> str:
+        return path.split(".", 1)[1] if path.startswith("components.") else path
+
+    made: dict[str, list[tuple[str, set[str]]]] = {}
+    for mechanic in causal.get("mechanics") or []:
+        roles = {**(mechanic.get("participants") or {}), "actor": mechanic.get("actor_selector") or {}}
+        effects = mechanic.get("effects") or []
+        used = {field(e["path"]) for e in effects if e.get("op") == "subtract"}
+        for effect in effects:
+            target = field(effect["path"])
+            if effect.get("op") != "add" or target in used or not used - {target}:
+                continue
+            categories = set((roles.get(effect.get("participant")) or {}).get("categories") or [])
+            made.setdefault(target, []).append((mechanic.get("action_kind", "?"), categories))
+    found: list[str] = []
+    for process in causal.get("processes") or []:
+        reach = set((process.get("selector") or {}).get("categories") or [])
+        for effect in process.get("effects") or []:
+            if effect.get("op") != "add" or effect.get("participant") != "it":
+                continue
+            target = field(effect["path"])
+            for kind, categories in made.get(target, []):
+                if not reach or not categories or reach & categories:
+                    found.append(f"{process.get('process_id', '?')} adds {target} (made by {kind})")
+                    break
+    return found
 
 
 def _initial_refusals(bundle: dict[str, Any], causal: dict[str, Any], limit: int = 6) -> list[str]:
@@ -1091,177 +1131,232 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 bundle, not_modeled, _ = generate_world_bundle(
                     description, model=model, trace_id=trace_id, max_budget=budget, world_kind=world_kind,
                 )
-                entities = bundle.get("entities") or []
-                action_kinds = [a.get("kind") for a in bundle.get("actions") or [] if a.get("kind")]
-                self._progress(
-                    "done", "Found what exists in your world",
-                    f"{len(entities)} thing{'s' if len(entities) != 1 else ''}, "
-                    f"{len(action_kinds)} kind{'s' if len(action_kinds) != 1 else ''} of action",
-                    [e.get("label") or e.get("id") for e in entities],
-                )
-                if not_modeled:
-                    self._progress("note", "Left out of the simulation", "", [str(x).rstrip(". ") for x in not_modeled])
-                guidance = ""
                 attempts: list[dict[str, Any]] = []
                 # Keep the best attempt: reaching the finish line beats merely
                 # allowing actions, which beats allowing nothing.
-                best: tuple[tuple[int, int], dict[str, Any], CausalModel, dict[str, Any]] | None = None
-                for attempt in range(RULES_ATTEMPTS):
-                    if attempt == 0:
-                        self._progress("doing", "Writing the rules")
-                    else:
-                        self._progress("doing", "Rewriting the rules with a stronger model",
-                                       "the last rules did not pass the test run")
-                    try:
+                best: tuple[tuple[int, int, int], dict[str, Any], CausalModel, dict[str, Any], dict[str, Any], list[str]] | None = None
+                # An ongoing world whose best rules still leave a step impossible or an actor idle gets its structure
+                # redesigned once from that evidence: rule rewrites cannot add a missing action or field (#187).
+                structures = STRUCTURE_ATTEMPTS if world_kind != "task" else 1
+                rules_per_structure = max(1, RULES_ATTEMPTS // structures)
+                rules_attempt = 0
+                out_of_budget = False
+                redesign_feedback = ""
+
+                def guidance_from_error(error: Exception) -> str:
+                    return f"The rules for it could not be compiled: {type(error).__name__}: {error}"[:600]
+
+                for structure_attempt in range(structures):
+                    structure_feedback = ""
+                    if structure_attempt:
+                        self._progress("doing", "Redesigning what each one can do",
+                                       "the test run showed steps that could never happen")
                         try:
-                            generated, _ = generate_causal_model(
-                            bundle,
-                            model=model if attempt == 0 else RULES_RETRY_MODEL,
-                            trace_id=trace_id,
-                            max_budget=budget,
-                            guidance=guidance,
-                            model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
-                            world_kind=world_kind,
+                            bundle, not_modeled, _ = generate_world_bundle(
+                                description, model=model, trace_id=trace_id, max_budget=budget, world_kind=world_kind,
+                                feedback=redesign_feedback, previous=bundle,
                             )
                         except Exception as error:
-                            # Matched by name: llm_client is imported lazily, only where calls are made.
-                            if type(error).__name__ != "LLMBudgetExceededError":
+                            # The first design's rules still stand; a failed redesign must not end the build.
+                            if best is None or not (isinstance(error, ValueError)
+                                                    or type(error).__name__ == "LLMBudgetExceededError"):
                                 raise
-                            # A retry that runs out of this build's AI budget must not throw away
-                            # an earlier attempt that works (2026-10-15: a pencil network lost its
-                            # first rules this way and showed "internal world-builder error").
-                            if best is None:
-                                raise ValueError(
-                                    "This description needed more AI work than one build allows. "
-                                    "Try a shorter or simpler description."
-                                ) from None
-                            self._progress("note", "Out of AI budget for this build", "keeping the earlier rules")
+                            self._progress("note", "Could not redesign it", "keeping the earlier rules")
                             break
-                        candidate = _strip_review(generated)
-                        candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
-                    except (ActionDeclarationError, ValueError, TypeError, KeyError) as error:
-                        # A rule set the compiler rejects is the cheapest failure to
-                        # recover from: hand it to the stronger retry instead of
-                        # ending the whole request.
-                        attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})
-                        self._progress("note", "Those rules did not fit together", str(error)[:160])
-                        if attempt == RULES_ATTEMPTS - 1 or _trace_cost(trace_id) >= budget - 0.01:
-                            if best is None:
-                                raise
-                            break
-                        guidance = (
-                            "Your previous proposal was rejected by the local causal compiler: "
-                            f"{type(error).__name__}: {error}. Return a corrected proposal."
-                        )
-                        continue
-                    review = candidate_compiled.as_review()
+                    entities = bundle.get("entities") or []
+                    action_kinds = [a.get("kind") for a in bundle.get("actions") or [] if a.get("kind")]
                     self._progress(
-                        "done",
-                        f"Wrote {len(review['mechanics'])} rule{'s' if len(review['mechanics']) != 1 else ''}"
-                        + (f" and {len(review['processes'])} thing{'s' if len(review['processes']) != 1 else ''} that happen by themselves"
-                           if review.get("processes") else ""),
-                        "with a finish line" if candidate_compiled.terminal is not None else "no finish line",
-                        [_words(m["action_kind"]) for m in review["mechanics"]] + [_words(p["process_id"]) for p in review.get("processes") or []],
+                        "done", "Found what exists in your world",
+                        f"{len(entities)} thing{'s' if len(entities) != 1 else ''}, "
+                        f"{len(action_kinds)} kind{'s' if len(action_kinds) != 1 else ''} of action",
+                        [e.get("label") or e.get("id") for e in entities],
                     )
-                    self._progress("doing", "Test-running the rules with simple moves")
-                    try:
-                        dry_turns = DRY_RUN_TURNS if world_kind == "task" else DRY_RUN_TURNS_CONTINUING
-                        dry, _, _ = run_world(
-                            bundle, candidate, policy="scripted", max_turns=dry_turns,
-                            trace_id=f"{trace_id}/dry-run-{attempt}",
-                        )
-                        result_row = {"ok": True, **dry["summary"]}
-                        if world_kind != "task":
-                            # Ongoing/open worlds succeed by staying alive, not by finishing.
-                            alive = (
-                                candidate_compiled.terminal is None
-                                and bool(candidate_compiled.processes)
-                                and dry["summary"]["active_at_end"]
-                            )
-                            summary = dry["summary"]
-                            idle = sorted(set(summary.get("idle_actors") or []) | set(summary.get("stalled_actors") or []))
-                            # Going in circles: one kind of move is all that still happens
-                            # although the rules offer several.
-                            circling = len(candidate_compiled.mechanics) >= 3 and len(summary.get("moves_at_end") or []) <= 1
-                            # A declared move nobody was ever offered (#166, pencil: the wholesaler's only move).
-                            never = summary.get("never_offered") or {}
-                            # Best: alive with every actor still taking part, every move possible at some point and the
-                            # work moving; then alive; then not.
-                            score = (3 if not idle and not circling and not never else 2) if alive else 1
-                            guidance = "" if alive else (
-                                f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
-                                f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
-                                f"{len(candidate_compiled.processes)} processes, active in the last rounds: "
-                                f"{dry['summary']['active_at_end']} (over {dry_turns} rounds). Set terminal to null and add "
-                                "processes so state keeps changing and the actors keep having useful actions in every "
-                                "round indefinitely: needs and resources must keep cycling (for example hunger rises, "
-                                "eating lowers it, food regrows), never just run down to a stop."
-                            )
-                            if idle:
-                                guidance += _idle_guidance(dry, idle, dry_turns)
-                            if circling:
-                                guidance += (
-                                    f" By the end of the {dry_turns}-round test the only move still happening was "
-                                    f"{', '.join(summary.get('moves_at_end') or ['nothing'])}: the work stopped progressing. "
-                                    "Make sure everything that can be taken or held can also be released or used up "
-                                    "(for example a rule to put a shared tool back), and that each step's output is "
-                                    "what the next step's checks need."
-                                )
-                            if never:
-                                guidance += (
-                                    f" In the {dry_turns}-round test these moves were never possible for anyone: "
-                                    + "; ".join(f"{kind} ({why or 'nothing it applies to ever existed, or no actor ever held what it needs'})"
-                                                for kind, why in never.items())
-                                    + ". For each, make sure some other action or a process produces what its checks "
-                                    "need (for example, if goods must be at the next stop before they can move on, give "
-                                    "someone an action that brings them there)."
-                                )
-                            result_row["stalled_actors"] = summary.get("stalled_actors") or []
-                            result_row["never_offered"] = sorted(never)
-                            result_row["circling"] = circling
-                            finishes = None
+                    if not_modeled:
+                        self._progress("note", "Left out of the simulation", "", [str(x).rstrip(". ") for x in not_modeled])
+                    guidance = ""
+                    structure_best: tuple[tuple[int, int, int], str] | None = None
+                    for try_index in range(rules_per_structure):
+                        attempt = rules_attempt
+                        rules_attempt += 1
+                        last_try = try_index == rules_per_structure - 1
+                        if try_index == 0:
+                            self._progress("doing", "Writing the rules")
                         else:
-                            finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
-                            score = 2 if finishes else 1
-                        if finishes is None:
-                            pass
-                        elif finishes:
-                            guidance = ""
-                        elif candidate_compiled.terminal is None:
+                            self._progress("doing", "Rewriting the rules with a stronger model",
+                                           "the last rules did not pass the test run")
+                        try:
+                            try:
+                                generated, _ = generate_causal_model(
+                                bundle,
+                                model=model if attempt == 0 else RULES_RETRY_MODEL,
+                                trace_id=trace_id,
+                                max_budget=budget,
+                                guidance=guidance,
+                                model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
+                                world_kind=world_kind,
+                                )
+                            except Exception as error:
+                                # Matched by name: llm_client is imported lazily, only where calls are made.
+                                if type(error).__name__ != "LLMBudgetExceededError":
+                                    raise
+                                # A retry that runs out of this build's AI budget must not throw away
+                                # an earlier attempt that works (2026-10-15: a pencil network lost its
+                                # first rules this way and showed "internal world-builder error").
+                                if best is None:
+                                    raise ValueError(
+                                        "This description needed more AI work than one build allows. "
+                                        "Try a shorter or simpler description."
+                                    ) from None
+                                self._progress("note", "Out of AI budget for this build", "keeping the earlier rules")
+                                out_of_budget = True
+                                break
+                            candidate = _strip_review(generated)
+                            candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
+                        except (ActionDeclarationError, ValueError, TypeError, KeyError) as error:
+                            # A rule set the compiler rejects is the cheapest failure to
+                            # recover from: hand it to the stronger retry instead of
+                            # ending the whole request.
+                            attempts.append({"ok": False, "error": f"rules rejected by the compiler: {error}"[:300]})
+                            self._progress("note", "Those rules did not fit together", str(error)[:160])
+                            spent = _trace_cost(trace_id) >= budget - 0.01
+                            if last_try or spent:
+                                out_of_budget = out_of_budget or spent
+                                if best is None and (spent or structure_attempt == structures - 1):
+                                    raise
+                                structure_feedback = structure_feedback or guidance_from_error(error)
+                                break
                             guidance = (
-                                "Your previous mechanics had terminal: null. The description has a goal; propose a "
-                                "terminal condition derived from represented state (e.g. every order's stage is "
-                                "served), and make the effects move state toward it."
+                                "Your previous proposal was rejected by the local causal compiler: "
+                                f"{type(error).__name__}: {error}. Return a corrected proposal."
                             )
-                        else:
-                            guidance = (
-                                f"A deterministic dry run of your previous mechanics allowed "
-                                f"{dry['summary']['accepted_actions']} actions over {DRY_RUN_TURNS} rounds but never "
-                                "reached the terminal condition. Make the effects move represented state toward "
-                                "the terminal condition (and keep checks from allowing the same useless action forever)."
-                            )
-                    except ValueError as error:
-                        result_row = {"ok": False, "error": str(error)[:300]}
-                        score = 0
-                        refusals = _initial_refusals(bundle, candidate)
-                        guidance = (
-                            "A deterministic dry run of your previous mechanics from the initial state "
-                            f"failed: {error}. In the starting state every action was refused because these "
-                            "checks were false: " + "; ".join(refusals) + ". Remove or correct checks that "
-                            "contradict the initial state (see initial_builtin_state and entity component "
-                            "values) so at least one actor can act, keeping effects consistent with the "
-                            "action descriptions."
+                            continue
+                        review = candidate_compiled.as_review()
+                        self._progress(
+                            "done",
+                            f"Wrote {len(review['mechanics'])} rule{'s' if len(review['mechanics']) != 1 else ''}"
+                            + (f" and {len(review['processes'])} thing{'s' if len(review['processes']) != 1 else ''} that happen by themselves"
+                               if review.get("processes") else ""),
+                            "with a finish line" if candidate_compiled.terminal is not None else "no finish line",
+                            [_words(m["action_kind"]) for m in review["mechanics"]] + [_words(p["process_id"]) for p in review.get("processes") or []],
                         )
-                    attempts.append(result_row)
-                    self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
-                    # Ties go to the attempt with fewer actors who never acted.
-                    rank = (score, -len(set(result_row.get("idle_actors") or []) | set(result_row.get("stalled_actors") or [])))
-                    if best is None or rank > best[0]:
-                        best = (rank, candidate, candidate_compiled, result_row)
-                    if score >= (2 if world_kind == "task" else 3) or attempt == RULES_ATTEMPTS - 1 or _trace_cost(trace_id) >= budget - 0.01:
+                        self._progress("doing", "Test-running the rules with simple moves")
+                        try:
+                            dry_turns = DRY_RUN_TURNS if world_kind == "task" else DRY_RUN_TURNS_CONTINUING
+                            dry, _, _ = run_world(
+                                bundle, candidate, policy="scripted", max_turns=dry_turns,
+                                trace_id=f"{trace_id}/dry-run-{attempt}",
+                            )
+                            result_row = {"ok": True, **dry["summary"]}
+                            if world_kind != "task":
+                                # Ongoing/open worlds succeed by staying alive, not by finishing.
+                                alive = (
+                                    candidate_compiled.terminal is None
+                                    and bool(candidate_compiled.processes)
+                                    and dry["summary"]["active_at_end"]
+                                )
+                                summary = dry["summary"]
+                                idle = sorted(set(summary.get("idle_actors") or []) | set(summary.get("stalled_actors") or []))
+                                # Going in circles: one kind of move is all that still happens
+                                # although the rules offer several.
+                                circling = len(candidate_compiled.mechanics) >= 3 and len(summary.get("moves_at_end") or []) <= 1
+                                # A declared move nobody was ever offered (#166, pencil: the wholesaler's only move).
+                                never = summary.get("never_offered") or {}
+                                # Best: alive with every actor still taking part, every move possible at some point and the
+                                # work moving; then alive; then not.
+                                conjuring_found = _conjuring_processes(candidate)
+                                score = (3 if not idle and not circling and not never and not conjuring_found else 2) if alive else 1
+                                guidance = "" if alive else (
+                                    f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
+                                    f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
+                                    f"{len(candidate_compiled.processes)} processes, active in the last rounds: "
+                                    f"{dry['summary']['active_at_end']} (over {dry_turns} rounds). Set terminal to null and add "
+                                    "processes so state keeps changing and the actors keep having useful actions in every "
+                                    "round indefinitely: needs and resources must keep cycling (for example hunger rises, "
+                                    "eating lowers it, food regrows), never just run down to a stop."
+                                )
+                                if idle:
+                                    guidance += _idle_guidance(dry, idle, dry_turns)
+                                if circling:
+                                    guidance += (
+                                        f" By the end of the {dry_turns}-round test the only move still happening was "
+                                        f"{', '.join(summary.get('moves_at_end') or ['nothing'])}: the work stopped progressing. "
+                                        "Make sure everything that can be taken or held can also be released or used up "
+                                        "(for example a rule to put a shared tool back), and that each step's output is "
+                                        "what the next step's checks need."
+                                    )
+                                if never:
+                                    guidance += (
+                                        f" In the {dry_turns}-round test these moves were never possible for anyone: "
+                                        + "; ".join(f"{kind} ({why or 'nothing it applies to ever existed, or no actor ever held what it needs'})"
+                                                    for kind, why in never.items())
+                                        + ". For each, make sure some other action produces what its checks need (for "
+                                        "example, if goods must be at the next stop before they can move on, give someone an "
+                                        "action that brings them there)."
+                                    )
+                                if conjuring_found:
+                                    guidance += (
+                                        " These processes create goods that an action is meant to make, so nothing has "
+                                        "to flow through the chain: " + "; ".join(conjuring_found) + ". Remove those effects; "
+                                        "processes may only renew raw materials at their source and bring new demand."
+                                    )
+                                result_row["stalled_actors"] = summary.get("stalled_actors") or []
+                                result_row["never_offered"] = sorted(never)
+                                result_row["circling"] = circling
+                                result_row["conjuring_processes"] = conjuring_found
+                                finishes = None
+                            else:
+                                finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
+                                score = 2 if finishes else 1
+                            if finishes is None:
+                                pass
+                            elif finishes:
+                                guidance = ""
+                            elif candidate_compiled.terminal is None:
+                                guidance = (
+                                    "Your previous mechanics had terminal: null. The description has a goal; propose a "
+                                    "terminal condition derived from represented state (e.g. every order's stage is "
+                                    "served), and make the effects move state toward it."
+                                )
+                            else:
+                                guidance = (
+                                    f"A deterministic dry run of your previous mechanics allowed "
+                                    f"{dry['summary']['accepted_actions']} actions over {DRY_RUN_TURNS} rounds but never "
+                                    "reached the terminal condition. Make the effects move represented state toward "
+                                    "the terminal condition (and keep checks from allowing the same useless action forever)."
+                                )
+                        except ValueError as error:
+                            result_row = {"ok": False, "error": str(error)[:300]}
+                            score = 0
+                            refusals = _initial_refusals(bundle, candidate)
+                            guidance = (
+                                "A deterministic dry run of your previous mechanics from the initial state "
+                                f"failed: {error}. In the starting state every action was refused because these "
+                                "checks were false: " + "; ".join(refusals) + ". Remove or correct checks that "
+                                "contradict the initial state (see initial_builtin_state and entity component "
+                                "values) so at least one actor can act, keeping effects consistent with the "
+                                "action descriptions."
+                            )
+                        attempts.append(result_row)
+                        self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
+                        # Ties go to the attempt with fewer actors who never acted, then fewer moves never possible.
+                        rank = (score, -len(set(result_row.get("idle_actors") or []) | set(result_row.get("stalled_actors") or [])),
+                                -len(result_row.get("never_offered") or []))
+                        if best is None or rank > best[0]:
+                            best = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled)
+                        if structure_best is None or rank > structure_best[0]:
+                            structure_best = (rank, guidance)
+                        out_of_budget = out_of_budget or _trace_cost(trace_id) >= budget - 0.01
+                        if score >= (2 if world_kind == "task" else 3) or last_try or out_of_budget:
+                            break
+                    if structure_best is not None:
+                        structure_feedback = structure_best[1]
+                    if best is not None and best[0][0] >= (2 if world_kind == "task" else 3):
                         break
+                    if out_of_budget or not structure_feedback:
+                        break
+                    redesign_feedback = structure_feedback
                 assert best is not None
-                _, causal, compiled, best_row = best
+                _, causal, compiled, best_row, bundle, not_modeled = best
                 trace_cost = _trace_cost(trace_id)
             except Exception:
                 _settle_failed_call(budget, trace_id)

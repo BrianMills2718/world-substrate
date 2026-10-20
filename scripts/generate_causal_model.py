@@ -235,9 +235,11 @@ WORLD_KIND_RULES = {
     ),
     "ongoing": (
         "World kind: keeps running. terminal must be null. Add 1-4 processes so the world never runs down. "
-        "If the description is about work or production: keep inputs replenishing and demand arriving (raw materials regrow or are mined each round, customers want more, a served "
+        "If the description is about work or production: keep raw materials renewing at their source and demand arriving (raw materials regrow or are mined each round, customers want more, a served "
         "order becomes a new waiting order), so goods keep flowing through the chain and every actor "
-        "role has something useful to do in most rounds, forever. Each actor's actions should be limited "
+        "role has something useful to do in most rounds, forever. A process never adds a good that an action "
+        "makes from other goods (boards, parts, finished products): those come only from that action. "
+        "Each actor's actions should be limited "
         "to its own step by checks on its role, and moving goods should add to the next holder's stock "
         "and subtract from the previous one's. If it is about people living their lives: change needs and "
         "resources every round in a cycle (for example hunger rises AND food regrows, supplies run down AND "

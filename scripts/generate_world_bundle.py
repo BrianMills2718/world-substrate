@@ -82,6 +82,12 @@ def _contract() -> dict[str, Any]:
             "When goods move between two entities and neither is the actor (a shopkeeper selling the shop's pencils "
             "to a customer, a carrier moving stock from the factory to the shop), the action needs an entity_ref "
             "field for each of them (for example 'shop' and 'customer', or 'source' and 'to').",
+            # 2026-10-20 c4-run13 (trace world-builder-live/world/fc37d615...): one carry-goods action with a text
+            # 'goods' field could only ever move boards, since a rule names fixed quantities; logs never reached the
+            # sawmill and five workers stayed idle through three rule rewrites.
+            "Rules change fixed, named quantities and cannot choose which one from a text field, so when different "
+            "goods move, declare one action per kind of goods (carry-logs, carry-boards), never one carry-goods "
+            "action with a field naming the goods.",
             "Labels and descriptions are plain English a visitor would use (\"Ava\", \"watering can\"), never internal jargon.",
             *SIZE_RULES,
         ],
@@ -156,8 +162,14 @@ def generate_world_bundle(
     max_budget: float = DEFAULT_BUDGET,
     reasoning_effort: str = "low",
     world_kind: str = "task",
+    feedback: str = "",
+    previous: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[str], Any]:
-    """Return (validated bundle, parts of the description not represented, last LLM result)."""
+    """Return (validated bundle, parts of the description not represented, last LLM result).
+
+    With ``feedback`` and the ``previous`` bundle, the model redesigns that structure from what a test run of
+    rules written for it showed; rule rewrites alone cannot add a missing action or field.
+    """
     if not isinstance(description, str) or not description.strip():
         raise ValueError("description must be a nonempty string")
     if len(description) > MAX_DESCRIPTION_CHARS:
@@ -168,6 +180,19 @@ def generate_world_bundle(
     if world_kind not in WORLD_KINDS:
         raise ValueError(f"world_kind must be one of {WORLD_KINDS}")
     messages = _messages(description.strip(), world_kind)
+    if feedback and previous is not None:
+        messages += [
+            {"role": "assistant", "content": json.dumps(previous)},
+            {
+                "role": "user",
+                "content": (
+                    "Rules were written for that structure and test-run, and this is what happened: "
+                    f"{feedback.strip()[:3000]} Rules can only change the actor and the entities its fields name, and "
+                    "cannot add actions or fields. Return a corrected structure (JSON object only) whose actions and "
+                    "fields let every step and every actor happen, keeping what already worked."
+                ),
+            },
+        ]
     last_error: Exception | None = None
     for attempt in range(MAX_REPAIRS + 1):
         result = call_llm(
