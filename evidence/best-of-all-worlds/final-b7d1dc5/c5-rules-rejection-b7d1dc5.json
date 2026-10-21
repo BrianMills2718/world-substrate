@@ -1,0 +1,43 @@
+{
+ "started": "2026-10-21T17:08:49.895Z",
+ "source_share": "../c4/share-IDBzd8xqGa_M.json",
+ "runs": [
+  {
+   "at": "2.2",
+   "url": "/run",
+   "status": 422,
+   "body": {
+    "ok": false,
+    "error": "These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example."
+   }
+  }
+ ],
+ "tampered": [
+  {
+   "at": "1.9",
+   "mechanic": "cut-logs",
+   "policy": "scripted",
+   "keys": [
+    "bundle",
+    "causal_model",
+    "approved",
+    "policy",
+    "turns"
+   ]
+  }
+ ],
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "b7d1dc59745cfa54c0c21e36de0022e74c487917",
+  "owner": false,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0.03920885
+ },
+ "ai_moves_before": false,
+ "build_mocked_at": "1.8",
+ "ai_moves_at_run": false,
+ "c5_rules_message": "Paused: These rules were refused before anything ran, so nothing changed: one rule does not fit this world (the rule check said: unsupported or unknown state path: components.no_such_part.value). Build the world again or start from an example.",
+ "c5_page_has_internal_error": false,
+ "finished": "2026-10-21T17:08:54.842Z"
+}

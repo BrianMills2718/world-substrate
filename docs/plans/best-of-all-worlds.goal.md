@@ -105,7 +105,21 @@ came back, came back unused, or the expectation was wrong.
   `LLM_CLIENT_TIMEOUT_POLICY=ban` (#158).
 - The shared AI lock: a build blocks other visitors' AI rounds while it runs; fix only if it blocks C1.
 
-## Current state (2026-10-21)
+## Current state (2026-10-21, final)
+
+- **C1-C6 pass on the live site at `b7d1dc5`** (confirmed by `/api/health`), one set on the owner allowance ($0.303),
+  every run listed with trace ids and event ids in [RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) ("Final set at
+  b7d1dc5"), files in [final-b7d1dc5/](../../evidence/best-of-all-worlds/final-b7d1dc5/):
+  - C1-C3: Waltzman c1r17, share `EAV7swDHSsAn`: round 1 at 123 s, 10/10 act in round 1, 7-13 distinct moves per 10
+    rounds over 45 rounds, four concerns on four channels, support down 11 / up 10, decision changed only by rule
+    events, readout 4/4 with event ids, C2 47/47, C3 replay with 0 AI calls.
+  - C4: pencil c4-run19 (`X7CRHl0w-oC2`) and c4-run20 (`IDBzd8xqGa_M`) both run a real supply chain for 28 rounds.
+  - C5: budget stop (visitor and owner) and a forced rules rejection each show a plain message.
+  - C6: 109 server log rows, all accounted for.
+- Known weaknesses (not failing a check): c4-run20 renews graphite twice (surplus of 29); the page keeps "Starting
+  the first round…" under a rules-rejection message.
+
+## Earlier state (2026-10-21)
 
 - Live: world-substrate `b7d1dc5` (#193 mover fix, #196 concerns condition support). No live run at it yet.
 - Final set at `183b47a` (#190 fix; Brian's yes), all three runs in
@@ -118,7 +132,7 @@ came back, came back unused, or the expectation was wrong.
   - Both pencil runs were charged to the visitor allowance ($0.039), against the boundary; the run scripts now refuse
     to start without the owner key.
 - #194 fixed in #196, live at `b7d1dc5` (confirmed by `/api/health`): an open concern in front of a full supporter now makes that support conditional by rule, and the readout's conditional-support mechanism needs an event that changes a support stance. No-spend check on the saved c1r16 world (scripted mover, 30 rounds): the rule fires 10 times, support moves down 18 and up 19 times.
-- So no single commit has all of C1-C6 yet. Next: one set at `b7d1dc5` (Waltzman once, pencil twice, owner allowance), which needs Brian's yes.
+- One set at `b7d1dc5` followed (Brian's yes); see the final state above.
 
 ## Previous state (2026-10-20)
 
