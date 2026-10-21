@@ -396,6 +396,20 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (v.participant) return (v.participant.name === "actor" ? "the person acting" : words(v.participant.name)) + "’s " + field(v.participant.path);
     return "a computed value";
   }
+  // Issue #121 (G5): the compiler-derived paths and limits stay folded under each rule.
+  function fold(label, list) {
+    if (!(list || []).length) return null;
+    const row = document.createElement("div"); row.className = "muted";
+    row.textContent = `${label} (${list.length}): ${list.join(", ")}`;
+    return row;
+  }
+  function details(rows) {
+    const d = document.createElement("details"); d.className = "small";
+    const summary = document.createElement("summary"); summary.textContent = "Show details";
+    summary.title = "Exactly which parts of the world this rule reads and changes, and its limits, worked out from the rule data";
+    d.append(summary, ...rows.filter(Boolean));
+    return d;
+  }
   function chip(text, bad) {
     const c = document.createElement("span"); c.className = "check" + (bad ? " bad" : ""); c.textContent = text;
     c.title = bad ? "This condition was false, so the action was refused" : "A condition that must be true at that moment for this to happen";
@@ -439,7 +453,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       if (!(m.checks || []).length) only.append("always allowed");
       td.append(only);
       const then = document.createElement("div"); then.className = "small muted"; then.textContent = "Then: " + ((m.effects || []).map(effectText).join("; ") || "nothing changes");
-      td.append(then);
+      td.append(then, details([fold("Reads", m.reads), fold("Changes", m.writes), fold("Limits", m.limits)]));
       tr.append(k, td); rules.append(tr);
     });
     const procs = data.review.processes || [];
@@ -456,7 +470,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       td.append(who);
       const then = document.createElement("div"); then.className = "small muted";
       then.textContent = "Then: " + (pr.effects || []).map((e) => effectText({ ...e, participant: (pr.selector.categories || [])[0] || "it" })).join("; ");
-      td.append(then);
+      td.append(then, details([fold("Changes", pr.writes)]));
       tr.append(k, td); pt.append(tr);
     });
     const t = data.review.terminal;
