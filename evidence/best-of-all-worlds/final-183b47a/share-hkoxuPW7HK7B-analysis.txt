@@ -1,0 +1,7 @@
+share-hkoxuPW7HK7B.json world-builder-live/world/10148deb328a4b77a45a79650f4f36e2 ongoing movers {'scripted-first-available': 27}
+rounds 1-10: 54 moves, 6 distinct {'mine-graphite': 10, 'harvest-logs': 10, 'place-order': 10, 'make-boards': 9, 'cut-slats': 8, 'assemble-pencils': 7}
+rounds 11-20: 60 moves, 6 distinct {'mine-graphite': 10, 'harvest-logs': 10, 'make-boards': 10, 'assemble-pencils': 10, 'place-order': 10, 'cut-slats': 10}
+rounds 21-30: 42 moves, 6 distinct {'mine-graphite': 7, 'harvest-logs': 7, 'make-boards': 7, 'assemble-pencils': 7, 'place-order': 7, 'cut-slats': 7}
+dry run: {'idle_actors': [], 'never_offered': [], 'moves_at_end': ['assemble-pencils', 'cut-slats', 'harvest-logs', 'make-boards', 'mine-graphite', 'place-order']}
+first event ids [(1, 'graphite-miner', 'r1-e00001'), (1, 'logger', 'r1-e00003'), (1, 'shopkeeper', 'r1-e00005'), (2, 'graphite-miner', 'r2-e00001'), (2, 'logger', 'r2-e00003')]
+world events {'renew-raw-materials': 27, 'customers-place-recurring-orders': 27}

@@ -1,0 +1,7 @@
+share--n_b5cczQ5wa.json world-builder-live/world/1d9d23ee75904d5c8e787bc385ce603f ongoing movers {'scripted-first-available': 26}
+rounds 1-10: 38 moves, 6 distinct {'mine-graphite-ore': 5, 'record-shop-order': 10, 'cut-logs': 10, 'load-ore': 5, 'refine-graphite': 4, 'load-graphite': 4}
+rounds 11-20: 40 moves, 6 distinct {'mine-graphite-ore': 5, 'refine-graphite': 5, 'record-shop-order': 10, 'cut-logs': 10, 'load-graphite': 5, 'load-ore': 5}
+rounds 21-30: 24 moves, 6 distinct {'mine-graphite-ore': 3, 'refine-graphite': 3, 'record-shop-order': 6, 'cut-logs': 6, 'load-graphite': 3, 'load-ore': 3}
+dry run: {'idle_actors': ['pencil-maker', 'sawmill-worker'], 'never_offered': ['assemble-pencils', 'deliver-pencils', 'load-boards', 'load-pencils', 'saw-boards'], 'moves_at_end': ['cut-logs', 'load-graphite', 'load-ore', 'mine-graphite-ore', 'record-shop-order', 'refine-graphite']}
+first event ids [(1, 'graphite-miner', 'r1-e00001'), (1, 'shopkeeper', 'r1-e00003'), (1, 'timber-crew', 'r1-e00005'), (2, 'graphite-miner', 'r2-e00001'), (2, 'shopkeeper', 'r2-e00003')]
+world events {'managed-forest-regrowth': 26, 'graphite-deposit-renewal': 13, 'shop-order-arrival': 26}

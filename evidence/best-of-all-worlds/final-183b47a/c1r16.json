@@ -1,0 +1,530 @@
+{
+ "started": "2026-10-21T14:55:48.153Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.4",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "8.5",
+   "text": "Working out who is involved and what each of them wants…\n5.5 s"
+  },
+  {
+   "at": "35.6",
+   "text": "✓\nFound what is known and when things happen · 4 pieces of information, 2 scheduled moments\nweekly member meeting\nactivation deadline\nAt one border site, the sensor feed has intermittent delays.\nThe current data-sharing agreement does not specify a retention period.\nOne remote crossing lacks trained staff for the overnight shift.\nClinic leaders in one local area have not yet received notice about the proposed\n31.7 s"
+  },
+  {
+   "at": "35.6",
+   "text": "!\nLeft out of the simulation\nThe schema does not specify a detailed mechanism for how discussion consumes mee\nThe schema cannot represent the technical operation of the surveillance system o\n31.7 s"
+  },
+  {
+   "at": "35.6",
+   "text": "Working out what each person can try to do…\n31.7 s"
+  },
+  {
+   "at": "52.6",
+   "text": "Writing the rules for what those attempts cause… · this is the longest step\n47.4 s"
+  },
+  {
+   "at": "115.8",
+   "text": "Test-running the rules with simple moves…\n114.4 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "131.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "140.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "151.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "162.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "168.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "193.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "199.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "206.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "215.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "228.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "234.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "257.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "267.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "285.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "293.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "302.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "315.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "329.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "338.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "357.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "363.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "382.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "398.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "411.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "421.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "442.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "482.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "489.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "496.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "501.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "512.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "526.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "532.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "545.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "552.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "558.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "566.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "573.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "584.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "589.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "597.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "603.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "633.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "640.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "652.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "660.6",
+   "status": 202,
+   "all": {}
+  }
+ ],
+ "rounds": [],
+ "readout": {
+  "at": "678.6",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "The partnership considered activating the early-warning system while technical, legal, staffing and communication concerns were raised and addressed. Country 2 repeatedly withheld support over data-retention terms and reopened the legal concern after it was marked resolved; the decision was repeatedly rejected at deadlines, and no activation is recorded.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "present",
+      "event_ids": [
+       "r1-e00001",
+       "r1-e00011",
+       "r1-e00013",
+       "r1-e00019"
+      ],
+      "events": [
+       {
+        "event_id": "r1-e00001",
+        "round": 1,
+        "by": "community-group",
+        "move": "communicate",
+        "changed": "entities.country-4.components.member.aware: false -> true; entities.delivery-info-community-notice-gap-to-country-4.components.delivery.status: pending -> delivered; entities.info-community-notice-gap-to-country-4.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00011",
+        "round": 1,
+        "by": "legal-group",
+        "move": "communicate",
+        "changed": "entities.country-2.components.member.aware: false -> true; entities.delivery-info-legal-retention-term-gap-to-country-2.components.delivery.status: pending -> delivered; entities.info-legal-retention-term-gap-to-country-2.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00013",
+        "round": 1,
+        "by": "logistics-group",
+        "move": "communicate",
+        "changed": "entities.country-3.components.member.aware: false -> true; entities.delivery-info-logistics-remote-shift-gap-to-country-3.components.delivery.status: pending -> delivered; entities.info-logistics-remote-shift-gap-to-country-3.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00019",
+        "round": 1,
+        "by": "technical-group",
+        "move": "communicate",
+        "changed": "entities.country-1.components.member.aware: false -> true; entities.delivery-info-technical-site-feed-delay-to-country-1.components.delivery.status: pending -> delivered; entities.info-technical-site-feed-delay-to-country-1.components.information.active: false -> true"
+       }
+      ],
+      "explanation": "The Community, Legal, Logistics and Technical groups each passed a distinct local concern through its own channel to a particular country: Country 4, Country 2, Country 3 and Country 1, respectively.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "present",
+      "event_ids": [
+       "r2-e00003",
+       "r8-e00012",
+       "r15-e00007",
+       "r22-e00008",
+       "r36-e00006",
+       "r43-e00008"
+      ],
+      "events": [
+       {
+        "event_id": "r2-e00003",
+        "round": 2,
+        "by": "country-1",
+        "move": "discuss-local-concern",
+        "changed": "entities.country-1.components.work.discuss_local_concern_done: false -> true; entities.meeting-pace.components.meeting_pace.baseline: regular -> slowed"
+       },
+       {
+        "event_id": "r8-e00012",
+        "round": 8,
+        "by": "the world (a rule)",
+        "move": "decision-rejected-at-deadline",
+        "changed": "entities.activate-early-warning-system.components.group_decision.status: open -> rejected"
+       },
+       {
+        "event_id": "r15-e00007",
+        "round": 15,
+        "by": "the world (a rule)",
+        "move": "decision-rejected-at-deadline",
+        "changed": "entities.activate-early-warning-system.components.group_decision.status: open -> rejected"
+       },
+       {
+        "event_id": "r22-e00008",
+        "round": 22,
+        "by": "the world (a rule)",
+        "move": "decision-rejected-at-deadline",
+        "changed": "entities.activate-early-warning-system.components.group_decision.status: open -> rejected"
+       },
+       {
+        "event_id": "r36-e00006",
+        "round": 36,
+        "by": "the world (a rule)",
+        "move": "decision-rejected-at-deadline",
+        "changed": "entities.activate-early-warning-system.components.group_decision.status: open -> rejected"
+       },
+       {
+        "event_id": "r43-e00008",
+        "round": 43,
+        "by": "the world (a rule)",
+        "move": "decision-rejected-at-deadline",
+        "changed": "entities.activate-early-warning-system.components.group_decision.status: open -> rejected"
+       }
+      ],
+      "explanation": "Country 1’s discussion of a local concern changed the meeting pace from regular to slowed. The activation decision then repeatedly reached a deadline without approval and was rejected, including after Country 2’s legal concern held back agreement.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "present",
+      "event_ids": [
+       "r4-e00003",
+       "r8-e00003",
+       "r11-e00003",
+       "r15-e00001",
+       "r21-e00003",
+       "r42-e00003"
+      ],
+      "events": [
+       {
+        "event_id": "r4-e00003",
+        "round": 4,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 0 -> 1"
+       },
+       {
+        "event_id": "r8-e00003",
+        "round": 8,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 1 -> 2"
+       },
+       {
+        "event_id": "r11-e00003",
+        "round": 11,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 2 -> 3"
+       },
+       {
+        "event_id": "r15-e00001",
+        "round": 15,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 4 -> 5"
+       },
+       {
+        "event_id": "r21-e00003",
+        "round": 21,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 6 -> 7"
+       },
+       {
+        "event_id": "r42-e00003",
+        "round": 42,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 13 -> 14"
+       }
+      ],
+      "explanation": "Country 2 repeatedly reopened the legal retention concern after it had been marked resolved, putting the issue back into the decision process.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "present",
+      "event_ids": [
+       "r8-e00003",
+       "r10-e00003",
+       "r18-e00001",
+       "r28-e00001",
+       "r40-e00001"
+      ],
+      "events": [
+       {
+        "event_id": "r8-e00003",
+        "round": 8,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 1 -> 2"
+       },
+       {
+        "event_id": "r10-e00003",
+        "round": 10,
+        "by": "country-2",
+        "move": "put-matter-on-agenda",
+        "changed": "entities.activate-early-warning-system.components.group_decision.agenda_items: 0 -> 1; entities.country-2.components.work.put_matter_on_agenda_done: false -> true"
+       },
+       {
+        "event_id": "r18-e00001",
+        "round": 18,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 5 -> 6"
+       },
+       {
+        "event_id": "r28-e00001",
+        "round": 28,
+        "by": "country-2",
+        "move": "reopen-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.status: resolved -> open; entities.info-legal-retention-term-gap-to-country-2.components.concern.times_reopened: 9 -> 10"
+       },
+       {
+        "event_id": "r40-e00001",
+        "round": 40,
+        "by": "country-2",
+        "move": "resolve-own-concern",
+        "changed": "entities.info-legal-retention-term-gap-to-country-2.components.concern.remedy_ticks_left: 0 -> 2; entities.info-legal-retention-term-gap-to-country-2.components.concern.status: open -> remedy_under_way"
+       }
+      ],
+      "explanation": "Country 2 explicitly withheld support until the data-retention terms were clear. With Country 2’s support absent, the partnership could not reach the required agreement before the deadlines.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 346
+   },
+   "cost_usd": 0.0034029,
+   "daily_cost_usd": 0.22965196999999993,
+   "trace_id": "world-builder-live/readout/c96082fade594f7d8341697a627c6fb5"
+  }
+ },
+ "share": {
+  "at": "681.4",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "vg2Pmxhml1so",
+   "rounds": 45
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/run/7c98176a6f2a4da489fb5ec55798f330",
+  "cost_usd": 0.0036605
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "183b47a8703a98f07b13b427fce9fb548d131d4a",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 0,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0
+ },
+ "pressed_at": "1.4",
+ "run_stage_at": "131.8",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nThe partnership considered activating the early-warning system while technical, legal, staffing and communication concerns were raised and addressed. Country 2 repeatedly withheld support over data-retention terms and reopened the legal concern after it was marked resolved; the decision was repeatedly rejected at deadlines, and no activation is recorded.\n\nHappened: Local concerns through separate channels\nThe Community, Legal, Logistics and Technical groups each passed a distinct local concern through its own channel to a particular country: Country 4, Country 2, Country 3 and Country 1, respectively.\nRound 1, Community Group: communicate (event r1-e00001)\nRound 1, Legal Group: communicate (event r1-e00011)\nRound 1, Logistics Group: communicate (event r1-e00013)\nRound 1, Technical Group: communicate (event r1-e00019)\nHappened: Slowed meetings\nCountry 1’s discussion of a local concern changed the meeting pace from regular to slowed. The activation decision then repeatedly reached a deadline without approval and was rejected, including after Country 2’s legal concern held back agreement.\nRound 2, Country 1: discuss-local-concern (event r2-e00003)\nRound 8, the world (a rule): decision-rejected-at-deadline (event r8-e00012)\nRound 15, the world (a rule): decision-rejected-at-deadline (event r15-e00007)\nRound 22, the world (a rule): decision-rejected-at-deadline (event r22-e00008)\nRound 36, the world (a rule): decision-rejected-at-deadline (event r36-e00006)\nRound 43, the world (a rule): decision-rejected-at-deadline (event r43-e00008)\nHappened: Reopened settled issues\nCountry 2 repeatedly reopened the legal retention concern after it had been marked resolved, putting the issue back into the decision process.\nRound 4, Country 2: reopen-concern (event r4-e00003)\nRound 8, Country 2: reopen-concern (event r8-e00003)\nRound 11, Country 2: reopen-concern (event r11-e00003)\nRound 15, Country 2: reopen-concern (event r15-e00001)\nRound 21, Country 2: reopen-concern (event r21-e00003)\nRound 42, Country 2: reopen-concern (event r42-e00003)\nHappened: Conditional support delaying deployment\nCountry 2 explicitly withheld support until the data-retention terms were clear. With Country 2’s support absent, the partnership could not reach the required agreement before the deadlines.\nRound 8, Country 2: reopen-concern (event r8-e00003)\nRound 10, Country 2: put-matter-on-agenda (event r10-e00003)\nRound 18, Country 2: reopen-concern (event r18-e00001)\nRound 28, Country 2: reopen-concern (event r28-e00001)\nRound 40, Country 2: resolve-own-concern (event r40-e00001)\nRead from 346 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 45 · 157 allowed · 44 refused · 450 held back by the rules · 222 by itself",
+ "finished": "2026-10-21T15:07:13.162Z"
+}

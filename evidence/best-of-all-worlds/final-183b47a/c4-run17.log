@@ -1,0 +1,43 @@
+[1.5s] pressing Create simulation
+[1.6s] step: Sending your description… 0 s
+[7.7s] step: Reading your description… 4.3 s
+[62.8s] step: ! Left out of the simulation Money and prices Distances and travel time Deadlines and delivery schedules Pencil materials and product quality variations 59 s
+[62.8s] step: Writing the rules… 59 s
+[103.9s] step: Test-running the rules with simple moves… 100.5 s
+[105.9s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 102.3 s
+[139.0s] step: Test-running the rules with simple moves… 135.4 s
+[140.0s] step: Redesigning what each one can do… · the test run showed steps that could never happen 137.3 s
+[184.1s] step: Writing the rules… 181.4 s
+[245.3s] step: Test-running the rules with simple moves… 242.1 s
+[246.3s] step: Rewriting the rules with a stronger model… · the last rules did not pass the test run 244 s
+[303.5s] step: Test-running the rules with simple moves… 299.1 s
+[304.4s] round 1: graphite-miner=mine-graphite-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[304.5s] run stage visible
+[306.2s] round 2: graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[308.0s] round 3: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[310.2s] round 4: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[312.0s] round 5: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[313.8s] round 6: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[315.6s] round 7: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[317.7s] round 8: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[319.5s] round 9: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[321.3s] round 10: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[323.1s] round 11: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[324.9s] round 12: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[326.7s] round 13: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[332.3s] round 14: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[334.1s] round 15: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[336.0s] round 16: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[338.0s] round 17: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[340.1s] round 18: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[342.2s] round 19: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[344.7s] round 20: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[346.5s] round 21: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[348.4s] round 22: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[350.3s] round 23: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[352.2s] round 24: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[354.2s] round 25: graphite-miner=mine-graphite-ore, refinery-worker=refine-graphite, shopkeeper=record-shop-order, timber-crew=cut-logs
+[356.5s] round 26: carrier=load-graphite, graphite-miner=load-ore, shopkeeper=record-shop-order, timber-crew=cut-logs
+[374.8s] readout 200
+[377.9s] share {"ok":true,"share_id":"-n_b5cczQ5wa","rounds":26}
+[378.3s] saved c4-run17.json

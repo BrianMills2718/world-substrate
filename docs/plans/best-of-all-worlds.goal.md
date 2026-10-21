@@ -105,7 +105,21 @@ came back, came back unused, or the expectation was wrong.
   `LLM_CLIENT_TIMEOUT_POLICY=ban` (#158).
 - The shared AI lock: a build blocks other visitors' AI rounds while it runs; fix only if it blocks C1.
 
-## Current state (2026-10-20)
+## Current state (2026-10-21)
+
+- Live: world-substrate `6636399` (#193 mover fix), confirmed by `/api/health`. No live run at it yet.
+- Final set at `183b47a` (#190 fix; Brian's yes), all three runs in
+  [RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) ("Final set at 183b47a"):
+  - Waltzman c1r16 (share `vg2Pmxhml1so`) passes every C1 point but one: support only rose, and no AI member ever made
+    support conditional ([#194](https://github.com/BrianMills2718/world-substrate/issues/194)). C2 41/41, C3 replay
+    45/45 with no AI calls, C6 readout 4/4 with event ids (but see #194 on how loosely it judged conditional support).
+  - Pencil c4-run17 fails (two workers never act) and c4-run18 is partial (the shop never sells). Both from the
+    scripted mover always taking the first allowed move; fixed in #193 and checked by no-spend replays of both worlds.
+  - Both pencil runs were charged to the visitor allowance ($0.039), against the boundary; the run scripts now refuse
+    to start without the owner key.
+- So no single commit has all of C1-C6 yet. Next: fix #194, then one set at the new commit, with Brian's yes.
+
+## Previous state (2026-10-20)
 
 - Live: world-substrate `1a5498f`, llm_client `2d30c34`. Final set run on the owner allowance; every run, with trace ids,
   is in [evidence/best-of-all-worlds/RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) ("Final set at f365d6b and

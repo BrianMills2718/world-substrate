@@ -103,3 +103,23 @@ Brian approved one pencil set at b582c79 ("yes", 2026-10-20). Both builds are li
 | --- | --- | --- | --- | --- |
 | **c4-run15 pencil (C4)** | **b582c79** | build world-builder-live/world/4a512f973063455598c2a019aa0e6b39 | share 4p5LQlDRNbdf. The first design left four moves never possible; the structure was redesigned and the new rules passed the test run with no one idle. 26 rounds, 7 distinct moves in every window (harvest-logs, make-slats, supply-graphite, make-erasers, assemble-pencils, carry-pencils, sell-pencils), first events r1-e00001..r1-e00009. Real chain: make-slats uses up logs, assemble-pencils uses up slats, graphite and erasers; carry-pencils moves factory to shop; sell-pencils shop to school. 26 pencils reached the school, factory and shop net 0. Processes only renew logs, graphite and erasers at their suppliers. PASS | c4-run15.*, share-4p5LQlDRNbdf.json |
 | c4-run16 pencil | b582c79 | build .../world/cde24f8929724605bee600215b12e326 | share M6CqmOQP-qt5. Redesign fired; 26 rounds, 6 distinct moves per window, but the carrier is idle and deliver-pencils and buy-pencil were never possible: processes move goods between businesses every round (move-logs-to-sawmill and four more). FAIL in substance -> [#190](https://github.com/BrianMills2718/world-substrate/issues/190) | c4-run16.*, share-M6CqmOQP-qt5.json |
+
+# Final set at 183b47a (#190 fix), 2026-10-21 UTC
+
+Brian approved one set at the #190 fix ("yes", 2026-10-21): Waltzman once, pencil twice. All three are listed; there
+were no other builds that day ([server-runlog-2026-10-21.jsonl](final-183b47a/server-runlog-2026-10-21.jsonl), the
+server's own request log). **Allowance slip:** the Waltzman run used the owner allowance, but both pencil runs and
+their readouts were charged to the visitor allowance ($0.039 of $3), because the shell that started them had not loaded
+the owner key. The run scripts now refuse to start with `OWNER=1` and no key. Owner spend $0.230. Files in
+[final-183b47a/](final-183b47a/).
+
+| Run | Commit | Trace ids | Outcome | Evidence |
+| --- | --- | --- | --- | --- |
+| c1r16 Waltzman | 183b47a | build world-builder-live/people/df57016133b54641983adba16866c9a8 (45 run traces, owner); readout .../readout/c96082fade594f7d8341697a627c6fb5 | share vg2Pmxhml1so. Run stage visible 131.8 s after the press; all 10 people act in round 1; 8-13 distinct moves in every 10-round window; concerns reach countries 4/2/3/1 through their channels (r1-e00001/11/13/19); resolve-concern 10 times; the decision changes only by rule events (decision-rejected-at-deadline r8, r15, r22, r29, r36, r43) and people bringing it back; readout 4/4 mechanisms with event ids; C2 41/41 claimed changes match the trace; C3 replay 45 rounds, 0 AI calls. **FAIL on "support changes both ways":** support only rose (four give-support, none to full); no AI member ever tried make-support-conditional, and the readout's conditional-support "present" (r8-e00003 etc.) is looser than the behavior -> [#194](https://github.com/BrianMills2718/world-substrate/issues/194) | c1r16.*, c1r16-*.png, c1r16-analysis.txt, c1r16-c2.txt, c1r16-replay.txt, share-vg2Pmxhml1so.json |
+| c4-run17 pencil | 183b47a | build .../world/1d9d23ee75904d5c8e787bc385ce603f; readout .../readout/78d31b454e3343beae4254eab42eb5f1 (both visitor) | share -n_b5cczQ5wa. FAIL: pencil-maker and sawmill-worker never act; the timber crew always cuts logs and never loads them. Cause: the scripted mover (live run and build test run) always took the first allowed move, so rule rewrites could not fix it. New "How goods moved" readout works (goods-made, goods-handed-on present; demand-met missing) | c4-run17.*, c4-run17-*.png, share--n_b5cczQ5wa*.json/txt |
+| c4-run18 pencil | 183b47a | build .../world/10148deb328a4b77a45a79650f4f36e2; readout .../readout/de858fcaad9443128ec3886df17f46cc (both visitor) | share hkoxuPW7HK7B. PARTIAL: 27 rounds, all 6 act, 6 distinct moves per window, assemble-pencils 24 times, no conjuring or moving processes; but the shopkeeper only places orders and never sells (same mover cause) | c4-run18.*, c4-run18-*.png, share-hkoxuPW7HK7B*.json/txt |
+
+Mover fix, [#193](https://github.com/BrianMills2718/world-substrate/pull/193) (live at 6636399): each person takes the
+allowed move they did least recently. Replayed with no AI spend on the saved worlds: c4-run17 all 13 moves happen, no
+one idle; c4-run18 sell-pencil 11 times, no one idle; c4-run15 still passes; c4-run16 still fails (its transport
+processes are now refused at build by #192). No live run at 6636399 yet.
