@@ -678,8 +678,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       : live.playing ? "Your world is running" : live.finished ? "Your world reached its finish line" : "Your world is paused";
     $("outcome").textContent = n
       ? `Round ${last} · ${t.allowed} allowed · ${t.refused} refused${t.held ? ` · ${t.held} held back by the rules` : ""}${t.byItself ? ` · ${t.byItself} by itself` : ""}`
-      : "Starting the first round…";
+      // 2026-10-21 C5 check: a refused first round left "Starting the first round…" under the refusal.
+      : live.playing ? "Starting the first round…" : "No rounds have run yet.";
     $("live-status").textContent = live.why;
+    // No picture until a round has run: before that it was an empty white box.
+    $("replay").closest("details").hidden = !n;
     const btn = $("play-btn");
     btn.textContent = live.playing ? "⏸ Pause" : "▶ Play";
     btn.disabled = live.finished;

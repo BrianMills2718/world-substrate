@@ -240,6 +240,8 @@ WORLD_KIND_RULES = {
         "role has something useful to do in most rounds, forever. A process never adds a good that an action "
         "makes from other goods (boards, parts, finished products): those come only from that action. A process "
         "never moves goods from one holder to another: carrying is an actor's action. "
+        "A raw material has one source: if an actor's action gathers it (mining, cutting), that action takes it "
+        "from a reserve and the process renews the reserve, not the gatherer's stock. "
         "Each actor's actions should be limited "
         "to its own step by checks on its role, and moving goods should add to the next holder's stock "
         "and subtract from the previous one's. If it is about people living their lives: change needs and "
