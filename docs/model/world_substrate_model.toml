@@ -321,7 +321,7 @@ schedule = "at the start of every run"
 
 [[processes]]
 name = "run"
-what = "Fresh or continued run: builds the Engine, then per round each actor (rotating order) discovers offered actions, a policy (scripted first-available, or LLM) picks one, Engine.submit commits or refuses; a lost race retries once; then Engine.advance(1) runs due processes."
+what = "Fresh or continued run: builds the Engine, then per round each actor (rotating order) discovers offered actions, a policy (scripted least-recent move, or LLM) picks one, Engine.submit commits or refuses; a lost race retries once; then Engine.advance(1) runs due processes."
 source = "scripts/run_authored_world.py:215"
 routes = ["POST /run"]
 changes = ["World", "Entity", "Run", "Snapshot"]

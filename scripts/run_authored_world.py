@@ -222,7 +222,7 @@ def bookkeeping_fields(model: CausalModel) -> dict[str, set[str]]:
     }
 
 
-def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool, bookkeeping: dict[str, set[str]] | None = None) -> dict[str, Any]:
+def _without_no_ops(engine: Engine, page: dict[str, Any], *, bookkeeping: dict[str, set[str]] | None = None) -> dict[str, Any]:
     """Drop allowed actions that would change nothing right now.
 
     A rule can allow a move whose effects leave the world exactly as it was (for
@@ -230,7 +230,6 @@ def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool, b
     Choosing it forever looked like a busy world (2026-10-06: two cooks did
     nothing but "record salad order" every round). Each candidate is tried on a
     scratch copy of the world; only moves that change something stay on offer.
-    With first_only, stop at the first useful move (simple moves take the first).
     """
     useful = []
     for row in page.get("available") or []:
@@ -239,16 +238,22 @@ def _without_no_ops(engine: Engine, page: dict[str, Any], *, first_only: bool, b
         own = (bookkeeping or {}).get(row["action"].get("kind", ""), set())
         if outcome.get("status") == "accepted" and any(_field(c.get("path", "")) not in own for c in _state_changes(outcome["event"])):
             useful.append(row)
-            if first_only:
-                break
     return {**page, "available": useful}
 
 
-def _scripted_choice(page: dict[str, Any]) -> tuple[dict[str, Any] | None, str]:
+def _scripted_choice(page: dict[str, Any], last_done: dict[str, int] | None = None) -> tuple[dict[str, Any] | None, str]:
+    """The allowed move this actor has done least recently (never done first), ties in offered order.
+
+    2026-10-21 live pencil runs at 183b47a: always taking the first allowed move kept a timber crew cutting logs
+    forever and never loading them (c4-run17 -n_b5cczQ5wa: sawmill and pencil maker idle), and a shopkeeper
+    ordering forever and never selling (c4-run18 hkoxuPW7HK7B). The build's dry run used the same rule, so it
+    reported idle workers that no rewrite of the rules could fix.
+    """
     if not page.get("available"):
         return None, "waited: the rules allowed nothing right now"
-    row = page["available"][0]
-    return dict(row["action"]), "chose the first action the rules allowed"
+    last_done = last_done or {}
+    row = min(page["available"], key=lambda r: last_done.get(r["action"].get("kind", ""), -1))
+    return dict(row["action"]), "chose the allowed move it had done least recently"
 
 
 def _llm_choice(
@@ -373,6 +378,8 @@ def run_world(
     # Every move the rules offered anyone at some point, and why each other move was refused, so a build's test run
     # can name a move that never once became possible (#166: the pencil wholesaler's only move never could).
     offered_kinds: set[str] = set()
+    # Per actor, the round each move kind was last chosen (scripted policy).
+    last_done: dict[str, dict[str, int]] = {}
     refused_why: dict[str, list[dict[str, Any]]] = {}
 
     for turn in range(1, max_turns + 1):
@@ -393,7 +400,7 @@ def run_world(
                 # person's ("this worker assembles pencils: was 'grows timber'"), which says nothing about the gap.
                 if failed and (kind not in refused_why or len(failed) < len(refused_why[kind])):
                     refused_why[kind] = failed
-            page = _without_no_ops(engine, raw, first_only=policy == "scripted", bookkeeping=bookkeeping)
+            page = _without_no_ops(engine, raw, bookkeeping=bookkeeping)
             # What the installed rules refused this actor at this moment, and why.
             # Recorded for every policy so a viewer can see refusals even when the
             # policy itself only ever picks allowed actions.
@@ -417,7 +424,9 @@ def run_world(
             blocked_by_rules[actor] = list(distinct.values())
             pages[actor] = page
             if policy == "scripted":
-                intents[actor], reasons[actor] = _scripted_choice(page)
+                intents[actor], reasons[actor] = _scripted_choice(page, last_done.get(actor))
+                if intents[actor] is not None:
+                    last_done.setdefault(actor, {})[intents[actor].get("kind", "")] = turn
         if policy == "resident":
             recents = {actor: _recent_for(engine, actor, seen) for actor in actors}
             if turn == 1 and prior_recent:
@@ -505,7 +514,7 @@ def run_world(
             said_retry = None
             if outcome["status"] == "stale_revision":
                 retried = True
-                page = _without_no_ops(engine, engine.discover(actor), first_only=policy == "scripted", bookkeeping=bookkeeping)
+                page = _without_no_ops(engine, engine.discover(actor), bookkeeping=bookkeeping)
                 # The same move is still allowed after the earlier moves: take it at the new revision
                 # without asking again. Every accepted move bumps the revision, so asking again made
                 # each round a chain of one-at-a-time AI calls (2026-10-16 Waltzman deploy8: 183
@@ -514,7 +523,9 @@ def run_world(
                 if still is not None:
                     again = still
                 elif policy == "scripted":
-                    again, said_retry = _scripted_choice(page)
+                    again, said_retry = _scripted_choice(page, last_done.get(actor))
+                    if again is not None:
+                        last_done.setdefault(actor, {})[again.get("kind", "")] = turn
                 elif policy == "resident":
                     residents.observe(actor, f"Round {turn + turn_offset}: your choice was no longer allowed after "
                                       "earlier moves this round; choose again.")
@@ -613,7 +624,7 @@ def run_world(
         "world": bundle["world"]["id"],
         "actors": actors,
         "model": (f"{MOVER} {model_name}" if policy == "resident" else model_name if policy == "llm"
-                  else "scripted-first-available"),
+                  else "scripted-least-recent"),
         "cost_usd": round(cost + (residents.cost() if residents is not None else 0.0), 6),
         "mechanic_profile_id": profile_id,
         "summary": {

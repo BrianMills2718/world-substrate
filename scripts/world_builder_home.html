@@ -153,7 +153,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
             <option value="people">People with their own goals</option>
             <option value="things">Things and the steps of a job</option>
           </select></label>
-        <label class="small" title="Instead of simple first-available moves, an AI picks each person’s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses each person’s moves</label>
+        <label class="small" title="Instead of simple automatic moves (each person takes the allowed move they did least recently), an AI picks each person’s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses each person’s moves</label>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
         <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
       </div>
@@ -488,7 +488,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         ? (d.active_at_end ? "still busy at the end" : "goes quiet by the end")
         : (d.terminal_reached ? "reaches the finish line" : "does not reach the finish line");
       const changes = keepsGoing && d.world_changes ? `, ${d.world_changes} by itself` : "";
-      n.title = "A quick automatic test run with simple first-available moves, before you approve";
+      n.title = "A quick automatic test run with simple automatic moves (each person takes the allowed move they did least recently), before you approve";
       n.textContent = `Quick test: ${d.accepted_actions} action${d.accepted_actions === 1 ? "" : "s"} in ${d.turns} round${d.turns === 1 ? "" : "s"}${changes}; ${outcome}.`;
       const idle = [...new Set([...(d.idle_actors || []), ...(d.stalled_actors || [])])];
       const circling = (data.review.mechanics || []).length >= 3 && (d.moves_at_end || []).length <= 1;
