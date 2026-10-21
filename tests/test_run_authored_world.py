@@ -171,6 +171,18 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertIn("Ava", html)
         self.assertIn("document.getElementById(\'turn\')", html)
 
+    def test_round_picture_shows_by_itself_changes_apart_from_actions(self):
+        # Issue #126 (G8): the picture carried no trace of process-made changes.
+        trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=2)
+        # A run with no process changes keeps the picture as it was.
+        self.assertNotIn("byitself", render_run(self.bundle, trace, compiled))
+        trace["transcript"][0]["world_changes"] = ["orchard.process.regrow_apples"]
+        html = render_run(self.bundle, trace, compiled)
+        frames = json.loads(html.split("const FRAMES=", 1)[1].split(";const PROFILE=", 1)[0])
+        self.assertEqual(frames[0]["world_changes"], ["orchard.process.regrow_apples"])
+        self.assertIn("id='byitself'", html)
+        self.assertIn("'By itself: '", html)
+
     def test_fresh_world_entity_id_does_not_inherit_reference_world_asset_binding(self):
         bundle = json.loads(json.dumps(self.bundle))
         bundle["entities"][0]["id"] = "bo"

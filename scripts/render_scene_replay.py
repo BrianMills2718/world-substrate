@@ -410,6 +410,9 @@ def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities:
             "active_stations": sorted(set(active_stations)),
             "moments": _moment_ids(profile, raw, accepted, previous_release_by),
         }
+        if raw.get("world_changes"):
+            # Changes the world's own processes made this round, with no actor acting (#126).
+            frame["world_changes"] = list(raw["world_changes"])
         placed_positions = _station_layout_positions(profile, item_state)
         if placed_positions:
             frame["placed_positions"] = placed_positions
@@ -444,6 +447,16 @@ def render_html(trace: dict[str, Any], profile: dict[str, Any], world_entities: 
     scene = profile.get("scene") or {}
     assets = {key: _asset_html(value, profile_dir) for key, value in profile["assets"].items()}
     payload = json.dumps(frames, separators=(",", ":")).replace("</", "<\\/")
+    # A blue strip for process-made changes, kept apart from the actors' moves.
+    # Added only when a round has one, so replays without processes stay byte-identical.
+    by_itself = any(frame.get("world_changes") for frame in frames)
+    by_css = (".byitself{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);z-index:20;background:#1f4f8a;color:white;"
+              "border:2px solid #9cc3ee;border-radius:999px;padding:6px 13px;font-size:12px;white-space:nowrap;max-width:90%;"
+              "overflow:hidden;text-overflow:ellipsis}.byitself[hidden]{display:none}") if by_itself else ""
+    by_html = ("<div class='byitself' id='byitself' hidden title='Changes the world made by itself this round, "
+               "from its own rules, with nobody acting'></div>") if by_itself else ""
+    by_js = (";const by=(f.world_changes||[]).map(c=>String(c).replace(/[-_]/g,' ')),bx=document.getElementById('byitself');"
+             "bx.hidden=!by.length;bx.textContent=by.length?'By itself: '+by.join(', '):''") if by_itself else ""
     profile_payload = deepcopy(profile)
     profile_payload["resolved_assets"] = assets
     profile_json = json.dumps(profile_payload, separators=(",", ":")).replace("</", "<\\/")
@@ -531,9 +544,9 @@ def render_html(trace: dict[str, Any], profile: dict[str, Any], world_entities: 
 .thought{{position:absolute;z-index:12;width:min(310px,34vw);background:#fffffff2;border:3px solid #30383c;border-radius:14px;padding:9px 11px;box-shadow:0 8px 22px #0004;font-size:13px}}.thought strong{{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#657078;margin-bottom:3px}}
 .entity{{position:absolute;z-index:7;font-size:34px;transition:left .6s ease,top .6s ease,transform .3s ease,filter .3s ease;filter:drop-shadow(0 4px 2px #0004)}}.entity small{{position:absolute;left:50%;top:34px;transform:translateX(-50%);background:#fffddd;border:1px solid #695a44;border-radius:6px;padding:1px 4px;font-size:9px;white-space:nowrap}}.entity img{{width:40px;height:40px}}
 .hud{{position:absolute;left:50%;top:18%;transform:translateX(-50%);z-index:20;background:#15191de8;color:white;border-radius:12px;padding:7px 12px;text-align:center;min-width:190px}}.turn{{font-size:22px;font-weight:900}}.moment{{display:inline-block;margin:4px 3px 0;background:#f0b448;color:#251b0b;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900;text-transform:uppercase}}.moment.terminal{{background:#5da46d;color:white}}
-.action{{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);z-index:20;background:#111d;color:white;border-radius:999px;padding:8px 15px;font-size:12px;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}}.controls{{display:flex;gap:10px;align-items:center;margin-top:12px;color:white}}button{{background:#f1eadc;border:0;border-radius:10px;padding:9px 13px;font-weight:800;cursor:pointer}}.bar{{height:8px;background:#ffffff24;border-radius:99px;flex:1;overflow:hidden}}.bar>i{{display:block;height:100%;background:#f0b448;width:0;transition:width .25s}}.note{{color:#aeb8bd;font-size:12px;margin-top:8px}}@media(max-width:800px){{.thought{{font-size:11px;width:38vw}}.actor{{transform:scale(.82);transform-origin:center}}.entity{{font-size:28px}}}}
+.action{{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);z-index:20;background:#111d;color:white;border-radius:999px;padding:8px 15px;font-size:12px;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}}{by_css}.controls{{display:flex;gap:10px;align-items:center;margin-top:12px;color:white}}button{{background:#f1eadc;border:0;border-radius:10px;padding:9px 13px;font-weight:800;cursor:pointer}}.bar{{height:8px;background:#ffffff24;border-radius:99px;flex:1;overflow:hidden}}.bar>i{{display:block;height:100%;background:#f0b448;width:0;transition:width .25s}}.note{{color:#aeb8bd;font-size:12px;margin-top:8px}}@media(max-width:800px){{.thought{{font-size:11px;width:38vw}}.actor{{transform:scale(.82);transform-origin:center}}.entity{{font-size:28px}}}}
 </style></head><body><div class='shell'><div class='top'><div><h1>{title}</h1><p class='sub'>{subtitle}</p></div><div class='badge'>{run_label}</div></div>
-<div class='stage'>{''.join(decor_html)}{''.join(stations_html)}{''.join(actors_html)}<div class='hud'><div class='turn' id='turn'></div><div id='moments'></div></div><div class='action' id='action'></div>{''.join(entities_html)}</div>
+<div class='stage'>{''.join(decor_html)}{''.join(stations_html)}{''.join(actors_html)}<div class='hud'><div class='turn' id='turn'></div><div id='moments'></div></div><div class='action' id='action'></div>{by_html}{''.join(entities_html)}</div>
 <div class='controls'><button id='restart'>↺ Replay</button><button id='prev'>←</button><button id='toggle'>Pause</button><button id='next'>→</button><div class='bar'><i id='progressbar'></i></div></div><div class='note'>{note}</div></div>
 <script>const FRAMES={payload};const PROFILE={profile_json};const ASSETS=PROFILE.resolved_assets;let idx=0,timer=null,playing=true;
 function setXY(el,p){{el.style.left=p[0]+'%';el.style.top=p[1]+'%'}}
@@ -544,7 +557,7 @@ function render(i){{idx=Math.max(0,Math.min(FRAMES.length-1,i));const f=FRAMES[i
  for(const id of Object.keys(PROFILE.entities)){{const el=document.querySelector('[data-entity="'+id+'"]');setXY(el,itemPos(id,f));styleEntity(el,(f.items[id]||{{}}).state)}}
  document.querySelectorAll('[data-station]').forEach(el=>el.classList.toggle('active',f.active_stations.includes(el.dataset.station)));
  document.querySelectorAll('[data-progress-actor]').forEach(el=>{{const a=el.dataset.progressActor,p=f.progress[a]||{{}};el.querySelector('.progress-items').innerHTML=(p.plated||[]).map(progressIcon).join('');el.querySelector('.progress-needs').textContent=p.filled?'✓ complete':'still needs: '+((p.still_wants||[]).join(', ')||'nothing')}});
- const labels=Object.fromEntries((PROFILE.moment_rules||[]).map(r=>[r.id,r.label||r.id]));const terminalIds=new Set((PROFILE.moment_rules||[]).filter(r=>r.terminal).map(r=>r.id));document.getElementById('moments').innerHTML=f.moments.map(m=>'<span class="moment '+(terminalIds.has(m)?'terminal':'')+'">'+(labels[m]||m)+'</span>').join('');document.getElementById('action').textContent=Object.keys(PROFILE.actors).map(a=>a+': '+(f.actors[a]?.action||'wait')).join(' · ')}}
+ const labels=Object.fromEntries((PROFILE.moment_rules||[]).map(r=>[r.id,r.label||r.id]));const terminalIds=new Set((PROFILE.moment_rules||[]).filter(r=>r.terminal).map(r=>r.id));document.getElementById('moments').innerHTML=f.moments.map(m=>'<span class="moment '+(terminalIds.has(m)?'terminal':'')+'">'+(labels[m]||m)+'</span>').join('');document.getElementById('action').textContent=Object.keys(PROFILE.actors).map(a=>a+': '+(f.actors[a]?.action||'wait')).join(' · '){by_js}}}
 function schedule(){{clearInterval(timer);if(playing)timer=setInterval(()=>{{if(idx>=FRAMES.length-1){{playing=false;document.getElementById('toggle').textContent='Play';clearInterval(timer)}}else render(idx+1)}},{autoplay_ms})}}
 document.getElementById('toggle').onclick=()=>{{playing=!playing;document.getElementById('toggle').textContent=playing?'Pause':'Play';schedule()}};document.getElementById('prev').onclick=()=>{{playing=false;document.getElementById('toggle').textContent='Play';schedule();render(idx-1)}};document.getElementById('next').onclick=()=>{{playing=false;document.getElementById('toggle').textContent='Play';schedule();render(idx+1)}};document.getElementById('restart').onclick=()=>{{playing=true;document.getElementById('toggle').textContent='Pause';render(0);schedule()}};const q=new URLSearchParams(location.search);const start=Math.max(0,Math.min(FRAMES.length-1,(parseInt(q.get('turn')||'1',10)||1)-1));render(start);if(start>0){{playing=false;document.getElementById('toggle').textContent='Play'}}schedule();
 </script></body></html>"""
