@@ -157,6 +157,14 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual({name for name, _ in colors}, {"ok", "warn", "grey"})
         self.assertNotRegex(self.page, r"#(?:ff0000|00ff00|e74c3c|2ecc71)")
 
+    def test_each_rule_folds_out_its_reads_writes_and_limits(self):
+        # Issue #121 (G5): the approve screen showed 0 of the compiler-derived read/write paths and limits.
+        self.assertIn('fold("Reads", m.reads)', self.page)
+        self.assertIn('fold("Changes", m.writes)', self.page)
+        self.assertIn('fold("Limits", m.limits)', self.page)
+        self.assertIn('fold("Changes", pr.writes)', self.page)
+        self.assertIn('summary.textContent = "Show details"', self.page)
+
 
 if __name__ == "__main__":
     unittest.main()
