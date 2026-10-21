@@ -116,8 +116,11 @@ came back, came back unused, or the expectation was wrong.
   - C4: pencil c4-run19 (`X7CRHl0w-oC2`) and c4-run20 (`IDBzd8xqGa_M`) both run a real supply chain for 28 rounds.
   - C5: budget stop (visitor and owner) and a forced rules rejection each show a plain message.
   - C6: 109 server log rows, all accounted for.
-- Known weaknesses (not failing a check): c4-run20 renews graphite twice (surplus of 29); the page keeps "Starting
-  the first round…" under a rules-rejection message.
+- Weaknesses found in the set, handled in #199 (live at `8d0233e`, confirmed by the deploy's page and backend check):
+  c4-run20 renewed graphite twice (surplus of 29): the rules prompt now asks for one source per raw material and each
+  build attempt records `second_source_processes` (not scored; 13 of 18 saved non-people worlds have the shape; the
+  prompt's effect on new builds is unchecked until the next paid build). The page now says "No rounds have run yet."
+  and hides the empty picture after a refusal (live browser check, no AI call).
 
 ## Earlier state (2026-10-21)
 
