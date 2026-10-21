@@ -33,7 +33,10 @@ LENSES: dict[str, dict[str, Any]] = {
                         "undone or put back up for discussion."},
             {"id": "conditional-support", "name": "Conditional support delaying deployment",
              "meaning": "Someone's support depends on a condition; while the condition is unmet their support is "
-                        "withheld or withdrawn, and that holds back the final decision or deployment."},
+                        "withheld or withdrawn, and that holds back the final decision or deployment.",
+             # 2026-10-21 c1r16 vg2Pmxhml1so (#194): marked present from reopened concerns while nobody's support ever
+             # moved; a cited event must change a support stance.
+             "needs_change_to": ["components.support.stance"]},
         ],
     },
     # #190: things worlds (a supply chain, a workshop) were read for coordination mechanisms they cannot have.
@@ -87,11 +90,13 @@ def evidence_events(rounds: list[dict[str, Any]]) -> list[dict[str, Any]]:
             out.append({"event_id": move["event_id"], "round": turn, "by": actor,
                         "move": (move.get("did") or {}).get("kind"),
                         "changed": _change_text(move["changes"]),
-                        "said": str(move.get("said") or "")[:MAX_TEXT]})
+                        "said": str(move.get("said") or "")[:MAX_TEXT],
+                        "paths": [c.get("path") for c in move["changes"]]})
         for event in row.get("world_events") or []:
             if event.get("event_id") and event.get("changes"):
                 out.append({"event_id": event["event_id"], "round": turn, "by": "the world (a rule)",
-                            "move": event.get("rule_id"), "changed": _change_text(event["changes"])})
+                            "move": event.get("rule_id"), "changed": _change_text(event["changes"]),
+                            "paths": [c.get("path") for c in event["changes"]]})
     return out[:MAX_EVIDENCE_EVENTS]
 
 
@@ -112,7 +117,8 @@ def readout_prompt(lens_id: str, people: list[dict[str, Any]] | None, events: li
         'sentences), "missing_reason": str (empty when present)}]}.'
     )
     user = (f"Lens: {lens['title']}\nMechanisms:\n{mechanisms}\n\nPeople:\n{cast or '- (not recorded)'}\n\n"
-            f"Events ({len(events)}, in order):\n" + "\n".join(json.dumps(e, separators=(",", ":")) for e in events))
+            f"Events ({len(events)}, in order):\n" + "\n".join(
+                json.dumps({k: v for k, v in e.items() if k != "paths"}, separators=(",", ":")) for e in events))
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -128,10 +134,14 @@ def validate_readout(lens_id: str, parsed: Any, events: list[dict[str, Any]]) ->
         cited = [str(i) for i in claim.get("event_ids") or []]
         real = [i for i in dict.fromkeys(cited) if i in known][:8]
         unknown = [i for i in cited if i not in known]
+        needs = mechanism.get("needs_change_to")
+        if needs:
+            real = [i for i in real if any(str(p).endswith(n) for p in known[i].get("paths") or [] for n in needs)]
         present = claim.get("status") == "present" and bool(real)
         reason = str(claim.get("missing_reason") or "").strip()[:300]
         if claim.get("status") == "present" and not real:
-            reason = "The analysis named no event from this run that shows it, so it is counted as missing."
+            reason = ("None of the events the analysis named changes anyone's support, so it is counted as missing."
+                      if needs else "The analysis named no event from this run that shows it, so it is counted as missing.")
         out.append({
             "id": mechanism["id"], "name": mechanism["name"],
             "status": "present" if present else "missing",

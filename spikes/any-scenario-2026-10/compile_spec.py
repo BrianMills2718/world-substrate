@@ -75,7 +75,9 @@ CONCERN = {"name": "concern", "fields": [
     {"name": "times_reopened", "type": "integer", "default": 0},
     {"name": "times_raised", "type": "integer", "default": 0},
     {"name": "times_reviewed", "type": "integer", "default": 0},
-    {"name": "decision_id", "type": "entity_ref", "default": "placeholder"}]}
+    {"name": "decision_id", "type": "entity_ref", "default": "placeholder"},
+    # the support record of the person it reached (support-<recipient>), when that person is a decider
+    {"name": "support_id", "type": "entity_ref", "default": "placeholder"}]}
 GROUP_DECISION = {"name": "group_decision", "fields": [
     {"name": "question", "type": "string", "default": "decision"},
     {"name": "status", "type": "string", "default": "open"},  # open | authorized (deploying) | deployed | suspended | rejected
@@ -274,7 +276,26 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
     under_way = _check("a remedy is under way", concern_it("status"), "eq", "remedy_under_way")
     # Completion is listed before progress: processes apply in sequence within a tick, so the other order would
     # finish a remedy one round early.
+    # "the concerns ... make support conditional" (the Waltzman text; generic to any decision with concerns). 2026-10-21
+    # c1r16 vg2Pmxhml1so (#194): left to the AI members' choice, no decider ever conditioned its support in 45 rounds,
+    # so support only rose. A concern open in front of a full supporter now does it as a rule; restoring stays theirs.
     processes = [
+        {"process_id": "concern-makes-support-conditional",
+         "rationale": "An open concern that has reached a decider who fully supports the decision makes that support "
+                      "wait on the concern.",
+         "selector": concern_sel,
+         "participants": {"support": {"link": "ref:concern.support_id", "selector": _SUPPORT_SEL},
+                          "decision": {"link": "ref:concern.decision_id", "selector": _DECISION_SEL}},
+         "checks": [_check("the concern is open", concern_it("status"), "eq", "open"),
+                    _check("the concern has been delivered", _ref("it", "components.information.active"), "eq", True),
+                    _check("its decider fully supports the decision", _ref("support", "components.support.stance"),
+                           "eq", "full"),
+                    _check("the decision was not rejected", _ref("decision", "components.group_decision.status"), "ne",
+                           "rejected")],
+         "effects": [_effect("support", "components.support.stance", "set", "conditional"),
+                     _effect("support", "components.support.condition_id", "set", {"entity_id": "it"}),
+                     _effect("decision", "components.group_decision.support", "subtract", 1),
+                     _effect("decision", "components.group_decision.conditional", "add", 1)]},
         {"process_id": "remedy-completes", "rationale": "A remedy under way that has run its course resolves the concern.",
          "selector": concern_sel,
          "checks": [under_way, _check("the remedy is in its last round", concern_it("remedy_ticks_left"), "lte", 1)],
@@ -602,7 +623,9 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                     "recipient_id"]
                 e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0, "times_raised": 0,
                                               "times_reopened": 0, "times_reviewed": 0,
-                                              "decision_id": _eid(d.decision_id)}
+                                              "decision_id": _eid(d.decision_id),
+                                              "support_id": f"support-{recipient}"
+                                              if recipient in {_eid(x) for x in d.decider_ids} else recipient}
         starting = set(d.supporters_at_start)
         for pid in dict.fromkeys(d.decider_ids):
             entities.append({"id": f"support-{_eid(pid)}", "label": f"Support of {pid}", "categories": ["support"],
