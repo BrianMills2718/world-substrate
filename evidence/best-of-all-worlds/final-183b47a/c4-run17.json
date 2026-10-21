@@ -1,0 +1,1314 @@
+{
+ "started": "2026-10-21T14:55:49.313Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.6",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "7.7",
+   "text": "Reading your description…\n4.3 s"
+  },
+  {
+   "at": "62.8",
+   "text": "!\nLeft out of the simulation\nMoney and prices\nDistances and travel time\nDeadlines and delivery schedules\nPencil materials and product quality variations\n59 s"
+  },
+  {
+   "at": "62.8",
+   "text": "Writing the rules…\n59 s"
+  },
+  {
+   "at": "103.9",
+   "text": "Test-running the rules with simple moves…\n100.5 s"
+  },
+  {
+   "at": "105.9",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n102.3 s"
+  },
+  {
+   "at": "139.0",
+   "text": "Test-running the rules with simple moves…\n135.4 s"
+  },
+  {
+   "at": "140.0",
+   "text": "Redesigning what each one can do… · the test run showed steps that could never happen\n137.3 s"
+  },
+  {
+   "at": "184.1",
+   "text": "Writing the rules…\n181.4 s"
+  },
+  {
+   "at": "245.3",
+   "text": "Test-running the rules with simple moves…\n242.1 s"
+  },
+  {
+   "at": "246.3",
+   "text": "Rewriting the rules with a stronger model… · the last rules did not pass the test run\n244 s"
+  },
+  {
+   "at": "303.5",
+   "text": "Test-running the rules with simple moves…\n299.1 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "304.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/7cb222e04e1a45da8eb34c6c96ed8436"
+  },
+  {
+   "at": "306.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/f771ea5575b740b4b5ff611d5857b283"
+  },
+  {
+   "at": "308.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/ccd11082aee445888b654f9a036ef7fb"
+  },
+  {
+   "at": "310.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/c2f7acf8f28947729df415814596a323"
+  },
+  {
+   "at": "312.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/5ae9419c36544256932d04dd173a9ca4"
+  },
+  {
+   "at": "313.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a4f3ec16da1640f29f6432b9a29b09bc"
+  },
+  {
+   "at": "315.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/b82cc6b02b84449ebcb2de9711e1438c"
+  },
+  {
+   "at": "317.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/8a92dd3eac754aabbdec4d2f1dc76328"
+  },
+  {
+   "at": "319.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/7af6efa9334d4957972d7e4d3f8bfc7e"
+  },
+  {
+   "at": "321.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d474a52e7d824a5fb0f740d8bde98d37"
+  },
+  {
+   "at": "323.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/21eb9d976c59494496b5b0dd4e9d4b64"
+  },
+  {
+   "at": "324.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/b1e1e090995e44489ffb0198058dc4ef"
+  },
+  {
+   "at": "326.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/62e45f49704f4d8fa2070fecd32bc897"
+  },
+  {
+   "at": "332.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/47a9f9fd2b3b45d4b823ac4f614fd3fa"
+  },
+  {
+   "at": "334.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/95c51ae5b6674dc0af002506afedfe00"
+  },
+  {
+   "at": "336.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/d64dd67697744efc83587932402a3e3c"
+  },
+  {
+   "at": "338.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/256d5015089041eea5f8f339e03bf895"
+  },
+  {
+   "at": "340.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/26842de891724d6f8f58b4b4f2a4f59f"
+  },
+  {
+   "at": "342.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/848ae994d21c4b16a19e937fbb2504de"
+  },
+  {
+   "at": "344.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/204471a8c5124d85805d57a35a4f9321"
+  },
+  {
+   "at": "346.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/726d0eec05284a2d9924c1dbe385eb3b"
+  },
+  {
+   "at": "348.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/ec5351a647034632a3d27721d196ba0b"
+  },
+  {
+   "at": "350.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/2ca42237508f4f50bd7ab6c092e291bc"
+  },
+  {
+   "at": "352.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/c45f79ec91734a09a14fc793de47bca3"
+  },
+  {
+   "at": "354.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/5bef1fc92ce8448fbc2cef5f1801a0fa"
+  },
+  {
+   "at": "356.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/4f570872409c47238be965b452273925"
+  }
+ ],
+ "rounds": [
+  {
+   "turn": 1,
+   "at": "304.4",
+   "trace_id": "world-builder-live/run/7cb222e04e1a45da8eb34c6c96ed8436",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r1-e00001",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r1-e00003",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r1-e00005",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r1-e00006",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r1-e00007",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r1-e00008",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "at": "306.2",
+   "trace_id": "world-builder-live/run/f771ea5575b740b4b5ff611d5857b283",
+   "moves": {
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r2-e00001",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r2-e00003",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r2-e00005",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r2-e00006",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r2-e00007",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 3,
+   "at": "308.0",
+   "trace_id": "world-builder-live/run/ccd11082aee445888b654f9a036ef7fb",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r3-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r3-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r3-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r3-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r3-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r3-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r3-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 4,
+   "at": "310.2",
+   "trace_id": "world-builder-live/run/c2f7acf8f28947729df415814596a323",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r4-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r4-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r4-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r4-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r4-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r4-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 5,
+   "at": "312.0",
+   "trace_id": "world-builder-live/run/5ae9419c36544256932d04dd173a9ca4",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r5-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r5-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r5-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r5-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r5-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r5-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r5-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 6,
+   "at": "313.8",
+   "trace_id": "world-builder-live/run/a4f3ec16da1640f29f6432b9a29b09bc",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r6-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r6-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r6-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r6-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r6-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r6-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 7,
+   "at": "315.6",
+   "trace_id": "world-builder-live/run/b82cc6b02b84449ebcb2de9711e1438c",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r7-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r7-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r7-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r7-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r7-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r7-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r7-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 8,
+   "at": "317.7",
+   "trace_id": "world-builder-live/run/8a92dd3eac754aabbdec4d2f1dc76328",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r8-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r8-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r8-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r8-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r8-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r8-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 9,
+   "at": "319.5",
+   "trace_id": "world-builder-live/run/7af6efa9334d4957972d7e4d3f8bfc7e",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r9-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r9-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r9-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r9-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r9-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r9-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r9-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 10,
+   "at": "321.3",
+   "trace_id": "world-builder-live/run/d474a52e7d824a5fb0f740d8bde98d37",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r10-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r10-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r10-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r10-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r10-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r10-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 11,
+   "at": "323.1",
+   "trace_id": "world-builder-live/run/21eb9d976c59494496b5b0dd4e9d4b64",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r11-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r11-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r11-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r11-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r11-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r11-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r11-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 12,
+   "at": "324.9",
+   "trace_id": "world-builder-live/run/b1e1e090995e44489ffb0198058dc4ef",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r12-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r12-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r12-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r12-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r12-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r12-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 13,
+   "at": "326.7",
+   "trace_id": "world-builder-live/run/62e45f49704f4d8fa2070fecd32bc897",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r13-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r13-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r13-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r13-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r13-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r13-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r13-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 14,
+   "at": "332.3",
+   "trace_id": "world-builder-live/run/47a9f9fd2b3b45d4b823ac4f614fd3fa",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r14-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r14-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r14-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r14-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r14-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r14-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 15,
+   "at": "334.1",
+   "trace_id": "world-builder-live/run/95c51ae5b6674dc0af002506afedfe00",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r15-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r15-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r15-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r15-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r15-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r15-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r15-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 16,
+   "at": "336.0",
+   "trace_id": "world-builder-live/run/d64dd67697744efc83587932402a3e3c",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r16-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r16-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r16-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r16-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r16-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r16-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 17,
+   "at": "338.0",
+   "trace_id": "world-builder-live/run/256d5015089041eea5f8f339e03bf895",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r17-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r17-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r17-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r17-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r17-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r17-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r17-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 18,
+   "at": "340.1",
+   "trace_id": "world-builder-live/run/26842de891724d6f8f58b4b4f2a4f59f",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r18-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r18-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r18-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r18-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r18-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r18-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 19,
+   "at": "342.2",
+   "trace_id": "world-builder-live/run/848ae994d21c4b16a19e937fbb2504de",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r19-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r19-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r19-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r19-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r19-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r19-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r19-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 20,
+   "at": "344.7",
+   "trace_id": "world-builder-live/run/204471a8c5124d85805d57a35a4f9321",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r20-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r20-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r20-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r20-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r20-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r20-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 21,
+   "at": "346.5",
+   "trace_id": "world-builder-live/run/726d0eec05284a2d9924c1dbe385eb3b",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r21-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r21-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r21-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r21-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r21-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r21-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r21-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 22,
+   "at": "348.4",
+   "trace_id": "world-builder-live/run/ec5351a647034632a3d27721d196ba0b",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r22-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r22-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r22-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r22-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r22-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r22-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 23,
+   "at": "350.3",
+   "trace_id": "world-builder-live/run/2ca42237508f4f50bd7ab6c092e291bc",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r23-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r23-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r23-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r23-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r23-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r23-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r23-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 24,
+   "at": "352.2",
+   "trace_id": "world-builder-live/run/c45f79ec91734a09a14fc793de47bca3",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r24-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r24-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r24-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r24-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r24-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r24-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 25,
+   "at": "354.2",
+   "trace_id": "world-builder-live/run/5bef1fc92ce8448fbc2cef5f1801a0fa",
+   "moves": {
+    "graphite-miner": {
+     "kind": "mine-graphite-ore",
+     "event_id": "r25-e00001",
+     "changed": true
+    },
+    "refinery-worker": {
+     "kind": "refine-graphite",
+     "event_id": "r25-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r25-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r25-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r25-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r25-e00009",
+     "graphite-deposit-renewal"
+    ],
+    [
+     "r25-e00010",
+     "shop-order-arrival"
+    ]
+   ]
+  },
+  {
+   "turn": 26,
+   "at": "356.5",
+   "trace_id": "world-builder-live/run/4f570872409c47238be965b452273925",
+   "moves": {
+    "carrier": {
+     "kind": "load-graphite",
+     "event_id": "r26-e00001",
+     "changed": true
+    },
+    "graphite-miner": {
+     "kind": "load-ore",
+     "event_id": "r26-e00003",
+     "changed": true
+    },
+    "shopkeeper": {
+     "kind": "record-shop-order",
+     "event_id": "r26-e00005",
+     "changed": true
+    },
+    "timber-crew": {
+     "kind": "cut-logs",
+     "event_id": "r26-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r26-e00008",
+     "managed-forest-regrowth"
+    ],
+    [
+     "r26-e00009",
+     "shop-order-arrival"
+    ]
+   ]
+  }
+ ],
+ "readout": {
+  "at": "374.8",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "flow",
+    "title": "How goods moved through the chain",
+    "summary": "The graphite miner mined ore, the refinery worker turned ore into graphite, and the carrier moved graphite to the pencil maker. The shopkeeper’s pencil orders kept growing, but no pencils were made or delivered to the shop in the recorded events.",
+    "mechanisms": [
+     {
+      "id": "goods-made",
+      "name": "Goods made from other goods",
+      "status": "present",
+      "event_ids": [
+       "r3-e00003",
+       "r5-e00003"
+      ],
+      "events": [
+       {
+        "event_id": "r3-e00003",
+        "round": 3,
+        "by": "refinery-worker",
+        "move": "refine-graphite",
+        "changed": "entities.graphite-refinery.components.inventory.graphite: 0 -> 1; entities.refinery-worker.components.inventory.graphite_ore: 1 -> 0"
+       },
+       {
+        "event_id": "r5-e00003",
+        "round": 5,
+        "by": "refinery-worker",
+        "move": "refine-graphite",
+        "changed": "entities.graphite-refinery.components.inventory.graphite: 0 -> 1; entities.refinery-worker.components.inventory.graphite_ore: 1 -> 0"
+       }
+      ],
+      "explanation": "The refinery worker used graphite ore to make graphite, consuming the ore in the process.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "goods-handed-on",
+      "name": "Goods carried to the next step",
+      "status": "present",
+      "event_ids": [
+       "r2-e00001",
+       "r4-e00001"
+      ],
+      "events": [
+       {
+        "event_id": "r2-e00001",
+        "round": 2,
+        "by": "graphite-miner",
+        "move": "load-ore",
+        "changed": "entities.graphite-miner.components.inventory.graphite_ore: 1 -> 0; entities.refinery-worker.components.inventory.graphite_ore: 0 -> 1"
+       },
+       {
+        "event_id": "r4-e00001",
+        "round": 4,
+        "by": "carrier",
+        "move": "load-graphite",
+        "changed": "entities.graphite-refinery.components.inventory.graphite: 1 -> 0; entities.pencil-maker.components.inventory.graphite: 0 -> 1"
+       }
+      ],
+      "explanation": "The graphite miner moved ore to the refinery worker, and the carrier moved graphite from the refinery to the pencil maker.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "demand-met",
+      "name": "Demand reached and met",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No finished goods were delivered to or used at the place wanting them.",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "work-waited",
+      "name": "Work held up",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No recorded work was held up because needed goods had not arrived or had run out.",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 167
+   },
+   "cost_usd": 0.0012297,
+   "daily_cost_usd": 0.029511875000000003,
+   "trace_id": "world-builder-live/readout/78d31b454e3343beae4254eab42eb5f1"
+  }
+ },
+ "share": {
+  "at": "377.9",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "-n_b5cczQ5wa",
+   "rounds": 26
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/world/1d9d23ee75904d5c8e787bc385ce603f",
+  "cost_usd": 0.028240975
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "183b47a8703a98f07b13b427fce9fb548d131d4a",
+  "owner": false,
+  "owner_error": "That owner password is not right.",
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0
+ },
+ "pressed_at": "1.6",
+ "run_stage_at": "304.5",
+ "readout_text": "What happened: How goods moved through the chain\n\nThe graphite miner mined ore, the refinery worker turned ore into graphite, and the carrier moved graphite to the pencil maker. The shopkeeper’s pencil orders kept growing, but no pencils were made or delivered to the shop in the recorded events.\n\nHappened: Goods made from other goods\nThe refinery worker used graphite ore to make graphite, consuming the ore in the process.\nRound 3, Refinery worker: refine-graphite (event r3-e00003)\nRound 5, Refinery worker: refine-graphite (event r5-e00003)\nHappened: Goods carried to the next step\nThe graphite miner moved ore to the refinery worker, and the carrier moved graphite from the refinery to the pencil maker.\nRound 2, Graphite miner: load-ore (event r2-e00001)\nRound 4, Delivery driver: load-graphite (event r4-e00001)\nDid not happen: Demand reached and met\nNo finished goods were delivered to or used at the place wanting them.\nDid not happen: Work held up\nNo recorded work was held up because needed goods had not arrived or had run out.\nRead from 167 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 26 · 102 allowed · 0 refused · 106 held back by the rules · 65 by itself",
+ "finished": "2026-10-21T15:02:07.576Z"
+}

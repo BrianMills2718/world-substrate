@@ -1,0 +1,12 @@
+[1.4s] pressing Create simulation
+[1.4s] step: Sending your description… 0 s
+[8.5s] step: Working out who is involved and what each of them wants… 5.5 s
+[35.6s] step: ✓ Found what is known and when things happen · 4 pieces of information, 2 scheduled moments weekly member meeting activation deadline At one border site, the se
+[35.6s] step: ! Left out of the simulation The schema does not specify a detailed mechanism for how discussion consumes mee The schema cannot represent the technical operatio
+[35.6s] step: Working out what each person can try to do… 31.7 s
+[52.6s] step: Writing the rules for what those attempts cause… · this is the longest step 47.4 s
+[115.8s] step: Test-running the rules with simple moves… 114.4 s
+[131.8s] run stage visible
+[678.6s] readout 200
+[681.4s] share {"ok":true,"share_id":"vg2Pmxhml1so","rounds":45}
+[685.0s] saved c1r16.json
