@@ -1,0 +1,1823 @@
+{
+ "source": "live World Builder build world-builder-live/world/1d9d23ee75904d5c8e787bc385ce603f (c4-run17, share -n_b5cczQ5wa, 2026-10-21), as generated",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "pencil-supply-network",
+   "label": "Pencil Supply Network",
+   "summary": "Specialists produce, move, and sell pencils using a renewing supply of wood and graphite ore.",
+   "location": "pencil-supply-network",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "worker",
+    "fields": [
+     {
+      "name": "role",
+      "type": "string",
+      "default": "worker"
+     }
+    ]
+   },
+   {
+    "name": "inventory",
+    "fields": [
+     {
+      "name": "logs",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "boards",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "graphite_ore",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "graphite",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "pencils",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   },
+   {
+    "name": "orders",
+    "fields": [
+     {
+      "name": "waiting_pencils",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "timber-crew",
+    "label": "Timber crew",
+    "categories": [
+     "worker",
+     "timber-producer"
+    ],
+    "components": {
+     "worker": {
+      "role": "Cuts and supplies wood"
+     },
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "forest",
+    "label": "Managed forest",
+    "categories": [
+     "wood-source"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 30,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "sawmill-worker",
+    "label": "Sawmill worker",
+    "categories": [
+     "worker",
+     "wood-processor"
+    ],
+    "components": {
+     "worker": {
+      "role": "Turns logs into boards"
+     },
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "sawmill",
+    "label": "Sawmill",
+    "categories": [
+     "workstation"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "graphite-miner",
+    "label": "Graphite miner",
+    "categories": [
+     "worker",
+     "mineral-producer"
+    ],
+    "components": {
+     "worker": {
+      "role": "Supplies graphite ore"
+     },
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "graphite-deposit",
+    "label": "Graphite deposit",
+    "categories": [
+     "mineral-source"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 30,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "refinery-worker",
+    "label": "Refinery worker",
+    "categories": [
+     "worker",
+     "mineral-processor"
+    ],
+    "components": {
+     "worker": {
+      "role": "Processes graphite ore"
+     },
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "graphite-refinery",
+    "label": "Graphite refinery",
+    "categories": [
+     "workstation"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "pencil-maker",
+    "label": "Pencil maker",
+    "categories": [
+     "worker",
+     "pencil-maker"
+    ],
+    "components": {
+     "worker": {
+      "role": "Assembles pencils"
+     },
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "pencil-factory",
+    "label": "Pencil factory",
+    "categories": [
+     "workstation"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "carrier",
+    "label": "Delivery driver",
+    "categories": [
+     "worker",
+     "carrier"
+    ],
+    "components": {
+     "worker": {
+      "role": "Moves pencil shipments"
+     },
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "pencil-shop",
+    "label": "Pencil shop",
+    "categories": [
+     "shop"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 12
+     },
+     "orders": {
+      "waiting_pencils": 6
+     }
+    }
+   },
+   {
+    "id": "shopkeeper",
+    "label": "Shopkeeper",
+    "categories": [
+     "worker",
+     "shopkeeper"
+    ],
+    "components": {
+     "worker": {
+      "role": "Sells pencils"
+     },
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "school",
+    "label": "School",
+    "categories": [
+     "customer"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   },
+   {
+    "id": "office",
+    "label": "Office",
+    "categories": [
+     "customer"
+    ],
+    "components": {
+     "inventory": {
+      "logs": 0,
+      "boards": 0,
+      "graphite_ore": 0,
+      "graphite": 0,
+      "pencils": 0
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "cut-logs",
+    "description": "Cut logs from the managed forest.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "load-logs",
+    "description": "Move logs from the timber crew to the sawmill worker.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "saw-boards",
+    "description": "Process the sawmill worker's logs into boards at the sawmill.",
+    "fields": [
+     {
+      "name": "mill",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "load-boards",
+    "description": "Move boards from the sawmill to the pencil maker.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "mine-graphite-ore",
+    "description": "Collect graphite ore from the deposit.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "load-ore",
+    "description": "Move graphite ore from the miner to the refinery worker.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "refine-graphite",
+    "description": "Process the refinery worker's graphite ore into graphite at the refinery.",
+    "fields": [
+     {
+      "name": "refinery",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "load-graphite",
+    "description": "Move graphite from the refinery to the pencil maker.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "assemble-pencils",
+    "description": "Assemble pencils from boards and graphite at the factory.",
+    "fields": [
+     {
+      "name": "factory",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "load-pencils",
+    "description": "Move pencils from the factory to the delivery driver.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "deliver-pencils",
+    "description": "Move the delivery driver's pencils to the shop.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "sell-pencils",
+    "description": "Sell pencils from the shop to a customer.",
+    "fields": [
+     {
+      "name": "shop",
+      "type": "entity_ref"
+     },
+     {
+      "name": "customer",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "record-shop-order",
+    "description": "Add pencils to the shop's waiting order count.",
+    "fields": [
+     {
+      "name": "shop",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "worker": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1\u200d\ud83c\udfed"
+    },
+    "wood": {
+     "kind": "emoji",
+     "value": "\ud83e\udeb5"
+    },
+    "graphite": {
+     "kind": "emoji",
+     "value": "\u26ab"
+    },
+    "pencil": {
+     "kind": "emoji",
+     "value": "\u270f\ufe0f"
+    },
+    "shop": {
+     "kind": "emoji",
+     "value": "\ud83c\udfea"
+    },
+    "customer": {
+     "kind": "emoji",
+     "value": "\ud83c\udfeb"
+    },
+    "vehicle": {
+     "kind": "emoji",
+     "value": "\ud83d\ude9a"
+    }
+   },
+   "category_assets": {
+    "worker": "worker",
+    "timber-producer": "wood",
+    "wood-source": "wood",
+    "wood-processor": "wood",
+    "mineral-producer": "graphite",
+    "mineral-source": "graphite",
+    "mineral-processor": "graphite",
+    "pencil-maker": "pencil",
+    "shop": "shop",
+    "shopkeeper": "worker",
+    "customer": "customer",
+    "carrier": "vehicle"
+   },
+   "station_roles": {
+    "wood-source": "source",
+    "mineral-source": "source",
+    "workstation": "workstation",
+    "shop": "goal"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "cut-logs",
+    "version": "1",
+    "action_kind": "cut-logs",
+    "rationale": "The timber crew cuts logs from a managed forest; the action transfers one log to its inventory.",
+    "actor_selector": {
+     "categories": [
+      "timber-producer"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "wood-source"
+      ],
+      "components": [
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the crew cuts wood",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Cuts and supplies wood"
+      }
+     },
+     {
+      "label": "the forest has logs",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.inventory.logs"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.inventory.logs",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.inventory.logs",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "One log is cut per action; this does not represent regrowth."
+    ],
+    "tests": [
+     "With a matching crew and a forest holding logs, one log moves to the crew.",
+     "A source without logs refuses the action."
+    ],
+    "semantic_bindings": [
+     "source is the managed forest",
+     "actor is the timber crew"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "load-logs",
+    "version": "1",
+    "action_kind": "load-logs",
+    "rationale": "The timber crew transfers one log to the named sawmill worker.",
+    "actor_selector": {
+     "categories": [
+      "timber-producer"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "wood-processor"
+      ],
+      "components": [
+       "worker",
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the crew cuts wood",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Cuts and supplies wood"
+      }
+     },
+     {
+      "label": "the recipient processes logs",
+      "left": {
+       "participant": {
+        "name": "to",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Turns logs into boards"
+      }
+     },
+     {
+      "label": "the crew has a log",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.inventory.logs"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.inventory.logs",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.inventory.logs",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Moves one log per action; no other goods move."
+    ],
+    "tests": [
+     "A crew with a log transfers one to a matching sawmill worker.",
+     "No transfer occurs when the crew has no logs."
+    ],
+    "semantic_bindings": [
+     "to is the sawmill worker"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "saw-boards",
+    "version": "1",
+    "action_kind": "saw-boards",
+    "rationale": "The sawmill worker consumes one log and produces one board at the named sawmill.",
+    "actor_selector": {
+     "categories": [
+      "wood-processor"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "mill": {
+      "categories": [
+       "workstation"
+      ],
+      "components": [
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the worker turns logs into boards",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Turns logs into boards"
+      }
+     },
+     {
+      "label": "the worker has a log",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.inventory.logs"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.inventory.logs",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "mill",
+      "path": "components.inventory.boards",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Consumes one worker-held log and makes one board at the named workstation."
+    ],
+    "tests": [
+     "A worker holding a log produces one board at the named mill.",
+     "A worker without logs cannot produce a board."
+    ],
+    "semantic_bindings": [
+     "mill is the sawmill"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "load-boards",
+    "version": "1",
+    "action_kind": "load-boards",
+    "rationale": "The named source transfers one board to the named pencil maker.",
+    "actor_selector": {
+     "categories": [
+      "carrier"
+     ],
+     "components": [
+      "inventory"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "workstation"
+      ],
+      "components": [
+       "inventory"
+      ]
+     },
+     "to": {
+      "categories": [
+       "pencil-maker"
+      ],
+      "components": [
+       "worker",
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the sawmill has a board",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.inventory.boards"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the recipient assembles pencils",
+      "left": {
+       "participant": {
+        "name": "to",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Assembles pencils"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.inventory.boards",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.inventory.boards",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Moves one board per action."
+    ],
+    "tests": [
+     "A source with a board transfers one to a matching pencil maker.",
+     "A source without boards refuses transfer."
+    ],
+    "semantic_bindings": [
+     "source is the sawmill",
+     "to is the pencil maker"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "mine-graphite-ore",
+    "version": "1",
+    "action_kind": "mine-graphite-ore",
+    "rationale": "The graphite miner collects one ore from the named deposit.",
+    "actor_selector": {
+     "categories": [
+      "mineral-producer"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "mineral-source"
+      ],
+      "components": [
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the worker supplies graphite ore",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Supplies graphite ore"
+      }
+     },
+     {
+      "label": "the deposit has ore",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.inventory.graphite_ore"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.inventory.graphite_ore",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.inventory.graphite_ore",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Collects one ore per action; this does not represent replenishment."
+    ],
+    "tests": [
+     "A matching miner collects one ore when the deposit has ore.",
+     "An empty deposit refuses collection."
+    ],
+    "semantic_bindings": [
+     "source is the graphite deposit"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "load-ore",
+    "version": "1",
+    "action_kind": "load-ore",
+    "rationale": "The graphite miner transfers one ore to the named refinery worker.",
+    "actor_selector": {
+     "categories": [
+      "mineral-producer"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "mineral-processor"
+      ],
+      "components": [
+       "worker",
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the worker supplies graphite ore",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Supplies graphite ore"
+      }
+     },
+     {
+      "label": "the recipient processes graphite ore",
+      "left": {
+       "participant": {
+        "name": "to",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Processes graphite ore"
+      }
+     },
+     {
+      "label": "the miner has ore",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.inventory.graphite_ore"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.inventory.graphite_ore",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.inventory.graphite_ore",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Moves one ore per action."
+    ],
+    "tests": [
+     "A miner with ore transfers one to a matching refinery worker.",
+     "A miner without ore cannot transfer ore."
+    ],
+    "semantic_bindings": [
+     "to is the refinery worker"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "refine-graphite",
+    "version": "1",
+    "action_kind": "refine-graphite",
+    "rationale": "The refinery worker consumes one ore and produces one graphite at the named refinery.",
+    "actor_selector": {
+     "categories": [
+      "mineral-processor"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "refinery": {
+      "categories": [
+       "workstation"
+      ],
+      "components": [
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the worker processes graphite ore",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Processes graphite ore"
+      }
+     },
+     {
+      "label": "the worker has ore",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.inventory.graphite_ore"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.inventory.graphite_ore",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "refinery",
+      "path": "components.inventory.graphite",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Consumes one worker-held ore and makes one graphite at the named workstation."
+    ],
+    "tests": [
+     "A worker holding ore produces one graphite at the named refinery.",
+     "A worker without ore cannot refine graphite."
+    ],
+    "semantic_bindings": [
+     "refinery is the graphite refinery"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "load-graphite",
+    "version": "1",
+    "action_kind": "load-graphite",
+    "rationale": "The named source transfers one graphite to the named pencil maker.",
+    "actor_selector": {
+     "categories": [
+      "carrier"
+     ],
+     "components": [
+      "inventory"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "workstation"
+      ],
+      "components": [
+       "inventory"
+      ]
+     },
+     "to": {
+      "categories": [
+       "pencil-maker"
+      ],
+      "components": [
+       "worker",
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the refinery has graphite",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.inventory.graphite"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the recipient assembles pencils",
+      "left": {
+       "participant": {
+        "name": "to",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Assembles pencils"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.inventory.graphite",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.inventory.graphite",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Moves one graphite per action."
+    ],
+    "tests": [
+     "A source with graphite transfers one to a matching pencil maker.",
+     "A source without graphite refuses transfer."
+    ],
+    "semantic_bindings": [
+     "source is the refinery",
+     "to is the pencil maker"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "assemble-pencils",
+    "version": "1",
+    "action_kind": "assemble-pencils",
+    "rationale": "The pencil maker consumes one board and one graphite to produce one pencil at the named factory.",
+    "actor_selector": {
+     "categories": [
+      "pencil-maker"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "factory": {
+      "categories": [
+       "workstation"
+      ],
+      "components": [
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the worker assembles pencils",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Assembles pencils"
+      }
+     },
+     {
+      "label": "the worker has a board",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.inventory.boards"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the worker has graphite",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.inventory.graphite"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.inventory.boards",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.inventory.graphite",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "factory",
+      "path": "components.inventory.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Consumes one board and one graphite to produce one pencil at the named factory."
+    ],
+    "tests": [
+     "With both inputs, the worker produces one pencil at the factory.",
+     "Missing either input prevents assembly."
+    ],
+    "semantic_bindings": [
+     "factory is the pencil factory"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "load-pencils",
+    "version": "1",
+    "action_kind": "load-pencils",
+    "rationale": "The named source transfers one pencil to the named delivery driver.",
+    "actor_selector": {
+     "categories": [
+      "carrier"
+     ],
+     "components": [
+      "inventory"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "workstation"
+      ],
+      "components": [
+       "inventory"
+      ]
+     },
+     "to": {
+      "categories": [
+       "carrier"
+      ],
+      "components": [
+       "worker",
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the factory has a pencil",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.inventory.pencils"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the recipient moves pencil shipments",
+      "left": {
+       "participant": {
+        "name": "to",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Moves pencil shipments"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.inventory.pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.inventory.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Moves one pencil per action."
+    ],
+    "tests": [
+     "A factory with a pencil transfers one to a matching driver.",
+     "A factory without pencils refuses transfer."
+    ],
+    "semantic_bindings": [
+     "source is the pencil factory",
+     "to is the delivery driver"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "deliver-pencils",
+    "version": "1",
+    "action_kind": "deliver-pencils",
+    "rationale": "The delivery driver transfers one pencil to the named shop.",
+    "actor_selector": {
+     "categories": [
+      "carrier"
+     ],
+     "components": [
+      "worker",
+      "inventory"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "shop"
+      ],
+      "components": [
+       "inventory",
+       "orders"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the worker moves pencil shipments",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Moves pencil shipments"
+      }
+     },
+     {
+      "label": "the driver has a pencil",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.inventory.pencils"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.inventory.pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.inventory.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Moves one pencil per action; it does not resolve shop orders."
+    ],
+    "tests": [
+     "A driver with a pencil transfers one to the named shop.",
+     "A driver without pencils cannot deliver."
+    ],
+    "semantic_bindings": [
+     "to is the pencil shop"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "sell-pencils",
+    "version": "1",
+    "action_kind": "sell-pencils",
+    "rationale": "The shopkeeper transfers one shop pencil to the customer.",
+    "actor_selector": {
+     "categories": [
+      "shopkeeper"
+     ],
+     "components": [
+      "worker"
+     ]
+    },
+    "participants": {
+     "shop": {
+      "categories": [
+       "shop"
+      ],
+      "components": [
+       "inventory",
+       "orders"
+      ]
+     },
+     "customer": {
+      "categories": [
+       "customer"
+      ],
+      "components": [
+       "inventory"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the worker sells pencils",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Sells pencils"
+      }
+     },
+     {
+      "label": "the shop has a pencil",
+      "left": {
+       "participant": {
+        "name": "shop",
+        "path": "components.inventory.pencils"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "shop",
+      "path": "components.inventory.pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.inventory.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Sells one pencil per action; no payment state is represented."
+    ],
+    "tests": [
+     "A shop with a pencil transfers one to the named customer.",
+     "A shop without pencils cannot sell one."
+    ],
+    "semantic_bindings": [
+     "shop is the pencil shop",
+     "customer is the buyer"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "record-shop-order",
+    "version": "1",
+    "action_kind": "record-shop-order",
+    "rationale": "The shopkeeper adds the requested nonnegative quantity to the named shop's waiting pencil count.",
+    "actor_selector": {
+     "categories": [
+      "shopkeeper"
+     ],
+     "components": [
+      "worker"
+     ]
+    },
+    "participants": {
+     "shop": {
+      "categories": [
+       "shop"
+      ],
+      "components": [
+       "orders"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    },
+    "checks": [
+     {
+      "label": "the worker sells pencils",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.worker.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Sells pencils"
+      }
+     },
+     {
+      "label": "the order quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the order quantity is within the supported range",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "lte",
+      "right": {
+       "literal": 8
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "shop",
+      "path": "components.orders.waiting_pencils",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "Accepts integer quantities from 1 through 8; no other order details are represented."
+    ],
+    "tests": [
+     "A supported positive quantity increases the named shop's waiting count by that amount.",
+     "Zero, negative, or greater-than-eight quantities are refused."
+    ],
+    "semantic_bindings": [
+     "shop is the pencil shop",
+     "quantity is the number of pencils ordered"
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "managed-forest-regrowth",
+    "rationale": "The managed forest renews a small supply of logs each round, supporting continuing timber production without creating processed goods.",
+    "selector": {
+     "categories": [
+      "wood-source"
+     ],
+     "components": [
+      "inventory"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the forest is below its represented stock cap",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.inventory.logs"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "literal": 30
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.inventory.logs",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "graphite-deposit-renewal",
+    "rationale": "The deposit renews a small supply of ore each round, supporting continuing mining without creating processed goods.",
+    "selector": {
+     "categories": [
+      "mineral-source"
+     ],
+     "components": [
+      "inventory"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the deposit is below its represented stock cap",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.inventory.graphite_ore"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "literal": 30
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.inventory.graphite_ore",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "shop-order-arrival",
+    "rationale": "Customers continue to want pencils, so the shop's waiting order count replenishes each round.",
+    "selector": {
+     "categories": [
+      "shop"
+     ],
+     "components": [
+      "orders"
+     ]
+    },
+    "checks": [],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.orders.waiting_pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   }
+  ],
+  "terminal": null
+ }
+}

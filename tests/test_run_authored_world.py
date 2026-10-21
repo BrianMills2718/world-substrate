@@ -9,7 +9,7 @@ from unittest.mock import patch
 from pathlib import Path
 
 from scripts.bootstrap_scene_profile import _entity_binding
-from scripts.run_authored_world import _llm_choice, bookkeeping_fields, _runtime_catalog, build_engine, render_run, run_world
+from scripts.run_authored_world import _llm_choice, _scripted_choice, bookkeeping_fields, _runtime_catalog, build_engine, render_run, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate.action_authoring import ActionDeclarationError
 
@@ -29,13 +29,31 @@ class AuthoredWorldRunTests(unittest.TestCase):
         trace, engine, model = run_world(
             self.bundle, self.causal, policy="scripted", max_turns=5
         )
-        self.assertEqual(trace["model"], "scripted-first-available")
+        self.assertEqual(trace["model"], "scripted-least-recent")
         self.assertEqual(trace["cost_usd"], 0.0)
         self.assertEqual(trace["summary"]["turns"], 1)
         self.assertTrue(trace["summary"]["terminal_reached"])
         self.assertEqual(engine.world.entities["apple-1"].ownership.owner_ref, "actor:ava")
         self.assertEqual(engine.world.entities["apple-1"].component("fruit").stage, "picked")
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
+
+    def test_scripted_choice_takes_the_move_done_least_recently(self):
+        page = {"available": [{"action": {"kind": "cut-logs"}}, {"action": {"kind": "load-logs"}}]}
+        self.assertEqual(_scripted_choice(page)[0]["kind"], "cut-logs")
+        self.assertEqual(_scripted_choice(page, {"cut-logs": 3})[0]["kind"], "load-logs")
+        self.assertEqual(_scripted_choice(page, {"cut-logs": 3, "load-logs": 4})[0]["kind"], "cut-logs")
+        self.assertIsNone(_scripted_choice({"available": []})[0])
+
+    def test_scripted_run_keeps_every_step_of_a_generated_chain_working(self):
+        # c4-run17 (live, 2026-10-21): taking the first allowed move kept the timber crew cutting and never
+        # loading, so the sawmill worker and pencil maker never acted in 26 rounds.
+        fixture = json.loads((REPO / "tests/fixtures/pencil-c4-run17.json").read_text())
+        trace, _, _ = run_world(fixture["bundle"], fixture["causal_model"], policy="scripted", max_turns=26)
+        self.assertEqual(trace["summary"]["idle_actors"], [])
+        self.assertEqual(trace["summary"]["never_offered"], {})
+        done = {row["did"]["kind"] for t in trace["transcript"] for row in t["actors"].values()
+                if row.get("status") == "accepted" and row.get("did")}
+        self.assertTrue({"load-logs", "assemble-pencils", "deliver-pencils", "sell-pencils"} <= done, done)
 
     def test_run_records_distinct_rule_refusals_with_their_failed_checks(self):
         bundle = load_bundle(REPAIR_BUNDLE_PATH)
@@ -190,10 +208,11 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertEqual(
             trace["summary"],
             {
-                "turns": 5, "terminal_reached": True, "accepted_actions": 10,
-                "world_changes": 0, "active_at_end": True, "idle_actors": ["dee"],
-                "stalled_actors": ["ava", "dee"], "moves_at_end": ["handoff-tool", "repair"], "never_offered": {},
-                "first_turn": 1, "last_turn": 5,
+                # 2026-10-21: the least-recent scripted mover brings dee in (no idle worker) for one more round.
+                "turns": 6, "terminal_reached": True, "accepted_actions": 11,
+                "world_changes": 0, "active_at_end": True, "idle_actors": [],
+                "stalled_actors": ["ava", "bo"], "moves_at_end": ["diagnose", "handoff-tool", "repair"],
+                "never_offered": {}, "first_turn": 1, "last_turn": 6,
             },
         )
         accepted_kinds = [
@@ -205,7 +224,7 @@ class RepairBayLiveProofTests(unittest.TestCase):
         self.assertEqual(accepted_kinds.count("claim-tool"), 3)
         self.assertEqual(accepted_kinds.count("diagnose"), 3)
         self.assertEqual(accepted_kinds.count("repair"), 3)
-        self.assertEqual(accepted_kinds.count("handoff-tool"), 1)
+        self.assertEqual(accepted_kinds.count("handoff-tool"), 2)
         self.assertEqual(
             sum(bool(row.get("retried")) for turn in trace["transcript"] for row in turn["actors"].values()),
             6,
@@ -216,7 +235,7 @@ class RepairBayLiveProofTests(unittest.TestCase):
         )
         for machine_id in ("pump-1", "generator-1", "conveyor-1"):
             self.assertEqual(engine.world.entities[machine_id].component("machine").status, "working")
-        self.assertEqual(engine.world.entities["scanner-1"].ownership.owner_ref, "actor:dee")
+        self.assertEqual(engine.world.entities["scanner-1"].ownership.owner_ref, "actor:bo")
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
 
 
