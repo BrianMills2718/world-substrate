@@ -107,7 +107,7 @@ came back, came back unused, or the expectation was wrong.
 
 ## Current state (2026-10-21)
 
-- Live: world-substrate `6636399` (#193 mover fix), confirmed by `/api/health`. No live run at it yet.
+- Live: world-substrate `b7d1dc5` (#193 mover fix, #196 concerns condition support). No live run at it yet.
 - Final set at `183b47a` (#190 fix; Brian's yes), all three runs in
   [RUNS.md](../../evidence/best-of-all-worlds/RUNS.md) ("Final set at 183b47a"):
   - Waltzman c1r16 (share `vg2Pmxhml1so`) passes every C1 point but one: support only rose, and no AI member ever made
@@ -117,7 +117,8 @@ came back, came back unused, or the expectation was wrong.
     scripted mover always taking the first allowed move; fixed in #193 and checked by no-spend replays of both worlds.
   - Both pencil runs were charged to the visitor allowance ($0.039), against the boundary; the run scripts now refuse
     to start without the owner key.
-- So no single commit has all of C1-C6 yet. Next: fix #194, then one set at the new commit, with Brian's yes.
+- #194 fixed in #196, live at `b7d1dc5` (confirmed by `/api/health`): an open concern in front of a full supporter now makes that support conditional by rule, and the readout's conditional-support mechanism needs an event that changes a support stance. No-spend check on the saved c1r16 world (scripted mover, 30 rounds): the rule fires 10 times, support moves down 18 and up 19 times.
+- So no single commit has all of C1-C6 yet. Next: one set at `b7d1dc5` (Waltzman once, pencil twice, owner allowance), which needs Brian's yes.
 
 ## Previous state (2026-10-20)
 
