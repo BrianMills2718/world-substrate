@@ -484,6 +484,22 @@ class WorldBuilderServiceTests(unittest.TestCase):
                         "effects": [{"participant": "it", "path": "components.inventory.pencils", "op": "add"}]}
         self.assertEqual(service._conjuring_processes({"mechanics": [make], "processes": [shop_restock]}), [])
 
+    def test_second_source_process_is_found(self):
+        # c4-run20 share IDBzd8xqGa_M: mine-graphite and graphite-renews both added graphite at the mine.
+        mine = {"action_kind": "mine-graphite", "actor_selector": {"categories": ["graphite-mine"]}, "participants": {},
+                "effects": [{"participant": "actor", "path": "components.stock.graphite", "op": "add"}]}
+        make = {"action_kind": "make-leads", "actor_selector": {"categories": ["lead-works"]}, "participants": {},
+                "effects": [{"participant": "actor", "path": "components.stock.graphite", "op": "subtract"},
+                            {"participant": "actor", "path": "components.stock.leads", "op": "add"}]}
+        renew = {"process_id": "graphite-renews", "selector": {"categories": ["graphite-mine"]},
+                 "effects": [{"participant": "it", "path": "components.stock.graphite", "op": "add"}]}
+        elsewhere = {"process_id": "shop-restock", "selector": {"categories": ["shop"]},
+                     "effects": [{"participant": "it", "path": "components.stock.graphite", "op": "add"}]}
+        leads = {"process_id": "leads-appear", "selector": {"categories": ["lead-works"]},
+                 "effects": [{"participant": "it", "path": "components.stock.leads", "op": "add"}]}
+        found = service._second_source_processes({"mechanics": [mine, make], "processes": [renew, elsewhere, leads]})
+        self.assertEqual(found, ["graphite-renews adds stock.graphite (already added from nothing by mine-graphite)"])
+
     def test_moving_process_is_found(self):
         # c4-run16 share M6CqmOQP-qt5: processes passed logs and pencils down the chain, so the carrier sat idle.
         move = {"process_id": "move-logs-to-sawmill", "selector": {"categories": ["logger"]},
@@ -532,6 +548,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("refill adds stock.pencils", mechanics.call_args_list[1].kwargs["guidance"])
         self.assertEqual(payload["dry_run_attempts"][0]["conjuring_processes"], ["refill adds stock.pencils (made by make)"])
         self.assertEqual(payload["dry_run"]["conjuring_processes"], [])
+        self.assertIsInstance(payload["dry_run"]["second_source_processes"], list)
 
     def test_unknown_world_kind_is_refused_before_spend(self):
         with patch.object(service, "generate_world_bundle") as world:

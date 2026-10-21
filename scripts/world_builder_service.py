@@ -798,6 +798,41 @@ def _conjuring_processes(causal: dict[str, Any]) -> list[str]:
     return found
 
 
+def _second_source_processes(causal: dict[str, Any]) -> list[str]:
+    """'process adds field (already added from nothing by action)': a raw good with two sources.
+
+    2026-10-21 c4-run20 (trace world-builder-live/world/5c2f3bc4490f4319b01f0f8983922265): mine-graphite added
+    graphite from nothing and graphite-renews added it again to the same stock, so 29 piles sat unused at the
+    mine. Recorded on the build result only: goods still flow, and the same shape appears in most saved pencil
+    worlds, so it does not lower the score or ask for a rewrite.
+    """
+    def field(path: str) -> str:
+        return path.split(".", 1)[1] if path.startswith("components.") else path
+
+    gathered: dict[str, list[tuple[str, set[str]]]] = {}
+    for mechanic in causal.get("mechanics") or []:
+        roles = {**(mechanic.get("participants") or {}), "actor": mechanic.get("actor_selector") or {}}
+        effects = mechanic.get("effects") or []
+        if any(e.get("op") == "subtract" for e in effects):
+            continue
+        for effect in effects:
+            if effect.get("op") == "add":
+                categories = set((roles.get(effect.get("participant")) or {}).get("categories") or [])
+                gathered.setdefault(field(effect["path"]), []).append((mechanic.get("action_kind", "?"), categories))
+    found: list[str] = []
+    for process in causal.get("processes") or []:
+        reach = set((process.get("selector") or {}).get("categories") or [])
+        for effect in process.get("effects") or []:
+            if effect.get("op") != "add" or effect.get("participant") != "it":
+                continue
+            target = field(effect["path"])
+            for kind, categories in gathered.get(target, []):
+                if not reach or not categories or reach & categories:
+                    found.append(f"{process.get('process_id', '?')} adds {target} (already added from nothing by {kind})")
+                    break
+    return found
+
+
 def _moving_processes(causal: dict[str, Any]) -> list[str]:
     """'process moves field from it to participant' for each process that carries goods between entities.
 
@@ -1334,6 +1369,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                     )
                                 result_row["conjuring_processes"] = conjuring_found
                                 result_row["moving_processes"] = moving_found
+                                result_row["second_source_processes"] = _second_source_processes(candidate)
                                 finishes = None
                             else:
                                 finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
