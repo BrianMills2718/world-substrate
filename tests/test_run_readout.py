@@ -53,6 +53,25 @@ class ReadoutTest(unittest.TestCase):
         self.assertEqual(out["conditional-support"]["status"], "missing")  # the model skipped it
         self.assertEqual(len(out), 4)
 
+    def test_conditional_support_needs_an_event_that_moves_support(self):
+        # 2026-10-21 c1r16 vg2Pmxhml1so (#194): "present" from reopened concerns while no support ever moved.
+        rounds = [{"turn": 8, "actors": {
+            "country-2": {"status": "accepted", "event_id": "r8-e00003", "did": {"kind": "reopen-concern"},
+                          "changes": [{"path": "entities.info-x-to-country-2.components.concern.status",
+                                       "before": "resolved", "after": "open"}]}},
+            "world_events": [{"event_id": "r9-e00001", "rule_id": "concern-makes-support-conditional", "changes": [
+                {"path": "entities.support-country-1.components.support.stance", "before": "full",
+                 "after": "conditional"}]}]}]
+        events = run_readout.evidence_events(rounds)
+        self.assertNotIn("paths", run_readout.readout_prompt("coordination", [], events)[1]["content"])
+        claim = lambda ids: {"summary": "s", "mechanisms": [  # noqa: E731
+            {"id": "conditional-support", "status": "present", "event_ids": ids, "explanation": "x"}]}
+        loose = run_readout.validate_readout("coordination", claim(["r8-e00003"]), events)["mechanisms"][3]
+        self.assertEqual(loose["status"], "missing")
+        self.assertIn("changes anyone's support", loose["missing_reason"])
+        real = run_readout.validate_readout("coordination", claim(["r8-e00003", "r9-e00001"]), events)["mechanisms"][3]
+        self.assertEqual((real["status"], real["event_ids"]), ("present", ["r9-e00001"]))
+
     def test_prompt_names_every_mechanism_and_event(self):
         messages = run_readout.readout_prompt("coordination", [{"id": "ana", "label": "Ana", "position": "chair"}],
                                               run_readout.evidence_events(ROUNDS))

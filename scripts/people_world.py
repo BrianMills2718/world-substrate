@@ -273,7 +273,7 @@ def rules_guidance(prepared: dict[str, Any], guidance: str = "") -> str:
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "
         "rule and is not in your list. When the world has a group decision (entity category `group-decision`), support, concerns "
         "and the decision are exact compiled rules (give-support, make-support-conditional, restore-full-support, "
-        "resolve-concern, resolve-own-concern, reopen-concern, and the deadline processes): rules may read the `support`, `concern` and "
+        "resolve-concern, resolve-own-concern, reopen-concern, the process by which an open concern makes its decider's full support conditional, and the deadline processes): rules may read the `support`, `concern` and "
         "`group_decision` components but never write them, with one exception: `group_decision.agenda_items` counts the "
         "matters put before the decision and not yet settled (compiled put-matter-on-agenda and settle-agenda-matter "
         "already add and subtract it; a rule of yours for discussing a matter or settling one at a meeting may too, "

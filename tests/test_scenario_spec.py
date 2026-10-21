@@ -385,8 +385,29 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertIn("operating-review-reexamines-concern", ids)
         self.assertIn("operating-review-held", ids)
         self.assertEqual((concern()["status"], concern()["times_reviewed"]), ("open", 1))
-        self._do("country-b", "make-support-conditional", matter=matter)  # the review can move support again
-        self.assertIn("deployment-suspended", [e["rule_id"] for e in self.engine.advance(1)["events"]])
+        self.assertLess(ids.index("operating-review-reexamines-concern"), ids.index("concern-makes-support-conditional"))
+        # the reopened concern moves support again by rule (#194), which suspends the decision in effect
+        ids += [e["rule_id"] for _ in range(2) for e in self.engine.advance(1)["events"]]
+        self.assertIn("concern-makes-support-conditional", ids)
+        self.assertIn("deployment-suspended", ids)
+
+    def test_an_open_concern_makes_a_full_supporters_support_conditional_by_rule(self):
+        # 2026-10-21 c1r16 vg2Pmxhml1so (#194): no AI member ever chose make-support-conditional, so support only rose.
+        matter = "info-clause-conflict-to-country-b"
+        support = lambda: self.engine.world.entities["support-country-b"].as_dict()["components"]["support"]  # noqa: E731
+        self.assertEqual(support()["stance"], "full")
+        before = self._decision()["support"]
+        self.assertNotIn("concern-makes-support-conditional",
+                         [e["rule_id"] for e in self.engine.advance(1)["events"]])  # nothing delivered yet
+        self._do("legal-group", "communicate", recipient="country-b")
+        ids = [e["rule_id"] for e in self.engine.advance(1)["events"]]
+        self.assertIn("concern-makes-support-conditional", ids)
+        self.assertEqual((support()["stance"], support()["condition_id"]), ("conditional", matter))
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (before - 1, 1))
+        self._do("country-b", "resolve-own-concern", matter=matter)
+        self._remedy_runs(matter)
+        self._do("country-b", "restore-full-support", matter=matter)  # coming back is the person's own move
+        self.assertEqual((self._decision()["support"], self._decision()["conditional"]), (before, 0))
 
     def test_a_decision_in_effect_still_meets_and_open_matters_hold_up_its_review(self):
         # 2026-10-18 live Waltzman WtCqXpKjI3Bs: the agenda closed at deployment and rounds 21-45 were mostly waits.
