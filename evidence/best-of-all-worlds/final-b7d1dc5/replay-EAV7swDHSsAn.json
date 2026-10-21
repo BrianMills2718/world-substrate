@@ -1,0 +1,20 @@
+{
+ "id": "EAV7swDHSsAn",
+ "at": "2026-10-21T16:58:34.614Z",
+ "final_round_label": 45,
+ "status": "End of the shared run: 45 rounds, replayed from the recording with no AI calls.",
+ "calls": [
+  {
+   "at": "0.4",
+   "method": "GET",
+   "path": "/health"
+  },
+  {
+   "at": "0.4",
+   "method": "GET",
+   "path": "/share/EAV7swDHSsAn"
+  }
+ ],
+ "ai_calls": [],
+ "pass": true
+}

@@ -1,0 +1,361 @@
+build trace world-builder-live/people/8139f52bb8244f528ba63916d9f9e1a3 kind ongoing people 10 ['community-group', 'country-a', 'country-b', 'country-c', 'country-d', 'four-country-partnership', 'legal-group', 'logistics-group', 'regional-health-network', 'technical-group']
+rounds 45 first 1 last 45
+runs 45 movers {'llm-resident (Concordia) openrouter/openai/gpt-6-luna': 45} policies {'resident': 45}
+cost 0.1944
+moves attempted 237; accepted 181; attempted moves missing belief or expected effect: 0 []
+first real move per person {'community-group': 1, 'country-a': 1, 'country-b': 1, 'country-c': 1, 'country-d': 1, 'four-country-partnership': 1, 'legal-group': 1, 'logistics-group': 1, 'regional-health-network': 1, 'technical-group': 1} all within 20: True
+rounds 1-10: 60 real moves, 13 distinct, top [('put-matter-on-agenda', 16), ('settle-agenda-matter', 15), ('coordinate-cross-border-response', 5)]
+rounds 11-20: 26 real moves, 7 distinct, top [('conclude-concern-deliberation', 6), ('settle-agenda-matter', 5), ('extend-deliberation-on-local-concern', 5)]
+rounds 21-30: 40 real moves, 8 distinct, top [('put-matter-on-agenda', 12), ('settle-agenda-matter', 11), ('extend-deliberation-on-local-concern', 4)]
+rounds 31-40: 33 real moves, 7 distinct, top [('put-matter-on-agenda', 11), ('settle-agenda-matter', 10), ('resolve-own-concern', 7)]
+rounds 41-50: 22 real moves, 9 distinct, top [('settle-agenda-matter', 7), ('put-matter-on-agenda', 6), ('conclude-concern-deliberation', 2)]
+communicate 4 [('r1-e00001', 'community-group'), ('r1-e00013', 'legal-group'), ('r1-e00015', 'logistics-group'), ('r1-e00019', 'technical-group')]
+complete-legal-readiness-work 1 [('r2-e00013', 'legal-group')]
+complete-logistics-readiness-work 1 [('r2-e00015', 'logistics-group')]
+complete-technical-readiness-work 1 [('r2-e00019', 'technical-group')]
+conclude-concern-deliberation 17 [('r2-e00009', 'country-d'), ('r3-e00007', 'country-c'), ('r6-e00001', 'country-a'), ('r6-e00008', 'four-country-partnership')]
+coordinate-cross-border-response 5 [('r1-e00007', 'country-c'), ('r1-e00017', 'regional-health-network'), ('r3-e00003', 'country-a'), ('r3-e00005', 'country-b')]
+extend-deliberation-on-local-concern 17 [('r1-e00009', 'country-d'), ('r3-e00001', 'community-group'), ('r5-e00009', 'logistics-group'), ('r6-e00006', 'country-d')]
+give-support 2 [('r4-e00005', 'country-c'), ('r8-e00003', 'country-d')]
+make-support-conditional 3 [('r20-e00005', 'country-b'), ('r25-e00003', 'country-a'), ('r45-e00005', 'country-b')]
+put-matter-on-agenda 50 [('r1-e00003', 'country-a'), ('r1-e00005', 'country-b'), ('r1-e00011', 'four-country-partnership'), ('r2-e00017', 'regional-health-network')]
+raise-new-concern 1 [('r44-e00001', 'community-group')]
+resolve-concern 9 [('r2-e00001', 'community-group'), ('r20-e00001', 'community-group'), ('r20-e00007', 'legal-group'), ('r20-e00009', 'logistics-group')]
+resolve-own-concern 14 [('r2-e00003', 'country-a'), ('r2-e00005', 'country-b'), ('r2-e00007', 'country-c'), ('r20-e00003', 'country-a')]
+restore-full-support 8 [('r4-e00001', 'country-a'), ('r4-e00003', 'country-b'), ('r22-e00001', 'country-b'), ('r28-e00003', 'country-a')]
+settle-agenda-matter 48 [('r2-e00011', 'four-country-partnership'), ('r3-e00012', 'regional-health-network'), ('r4-e00009', 'technical-group'), ('r5-e00001', 'country-a')]
+world 1 r1-e00020 moment-countdown
+world 1 r1-e00021 moment-occurs
+world 1 r1-e00022 concern-makes-support-conditional
+world 2 r2-e00020 moment-passes
+world 2 r2-e00021 moment-countdown
+world 2 r2-e00022 moment-occurs
+world 2 r2-e00023 remedy-progresses
+world 3 r3-e00015 moment-passes
+world 3 r3-e00016 moment-countdown
+world 3 r3-e00017 moment-occurs
+world 3 r3-e00018 remedy-completes
+world 4 r4-e00010 moment-passes
+world 4 r4-e00011 moment-countdown
+world 4 r4-e00012 moment-occurs
+world 4 r4-e00013 work-cycle-restarts
+world 4 r4-e00014 renew-first-work-records
+world 4 r4-e00015 renew-specialist-work-records
+world 5 r5-e00014 moment-passes
+world 5 r5-e00015 moment-countdown
+world 5 r5-e00016 moment-occurs
+world 6 r6-e00015 moment-passes
+world 6 r6-e00016 moment-countdown
+world 6 r6-e00017 moment-occurs
+world 7 r7-e00004 moment-passes
+world 7 r7-e00005 moment-countdown
+world 7 r7-e00006 moment-occurs
+world 8 r8-e00010 moment-passes
+world 8 r8-e00011 moment-countdown
+world 8 r8-e00012 moment-occurs
+world 8 r8-e00013 decision-postponed-for-open-matters
+world 8 r8-e00014 work-cycle-restarts
+world 8 r8-e00015 renew-first-work-records
+world 8 r8-e00016 renew-specialist-work-records
+world 9 r9-e00014 moment-passes
+world 9 r9-e00015 moment-countdown
+world 9 r9-e00016 moment-occurs
+world 9 r9-e00017 decision-authorized-at-deadline
+world 10 r10-e00004 moment-passes
+world 10 r10-e00005 moment-countdown
+world 10 r10-e00006 moment-occurs
+world 10 r10-e00007 deployment-progresses
+world 11 r11-e00012 moment-passes
+world 11 r11-e00013 moment-countdown
+world 11 r11-e00014 moment-occurs
+world 11 r11-e00015 deployment-progresses
+world 12 r12-e00001 moment-passes
+world 12 r12-e00002 moment-countdown
+world 12 r12-e00003 moment-occurs
+world 12 r12-e00004 deployment-progresses
+world 12 r12-e00005 work-cycle-restarts
+world 12 r12-e00006 renew-first-work-records
+world 12 r12-e00007 renew-specialist-work-records
+world 13 r13-e00006 moment-passes
+world 13 r13-e00007 moment-countdown
+world 13 r13-e00008 moment-occurs
+world 13 r13-e00009 deployment-progresses
+world 14 r14-e00017 moment-passes
+world 14 r14-e00018 moment-countdown
+world 14 r14-e00019 moment-occurs
+world 14 r14-e00020 deployment-progresses
+world 15 r15-e00002 moment-passes
+world 15 r15-e00003 moment-countdown
+world 15 r15-e00004 moment-occurs
+world 15 r15-e00005 deployment-completes
+world 15 r15-e00006 operating-review-nears
+world 16 r16-e00008 moment-passes
+world 16 r16-e00009 moment-countdown
+world 16 r16-e00010 moment-occurs
+world 16 r16-e00011 operating-review-nears
+world 16 r16-e00012 work-cycle-restarts
+world 16 r16-e00013 renew-first-work-records
+world 16 r16-e00014 renew-specialist-work-records
+world 17 r17-e00006 moment-passes
+world 17 r17-e00007 moment-countdown
+world 17 r17-e00008 moment-occurs
+world 17 r17-e00009 operating-review-nears
+world 18 r18-e00010 moment-passes
+world 18 r18-e00011 moment-countdown
+world 18 r18-e00012 moment-occurs
+world 18 r18-e00013 operating-review-nears
+world 19 r19-e00001 moment-passes
+world 19 r19-e00002 moment-countdown
+world 19 r19-e00003 moment-occurs
+world 19 r19-e00004 operating-review-nears
+world 19 r19-e00005 operating-review-reexamines-concern
+world 19 r19-e00006 operating-review-held
+world 20 r20-e00012 moment-passes
+world 20 r20-e00013 moment-countdown
+world 20 r20-e00014 moment-occurs
+world 20 r20-e00015 remedy-progresses
+world 20 r20-e00016 operating-review-nears
+world 20 r20-e00017 work-cycle-restarts
+world 20 r20-e00018 renew-first-work-records
+world 20 r20-e00019 renew-specialist-work-records
+world 21 r21-e00011 moment-passes
+world 21 r21-e00012 moment-countdown
+world 21 r21-e00013 moment-occurs
+world 21 r21-e00014 remedy-completes
+world 21 r21-e00015 operating-review-nears
+world 22 r22-e00004 moment-passes
+world 22 r22-e00005 moment-countdown
+world 22 r22-e00006 moment-occurs
+world 22 r22-e00007 operating-review-nears
+world 23 r23-e00005 moment-passes
+world 23 r23-e00006 moment-countdown
+world 23 r23-e00007 moment-occurs
+world 23 r23-e00008 operating-review-nears
+world 24 r24-e00001 moment-passes
+world 24 r24-e00002 moment-countdown
+world 24 r24-e00003 moment-occurs
+world 24 r24-e00004 operating-review-nears
+world 24 r24-e00005 operating-review-reexamines-concern
+world 24 r24-e00006 operating-review-held
+world 24 r24-e00007 work-cycle-restarts
+world 24 r24-e00008 renew-first-work-records
+world 24 r24-e00009 renew-specialist-work-records
+world 25 r25-e00008 moment-passes
+world 25 r25-e00009 moment-countdown
+world 25 r25-e00010 moment-occurs
+world 25 r25-e00011 concern-makes-support-conditional
+world 25 r25-e00012 deployment-suspended
+world 25 r25-e00013 remedy-progresses
+world 26 r26-e00019 moment-passes
+world 26 r26-e00020 moment-countdown
+world 26 r26-e00021 moment-occurs
+world 26 r26-e00022 remedy-completes
+world 26 r26-e00023 remedy-progresses
+world 27 r27-e00008 moment-passes
+world 27 r27-e00009 moment-countdown
+world 27 r27-e00010 moment-occurs
+world 27 r27-e00011 remedy-completes
+world 28 r28-e00017 moment-passes
+world 28 r28-e00018 moment-countdown
+world 28 r28-e00019 moment-occurs
+world 28 r28-e00020 deployment-resumes
+world 28 r28-e00021 operating-review-nears
+world 28 r28-e00022 work-cycle-restarts
+world 28 r28-e00023 renew-first-work-records
+world 28 r28-e00024 renew-specialist-work-records
+world 29 r29-e00013 moment-passes
+world 29 r29-e00014 moment-countdown
+world 29 r29-e00015 moment-occurs
+world 29 r29-e00016 operating-review-nears
+world 30 r30-e00004 moment-passes
+world 30 r30-e00005 moment-countdown
+world 30 r30-e00006 moment-occurs
+world 30 r30-e00007 operating-review-nears
+world 31 r31-e00014 moment-passes
+world 31 r31-e00015 moment-countdown
+world 31 r31-e00016 moment-occurs
+world 31 r31-e00017 operating-review-nears
+world 32 r32-e00001 moment-passes
+world 32 r32-e00002 moment-countdown
+world 32 r32-e00003 moment-occurs
+world 32 r32-e00004 operating-review-nears
+world 32 r32-e00005 operating-review-reexamines-concern
+world 32 r32-e00006 operating-review-held
+world 32 r32-e00007 work-cycle-restarts
+world 32 r32-e00008 renew-first-work-records
+world 32 r32-e00009 renew-specialist-work-records
+world 33 r33-e00012 moment-passes
+world 33 r33-e00013 moment-countdown
+world 33 r33-e00014 moment-occurs
+world 33 r33-e00015 concern-makes-support-conditional
+world 33 r33-e00016 remedy-progresses
+world 33 r33-e00017 operating-review-nears
+world 34 r34-e00012 moment-passes
+world 34 r34-e00013 moment-countdown
+world 34 r34-e00014 moment-occurs
+world 34 r34-e00015 remedy-completes
+world 34 r34-e00016 remedy-progresses
+world 34 r34-e00017 operating-review-nears
+world 35 r35-e00003 moment-passes
+world 35 r35-e00004 moment-countdown
+world 35 r35-e00005 moment-occurs
+world 35 r35-e00006 remedy-completes
+world 35 r35-e00007 operating-review-nears
+world 36 r36-e00013 moment-passes
+world 36 r36-e00014 moment-countdown
+world 36 r36-e00015 moment-occurs
+world 36 r36-e00016 operating-review-nears
+world 36 r36-e00017 work-cycle-restarts
+world 36 r36-e00018 renew-first-work-records
+world 36 r36-e00019 renew-specialist-work-records
+world 37 r37-e00004 moment-passes
+world 37 r37-e00005 moment-countdown
+world 37 r37-e00006 moment-occurs
+world 37 r37-e00007 operating-review-nears
+world 38 r38-e00008 moment-passes
+world 38 r38-e00009 moment-countdown
+world 38 r38-e00010 moment-occurs
+world 38 r38-e00011 operating-review-reexamines-concern
+world 38 r38-e00012 operating-review-held
+world 39 r39-e00006 moment-passes
+world 39 r39-e00007 moment-countdown
+world 39 r39-e00008 moment-occurs
+world 39 r39-e00009 concern-makes-support-conditional
+world 39 r39-e00010 remedy-progresses
+world 39 r39-e00011 operating-review-nears
+world 40 r40-e00010 moment-passes
+world 40 r40-e00011 moment-countdown
+world 40 r40-e00012 moment-occurs
+world 40 r40-e00013 remedy-completes
+world 40 r40-e00014 remedy-progresses
+world 40 r40-e00015 operating-review-nears
+world 40 r40-e00016 work-cycle-restarts
+world 40 r40-e00017 renew-first-work-records
+world 40 r40-e00018 renew-specialist-work-records
+world 41 r41-e00016 moment-passes
+world 41 r41-e00017 moment-countdown
+world 41 r41-e00018 moment-occurs
+world 41 r41-e00019 remedy-completes
+world 41 r41-e00020 operating-review-nears
+world 42 r42-e00010 moment-passes
+world 42 r42-e00011 moment-countdown
+world 42 r42-e00012 moment-occurs
+world 42 r42-e00013 operating-review-nears
+world 43 r43-e00002 moment-passes
+world 43 r43-e00003 moment-countdown
+world 43 r43-e00004 moment-occurs
+world 43 r43-e00005 operating-review-nears
+world 44 r44-e00004 moment-passes
+world 44 r44-e00005 moment-countdown
+world 44 r44-e00006 moment-occurs
+world 44 r44-e00007 concern-makes-support-conditional
+world 44 r44-e00008 operating-review-reexamines-concern
+world 44 r44-e00009 operating-review-held
+world 44 r44-e00010 work-cycle-restarts
+world 44 r44-e00011 renew-first-work-records
+world 44 r44-e00012 renew-specialist-work-records
+world 45 r45-e00016 moment-passes
+world 45 r45-e00017 moment-countdown
+world 45 r45-e00018 moment-occurs
+world 45 r45-e00019 concern-makes-support-conditional
+world 45 r45-e00020 deployment-suspended
+world 45 r45-e00021 remedy-progresses
+--- sample beliefs (first accepted move per person) ---
+community-group | communicate | believed: My local concern about whether clinic alerts could identify individuals is still open and has not yet reached Country D. Trust and privacy need to be considered, but the observation is limited to one clinic. | expected: The concern will be delivered to Country D and make it aware of the information.
+country-a | put-matter-on-agenda | believed: I support activation, and the decision has four weeks remaining with no matter yet on the agenda. The visible local concerns may be relevant, but I have not received them directly and should keep the decision moving. | expected: This will put activation on the partnership agenda for deliberation.
+country-b | put-matter-on-agenda | believed: I support activation, but the decision has no agenda items yet and only two countries currently have full support; there are four weeks to deliberate. Public trust and legal safeguards matter, so I should make room to consider the activation decision formally. | expected: This will add the activation question to the partnership agenda.
+country-c | coordinate-cross-border-response | believed: The decision remains open with four supports, but I do not support activation and readiness is only 60%; I have not received details of any local concern yet. I need operational gaps addressed before backing a system that may fail across borders. | expected: I expect to increase the deployment-readiness measure by five points and record my cross-border response coordination work.
+country-d | extend-deliberation-on-local-concern | believed: Activation currently has four support, but Country C and I do not support it; I have not received any specific legal concern or clarification. I should avoid committing while the legal basis for cross-border data sharing remains unclear. | expected: This will extend the partnership meeting pace to deliberate on the cross-border data-sharing basis.
+four-country-partnership | put-matter-on-agenda | believed: The partnership supports activation overall, but only two countries currently show full support, and the decision is not yet on the agenda. There is time to build a durable joint decision before the deadline. | expected: The activation decision will be placed on the agenda and marked as done for this work cycle.
+legal-group | communicate | believed: The activation decision currently has full support from several parties, but country B has not yet been told that one proposed data field lacks an explicit sharing basis in a participating jurisdiction. I should communicate this local legal concern before the partnership proceeds. | expected: The concern will be delivered to country B, making the information active and country B aware.
+logistics-group | communicate | believed: The remote crossing has a real weekend staffing vulnerability, and country C has not yet received my information. Reliable deployment depends on decision-makers knowing about this local capacity gap. | expected: The logistics concern will be delivered to country C, making the information active and country C aware.
+regional-health-network | coordinate-cross-border-response | believed: The system has full support from the partnership and me, but only two of the four countries show full support, and deployment readiness is 60%. The activation deadline is still several weeks away, so there is time to improve readiness and coordinate country participation. | expected: I expect coordination of the cross-border response to increase deployment readiness by five percentage points and mark that coordination work done.
+technical-group | communicate | believed: The sensor feed in one border district drops during power interruptions, and Country A has not yet been informed. This local reliability gap matters for early warning, so I should communicate it clearly. | expected: Country A will receive the technical concern and become aware of it.
+--- readout ---
+{
+ "schema": "world-builder-readout/v1",
+ "lens": "coordination",
+ "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+ "summary": "Community, legal, logistics, and technical groups raised local concerns through separate routes to different countries, and unresolved or reopened concerns repeatedly slowed the partnership\u2019s activation process. The countries eventually authorized and deployed the system, but operating reviews reopened resolved concerns; conditional support then suspended deployment, which resumed after concerns were remedied and support restored.",
+ "mechanisms": [
+  {
+   "id": "separate-channels",
+   "name": "Local concerns through separate channels",
+   "status": "present",
+   "event_ids": [
+    "r1-e00001",
+    "r1-e00013",
+    "r1-e00015",
+    "r1-e00019"
+   ],
+   "events": [
+    {
+     "event_id": "r1-e00001",
+     "round": 1,
+     "by": "community-group",
+     "move": "communicate",
+     "changed": "entities.country-d.components.member.aware: false -> true; entities.delivery-info-community-local-concern-to-country-d.components.delivery.status: pending -> delivered; entities.info-community-local-concern-to-country-d.components.information.active: false -> true"
+    },
+    {
+     "event_id": "r1-e00013",
+     "round": 1,
+     "by": "legal-group",
+     "move": "communicate",
+     "changed": "entities.country-b.components.member.aware: false -> true; entities.delivery-info-legal-local-concern-to-country-b.components.delivery.status: pending -> delivered; entities.info-legal-local-concern-to-country-b.components.information.active: false -> true"
+    },
+    {
+     "event_id": "r1-e00015",
+     "round": 1,
+     "by": "logistics-group",
+     "move": "communicate",
+     "changed": "entities.country-c.components.member.aware: false -> true; entities.delivery-info-logistics-local-concern-to-country-c.components.delivery.status: pending -> delivered; entities.info-logistics-local-concern-to-country-c.components.information.active: false -> true"
+    },
+    {
+     "event_id": "r1-e00019",
+     "round": 1,
+     "by": "technical-group",
+     "move": "communicate",
+     "changed": "entities.country-a.components.member.aware: false -> true; entities.delivery-info-technical-local-concern-to-country-a.components.delivery.status: pending -> delivered; entities.info-technical-local-concern-to-country-a.components.information.active: false -> true"
+    }
+   ],
+   "explanation": "Community, Legal, Logistics, and Technical groups each sent a distinct local concern through its own route to Country D, Country B, Country C, and Country A. The countries therefore received different concerns.",
+   "missing_reason": "",
+   "dropped_event_ids": []
+  },
+  {
+   "id": "slowed-meetings",
+   "name": "Slowed meetings",
+   "status": "present",
+   "event_ids": [
+    "r1-e00009",
+    "r8-e00013",
+    "r9-e00017",
+    "r45-e00007"
+   ],
+   "events": [
+    {
+     "event_id": "r1-e00009",
+     "round": 1,
+     "by": "country-d",
+     "move": "extend-deliberation-on-local-concern",
+     "changed": "entities.country-d.components.work.extend_deliberation_on_local_concern_done: false -> true; entities.meeting-pace.components.meeting_pace.pace: normal -> extended"
+    },
+    {
+     "event_id": "r8-e00013",
+     "round": 8,
+     "by": "the world (a rule)",
+     "move": "decision-postponed-for-open-matters",
+     "changed": "entities.activate-early-warning-system.components.group_decision.postponements: 0 -> 1; entities.activation-deadline.components.moment.ticks_until: -1 -> 1"
+    },
+    {
+     "event_id": "r9-e00017",
+     "round": 9,
+     "by": "the world (a rule)",
+     "move": "decision-authorized-at-deadline",
+     "changed": "entities.activate-early-warning-system.components.group_decision.deploy_ticks_left: 0 -> 6; entities.activate-early-warning-system.components.group_decision.status: open -> authorized"
+    },
+    {
+     "event_id": "r45-e00007",
+     "round": 45,
+     "by": "country-d",
+     "move": "extend-de

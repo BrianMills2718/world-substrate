@@ -1,0 +1,37 @@
+[4.2s] pressing Create simulation
+[4.3s] step: Sending your description… 0 s
+[7.3s] step: Reading your description… 1.9 s
+[84.7s] step: Writing the rules… 80.7 s
+[131.9s] step: Test-running the rules with simple moves… 128.2 s
+[133.9s] run stage visible
+[134.3s] round 1: graphite-mine=mine-graphite, timber-cutter=cut-logs
+[136.1s] round 2: graphite-mine=mine-graphite, lead-works=make-leads, sawmill=saw-logs, timber-cutter=cut-logs
+[137.9s] round 3: graphite-mine=mine-graphite, lead-works=make-leads, sawmill=saw-logs, slat-mill=shape-slats, timber-cutter=cut-logs
+[139.7s] round 4: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, sawmill=saw-logs, slat-mill=shape-slats, timber-cutter=cut-logs
+[141.5s] round 5: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, timber-cutter=cut-logs
+[146.2s] round 6: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[148.0s] round 7: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[149.8s] round 8: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[151.7s] round 9: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[153.7s] round 10: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[155.6s] round 11: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[157.4s] round 12: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[159.2s] round 13: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[161.1s] round 14: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[162.9s] round 15: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[164.8s] round 16: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[166.6s] round 17: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[168.4s] round 18: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[170.2s] round 19: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[172.1s] round 20: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[173.9s] round 21: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[175.7s] round 22: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[180.4s] round 23: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[182.2s] round 24: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[184.0s] round 25: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[185.8s] round 26: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[187.6s] round 27: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[189.4s] round 28: graphite-mine=mine-graphite, lead-works=make-leads, pencil-assembler=assemble-pencils, pencil-carrier=deliver-pencils, sawmill=saw-logs, slat-mill=shape-slats, stationery-shop=place-and-fill-order, timber-cutter=cut-logs
+[202.9s] readout 200
+[204.9s] share {"ok":true,"share_id":"IDBzd8xqGa_M","rounds":28}
+[205.6s] saved c4-run20.json

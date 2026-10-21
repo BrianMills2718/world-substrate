@@ -1,0 +1,1831 @@
+{
+ "started": "2026-10-21T16:53:30.787Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "4.3",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "7.3",
+   "text": "Reading your description…\n1.9 s"
+  },
+  {
+   "at": "84.7",
+   "text": "Writing the rules…\n80.7 s"
+  },
+  {
+   "at": "131.9",
+   "text": "Test-running the rules with simple moves…\n128.2 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "134.3",
+   "status": 200,
+   "trace_id": "world-builder-live/run/474189f24e5e424fa56f4a9ddacb0495"
+  },
+  {
+   "at": "136.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/637f7728546c4ecebc4deefb4e435a77"
+  },
+  {
+   "at": "137.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/bcf51e06b6724fb19bf064b934c58483"
+  },
+  {
+   "at": "139.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/18cf608f72604015b0230ec8a48e3ebe"
+  },
+  {
+   "at": "141.5",
+   "status": 200,
+   "trace_id": "world-builder-live/run/6ed39eb27f1f470cba426458e17632e4"
+  },
+  {
+   "at": "146.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/0934431c371b4d718e6ba050c0f42765"
+  },
+  {
+   "at": "148.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/5c0133c2f0b74541bb98b08ef07524d8"
+  },
+  {
+   "at": "149.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a6d338f76eef44049a3533ac2f6288d7"
+  },
+  {
+   "at": "151.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/fe4fad20486f4383b75468e060090936"
+  },
+  {
+   "at": "153.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/39df1365ba974672964ffb0845510edb"
+  },
+  {
+   "at": "155.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/a3b185c511714b03852ea6157458d0ae"
+  },
+  {
+   "at": "157.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/13ae020ca8644b9697a54380d9266a42"
+  },
+  {
+   "at": "159.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/ac914dcd982c4dca8d0aa00b8a657963"
+  },
+  {
+   "at": "161.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/b7d1440a547c43739d37b085b3941040"
+  },
+  {
+   "at": "162.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/43896617783247d2a8985a2fd7d693f7"
+  },
+  {
+   "at": "164.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/c00c5dbc9d2a4d58962ec80b194c46c1"
+  },
+  {
+   "at": "166.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/cdff77aca8a44c568dbdbfd12094443a"
+  },
+  {
+   "at": "168.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/881e88fc95064c319d1f02723ad719e2"
+  },
+  {
+   "at": "170.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/29a4cf90c533433e8976e51eda45875e"
+  },
+  {
+   "at": "172.1",
+   "status": 200,
+   "trace_id": "world-builder-live/run/fafb971585404b1c9cb2eab6d4105dda"
+  },
+  {
+   "at": "173.9",
+   "status": 200,
+   "trace_id": "world-builder-live/run/0900356c871b45adb85a25f816ed6f4c"
+  },
+  {
+   "at": "175.7",
+   "status": 200,
+   "trace_id": "world-builder-live/run/2cbed29654c14338a3a6a1f8e8e71141"
+  },
+  {
+   "at": "180.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/cf211b46e3ec4b89a0cf1bd8edc09558"
+  },
+  {
+   "at": "182.2",
+   "status": 200,
+   "trace_id": "world-builder-live/run/bbc47703405e42619c8e4d31be001b20"
+  },
+  {
+   "at": "184.0",
+   "status": 200,
+   "trace_id": "world-builder-live/run/76b5b39f29cc49baa58be457dfd90980"
+  },
+  {
+   "at": "185.8",
+   "status": 200,
+   "trace_id": "world-builder-live/run/496333325201411697470fb439e1a15f"
+  },
+  {
+   "at": "187.6",
+   "status": 200,
+   "trace_id": "world-builder-live/run/ed4c7d58adeb45bea13f1f11615cb140"
+  },
+  {
+   "at": "189.4",
+   "status": 200,
+   "trace_id": "world-builder-live/run/0ceb4959348743ebaacbdbeeb2ca6c97"
+  }
+ ],
+ "rounds": [
+  {
+   "turn": 1,
+   "at": "134.3",
+   "trace_id": "world-builder-live/run/474189f24e5e424fa56f4a9ddacb0495",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r1-e00001",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r1-e00003",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r1-e00004",
+     "graphite-renews"
+    ],
+    [
+     "r1-e00005",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "at": "136.1",
+   "trace_id": "world-builder-live/run/637f7728546c4ecebc4deefb4e435a77",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r2-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r2-e00003",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r2-e00005",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r2-e00007",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r2-e00008",
+     "graphite-renews"
+    ],
+    [
+     "r2-e00009",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 3,
+   "at": "137.9",
+   "trace_id": "world-builder-live/run/bcf51e06b6724fb19bf064b934c58483",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r3-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r3-e00003",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r3-e00005",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r3-e00007",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r3-e00009",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r3-e00010",
+     "graphite-renews"
+    ],
+    [
+     "r3-e00011",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 4,
+   "at": "139.7",
+   "trace_id": "world-builder-live/run/18cf608f72604015b0230ec8a48e3ebe",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r4-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r4-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r4-e00005",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r4-e00007",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r4-e00009",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r4-e00011",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r4-e00012",
+     "graphite-renews"
+    ],
+    [
+     "r4-e00013",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 5,
+   "at": "141.5",
+   "trace_id": "world-builder-live/run/6ed39eb27f1f470cba426458e17632e4",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r5-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r5-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r5-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r5-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r5-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r5-e00011",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r5-e00013",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r5-e00014",
+     "graphite-renews"
+    ],
+    [
+     "r5-e00015",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 6,
+   "at": "146.2",
+   "trace_id": "world-builder-live/run/0934431c371b4d718e6ba050c0f42765",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r6-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r6-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r6-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r6-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r6-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r6-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r6-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r6-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r6-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r6-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 7,
+   "at": "148.0",
+   "trace_id": "world-builder-live/run/5c0133c2f0b74541bb98b08ef07524d8",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r7-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r7-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r7-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r7-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r7-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r7-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r7-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r7-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r7-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r7-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 8,
+   "at": "149.8",
+   "trace_id": "world-builder-live/run/a6d338f76eef44049a3533ac2f6288d7",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r8-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r8-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r8-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r8-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r8-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r8-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r8-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r8-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r8-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r8-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 9,
+   "at": "151.7",
+   "trace_id": "world-builder-live/run/fe4fad20486f4383b75468e060090936",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r9-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r9-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r9-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r9-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r9-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r9-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r9-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r9-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r9-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r9-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 10,
+   "at": "153.7",
+   "trace_id": "world-builder-live/run/39df1365ba974672964ffb0845510edb",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r10-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r10-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r10-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r10-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r10-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r10-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r10-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r10-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r10-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r10-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 11,
+   "at": "155.6",
+   "trace_id": "world-builder-live/run/a3b185c511714b03852ea6157458d0ae",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r11-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r11-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r11-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r11-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r11-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r11-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r11-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r11-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r11-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r11-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 12,
+   "at": "157.4",
+   "trace_id": "world-builder-live/run/13ae020ca8644b9697a54380d9266a42",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r12-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r12-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r12-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r12-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r12-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r12-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r12-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r12-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r12-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r12-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 13,
+   "at": "159.2",
+   "trace_id": "world-builder-live/run/ac914dcd982c4dca8d0aa00b8a657963",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r13-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r13-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r13-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r13-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r13-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r13-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r13-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r13-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r13-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r13-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 14,
+   "at": "161.1",
+   "trace_id": "world-builder-live/run/b7d1440a547c43739d37b085b3941040",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r14-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r14-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r14-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r14-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r14-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r14-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r14-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r14-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r14-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r14-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 15,
+   "at": "162.9",
+   "trace_id": "world-builder-live/run/43896617783247d2a8985a2fd7d693f7",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r15-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r15-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r15-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r15-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r15-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r15-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r15-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r15-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r15-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r15-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 16,
+   "at": "164.8",
+   "trace_id": "world-builder-live/run/c00c5dbc9d2a4d58962ec80b194c46c1",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r16-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r16-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r16-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r16-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r16-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r16-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r16-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r16-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r16-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r16-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 17,
+   "at": "166.6",
+   "trace_id": "world-builder-live/run/cdff77aca8a44c568dbdbfd12094443a",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r17-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r17-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r17-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r17-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r17-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r17-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r17-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r17-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r17-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r17-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 18,
+   "at": "168.4",
+   "trace_id": "world-builder-live/run/881e88fc95064c319d1f02723ad719e2",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r18-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r18-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r18-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r18-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r18-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r18-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r18-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r18-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r18-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r18-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 19,
+   "at": "170.2",
+   "trace_id": "world-builder-live/run/29a4cf90c533433e8976e51eda45875e",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r19-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r19-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r19-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r19-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r19-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r19-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r19-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r19-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r19-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r19-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 20,
+   "at": "172.1",
+   "trace_id": "world-builder-live/run/fafb971585404b1c9cb2eab6d4105dda",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r20-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r20-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r20-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r20-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r20-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r20-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r20-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r20-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r20-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r20-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 21,
+   "at": "173.9",
+   "trace_id": "world-builder-live/run/0900356c871b45adb85a25f816ed6f4c",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r21-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r21-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r21-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r21-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r21-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r21-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r21-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r21-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r21-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r21-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 22,
+   "at": "175.7",
+   "trace_id": "world-builder-live/run/2cbed29654c14338a3a6a1f8e8e71141",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r22-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r22-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r22-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r22-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r22-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r22-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r22-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r22-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r22-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r22-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 23,
+   "at": "180.4",
+   "trace_id": "world-builder-live/run/cf211b46e3ec4b89a0cf1bd8edc09558",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r23-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r23-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r23-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r23-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r23-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r23-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r23-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r23-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r23-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r23-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 24,
+   "at": "182.2",
+   "trace_id": "world-builder-live/run/bbc47703405e42619c8e4d31be001b20",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r24-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r24-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r24-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r24-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r24-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r24-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r24-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r24-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r24-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r24-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 25,
+   "at": "184.0",
+   "trace_id": "world-builder-live/run/76b5b39f29cc49baa58be457dfd90980",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r25-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r25-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r25-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r25-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r25-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r25-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r25-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r25-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r25-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r25-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 26,
+   "at": "185.8",
+   "trace_id": "world-builder-live/run/496333325201411697470fb439e1a15f",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r26-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r26-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r26-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r26-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r26-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r26-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r26-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r26-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r26-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r26-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 27,
+   "at": "187.6",
+   "trace_id": "world-builder-live/run/ed4c7d58adeb45bea13f1f11615cb140",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r27-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r27-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r27-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r27-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r27-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r27-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r27-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r27-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r27-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r27-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  },
+  {
+   "turn": 28,
+   "at": "189.4",
+   "trace_id": "world-builder-live/run/0ceb4959348743ebaacbdbeeb2ca6c97",
+   "moves": {
+    "graphite-mine": {
+     "kind": "mine-graphite",
+     "event_id": "r28-e00001",
+     "changed": true
+    },
+    "lead-works": {
+     "kind": "make-leads",
+     "event_id": "r28-e00003",
+     "changed": true
+    },
+    "pencil-assembler": {
+     "kind": "assemble-pencils",
+     "event_id": "r28-e00005",
+     "changed": true
+    },
+    "pencil-carrier": {
+     "kind": "deliver-pencils",
+     "event_id": "r28-e00007",
+     "changed": true
+    },
+    "sawmill": {
+     "kind": "saw-logs",
+     "event_id": "r28-e00009",
+     "changed": true
+    },
+    "slat-mill": {
+     "kind": "shape-slats",
+     "event_id": "r28-e00011",
+     "changed": true
+    },
+    "stationery-shop": {
+     "kind": "place-and-fill-order",
+     "event_id": "r28-e00013",
+     "changed": true
+    },
+    "timber-cutter": {
+     "kind": "cut-logs",
+     "event_id": "r28-e00015",
+     "changed": true
+    }
+   },
+   "world_events": [
+    [
+     "r28-e00016",
+     "graphite-renews"
+    ],
+    [
+     "r28-e00017",
+     "school-demand-arrives"
+    ]
+   ]
+  }
+ ],
+ "readout": {
+  "at": "202.9",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "flow",
+    "title": "How goods moved through the chain",
+    "summary": "The graphite mine supplied lead works, while the timber cutter’s logs became boards and then slats. The pencil assembler made pencils, the pencil carrier took them to the stationery shop, and the shop filled school orders, though new orders kept arriving faster than they were filled.",
+    "mechanisms": [
+     {
+      "id": "goods-made",
+      "name": "Goods made from other goods",
+      "status": "present",
+      "event_ids": [
+       "r2-e00003",
+       "r3-e00007",
+       "r4-e00005"
+      ],
+      "events": [
+       {
+        "event_id": "r2-e00003",
+        "round": 2,
+        "by": "lead-works",
+        "move": "make-leads",
+        "changed": "entities.graphite-mine.components.stock.graphite: 3 -> 2; entities.lead-works.components.stock.leads: 0 -> 1"
+       },
+       {
+        "event_id": "r3-e00007",
+        "round": 3,
+        "by": "slat-mill",
+        "move": "shape-slats",
+        "changed": "entities.sawmill.components.stock.boards: 2 -> 1; entities.slat-mill.components.stock.slats: 0 -> 1"
+       },
+       {
+        "event_id": "r4-e00005",
+        "round": 4,
+        "by": "pencil-assembler",
+        "move": "assemble-pencils",
+        "changed": "entities.lead-works.components.stock.leads: 3 -> 2; entities.pencil-assembler.components.stock.pencils: 0 -> 1; entities.slat-mill.components.stock.slats: 1 -> 0"
+       }
+      ],
+      "explanation": "Lead works turned graphite into leads, the slat mill turned boards into slats, and the pencil assembler used leads and slats to make pencils.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "goods-handed-on",
+      "name": "Goods carried to the next step",
+      "status": "present",
+      "event_ids": [
+       "r5-e00007",
+       "r6-e00007"
+      ],
+      "events": [
+       {
+        "event_id": "r5-e00007",
+        "round": 5,
+        "by": "pencil-carrier",
+        "move": "deliver-pencils",
+        "changed": "entities.pencil-assembler.components.stock.pencils: 2 -> 1; entities.stationery-shop.components.stock.pencils: 0 -> 1"
+       },
+       {
+        "event_id": "r6-e00007",
+        "round": 6,
+        "by": "pencil-carrier",
+        "move": "deliver-pencils",
+        "changed": "entities.pencil-assembler.components.stock.pencils: 2 -> 1; entities.stationery-shop.components.stock.pencils: 1 -> 2"
+       }
+      ],
+      "explanation": "The pencil carrier moved pencils from the assembler to the stationery shop.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "demand-met",
+      "name": "Demand reached and met",
+      "status": "present",
+      "event_ids": [
+       "r6-e00013",
+       "r7-e00013"
+      ],
+      "events": [
+       {
+        "event_id": "r6-e00013",
+        "round": 6,
+        "by": "stationery-shop",
+        "move": "place-and-fill-order",
+        "changed": "entities.school-customer.components.stock.waiting_orders: 5 -> 4; entities.stationery-shop.components.stock.pencils: 2 -> 1"
+       },
+       {
+        "event_id": "r7-e00013",
+        "round": 7,
+        "by": "stationery-shop",
+        "move": "place-and-fill-order",
+        "changed": "entities.school-customer.components.stock.waiting_orders: 5 -> 4; entities.stationery-shop.components.stock.pencils: 2 -> 1"
+       }
+      ],
+      "explanation": "The stationery shop used its pencils to fill the school customer’s waiting orders.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "work-waited",
+      "name": "Work held up",
+      "status": "missing",
+      "event_ids": [],
+      "events": [],
+      "explanation": "",
+      "missing_reason": "No event records work being held up while waiting for needed goods.",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 264
+   },
+   "cost_usd": 0.0019202,
+   "daily_cost_usd": 0.5169241349999999,
+   "trace_id": "world-builder-live/readout/9ea872a788b441ea8ef2e6d491413565"
+  }
+ },
+ "share": {
+  "at": "204.9",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "IDBzd8xqGa_M",
+   "rounds": 28
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/world/5c2f3bc4490f4319b01f0f8983922265",
+  "cost_usd": 0.007209360000000001
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "b7d1dc59745cfa54c0c21e36de0022e74c487917",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 0.5470390749999998,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0.03920885
+ },
+ "pressed_at": "4.2",
+ "run_stage_at": "133.9",
+ "readout_text": "What happened: How goods moved through the chain\n\nThe graphite mine supplied lead works, while the timber cutter’s logs became boards and then slats. The pencil assembler made pencils, the pencil carrier took them to the stationery shop, and the shop filled school orders, though new orders kept arriving faster than they were filled.\n\nHappened: Goods made from other goods\nLead works turned graphite into leads, the slat mill turned boards into slats, and the pencil assembler used leads and slats to make pencils.\nRound 2, Pencil lead works: make-leads (event r2-e00003)\nRound 3, Pencil slat mill: shape-slats (event r3-e00007)\nRound 4, Pencil assembly shop: assemble-pencils (event r4-e00005)\nHappened: Goods carried to the next step\nThe pencil carrier moved pencils from the assembler to the stationery shop.\nRound 5, Pencil carrier: deliver-pencils (event r5-e00007)\nRound 6, Pencil carrier: deliver-pencils (event r6-e00007)\nHappened: Demand reached and met\nThe stationery shop used its pencils to fill the school customer’s waiting orders.\nRound 6, Stationery shop: place-and-fill-order (event r6-e00013)\nRound 7, Stationery shop: place-and-fill-order (event r7-e00013)\nDid not happen: Work held up\nNo event records work being held up while waiting for needed goods.\nRead from 264 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 28 · 208 allowed · 0 refused · 16 held back by the rules · 56 by itself",
+ "finished": "2026-10-21T16:56:56.398Z"
+}

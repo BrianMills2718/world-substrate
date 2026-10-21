@@ -1,0 +1,478 @@
+{
+ "started": "2026-10-21T16:46:17.219Z",
+ "visitor": true,
+ "steps": [
+  {
+   "at": "1.6",
+   "text": "Sending your description…\n0 s"
+  },
+  {
+   "at": "10.7",
+   "text": "Working out who is involved and what each of them wants…\n7 s"
+  },
+  {
+   "at": "37.7",
+   "text": "✓\nFound what is known and when things happen · 4 pieces of information, 2 scheduled moments\nweekly partnership meeting\nactivation deadline\nThe sensor feed at one border district drops during power interruptions.\nOne proposed cross-border data field lacks an explicit sharing basis in one part\nThe courier serving one remote crossing has no backup driver on weekends.\nResidents at one border clinic have not been told whether alerts could identify\n33.3 s"
+  },
+  {
+   "at": "37.7",
+   "text": "Working out what each person can try to do…\n33.3 s"
+  },
+  {
+   "at": "56.8",
+   "text": "Writing the rules for what those attempts cause… · this is the longest step\n52.4 s"
+  },
+  {
+   "at": "107.0",
+   "text": "Test-running the rules with simple moves…\n103.7 s"
+  }
+ ],
+ "runs": [
+  {
+   "at": "116.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "126.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "145.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "158.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "163.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "168.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "192.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "198.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "203.2",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "215.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "220.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "250.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "255.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "274.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "299.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "303.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "319.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "326.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "345.0",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "350.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "357.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "373.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "379.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "390.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "395.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "404.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "438.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "443.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "462.7",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "474.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "479.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "489.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "493.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "498.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "516.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "523.5",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "562.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "567.3",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "582.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "588.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "594.1",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "626.4",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "631.6",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "636.8",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "640.9",
+   "status": 202,
+   "all": {}
+  },
+  {
+   "at": "652.4",
+   "status": 202,
+   "all": {}
+  }
+ ],
+ "rounds": [],
+ "readout": {
+  "at": "668.3",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "readout": {
+    "schema": "world-builder-readout/v1",
+    "lens": "coordination",
+    "title": "How coordination slowed (the four mechanisms of the Waltzman paper)",
+    "summary": "Community, legal, logistics, and technical groups raised local concerns through separate routes to different countries, and unresolved or reopened concerns repeatedly slowed the partnership’s activation process. The countries eventually authorized and deployed the system, but operating reviews reopened resolved concerns; conditional support then suspended deployment, which resumed after concerns were remedied and support restored.",
+    "mechanisms": [
+     {
+      "id": "separate-channels",
+      "name": "Local concerns through separate channels",
+      "status": "present",
+      "event_ids": [
+       "r1-e00001",
+       "r1-e00013",
+       "r1-e00015",
+       "r1-e00019"
+      ],
+      "events": [
+       {
+        "event_id": "r1-e00001",
+        "round": 1,
+        "by": "community-group",
+        "move": "communicate",
+        "changed": "entities.country-d.components.member.aware: false -> true; entities.delivery-info-community-local-concern-to-country-d.components.delivery.status: pending -> delivered; entities.info-community-local-concern-to-country-d.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00013",
+        "round": 1,
+        "by": "legal-group",
+        "move": "communicate",
+        "changed": "entities.country-b.components.member.aware: false -> true; entities.delivery-info-legal-local-concern-to-country-b.components.delivery.status: pending -> delivered; entities.info-legal-local-concern-to-country-b.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00015",
+        "round": 1,
+        "by": "logistics-group",
+        "move": "communicate",
+        "changed": "entities.country-c.components.member.aware: false -> true; entities.delivery-info-logistics-local-concern-to-country-c.components.delivery.status: pending -> delivered; entities.info-logistics-local-concern-to-country-c.components.information.active: false -> true"
+       },
+       {
+        "event_id": "r1-e00019",
+        "round": 1,
+        "by": "technical-group",
+        "move": "communicate",
+        "changed": "entities.country-a.components.member.aware: false -> true; entities.delivery-info-technical-local-concern-to-country-a.components.delivery.status: pending -> delivered; entities.info-technical-local-concern-to-country-a.components.information.active: false -> true"
+       }
+      ],
+      "explanation": "Community, Legal, Logistics, and Technical groups each sent a distinct local concern through its own route to Country D, Country B, Country C, and Country A. The countries therefore received different concerns.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "slowed-meetings",
+      "name": "Slowed meetings",
+      "status": "present",
+      "event_ids": [
+       "r1-e00009",
+       "r8-e00013",
+       "r9-e00017",
+       "r45-e00007"
+      ],
+      "events": [
+       {
+        "event_id": "r1-e00009",
+        "round": 1,
+        "by": "country-d",
+        "move": "extend-deliberation-on-local-concern",
+        "changed": "entities.country-d.components.work.extend_deliberation_on_local_concern_done: false -> true; entities.meeting-pace.components.meeting_pace.pace: normal -> extended"
+       },
+       {
+        "event_id": "r8-e00013",
+        "round": 8,
+        "by": "the world (a rule)",
+        "move": "decision-postponed-for-open-matters",
+        "changed": "entities.activate-early-warning-system.components.group_decision.postponements: 0 -> 1; entities.activation-deadline.components.moment.ticks_until: -1 -> 1"
+       },
+       {
+        "event_id": "r9-e00017",
+        "round": 9,
+        "by": "the world (a rule)",
+        "move": "decision-authorized-at-deadline",
+        "changed": "entities.activate-early-warning-system.components.group_decision.deploy_ticks_left: 0 -> 6; entities.activate-early-warning-system.components.group_decision.status: open -> authorized"
+       },
+       {
+        "event_id": "r45-e00007",
+        "round": 45,
+        "by": "country-d",
+        "move": "extend-deliberation-on-local-concern",
+        "changed": "entities.country-d.components.work.extend_deliberation_on_local_concern_done: false -> true; entities.meeting-pace.components.meeting_pace.pace: normal -> extended"
+       }
+      ],
+      "explanation": "Country D extended deliberation, and the decision was postponed when matters remained open at the deadline. The system was eventually authorized and deployed, but repeated extended deliberations and agenda work slowed the process.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "reopened-issues",
+      "name": "Reopened settled issues",
+      "status": "present",
+      "event_ids": [
+       "r19-e00005",
+       "r24-e00005",
+       "r32-e00005",
+       "r38-e00011"
+      ],
+      "events": [
+       {
+        "event_id": "r19-e00005",
+        "round": 19,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-community-local-concern-to-country-d.components.concern.status: resolved -> open; entities.info-community-local-concern-to-country-d.components.concern.times_reviewed: 0 -> 1; entities.info-legal-local-concern-to-country-b.components.concern.status: resolved -> open; entities.info-legal-local-concern-to-country-b.components.concern.times_reviewed: 0 -> 1; and 4 more changes"
+       },
+       {
+        "event_id": "r24-e00005",
+        "round": 24,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-community-local-concern-to-country-d.components.concern.status: resolved -> open; entities.info-community-local-concern-to-country-d.components.concern.times_reviewed: 1 -> 2; entities.info-legal-local-concern-to-country-b.components.concern.status: resolved -> open; entities.info-legal-local-concern-to-country-b.components.concern.times_reviewed: 1 -> 2; and 4 more changes"
+       },
+       {
+        "event_id": "r32-e00005",
+        "round": 32,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-community-local-concern-to-country-d.components.concern.status: resolved -> open; entities.info-community-local-concern-to-country-d.components.concern.times_reviewed: 2 -> 3; entities.info-legal-local-concern-to-country-b.components.concern.status: resolved -> open; entities.info-legal-local-concern-to-country-b.components.concern.times_reviewed: 2 -> 3; and 4 more changes"
+       },
+       {
+        "event_id": "r38-e00011",
+        "round": 38,
+        "by": "the world (a rule)",
+        "move": "operating-review-reexamines-concern",
+        "changed": "entities.info-community-local-concern-to-country-d.components.concern.status: resolved -> open; entities.info-community-local-concern-to-country-d.components.concern.times_reviewed: 3 -> 4; entities.info-legal-local-concern-to-country-b.components.concern.status: resolved -> open; entities.info-legal-local-concern-to-country-b.components.concern.times_reviewed: 3 -> 4; and 4 more changes"
+       }
+      ],
+      "explanation": "Operating reviews changed resolved concerns back to open, including community and legal concerns. This put previously remedied issues back into consideration.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     },
+     {
+      "id": "conditional-support",
+      "name": "Conditional support delaying deployment",
+      "status": "present",
+      "event_ids": [
+       "r1-e00022",
+       "r20-e00005",
+       "r25-e00011"
+      ],
+      "events": [
+       {
+        "event_id": "r1-e00022",
+        "round": 1,
+        "by": "the world (a rule)",
+        "move": "concern-makes-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 2; entities.activate-early-warning-system.components.group_decision.support: 4 -> 2; entities.support-country-a.components.support.condition_id: country-a -> info-technical-local-concern-to-country-a; entities.support-country-a.components.support.stance: full -> conditional; and 2 more changes"
+       },
+       {
+        "event_id": "r20-e00005",
+        "round": 20,
+        "by": "country-b",
+        "move": "make-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 0 -> 1; entities.activate-early-warning-system.components.group_decision.support: 6 -> 5; entities.support-country-b.components.support.stance: full -> conditional"
+       },
+       {
+        "event_id": "r25-e00011",
+        "round": 25,
+        "by": "the world (a rule)",
+        "move": "concern-makes-support-conditional",
+        "changed": "entities.activate-early-warning-system.components.group_decision.conditional: 1 -> 3; entities.activate-early-warning-system.components.group_decision.support: 5 -> 3; entities.support-country-c.components.support.condition_id: country-c -> info-logistics-local-concern-to-country-c; entities.support-country-c.components.support.stance: full -> conditional; and 2 more changes"
+       }
+      ],
+      "explanation": "Countries’ support became conditional on concerns being addressed; when conditional support accumulated, deployment was suspended. Support was restored after remedies were completed, and deployment resumed.",
+      "missing_reason": "",
+      "dropped_event_ids": []
+     }
+    ],
+    "events_read": 395
+   },
+   "cost_usd": 0.0036806,
+   "daily_cost_usd": 0.5331700349999999,
+   "trace_id": "world-builder-live/readout/f0247539290346fd8ae46a5144c41731"
+  }
+ },
+ "share": {
+  "at": "671.3",
+  "status": 200,
+  "body": {
+   "ok": true,
+   "share_id": "EAV7swDHSsAn",
+   "rounds": 45
+  }
+ },
+ "job": {
+  "trace_id": "world-builder-live/run/71cc555c06ec496b9f30adff4284dde5",
+  "cost_usd": 0.0044852
+ },
+ "health": {
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "b7d1dc59745cfa54c0c21e36de0022e74c487917",
+  "owner": true,
+  "owner_daily_budget_usd": 5,
+  "owner_daily_committed_usd": 0.22965196999999993,
+  "llm_daily_budget_usd": 3,
+  "llm_daily_committed_usd": 0.03920885
+ },
+ "pressed_at": "1.6",
+ "run_stage_at": "117.0",
+ "readout_text": "What happened: How coordination slowed (the four mechanisms of the Waltzman paper)\n\nCommunity, legal, logistics, and technical groups raised local concerns through separate routes to different countries, and unresolved or reopened concerns repeatedly slowed the partnership’s activation process. The countries eventually authorized and deployed the system, but operating reviews reopened resolved concerns; conditional support then suspended deployment, which resumed after concerns were remedied and support restored.\n\nHappened: Local concerns through separate channels\nCommunity, Legal, Logistics, and Technical groups each sent a distinct local concern through its own route to Country D, Country B, Country C, and Country A. The countries therefore received different concerns.\nRound 1, Community Group: communicate (event r1-e00001)\nRound 1, Legal Group: communicate (event r1-e00013)\nRound 1, Logistics Group: communicate (event r1-e00015)\nRound 1, Technical Group: communicate (event r1-e00019)\nHappened: Slowed meetings\nCountry D extended deliberation, and the decision was postponed when matters remained open at the deadline. The system was eventually authorized and deployed, but repeated extended deliberations and agenda work slowed the process.\nRound 1, Country D: extend-deliberation-on-local-concern (event r1-e00009)\nRound 8, the world (a rule): decision-postponed-for-open-matters (event r8-e00013)\nRound 9, the world (a rule): decision-authorized-at-deadline (event r9-e00017)\nRound 45, Country D: extend-deliberation-on-local-concern (event r45-e00007)\nHappened: Reopened settled issues\nOperating reviews changed resolved concerns back to open, including community and legal concerns. This put previously remedied issues back into consideration.\nRound 19, the world (a rule): operating-review-reexamines-concern (event r19-e00005)\nRound 24, the world (a rule): operating-review-reexamines-concern (event r24-e00005)\nRound 32, the world (a rule): operating-review-reexamines-concern (event r32-e00005)\nRound 38, the world (a rule): operating-review-reexamines-concern (event r38-e00011)\nHappened: Conditional support delaying deployment\nCountries’ support became conditional on concerns being addressed; when conditional support accumulated, deployment was suspended. Support was restored after remedies were completed, and deployment resumed.\nRound 1, the world (a rule): concern-makes-support-conditional (event r1-e00022)\nRound 20, Country B: make-support-conditional (event r20-e00005)\nRound 25, the world (a rule): concern-makes-support-conditional (event r25-e00011)\nRead from 395 recorded events. Each event named above is checked against the recording; hover one to see what it changed.",
+ "outcome": "Round 45 · 181 allowed · 56 refused · 450 held back by the rules · 236 by itself",
+ "finished": "2026-10-21T16:57:29.178Z"
+}
