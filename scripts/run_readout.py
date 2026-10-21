@@ -1,8 +1,8 @@
 """The "What happened" readout: a detachable analysis of one finished run.
 
-A lens names the patterns a reader wants found (here, the four coordination mechanisms of the Waltzman paper). One
-light model call reads the run's recorded Engine events and says, for each pattern, which events show it or why it
-is missing. Every event id it cites is checked against the recording; a pattern the model calls present without a
+A lens names the patterns a reader wants found (the four coordination mechanisms of the Waltzman paper for a people
+world, how goods moved for a things world). One light model call reads the run's recorded Engine events and says,
+for each pattern, which events show it or why it is missing. Every event id it cites is checked against the recording; a pattern the model calls present without a
 real event id is reported missing. The analysis never changes the world (AGENTS.md: post-run analysis stays separate
 from canonical truth), and its result is saved with a shared run, so a replay needs no AI call.
 """
@@ -16,7 +16,7 @@ READOUT_SCHEMA = "world-builder-readout/v1"
 MAX_EVIDENCE_EVENTS = 700
 MAX_TEXT = 160
 
-# The lens is data, not code: any people world is read through the same patterns, and none of them names a
+# The lens is data, not code: every world of one kind is read through the same patterns, and none of them names a
 # particular scenario's people, records or rules.
 LENSES: dict[str, dict[str, Any]] = {
     "coordination": {
@@ -34,6 +34,22 @@ LENSES: dict[str, dict[str, Any]] = {
             {"id": "conditional-support", "name": "Conditional support delaying deployment",
              "meaning": "Someone's support depends on a condition; while the condition is unmet their support is "
                         "withheld or withdrawn, and that holds back the final decision or deployment."},
+        ],
+    },
+    # #190: things worlds (a supply chain, a workshop) were read for coordination mechanisms they cannot have.
+    "flow": {
+        "title": "How goods moved through the chain",
+        "mechanisms": [
+            {"id": "goods-made", "name": "Goods made from other goods",
+             "meaning": "Someone turns inputs into a new kind of good (for example logs into boards), using the "
+                        "inputs up."},
+            {"id": "goods-handed-on", "name": "Goods carried to the next step",
+             "meaning": "Someone moves goods from one place or business to another, where the next step uses them."},
+            {"id": "demand-met", "name": "Demand reached and met",
+             "meaning": "Finished goods reach the place that wants them and are taken or used there."},
+            {"id": "work-waited", "name": "Work held up",
+             "meaning": "A step could not go ahead because what it needs had not arrived or had run out, so someone "
+                        "waited or the chain stalled."},
         ],
     },
 }
