@@ -384,6 +384,29 @@ def _world_fingerprint(bundle: Any, causal: Any) -> str | None:
     return hashlib.sha256(canonical.encode()).hexdigest()[:16]
 
 
+def _canon(value: Any) -> Any:
+    """JSON as the browser hands it back: whole floats become ints (JavaScript writes 2.0 as 2)."""
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    if isinstance(value, dict):
+        return {k: _canon(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_canon(v) for v in value]
+    return value
+
+
+def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any) -> str:
+    """Issue #127 (G11): a keyed hash of the world state a round ended in, under these exact rules.
+
+    The browser holds the state between live rounds; a continued round must bring back one this
+    server sealed, so an edited state (or the same state under other rules) is refused.
+    """
+    key = (_owner_password() or "world-builder").encode()
+    canonical = json.dumps(_canon({"snapshot": snapshot, "bundle": bundle, "causal_model": causal}),
+                           sort_keys=True, separators=(",", ":"))
+    return hmac.new(key, canonical.encode(), "sha256").hexdigest()
+
+
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
     keep = ("description", "world_kind", "policy", "turns", "turn_offset", "approved", "execution_mode", "async")
     out = {k: body[k] for k in keep if k in body}
@@ -1812,6 +1835,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         continue_from = body.get("continue_from")
         if continue_from is not None and not isinstance(continue_from, dict):
             raise ValueError("continue_from must be a snapshot object")
+        if continue_from is not None:
+            seal = body.get("continue_seal")
+            if not isinstance(seal, str) or not hmac.compare_digest(
+                    seal.encode(), _snapshot_seal(continue_from, body.get("bundle"), causal).encode()):
+                raise ValueError("This world cannot carry on: the state sent back does not match the last round "
+                                 "this server ran under these rules. Press Start over.")
         turn_offset = body.get("turn_offset", 0)
         if type(turn_offset) is not int or not 0 <= turn_offset <= MAX_CONTINUED_TURNS:
             raise ValueError(f"turn_offset must be an integer between 0 and {MAX_CONTINUED_TURNS}")
@@ -1892,6 +1921,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "trace": trace,
                 "causal_review": compiled.as_review(),
                 "replay_html": replay,
+                # The next continued round must send this back with final_snapshot (#127).
+                "snapshot_seal": _snapshot_seal(trace.get("final_snapshot"), body.get("bundle"), causal),
                 "cost_usd": trace.get("cost_usd", 0.0),
                 "daily_cost_usd": daily_cost,
                 "execution_mode": execution_mode,

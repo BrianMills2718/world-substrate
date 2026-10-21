@@ -562,7 +562,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, first)
         status, second = self.post("/run", {
             "bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 4,
-            "continue_from": first["trace"]["final_snapshot"], "turn_offset": first["summary"]["last_turn"],
+            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "turn_offset": first["summary"]["last_turn"],
         })
         self.assertEqual(status, 200, second)
         self.assertEqual(second["summary"]["first_turn"], 5)
@@ -747,11 +747,11 @@ class WorldBuilderServiceTests(unittest.TestCase):
         for _ in range(n):
             body = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1}
             if snap:
-                body.update(continue_from=snap, turn_offset=last)
+                body.update(continue_from=snap, continue_seal=seal, turn_offset=last)
             status, run = self.post("/run", body)
             self.assertEqual(status, 200, run)
             ids.append(run["trace_id"]); transcript += run["trace"]["transcript"]
-            snap, last = run["trace"]["final_snapshot"], run["summary"]["last_turn"]
+            snap, seal, last = run["trace"]["final_snapshot"], run["snapshot_seal"], run["summary"]["last_turn"]
         return ids, transcript
 
     def test_shared_run_replays_the_recorded_rounds_without_ai(self):
@@ -1006,7 +1006,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
         self.assertEqual(status, 200, first)
         status, second = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
-                                            "continue_from": first["trace"]["final_snapshot"],
+                                            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"],
                                             "turn_offset": first["summary"]["last_turn"]})
         self.assertEqual(status, 200, second)
         opening, continued = self.run_log()
@@ -1035,18 +1035,45 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
         self.assertEqual(status, 200, first)
         status, second = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
-                                            "continue_from": first["trace"]["final_snapshot"],
+                                            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"],
                                             "turn_offset": first["summary"]["last_turn"]})
         self.assertEqual(status, 200, second)
         expected = first["trace"]["mechanic_profile_id"]
         self.assertRegex(expected, r"^[0-9a-f]{16}$")
         self.assertEqual([row["result"]["mechanic_profile_id"] for row in self.run_log()], [expected, expected])
 
+    def test_continued_round_must_start_from_the_state_this_server_returned(self):
+        # Issue #127 (G11): the server trusted whatever world state the browser sent back.
+        causal = self._ongoing_causal()
+        status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
+        self.assertEqual(status, 200, first)
+        snap, seal = first["trace"]["final_snapshot"], first["snapshot_seal"]
+        base = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
+                "turn_offset": first["summary"]["last_turn"]}
+        tampered = json.loads(json.dumps(snap)); tampered["world"]["revision"] += 1
+        other = json.loads(json.dumps(causal)); other["processes"][0]["rationale"] = "Picked fruit never grows back."
+        for label, extra in (("no seal", {"continue_from": snap}),
+                             ("edited state", {"continue_from": tampered, "continue_seal": seal}),
+                             ("other rules", {"continue_from": snap, "continue_seal": seal, "causal_model": other})):
+            with self.subTest(label):
+                status, payload = self.post("/run", {**base, **extra})
+                self.assertEqual(status, 422, payload)
+                self.assertIn("does not match the last round", payload["error"])
+        status, second = self.post("/run", {**base, "continue_from": snap, "continue_seal": seal})
+        self.assertEqual(status, 200, second)
+        self.assertNotEqual(second["snapshot_seal"], seal)
+
+    def test_snapshot_seal_survives_the_browser_rewriting_whole_floats(self):
+        from scripts.world_builder_service import _snapshot_seal
+        self.assertEqual(_snapshot_seal({"a": [1.0, {"b": 2.0}]}, BUNDLE, CAUSAL),
+                         _snapshot_seal({"a": [1, {"b": 2}]}, BUNDLE, CAUSAL))
+        self.assertNotEqual(_snapshot_seal({"a": 1.5}, BUNDLE, CAUSAL), _snapshot_seal({"a": 1}, BUNDLE, CAUSAL))
+
     def test_continuing_a_finished_world_returns_no_rounds_instead_of_an_error(self):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1})
         self.assertTrue(first["summary"]["terminal_reached"])
         status, after = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1,
-                                           "continue_from": first["trace"]["final_snapshot"], "turn_offset": 1})
+                                           "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "turn_offset": 1})
         self.assertEqual(status, 200, after)
         self.assertEqual(after["trace"]["transcript"], [])
         self.assertTrue(after["summary"]["terminal_reached"])
