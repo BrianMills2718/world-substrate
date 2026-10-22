@@ -1116,7 +1116,7 @@ file = "<WORLD_BUILDER_RUN_LOG_DIR or ~/.local/state/world-builder/runs>/runs_<U
 logged_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/generate-draft", "/generate-mechanics", "/compare-native-coordination", "/readout"]
 # Paths whose result keeps a real summary. The other logged paths keep only the
 # sorted response key names (world_builder_service.py:374): see gap G4.
-summarised_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/readout"]
+summarised_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/readout", "/generate-mechanics", "/generate-draft", "/compare-native-coordination"]
 
 # -------------------------------------------------------------------- views --
 
@@ -1295,7 +1295,7 @@ status = "fixed"
 id = "G4"
 title = "Run log keeps only key names for generate-mechanics, generate-draft and compare"
 reproduced = "yes"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G5"
