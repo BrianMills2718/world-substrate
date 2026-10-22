@@ -26,22 +26,22 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Description | shown | shown | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | AuthoringBundle | partial | shown | n/a | partial | n/a | n/a | shown | partial (G12) | partial (G12) |
-| CausalReview (compiler-derived authority) | partial (G5) | partial (G3) | n/a | n/a | n/a | n/a | partial (G4) | n/a | n/a |
+| CausalReview (compiler-derived authority) | shown (G5 fixed) | shown (G3 fixed) | n/a | n/a | n/a | n/a | shown (G4 fixed) | n/a | n/a |
 | MechanicProfile (frozen id) | missing (G7) | missing (G7) | missing | missing | n/a | n/a | shown (G7 fixed) | missing (G7) | missing (G7) |
 | Approval | partial (G6) | partial (G6) | n/a | n/a | n/a | n/a | partial (G6) | n/a (G14) | n/a (G14) |
-| Run (trace) | partial (G1) | partial (G1) | partial | partial | n/a | n/a | partial (G1) | n/a | n/a |
+| Run (trace) | partial | partial | partial | partial | n/a | n/a | shown (G1 fixed) | n/a | n/a |
 | event `accepted` | shown | partial | shown | shown | shown | shown | partial | shown | shown |
 | event `precondition_failed` | shown | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
 | event `stale_revision` | partial | partial | partial | partial | partial | partial | partial | n/a | n/a |
 | event `scope_violation` | partial | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
 | event `invalid_action` | partial | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
 | event `unsupported_action` | partial | partial | partial | partial | partial | partial | partial | partial (G15, G16) | partial (G15, G16) |
-| process-made changes (`advance`) | shown | partial | partial | missing (G8) | partial | partial | partial | missing (G8) | shown |
+| process-made changes (`advance`) | shown | partial | partial | shown (G8 fixed) | partial | partial | partial | missing (G8) | shown |
 | run row `no_action` (waited) | shown | partial | n/a | partial | n/a | n/a | shown | partial (G16) | n/a |
 | run row `nothing_left` (lost a race) | shown | partial | n/a | partial | n/a | n/a | shown | n/a | n/a |
 | World (state, positions) | partial | partial | partial | partial | shown (G9, G10 fixed) | shown (G9, G10 fixed) | partial | partial (G12) | shown |
 | LivingSceneFrame | n/a | partial | n/a | n/a | partial | partial | n/a | n/a | n/a |
-| Comparison | n/a | shown | n/a | n/a | n/a | partial | missing (G4) | n/a | n/a |
+| Comparison | n/a | shown | n/a | n/a | n/a | partial | shown (G4 fixed) | n/a | n/a |
 | RunLogEntry | hidden | hidden | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | BudgetLedger | partial | partial | n/a | n/a | n/a | n/a | partial | n/a | n/a |
 | ScenarioModel (`model.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
@@ -92,6 +92,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Model:** the run log promises that "the world and rules produced" are retained for every build (`scripts/world_builder_service.py:290-296`).
 - **Code:** `_result_summary` keeps real results only for `/generate-world`, `/run`, `/clarify`, `/surprise`; `/generate-mechanics`, `/generate-draft` and `/compare-native-coordination` fall through to `{"keys": [...]}` (`world_builder_service.py:374`). So a mechanics proposal made in `build` and every comparison outcome are lost; an approved model is only recoverable if it was later sent to `/run` (whose request is logged in full when not continued, `:325-336`).
 - **Reproduced: yes.** Calling `_result_summary` with each path's real response shape returned only key lists, e.g. `/generate-mechanics -> {'keys': ['causal_model', 'cost_usd', 'daily_cost_usd', 'model', 'ok', 'review', 'trace_id']}`. The model test pins the current split (`run_log.summarised_paths`), so closing the gap means updating the model.
+
+- **Fixed 2026-10-21 (#125).** `_result_summary` now keeps the full result for `/generate-mechanics`, `/generate-draft` and `/compare-native-coordination` (proposed causal model, review, draft, bundle, comparison trace and change), leaving out only the cost and trace id already on the line and the rebuilt replay HTML. Test: `test_run_log_keeps_generated_rules_drafts_and_comparisons_in_full`.
 
 ### G5. Home approval screen shows no derived authority or limits
 

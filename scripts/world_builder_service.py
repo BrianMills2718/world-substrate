@@ -475,7 +475,20 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
         return {"readout": value.get("readout")}
     if path == "/surprise":
         return {k: value.get(k) for k in ("theme", "description")}
+    # Gap G4: these logged only key names. Keep the full result; cost and trace id
+    # are already on the line, and a replay page is rebuilt from its trace.
+    if path == "/generate-mechanics":
+        return _full_result(value)
+    if path == "/generate-draft":
+        return _full_result(value)
+    if path == "/compare-native-coordination":
+        return _full_result(value)
     return {"keys": sorted(value)[:20]}
+
+
+def _full_result(value: dict[str, Any]) -> dict[str, Any]:
+    on_line = {"ok", "cost_usd", "daily_cost_usd", "trace_id"}
+    return {k: v for k, v in value.items() if k not in on_line and not k.endswith("html")}
 
 
 def _new_trace_id(kind: str) -> str:

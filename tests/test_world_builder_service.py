@@ -1069,6 +1069,28 @@ class WorldBuilderServiceTests(unittest.TestCase):
                          _snapshot_seal({"a": [1, {"b": 2}]}, BUNDLE, CAUSAL))
         self.assertNotEqual(_snapshot_seal({"a": 1.5}, BUNDLE, CAUSAL), _snapshot_seal({"a": 1}, BUNDLE, CAUSAL))
 
+    def test_run_log_keeps_generated_rules_drafts_and_comparisons_in_full(self):
+        # Issue #125 (G4): these three paths logged only their key names.
+        review = {"mechanics": [{"action_kind": "fix"}]}
+        mechanics = service._result_summary("/generate-mechanics", 200, {
+            "ok": True, "causal_model": {"actions": ["fix"]}, "review": review, "model": "m",
+            "cost_usd": 0.1, "daily_cost_usd": 0.2, "trace_id": "t"})
+        self.assertEqual(mechanics["causal_model"], {"actions": ["fix"]})
+        self.assertEqual(mechanics["review"], review)
+        self.assertEqual(mechanics["model"], "m")
+        draft = service._result_summary("/generate-draft", 200, {
+            "ok": True, "draft": {"d": 1}, "bundle": {"world": {}}, "causal_model": {"c": 1}, "review": review})
+        self.assertEqual((draft["draft"], draft["bundle"], draft["causal_model"]), ({"d": 1}, {"world": {}}, {"c": 1}))
+        compare = service._result_summary("/compare-native-coordination", 200, {
+            "ok": True, "summary": {"s": 1}, "trace": {"transcript": []}, "causal_review": review,
+            "replay_html": "<html>big</html>", "comparison_bundle": {"b": 1}, "change": {"x": 1}})
+        self.assertEqual(compare["change"], {"x": 1})
+        self.assertEqual(compare["comparison_bundle"], {"b": 1})
+        self.assertEqual(compare["trace"], {"transcript": []})
+        self.assertNotIn("replay_html", compare)  # the page is rebuilt from the trace, not stored twice
+        for row in (mechanics, draft, compare):
+            self.assertNotIn("keys", row)
+
     def test_run_log_keeps_engine_events_in_full_but_the_page_does_not_get_them(self):
         # Issue #123 (G1): keep every engine event (never record less); the browser does not need them.
         status, run = self.post("/run", {"bundle": BUNDLE, "causal_model": self._ongoing_causal(), "approved": True, "turns": 2})
