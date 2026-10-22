@@ -69,6 +69,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Effect:** no view, and no retained file, can say which state paths an action changed or show the world hash chain for a Builder run; the engine's `stale_revision` event behind a `nothing_left` row is lost.
 - **Reproduced: yes.** `run_authored_world.py` on `examples/world_authoring/repair-bay-v0.json` produced a trace with keys `actors, cost_usd, final_snapshot, mechanic_profile_id, model, schema_version, summary, transcript, world`, with no events. A local service run of the same world wrote run-log `/run` results with keys `final_snapshot, mover, summary, transcript`.
 
+- **Fixed 2026-10-21 (#123).** `run_world` keeps every Engine event in full as `trace["engine_events"]` (checks, declared read/write paths, changes, `hash_before`/`hash_after`, observation), under the same run-wide ids (`r<round>-e<n>`) the transcript cites. The service writes them to the `/run` run-log line (`result.engine_events`, sync and job runs) and drops them from the page's response, which never read them; shares keep only the transcript. Tests: `test_run_keeps_every_engine_event_in_full`, `test_run_log_keeps_engine_events_in_full_but_the_page_does_not_get_them`.
+
 ### G2. Home "refused" counter counts blocked offers, not refused attempts
 
 - **Model:** a refusal is an Engine event with a non-`accepted` status for an attempt that was submitted. `blocked_by_rules` is something else: the offers `Engine.discover` withheld from an actor that round, one example per distinct (action kind, reason) (`scripts/run_authored_world.py:261-281`).
@@ -95,6 +97,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **View:** the home "Check the rules" step shows each rule's checks and effects in plain words (`world_builder_home.html:370-414`) but no derived read or write paths and no limits. `build` does show them (`world_builder_app.js:272`).
 - **Reproduced: yes.** Playwright with the Repair Bay review (5 mechanics, 27 derived read paths, 16 derived write paths, 5 limits): 0 of 27 read paths, 0 of 16 write paths and 0 of 5 limits appeared in the page text when the Approve button became enabled. This may be a deliberate plain-language choice (effects in words imply most writes), but no doc says so, and limits are not implied by anything shown.
 
+- **Fixed 2026-10-21 (#121, PR #202).** Each rule on the home approve screen, and each process, has a collapsed "Show details" (with a tooltip) listing its derived read paths, write paths and limits. Test: `test_each_rule_folds_out_its_reads_writes_and_limits`; browser check on the saved pencil world: 8 rule folds, 2 process folds.
+
 ### G6. Approval is a request flag, not a record
 
 - **Model:** approval is the gate between proposal and execution (Decision 006, `docs/architecture.md` "Causal authoring and installation").
@@ -114,6 +118,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Model:** due processes commit `accepted` events each round via `Engine.advance` (`engine.py:762`); the transcript lists them as `world_changes`.
 - **View:** the round replay builds frames from accepted actor actions (`scripts/render_scene_replay.py:237`) and never reads `world_changes` (0 matches). The home feed does print them ("By itself: ...", `world_builder_home.html:542`).
 - **Reproduced: partly.** A 4-round scripted run of the Orchard world with the `regrow` process committed one process event in round 1; the rendered replay HTML contains no mention of `regrow`. Whether the picture still shows the resulting state change (for example a fruit's stage) was not checked.
+
+- **Fixed 2026-10-21 (#126, PR #201).** Each picture frame carries the round's process-made changes, shown in a blue "By itself: …" strip apart from the actors' moves; the strip is emitted only when a round has one. Test: `test_round_picture_shows_by_itself_changes_apart_from_actions`.
 
 ### G9. Actors moved to the same place stack on one point (issue #106)
 
@@ -136,6 +142,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Model:** "one canonical persistent world owns material truth" (root `AGENTS.md`).
 - **Code:** live play asks for one round at a time; between rounds the world state lives in the browser and comes back as `continue_from` (`world_builder_home.html:582`). The server checks that the snapshot's `world_id`, `content_id`, `rule_versions` and `engine_id` match the bundle (`run_authored_world.py:233-242`) but not that the entity state equals the previous round's `final_snapshot` (which the run log retains, `world_builder_service.py:366`).
 - **Reproduced: no.** Read from code only; no edited snapshot was sent. This is a boundary finding, not a view gap: a visitor can only change their own world, but a logged run is not proof that round N+1 started where round N ended.
+
+- **Fixed 2026-10-21 (#127, PR #203).** `/run` returns `snapshot_seal`, an HMAC over the final snapshot and the exact bundle and rules; a continued round without the matching `continue_seal` is refused (422). Live check at 794775e: 6 continued rounds accepted, a forged state refused.
 
 ### G12. Scenario views show only what the run touched, not the world that was built
 

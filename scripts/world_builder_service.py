@@ -508,6 +508,8 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
         "request": request["summary"],
         "result": _result_summary(request["path"], int(status), value),
     }
+    if request.get("engine_events") is not None and status < 400:
+        entry["result"]["engine_events"] = request["engine_events"]
     try:
         directory = _run_log_dir()
         directory.mkdir(parents=True, exist_ok=True)
@@ -1913,6 +1915,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             daily_cost = None
         if execution_mode == "authored_world":
             replay = render_run(bundle, trace, compiled)
+        # Every engine event in full goes to the run log only; the page never reads them (#123, G1).
+        engine_events = trace.pop("engine_events", None)
+        request = _REQUEST.get()
+        if request is not None and engine_events is not None:
+            request["engine_events"] = engine_events
         self._json(
             HTTPStatus.OK,
             {

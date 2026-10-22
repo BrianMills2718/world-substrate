@@ -381,11 +381,15 @@ def run_world(
     # Per actor, the round each move kind was last chosen (scripted policy).
     last_done: dict[str, dict[str, int]] = {}
     refused_why: dict[str, list[dict[str, Any]]] = {}
+    # Every Engine event in full (checks, declared paths, changes, hash chain), under run-wide ids (#123, G1).
+    engine_events: list[dict[str, Any]] = []
+    run_ids: dict[str, str] = {}
 
     for turn in range(1, max_turns + 1):
         if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
             break
         revision = engine.world.revision
+        events_seen = len(engine.world.events)
         intents: dict[str, dict[str, Any] | None] = {}
         reasons: dict[str, str] = {}
         blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
@@ -613,6 +617,12 @@ def run_world(
                 "progress": {},
             }
         )
+        for event in engine.world.events[events_seen:]:
+            run_ids[event["event_id"]] = _run_event_id(turn + turn_offset, event["event_id"])
+            kept = {**deepcopy(event), "event_id": run_ids[event["event_id"]]}
+            if "causal_parent_event_ids" in kept:
+                kept["causal_parent_event_ids"] = [run_ids.get(e, e) for e in kept["causal_parent_event_ids"]]
+            engine_events.append(kept)
 
     terminal_reached = bool(
         causal_model.terminal is not None and causal_model.terminal.reached(engine.world)
@@ -627,6 +637,7 @@ def run_world(
                   else "scripted-least-recent"),
         "cost_usd": round(cost + (residents.cost() if residents is not None else 0.0), 6),
         "mechanic_profile_id": profile_id,
+        "engine_events": engine_events,
         "summary": {
             "turns": len(transcript),
             "terminal_reached": terminal_reached,

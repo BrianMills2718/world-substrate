@@ -171,6 +171,25 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertIn("Ava", html)
         self.assertIn("document.getElementById(\'turn\')", html)
 
+    def test_run_keeps_every_engine_event_in_full(self):
+        # Issue #123 (G1): builder runs kept no engine event records (hashes, checks, read/write paths).
+        trace, _, _ = run_world(self.bundle, self.causal, policy="scripted", max_turns=3)
+        events = trace["engine_events"]
+        self.assertTrue(events)
+        for event in events:
+            for key in ("event_id", "rule_id", "status", "checks", "declared_read_paths",
+                        "declared_write_paths", "changes", "hash_before", "hash_after", "observation"):
+                self.assertIn(key, event)
+            self.assertRegex(event["event_id"], r"^r\d+-e\d+$")
+        cited = {row["event_id"] for t in trace["transcript"] for row in t["actors"].values() if row.get("event_id")}
+        cited |= {e["event_id"] for t in trace["transcript"] for e in t.get("world_events", [])}
+        self.assertTrue(cited)
+        self.assertLessEqual(cited, {e["event_id"] for e in events})
+        # A continued run restarts the engine's own ids; the run-wide ids stay unique.
+        again, _, _ = run_world(self.bundle, self.causal, policy="scripted", max_turns=2,
+                                start_snapshot=trace["final_snapshot"], turn_offset=trace["summary"]["last_turn"])
+        self.assertFalse({e["event_id"] for e in events} & {e["event_id"] for e in again["engine_events"]})
+
     def test_round_picture_shows_by_itself_changes_apart_from_actions(self):
         # Issue #126 (G8): the picture carried no trace of process-made changes.
         trace, _, compiled = run_world(self.bundle, self.causal, policy="scripted", max_turns=2)
