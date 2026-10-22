@@ -49,7 +49,8 @@ def main() -> int:
             outcome = f"{res.get('world')} rules={res.get('rules')} by-itself={res.get('processes')} quick-test ok={dry.get('ok')} finished={dry.get('terminal_reached')} active={dry.get('active_at_end')}"
         elif row["path"] == "/run":
             s = res.get("summary") or {}
-            outcome = f"rounds {s.get('first_turn')}-{s.get('last_turn')} allowed={s.get('accepted_actions')} world-changes={s.get('world_changes')} finished={s.get('terminal_reached')} active={s.get('active_at_end')} rules-id={res.get('mechanic_profile_id') or '-'}"
+            ok = res.get("approval") or {}  # who approved these rules, when (#122)
+            outcome = f"rounds {s.get('first_turn')}-{s.get('last_turn')} allowed={s.get('accepted_actions')} world-changes={s.get('world_changes')} finished={s.get('terminal_reached')} active={s.get('active_at_end')} rules-id={res.get('mechanic_profile_id') or '-'} approval={ok.get('approval_id') or '-'} by {ok.get('approved_by') or '-'} at {ok.get('approved_at') or '-'}"
         else:
             outcome = (res.get("description") or res.get("reply") or "")[:120]
         print(f"{row['ts']}  {who:22} {row['path']:16} {row['status']}  ${(row.get('cost_usd') or 0):.4f}  {asked[:70]!r} -> {outcome}")

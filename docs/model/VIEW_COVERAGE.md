@@ -28,7 +28,7 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | AuthoringBundle | partial | shown | n/a | partial | n/a | n/a | shown | partial (G12) | partial (G12) |
 | CausalReview (compiler-derived authority) | shown (G5 fixed) | shown (G3 fixed) | n/a | n/a | n/a | n/a | shown (G4 fixed) | n/a | n/a |
 | MechanicProfile (frozen id) | missing (G7) | missing (G7) | missing | missing | n/a | n/a | shown (G7 fixed) | missing (G7) | missing (G7) |
-| Approval | partial (G6) | partial (G6) | n/a | n/a | n/a | n/a | partial (G6) | n/a (G14) | n/a (G14) |
+| Approval | partial | partial | n/a | n/a | n/a | n/a | shown (G6 fixed) | n/a (G14) | n/a (G14) |
 | Run (trace) | partial | partial | partial | partial | n/a | n/a | shown (G1 fixed) | n/a | n/a |
 | event `accepted` | shown | partial | shown | shown | shown | shown | partial | shown | shown |
 | event `precondition_failed` | shown | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
@@ -108,6 +108,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Model:** approval is the gate between proposal and execution (Decision 006, `docs/architecture.md` "Causal authoring and installation").
 - **Code:** the server refuses `/run` and `/compare-native-coordination` unless the body says `approved: true` (`world_builder_service.py:957-962`, `:998-1000`); both pages send the literal `approved:true` (`world_builder_home.html:581`, `world_builder_app.js:304`, `:319`). Nothing records who approved which causal model when; the run log has the request flag and a `world_fingerprint` of bundle + model (`:330`), which is the closest substitute.
 - **Reproduced: partly.** The local run log rows from the G2 run carry `request.approved = true` and nothing else about approval. No request was sent without a UI approval (that the server accepts one follows from the code above but was not exercised).
+
+- **Fixed 2026-10-21 (#122).** The first `/run` round and every comparison now make an approval record (`approval_id`, `approved_at`, `approved_by` as owner, agent or visitor fingerprint, the frozen `mechanic_profile_id`, `world_fingerprint`). Continued rounds must send it back; it is sealed with the round's state (#127), so a swapped or forged record is refused. Every run-log line keeps it and `scripts/world_builder_runs.py` prints it per run. Tests: `test_every_round_names_the_approval_that_let_it_run`, the native comparison test.
 
 ### G7. Frozen mechanic profile id is shown nowhere and not logged
 

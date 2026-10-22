@@ -735,7 +735,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const residents = ai && world.briefs;
     const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: residents ? "resident" : ai ? "llm" : "scripted", turns: 1 };
     if (residents) { request.briefs = world.briefs; if (live.memory) request.resident_memory = live.memory; }
-    if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.turn_offset = live.lastTurn; request.recent = recentMoves(); }
+    if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); }
     // Simple moves are instant, so ask directly; AI rounds take a few seconds and go through a job.
     return ai ? apiJob("/run", request, 1000) : api("/run", request);
   }
@@ -760,7 +760,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         }
         if (!current()) return;
         const rounds = run.trace.transcript || [];
-        live.snapshot = run.trace.final_snapshot; live.seal = run.snapshot_seal; live.lastTurn = run.summary.last_turn;
+        live.snapshot = run.trace.final_snapshot; live.seal = run.snapshot_seal; live.approval = run.approval; live.lastTurn = run.summary.last_turn;
         if (run.trace.resident_memory) live.memory = run.trace.resident_memory;
         if (run.trace_id) live.runIds.push(run.trace_id);
         if (run.replay_html) $("replay").srcdoc = run.replay_html;
