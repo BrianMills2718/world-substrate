@@ -506,8 +506,18 @@ class CompiledActionMechanic:
             )
         parameter_names = sorted(self.declared.parameters)
         parameter_choices = [list(self.declared.parameters[name]) for name in parameter_names]
-        dimensions: list[list[Any]] = [*participant_choices, *parameter_choices]
-        combinations = product(*dimensions) if dimensions else [()]
+        # Join participants on the checks that link them by id ("delivery names the information") before the cap,
+        # so a long product does not cut off later actors' own moves (c1r18, 2026-10-22: 8 deliveries x 8 items x
+        # 11 members passed 256 before any technical or logistics delivery, so neither group could ever speak).
+        # When nothing links up, the plain product stays, so refusals still say why the move is impossible.
+        linked = self._linked_bindings(world, actor_id, participant_names, participant_choices)
+        if linked:
+            combinations = (
+                (*bound, *params) for bound in linked for params in product(*parameter_choices)
+            )
+        else:
+            dimensions: list[list[Any]] = [*participant_choices, *parameter_choices]
+            combinations = product(*dimensions) if dimensions else [()]
         actions: list[TypedAction] = []
         for values in combinations:
             row: dict[str, Any] = {
@@ -527,6 +537,51 @@ class CompiledActionMechanic:
             if len(actions) >= MAX_DISCOVERED_ACTIONS:
                 break
         return actions
+
+    def _linked_bindings(
+        self, world: World, actor_id: str, names: list[str], choices: list[list[str]]
+    ) -> list[tuple[str, ...]]:
+        """Participant tuples that pass every id-link check (an `eq` against `entity_id`), in product order."""
+        links = [
+            (row, refs)
+            for row in self.declared.checks
+            if row["op"] == "eq" and ("entity_id" in row["left"] or "entity_id" in row["right"])
+            for left, right in [(_expr_refs(row["left"]), _expr_refs(row["right"]))]
+            if left is not None and right is not None
+            for refs in [left | right]
+            if refs <= {"actor", *names}
+        ]
+        if not links:
+            return []
+        out: list[tuple[str, ...]] = []
+        bound: dict[str, str] = {"actor": actor_id}
+
+        def passes(name: str) -> bool:
+            for row, refs in links:
+                if name in refs and refs <= set(bound):
+                    try:
+                        left = _resolve_expr(row["left"], world, {}, bound, None)
+                        right = _resolve_expr(row["right"], world, {}, bound, None)
+                    except (KeyError, TypeError, ValueError, ActionDeclarationError):
+                        return False
+                    if not _compare(left, "eq", right):
+                        return False
+            return True
+
+        def walk(depth: int) -> None:
+            if len(out) >= MAX_DISCOVERED_ACTIONS:
+                return
+            if depth == len(names):
+                out.append(tuple(bound[name] for name in names))
+                return
+            for entity_id in choices[depth]:
+                bound[names[depth]] = entity_id
+                if passes(names[depth]):
+                    walk(depth + 1)
+            bound.pop(names[depth], None)
+
+        walk(0)
+        return out
 
     def effect_preview(self, world: World, action: TypedAction) -> list[str]:
         """Describe the concrete writes this installed mechanic would perform."""
@@ -1049,6 +1104,19 @@ def _resolve_expr(expr: dict[str, Any], world: World, action: dict[str, Any], pa
             raise ActionDeclarationError("event_id is unavailable during checks")
         return event_id
     raise ActionDeclarationError("unresolvable expression")
+
+
+def _expr_refs(expr: dict[str, Any]) -> set[str] | None:
+    """The participant names an expression reads, or None when it reads the action's own fields or an event."""
+    if "literal" in expr:
+        return set()
+    if "participant" in expr:
+        return {expr["participant"]["name"]}
+    if "entity_id" in expr:
+        return {expr["entity_id"]}
+    if "owner_ref" in expr:
+        return {expr["owner_ref"]}
+    return None
 
 
 def _compare(left: Any, op: str, right: Any) -> bool:
