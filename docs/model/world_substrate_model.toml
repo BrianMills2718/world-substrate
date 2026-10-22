@@ -1343,7 +1343,7 @@ status = "fixed"
 id = "G12"
 title = "Scenario views show only what the run touched, not the world that was built"
 reproduced = "yes"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G13"
@@ -1361,10 +1361,10 @@ status = "open"
 id = "G15"
 title = "Scenario views show a refusal's status but never the check that failed"
 reproduced = "partly"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G16"
 title = "Scenario replay drops most of each attempt and the game master's ruling; 'continue' shows as no_action"
 reproduced = "yes"
-status = "open"
+status = "fixed"
