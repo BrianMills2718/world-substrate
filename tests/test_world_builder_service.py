@@ -1069,6 +1069,26 @@ class WorldBuilderServiceTests(unittest.TestCase):
                          _snapshot_seal({"a": [1, {"b": 2}]}, BUNDLE, CAUSAL))
         self.assertNotEqual(_snapshot_seal({"a": 1.5}, BUNDLE, CAUSAL), _snapshot_seal({"a": 1}, BUNDLE, CAUSAL))
 
+    def test_run_log_keeps_engine_events_in_full_but_the_page_does_not_get_them(self):
+        # Issue #123 (G1): keep every engine event (never record less); the browser does not need them.
+        status, run = self.post("/run", {"bundle": BUNDLE, "causal_model": self._ongoing_causal(), "approved": True, "turns": 2})
+        self.assertEqual(status, 200, run)
+        self.assertNotIn("engine_events", run["trace"])
+        (row,) = self.run_log()
+        events = row["result"]["engine_events"]
+        self.assertTrue(events)
+        self.assertTrue(all("hash_before" in e and "declared_write_paths" in e for e in events))
+        cited = {r["event_id"] for t in run["trace"]["transcript"] for r in t["actors"].values() if r.get("event_id")}
+        self.assertLessEqual(cited, {e["event_id"] for e in events})
+        # AI rounds run as a background job; the job's log line keeps them too.
+        status, started = self.post("/run", {"bundle": BUNDLE, "causal_model": self._ongoing_causal(), "approved": True,
+                                             "turns": 1, "async": True})
+        self.assertEqual(status, 202, started)
+        status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 200, payload)
+        self.assertNotIn("engine_events", payload["trace"])
+        self.assertTrue(self.run_log()[-1]["result"]["engine_events"])
+
     def test_continuing_a_finished_world_returns_no_rounds_instead_of_an_error(self):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1})
         self.assertTrue(first["summary"]["terminal_reached"])

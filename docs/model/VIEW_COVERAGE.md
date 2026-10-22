@@ -69,6 +69,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Effect:** no view, and no retained file, can say which state paths an action changed or show the world hash chain for a Builder run; the engine's `stale_revision` event behind a `nothing_left` row is lost.
 - **Reproduced: yes.** `run_authored_world.py` on `examples/world_authoring/repair-bay-v0.json` produced a trace with keys `actors, cost_usd, final_snapshot, mechanic_profile_id, model, schema_version, summary, transcript, world`, with no events. A local service run of the same world wrote run-log `/run` results with keys `final_snapshot, mover, summary, transcript`.
 
+- **Fixed 2026-10-21 (#123).** `run_world` keeps every Engine event in full as `trace["engine_events"]` (checks, declared read/write paths, changes, `hash_before`/`hash_after`, observation), under the same run-wide ids (`r<round>-e<n>`) the transcript cites. The service writes them to the `/run` run-log line (`result.engine_events`, sync and job runs) and drops them from the page's response, which never read them; shares keep only the transcript. Tests: `test_run_keeps_every_engine_event_in_full`, `test_run_log_keeps_engine_events_in_full_but_the_page_does_not_get_them`.
+
 ### G2. Home "refused" counter counts blocked offers, not refused attempts
 
 - **Model:** a refusal is an Engine event with a non-`accepted` status for an attempt that was submitted. `blocked_by_rules` is something else: the offers `Engine.discover` withheld from an actor that round, one example per distinct (action kind, reason) (`scripts/run_authored_world.py:261-281`).
