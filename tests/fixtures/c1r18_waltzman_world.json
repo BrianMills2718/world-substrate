@@ -1,0 +1,6337 @@
+{
+ "bundle": {
+  "actions": [
+   {
+    "description": "Deliver one represented information item to its declared recipient.",
+    "fields": [
+     {
+      "name": "information",
+      "type": "entity_ref"
+     },
+     {
+      "name": "delivery",
+      "type": "entity_ref"
+     },
+     {
+      "name": "recipient",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "communicate"
+   },
+   {
+    "description": "A decider who does not yet support the decision gives it full support.",
+    "fields": [
+     {
+      "name": "support",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "give-support"
+   },
+   {
+    "description": "A supporting decider who received an open concern makes its support wait on that concern.",
+    "fields": [
+     {
+      "name": "support",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     },
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "make-support-conditional"
+   },
+   {
+    "description": "A decider whose condition's concern is resolved gives full support again.",
+    "fields": [
+     {
+      "name": "support",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     },
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "restore-full-support"
+   },
+   {
+    "description": "Whoever holds a concern's information starts the remedy; 2 rounds later the concern is resolved.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "resolve-concern"
+   },
+   {
+    "description": "The person a concern reached starts the remedy on their own side; 2 rounds later it is resolved.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "resolve-own-concern"
+   },
+   {
+    "description": "Whoever holds a resolved concern's information raises a new local concern on the same matter, through the same channel to the same person.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "raise-new-concern"
+   },
+   {
+    "description": "The person a resolved concern reached finds the remedy wanting and reopens it.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "reopen-concern"
+   },
+   {
+    "description": "Anyone puts a matter before the group while the decision is open or in effect; it stays on the agenda until someone settles it.",
+    "fields": [
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "put-matter-on-agenda"
+   },
+   {
+    "description": "Anyone settles one of the matters still open on the group's agenda.",
+    "fields": [
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "settle-agenda-matter"
+   },
+   {
+    "description": "A decider puts a rejected decision back on the table; it is decided again 6 rounds later.",
+    "fields": [
+     {
+      "name": "support",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "bring-decision-back"
+   },
+   {
+    "description": "Ask for clarification or follow-up on an open concern so members can examine it in a meeting.",
+    "fields": [
+     {
+      "name": "concern",
+      "type": "entity_ref"
+     },
+     {
+      "name": "question",
+      "type": "string"
+     },
+     {
+      "name": "regular_partnership_meeting",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision_time",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "request-clarification"
+   },
+   {
+    "description": "Review the activation proposal or a concern and provide technical findings for the partnership's deliberation.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     },
+     {
+      "name": "findings",
+      "type": "string"
+     },
+     {
+      "name": "regular_partnership_meeting",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision_time",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "conduct-technical-review"
+   },
+   {
+    "description": "Review the activation proposal or a concern and provide legal findings for the partnership's deliberation.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     },
+     {
+      "name": "findings",
+      "type": "string"
+     },
+     {
+      "name": "regular_partnership_meeting",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision_time",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "conduct-legal-review"
+   },
+   {
+    "description": "Review the activation proposal or a concern and provide logistics findings for the partnership's deliberation.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     },
+     {
+      "name": "findings",
+      "type": "string"
+     },
+     {
+      "name": "regular_partnership_meeting",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision_time",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "conduct-logistics-review"
+   },
+   {
+    "description": "Review the activation proposal or a concern and provide community findings for the partnership's deliberation.",
+    "fields": [
+     {
+      "name": "matter",
+      "type": "entity_ref"
+     },
+     {
+      "name": "findings",
+      "type": "string"
+     },
+     {
+      "name": "regular_partnership_meeting",
+      "type": "entity_ref"
+     },
+     {
+      "name": "decision_time",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "conduct-community-review"
+   },
+   {
+    "description": "Provide or update a country implementation plan and readiness evidence for the proposed system.",
+    "fields": [
+     {
+      "name": "readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "plan",
+      "type": "string"
+     },
+     {
+      "name": "activation_deadline",
+      "type": "entity_ref"
+     },
+     {
+      "name": "system_readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "deployment_pace",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "submit-country-readiness-plan"
+   },
+   {
+    "description": "Coordinate partnership members' implementation preparations and update the system's readiness evidence.",
+    "fields": [
+     {
+      "name": "readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "plan",
+      "type": "string"
+     },
+     {
+      "name": "activation_deadline",
+      "type": "entity_ref"
+     },
+     {
+      "name": "system_readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "deployment_pace",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "coordinate-deployment-preparation"
+   },
+   {
+    "description": "Assess whether the system is operationally ready for deployment and record any remaining requirements or evidence.",
+    "fields": [
+     {
+      "name": "readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "assessment",
+      "type": "string"
+     },
+     {
+      "name": "activation_deadline",
+      "type": "entity_ref"
+     },
+     {
+      "name": "system_readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "deployment_pace",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "verify-operational-readiness"
+   },
+   {
+    "description": "Record that the system's deployment requirements have been met, based on readiness evidence.",
+    "fields": [
+     {
+      "name": "readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "evidence",
+      "type": "string"
+     },
+     {
+      "name": "activation_deadline",
+      "type": "entity_ref"
+     },
+     {
+      "name": "system_readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "deployment_pace",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "complete-deployment-readiness"
+   },
+   {
+    "description": "After activation and readiness, begin deploying the cross-border early-warning system.",
+    "fields": [
+     {
+      "name": "deployment",
+      "type": "entity_ref"
+     },
+     {
+      "name": "activation_deadline",
+      "type": "entity_ref"
+     },
+     {
+      "name": "system_readiness",
+      "type": "entity_ref"
+     },
+     {
+      "name": "deployment_pace",
+      "type": "entity_ref"
+     }
+    ],
+    "kind": "deploy-early-warning-system"
+   }
+  ],
+  "components": [
+   {
+    "fields": [
+     {
+      "default": "participant",
+      "name": "role",
+      "type": "string"
+     },
+     {
+      "default": false,
+      "name": "authorized",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "approved",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "aware",
+      "type": "boolean"
+     }
+    ],
+    "name": "member"
+   },
+   {
+    "fields": [
+     {
+      "default": "report",
+      "name": "content",
+      "type": "string"
+     },
+     {
+      "default": "placeholder",
+      "name": "source_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": "brief",
+      "name": "channel_id",
+      "type": "string"
+     },
+     {
+      "default": "direct",
+      "name": "visibility",
+      "type": "string"
+     },
+     {
+      "default": "coordination",
+      "name": "topic",
+      "type": "string"
+     },
+     {
+      "default": false,
+      "name": "active",
+      "type": "boolean"
+     }
+    ],
+    "name": "information"
+   },
+   {
+    "fields": [
+     {
+      "default": "placeholder",
+      "name": "info_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": "placeholder",
+      "name": "recipient_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": "brief",
+      "name": "channel_id",
+      "type": "string"
+     },
+     {
+      "default": "pending",
+      "name": "status",
+      "type": "string"
+     }
+    ],
+    "name": "delivery"
+   },
+   {
+    "fields": [
+     {
+      "default": "proposed; activation not yet approved",
+      "name": "status",
+      "type": "string"
+     },
+     {
+      "default": false,
+      "name": "deployment_ready",
+      "type": "boolean"
+     }
+    ],
+    "name": "system_readiness"
+   },
+   {
+    "fields": [
+     {
+      "default": 8,
+      "name": "initial_ticks_remaining",
+      "type": "integer"
+     },
+     {
+      "default": "week",
+      "name": "tick_unit",
+      "type": "string"
+     }
+    ],
+    "name": "decision_time"
+   },
+   {
+    "fields": [
+     {
+      "default": "not deployed",
+      "name": "initial_status",
+      "type": "string"
+     },
+     {
+      "default": "dependent on timely approval and resolution of concerns",
+      "name": "pace",
+      "type": "string"
+     }
+    ],
+    "name": "deployment_pace"
+   },
+   {
+    "fields": [
+     {
+      "default": 0,
+      "name": "ticks_until",
+      "type": "integer"
+     },
+     {
+      "default": -1,
+      "name": "every_ticks",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "occurrences",
+      "type": "integer"
+     },
+     {
+      "default": false,
+      "name": "happening_now",
+      "type": "boolean"
+     }
+    ],
+    "name": "moment"
+   },
+   {
+    "fields": [
+     {
+      "default": "placeholder",
+      "name": "holder_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": "none",
+      "name": "stance",
+      "type": "string"
+     },
+     {
+      "default": "placeholder",
+      "name": "condition_id",
+      "type": "entity_ref"
+     }
+    ],
+    "name": "support"
+   },
+   {
+    "fields": [
+     {
+      "default": "placeholder",
+      "name": "recipient_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": "open",
+      "name": "status",
+      "type": "string"
+     },
+     {
+      "default": 0,
+      "name": "remedy_ticks_left",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "times_resolved",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "times_reopened",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "times_raised",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "times_reviewed",
+      "type": "integer"
+     },
+     {
+      "default": "placeholder",
+      "name": "decision_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": "placeholder",
+      "name": "support_id",
+      "type": "entity_ref"
+     }
+    ],
+    "name": "concern"
+   },
+   {
+    "fields": [
+     {
+      "default": "decision",
+      "name": "question",
+      "type": "string"
+     },
+     {
+      "default": "open",
+      "name": "status",
+      "type": "string"
+     },
+     {
+      "default": 0,
+      "name": "support",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "conditional",
+      "type": "integer"
+     },
+     {
+      "default": 1,
+      "name": "needed",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "postponements",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "max_postponements",
+      "type": "integer"
+     },
+     {
+      "default": 1,
+      "name": "postpone_ticks",
+      "type": "integer"
+     },
+     {
+      "default": "placeholder",
+      "name": "deadline_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": 0,
+      "name": "deploy_ticks_left",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "review_ticks_left",
+      "type": "integer"
+     },
+     {
+      "default": 0,
+      "name": "agenda_items",
+      "type": "integer"
+     }
+    ],
+    "name": "group_decision"
+   },
+   {
+    "fields": [
+     {
+      "default": "work-cycle",
+      "name": "cycle_id",
+      "type": "entity_ref"
+     },
+     {
+      "default": false,
+      "name": "request_clarification_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "conduct_technical_review_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "conduct_legal_review_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "conduct_logistics_review_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "conduct_community_review_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "submit_country_readiness_plan_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "coordinate_deployment_preparation_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "verify_operational_readiness_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "complete_deployment_readiness_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "deploy_early_warning_system_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "raise_new_concern_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "put_matter_on_agenda_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "settle_agenda_matter_done",
+      "type": "boolean"
+     },
+     {
+      "default": false,
+      "name": "bring_decision_back_done",
+      "type": "boolean"
+     }
+    ],
+    "name": "work"
+   }
+  ],
+  "entities": [
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "Convening and coordinating body for the four countries and the regional health network; participates in the activation decision."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "partnership",
+    "label": "The Partnership"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "One of the four country members of the partnership and a decision participant."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "country-one",
+    "label": "Country One"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "One of the four country members of the partnership and a decision participant."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "country-two",
+    "label": "Country Two"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "One of the four country members of the partnership and a decision participant."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "country-three",
+    "label": "Country Three"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "One of the four country members of the partnership and a decision participant."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "country-four",
+    "label": "Country Four"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "Regional health body and decision participant in the partnership."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "regional-health-network",
+    "label": "Regional Health Network"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "Technical group providing local observations through its own channel."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "technical-group",
+    "label": "Technical Group"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "Legal group providing local observations through its own channel."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "legal-group",
+    "label": "Legal Group"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "Logistics group providing local observations through its own channel."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "logistics-group",
+    "label": "Logistics Group"
+   },
+   {
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "approved": false,
+      "authorized": false,
+      "aware": false,
+      "role": "Community group providing local observations through its own channel."
+     },
+     "work": {
+      "bring_decision_back_done": false,
+      "complete_deployment_readiness_done": false,
+      "conduct_community_review_done": false,
+      "conduct_legal_review_done": false,
+      "conduct_logistics_review_done": false,
+      "conduct_technical_review_done": false,
+      "coordinate_deployment_preparation_done": false,
+      "cycle_id": "work-cycle",
+      "deploy_early_warning_system_done": false,
+      "put_matter_on_agenda_done": false,
+      "raise_new_concern_done": false,
+      "request_clarification_done": false,
+      "settle_agenda_matter_done": false,
+      "submit_country_readiness_plan_done": false,
+      "verify_operational_readiness_done": false
+     }
+    },
+    "id": "community-group",
+    "label": "Community Group"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "country-one",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-country-one",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "technical_group_channel",
+      "content": "At one participating site, a recent test feed arrived with a short delay.",
+      "source_id": "technical-group",
+      "topic": "technical_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-technical-concern-to-country-one",
+    "label": "At one participating site, a recent test feed arrived with a (to country_one)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "technical_group_channel",
+      "info_id": "info-technical-concern-to-country-one",
+      "recipient_id": "country-one",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-technical-concern-to-country-one",
+    "label": "Delivery to country_one"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "regional-health-network",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-regional-health-network",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "technical_group_channel",
+      "content": "At one participating site, a recent test feed arrived with a short delay.",
+      "source_id": "technical-group",
+      "topic": "technical_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-technical-concern-to-regional-health-network",
+    "label": "At one participating site, a recent test feed arrived with a (to regional_health_network)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "technical_group_channel",
+      "info_id": "info-technical-concern-to-regional-health-network",
+      "recipient_id": "regional-health-network",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-technical-concern-to-regional-health-network",
+    "label": "Delivery to regional_health_network"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "country-two",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-country-two",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "legal_group_channel",
+      "content": "One participating jurisdiction has not yet confirmed which local office may authorize the proposed data-sharing step.",
+      "source_id": "legal-group",
+      "topic": "legal_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-legal-concern-to-country-two",
+    "label": "One participating jurisdiction has not yet confirmed which l (to country_two)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "legal_group_channel",
+      "info_id": "info-legal-concern-to-country-two",
+      "recipient_id": "country-two",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-legal-concern-to-country-two",
+    "label": "Delivery to country_two"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "partnership",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-partnership",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "legal_group_channel",
+      "content": "One participating jurisdiction has not yet confirmed which local office may authorize the proposed data-sharing step.",
+      "source_id": "legal-group",
+      "topic": "legal_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-legal-concern-to-partnership",
+    "label": "One participating jurisdiction has not yet confirmed which l (to partnership)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "legal_group_channel",
+      "info_id": "info-legal-concern-to-partnership",
+      "recipient_id": "partnership",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-legal-concern-to-partnership",
+    "label": "Delivery to partnership"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "country-three",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-country-three",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "logistics_group_channel",
+      "content": "One participating site has a short staffing gap on the proposed initial monitoring rota.",
+      "source_id": "logistics-group",
+      "topic": "logistics_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-logistics-concern-to-country-three",
+    "label": "One participating site has a short staffing gap on the propo (to country_three)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "logistics_group_channel",
+      "info_id": "info-logistics-concern-to-country-three",
+      "recipient_id": "country-three",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-logistics-concern-to-country-three",
+    "label": "Delivery to country_three"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "regional-health-network",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-regional-health-network",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "logistics_group_channel",
+      "content": "One participating site has a short staffing gap on the proposed initial monitoring rota.",
+      "source_id": "logistics-group",
+      "topic": "logistics_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-logistics-concern-to-regional-health-network",
+    "label": "One participating site has a short staffing gap on the propo (to regional_health_network)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "logistics_group_channel",
+      "info_id": "info-logistics-concern-to-regional-health-network",
+      "recipient_id": "regional-health-network",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-logistics-concern-to-regional-health-network",
+    "label": "Delivery to regional_health_network"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "country-four",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-country-four",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "community_group_channel",
+      "content": "At one local consultation, participants asked for a clearer explanation of how alerts would be communicated.",
+      "source_id": "community-group",
+      "topic": "community_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-community-concern-to-country-four",
+    "label": "At one local consultation, participants asked for a clearer  (to country_four)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "community_group_channel",
+      "info_id": "info-community-concern-to-country-four",
+      "recipient_id": "country-four",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-community-concern-to-country-four",
+    "label": "Delivery to country_four"
+   },
+   {
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "concern": {
+      "decision_id": "activate-early-warning-system",
+      "recipient_id": "partnership",
+      "remedy_ticks_left": 0,
+      "status": "open",
+      "support_id": "support-partnership",
+      "times_raised": 0,
+      "times_reopened": 0,
+      "times_resolved": 0,
+      "times_reviewed": 0
+     },
+     "information": {
+      "active": false,
+      "channel_id": "community_group_channel",
+      "content": "At one local consultation, participants asked for a clearer explanation of how alerts would be communicated.",
+      "source_id": "community-group",
+      "topic": "community_concern",
+      "visibility": "direct"
+     }
+    },
+    "id": "info-community-concern-to-partnership",
+    "label": "At one local consultation, participants asked for a clearer  (to partnership)"
+   },
+   {
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "channel_id": "community_group_channel",
+      "info_id": "info-community-concern-to-partnership",
+      "recipient_id": "partnership",
+      "status": "pending"
+     }
+    },
+    "id": "delivery-info-community-concern-to-partnership",
+    "label": "Delivery to partnership"
+   },
+   {
+    "categories": [
+     "readiness",
+     "system-readiness"
+    ],
+    "components": {
+     "system_readiness": {
+      "deployment_ready": false,
+      "status": "proposed; activation not yet approved"
+     }
+    },
+    "id": "system-readiness",
+    "label": "Early-warning system readiness"
+   },
+   {
+    "categories": [
+     "time",
+     "decision-time"
+    ],
+    "components": {
+     "decision_time": {
+      "initial_ticks_remaining": 8,
+      "tick_unit": "week"
+     }
+    },
+    "id": "decision-time",
+    "label": "Time remaining before the activation decision deadline"
+   },
+   {
+    "categories": [
+     "pace",
+     "deployment-pace"
+    ],
+    "components": {
+     "deployment_pace": {
+      "initial_status": "not deployed",
+      "pace": "dependent on timely approval and resolution of concerns"
+     }
+    },
+    "id": "deployment-pace",
+    "label": "Deployment pace after an activation decision"
+   },
+   {
+    "categories": [
+     "moment",
+     "regular-partnership-meeting"
+    ],
+    "components": {
+     "moment": {
+      "every_ticks": 1,
+      "happening_now": false,
+      "occurrences": 0,
+      "ticks_until": 1
+     }
+    },
+    "id": "regular-partnership-meeting",
+    "label": "Regular meeting of partnership members to consider activation and address concer"
+   },
+   {
+    "categories": [
+     "moment",
+     "activation-deadline"
+    ],
+    "components": {
+     "moment": {
+      "every_ticks": -1,
+      "happening_now": false,
+      "occurrences": 0,
+      "ticks_until": 8
+     }
+    },
+    "id": "activation-deadline",
+    "label": "Deadline for deciding whether to activate the cross-border bio-surveillance earl"
+   },
+   {
+    "categories": [
+     "support"
+    ],
+    "components": {
+     "support": {
+      "condition_id": "partnership",
+      "holder_id": "partnership",
+      "stance": "full"
+     }
+    },
+    "id": "support-partnership",
+    "label": "Support of partnership"
+   },
+   {
+    "categories": [
+     "support"
+    ],
+    "components": {
+     "support": {
+      "condition_id": "country-one",
+      "holder_id": "country-one",
+      "stance": "full"
+     }
+    },
+    "id": "support-country-one",
+    "label": "Support of country_one"
+   },
+   {
+    "categories": [
+     "support"
+    ],
+    "components": {
+     "support": {
+      "condition_id": "country-two",
+      "holder_id": "country-two",
+      "stance": "none"
+     }
+    },
+    "id": "support-country-two",
+    "label": "Support of country_two"
+   },
+   {
+    "categories": [
+     "support"
+    ],
+    "components": {
+     "support": {
+      "condition_id": "country-three",
+      "holder_id": "country-three",
+      "stance": "none"
+     }
+    },
+    "id": "support-country-three",
+    "label": "Support of country_three"
+   },
+   {
+    "categories": [
+     "support"
+    ],
+    "components": {
+     "support": {
+      "condition_id": "country-four",
+      "holder_id": "country-four",
+      "stance": "none"
+     }
+    },
+    "id": "support-country-four",
+    "label": "Support of country_four"
+   },
+   {
+    "categories": [
+     "support"
+    ],
+    "components": {
+     "support": {
+      "condition_id": "regional-health-network",
+      "holder_id": "regional-health-network",
+      "stance": "full"
+     }
+    },
+    "id": "support-regional-health-network",
+    "label": "Support of regional_health_network"
+   },
+   {
+    "categories": [
+     "group-decision",
+     "activate-early-warning-system"
+    ],
+    "components": {
+     "group_decision": {
+      "agenda_items": 0,
+      "conditional": 0,
+      "deadline_id": "activation-deadline",
+      "deploy_ticks_left": 0,
+      "max_postponements": 1,
+      "needed": 5,
+      "postpone_ticks": 1,
+      "postponements": 0,
+      "question": "Activate the cross-border bio-surveillance early-warning system?",
+      "review_ticks_left": 0,
+      "status": "open",
+      "support": 3
+     }
+    },
+    "id": "activate-early-warning-system",
+    "label": "Activate the cross-border bio-surveillance early-warning system?"
+   },
+   {
+    "categories": [
+     "moment",
+     "work-cycle"
+    ],
+    "components": {
+     "moment": {
+      "every_ticks": 4,
+      "happening_now": false,
+      "occurrences": 0,
+      "ticks_until": 4
+     }
+    },
+    "id": "work-cycle",
+    "label": "a new work cycle every 4 rounds"
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "delivery": {
+     "kind": "text",
+     "value": "\u2192"
+    },
+    "information": {
+     "kind": "emoji",
+     "value": "\u2709\ufe0f"
+    },
+    "participant": {
+     "kind": "emoji",
+     "value": "\ud83d\udc64"
+    }
+   },
+   "category_assets": {
+    "delivery": "delivery",
+    "information": "information",
+    "member": "participant"
+   },
+   "station_roles": {}
+  },
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "content_version": 1,
+   "id": "cross-border-biosurveillance-activation",
+   "label": "Cross-Border Bio-Surveillance Early Warning Decision",
+   "location": "scenario",
+   "summary": "A partnership of four countries and a regional health network considers whether to activate a cross-border bio-surveillance early-warning system. Technical, legal, logistics and community groups send small, true, local concerns through their own channels to different members. Regular meetings address those concerns; they can slow progress, reopen settled issues and make support conditional, delayi"
+  }
+ },
+ "causal_model": {
+  "mechanics": [
+   {
+    "action_kind": "communicate",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "checks": [
+     {
+      "label": "Actor is the represented information source",
+      "left": {
+       "participant": {
+        "name": "information",
+        "path": "components.information.source_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "Delivery names the represented information",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.info_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "information"
+      }
+     },
+     {
+      "label": "Delivery names the represented recipient",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.recipient_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "recipient"
+      }
+     },
+     {
+      "label": "Delivery channel agrees with information channel",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.channel_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "information",
+        "path": "components.information.channel_id"
+       }
+      }
+     },
+     {
+      "label": "Information is not active yet",
+      "left": {
+       "participant": {
+        "name": "information",
+        "path": "components.information.active"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "Delivery is pending",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "pending"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "information",
+      "path": "components.information.active",
+      "value": {
+       "literal": true
+      }
+     },
+     {
+      "op": "set",
+      "participant": "delivery",
+      "path": "components.delivery.status",
+      "value": {
+       "literal": "delivered"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "recipient",
+      "path": "components.member.aware",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Delivery is represented, not a claim that the message caused a later decision."
+    ],
+    "mechanic_id": "coordination.action.communicate",
+    "parameters": {},
+    "participants": {
+     "delivery": {
+      "categories": [
+       "delivery"
+      ],
+      "components": [
+       "delivery"
+      ]
+     },
+     "information": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information"
+      ]
+     },
+     "recipient": {
+      "categories": [
+       "member"
+      ],
+      "components": [
+       "member"
+      ]
+     }
+    },
+    "rationale": "A represented member may deliver one represented information item through its declared delivery record to its declared recipient.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "only the declared source can deliver; recipient visibility remains actor-scoped"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "give-support",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "checks": [
+     {
+      "label": "this is the actor's own support",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.holder_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the decision is still open",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "the actor does not support it yet",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.stance"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "none"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "support",
+      "path": "components.support.stance",
+      "value": {
+       "literal": "full"
+      }
+     },
+     {
+      "op": "add",
+      "participant": "decision",
+      "path": "components.group_decision.support",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.give-support",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     },
+     "support": {
+      "categories": [
+       "support"
+      ],
+      "components": [
+       "support"
+      ]
+     }
+    },
+    "rationale": "A decider who does not yet support the decision gives it full support.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "make-support-conditional",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "checks": [
+     {
+      "label": "this is the actor's own support",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.holder_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the decision was not rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "rejected"
+      }
+     },
+     {
+      "label": "the concern reached the actor",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.recipient_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the concern has been delivered",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.information.active"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the actor fully supports it",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.stance"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "full"
+      }
+     },
+     {
+      "label": "the concern is open",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "support",
+      "path": "components.support.stance",
+      "value": {
+       "literal": "conditional"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "support",
+      "path": "components.support.condition_id",
+      "value": {
+       "entity_id": "matter"
+      }
+     },
+     {
+      "op": "subtract",
+      "participant": "decision",
+      "path": "components.group_decision.support",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "add",
+      "participant": "decision",
+      "path": "components.group_decision.conditional",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.make-support-conditional",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information",
+       "concern"
+      ]
+     },
+     "support": {
+      "categories": [
+       "support"
+      ],
+      "components": [
+       "support"
+      ]
+     }
+    },
+    "rationale": "A supporting decider who received an open concern makes its support wait on that concern.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "restore-full-support",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "checks": [
+     {
+      "label": "this is the actor's own support",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.holder_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the decision was not rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "rejected"
+      }
+     },
+     {
+      "label": "the actor's support is conditional",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.stance"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "conditional"
+      }
+     },
+     {
+      "label": "this is the concern the support waits on",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.condition_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "matter"
+      }
+     },
+     {
+      "label": "the concern is resolved",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "resolved"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "support",
+      "path": "components.support.stance",
+      "value": {
+       "literal": "full"
+      }
+     },
+     {
+      "op": "add",
+      "participant": "decision",
+      "path": "components.group_decision.support",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "subtract",
+      "participant": "decision",
+      "path": "components.group_decision.conditional",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.restore-full-support",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information",
+       "concern"
+      ]
+     },
+     "support": {
+      "categories": [
+       "support"
+      ],
+      "components": [
+       "support"
+      ]
+     }
+    },
+    "rationale": "A decider whose condition's concern is resolved gives full support again.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "resolve-concern",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the actor holds this information",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.information.source_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the concern has been delivered",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.information.active"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the concern is open",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "matter",
+      "path": "components.concern.status",
+      "value": {
+       "literal": "remedy_under_way"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "matter",
+      "path": "components.concern.remedy_ticks_left",
+      "value": {
+       "literal": 2
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.resolve-concern",
+    "parameters": {},
+    "participants": {
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information",
+       "concern"
+      ]
+     }
+    },
+    "rationale": "Whoever holds a concern's information starts the remedy; 2 rounds later the concern is resolved.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "resolve-own-concern",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the concern reached the actor",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.recipient_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the concern has been delivered",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.information.active"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the concern is open",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "matter",
+      "path": "components.concern.status",
+      "value": {
+       "literal": "remedy_under_way"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "matter",
+      "path": "components.concern.remedy_ticks_left",
+      "value": {
+       "literal": 2
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.resolve-own-concern",
+    "parameters": {},
+    "participants": {
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information",
+       "concern"
+      ]
+     }
+    },
+    "rationale": "The person a concern reached starts the remedy on their own side; 2 rounds later it is resolved.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "raise-new-concern",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the actor holds this information",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.information.source_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the concern has been delivered",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.information.active"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the decision was not rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "rejected"
+      }
+     },
+     {
+      "label": "the last concern on this matter is resolved",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "resolved"
+      }
+     },
+     {
+      "label": "not already done this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.raise_new_concern_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "matter",
+      "path": "components.concern.status",
+      "value": {
+       "literal": "open"
+      }
+     },
+     {
+      "op": "add",
+      "participant": "matter",
+      "path": "components.concern.times_raised",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.raise_new_concern_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.raise-new-concern",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information",
+       "concern"
+      ]
+     }
+    },
+    "rationale": "Whoever holds a resolved concern's information raises a new local concern on the same matter, through the same channel to the same person.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "reopen-concern",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the concern reached the actor",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.recipient_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the decision was not rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "rejected"
+      }
+     },
+     {
+      "label": "the concern is resolved",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "resolved"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "matter",
+      "path": "components.concern.status",
+      "value": {
+       "literal": "open"
+      }
+     },
+     {
+      "op": "add",
+      "participant": "matter",
+      "path": "components.concern.times_reopened",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.reopen-concern",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information",
+       "concern"
+      ]
+     }
+    },
+    "rationale": "The person a resolved concern reached finds the remedy wanting and reopens it.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "put-matter-on-agenda",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the decision is not rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "rejected"
+      }
+     },
+     {
+      "label": "the decision is not waiting to be brought back",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "back_on_table"
+      }
+     },
+     {
+      "label": "not already done this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.put_matter_on_agenda_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "add",
+      "participant": "decision",
+      "path": "components.group_decision.agenda_items",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.put_matter_on_agenda_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.put-matter-on-agenda",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     }
+    },
+    "rationale": "Anyone puts a matter before the group while the decision is open or in effect; it stays on the agenda until someone settles it.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "settle-agenda-matter",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the decision is not rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "rejected"
+      }
+     },
+     {
+      "label": "the decision is not waiting to be brought back",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "back_on_table"
+      }
+     },
+     {
+      "label": "a matter is still open on the agenda",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.agenda_items"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "not already done this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.settle_agenda_matter_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "subtract",
+      "participant": "decision",
+      "path": "components.group_decision.agenda_items",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.settle_agenda_matter_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.settle-agenda-matter",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     }
+    },
+    "rationale": "Anyone settles one of the matters still open on the group's agenda.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "bring-decision-back",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "this is the actor's own support",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.holder_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the decision was rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "rejected"
+      }
+     },
+     {
+      "label": "not already done this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.bring_decision_back_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "decision",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "back_on_table"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.bring_decision_back_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+    ],
+    "mechanic_id": "decision.action.bring-decision-back",
+    "parameters": {},
+    "participants": {
+     "decision": {
+      "categories": [
+       "group-decision"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     },
+     "support": {
+      "categories": [
+       "support"
+      ],
+      "components": [
+       "support"
+      ]
+     }
+    },
+    "rationale": "A decider puts a rejected decision back on the table; it is decided again 6 rounds later.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [],
+    "tests": [
+     "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+    ],
+    "version": "1"
+   },
+   {
+    "action_kind": "request-clarification",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The concern is open",
+      "left": {
+       "participant": {
+        "name": "concern",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "The concern belongs to this activation decision",
+      "left": {
+       "participant": {
+        "name": "concern",
+        "path": "components.concern.decision_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "activate-early-warning-system"
+      }
+     },
+     {
+      "label": "The partnership meeting is happening now",
+      "left": {
+       "participant": {
+        "name": "regular_partnership_meeting",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "Time remains before the decision deadline",
+      "left": {
+       "participant": {
+        "name": "decision_time",
+        "path": "components.decision_time.initial_ticks_remaining"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "This member has not asked for clarification this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.request_clarification_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.request_clarification_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Only open concerns tied to the represented activation decision can be queried.",
+     "The question replaces the concern information's current content; no separate question record is represented.",
+     "The request is limited to once per member per work cycle."
+    ],
+    "mechanic_id": "request-clarification-at-meeting",
+    "parameters": {
+     "question": [
+      "The clarification question is recorded as the concern's information content."
+     ]
+    },
+    "participants": {
+     "concern": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "concern",
+       "information"
+      ]
+     },
+     "decision_time": {
+      "categories": [
+       "decision-time"
+      ],
+      "components": [
+       "decision_time"
+      ]
+     },
+     "regular_partnership_meeting": {
+      "categories": [
+       "regular-partnership-meeting"
+      ],
+      "components": [
+       "moment"
+      ]
+     }
+    },
+    "rationale": "A member can ask about an open concern during a scheduled partnership meeting. The question is recorded on that concern's information record, and the member's work-cycle record limits repetition.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "concern is the information entity carrying the concern component",
+     "regular_partnership_meeting is the scheduled meeting moment",
+     "decision_time is the represented remaining decision time"
+    ],
+    "tests": [
+     "An open concern at a meeting accepts a question and records it on the information record.",
+     "A closed concern, an unrelated concern, or a meeting that is not happening refuses the request.",
+     "A member who already asked in this work cycle cannot repeat the action until the cycle clears the work record."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "conduct-technical-review",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The technical group is providing the review",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Technical group providing local observations through its own channel."
+      }
+     },
+     {
+      "label": "The concern is open",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "The concern belongs to this activation decision",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.decision_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "activate-early-warning-system"
+      }
+     },
+     {
+      "label": "The partnership meeting is happening now",
+      "left": {
+       "participant": {
+        "name": "regular_partnership_meeting",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "Time remains before the decision deadline",
+      "left": {
+       "participant": {
+        "name": "decision_time",
+        "path": "components.decision_time.initial_ticks_remaining"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The technical group has not reviewed this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.conduct_technical_review_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.conduct_technical_review_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "This mechanic records reviews of represented open concerns; no separate proposal findings record is available.",
+     "The findings replace the concern information's current content.",
+     "The technical group can perform this review once per work cycle."
+    ],
+    "mechanic_id": "technical-review-of-concern",
+    "parameters": {
+     "findings": [
+      "Technical findings are recorded as the concern's information content."
+     ]
+    },
+    "participants": {
+     "decision_time": {
+      "categories": [
+       "decision-time"
+      ],
+      "components": [
+       "decision_time"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "concern",
+       "information"
+      ]
+     },
+     "regular_partnership_meeting": {
+      "categories": [
+       "regular-partnership-meeting"
+      ],
+      "components": [
+       "moment"
+      ]
+     }
+    },
+    "rationale": "The technical group can record technical findings about an open concern at a scheduled meeting. Findings and completion are recorded using represented information and work fields.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "matter is the information entity carrying the concern component",
+     "technical-review authority is represented by the actor's member.role",
+     "findings are recorded in information.content"
+    ],
+    "tests": [
+     "The technical group can record findings about an open related concern during a meeting.",
+     "Another role, a closed concern, or a meeting that is not happening refuses the review.",
+     "A second review by the technical group in the same work cycle is refused."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "conduct-legal-review",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The legal group is providing the review",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Legal group providing local observations through its own channel."
+      }
+     },
+     {
+      "label": "The concern is open",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "The concern belongs to this activation decision",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.decision_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "activate-early-warning-system"
+      }
+     },
+     {
+      "label": "The partnership meeting is happening now",
+      "left": {
+       "participant": {
+        "name": "regular_partnership_meeting",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "Time remains before the decision deadline",
+      "left": {
+       "participant": {
+        "name": "decision_time",
+        "path": "components.decision_time.initial_ticks_remaining"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The legal group has not reviewed this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.conduct_legal_review_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.conduct_legal_review_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "This mechanic records reviews of represented open concerns; no separate proposal findings record is available.",
+     "The findings replace the concern information's current content.",
+     "The legal group can perform this review once per work cycle."
+    ],
+    "mechanic_id": "legal-review-of-concern",
+    "parameters": {
+     "findings": [
+      "Legal findings are recorded as the concern's information content."
+     ]
+    },
+    "participants": {
+     "decision_time": {
+      "categories": [
+       "decision-time"
+      ],
+      "components": [
+       "decision_time"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "concern",
+       "information"
+      ]
+     },
+     "regular_partnership_meeting": {
+      "categories": [
+       "regular-partnership-meeting"
+      ],
+      "components": [
+       "moment"
+      ]
+     }
+    },
+    "rationale": "The legal group can record legal findings about an open concern at a scheduled meeting. Findings and completion use represented information and work fields.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "matter is the information entity carrying the concern component",
+     "legal-review authority is represented by the actor's member.role",
+     "findings are recorded in information.content"
+    ],
+    "tests": [
+     "The legal group can record findings about an open related concern during a meeting.",
+     "Another role, a closed concern, or a meeting that is not happening refuses the review.",
+     "A second review by the legal group in the same work cycle is refused."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "conduct-logistics-review",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The logistics group is providing the review",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Logistics group providing local observations through its own channel."
+      }
+     },
+     {
+      "label": "The concern is open",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "The concern belongs to this activation decision",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.decision_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "activate-early-warning-system"
+      }
+     },
+     {
+      "label": "The partnership meeting is happening now",
+      "left": {
+       "participant": {
+        "name": "regular_partnership_meeting",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "Time remains before the decision deadline",
+      "left": {
+       "participant": {
+        "name": "decision_time",
+        "path": "components.decision_time.initial_ticks_remaining"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The logistics group has not reviewed this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.conduct_logistics_review_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.conduct_logistics_review_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "This mechanic records reviews of represented open concerns; no separate proposal findings record is available.",
+     "The findings replace the concern information's current content.",
+     "The logistics group can perform this review once per work cycle."
+    ],
+    "mechanic_id": "logistics-review-of-concern",
+    "parameters": {
+     "findings": [
+      "Logistics findings are recorded as the concern's information content."
+     ]
+    },
+    "participants": {
+     "decision_time": {
+      "categories": [
+       "decision-time"
+      ],
+      "components": [
+       "decision_time"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "concern",
+       "information"
+      ]
+     },
+     "regular_partnership_meeting": {
+      "categories": [
+       "regular-partnership-meeting"
+      ],
+      "components": [
+       "moment"
+      ]
+     }
+    },
+    "rationale": "The logistics group can record logistics findings about an open concern at a scheduled meeting. Findings and completion use represented information and work fields.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "matter is the information entity carrying the concern component",
+     "logistics-review authority is represented by the actor's member.role",
+     "findings are recorded in information.content"
+    ],
+    "tests": [
+     "The logistics group can record findings about an open related concern during a meeting.",
+     "Another role, a closed concern, or a meeting that is not happening refuses the review.",
+     "A second review by the logistics group in the same work cycle is refused."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "conduct-community-review",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The community group is providing the review",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Community group providing local observations through its own channel."
+      }
+     },
+     {
+      "label": "The concern is open",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "The concern belongs to this activation decision",
+      "left": {
+       "participant": {
+        "name": "matter",
+        "path": "components.concern.decision_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "activate-early-warning-system"
+      }
+     },
+     {
+      "label": "The partnership meeting is happening now",
+      "left": {
+       "participant": {
+        "name": "regular_partnership_meeting",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "Time remains before the decision deadline",
+      "left": {
+       "participant": {
+        "name": "decision_time",
+        "path": "components.decision_time.initial_ticks_remaining"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The community group has not reviewed this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.conduct_community_review_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.conduct_community_review_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "This mechanic records reviews of represented open concerns; no separate proposal findings record is available.",
+     "The findings replace the concern information's current content.",
+     "The community group can perform this review once per work cycle."
+    ],
+    "mechanic_id": "community-review-of-concern",
+    "parameters": {
+     "findings": [
+      "Community findings are recorded as the concern's information content."
+     ]
+    },
+    "participants": {
+     "decision_time": {
+      "categories": [
+       "decision-time"
+      ],
+      "components": [
+       "decision_time"
+      ]
+     },
+     "matter": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "concern",
+       "information"
+      ]
+     },
+     "regular_partnership_meeting": {
+      "categories": [
+       "regular-partnership-meeting"
+      ],
+      "components": [
+       "moment"
+      ]
+     }
+    },
+    "rationale": "The community group can record community findings about an open concern at a scheduled meeting. Findings and completion use represented information and work fields.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "matter is the information entity carrying the concern component",
+     "community-review authority is represented by the actor's member.role",
+     "findings are recorded in information.content"
+    ],
+    "tests": [
+     "The community group can record findings about an open related concern during a meeting.",
+     "Another role, a closed concern, or a meeting that is not happening refuses the review.",
+     "A second review by the community group in the same work cycle is refused."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "submit-country-readiness-plan",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The submitting member is one of the countries",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "One of the four country members of the partnership and a decision participant."
+      }
+     },
+     {
+      "label": "Time remains before the activation deadline",
+      "left": {
+       "participant": {
+        "name": "activation_deadline",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "This country has not submitted a plan this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.submit_country_readiness_plan_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "system_readiness",
+      "path": "components.system_readiness.status",
+      "value": {
+       "action_field": "plan"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.submit_country_readiness_plan_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The world represents one shared system-readiness record, not separate country plan records; a submitted plan replaces its status.",
+     "This action records a plan but does not assert that deployment requirements are met.",
+     "A country member can submit once per work cycle."
+    ],
+    "mechanic_id": "submit-country-readiness-plan",
+    "parameters": {
+     "plan": [
+      "The submitted plan is recorded in the represented system-readiness status."
+     ]
+    },
+    "participants": {
+     "activation_deadline": {
+      "categories": [
+       "activation-deadline"
+      ],
+      "components": [
+       "moment"
+      ]
+     },
+     "deployment_pace": {
+      "categories": [
+       "deployment-pace"
+      ],
+      "components": [
+       "deployment_pace"
+      ]
+     },
+     "readiness": {
+      "categories": [
+       "readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     },
+     "system_readiness": {
+      "categories": [
+       "system-readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     }
+    },
+    "rationale": "A country member can record its submitted plan in the represented system-readiness record while the activation decision remains within its deadline. The actor's work record limits repetition within a cycle.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "readiness and system_readiness refer to represented readiness state",
+     "country eligibility is represented by the country-member role description",
+     "submission frequency is represented by the actor's work-cycle record"
+    ],
+    "tests": [
+     "A country member with an unused cycle record can submit a plan while time remains.",
+     "An actor with another role or a country member who has already submitted this cycle is refused.",
+     "A deadline at or before zero refuses the submission."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "coordinate-deployment-preparation",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The convening partnership body is coordinating preparations",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Convening and coordinating body for the four countries and the regional health network; participates in the activation decision."
+      }
+     },
+     {
+      "label": "Time remains before the activation deadline",
+      "left": {
+       "participant": {
+        "name": "activation_deadline",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "This partnership body has not coordinated preparations this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.coordinate_deployment_preparation_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "system_readiness",
+      "path": "components.system_readiness.status",
+      "value": {
+       "action_field": "plan"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.coordinate_deployment_preparation_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The represented world has one shared system-readiness record, so this plan replaces its status rather than creating separate member records.",
+     "Recording preparation does not establish that deployment requirements are met.",
+     "The partnership body can coordinate once per work cycle."
+    ],
+    "mechanic_id": "coordinate-deployment-preparation",
+    "parameters": {
+     "plan": [
+      "The coordinated preparation plan is recorded in system-readiness status."
+     ]
+    },
+    "participants": {
+     "activation_deadline": {
+      "categories": [
+       "activation-deadline"
+      ],
+      "components": [
+       "moment"
+      ]
+     },
+     "deployment_pace": {
+      "categories": [
+       "deployment-pace"
+      ],
+      "components": [
+       "deployment_pace"
+      ]
+     },
+     "readiness": {
+      "categories": [
+       "readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     },
+     "system_readiness": {
+      "categories": [
+       "system-readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     }
+    },
+    "rationale": "The convening partnership body can record a coordinated preparation plan in system readiness before the activation deadline. Its work-cycle record limits repetition.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "the convening body is identified by its represented member.role",
+     "the plan is recorded in system_readiness.status",
+     "repeat limitation is represented by the actor's work record"
+    ],
+    "tests": [
+     "The convening body can record a preparation plan before the deadline if it has not done so this cycle.",
+     "A different role or a second action by that body in the same cycle is refused.",
+     "An expired deadline refuses the action."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "verify-operational-readiness",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The technical group is assessing readiness",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Technical group providing local observations through its own channel."
+      }
+     },
+     {
+      "label": "Time remains before the activation deadline",
+      "left": {
+       "participant": {
+        "name": "activation_deadline",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "This technical group has not assessed readiness this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.verify_operational_readiness_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "system_readiness",
+      "path": "components.system_readiness.status",
+      "value": {
+       "action_field": "assessment"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.verify_operational_readiness_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The assessment replaces the single shared system-readiness status; the world has no separate assessment record.",
+     "The action does not set deployment_ready, because an assessment alone does not establish that requirements are met.",
+     "The technical group can assess once per work cycle."
+    ],
+    "mechanic_id": "verify-operational-readiness",
+    "parameters": {
+     "assessment": [
+      "The assessment is recorded in the represented system-readiness status."
+     ]
+    },
+    "participants": {
+     "activation_deadline": {
+      "categories": [
+       "activation-deadline"
+      ],
+      "components": [
+       "moment"
+      ]
+     },
+     "deployment_pace": {
+      "categories": [
+       "deployment-pace"
+      ],
+      "components": [
+       "deployment_pace"
+      ]
+     },
+     "readiness": {
+      "categories": [
+       "readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     },
+     "system_readiness": {
+      "categories": [
+       "system-readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     }
+    },
+    "rationale": "The technical group can record an operational assessment in system readiness before the activation deadline. The assessment does not itself declare deployment readiness.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "assessment authority is represented by the technical group's member.role",
+     "assessment text is stored in system_readiness.status",
+     "deployment_ready is deliberately unchanged"
+    ],
+    "tests": [
+     "The technical group can record an assessment before the deadline if its cycle record is unused.",
+     "Another role or a second assessment by the technical group in the same cycle is refused.",
+     "An expired deadline refuses the assessment."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "complete-deployment-readiness",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The convening partnership body is recording readiness completion",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Convening and coordinating body for the four countries and the regional health network; participates in the activation decision."
+      }
+     },
+     {
+      "label": "The readiness record contains something other than the initial proposed status",
+      "left": {
+       "participant": {
+        "name": "system_readiness",
+        "path": "components.system_readiness.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "proposed; activation not yet approved"
+      }
+     },
+     {
+      "label": "The evidence is not empty",
+      "left": {
+       "action_field": "evidence"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This partnership body has not recorded readiness completion this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.complete_deployment_readiness_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "system_readiness",
+      "path": "components.system_readiness.status",
+      "value": {
+       "action_field": "evidence"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "system_readiness",
+      "path": "components.system_readiness.deployment_ready",
+      "value": {
+       "literal": true
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.complete_deployment_readiness_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Evidence quality and truth cannot be validated by the represented fields; the action requires nonempty evidence and an existing non-default readiness record.",
+     "The action does not settle or authorize the group decision.",
+     "The partnership body can record completion once per work cycle."
+    ],
+    "mechanic_id": "complete-deployment-readiness",
+    "parameters": {
+     "evidence": [
+      "The provided evidence is recorded as the readiness status when requirements are marked met."
+     ]
+    },
+    "participants": {
+     "activation_deadline": {
+      "categories": [
+       "activation-deadline"
+      ],
+      "components": [
+       "moment"
+      ]
+     },
+     "deployment_pace": {
+      "categories": [
+       "deployment-pace"
+      ],
+      "components": [
+       "deployment_pace"
+      ]
+     },
+     "readiness": {
+      "categories": [
+       "readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     },
+     "system_readiness": {
+      "categories": [
+       "system-readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     }
+    },
+    "rationale": "The convening partnership body can record that deployment requirements are met when a non-default readiness record and nonempty evidence are supplied. This updates only the represented readiness flag and status.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "the readiness record is represented by system_readiness",
+     "completion is represented by deployment_ready",
+     "the evidence text is stored in system_readiness.status"
+    ],
+    "tests": [
+     "The convening body can record completion with nonempty evidence and a non-default readiness status.",
+     "Empty evidence, the initial proposed status, another role, or a repeated same-cycle action is refused.",
+     "The action does not change the group decision or deployment pace."
+    ],
+    "version": "1.0"
+   },
+   {
+    "action_kind": "deploy-early-warning-system",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "The convening partnership body is beginning deployment",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "Convening and coordinating body for the four countries and the regional health network; participates in the activation decision."
+      }
+     },
+     {
+      "label": "The activation decision is authorized",
+      "left": {
+       "participant": {
+        "name": "deployment",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "authorized"
+      }
+     },
+     {
+      "label": "The system is marked deployment ready",
+      "left": {
+       "participant": {
+        "name": "system_readiness",
+        "path": "components.system_readiness.deployment_ready"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "The system has not already been recorded as deployed",
+      "left": {
+       "participant": {
+        "name": "deployment_pace",
+        "path": "components.deployment_pace.initial_status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "not deployed"
+      }
+     },
+     {
+      "label": "This partnership body has not deployed the system this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.deploy_early_warning_system_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "system_readiness",
+      "path": "components.system_readiness.status",
+      "value": {
+       "literal": "deployed"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "deployment_pace",
+      "path": "components.deployment_pace.initial_status",
+      "value": {
+       "literal": "deployed"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "actor",
+      "path": "components.work.deploy_early_warning_system_done",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Deployment is refused unless the represented decision is authorized and deployment readiness is marked true.",
+     "The represented world has no separate deployment entity or operating-monitoring record; this action records deployment in existing readiness and pace state.",
+     "The action does not alter the group decision."
+    ],
+    "mechanic_id": "deploy-early-warning-system",
+    "parameters": {},
+    "participants": {
+     "activation_deadline": {
+      "categories": [
+       "activation-deadline"
+      ],
+      "components": [
+       "moment"
+      ]
+     },
+     "deployment": {
+      "categories": [
+       "group-decision",
+       "activate-early-warning-system"
+      ],
+      "components": [
+       "group_decision"
+      ]
+     },
+     "deployment_pace": {
+      "categories": [
+       "deployment-pace"
+      ],
+      "components": [
+       "deployment_pace"
+      ]
+     },
+     "system_readiness": {
+      "categories": [
+       "system-readiness"
+      ],
+      "components": [
+       "system_readiness"
+      ]
+     }
+    },
+    "rationale": "The convening partnership body can record deployment only after the represented group decision is authorized and readiness is marked complete. The system status and deployment pace record the resulting deployment state.",
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "semantic_bindings": [
+     "deployment is represented by the activation group decision and system-readiness state",
+     "authorization is read from group_decision.status",
+     "deployment completion is represented by deployment_pace.initial_status"
+    ],
+    "tests": [
+     "Authorized decision plus deployment readiness permits deployment by the convening body.",
+     "An unauthorized decision, incomplete readiness, already deployed status, or another actor role refuses deployment.",
+     "A second deployment attempt is refused after the pace records deployed."
+    ],
+    "version": "1.0"
+   }
+  ],
+  "processes": [
+   {
+    "checks": [
+     {
+      "label": "the moment is happening",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.moment.happening_now",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "process_id": "moment-passes",
+    "rationale": "A moment that happened last round is over.",
+    "selector": {
+     "categories": [
+      "moment"
+     ],
+     "components": [
+      "moment"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the moment is still ahead",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "subtract",
+      "participant": "it",
+      "path": "components.moment.ticks_until",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "process_id": "moment-countdown",
+    "rationale": "A scheduled moment's countdown falls by one each tick.",
+    "selector": {
+     "categories": [
+      "moment"
+     ],
+     "components": [
+      "moment"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the moment is due",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "add",
+      "participant": "it",
+      "path": "components.moment.occurrences",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.moment.happening_now",
+      "value": {
+       "literal": true
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.moment.ticks_until",
+      "value": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.every_ticks"
+       }
+      }
+     }
+    ],
+    "process_id": "moment-occurs",
+    "rationale": "At zero the moment happens once, then restarts its countdown.",
+    "selector": {
+     "categories": [
+      "moment"
+     ],
+     "components": [
+      "moment"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the concern is open",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "the concern has been delivered",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.information.active"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "its decider fully supports the decision",
+      "left": {
+       "participant": {
+        "name": "support",
+        "path": "components.support.stance"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "full"
+      }
+     },
+     {
+      "label": "the decision was not rejected",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "literal": "rejected"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "support",
+      "path": "components.support.stance",
+      "value": {
+       "literal": "conditional"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "support",
+      "path": "components.support.condition_id",
+      "value": {
+       "entity_id": "it"
+      }
+     },
+     {
+      "op": "subtract",
+      "participant": "decision",
+      "path": "components.group_decision.support",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "add",
+      "participant": "decision",
+      "path": "components.group_decision.conditional",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "participants": {
+     "decision": {
+      "link": "ref:concern.decision_id",
+      "selector": {
+       "categories": [
+        "group-decision"
+       ],
+       "components": [
+        "group_decision"
+       ]
+      }
+     },
+     "support": {
+      "link": "ref:concern.support_id",
+      "selector": {
+       "categories": [
+        "support"
+       ],
+       "components": [
+        "support"
+       ]
+      }
+     }
+    },
+    "process_id": "concern-makes-support-conditional",
+    "rationale": "An open concern that has reached a decider who fully supports the decision makes that support wait on the concern.",
+    "selector": {
+     "categories": [
+      "information"
+     ],
+     "components": [
+      "information",
+      "concern"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "a remedy is under way",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "remedy_under_way"
+      }
+     },
+     {
+      "label": "the remedy is in its last round",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.concern.remedy_ticks_left"
+       }
+      },
+      "op": "lte",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.concern.status",
+      "value": {
+       "literal": "resolved"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.concern.remedy_ticks_left",
+      "value": {
+       "literal": 0
+      }
+     },
+     {
+      "op": "add",
+      "participant": "it",
+      "path": "components.concern.times_resolved",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "process_id": "remedy-completes",
+    "rationale": "A remedy under way that has run its course resolves the concern.",
+    "selector": {
+     "categories": [
+      "information"
+     ],
+     "components": [
+      "information",
+      "concern"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is authorized and deploying",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "authorized"
+      }
+     },
+     {
+      "label": "too few deciders still fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "open"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "deadline",
+      "path": "components.moment.ticks_until",
+      "value": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.postpone_ticks"
+       }
+      }
+     }
+    ],
+    "participants": {
+     "deadline": {
+      "link": "ref:group_decision.deadline_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "authorization-withdrawn",
+    "rationale": "An authorized decision whose full support falls below the threshold goes back to open.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is authorized and deploying",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "authorized"
+      }
+     },
+     {
+      "label": "no decider's support waits on a concern",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.conditional"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "enough deciders still fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     },
+     {
+      "label": "deployment is in its last round",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.deploy_ticks_left"
+       }
+      },
+      "op": "lte",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "deployed"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.deploy_ticks_left",
+      "value": {
+       "literal": 0
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.review_ticks_left",
+      "value": {
+       "literal": 6
+      }
+     }
+    ],
+    "process_id": "deployment-completes",
+    "rationale": "Deployment finishes when its last round passes with no support waiting on a concern.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is deployed",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "deployed"
+      }
+     },
+     {
+      "label": "too few deciders still fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "suspended"
+      }
+     }
+    ],
+    "process_id": "deployment-suspended",
+    "rationale": "A deployed decision whose full support falls below the threshold is suspended.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is suspended",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "suspended"
+      }
+     },
+     {
+      "label": "no decider's support waits on a concern",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.conditional"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "enough deciders still fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "deployed"
+      }
+     }
+    ],
+    "process_id": "deployment-resumes",
+    "rationale": "A suspended decision resumes once enough deciders fully support it again.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is authorized and deploying",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "authorized"
+      }
+     },
+     {
+      "label": "no decider's support waits on a concern",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.conditional"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "enough deciders still fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     },
+     {
+      "label": "deployment has rounds to go",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.deploy_ticks_left"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "subtract",
+      "participant": "it",
+      "path": "components.group_decision.deploy_ticks_left",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "process_id": "deployment-progresses",
+    "rationale": "Deployment moves one round closer while no decider's support waits on a concern.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "a remedy is under way",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "remedy_under_way"
+      }
+     },
+     {
+      "label": "the remedy has rounds to go",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.concern.remedy_ticks_left"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "subtract",
+      "participant": "it",
+      "path": "components.concern.remedy_ticks_left",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "process_id": "remedy-progresses",
+    "rationale": "A remedy under way moves one round closer to done.",
+    "selector": {
+     "categories": [
+      "information"
+     ],
+     "components": [
+      "information",
+      "concern"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision was brought back",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "back_on_table"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "open"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.postponements",
+      "value": {
+       "literal": 0
+      }
+     },
+     {
+      "op": "set",
+      "participant": "deadline",
+      "path": "components.moment.ticks_until",
+      "value": {
+       "literal": 6
+      }
+     }
+    ],
+    "participants": {
+     "deadline": {
+      "link": "ref:group_decision.deadline_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "decision-back-on-table",
+    "rationale": "A rejected decision brought back is open again, with a new deadline 6 rounds on.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is still open",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "the deadline is happening now",
+      "left": {
+       "participant": {
+        "name": "deadline",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "enough deciders fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     },
+     {
+      "label": "no matters are still open on the agenda",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.agenda_items"
+       }
+      },
+      "op": "lte",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "authorized"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.deploy_ticks_left",
+      "value": {
+       "literal": 6
+      }
+     }
+    ],
+    "participants": {
+     "deadline": {
+      "link": "ref:group_decision.deadline_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "decision-authorized-at-deadline",
+    "rationale": "At the deadline, enough full support authorizes the decision.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is still open",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "the deadline is happening now",
+      "left": {
+       "participant": {
+        "name": "deadline",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "enough deciders fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     },
+     {
+      "label": "matters are still open on the agenda",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.agenda_items"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "no postponements remain",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.postponements"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.max_postponements"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "authorized"
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.deploy_ticks_left",
+      "value": {
+       "literal": 6
+      }
+     }
+    ],
+    "participants": {
+     "deadline": {
+      "link": "ref:group_decision.deadline_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "decision-authorized-at-last-deadline",
+    "rationale": "At the last deadline, enough full support authorizes the decision even with matters still open.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is still open",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "the deadline is happening now",
+      "left": {
+       "participant": {
+        "name": "deadline",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "too few deciders fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     },
+     {
+      "label": "no postponements remain",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.postponements"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.max_postponements"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.status",
+      "value": {
+       "literal": "rejected"
+      }
+     }
+    ],
+    "participants": {
+     "deadline": {
+      "link": "ref:group_decision.deadline_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "decision-rejected-at-deadline",
+    "rationale": "At the deadline, too little full support with no postponements left rejects the decision.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is still open",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "the deadline is happening now",
+      "left": {
+       "participant": {
+        "name": "deadline",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "too few deciders fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     },
+     {
+      "label": "postponements remain",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.postponements"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.max_postponements"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "add",
+      "participant": "it",
+      "path": "components.group_decision.postponements",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "set",
+      "participant": "deadline",
+      "path": "components.moment.ticks_until",
+      "value": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.postpone_ticks"
+       }
+      }
+     }
+    ],
+    "participants": {
+     "deadline": {
+      "link": "ref:group_decision.deadline_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "decision-postponed-at-deadline",
+    "rationale": "At the deadline, too little full support postpones the decision and sets a new deadline.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is still open",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "open"
+      }
+     },
+     {
+      "label": "the deadline is happening now",
+      "left": {
+       "participant": {
+        "name": "deadline",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "enough deciders fully support it",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.support"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.needed"
+       }
+      }
+     },
+     {
+      "label": "matters are still open on the agenda",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.agenda_items"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "postponements remain",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.postponements"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.max_postponements"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "add",
+      "participant": "it",
+      "path": "components.group_decision.postponements",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "op": "set",
+      "participant": "deadline",
+      "path": "components.moment.ticks_until",
+      "value": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.postpone_ticks"
+       }
+      }
+     }
+    ],
+    "participants": {
+     "deadline": {
+      "link": "ref:group_decision.deadline_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "decision-postponed-for-open-matters",
+    "rationale": "At the deadline, matters still open on the agenda postpone a supported decision and set a new deadline.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is in effect",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "deployed"
+      }
+     },
+     {
+      "label": "the review is still ahead",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.review_ticks_left"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "subtract",
+      "participant": "it",
+      "path": "components.group_decision.review_ticks_left",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "process_id": "operating-review-nears",
+    "rationale": "The next operating review of the decision in effect comes one round closer.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the concern is resolved",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.concern.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "resolved"
+      }
+     },
+     {
+      "label": "the decision is in effect",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "deployed"
+      }
+     },
+     {
+      "label": "an operating review is due now",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.review_ticks_left"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "no matters are still open on the agenda",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.group_decision.agenda_items"
+       }
+      },
+      "op": "lte",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.concern.status",
+      "value": {
+       "literal": "open"
+      }
+     },
+     {
+      "op": "add",
+      "participant": "it",
+      "path": "components.concern.times_reviewed",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "participants": {
+     "decision": {
+      "link": "ref:concern.decision_id",
+      "selector": {
+       "categories": [
+        "group-decision"
+       ],
+       "components": [
+        "group_decision"
+       ]
+      }
+     }
+    },
+    "process_id": "operating-review-reexamines-concern",
+    "rationale": "An operating review examines a resolved concern again against what running the decision has shown; it is open again until its holder or the person it reached answers it.",
+    "selector": {
+     "categories": [
+      "information"
+     ],
+     "components": [
+      "information",
+      "concern"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the decision is in effect",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "deployed"
+      }
+     },
+     {
+      "label": "an operating review is due now",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.review_ticks_left"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "no matters are still open on the agenda",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.group_decision.agenda_items"
+       }
+      },
+      "op": "lte",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.group_decision.review_ticks_left",
+      "value": {
+       "literal": 6
+      }
+     }
+    ],
+    "process_id": "operating-review-held",
+    "rationale": "An operating review of the decision in effect is held once no matters are open on the agenda; the next is 6 rounds on.",
+    "selector": {
+     "categories": [
+      "group-decision"
+     ],
+     "components": [
+      "group_decision"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "the work cycle restarts now",
+      "left": {
+       "participant": {
+        "name": "cycle",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.request_clarification_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_technical_review_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_legal_review_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_logistics_review_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_community_review_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.submit_country_readiness_plan_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.coordinate_deployment_preparation_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.verify_operational_readiness_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.complete_deployment_readiness_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.deploy_early_warning_system_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.raise_new_concern_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.put_matter_on_agenda_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.settle_agenda_matter_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.bring_decision_back_done",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "participants": {
+     "cycle": {
+      "link": "ref:work.cycle_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "work-cycle-restarts",
+    "rationale": "Each time a new work cycle every 4 rounds comes round, everyone's record of work done is cleared, so routine work can be done again.",
+    "selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "work"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "A new work cycle is happening now",
+      "left": {
+       "participant": {
+        "name": "cycle",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.request_clarification_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_technical_review_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_legal_review_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_logistics_review_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.conduct_community_review_done",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "participants": {
+     "cycle": {
+      "link": "ref:work.cycle_id",
+      "selector": {
+       "categories": [
+        "moment",
+        "work-cycle"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "clear-first-work-flags-at-cycle",
+    "rationale": "A new work cycle clears the first set of member work records so the recurring deliberation and readiness actions can be performed again.",
+    "selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "work"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "A new work cycle is happening now",
+      "left": {
+       "participant": {
+        "name": "cycle",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.submit_country_readiness_plan_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.coordinate_deployment_preparation_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.verify_operational_readiness_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.complete_deployment_readiness_done",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "op": "set",
+      "participant": "it",
+      "path": "components.work.deploy_early_warning_system_done",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "participants": {
+     "cycle": {
+      "link": "ref:work.cycle_id",
+      "selector": {
+       "categories": [
+        "moment",
+        "work-cycle"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "process_id": "clear-second-work-flags-at-cycle",
+    "rationale": "A new work cycle clears the remaining member work records so recurring readiness and deployment preparation remains possible.",
+    "selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "work"
+     ]
+    }
+   },
+   {
+    "checks": [
+     {
+      "label": "Time remains before the decision deadline",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.decision_time.initial_ticks_remaining"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "op": "subtract",
+      "participant": "it",
+      "path": "components.decision_time.initial_ticks_remaining",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "process_id": "advance-decision-time",
+    "rationale": "The represented decision-time counter decreases by one each round while positive, making the finite decision window advance without relying on an actor to update it.",
+    "selector": {
+     "categories": [
+      "time",
+      "decision-time"
+     ],
+     "components": [
+      "decision_time"
+     ]
+    }
+   }
+  ],
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": null
+ },
+ "source": "live run c1r18, 2026-10-22, first /run request (world-builder-live/run/2fac1373671e4b5aa864f9f7e78b6cee)"
+}
