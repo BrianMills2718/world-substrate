@@ -438,6 +438,11 @@
       const c=card(`${row.action_kind} · ${row.mechanic_id}`); c.append(el("p","mechanic-rationale",row.rationale||""));
       const grid=el("div","authority-grid");grid.append(codeList("Derived reads",row.reads),codeList("Derived writes",row.writes));c.append(grid,jsonRows("Checks",row.checks),jsonRows("Effects",row.effects),codeList("Limits",row.limits),codeList("Declared tests",row.tests));editor.append(c);
     });
+    // Issue #124 (G3): processes are installed law too; they run every round with nobody acting.
+    (causalReview?.processes||[]).forEach(row=>{
+      const c=card(`By itself, every round · ${row.process_id}`); c.title="This change happens on its own every round, with nobody acting, whenever its checks hold"; c.append(el("p","mechanic-rationale",row.rationale||""));
+      c.append(jsonRows("Applies to",[row.selector]),jsonRows("Checks",row.checks),jsonRows("Effects",row.effects),codeList("Derived writes",row.writes));editor.append(c);
+    });
     const terminal=card("Terminal condition"); terminal.append(causalReview?.terminal?el("pre","mini-json",JSON.stringify(causalReview.terminal,null,2)):liveMessage("No terminal condition was proposed. A run can still stop when no actions remain or at its turn ceiling."));editor.append(terminal);
     const approve=button(mechanicsApproved?"✓ Mechanics approved":"Approve mechanics for run",mechanicsApproved?"secondary":"primary",()=>{if(!stale){mechanicsApproved=true;rerender();}});approve.disabled=stale||mechanicsApproved;editor.append(approve);
   }

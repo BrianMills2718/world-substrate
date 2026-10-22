@@ -129,6 +129,13 @@ class WorldAuthoringBuilderTests(unittest.TestCase):
         self.assertIn("approved:true", source)
         self.assertIn("iframe", source)
 
+    def test_approve_screen_lists_by_itself_processes(self):
+        # Issue #124 (G3): /build rendered the mechanics and terminal only; review.processes was never read.
+        app = APP.read_text()
+        self.assertIn("(causalReview?.processes||[]).forEach(", app)
+        self.assertIn("By itself, every round", app)
+        self.assertIn("By itself, every round", HTML.read_text())
+
     def test_live_flow_exposes_complete_debug_logs(self):
         source = APP.read_text()
         self.assertIn("liveLog = []", source)
