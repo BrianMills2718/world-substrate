@@ -25,29 +25,29 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | Model element | home | build | play | round_replay | living_scene | composed_living_scene | owner_run_log | scenario_replay | scenario_state_panel |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Description | shown | shown | n/a | n/a | n/a | n/a | shown | n/a | n/a |
-| AuthoringBundle | partial | shown | n/a | partial | n/a | n/a | shown | partial (G12) | partial (G12) |
+| AuthoringBundle | partial | shown | n/a | partial | n/a | n/a | shown | shown (G12 fixed) | shown (G12 fixed) |
 | CausalReview (compiler-derived authority) | shown (G5 fixed) | shown (G3 fixed) | n/a | n/a | n/a | n/a | shown (G4 fixed) | n/a | n/a |
 | MechanicProfile (frozen id) | missing (G7) | missing (G7) | missing | missing | n/a | n/a | shown (G7 fixed) | missing (G7) | missing (G7) |
 | Approval | partial | partial | n/a | n/a | n/a | n/a | shown (G6 fixed) | n/a (G14) | n/a (G14) |
 | Run (trace) | partial | partial | partial | partial | n/a | n/a | shown (G1 fixed) | n/a | n/a |
 | event `accepted` | shown | partial | shown | shown | shown | shown | partial | shown | shown |
-| event `precondition_failed` | shown | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
+| event `precondition_failed` | shown | partial | partial | partial | partial | partial | partial | shown (G15 fixed) | shown (G15 fixed) |
 | event `stale_revision` | partial | partial | partial | partial | partial | partial | partial | n/a | n/a |
-| event `scope_violation` | partial | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
-| event `invalid_action` | partial | partial | partial | partial | partial | partial | partial | partial (G15) | partial (G15) |
-| event `unsupported_action` | partial | partial | partial | partial | partial | partial | partial | partial (G15, G16) | partial (G15, G16) |
+| event `scope_violation` | partial | partial | partial | partial | partial | partial | partial | shown (G15 fixed) | shown (G15 fixed) |
+| event `invalid_action` | partial | partial | partial | partial | partial | partial | partial | shown (G15 fixed) | shown (G15 fixed) |
+| event `unsupported_action` | partial | partial | partial | partial | partial | partial | partial | shown (G15, G16 fixed) | shown (G15, G16 fixed) |
 | process-made changes (`advance`) | shown | partial | partial | shown (G8 fixed) | partial | partial | partial | missing (G8) | shown |
-| run row `no_action` (waited) | shown | partial | n/a | partial | n/a | n/a | shown | partial (G16) | n/a |
+| run row `no_action` (waited) | shown | partial | n/a | partial | n/a | n/a | shown | shown (G16 fixed) | n/a |
 | run row `nothing_left` (lost a race) | shown | partial | n/a | partial | n/a | n/a | shown | n/a | n/a |
-| World (state, positions) | partial | partial | partial | partial | shown (G9, G10 fixed) | shown (G9, G10 fixed) | partial | partial (G12) | shown |
+| World (state, positions) | partial | partial | partial | partial | shown (G9, G10 fixed) | shown (G9, G10 fixed) | partial | shown (G12 fixed) | shown |
 | LivingSceneFrame | n/a | partial | n/a | n/a | partial | partial | n/a | n/a | n/a |
 | Comparison | n/a | shown | n/a | n/a | n/a | partial | shown (G4 fixed) | n/a | n/a |
 | RunLogEntry | hidden | hidden | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | BudgetLedger | partial | partial | n/a | n/a | n/a | n/a | partial | n/a | n/a |
 | ScenarioModel (`model.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | CheckReport (`checks.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
-| Attempt (`attempts.jsonl`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | partial (G16) | n/a |
-| RuleChange (mid-run rule or ruling) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | partial (G16) | partial (G16) |
+| Attempt (`attempts.jsonl`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | n/a |
+| RuleChange (mid-run rule or ruling) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | shown (G16 fixed) |
 
 Notes on the rows:
 
@@ -157,6 +157,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **View:** the replay draws the transcript `to_trace` builds from attempts (`render_run.py:25`); the state panel lists entities by label with their field values (`render_run.py:68`). Neither names the world, its components, actions nobody attempted or processes that never fired.
 - **Reproduced: yes.** Waltzman run page: actions `cast-vote`, `activate-system` (attempted) present; `submit-concern`, `hold-meeting` (never attempted) absent; component `governance_participant` absent; world label and summary absent; processes `tally-country-approval` and `apply-weekly-activated-system-wear` (fired) present, `apply-weekly-unresolved-concern-pressure` (never fired) absent. The state panel showed every entity's fields after each round.
 
+- **Fixed 2026-10-22 (#PR).** `render_run.py` adds a "The world that was built" box above the replay (`built_world`): the world's name and summary, its parts, everyone and everything in it, every action with how often it was tried ("never tried" included) and every process with how often it ran ("never ran" included). Waltzman page: `submit-concern` and `hold-meeting` never tried, `apply-weekly-unresolved-concern-pressure` never ran, `governance_participant` shown. Test: `test_g12_the_page_shows_the_whole_built_world`.
+
 ### G13. No view shows the layer-1 scenario model or its check report
 
 - **Model:** Decision 007 layer 1 produces a checked model (ODD, stock map, repairs, check findings; `model.json`, `checks.json`) that "the person approves ... in plain words".
@@ -175,11 +177,15 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **View:** `to_trace` sets every row's `refused_because` to `[]` (`render_run.py:50`, `:56`); `state_rounds` keeps only `event_id`, `rule_id`, `status` and `changes` (`render_run.py:93`).
 - **Reproduced: partly.** The Waltzman page's embedded panel data has no `checks` key and shows the three `unsupported_action` events by status only. That run had no `precondition_failed` event, so the loss of failed-check labels was not observed on a page, only read from code.
 
+- **Fixed 2026-10-22 (#PR).** `to_trace` fills `refused_because` with the labels of the Engine checks that failed, and the state panel prints each refused event's failed check with what it needed and what it found. Waltzman page, round 2: `e00008`–`e00010` "failed check: Registered action rule (was gm-ruling)". Test: `test_g15_a_refusal_names_the_check_that_failed`.
+
 ### G16. Scenario replay drops most of each attempt and the game master's ruling; "continue" shows as `no_action`
 
 - **Model:** an Attempt records belief, cited observations, decision, expected effect, unlisted intent, what was performed and the observed effect; a game-master ruling records the intent, the proposed rule and why it failed (`summary.json` `rules_written_mid_run`).
 - **View:** `to_trace` keeps only the belief (as `said`), the performed action and its status (`render_run.py:44-52`); a `continue` decision has no `action_record`, so it becomes `no_action`, the same as a resident that was not woken (`:49`, `:55`).
 - **Reproduced: yes.** Waltzman run (10 attempts: 6 offered, 3 unlisted, 1 continue): in the browser the page text contained the belief "Country A currently supports activation" but not the unlisted intent ("Propose a time-boxed ..."), not the ruling reason ("No rule could be added ..."), not any expected effect or cited observation, and not the rules id `12d71aa7843fec08` (G7); the transcript data held exactly one `no_action` row, the `continue` attempt.
+
+- **Fixed 2026-10-22 (#PR).** The panel adds "What each person tried this round": belief, what they saw, decision, the off-menu intent, what they did, what they expected, what they observed and the game master's ruling. A `continue` decision is its own status and is labelled "continue" in the picture, not "wait". Waltzman page, round 2: Country A "continue"; Country B's intent "Propose a time-boxed cross-country review ..." and ruling "No rule could be added ...". Tests: `test_g16_continue_is_not_shown_as_waiting`, `test_g16_each_attempt_is_shown_in_full_with_the_game_masters_ruling`.
 
 ## Not verified
 
