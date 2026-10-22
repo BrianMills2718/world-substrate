@@ -594,6 +594,16 @@ def main() -> int:
         detail = transfer_check.stderr.strip() or transfer_check.stdout.strip()
         failures.append(f"neutral transfer evidence check failed: {detail}")
 
+    # Every saved run carries a read-through of its whole trace (Brian, 2026-10-16; checked from 2026-10-22).
+    trace_read_check = subprocess.run(
+        [sys.executable, str(REPO / "scripts/check_trace_reads.py")],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if trace_read_check.returncode != 0:
+        failures.append(f"trace read check failed: {trace_read_check.stdout.strip()}")
+
     replay_check = subprocess.run(
         [
             sys.executable,

@@ -23,6 +23,7 @@ Before editing a scoped subtree, read its local `AGENTS.md`:
 - Unsupported or defective behavior fails visibly without partial mutation.
 - Resident cognition and post-run analysis remain separate from canonical world truth.
 - Every attempted transition leaves inspectable causal evidence.
+- A run reported as evidence is saved as a folder with its server run-log lines (`run-log.jsonl`) and a `TRACE_READ.md` read-through: a `## Round N` section per round naming everyone who tried a move and citing an event id, every llm_client trace id, and `## Findings`. `scripts/check_trace_reads.py` (part of `check_project.py`) enforces it; `--skeleton <folder>` prints the headings.
 - A World Substrate causal claim is about why a transition occurred **inside the represented world under its installed mechanics**; it is not by itself a claim that those mechanics are scientifically true of the real world.
 
 ## Current boundary
