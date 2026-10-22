@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attempt from belief</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1d2228;--muted:#5d6670;--line:#d8dde3;--blue:#1f5fbf;--blue-soft:#e3ecfa;--orange:#c25e00;--orange-soft:#fbeadb;--grey-soft:#eceef1}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181c;--card:#1e2227;--ink:#e7eaee;--muted:#a3abb5;--line:#343a42;--blue:#7fb0ff;--blue-soft:#1d2c44;--orange:#ffa95c;--orange-soft:#3a2816;--grey-soft:#262b31}}
+:root[data-theme="dark"]{--bg:#15181c;--card:#1e2227;--ink:#e7eaee;--muted:#a3abb5;--line:#343a42;--blue:#7fb0ff;--blue-soft:#1d2c44;--orange:#ffa95c;--orange-soft:#3a2816;--grey-soft:#262b31}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1040px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:20px;margin:36px 0 8px}h3{font-size:16px;margin:0 0 6px}
+p{margin:6px 0 10px}.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0}
+.ask{border-left:5px solid var(--blue)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.rounds{display:flex;gap:6px;flex-wrap:wrap}
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.lane{border-radius:8px;padding:10px 12px;min-height:120px}
+.lane.believe{background:var(--blue-soft)}.lane.true{background:var(--grey-soft)}.lane.sees{background:var(--orange-soft)}
+.lane h3 small{font-weight:400;color:var(--muted)}
+.tag{display:inline-block;font-size:12px;border-radius:999px;padding:1px 8px;border:1px solid currentColor;margin-left:6px}
+.tag.blue{color:var(--blue)}.tag.orange{color:var(--orange)}
+table{border-collapse:collapse;width:100%;font-size:15px}th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:600}
+ol li,ul li{margin:4px 0}
+code{font-size:13px;background:var(--grey-soft);padding:1px 4px;border-radius:4px}
+svg text{fill:var(--ink);font:13px system-ui,sans-serif}
+@media (max-width:720px){.lanes{grid-template-columns:1fr}table{display:block;overflow-x:auto}td,th{min-width:140px}code{word-break:break-all}}
+</style>
+</head>
+<body>
+<main>
+<p class="muted">World Builder design · issue <a href="https://github.com/BrianMills2718/world-substrate/issues/128">#128</a> · 2026-10-22 · for Brian's approval</p>
+<h1>Attempt from belief</h1>
+<p>Brian, 2026-10-07: <em>"in the real world if you try to do something that doesnt work god doesnt come down and tell you. like if you try to drive a truck without enough gas you can probably start driving and then you will either run out of gas or get more on the way."</em></p>
+
+<div class="card ask">
+<h3>The decision asked of you</h3>
+<p><b>Approve the first slice below</b>: in any World Builder world, a person can start a task that takes several rounds; it fails or succeeds part-way from what changed in between; and the person finds out only from what they can see, not from a message saying "refused".</p>
+<p class="muted">If you do not answer, nothing is built: the goal ends with this page and the fixes already merged.</p>
+</div>
+
+<h2>1. Step through one attempt</h2>
+<p>An illustration with made-up numbers, using Brian's truck. Click a round. Three columns: what the driver believes, what is actually true, and what the driver can see. Switch the ending to see the same start end two ways.</p>
+<div class="tabs" role="group" aria-label="Ending">
+  <button id="end-fail" aria-pressed="true">Runs out part-way</button>
+  <button id="end-ok" aria-pressed="false">Refuels on the way</button>
+</div>
+<div class="rounds" id="rounds" role="group" aria-label="Round"></div>
+<div class="lanes">
+  <div class="lane believe"><h3>Believes <small>(the driver's own head)</small></h3><div id="l-believe"></div></div>
+  <div class="lane true"><h3>Is true <small>(the world; only the rules read this)</small></h3><div id="l-true"></div></div>
+  <div class="lane sees"><h3>Sees <small>(what reaches the driver)</small></h3><div id="l-sees"></div></div>
+</div>
+<p class="muted" id="where"></p>
+
+<h2>2. The attempt's life</h2>
+<svg viewBox="0 0 1000 170" width="100%" role="img" aria-label="Attempt lifecycle: start, underway, then failed or finished">
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#7d8792"/></marker></defs>
+  <g stroke="#7d8792" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M190,80 H265"/><path d="M450,80 H520"/><path d="M710,70 L790,35"/><path d="M710,90 L790,130"/>
+    <path d="M400,110 C400,150 300,150 300,110"/>
+  </g>
+  <rect x="10" y="50" width="180" height="60" rx="8" fill="none" stroke="#1f5fbf" stroke-width="2"/>
+  <text x="100" y="75" text-anchor="middle">Start (allowed?)</text><text x="100" y="95" text-anchor="middle">rules of the game only</text>
+  <rect x="270" y="50" width="180" height="60" rx="8" fill="none" stroke="#7d8792" stroke-width="2"/>
+  <text x="360" y="75" text-anchor="middle">Underway</text><text x="360" y="95" text-anchor="middle">a process uses stock</text>
+  <text x="350" y="160" text-anchor="middle">each round, current state</text>
+  <rect x="525" y="50" width="185" height="60" rx="8" fill="none" stroke="#7d8792" stroke-width="2"/>
+  <text x="617" y="75" text-anchor="middle">Rule checks now</text><text x="617" y="95" text-anchor="middle">stock gone? goal reached?</text>
+  <rect x="795" y="10" width="190" height="50" rx="8" fill="none" stroke="#c25e00" stroke-width="2"/>
+  <text x="890" y="40" text-anchor="middle">Stopped / failed</text>
+  <rect x="795" y="105" width="190" height="50" rx="8" fill="none" stroke="#1f5fbf" stroke-width="2"/>
+  <text x="890" y="135" text-anchor="middle">Finished</text>
+</svg>
+<p class="muted">Blue outline: what the person controls or wants. Orange outline: failure. Grey: the world acting by itself.</p>
+
+<h2>3. What changes from today</h2>
+<table>
+<tr><th>Step</th><th>Today (live at 936153d)</th><th>After this slice</th></tr>
+<tr><td>What a person is offered</td><td>Only moves whose checks already pass against the true state, so the menu tells them what will work.</td><td>Moves the rules of the game allow (place, turn, possession). Whether there is enough fuel, time or support is not checked up front.</td></tr>
+<tr><td>Starting a long task</td><td>The rules writer is asked to do it (<code>ATTEMPT_GUIDANCE</code> in <code>scripts/people_world.py</code>) but nothing checks it did.</td><td>The build runs the existing <code>attempt_findings</code> check (from the Decision 007 spike) on the written rules; a finding goes into the build's one existing rules retry.</td></tr>
+<tr><td>What the person is told after a move</td><td>"Result: refused (the check that failed)" in their memory the same round (<code>run_authored_world.py</code> ~601).</td><td>For a rule-of-the-game refusal, still told (a person knows they aren't allowed). For a started task: "you started X". The ending reaches them only through what they can see in later rounds.</td></tr>
+<tr><td>Expected vs. what happened</td><td>Belief and expectation are logged, never compared.</td><td>The person's next turn shows their own earlier expectation beside what they now see, so they can notice it went wrong.</td></tr>
+<tr><td>What the page and readout show</td><td>Moves per round.</td><td>An "underway" strip: who started what, in which round, what they expected, and the event that ended it (failed or finished).</td></tr>
+</table>
+
+<h2>4. Prior art: what is adopted</h2>
+<table>
+<tr><th>Source</th><th>Adopted</th><th>Not adopted, and why</th></tr>
+<tr><td>Decision 007, layer 2 (accepted 2026-10-07) and its spike in <code>spikes/any-scenario-2026-10/</code></td><td>The split between "allowed" and "will it work"; a start action that only sets a state; processes that move it forward and stop it when stock runs out. The truck test already shows it: driving starts on an empty tank and the world stops it next round (<code>tests/test_any_scenario_poc.py</code>, <code>check_attempt_starts_without_fuel_and_world_stops_it_later</code>). Also the check that flags a fuel gate on a start (<code>attempt_findings</code>).</td><td>The game master writing new rules mid-run: about $0.10 per attempt and a 4-minute check on Waltzman-sized worlds (<code>midrun.py</code> notes). Kept for later.</td></tr>
+<tr><td>Cybernetic Influence v3, ADR-013 (read-only)</td><td>The path intent → declared authority → proposed change → checks → commit or visible rejection → <b>actor-specific observation</b>; and keeping capability, permission, attempt, ruling and outcome apart.</td><td>An LLM ruling whether an attempt worked: exact rules stay the only thing that changes the world.</td></tr>
+<tr><td>Concordia game-master pattern (already the residents' runtime)</td><td>The person states what they try; something else resolves it; the person sees only their own observations.</td><td>Concordia's prose resolution in the same step: our outcome plays out over rounds.</td></tr>
+<tr><td><code>docs/architecture.md</code>, "Time, cadence, and duration"</td><td>"Completion is a new transition opportunity that rechecks then-current state, not a guaranteed delayed write."</td><td>A general future-event scheduler (SimPy): one round per <code>Engine.advance</code> is enough for this slice.</td></tr>
+</table>
+
+<h2>5. The first slice (what gets built after a yes)</h2>
+<ol>
+<li><b>Build check.</b> Copy <code>attempt_findings</code> into the service's rules checks; a finding is fed into the existing one rules retry, the same way test-run failures are. No new AI call.</li>
+<li><b>Memory wording.</b> For an accepted start, the person's memory says what they started, not whether it will work. Rule-of-the-game refusals keep their reason. Every later round they see the fields they can observe, plus "you expected: …" from their own earlier attempt while it is underway.</li>
+<li><b>Records.</b> Each run-log round gets <code>underway</code>: person, action, started event id, expected effect, and when it ends, the ending event id and whether it failed or finished. The trace-read check then asks every read-through to name them.</li>
+<li><b>Page.</b> The round picture gets an "underway" strip (blue while underway, orange when it fails, with words).</li>
+<li><b>Proof.</b> Tests with no AI spend on the truck world and a saved people world; then one live owner-allowance run of Waltzman's scenario, read in full, that shows a part-way failure or success learned by observation. If the run shows none, that is reported, not rerun.</li>
+</ol>
+<p class="muted">Out of scope: rules written mid-run, a scheduler, anything specific to Waltzman's text.</p>
+
+<h2>6. Risks</h2>
+<ul>
+<li><b>People may repeat a doomed task</b> because nobody tells them. That is the point, but it can make runs look stuck. The "you expected" line is the guard; the read-through checks whether they notice.</li>
+<li><b>The rules writer may still gate starts on stock.</b> The build check catches it, but the single retry may not fix it; then the build says so plainly.</li>
+<li><b>A world may have no long task at all.</b> Waltzman's text has meetings, deliveries and deployment; if the live world builds none, the run is reported as "no attempt took more than one round".</li>
+</ul>
+</main>
+<script>
+const R = {
+  fail: [
+    {b:"The tank has enough to reach the depot. I'll start driving.", t:"Fuel 2. Driving starts: allowed (driver is at the truck). Nothing checks fuel.", s:"You started driving.", w:"Round 1: the start is accepted because only the rules of the game are checked."},
+    {b:"Halfway there; should arrive next round.", t:"The driving process moves the truck 1 and uses 1 fuel. Fuel 1.", s:"The truck is on the road, 1 of 3 along. You expected to arrive next round.", w:"Round 2: the world moves the attempt forward from the current state."},
+    {b:"Arriving now.", t:"The driving process uses the last fuel. Fuel 0. The out-of-fuel rule sets the truck to 'stopped' at 2 of 3.", s:"The truck is not moving. Fuel gauge: empty.", w:"Round 3: the failure happens here, from state that changed while underway."},
+    {b:"I ran out of fuel. I need to get more before I can finish.", t:"Truck stopped at 2 of 3.", s:"You expected to arrive; you see the truck stopped short.", w:"Round 4: the driver learns it only from what they see, then chooses again."}
+  ],
+  ok: [
+    {b:"The tank has enough to reach the depot. I'll start driving.", t:"Fuel 2. Driving starts: allowed. Nothing checks fuel.", s:"You started driving.", w:"Round 1: same start."},
+    {b:"Fuel looks low. There's a station on the way; I'll stop and fill up.", t:"The driving process moves the truck 1, uses 1 fuel. The driver refuels: fuel 3.", s:"The truck is 1 of 3 along. Fuel gauge: full.", w:"Round 2: the driver's own move changes the state the rule will check."},
+    {b:"Should arrive next round.", t:"Moves to 2 of 3. Fuel 2.", s:"2 of 3 along.", w:"Round 3: still underway."},
+    {b:"Arrived.", t:"Moves to 3 of 3. The arrival rule sets the trip to 'finished'.", s:"You are at the depot.", w:"Round 4: success, learned by seeing the depot."}
+  ]
+};
+let end = "fail", round = 0;
+const roundsEl = document.getElementById("rounds");
+function draw(){
+  roundsEl.innerHTML = "";
+  R[end].forEach((_, i) => { const b = document.createElement("button"); b.textContent = "Round " + (i + 1);
+    b.setAttribute("aria-pressed", i === round); b.onclick = () => { round = i; draw(); }; roundsEl.appendChild(b); });
+  const r = R[end][round];
+  document.getElementById("l-believe").textContent = r.b;
+  document.getElementById("l-true").textContent = r.t;
+  document.getElementById("l-sees").textContent = r.s;
+  document.getElementById("where").textContent = r.w;
+  document.getElementById("end-fail").setAttribute("aria-pressed", end === "fail");
+  document.getElementById("end-ok").setAttribute("aria-pressed", end === "ok");
+}
+document.getElementById("end-fail").onclick = () => { end = "fail"; draw(); };
+document.getElementById("end-ok").onclick = () => { end = "ok"; draw(); };
+draw();
+</script>
+</body>
+</html>
