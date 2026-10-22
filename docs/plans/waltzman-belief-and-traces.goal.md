@@ -68,3 +68,8 @@ Brian's review of anything except D5's design approval; Waltzman; llm_client#283
 ## Progress
 
 - 2026-10-22: trace-read check built and committed (`feat/trace-read-check`); merged with this document.
+- 2026-10-22: D4 merged (#209), D3 merged and live (#210,
+  https://brianmills.dev/world-builder/design/attempt-from-belief/). D5 waits for Brian's approval of D3.
+- 2026-10-22: D2 live run c1r18 (936153d) read in full: fails C1 item 3 (technical and logistics groups were
+  never offered their own message; the 256-move discovery cap cut them off). Fixed in #211 (4b48f22, live);
+  evidence in `evidence/waltzman-belief-and-traces/c1r18/`. Rerun c1r19 at 4b48f22.
