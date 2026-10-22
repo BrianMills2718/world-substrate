@@ -1277,7 +1277,7 @@ views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", livin
 id = "G1"
 title = "Authored-world runs keep no engine event records"
 reproduced = "yes"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G2"
@@ -1301,7 +1301,7 @@ status = "open"
 id = "G5"
 title = "Home approval screen shows no derived read/write authority or limits"
 reproduced = "yes"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G6"
@@ -1319,7 +1319,7 @@ status = "fixed"
 id = "G8"
 title = "Round replay carries no trace of process-made changes"
 reproduced = "partly"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G9"
@@ -1337,7 +1337,7 @@ status = "fixed"
 id = "G11"
 title = "Continued live rounds trust client-held world state"
 reproduced = "no"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G12"
