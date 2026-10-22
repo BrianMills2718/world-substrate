@@ -85,6 +85,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **View:** the mechanics section renders `causalReview.mechanics` and the terminal only (`scripts/world_builder_app.js:270-274`); `review.processes` is never read. The Approve button sits under that list (`:275`).
 - **Reproduced: yes.** Playwright on `evidence/renders/world-builder-v0.html` with a generated-mechanics response for the embedded Orchard world plus one process `regrow` ("Picked fruit grows back."): after generating, the Approve button appeared, the page text contained the mechanic but neither `regrow` nor "grows back". The home page does show processes (`world_builder_home.html:412`).
 
+- **Fixed 2026-10-21 (#124).** The /build mechanics section now renders each process as a "By itself, every round" card (rationale, what it applies to, checks, effects, derived writes) above the Approve button. Test: `test_approve_screen_lists_by_itself_processes`.
+
 ### G4. Run log keeps only key names for three logged paths
 
 - **Model:** the run log promises that "the world and rules produced" are retained for every build (`scripts/world_builder_service.py:290-296`).

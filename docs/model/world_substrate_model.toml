@@ -1289,7 +1289,7 @@ status = "fixed"
 id = "G3"
 title = "/build approval screen hides installed processes"
 reproduced = "yes"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G4"
