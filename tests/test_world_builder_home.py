@@ -72,7 +72,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
                       "By itself, every round", "Why things were refused"):
             self.assertIn(label, self.page)
         # Each round continues from exactly where the last one ended.
-        self.assertIn("request.continue_from = live.snapshot; request.turn_offset = live.lastTurn;", self.page)
+        self.assertIn("request.continue_from = live.snapshot; request.continue_seal = live.seal; request.turn_offset = live.lastTurn;", self.page)
         self.assertIn("QUIET_ROUNDS_TO_PAUSE", self.page)
         # "Ongoing work" and "An open world" were one kind in all but name (merged 2026-10-06).
         self.assertNotIn('value="open"', self.page)
