@@ -1307,7 +1307,7 @@ status = "fixed"
 id = "G6"
 title = "Approval is a request flag, not a record"
 reproduced = "partly"
-status = "open"
+status = "fixed"
 
 [[gaps]]
 id = "G7"

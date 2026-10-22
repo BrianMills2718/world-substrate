@@ -562,7 +562,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, first)
         status, second = self.post("/run", {
             "bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 4,
-            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "turn_offset": first["summary"]["last_turn"],
+            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "approval": first["approval"], "turn_offset": first["summary"]["last_turn"],
         })
         self.assertEqual(status, 200, second)
         self.assertEqual(second["summary"]["first_turn"], 5)
@@ -747,11 +747,12 @@ class WorldBuilderServiceTests(unittest.TestCase):
         for _ in range(n):
             body = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1}
             if snap:
-                body.update(continue_from=snap, continue_seal=seal, turn_offset=last)
+                body.update(continue_from=snap, continue_seal=seal, approval=approval, turn_offset=last)
             status, run = self.post("/run", body)
             self.assertEqual(status, 200, run)
             ids.append(run["trace_id"]); transcript += run["trace"]["transcript"]
             snap, seal, last = run["trace"]["final_snapshot"], run["snapshot_seal"], run["summary"]["last_turn"]
+            approval = run["approval"]
         return ids, transcript
 
     def test_shared_run_replays_the_recorded_rounds_without_ai(self):
@@ -1006,7 +1007,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
         self.assertEqual(status, 200, first)
         status, second = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
-                                            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"],
+                                            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "approval": first["approval"],
                                             "turn_offset": first["summary"]["last_turn"]})
         self.assertEqual(status, 200, second)
         opening, continued = self.run_log()
@@ -1035,7 +1036,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
         self.assertEqual(status, 200, first)
         status, second = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
-                                            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"],
+                                            "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "approval": first["approval"],
                                             "turn_offset": first["summary"]["last_turn"]})
         self.assertEqual(status, 200, second)
         expected = first["trace"]["mechanic_profile_id"]
@@ -1049,7 +1050,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, first)
         snap, seal = first["trace"]["final_snapshot"], first["snapshot_seal"]
         base = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
-                "turn_offset": first["summary"]["last_turn"]}
+                "turn_offset": first["summary"]["last_turn"], "approval": first["approval"]}
         tampered = json.loads(json.dumps(snap)); tampered["world"]["revision"] += 1
         other = json.loads(json.dumps(causal)); other["processes"][0]["rationale"] = "Picked fruit never grows back."
         for label, extra in (("no seal", {"continue_from": snap}),
@@ -1062,6 +1063,31 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, second = self.post("/run", {**base, "continue_from": snap, "continue_seal": seal})
         self.assertEqual(status, 200, second)
         self.assertNotEqual(second["snapshot_seal"], seal)
+
+    def test_every_round_names_the_approval_that_let_it_run(self):
+        # Issue #122 (G6): approval was only an approved:true flag; nothing recorded who approved which rules when.
+        causal = self._ongoing_causal()
+        status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
+        self.assertEqual(status, 200, first)
+        approval = first["approval"]
+        self.assertEqual(set(approval), {"approval_id", "approved_at", "approved_by", "mechanic_profile_id", "world_fingerprint"})
+        self.assertEqual(approval["mechanic_profile_id"], first["trace"]["mechanic_profile_id"])
+        self.assertEqual(approval["world_fingerprint"], service._world_fingerprint(BUNDLE, causal))
+        self.assertTrue(approval["approved_by"].startswith("visitor:"))
+        base = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1,
+                "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "approval": first["approval"],
+                "turn_offset": first["summary"]["last_turn"]}
+        # A continued round carries the first round's approval, sealed, so it cannot be swapped.
+        forged = {**approval, "approved_by": "owner"}
+        for label, extra in (("no approval", {"approval": None}), ("forged approval", {"approval": forged})):
+            with self.subTest(label):
+                status, payload = self.post("/run", {**base, **extra})
+                self.assertEqual(status, 422, payload)
+        status, second = self.post("/run", {**base, "approval": approval})
+        self.assertEqual(status, 200, second)
+        self.assertEqual(second["approval"], approval)
+        rows = self.run_log()
+        self.assertEqual([r["result"]["approval"] for r in rows if r["status"] == 200], [approval, approval])
 
     def test_snapshot_seal_survives_the_browser_rewriting_whole_floats(self):
         from scripts.world_builder_service import _snapshot_seal
@@ -1115,7 +1141,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1})
         self.assertTrue(first["summary"]["terminal_reached"])
         status, after = self.post("/run", {"bundle": BUNDLE, "causal_model": CAUSAL, "approved": True, "turns": 1,
-                                           "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "turn_offset": 1})
+                                           "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"], "approval": first["approval"], "turn_offset": 1})
         self.assertEqual(status, 200, after)
         self.assertEqual(after["trace"]["transcript"], [])
         self.assertTrue(after["summary"]["terminal_reached"])
@@ -1325,6 +1351,9 @@ class WorldBuilderServiceTests(unittest.TestCase):
         )
         self.assertEqual(returned_gate["components"]["gate"]["required_approvals"], 1)
         run_native.assert_called_once()
+        # Issue #122 (G6): a comparison records its approval too, and the run log keeps it.
+        self.assertTrue(payload["approval"]["approved_by"].startswith("visitor:"))
+        self.assertEqual(self.run_log()[-1]["result"]["approval"], payload["approval"])
 
     def test_native_comparison_requires_explicit_mechanics_approval(self):
         shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())

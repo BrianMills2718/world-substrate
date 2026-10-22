@@ -395,16 +395,30 @@ def _canon(value: Any) -> Any:
     return value
 
 
-def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any) -> str:
+def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None) -> str:
     """Issue #127 (G11): a keyed hash of the world state a round ended in, under these exact rules.
 
     The browser holds the state between live rounds; a continued round must bring back one this
     server sealed, so an edited state (or the same state under other rules) is refused.
+    The first round's approval record is sealed with it (#122), so it cannot be swapped either.
     """
     key = (_owner_password() or "world-builder").encode()
-    canonical = json.dumps(_canon({"snapshot": snapshot, "bundle": bundle, "causal_model": causal}),
+    canonical = json.dumps(_canon({"snapshot": snapshot, "bundle": bundle, "causal_model": causal,
+                                  "approval": approval}),
                            sort_keys=True, separators=(",", ":"))
     return hmac.new(key, canonical.encode(), "sha256").hexdigest()
+
+
+def _approval_record(*, bundle: Any, causal: Any, trace: dict[str, Any]) -> dict[str, Any]:
+    request = _REQUEST.get() or {}
+    who = request.get("who") or "visitor"
+    return {
+        "approval_id": uuid.uuid4().hex[:12],
+        "approved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "approved_by": f"visitor:{request.get('client')}" if who == "visitor" else who,
+        "mechanic_profile_id": trace.get("mechanic_profile_id"),
+        "world_fingerprint": _world_fingerprint(bundle, causal),
+    }
 
 
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
@@ -468,6 +482,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "transcript": trace.get("transcript"),
             # Where the world ended up, so the next live round (or a later replay) starts from it.
             "final_snapshot": trace.get("final_snapshot"),
+            "approval": value.get("approval"),
         }
     if path == "/clarify":
         return {k: value.get(k) for k in ("reply", "questions", "description", "ready")}
@@ -1773,6 +1788,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "cost_usd": 0.0,
                 "daily_cost_usd": None,
                 "execution_mode": "native_coordination_comparison",
+                "approval": _approval_record(bundle=comparison_bundle, causal=causal, trace=trace),
                 "trace_id": trace_id,
             },
         )
@@ -1853,7 +1869,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if continue_from is not None:
             seal = body.get("continue_seal")
             if not isinstance(seal, str) or not hmac.compare_digest(
-                    seal.encode(), _snapshot_seal(continue_from, body.get("bundle"), causal).encode()):
+                    seal.encode(), _snapshot_seal(continue_from, body.get("bundle"), causal,
+                                                  body.get("approval")).encode()):
                 raise ValueError("This world cannot carry on: the state sent back does not match the last round "
                                  "this server ran under these rules. Press Start over.")
         turn_offset = body.get("turn_offset", 0)
@@ -1928,6 +1945,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             daily_cost = None
         if execution_mode == "authored_world":
             replay = render_run(bundle, trace, compiled)
+        # Issue #122 (G6): who approved which frozen rules, when. Made on the first round;
+        # continued rounds carry it back under the seal checked above.
+        approval = body.get("approval") if continue_from is not None else _approval_record(bundle=body.get("bundle"),
+                                                                                           causal=causal, trace=trace)
         # Every engine event in full goes to the run log only; the page never reads them (#123, G1).
         engine_events = trace.pop("engine_events", None)
         request = _REQUEST.get()
@@ -1942,7 +1963,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "causal_review": compiled.as_review(),
                 "replay_html": replay,
                 # The next continued round must send this back with final_snapshot (#127).
-                "snapshot_seal": _snapshot_seal(trace.get("final_snapshot"), body.get("bundle"), causal),
+                "snapshot_seal": _snapshot_seal(trace.get("final_snapshot"), body.get("bundle"), causal, approval),
+                "approval": approval,
                 "cost_usd": trace.get("cost_usd", 0.0),
                 "daily_cost_usd": daily_cost,
                 "execution_mode": execution_mode,
