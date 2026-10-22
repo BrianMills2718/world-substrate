@@ -546,8 +546,10 @@ class CompiledActionMechanic:
             (row, refs)
             for row in self.declared.checks
             if row["op"] == "eq" and ("entity_id" in row["left"] or "entity_id" in row["right"])
-            for refs in [_expr_refs(row["left"]) | _expr_refs(row["right"])]
-            if refs is not None and refs <= {"actor", *names}
+            for left, right in [(_expr_refs(row["left"]), _expr_refs(row["right"]))]
+            if left is not None and right is not None
+            for refs in [left | right]
+            if refs <= {"actor", *names}
         ]
         if not links:
             return []
