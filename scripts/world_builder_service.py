@@ -26,6 +26,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
+from scripts.attempts import attempt_findings, long_tasks
 from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
 from scripts.generate_world_bundle import generate_world_bundle
 from scripts.world_dialogue import clarify, surprise_description
@@ -786,8 +787,13 @@ def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
     if world_kind == "task":
         return head + ("; reached the finish line" if row.get("terminal_reached") else "; did not reach the finish line")
     never = row.get("never_offered") or []
+    tasks = row.get("long_tasks")
+    fail = sorted({_words(t["action"]) for t in tasks or [] if t["can_fail_part_way"]})
     return (head + ("; still busy at the end" if row.get("active_at_end") else "; went quiet by the end")
-            + (f"; never possible: {', '.join(_words(k) for k in never)}" if never else ""))
+            + (f"; never possible: {', '.join(_words(k) for k in never)}" if never else "")
+            + ("" if tasks is None else f"; can fail part-way: {', '.join(fail)}" if fail
+               else "; no task can fail part-way" if tasks else "; no task takes several rounds")
+            + ("; a move refuses up front on what its own task uses up" if row.get("attempt_findings") else ""))
 
 
 def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
@@ -1621,6 +1627,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             f"A test run of your previous rules failed from the starting state: {error}. Make sure "
                             "people can act from the starting state."
                         )
+                    # Tasks that take several rounds (#128): a start must not refuse up front on what its own task
+                    # uses up; that outcome plays out over rounds. A finding goes into the one rules retry.
+                    tasks = long_tasks(built["causal_model"])
+                    dry_row["long_tasks"] = [{"action": t["action"], "can_fail_part_way": t["can_fail_part_way"]}
+                                             for t in tasks]
+                    gates = attempt_findings(built["bundle"], built["causal_model"])
+                    if gates:
+                        dry_row["attempt_findings"] = [g["finding"] for g in gates]
+                        score -= 1
+                        guidance += " " + " ".join(g["finding"] for g in gates)
                     attempts.append(dry_row)
                     sentence = _dry_run_sentence(dry_row, "ongoing")
                     if dry_row.get("circling"):
@@ -1633,7 +1649,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     if time.monotonic() - started > PEOPLE_REWRITE_BY_S:
                         self._progress("note", "Kept these rules", "a rewrite would make the wait too long")
                         break
-                    self._progress("doing", "Rewriting the rules so the world keeps moving", "the test run went in circles" if dry_row.get("circling") else "some people could not act")
+                    self._progress("doing", "Rewriting the rules so the world keeps moving",
+                                   "the test run went in circles" if dry_row.get("circling")
+                                   else "some people could not act" if dry_row.get("stalled_actors") or dry_row.get("idle_actors")
+                                   else "a move refused up front on what its own task uses up" if dry_row.get("attempt_findings")
+                                   else "the test run went quiet")
                 assert best is not None
                 _, built, dry_row = best
                 bundle, causal = built["bundle"], built["causal_model"]
@@ -1904,6 +1924,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         ):
             raise ValueError(f"resident_memory must map up to 24 actor ids to up to {MEMORY_ITEMS} notes of at most "
                              f"{MEMORY_ITEM_CHARS} characters")
+        # Tasks still under way from the previous round (trace.underway, #128). They are only records of who
+        # started what; run_world keeps one only while the sealed world state still shows it under way.
+        underway = body.get("underway") if continue_from is not None else None
         model = _requested_model(body)
         trace_id = _new_trace_id("run")
         if execution_mode == "native_coordination":
@@ -1929,7 +1952,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         bundle, causal, policy=policy, model_name=model,
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
                         start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
-                        briefs=briefs, resident_memory=resident_memory,
+                        briefs=briefs, resident_memory=resident_memory, underway=underway,
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
@@ -1941,7 +1964,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             trace, _, compiled = run_world(
                 bundle, causal, policy=policy, model_name=model,
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
-                start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
+                start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent, underway=underway,
             )
             daily_cost = None
         if execution_mode == "authored_world":
