@@ -811,6 +811,35 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual([r["trace_id"] for r in record["runs"]], ids)
         self.assertTrue(record["world"]["review"]["mechanics"])
 
+    def test_share_keeps_the_build_when_the_browser_wrote_whole_floats_as_ints(self):
+        # c1r23: the build held 1.0 where the page sent 1 back, the logged fingerprints differed, and the share dropped
+        # the build, so the readout read a people world for how goods flowed. Rows logged that way still match now.
+        import hashlib
+        old_style = lambda b, c: hashlib.sha256(json.dumps({"bundle": b, "causal_model": c}, sort_keys=True,
+                                                           separators=(",", ":")).encode()).hexdigest()[:16]
+        causal = {"mechanics": [], "pace": 1.0}
+        built = {"bundle": {"world": {"label": "w"}, "pace": 1.0}, "causal_model": causal}
+        sent = json.loads(json.dumps(built).replace("1.0", "1"))
+        self.assertNotEqual(old_style(built["bundle"], causal), old_style(sent["bundle"], sent["causal_model"]))
+        self.assertEqual(service._world_fingerprint(built["bundle"], causal),
+                         service._world_fingerprint(sent["bundle"], sent["causal_model"]))
+        build_id, run_id = service.TRACE_ROOT + "/people/" + "1" * 32, service.TRACE_ROOT + "/run/" + "2" * 32
+        rows = {
+            build_id: {"path": "/generate-world", "client": "c", "request": {"description": "people"},
+                       "result": {**built, "people": [{"name": "Legal Group"}],
+                                  "world_fingerprint": old_style(built["bundle"], causal)}},
+            run_id: {"path": "/run", "client": "c", "trace_id": run_id,
+                     "request": {**sent, "continued": False,
+                                 "world_fingerprint": old_style(sent["bundle"], sent["causal_model"])},
+                     "result": {"summary": {"first_turn": 1, "last_turn": 1}, "transcript": [{"turn": 1}]}},
+        }
+        with patch.object(service, "_logged_entries", return_value=rows), \
+                patch.object(service.CausalModel, "from_dict") as from_dict, patch.object(service, "validate_bundle"):
+            from_dict.return_value.as_review.return_value = {}
+            record = service._assemble_share(build_id, [run_id])
+        self.assertEqual(record["world"]["people"], [{"name": "Legal Group"}])
+        self.assertEqual(record["world"]["trace_id"], build_id)
+
     def test_share_refuses_rounds_the_server_did_not_answer_or_a_broken_run(self):
         ids, _ = self._scripted_rounds(3)
         fake = service.TRACE_ROOT + "/run/" + "0" * 32

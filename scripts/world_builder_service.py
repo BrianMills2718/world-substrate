@@ -379,10 +379,14 @@ def _fingerprint(client: str) -> str:
 
 
 def _world_fingerprint(bundle: Any, causal: Any) -> str | None:
-    """Same world and rules -> same fingerprint, so a run can be matched to its build."""
+    """Same world and rules -> same fingerprint, so a run can be matched to its build.
+
+    Hashed as the browser hands the world back (`_canon`): c1r23's build held `1.0` where its rounds held `1`, so the
+    share dropped the build and the readout read a people world as goods.
+    """
     if not isinstance(bundle, dict) or not isinstance(causal, dict):
         return None
-    canonical = json.dumps({"bundle": bundle, "causal_model": causal}, sort_keys=True, separators=(",", ":"))
+    canonical = json.dumps(_canon({"bundle": bundle, "causal_model": causal}), sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(canonical.encode()).hexdigest()[:16]
 
 
@@ -617,8 +621,12 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
         last = (row["result"].get("summary") or {}).get("last_turn") or last
     bundle, causal = first["request"]["bundle"], first["request"]["causal_model"]
     build = rows.get(build_trace_id) if build_trace_id else None
+    # Recomputed from the logged world and rules, so rows logged before the fingerprint ignored 2.0 vs 2 still match.
+    build_fingerprint = (_world_fingerprint((build["result"] or {}).get("bundle"), (build["result"] or {}).get("causal_model"))
+                         if build is not None else None)
     if build is not None and (build["path"] != "/generate-world"
-                              or (build["result"] or {}).get("world_fingerprint") != fingerprint
+                              or build_fingerprint != _world_fingerprint(first["request"]["bundle"],
+                                                                         first["request"].get("causal_model"))
                               or build.get("client") != first.get("client")):
         # The rules were edited after the build, it is another build, or another visitor's build (its description
         # and briefs are theirs): show the run without a build.
