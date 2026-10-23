@@ -78,3 +78,8 @@ Brian's review of anything except D5's design approval; Waltzman; llm_client#283
   `evidence/waltzman-belief-and-traces/c1r19/`. Open problems seen while reading are listed there (seeded
   recipient memory, retry changes the move but keeps the first `said`, logistics/Country Three reopen loop,
   confusing state labels). D1-D4 done; D5 waits for Brian's approval of the D3 design.
+- 2026-10-23: C4 and C5 rerun at 9bfa8d3 so the whole C1-C6 table is evidenced on the new code. C4: pencil
+  run c4-run21 (share `NVZGnhM87Yj1`), built as things, 29 rounds, 8 distinct moves every round from round 6,
+  real chain, read in full (`evidence/waltzman-belief-and-traces/c4-run21/`). C5: forced rules rejection and
+  forced visitor and owner budget stops each show a plain message (`.../c5-9bfa8d3/`). D4's rendered replay
+  screenshot is `spikes/any-scenario-2026-10/evidence/waltzman/run/frame-round2-attempts.png` (#209).
