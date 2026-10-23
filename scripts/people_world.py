@@ -275,7 +275,7 @@ def rules_guidance(prepared: dict[str, Any], guidance: str = "") -> str:
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "
         "rule and is not in your list. When the world has a group decision (entity category `group-decision`), support, concerns "
         "and the decision are exact compiled rules (give-support, make-support-conditional, restore-full-support, "
-        "resolve-concern, resolve-own-concern, reopen-concern, the process by which an open concern makes its decider's full support conditional, and the deadline processes): rules may read the `support`, `concern` and "
+        "resolve-concern, resolve-own-concern, object-to-remedy, reopen-concern, raise-new-concern, the process by which an open concern makes its decider's full support conditional, and the deadline processes): rules may read the `support`, `concern` and "
         "`group_decision` components but never write them, with one exception: `group_decision.agenda_items` counts the "
         "matters put before the decision and not yet settled (compiled put-matter-on-agenda and settle-agenda-matter "
         "already add and subtract it; a rule of yours for discussing a matter or settling one at a meeting may too, "
@@ -285,7 +285,11 @@ def rules_guidance(prepared: dict[str, Any], guidance: str = "") -> str:
         "stock or state with rules for how it falls and recovers, and write one process that stops the remedy "
         "part-way: it checks the concern's `status` is 'remedy_under_way' and the needed thing is gone, and sets "
         "`status` to 'open' and `remedy_ticks_left` to 0. That is the only write to `concern` allowed, and the people "
-        "find out by seeing the concern open again. At a deadline, open agenda items postpone a decision that has "
+        "find out by seeing the concern open again. Whether the decision is in effect is said only by "
+        "`group_decision.status` (authorized while it rolls out, then deployed): never copy it into another record (a "
+        "system 'activated' or a plan 'deployed'), since that record would still say so after the decision moved on. "
+        "Moment clocks, meetings, deadlines and the rollout are already compiled processes; do not write them again. "
+        "At a deadline, open agenda items postpone a decision that has "
         "the support, until no postponements remain. Every rule must change something another rule or the deadline "
         "reads (a person's own done flag alone changes nothing); work by people outside the decision can change their "
         "own records or the agenda. Scheduled moments are entities in category `moment` whose `occurrences` rises when they "
@@ -327,7 +331,9 @@ def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -
     generated["mechanics"], impossible = compile_spec.drop_impossible_checks(generated.get("mechanics") or [], bundle)
     generated["mechanics"] = compile_spec.limit_to_work_cycle(generated["mechanics"], prepared.get("work_cycle"))
     causal, dropped = sp.merge_causal(compiled, generated)
-    dropped = impossible + dropped
+    causal, copies = sp.drop_decision_copies(causal)
+    causal["mechanics"] = [m for m in causal["mechanics"] if m.get("effects")]
+    dropped = impossible + dropped + copies
     # An action whose whole generated rule was dropped (every effect wrote a compiled component) leaves the world, so
     # bundle and rules still match. 2026-10-16 inc15j (luna): reconsider-settled-issue only set a concern's status,
     # the merge removed it, and the build failed with "action kinds must exactly match the authoring bundle".

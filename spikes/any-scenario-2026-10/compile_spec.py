@@ -75,6 +75,11 @@ CONCERN = {"name": "concern", "fields": [
     {"name": "times_reopened", "type": "integer", "default": 0},
     {"name": "times_raised", "type": "integer", "default": 0},
     {"name": "times_reviewed", "type": "integer", "default": 0},
+    # What the last remedy did with the concern's question (#128 slice 2): answered when a remedy finished, and who
+    # carried it out. 2026-10-23 c1r20: a remedy only flipped `status`, so Country Two saw the same unanswered legal
+    # question after each one and reopened its own concern ten times (times_resolved reached 14).
+    {"name": "answered", "type": "boolean", "default": False},
+    {"name": "remedy_by", "type": "entity_ref", "default": "placeholder"},
     {"name": "decision_id", "type": "entity_ref", "default": "placeholder"},
     # the support record of the person it reached (support-<recipient>), when that person is a decider
     {"name": "support_id", "type": "entity_ref", "default": "placeholder"}]}
@@ -131,6 +136,10 @@ DEPLOY_TICKS = 6
 # serve my goal"), 1 real move in rounds 21-30. Generated rules cannot write concerns or the decision, so asking the
 # rule writer for a review (people_world LIVENESS_GUIDANCE 8) could not supply it.
 REVIEW_TICKS = 6
+# A concern's question is reopened by the person it reached, raised anew by its holder, or re-examined by an operating
+# review at most this many times each; with the first remedy that is at most four answers per concern. An answer given
+# again after it was disputed stands (c1r20: one concern answered 14 times with the same question).
+MAX_REOPENS = MAX_NEW_CONCERNS = MAX_REVIEWS = 1
 RETABLE_TICKS = 6  # rounds from bringing a rejected decision back to deciding it again
 
 _SUPPORT_SEL = {"categories": ["support"], "components": ["support"]}
@@ -198,7 +207,8 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                           {"entity_id": "actor"}), arrived,
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
                   [_effect("matter", "components.concern.status", "set", "remedy_under_way"),
-                   _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS)]),
+                   _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS),
+                   _effect("matter", "components.concern.remedy_by", "set", {"entity_id": "actor"})]),
         # 2026-10-16 Waltzman inc15g: only the holder could resolve, but many remedies sit with the person the concern
         # reached (a country obtaining its own authorization). The legal group rightly refused to resolve another
         # country's gap, so no concern was ever resolved and every country could only keep raising it.
@@ -208,7 +218,22 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                   [mine, arrived,
                    _check("the concern is open", _ref("matter", "components.concern.status"), "eq", "open")],
                   [_effect("matter", "components.concern.status", "set", "remedy_under_way"),
-                   _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS)]),
+                   _effect("matter", "components.concern.remedy_ticks_left", "set", REMEDY_TICKS),
+                   _effect("matter", "components.concern.remedy_by", "set", {"entity_id": "actor"})]),
+        # A remedy someone else carries out can miss what the concern's holder meant; the holder says so and the
+        # remedy stops part-way, so a task a person starts can end two ways (#128 slice 2). 2026-10-23 c1r20: the
+        # rules writer wrote no remedy stop, so every one of 21 remedies finished on schedule.
+        _mechanic("object-to-remedy",
+                  "Whoever holds a concern's information finds the remedy under way misses the point; the remedy "
+                  "stops part-way and the concern is open again.",
+                  {"matter": _MATTER_SEL},
+                  [_check("the actor holds this information", _ref("matter", "components.information.source_id"), "eq",
+                          {"entity_id": "actor"}),
+                   _check("a remedy is under way", _ref("matter", "components.concern.status"), "eq", "remedy_under_way"),
+                   _check("someone else carries out the remedy", _ref("matter", "components.concern.remedy_by"), "ne",
+                          {"entity_id": "actor"})],
+                  [_effect("matter", "components.concern.status", "set", "open"),
+                   _effect("matter", "components.concern.remedy_ticks_left", "set", 0)]),
         # Concerns keep coming: the texts have groups that "each raise small, true but local concerns", not one each.
         # 2026-10-16 Waltzman deploy7: with each item delivered once, nobody acted in rounds 11-30 once the four
         # concerns were resolved. Limited to once per work cycle (add_work_cycle).
@@ -219,16 +244,23 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
                   [_check("the actor holds this information", _ref("matter", "components.information.source_id"), "eq",
                           {"entity_id": "actor"}), arrived, *unsettled,
                    _check("the last concern on this matter is resolved", _ref("matter", "components.concern.status"),
-                          "eq", "resolved")],
+                          "eq", "resolved"),
+                   _check("no new concern has been raised on this matter yet",
+                          _ref("matter", "components.concern.times_raised"), "lt", MAX_NEW_CONCERNS)],
                   # what the new concern is stays in the actor's own words (parameters are fixed lists, not text)
                   [_effect("matter", "components.concern.status", "set", "open"),
+                   _effect("matter", "components.concern.answered", "set", False),
                    _effect("matter", "components.concern.times_raised", "add", 1)]),
         _mechanic("reopen-concern",
-                  "The person a resolved concern reached finds the remedy wanting and reopens it.",
+                  "The person a resolved concern reached finds the answer wanting and reopens it, once; the answer "
+                  "the next remedy gives stands.",
                   {"matter": _MATTER_SEL, "decision": _DECISION_SEL},
                   [mine, *unsettled, _check("the concern is resolved", _ref("matter", "components.concern.status"), "eq",
-                                         "resolved")],
+                                         "resolved"),
+                   _check("the actor has not reopened this concern before",
+                          _ref("matter", "components.concern.times_reopened"), "lt", MAX_REOPENS)],
                   [_effect("matter", "components.concern.status", "set", "open"),
+                   _effect("matter", "components.concern.answered", "set", False),
                    _effect("matter", "components.concern.times_reopened", "add", 1)]),
         # Anyone can put a matter before the group and anyone can settle one; open matters at a deadline postpone a
         # decision that has the support (decision-postponed-for-open-matters). 2026-10-16 Waltzman deploy12: the rule
@@ -266,6 +298,7 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
             [_effect("decision", "components.group_decision.status", "set", "back_on_table")]))
     fields = {"give-support": ["support", "decision"], "make-support-conditional": ["support", "decision", "matter"],
               "restore-full-support": ["support", "decision", "matter"], "resolve-concern": ["matter"], "resolve-own-concern": ["matter"],
+              "object-to-remedy": ["matter"],
               "reopen-concern": ["matter", "decision"], "call-decision": ["support", "decision"],
               "raise-new-concern": ["matter", "decision"], "put-matter-on-agenda": ["decision"],
               "settle-agenda-matter": ["decision"], "bring-decision-back": ["support", "decision"]}
@@ -301,6 +334,7 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
          "checks": [under_way, _check("the remedy is in its last round", concern_it("remedy_ticks_left"), "lte", 1)],
          "effects": [_effect("it", "components.concern.status", "set", "resolved"),
                      _effect("it", "components.concern.remedy_ticks_left", "set", 0),
+                     _effect("it", "components.concern.answered", "set", True),
                      _effect("it", "components.concern.times_resolved", "add", 1)]},
         {"process_id": "remedy-progresses", "rationale": "A remedy under way moves one round closer to done.",
          "selector": concern_sel,
@@ -422,8 +456,11 @@ def _decision_rules(has_deadline: bool) -> tuple[list[dict[str, Any]], list[dict
              "selector": concern_sel,
              "participants": {"decision": {"link": "ref:concern.decision_id", "selector": _DECISION_SEL}},
              "checks": [_check("the concern is resolved", concern_it("status"), "eq", "resolved"),
+                        _check("the concern has not been reviewed before", concern_it("times_reviewed"), "lt",
+                               MAX_REVIEWS),
                         _check("the decision is in effect", reviewed("status"), "eq", "deployed"), *review_now(reviewed)],
              "effects": [_effect("it", "components.concern.status", "set", "open"),
+                         _effect("it", "components.concern.answered", "set", False),
                          _effect("it", "components.concern.times_reviewed", "add", 1)]},
             {"process_id": "operating-review-held",
              "rationale": f"An operating review of the decision in effect is held once no matters are open on the "
@@ -482,7 +519,7 @@ WORK_CYCLE_TICKS = 4  # the cycle when the scenario has no repeating moment (one
 # round and all ten people repeated one action for 40 rounds.
 MIN_WORK_CYCLE_TICKS = 3
 RECURRING_COMPILED = ("raise-new-concern", "put-matter-on-agenda", "settle-agenda-matter",
-                      "bring-decision-back")  # compiled actions limited to once per person per work cycle
+                      "bring-decision-back", "object-to-remedy")  # compiled actions limited to once per person per work cycle
 
 
 def work_field(kind: str) -> str:
@@ -623,6 +660,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                     "recipient_id"]
                 e["components"]["concern"] = {"recipient_id": recipient, "status": "open", "remedy_ticks_left": 0, "times_resolved": 0, "times_raised": 0,
                                               "times_reopened": 0, "times_reviewed": 0,
+                                              "answered": False, "remedy_by": e["id"],  # itself: nobody yet
                                               "decision_id": _eid(d.decision_id),
                                               "support_id": f"support-{recipient}"
                                               if recipient in {_eid(x) for x in d.decider_ids} else recipient}

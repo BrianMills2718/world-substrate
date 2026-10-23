@@ -78,7 +78,8 @@ class WaltzmanTests(unittest.TestCase):
 
     def test_remedies_cannot_fail_part_way_in_this_saved_world(self):
         """Why the slice lets the rules writer add a stop: only a compiled countdown ever ends a remedy here."""
-        rows = attempts.long_tasks(self.world["causal_model"])
+        rows = [r for r in attempts.long_tasks(self.world["causal_model"], self.world["bundle"])
+                if r["started_by"] == "person"]
         self.assertEqual({r["action"] for r in rows}, {"resolve-concern", "resolve-own-concern"})
         self.assertFalse(any(r["can_fail_part_way"] for r in rows))
 

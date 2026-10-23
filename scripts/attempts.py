@@ -66,32 +66,84 @@ def endings(causal: dict[str, Any]) -> dict[tuple[str, str], set[str]]:
     return out
 
 
-def long_tasks(causal: dict[str, Any]) -> list[dict[str, Any]]:
-    """Every move that starts a task, and whether it can end two ways (so it can fail part-way).
+def _ways(causal: dict[str, Any], key: tuple[str, str]) -> set[str]:
+    """The values a task's field can move to while it is under way: by the world's processes, or by any person's
+    move that can act then (a move whose own checks require the field to hold some other value cannot)."""
+    ways = set(endings(causal).get(key, set()))
+    for other in causal.get("mechanics") or []:
+        needs = [lit for c in other.get("checks") or [] for path, lit in _eq_literals(c) if path == key[0]]
+        if any(repr(lit) != key[1] for lit in needs):
+            continue
+        ways |= {repr((o.get("value") or {}).get("literal")) for o in other.get("effects") or []
+                 if o.get("op") == "set" and o.get("path") == key[0] and "literal" in (o.get("value") or {})
+                 and repr(o["value"]["literal"]) != key[1]}
+    return ways
 
-    Endings count the world's processes and any person's move that can change the field while the task is under
-    way (a move whose own checks require the field to hold some other value cannot).
-    """
-    watchers, ends = task_watchers(causal), endings(causal)
-    mechanics = causal.get("mechanics") or []
+
+def _starts(rule: dict[str, Any], watchers: dict[tuple[str, str], list[str]]) -> list[tuple[str, str, Any]]:
+    """(field, value as text, value) for each watched value a rule's effects set."""
     out = []
-    for m in mechanics:
-        for e in m.get("effects") or []:
-            value = e.get("value") or {}
-            key = (e.get("path"), repr(value.get("literal")))
-            if e.get("op") == "set" and "literal" in value and key in watchers:
-                ways = set(ends.get(key, set()))
-                for other in mechanics:
-                    needs = [lit for c in other.get("checks") or [] for path, lit in _eq_literals(c) if path == key[0]]
-                    if any(repr(lit) != key[1] for lit in needs):
-                        continue
-                    ways |= {repr((o.get("value") or {}).get("literal")) for o in other.get("effects") or []
-                             if o.get("op") == "set" and o.get("path") == key[0] and "literal" in (o.get("value") or {})
-                             and repr(o["value"]["literal"]) != key[1]}
-                out.append({"action": m.get("action_kind") or m.get("mechanic_id"), "field": key[0],
-                            "value": value["literal"], "watched_by": watchers[key],
-                            "can_fail_part_way": len(ways) >= 2})
+    for e in rule.get("effects") or []:
+        value = e.get("value") or {}
+        key = (e.get("path"), repr(value.get("literal")))
+        if e.get("op") == "set" and "literal" in value and key in watchers:
+            out.append((key[0], key[1], value["literal"]))
     return out
+
+
+def _resting(bundle: dict[str, Any] | None) -> set[tuple[str, str]]:
+    """(field, value as text) for every value a field holds when the world starts."""
+    return {(f"components.{c}.{f}", repr(v)) for e in (bundle or {}).get("entities") or []
+            for c, fields in (e.get("components") or {}).items() if isinstance(fields, dict) for f, v in fields.items()}
+
+
+def world_watchers(causal: dict[str, Any], bundle: dict[str, Any] | None = None) -> dict[tuple[str, str], list[str]]:
+    """The tasks a world process starts (the rollout an authorization starts), followed like a person's task.
+
+    Only those that can end two ways count, and never a value the world starts in: a meeting being on (one way to
+    end, when it passes) is a phase, and a decision open again is back where it rested (2026-10-23 c1r20: the
+    rollout was authorized three times and never shown under way).
+    """
+    watchers, resting = task_watchers(causal), _resting(bundle)
+    out = {}
+    for p in causal.get("processes") or []:
+        for path, text, _ in _starts(p, watchers):
+            if (path, text) not in resting and len(_ways(causal, (path, text))) >= 2:
+                out[(path, text)] = watchers[(path, text)]
+    return out
+
+
+def long_tasks(causal: dict[str, Any], bundle: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    """Every move or world process that starts a task, and whether it can end two ways (so it can fail part-way).
+    `started_by` is "person" for a move and "world" for a process (see world_watchers; it needs the bundle)."""
+    watchers, world = task_watchers(causal), world_watchers(causal, bundle)
+    out = []
+    for kind, rules, ok in (("person", causal.get("mechanics") or [], watchers),
+                            ("world", causal.get("processes") or [], world)):
+        for rule in rules:
+            for path, text, literal in _starts(rule, ok):
+                out.append({"action": rule.get("action_kind") or rule.get("mechanic_id") or rule.get("process_id"),
+                            "started_by": kind, "field": path, "value": literal, "watched_by": watchers[(path, text)],
+                            "can_fail_part_way": len(_ways(causal, (path, text))) >= 2})
+    return out
+
+
+def part_way_findings(causal: dict[str, Any]) -> list[dict[str, Any]]:
+    """A world whose people start tasks that take several rounds, none of which can end two ways (#128 slice 2, E1).
+
+    Every such task then finishes on schedule whatever happens meanwhile, so nobody can start something believing
+    it will work and find out otherwise. 2026-10-23 c1r20: all 21 remedies finished one round after they started.
+    """
+    tasks = [t for t in long_tasks(causal) if t["started_by"] == "person"]
+    if not tasks or any(t["can_fail_part_way"] for t in tasks):
+        return []
+    names = ", ".join(sorted({t["action"] for t in tasks}))
+    fields = ", ".join(sorted({f"{t['field']} == {t['value']!r}" for t in tasks}))
+    return [{"rule": names, "finding": (
+        f"Every task people start ({names}) can only finish: nothing can stop it part-way. Add one process that "
+        f"stops it part-way: it checks the task is under way ({fields}) and that something it needs has gone (a "
+        "stock at or below zero, a state another person's move changed), and sets the field back to the value it "
+        "had before the task started. The person finds out by seeing it in a later round.")}]
 
 
 def _split(path: str) -> tuple[str, str] | None:

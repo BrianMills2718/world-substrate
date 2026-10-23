@@ -96,3 +96,13 @@ move, and people misreading visible state, are recorded problems, not part of th
 ## Progress
 
 - 2026-10-23: goal written.
+- 2026-10-23: E1-E4 built on branch `feat/tasks-slice2`, tested on free replays only. The c1r20 build's own AI answers
+  (`tests/fixtures/c1r20_waltzman_build.json`, ids 15817/15819/15821 from the VPS llm_client database) are rebuilt by
+  `tests/replay_build.py` with today's rules and no AI calls. Why not the rules-writing retry: in c1r20 the test run
+  started at 85 s, past the 80 s rewrite cut-off, so the retry never runs for this text; and the writer spent its
+  processes on clocks and deadlines the compiler already supplies. So the group-decision family itself now lets a
+  remedy end two ways (the concern's holder can stop someone else's remedy part-way), and the part-way check feeds the
+  retry for any other world. E2: a finished remedy records `answered` and `remedy_by`; reopening, a new concern and an
+  operating review each happen at most once per concern, so a concern is answered at most four times (free replay of
+  45 rounds: 3 each). E3: the rollout is followed with `world` as its starter (free replay: started r22-e00472,
+  finished r30-e00600). E4: the deploy move's copy of the decision into `activation_state` is removed at build time.
