@@ -83,3 +83,11 @@ Brian's review of anything except D5's design approval; Waltzman; llm_client#283
   real chain, read in full (`evidence/waltzman-belief-and-traces/c4-run21/`). C5: forced rules rejection and
   forced visitor and owner budget stops each show a plain message (`.../c5-9bfa8d3/`). D4's rendered replay
   screenshot is `spikes/any-scenario-2026-10/evidence/waltzman/run/frame-round2-attempts.png` (#209).
+- 2026-10-23: Brian approved D3 ("yes"). First #128 slice built (`scripts/attempts.py`): a move that sets a
+  field a world process watches starts a task; the run follows it across one-round requests (the page sends
+  open tasks back as `underway`), the person who started it is told each round what they expected beside what
+  they now see, and the page lists tasks under way, stopped part-way and finished. Free replays: truck on an
+  empty tank stops part-way, with fuel finishes; in the saved Waltzman world all 51 remedies finished because
+  generated rules could never write `concern`, so a generated process may now stop a remedy part-way (status
+  back to open) and the rules guidance asks for one when the description names something a remedy needs.
+  The build check flags a start that refuses up front on a stock its own task uses up. Full check: 692 tests OK.
