@@ -562,6 +562,9 @@ def run_world(
                     outcome = {"status": "nothing_left", "event": {"checks": []}}
                 else:
                     did = again
+                    # A retry chooses from a fresh page, so its move was offered (2026-10-23 luna measurement R1.5:
+                    # both fires were put out on retries, yet extinguish-fire was reported never possible).
+                    offered_kinds.add(str(again.get("kind") or ""))
                     outcome = engine.submit({**again, "controller": f"live:{policy}"})
             row = {
                 "wanted": wanted,

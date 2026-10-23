@@ -1,0 +1,8 @@
+task     0 HTTP 200    31s $0.0025 package-delivery       runnable=True finished=True attempts=[True] things=7 actions=6 idle=[]
+task     1 HTTP 200    95s $0.0118 shared-garden          runnable=True finished=False attempts=[True, True, True, True] things=7 actions=12 idle=[]
+task     2 HTTP 200    37s $0.0034 salad-orders           runnable=True finished=True attempts=[True] things=6 actions=8 idle=[]
+task     3 HTTP 200    29s $0.0028 library-lending        runnable=True finished=True attempts=[False, True] things=6 actions=3 idle=[]
+task     4 HTTP 200    27s $0.0026 small-bakery           runnable=True finished=True attempts=[True] things=3 actions=12 idle=[]
+task     5 HTTP 200    32s $0.0042 firefighting           runnable=True finished=True attempts=[True] things=7 actions=3 idle=[]
+RESULT kind=task builds=6 runnable=6 finished=5
+RESULT http_failures=0

@@ -1,0 +1,458 @@
+{
+ "source": "local World Builder build world-builder-live/world/185fa5e9bd1f46018c28ae2250c10e15 (gpt-6-luna rules measurement R1.5, 2026-10-23, evidence/luna-rules-2026-10-23), as generated",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "firefighting-task",
+   "label": "Two Small Fires",
+   "summary": "Three firefighters share a hose, a hydrant, and two small fires that can each be represented as extinguished.",
+   "location": "fire-scene",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "firefighter",
+    "fields": [
+     {
+      "name": "can_act",
+      "type": "boolean",
+      "default": true
+     }
+    ]
+   },
+   {
+    "name": "hose",
+    "fields": [
+     {
+      "name": "connected_to",
+      "type": "entity_ref_or_null",
+      "default": null
+     }
+    ]
+   },
+   {
+    "name": "fire",
+    "fields": [
+     {
+      "name": "extinguished",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "firefighter-1",
+    "label": "Firefighter 1",
+    "categories": [
+     "firefighter"
+    ],
+    "components": {
+     "firefighter": {
+      "can_act": true
+     }
+    }
+   },
+   {
+    "id": "firefighter-2",
+    "label": "Firefighter 2",
+    "categories": [
+     "firefighter"
+    ],
+    "components": {
+     "firefighter": {
+      "can_act": true
+     }
+    }
+   },
+   {
+    "id": "firefighter-3",
+    "label": "Firefighter 3",
+    "categories": [
+     "firefighter"
+    ],
+    "components": {
+     "firefighter": {
+      "can_act": true
+     }
+    }
+   },
+   {
+    "id": "shared-hose",
+    "label": "Shared hose",
+    "categories": [
+     "hose"
+    ],
+    "portable": true,
+    "owner_ref": "place:fire-scene",
+    "components": {
+     "hose": {
+      "connected_to": null
+     }
+    }
+   },
+   {
+    "id": "hydrant",
+    "label": "Hydrant",
+    "categories": [
+     "hydrant"
+    ],
+    "components": {}
+   },
+   {
+    "id": "small-fire-1",
+    "label": "Small fire 1",
+    "categories": [
+     "fire"
+    ],
+    "components": {
+     "fire": {
+      "extinguished": false
+     }
+    }
+   },
+   {
+    "id": "small-fire-2",
+    "label": "Small fire 2",
+    "categories": [
+     "fire"
+    ],
+    "components": {
+     "fire": {
+      "extinguished": false
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "connect-hose",
+    "description": "Connect the shared hose to the hydrant.",
+    "fields": [
+     {
+      "name": "hose",
+      "type": "entity_ref"
+     },
+     {
+      "name": "hydrant",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "extinguish-fire",
+    "description": "Use the shared hose at a small fire.",
+    "fields": [
+     {
+      "name": "hose",
+      "type": "entity_ref"
+     },
+     {
+      "name": "fire",
+      "type": "entity_ref"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "firefighter": {
+     "kind": "emoji",
+     "value": "\ud83d\udc68\u200d\ud83d\ude92"
+    },
+    "hose": {
+     "kind": "emoji",
+     "value": "\ud83e\uddef"
+    },
+    "hydrant": {
+     "kind": "emoji",
+     "value": "\ud83d\udeb0"
+    },
+    "fire": {
+     "kind": "emoji",
+     "value": "\ud83d\udd25"
+    }
+   },
+   "category_assets": {
+    "firefighter": "firefighter",
+    "hose": "hose",
+    "hydrant": "hydrant",
+    "fire": "fire"
+   },
+   "station_roles": {
+    "hydrant": "source",
+    "fire": "goal"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "connect-shared-hose",
+    "version": "1",
+    "action_kind": "connect-hose",
+    "rationale": "A firefighter can connect the shared hose to the hydrant when they are together at the fire scene and the hose is not already connected.",
+    "actor_selector": {
+     "categories": [
+      "firefighter"
+     ],
+     "components": [
+      "firefighter"
+     ]
+    },
+    "participants": {
+     "hose": {
+      "categories": [
+       "hose"
+      ],
+      "components": [
+       "hose"
+      ]
+     },
+     "hydrant": {
+      "categories": [
+       "hydrant"
+      ],
+      "components": []
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the firefighter can act",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.firefighter.can_act"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the hose is not connected",
+      "left": {
+       "participant": {
+        "name": "hose",
+        "path": "components.hose.connected_to"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": null
+      }
+     },
+     {
+      "label": "the firefighter is at the hose",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "hose",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the hydrant is at the hose",
+      "left": {
+       "participant": {
+        "name": "hydrant",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "hose",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "hose",
+      "path": "components.hose.connected_to",
+      "op": "set",
+      "value": {
+       "action_field": "hydrant"
+      }
+     }
+    ],
+    "limits": [
+     "The connection is refused if the hose is already connected.",
+     "This records the hose's connection to the named hydrant; it does not move the hose or represent any additional water-supply effects."
+    ],
+    "tests": [
+     "A firefighter at the unconnected hose and hydrant can connect them.",
+     "A firefighter who cannot act is refused.",
+     "A hose that is already connected is refused."
+    ],
+    "semantic_bindings": [
+     "hose is the shared hose named by the action",
+     "hydrant is the hydrant named by the action"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "extinguish-small-fire",
+    "version": "1",
+    "action_kind": "extinguish-fire",
+    "rationale": "Using the shared hose at a small fire extinguishes that fire when the hose is connected to the represented hydrant and the firefighter, hose, and fire are together.",
+    "actor_selector": {
+     "categories": [
+      "firefighter"
+     ],
+     "components": [
+      "firefighter"
+     ]
+    },
+    "participants": {
+     "hose": {
+      "categories": [
+       "hose"
+      ],
+      "components": [
+       "hose"
+      ]
+     },
+     "fire": {
+      "categories": [
+       "fire"
+      ],
+      "components": [
+       "fire"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the firefighter can act",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.firefighter.can_act"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the hose is connected to the hydrant",
+      "left": {
+       "participant": {
+        "name": "hose",
+        "path": "components.hose.connected_to"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "hydrant"
+      }
+     },
+     {
+      "label": "the fire is not extinguished",
+      "left": {
+       "participant": {
+        "name": "fire",
+        "path": "components.fire.extinguished"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "the firefighter is at the hose",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "hose",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the fire is at the hose",
+      "left": {
+       "participant": {
+        "name": "fire",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "hose",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "fire",
+      "path": "components.fire.extinguished",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The fire is not extinguished if the hose is unconnected or connected to something other than the represented hydrant.",
+     "This records only the selected fire as extinguished; it does not extinguish other fires."
+    ],
+    "tests": [
+     "With the hose connected to the hydrant, a firefighter at an unextinguished fire and hose can extinguish that fire.",
+     "An already extinguished fire cannot be extinguished again.",
+     "A fire away from the firefighter and hose is refused."
+    ],
+    "semantic_bindings": [
+     "hose is the shared hose named by the action",
+     "fire is the small fire named by the action",
+     "the hydrant reference is represented by the entity id hydrant"
+    ]
+   }
+  ],
+  "terminal": {
+   "mode": "all",
+   "selector": {
+    "categories": [
+     "fire"
+    ],
+    "components": [
+     "fire"
+    ]
+   },
+   "checks": [
+    {
+     "path": "components.fire.extinguished",
+     "op": "eq",
+     "value": true
+    }
+   ]
+  }
+ }
+}

@@ -55,6 +55,17 @@ class AuthoredWorldRunTests(unittest.TestCase):
                 if row.get("status") == "accepted" and row.get("did")}
         self.assertTrue({"load-logs", "assemble-pencils", "deliver-pencils", "sell-pencils"} <= done, done)
 
+    def test_a_move_made_on_a_same_round_retry_is_not_reported_never_offered(self):
+        # 2026-10-23 luna measurement R1.5: the hose was connected first in round 1, the other two firefighters
+        # retried and put out both fires that round, yet the summary said extinguish-fire was never possible.
+        fixture = json.loads((REPO / "tests/fixtures/firefighting-luna-r1.json").read_text())
+        trace, _, _ = run_world(fixture["bundle"], fixture["causal_model"], policy="scripted", max_turns=12)
+        done = [row["did"]["kind"] for t in trace["transcript"] for row in t["actors"].values()
+                if row.get("status") == "accepted" and row.get("did")]
+        self.assertEqual(done.count("extinguish-fire"), 2)
+        self.assertTrue(trace["summary"]["terminal_reached"])
+        self.assertEqual(trace["summary"]["never_offered"], {})
+
     def test_run_records_distinct_rule_refusals_with_their_failed_checks(self):
         bundle = load_bundle(REPAIR_BUNDLE_PATH)
         causal = json.loads(REPAIR_CAUSAL_PATH.read_text())

@@ -1,0 +1,600 @@
+{
+ "source": "local World Builder build world-builder-live/world/55ed34c1b051487799ab23f9286305fc (gpt-6-luna rules measurement R3.1, 2026-10-23, evidence/luna-rules-2026-10-23), as generated",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "shared-garden",
+   "label": "Shared Garden",
+   "summary": "Two gardeners share a watering can to water four plants.",
+   "location": "garden",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "gardener",
+    "fields": [
+     {
+      "name": "holding",
+      "type": "entity_ref_or_null",
+      "default": null
+     }
+    ]
+   },
+   {
+    "name": "watering_can",
+    "fields": [
+     {
+      "name": "held_by",
+      "type": "entity_ref_or_null",
+      "default": null
+     }
+    ]
+   },
+   {
+    "name": "plant",
+    "fields": [
+     {
+      "name": "watered",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "gardener-1",
+    "label": "Gardener 1",
+    "categories": [
+     "gardener"
+    ],
+    "components": {
+     "gardener": {
+      "holding": null
+     }
+    }
+   },
+   {
+    "id": "gardener-2",
+    "label": "Gardener 2",
+    "categories": [
+     "gardener"
+    ],
+    "components": {
+     "gardener": {
+      "holding": null
+     }
+    }
+   },
+   {
+    "id": "watering-can",
+    "label": "Watering can",
+    "categories": [
+     "watering_can"
+    ],
+    "portable": true,
+    "owner_ref": "place:garden",
+    "components": {
+     "watering_can": {
+      "held_by": null
+     }
+    }
+   },
+   {
+    "id": "plant-1",
+    "label": "Plant 1",
+    "categories": [
+     "plant"
+    ],
+    "components": {
+     "plant": {
+      "watered": false
+     }
+    }
+   },
+   {
+    "id": "plant-2",
+    "label": "Plant 2",
+    "categories": [
+     "plant"
+    ],
+    "components": {
+     "plant": {
+      "watered": false
+     }
+    }
+   },
+   {
+    "id": "plant-3",
+    "label": "Plant 3",
+    "categories": [
+     "plant"
+    ],
+    "components": {
+     "plant": {
+      "watered": false
+     }
+    }
+   },
+   {
+    "id": "plant-4",
+    "label": "Plant 4",
+    "categories": [
+     "plant"
+    ],
+    "components": {
+     "plant": {
+      "watered": false
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "take-can",
+    "description": "Take the shared watering can.",
+    "fields": [
+     {
+      "name": "can",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "set-down-can",
+    "description": "Set down the watering can you are holding.",
+    "fields": [
+     {
+      "name": "can",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "water-plant",
+    "description": "Water one plant with the shared watering can.",
+    "fields": [
+     {
+      "name": "plant",
+      "type": "entity_ref"
+     },
+     {
+      "name": "can",
+      "type": "entity_ref"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "gardener": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1\u200d\ud83c\udf3e"
+    },
+    "watering_can": {
+     "kind": "emoji",
+     "value": "\ud83d\udebf"
+    },
+    "plant": {
+     "kind": "emoji",
+     "value": "\ud83e\udeb4"
+    }
+   },
+   "category_assets": {
+    "gardener": "gardener",
+    "watering_can": "watering_can",
+    "plant": "plant"
+   },
+   "station_roles": {}
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "take-shared-watering-can",
+    "version": "1",
+    "action_kind": "take-can",
+    "rationale": "Taking the shared can makes it held by the gardener and records it in the gardener's holding field.",
+    "actor_selector": {
+     "categories": [
+      "gardener"
+     ],
+     "components": [
+      "gardener"
+     ]
+    },
+    "participants": {
+     "can": {
+      "categories": [
+       "watering_can"
+      ],
+      "components": [
+       "watering_can"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the watering can is free",
+      "left": {
+       "participant": {
+        "name": "can",
+        "path": "components.watering_can.held_by"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": null
+      }
+     },
+     {
+      "label": "your hands are free",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.gardener.holding"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": null
+      }
+     },
+     {
+      "label": "the watering can belongs to the garden",
+      "left": {
+       "participant": {
+        "name": "can",
+        "path": "ownership.owner_ref"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "place:garden"
+      }
+     },
+     {
+      "label": "you are in the garden",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "garden"
+      }
+     },
+     {
+      "label": "the watering can is in the garden",
+      "left": {
+       "participant": {
+        "name": "can",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "garden"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.gardener.holding",
+      "op": "set",
+      "value": {
+       "action_field": "can"
+      }
+     },
+     {
+      "participant": "can",
+      "path": "components.watering_can.held_by",
+      "op": "set",
+      "value": {
+       "owner_ref": "actor"
+      }
+     },
+     {
+      "participant": "can",
+      "path": "ownership.owner_ref",
+      "op": "set",
+      "value": {
+       "owner_ref": "actor"
+      }
+     }
+    ],
+    "limits": [
+     "Only a free watering can that belongs to the garden can be taken.",
+     "Taking the can is refused if your hands are not free or either you or the can is outside the garden."
+    ],
+    "tests": [
+     "A gardener with free hands can take the garden's unheld watering can, and both holding fields and its owner record the gardener.",
+     "Taking is refused when the can is already held, the gardener is already holding something, or the gardener or can is outside the garden."
+    ],
+    "semantic_bindings": [
+     "The action's can field identifies the shared watering can.",
+     "The gardener's holding and the can's held_by fields represent the same holding relationship."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "set-down-watering-can",
+    "version": "1",
+    "action_kind": "set-down-can",
+    "rationale": "Setting down the can clears the gardener's holding and the can's held_by field, and restores its represented shared-garden ownership.",
+    "actor_selector": {
+     "categories": [
+      "gardener"
+     ],
+     "components": [
+      "gardener"
+     ]
+    },
+    "participants": {
+     "can": {
+      "categories": [
+       "watering_can"
+      ],
+      "components": [
+       "watering_can"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "you are holding this watering can",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.gardener.holding"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "action_field": "can"
+      }
+     },
+     {
+      "label": "the watering can is held by you",
+      "left": {
+       "participant": {
+        "name": "can",
+        "path": "components.watering_can.held_by"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "owner_ref": "actor"
+      }
+     },
+     {
+      "label": "you are in the garden",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "garden"
+      }
+     },
+     {
+      "label": "the watering can is in the garden",
+      "left": {
+       "participant": {
+        "name": "can",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "garden"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.gardener.holding",
+      "op": "set",
+      "value": {
+       "literal": null
+      }
+     },
+     {
+      "participant": "can",
+      "path": "components.watering_can.held_by",
+      "op": "set",
+      "value": {
+       "literal": null
+      }
+     },
+     {
+      "participant": "can",
+      "path": "ownership.owner_ref",
+      "op": "set",
+      "value": {
+       "literal": "place:garden"
+      }
+     }
+    ],
+    "limits": [
+     "Only the gardener holding the specified can can set it down.",
+     "Setting it down is refused if the gardener or can is outside the garden."
+    ],
+    "tests": [
+     "A gardener holding the specified can can set it down, clearing both holding fields and restoring garden ownership.",
+     "Setting it down is refused if the gardener is not holding that can or the gardener or can is outside the garden."
+    ],
+    "semantic_bindings": [
+     "The action's can field identifies the can being set down.",
+     "The gardener's holding and the can's held_by fields represent the same holding relationship."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "water-plant-with-shared-can",
+    "version": "1",
+    "action_kind": "water-plant",
+    "rationale": "Watering one plant with the held shared can changes that plant's watered field to true; no represented can-water quantity or other plant state is changed.",
+    "actor_selector": {
+     "categories": [
+      "gardener"
+     ],
+     "components": [
+      "gardener"
+     ]
+    },
+    "participants": {
+     "plant": {
+      "categories": [
+       "plant"
+      ],
+      "components": [
+       "plant"
+      ]
+     },
+     "can": {
+      "categories": [
+       "watering_can"
+      ],
+      "components": [
+       "watering_can"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "you are holding this watering can",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.gardener.holding"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "action_field": "can"
+      }
+     },
+     {
+      "label": "the watering can is held by you",
+      "left": {
+       "participant": {
+        "name": "can",
+        "path": "components.watering_can.held_by"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "owner_ref": "actor"
+      }
+     },
+     {
+      "label": "the plant has not been watered yet",
+      "left": {
+       "participant": {
+        "name": "plant",
+        "path": "components.plant.watered"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "you are in the garden",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "garden"
+      }
+     },
+     {
+      "label": "the watering can is in the garden",
+      "left": {
+       "participant": {
+        "name": "can",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "garden"
+      }
+     },
+     {
+      "label": "the plant is in the garden",
+      "left": {
+       "participant": {
+        "name": "plant",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "garden"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "plant",
+      "path": "components.plant.watered",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Only one specified, not-yet-watered plant is marked watered by this action.",
+     "Watering is refused unless you hold the specified can and you, the can, and the plant are in the garden.",
+     "The represented state does not establish a water supply, a can-empty condition, or a need to set the can down between plants."
+    ],
+    "tests": [
+     "A gardener holding the can can water one not-yet-watered garden plant, marking that plant watered.",
+     "Watering is refused if the gardener does not hold that can, the plant is already watered, or the gardener, can, or plant is outside the garden."
+    ],
+    "semantic_bindings": [
+     "The action's plant and can fields identify the plant to water and the can used.",
+     "The plant's watered field represents whether that plant has been watered."
+    ]
+   }
+  ],
+  "terminal": {
+   "mode": "all",
+   "selector": {
+    "categories": [
+     "plant"
+    ],
+    "components": [
+     "plant"
+    ]
+   },
+   "checks": [
+    {
+     "path": "components.plant.watered",
+     "op": "eq",
+     "value": true
+    }
+   ]
+  }
+ }
+}
