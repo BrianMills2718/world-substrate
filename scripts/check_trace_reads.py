@@ -9,6 +9,8 @@ A saved run is a folder holding `run-log.jsonl`: that run's lines from the serve
 Next to it, `TRACE_READ.md` must have:
   - a `## Round N` section for every round, naming every person who tried a move that round and citing at
     least one of that round's event ids (`rN-e...`);
+  - for every task that takes several rounds (`underway` in a round, #128), its start event id in the round it
+    started and its ending event id in the round it ended, so the read says how each one turned out;
   - every llm_client trace id the log names (open each one; say what it showed);
   - a non-empty `## Findings` section.
 This proves coverage, not care: it cannot tell a careful note from a careless one.
@@ -42,7 +44,12 @@ def required(rows: list[dict]) -> tuple[set[str], dict[int, dict[str, set[str]]]
         result = row.get("result") or {}
         for turn in result.get("transcript") or []:
             n = int(turn["turn"])
-            entry = rounds.setdefault(n, {"actors": set(), "events": set()})
+            entry = rounds.setdefault(n, {"actors": set(), "events": set(), "tasks": set()})
+            for task in turn.get("underway") or []:
+                if task.get("started_round") == n and task.get("started_event_id"):
+                    entry["tasks"].add(task["started_event_id"])
+                if task.get("status") in ("failed", "finished") and task.get("ending_event_id"):
+                    entry["tasks"].add(task["ending_event_id"])
             for actor, act in (turn.get("actors") or {}).items():
                 if act.get("status") != "no_action" or act.get("wanted"):
                     entry["actors"].add(actor)
@@ -51,7 +58,7 @@ def required(rows: list[dict]) -> tuple[set[str], dict[int, dict[str, set[str]]]
         for event in result.get("engine_events") or []:
             match = re.match(r"r(\d+)-", str(event.get("event_id") or event.get("id") or ""))
             if match:
-                rounds.setdefault(int(match.group(1)), {"actors": set(), "events": set()})["events"].add(
+                rounds.setdefault(int(match.group(1)), {"actors": set(), "events": set(), "tasks": set()})["events"].add(
                     event.get("event_id") or event.get("id"))
     return trace_ids, rounds
 
@@ -85,6 +92,9 @@ def check_run(folder: Path) -> list[str]:
             problems.append(f"{folder}: Round {n} does not mention {', '.join(missing)}")
         if need["events"] and not any(e in body for e in need["events"]):
             problems.append(f"{folder}: Round {n} cites none of its event ids")
+        unnamed = sorted(e for e in need.get("tasks", set()) if not re.search(rf"{re.escape(e)}(?!\d)", body))
+        if unnamed:
+            problems.append(f"{folder}: Round {n} does not name the start or end of a task under way: {', '.join(unnamed)}")
     if not found.get("Findings"):
         problems.append(f"{folder}: '## Findings' is missing or empty")
     return problems

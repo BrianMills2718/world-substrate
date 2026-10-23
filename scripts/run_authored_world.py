@@ -17,6 +17,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
+from scripts import attempts
 from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
 from scripts.scaffold_world import _render_model, load_bundle, validate_bundle
@@ -342,6 +343,7 @@ def run_world(
     prior_recent: list[dict[str, str]] | None = None,
     briefs: dict[str, str] | None = None,
     resident_memory: dict[str, list[str]] | None = None,
+    underway: list[dict[str, Any]] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
@@ -363,6 +365,9 @@ def run_world(
         raise ValueError("turn_offset must be a nonnegative integer")
     actors = actor_ids(engine, causal_model)
     trace_id = trace_id or f"world-builder-live-run-{uuid.uuid4().hex}"
+    # Tasks that take several rounds (#128): started by a move, ended by whatever is true in a later round.
+    watchers = attempts.task_watchers(causal_value)
+    open_tasks = attempts.carried(underway, engine.world.material_dict()["entities"]) if watchers else []
     transcript: list[dict[str, Any]] = []
     seen: dict[str, int] = {}
     cost = 0.0
@@ -589,6 +594,16 @@ def run_world(
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
             rows[actor] = row
+        round_no = turn + turn_offset
+        starting: dict[str, list[dict[str, Any]]] = {}
+        for actor in actors:
+            row = rows[actor]
+            if row.get("status") == "accepted":
+                expects = (beliefs.get(actor) or {}).get("expected_effect") if residents is not None else None
+                for task in attempts.started(watchers, actor, str((row.get("did") or {}).get("kind")),
+                                             row.get("changes") or [], round_no, row.get("event_id")):
+                    row["started_task"] = True
+                    starting.setdefault(row["event_id"], []).append({**task, "expects": expects})
         if residents is not None:
             for actor in actors:
                 row, attempt = rows[actor], beliefs.get(actor) or {}
@@ -598,12 +613,37 @@ def run_world(
                 if row.get("refused_because"):
                     result += " (" + "; ".join(row["refused_because"])[:160] + ")"
                 # The resident's own record of this move, kept in its Concordia memory for the next rounds.
+                if row.get("started_task"):
+                    # A started task says what was started, not whether it will work (#128): the ending reaches the
+                    # person only through what they see in later rounds.
+                    result = "you started it; it is now under way"
                 if row["belief"] is None:
                     residents.observe(actor, f"Round {turn + turn_offset}: nothing was open to you, so you waited.")
                 else:
                     residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You did {did}, "
                                       f"expecting: {row['expects']} Result: {result}.")
         advanced = engine.advance(1)
+        # This round's events in order: each ends the open tasks whose field it moves on (a person's move or the
+        # world's process), then opens the tasks it started. An earlier event cannot end a later start.
+        this_round: list[dict[str, Any]] = []
+        for event in engine.world.events[events_seen:]:
+            run_id = _run_event_id(round_no, event.get("event_id"))
+            changes = _state_changes(event)
+            for task in list(open_tasks):
+                done = attempts.ended(task, event, run_id, round_no, changes)
+                if done is not None:
+                    open_tasks.remove(task)
+                    this_round.append(done)
+            open_tasks.extend(starting.pop(run_id, []) if run_id else [])
+        underway_now = this_round + [{**t, "status": "underway"} for t in open_tasks]
+        if residents is not None:
+            # Each open or just-ended task, seen by the person who started it next round: their own expectation
+            # beside the field as it is now. Nobody tells them it failed.
+            entities = engine.world.material_dict()["entities"]
+            for task in underway_now:
+                component, name = task["field"].split(".")[1:]
+                now = ((entities.get(task["entity"]) or {}).get("components") or {}).get(component, {}).get(name)
+                residents.observe(task["person"], f"Round {round_no + 1}: " + attempts.memory_line(task, now))
         transcript.append(
             {
                 "turn": turn + turn_offset,
@@ -615,6 +655,10 @@ def run_world(
                     for event in advanced.get("events", [])
                 ],
                 "revision_when_decided": revision,
+                # Tasks started this round or earlier that were still open or ended this round (#128).
+                "underway": [{k: t.get(k) for k in ("person", "action", "entity", "field", "started_round",
+                                                    "started_event_id", "expects", "status", "ending_event_id",
+                                                    "ended_by", "ended_with")} for t in underway_now],
                 "committed_first": order[0],
                 "actors": rows,
                 "progress": {},
@@ -698,6 +742,8 @@ def run_world(
     if residents is not None:
         # Each resident's Concordia memory after this request; live play sends it back with the next round.
         trace["resident_memory"] = residents.memory_state()
+    # Open tasks, sent back with the next round so live play keeps following them.
+    trace["underway"] = [{k: t[k] for k in sorted(attempts.TASK_KEYS)} for t in open_tasks]
     return trace, engine, causal_model
 
 

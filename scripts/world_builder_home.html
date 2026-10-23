@@ -47,6 +47,12 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .feed{margin:6px 0 14px;padding-left:0;list-style:none;font-size:14px;line-height:1.45}
 .feed li{padding:6px 0;border-bottom:1px solid var(--line)}
 .feed li:first-child{font-weight:600}
+/* Tasks that take several rounds (#128): blue while under way, orange when stopped part-way, grey when finished. */
+.underway{display:grid;gap:6px;margin:0 0 14px;padding:0;list-style:none;font-size:14px;line-height:1.45}
+.underway li{border:2px solid var(--ok);border-radius:8px;padding:6px 10px}
+.underway li.failed{border-color:var(--warn);border-style:dashed}
+.underway li.finished{border-color:var(--grey)}
+.underway b{margin-right:4px}
 .live-controls{align-items:center;gap:14px}
 .strip{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0 4px}
 .tick{width:26px;height:26px;border-radius:5px;border:2px solid transparent;cursor:pointer;padding:0}
@@ -222,6 +228,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
     </details>
     <ol class="feed" id="feed" aria-label="What just happened, newest round first"></ol>
+    <ul class="underway" id="underway" aria-label="Tasks that take several rounds: under way, stopped part-way, or finished" hidden></ul>
     <details class="picture" id="attempts"><summary title="Every person in the last 10 rounds as squares: allowed, refused, held back by the rules (not allowed to try), or waited. Select one to see why.">Why things were refused</summary>
     <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick held"></span>held back by the rules (not allowed to try)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
     <div class="strip" id="strip" aria-label="Every attempt in the last 10 rounds, in order. Select one to see why."></div>
@@ -685,6 +692,28 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     return text;
   }
 
+  // Who started a task that takes several rounds, what they expected, and how the world ended it (#128). Open tasks
+  // from the latest round, plus tasks that ended in the rounds shown in the feed, newest first.
+  function renderUnderway(rounds) {
+    const list = $("underway"); list.innerHTML = "";
+    const latest = rounds.length ? rounds[rounds.length - 1] : null;
+    const items = [];
+    rounds.slice().reverse().forEach((turn) => (turn.underway || []).forEach((u) => {
+      if (u.status !== "underway" || turn === latest) items.push(u);
+    }));
+    items.forEach((u) => {
+      const li = document.createElement("li"); li.className = u.status;
+      const head = document.createElement("b");
+      head.textContent = u.status === "underway" ? `Under way since round ${u.started_round}:`
+        : u.status === "failed" ? `Stopped part-way (started round ${u.started_round}):` : `Finished (started round ${u.started_round}):`;
+      let text = `${labelFor(u.person)} — ${words(u.action)}.`;
+      if (u.expects) text += ` They expected: ${u.expects}`;
+      if (u.status !== "underway") text += ` Ended by ${words(u.ended_by || "a move")} (${u.ending_event_id}).`;
+      li.append(head, text); list.append(li);
+    });
+    list.hidden = !items.length;
+  }
+
   function renderLive() {
     const t = live.totals, n = live.rounds.length;
     const last = n ? live.rounds[n - 1].turn : 0;
@@ -710,6 +739,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       li.append(b, roundSentence(turn)); feed.append(li);
     });
     renderStrip(live.rounds.slice(-STRIP_ROUNDS));
+    renderUnderway(live.rounds.slice(-FEED_ROUNDS));
     // Busy but stuck: name anyone who has not changed anything for a while.
     const stuck = Object.entries(live.lastChanged).filter(([, at]) => last - at >= STUCK_ROUNDS);
     const note = $("stuck-note"); note.innerHTML = "";
@@ -735,7 +765,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const residents = ai && world.briefs;
     const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: residents ? "resident" : ai ? "llm" : "scripted", turns: 1 };
     if (residents) { request.briefs = world.briefs; if (live.memory) request.resident_memory = live.memory; }
-    if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); }
+    if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
     // Simple moves are instant, so ask directly; AI rounds take a few seconds and go through a job.
     return ai ? apiJob("/run", request, 1000) : api("/run", request);
   }
@@ -762,6 +792,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         const rounds = run.trace.transcript || [];
         live.snapshot = run.trace.final_snapshot; live.seal = run.snapshot_seal; live.approval = run.approval; live.lastTurn = run.summary.last_turn;
         if (run.trace.resident_memory) live.memory = run.trace.resident_memory;
+        live.underway = run.trace.underway || [];
         if (run.trace_id) live.runIds.push(run.trace_id);
         if (run.replay_html) $("replay").srcdoc = run.replay_html;
         if (!rounds.length) {

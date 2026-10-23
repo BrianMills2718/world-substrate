@@ -325,7 +325,7 @@ what = "Fresh or continued run: builds the Engine, then per round each actor (ro
 source = "scripts/run_authored_world.py:215"
 routes = ["POST /run"]
 changes = ["World", "Entity", "Run", "Snapshot"]
-writes = ["world-substrate-contested-run/v3", "no_action", "nothing_left"]
+writes = ["world-substrate-contested-run/v3", "no_action", "nothing_left", "underway"]
 schedule = "on request; scripted runs synchronous, AI runs as a job; live play asks for 1 round at a time with continue_from"
 
 [[processes]]
@@ -581,6 +581,12 @@ name = "nothing_left"
 meaning = "The first attempt lost a race (engine wrote stale_revision) and on retry nothing was offered. The stale_revision event exists in World.events but not in the trace."
 written_by = ["run"]
 writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 364 }]
+
+[[run_row_statuses]]
+name = "underway"
+meaning = "Not a move row: the status of a task in a round's `underway` list (#128) that a person started and the world has not yet ended. Ended tasks carry `failed` or `finished`, written by scripts/attempts.py `ended`."
+written_by = ["run"]
+writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 638 }]
 
 # ------------------------------------------------------------ record schemas --
 # Every `world-substrate-*/vN` (and world-builder-*/vN) identifier the code

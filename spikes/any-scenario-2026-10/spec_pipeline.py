@@ -142,6 +142,25 @@ def _writes_compiled(effect: dict[str, Any], *, by_move: bool = False) -> bool:
     return any(effect["path"].startswith(f"components.{c}.") for c in COMPILED_COMPONENTS)
 
 
+# The one compiled write a generated process may make (#128, attempt from belief): stop a remedy part-way. The
+# compiled resolve rules start a remedy and the compiled remedy processes finish it after its rounds; nothing could
+# make one fail, so a person never learned that their fix did not hold. A world process may now put the concern
+# back to open when something the remedy needs is gone, and only while the remedy is under way.
+REMEDY_STOP = {("components.concern.status", "open"), ("components.concern.remedy_ticks_left", 0)}
+
+
+def _stops_remedy(process: dict[str, Any]) -> bool:
+    """Every compiled write of this process stops a remedy under way on the concern it checks."""
+    watched = {(c["left"]["participant"]["name"]) for c in process.get("checks", [])
+               if c.get("op") == "eq" and isinstance(c.get("left"), dict) and "participant" in c["left"]
+               and c["left"]["participant"].get("path") == "components.concern.status"
+               and (c.get("right") or {}).get("literal") == "remedy_under_way"}
+    writes = [e for e in process.get("effects", []) if _writes_compiled(e)]
+    return bool(watched and writes) and all(
+        e.get("op") == "set" and e.get("participant") in watched
+        and (e["path"], (e.get("value") or {}).get("literal", object())) in REMEDY_STOP for e in writes)
+
+
 def merge_causal(compiled: dict[str, Any], generated: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     """Compiled rules win. The reviewed communicate rule and the moment processes are never replaced, and only they
     write the information, delivery and moment components: a generated process that writes one is dropped (it would,
@@ -164,7 +183,7 @@ def merge_causal(compiled: dict[str, Any], generated: dict[str, Any]) -> tuple[d
         mechanics.append({**m, "effects": kept})
     processes = []
     for p in generated.get("processes", []):
-        if p["process_id"] in pids or any(_writes_compiled(e) for e in p.get("effects", [])):
+        if p["process_id"] in pids or (any(_writes_compiled(e) for e in p.get("effects", [])) and not _stops_remedy(p)):
             dropped.append(f"generated process {p['process_id']} dropped: it writes what a compiled rule owns")
             continue
         processes.append(p)
