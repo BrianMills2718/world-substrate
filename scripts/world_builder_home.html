@@ -710,7 +710,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       let text = (u.person === "world" ? `Started by the world's own rule — ${words(u.action)}`
         : `${labelFor(u.person)} — ${words(u.action)}`) + ` (${u.started_event_id}).`;
       if (u.expects) text += ` They expected: ${u.expects}`;
-      if (u.status !== "underway") text += ` Ended by ${words(u.ended_by || "a move")} (${u.ending_event_id}).`;
+      // Records saved before 2026-10-23 name a person's move by its rule id ("decision.action.<kind>").
+      const by = String(u.ended_by || "a move").replace(/^decision\.action\./, "");
+      if (u.status !== "underway") text += ` Ended by ${u.ended_by_person ? `${labelFor(u.ended_by_person)}: ` : ""}${words(by)} (${u.ending_event_id}).`;
       li.append(head, text); list.append(li);
     });
     list.hidden = !items.length;

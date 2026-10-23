@@ -1,0 +1,14 @@
+calls 519 errors 0 cost $0.2661
+trace ids with calls 49 of 49 ; without: []
+round-1 trace world-builder-live/run/e1c758de85e04b269bd4959ed7bde683
+16328 2026-10-23T20:07:41.002671+00:00 world-builder-concordia-resident ok 9927 persona: Community Group | sees: ['info-community-translation-concern-to-country-cedar']
+16329 2026-10-23T20:07:41.089960+00:00 world-builder-concordia-resident ok 7805 persona: Country Cedar | sees: none
+16330 2026-10-23T20:07:41.169487+00:00 world-builder-concordia-resident ok 9904 persona: Legal Group | sees: ['info-legal-retention-concern-to-country-birch']
+16331 2026-10-23T20:07:41.236756+00:00 world-builder-concordia-resident ok 8061 persona: Country Dune | sees: none
+16332 2026-10-23T20:07:41.743462+00:00 world-builder-concordia-resident ok 10217 persona: Technical Group | sees: ['info-technical-maintenance-concern-to-country-amber']
+16333 2026-10-23T20:07:41.812206+00:00 world-builder-concordia-resident ok 7822 persona: Country Birch | sees: none
+16334 2026-10-23T20:07:41.867635+00:00 world-builder-concordia-resident ok 10027 persona: Logistics Group | sees: ['info-logistics-delivery-concern-to-regional-health-network']
+16335 2026-10-23T20:07:42.115772+00:00 world-builder-concordia-resident ok 7929 persona: Regional Health Network | sees: none
+16336 2026-10-23T20:07:42.229643+00:00 world-builder-concordia-resident ok 7880 persona: the-partnership ("You are the-partnership.") | sees: none
+16337 2026-10-23T20:07:44.629300+00:00 world-builder-concordia-resident ok 7907 persona: Country Amber | sees: none
+personas: each group's private text (its own concern's content) appears only in its own call (16328 community, 16330 legal, 16332 technical, 16334 logistics); the four countries, the network and the partnership see none.

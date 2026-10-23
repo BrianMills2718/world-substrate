@@ -144,7 +144,8 @@ class RemedyCarriesItsAnswerTests(unittest.TestCase):
         self.assertEqual((self._concern()["status"], self._concern()["remedy_ticks_left"]), ("open", 0))
         changes = [c for c in stop["event"]["changes"] if ".components.concern." in c["path"]]
         ended = attempts.ended(task[0], stop["event"], "r1-e2", 1, changes)
-        self.assertEqual(ended["status"], "failed")
+        self.assertEqual((ended["status"], ended["ended_by"], ended["ended_by_person"]),
+                         ("failed", "object-to-remedy", "legal-group"))
 
     def test_no_concern_is_answered_more_than_four_times_in_a_long_free_replay(self):
         _, more = replayed()
