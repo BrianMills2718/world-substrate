@@ -1,0 +1,15 @@
+| r2-e00001 | community-group resolve-concern on info-community-notice-concern-to-country-four | finished r3-e00014 by remedy-completes |
+| r2-e00005 | country-one resolve-own-concern on info-technical-interface-concern-to-country-one | failed r3-e00010 by object-to-remedy |
+| r2-e00007 | country-three resolve-own-concern on info-logistics-backup-concern-to-country-three | finished r3-e00014 by remedy-completes |
+| r2-e00009 | country-two resolve-own-concern on info-legal-retention-concern-to-country-two | failed r3-e00008 by object-to-remedy |
+| r4-e00005 | country-one resolve-own-concern on info-technical-interface-concern-to-country-one | failed r5-e00012 by object-to-remedy |
+| r4-e00009 | country-two resolve-own-concern on info-legal-retention-concern-to-country-two | failed r5-e00006 by object-to-remedy |
+| r6-e00001 | country-one resolve-own-concern on info-technical-interface-concern-to-country-one | finished r7-e00013 by remedy-completes |
+| r6-e00003 | country-two resolve-own-concern on info-legal-retention-concern-to-country-two | finished r7-e00013 by remedy-completes |
+| r8-e00013 | world decision-authorized-at-deadline on activate-early-warning | finished r14-e00012 by deployment-completes |
+| r19-e00001 | community-group resolve-concern on info-community-notice-concern-to-country-four | finished r20-e00009 by remedy-completes |
+| r19-e00004 | country-one resolve-own-concern on info-technical-interface-concern-to-country-one | failed r19-e00010 by object-to-remedy |
+| r19-e00006 | legal-group resolve-concern on info-legal-retention-concern-to-country-two | finished r20-e00009 by remedy-completes |
+| r19-e00008 | logistics-group resolve-concern on info-logistics-backup-concern-to-country-three | finished r20-e00009 by remedy-completes |
+| r20-e00005 | technical-group resolve-concern on info-technical-interface-concern-to-country-one | finished r21-e00007 by remedy-completes |
+tasks 14 finished 9 failed 5 open 0

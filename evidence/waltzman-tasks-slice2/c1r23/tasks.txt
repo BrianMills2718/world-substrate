@@ -1,0 +1,19 @@
+| r2-e00001 | community-group resolve-concern on info-community-local-concern-to-country-d | finished r3-e00011 by remedy-completes |
+| r2-e00003 | country-a resolve-own-concern on info-technical-local-concern-to-country-a | finished r3-e00011 by remedy-completes |
+| r2-e00005 | country-b resolve-own-concern on info-legal-local-concern-to-country-b | failed r3-e00005 by object-to-remedy |
+| r2-e00007 | country-c resolve-own-concern on info-logistics-local-concern-to-country-c | finished r3-e00011 by remedy-completes |
+| r4-e00003 | country-b resolve-own-concern on info-legal-local-concern-to-country-b | failed r5-e00005 by object-to-remedy |
+| r6-e00003 | legal-group resolve-concern on info-legal-local-concern-to-country-b | finished r7-e00006 by remedy-completes |
+| r8-e00008 | world decision-authorized-at-deadline on activate-early-warning-system | finished r24-e00004 by deployment-completes |
+| r9-e00001 | country-b resolve-own-concern on info-legal-local-concern-to-country-b | failed r10-e00004 by object-to-remedy |
+| r11-e00001 | country-b resolve-own-concern on info-legal-local-concern-to-country-b | finished r12-e00007 by remedy-completes |
+| r16-e00003 | country-b resolve-own-concern on info-legal-local-concern-to-country-b | failed r16-e00007 by object-to-remedy |
+| r17-e00003 | legal-group resolve-concern on info-legal-local-concern-to-country-b | finished r18-e00012 by remedy-completes |
+| r29-e00001 | country-a resolve-own-concern on info-technical-local-concern-to-country-a | failed r30-e00013 by object-to-remedy |
+| r29-e00003 | country-b resolve-own-concern on info-legal-local-concern-to-country-b | failed r29-e00009 by object-to-remedy |
+| r29-e00005 | country-c resolve-own-concern on info-logistics-local-concern-to-country-c | failed r29-e00011 by object-to-remedy |
+| r29-e00007 | country-d resolve-own-concern on info-community-local-concern-to-country-d | finished r30-e00018 by remedy-completes |
+| r30-e00001 | country-b resolve-own-concern on info-legal-local-concern-to-country-b | finished r31-e00016 by remedy-completes |
+| r30-e00003 | country-c resolve-own-concern on info-logistics-local-concern-to-country-c | finished r31-e00016 by remedy-completes |
+| r31-e00012 | technical-group resolve-concern on info-technical-local-concern-to-country-a | finished r32-e00009 by remedy-completes |
+tasks 18 finished 11 failed 7 open 0

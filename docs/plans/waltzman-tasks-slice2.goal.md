@@ -11,7 +11,7 @@ Profile: continuous-light.
 | --- | --- | --- | --- | --- |
 | 1 | best-of-all-worlds.goal.md | – | the live World Builder | done |
 | 2 | waltzman-belief-and-traces.goal.md | 1 | enforced trace reads; #128 design and first slice | done |
-| 3 | this goal | 2 | run c1r20 showed the slice cannot yet produce a part-way ending in the canonical world | active |
+| 3 | this goal | 2 | run c1r20 showed the slice cannot yet produce a part-way ending in the canonical world | done |
 
 ## What run c1r20 showed (the problems this goal fixes)
 
@@ -129,3 +129,19 @@ move, and people misreading visible state, are recorded problems, not part of th
   said "already deployed". Fixed on branch `evidence/c1r22` (a decision-gated move cannot write one of the decision's
   own statuses into another record; free rebuild of this run's build answers), with the task record now naming who
   stopped a task. E5 needs one live run at that commit.
+- 2026-10-23: the c1r22 fixes merged and deployed (#227, 73501bb). Live run c1r23 (share `EIm1Rml2eOIZ`, 45 rounds,
+  498 AI calls, 0 errors), read in full (`evidence/waltzman-tasks-slice2/c1r23/TRACE_READ.md`), found two faults, so it
+  is not the E5 run. (1) The readout read this people world as goods, because the build's fingerprint hashed `1.0`
+  where the page sends `1`; fixed in #228 (89f1801). (2) Country B reopened its own concern at r14 because the words
+  kept for its own fix were bookkeeping ("mark the retention concern as under remedy for two ticks"); fixed in #229
+  (713a2b5, deployed): residents give a separate `work` answer saying what the work decides, and the task keeps it.
+- 2026-10-23: **E5 run c1r24** at deployed 713a2b5 (share `FQHXnP_TLKPi`, 45 rounds, $0.2371, 500 AI calls, 0 errors),
+  read in full: `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md` (check_trace_reads passes). C1 items 1-7 pass
+  (run stage at 121.5 s, 0 leaks, readout lens coordination with 46 of 46 change claims matching, replay with 0 AI
+  calls). Build record: all four long tasks `can_fail_part_way: true`. 14 tasks: 5 failed part-way (r3-e00008,
+  r3-e00010, r5-e00006, r5-e00012, r19-e00010; the concern's holder objected), 9 finished, including the world's
+  rollout r8-e00013 to r14-e00012. Countries One and Two noticed their stopped fixes at r4 from the concern reading
+  open and restarted; Country One at r20 named the objection. Most times any concern was resolved: 2; no person
+  reopened a concern (the only reopen was the operating review, r18-e00013). Nothing read activated before deploy.
+  Limit: the notice is only as specific as the person's words (Country Two's were vague, and legal said at r10 that
+  "earlier remedy details are not visible"). E1-E5 are met; goal done.

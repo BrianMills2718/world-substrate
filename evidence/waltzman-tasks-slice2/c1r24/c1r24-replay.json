@@ -1,0 +1,20 @@
+{
+ "id": "FQHXnP_TLKPi",
+ "at": "2026-10-23T22:14:43.180Z",
+ "final_round_label": 45,
+ "status": "End of the shared run: 45 rounds, replayed from the recording with no AI calls.",
+ "calls": [
+  {
+   "at": "0.5",
+   "method": "GET",
+   "path": "/health"
+  },
+  {
+   "at": "0.5",
+   "method": "GET",
+   "path": "/share/FQHXnP_TLKPi"
+  }
+ ],
+ "ai_calls": [],
+ "pass": true
+}
