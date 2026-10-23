@@ -604,7 +604,7 @@ def run_world(
         for actor in actors:
             row = rows[actor]
             if row.get("status") == "accepted":
-                expects = (beliefs.get(actor) or {}).get("expected_effect") if residents is not None else None
+                expects = attempts.task_words(beliefs.get(actor) or {}) if residents is not None else None
                 for task in attempts.started(watchers, actor, str((row.get("did") or {}).get("kind")),
                                              row.get("changes") or [], round_no, row.get("event_id")):
                     row["started_task"] = True

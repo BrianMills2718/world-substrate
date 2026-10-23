@@ -185,6 +185,20 @@ class FinishedTaskNoticeTests(unittest.TestCase):
         self.assertEqual(attempts.finished_notices([{**task, "expects": None}], entities, actors, 1), [])
 
 
+    def test_the_words_kept_for_a_task_carry_what_the_work_decides(self):
+        # c1r23 r11: Country B's own remedy kept only the record change, so at r14 B reopened the same question.
+        bookkeeping = "This will mark the retention concern as under remedy for two ticks, with me responsible."
+        answer = "Country B's data law sets a 30-day retention period for shared alert data."
+        words = attempts.task_words({"expected_effect": bookkeeping, "work": answer})
+        self.assertEqual(words, f"{bookkeeping} The work: {answer}")
+        self.assertEqual(attempts.task_words({"expected_effect": bookkeeping, "work": "none"}), bookkeeping)
+        self.assertEqual(attempts.task_words({"expected_effect": None, "work": None}), None)
+        self.assertLessEqual(len(attempts.task_words({"expected_effect": "x" * 590, "work": answer})), 600)
+        # the holder who fixed their own concern sees the answer beside the record later
+        task = {"action": "resolve-own-concern", "started_round": 11, "expects": words, "entity": "concern-b",
+                "field": "components.concern.status"}
+        self.assertIn(answer, attempts.memory_line(task, "resolved"))
+
 class WorldTasksTests(unittest.TestCase):
     """E3: the rollout a deadline rule starts is followed from its start to its ending event."""
 
