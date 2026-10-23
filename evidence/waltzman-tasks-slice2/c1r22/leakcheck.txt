@@ -1,0 +1,14 @@
+calls 522 errors 0 cost $0.2398
+round-1 trace world-builder-live/run/7eaa29c986a844fb944ac9556adf809d
+16845 2026-10-23T20:59:02.031132+00:00 world-builder-concordia-resident ok 7430 persona: partnership | sees: none
+16846 2026-10-23T20:59:02.169502+00:00 world-builder-concordia-resident ok 8791 persona: legal-group | sees: ['info-legal-clause-concern-to-country-two']
+16847 2026-10-23T20:59:02.303784+00:00 world-builder-concordia-resident ok 7615 persona: country-four | sees: none
+16848 2026-10-23T20:59:02.307074+00:00 world-builder-concordia-resident ok 7605 persona: country-three | sees: none
+16849 2026-10-23T20:59:02.350035+00:00 world-builder-concordia-resident ok 9266 persona: technical-group | sees: ['info-technical-interface-concern-to-country-one']
+16850 2026-10-23T20:59:02.470937+00:00 world-builder-concordia-resident ok 7357 persona: country-one | sees: none
+16851 2026-10-23T20:59:02.576532+00:00 world-builder-concordia-resident ok 7473 persona: regional-health-network | sees: none
+16852 2026-10-23T20:59:02.935994+00:00 world-builder-concordia-resident ok 8803 persona: logistics-group | sees: ['info-local-resupply-concern-to-country-three']
+16853 2026-10-23T20:59:03.021987+00:00 world-builder-concordia-resident ok 7354 persona: country-two | sees: none
+16854 2026-10-23T20:59:03.182336+00:00 world-builder-concordia-resident ok 8852 persona: community-group | sees: ['info-local-language-alert-concern-to-country-four']
+info texts found: {'info-technical-interface-concern-to-country-one': 'A locally tested interface does not yet display one alert fi', 'info-legal-clause-concern-to-country-two': 'One draft information-sharing clause does not specify which ', 'info-local-resupply-concern-to-country-three': 'One local supply route has a short resupply gap that could a', 'info-local-language-alert-concern-to-country-four': 'A sample alert message is not yet available in one language '}
+personas: each group's private text (its own concern's content) appears only in its own call (16846 legal, 16849 technical, 16852 logistics, 16854 community); the four countries, the network and the partnership see none.

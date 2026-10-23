@@ -113,6 +113,19 @@ move, and people misreading visible state, are recorded problems, not part of th
   objected to someone else's remedy: r3-e00007, r3-e00013, r5-e00006, r5-e00010, r9-e00005), 10 finished, including
   the world's rollout r8-e00018 to r17-e00005. Countries Amber and Birch noticed their stopped remedies in round 4 from
   the concern's state. Most times any concern was resolved: 3. Nothing read "activated" while not deployed. Page fix
-  from the read: a stop now names the person and the move instead of the rule id. **Goal done.** Left for the next
-  slice: `answered` is a flag (the legal group still says the draft lacks a retention period), and readiness stays
+  from the read: a stop now names the person and the move instead of the rule id. Called done here, but the goal
+  check rejected it (next entry). Left for the next slice: `answered` is a flag (the legal group still says the draft lacks a retention period), and readiness stays
   `not_yet_activated` after the decision is deployed.
+- 2026-10-23: the goal check rejected "done": E1 had no test of the rules retry repairing a world, and E2's `answered` was
+  only a flag (the legal group kept saying the draft lacked a retention period). #224 (385402a, deployed): a finished
+  task tells the other people its concern names what was done, in the remover's own words; the retry-repair test runs
+  the service with a stand-in rules writer and no AI calls. Live run c1r22 (share `A_tY0YwYWiyJ`, 46 rounds, $0.2055
+  run log, 522 AI calls, 0 errors), read in full: `evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md`. C1 items 1-7
+  pass. 11 tasks: 2 failed part-way (r3-e00013, r19-e00008, the concern's holder objecting), 9 finished, including the
+  rollout r8-e00004 to r14-e00004; Countries One (r4) and Two (r20) noticed their stopped remedies and restarted them.
+  Most times any concern was resolved: 2. The legal group stopped re-asking after each fix ("Without evidence that the
+  current remedy fails to clarify the alert recipient, waiting is more cautious", r21). The read found an E4 break:
+  the generated deploy move set readiness to "deployed" at r10 while the decision rolled out until r14, and six people
+  said "already deployed". Fixed on branch `evidence/c1r22` (a decision-gated move cannot write one of the decision's
+  own statuses into another record; free rebuild of this run's build answers), with the task record now naming who
+  stopped a task. E5 needs one live run at that commit.

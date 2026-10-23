@@ -146,6 +146,9 @@ class RemedyCarriesItsAnswerTests(unittest.TestCase):
         ended = attempts.ended(task[0], stop["event"], "r1-e2", 1, changes)
         self.assertEqual((ended["status"], ended["ended_by"], ended["ended_by_person"]),
                          ("failed", "object-to-remedy", "legal-group"))
+        # A built world names the rule after the move with no prefix (live run c1r22, r3-e00013): still credited.
+        built = attempts.ended(task[0], {**stop["event"], "rule_id": "object-to-remedy"}, "r1-e2", 1, changes)
+        self.assertEqual((built["ended_by"], built["ended_by_person"]), ("object-to-remedy", "legal-group"))
 
     def test_no_concern_is_answered_more_than_four_times_in_a_long_free_replay(self):
         _, more = replayed()
@@ -242,6 +245,20 @@ class DecisionCopyTests(unittest.TestCase):
         # readiness is set to several values by several moves, so no single value is a one-way copy
         _, found = drop_decision_copies(json.loads(json.dumps(causal)))
         self.assertFalse([d for d in found if "readiness to" in d])
+
+    def test_the_saved_c1r22_deploy_move_no_longer_marks_readiness_deployed(self):
+        # c1r22 r10-e00009: the partnership's deploy move set the readiness record to 'deployed' while the decision was
+        # authorized and rolling out (deployed only at r14-e00004). Readiness takes other values too, so the one-way
+        # check missed it; the value is one the decision itself moves to.
+        world = replay(REPO / "tests" / "fixtures" / "c1r22_waltzman_build.json")
+        dropped = [d for d in world["dropped_generated_rules"] if "copied the decision's status" in d]
+        self.assertEqual(len(dropped), 1, dropped)
+        self.assertIn("deploy-early-warning-system", dropped[0])
+        self.assertIn("'deployed'", dropped[0])
+        mechs = {m["action_kind"]: m for m in world["causal_model"]["mechanics"]}
+        for kind, mech in mechs.items():  # the readiness steps people work through stay as written
+            if kind != "deploy-early-warning-system":
+                self.assertNotIn("deployed", [(e.get("value") or {}).get("literal") for e in mech["effects"]], kind)
 
     def test_nothing_reads_activated_while_the_decision_is_not_deployed_in_a_free_replay(self):
         trace, _ = replayed()
