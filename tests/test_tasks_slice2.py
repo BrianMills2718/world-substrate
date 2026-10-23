@@ -157,6 +157,31 @@ class RemedyCarriesItsAnswerTests(unittest.TestCase):
         self.assertLessEqual(max(resolved.values()), 4, resolved)
 
 
+class FinishedTaskNoticeTests(unittest.TestCase):
+    """E2: when a remedy finishes, the concern's holder is told who did it and what they said it would do."""
+
+    def test_the_holder_and_the_recipient_hear_what_the_remedy_did(self):
+        trace, _ = replayed()
+        turn = next(t for t in trace["transcript"] for u in t["underway"]
+                    if u["status"] == "finished" and u["person"] != WORLD and u["action"].startswith("resolve"))
+        task = next(u for u in turn["underway"] if u["status"] == "finished" and u["person"] != WORLD)
+        said = "a 90-day retention period is added to the shared draft"
+        built_world = built()
+        engine, _, _ = build_engine(built_world["bundle"], built_world["causal_model"])
+        entities = engine.world.material_dict()["entities"]
+        concern = entities[task["entity"]]["components"]
+        holder, recipient = concern["information"]["source_id"], concern["concern"]["recipient_id"]
+        actors = sorted({holder, recipient, task["person"], "country-dune"})
+        notices = attempts.finished_notices([{**task, "expects": said}], entities, actors, turn["turn"])
+        told = {actor for actor, _ in notices}
+        self.assertEqual(told, {holder, recipient} - {task["person"]})
+        self.assertNotIn("country-dune", told)
+        self.assertTrue(all(said in text and task["person"] in text for _, text in notices))
+        # nothing for a stopped remedy, a world task, or a remedy started without words
+        self.assertEqual(attempts.finished_notices([{**task, "expects": said, "status": "failed"}], entities, actors, 1), [])
+        self.assertEqual(attempts.finished_notices([{**task, "expects": None}], entities, actors, 1), [])
+
+
 class WorldTasksTests(unittest.TestCase):
     """E3: the rollout a deadline rule starts is followed from its start to its ending event."""
 

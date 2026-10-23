@@ -655,6 +655,8 @@ def run_world(
                 component, name = task["field"].split(".")[1:]
                 now = ((entities.get(task["entity"]) or {}).get("components") or {}).get(component, {}).get(name)
                 residents.observe(task["person"], f"Round {round_no + 1}: " + attempts.memory_line(task, now))
+            for actor, text in attempts.finished_notices(this_round, entities, actors, round_no):
+                residents.observe(actor, text)
         transcript.append(
             {
                 "turn": turn + turn_offset,

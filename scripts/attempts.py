@@ -217,6 +217,30 @@ def memory_line(task: dict[str, Any], now: Any) -> str:
             f"{task['entity']} {name} is {now!r}.")
 
 
+def finished_notices(tasks: list[dict[str, Any]], entities: dict[str, Any], actors: list[str],
+                     round_no: int) -> list[tuple[str, str]]:
+    """What a finished task carried, told to the other people its record names (#128 slice 2, E2).
+
+    A remedy that only flips a status leaves the concern's holder looking at the same unanswered question
+    (2026-10-23 c1r21: the legal group said "the draft still lacks a retention period" after every remedy). The
+    person who started the task said what it would do; when it finishes, everyone else the task's record names
+    (for a concern: who holds it and who it reached) is told who did it and those words, so they can judge whether
+    it answered them.
+    """
+    out = []
+    for task in tasks:
+        if task.get("status") != "finished" or task.get("person") == "world" or not task.get("expects"):
+            continue
+        record = (entities.get(task["entity"]) or {}).get("components") or {}
+        named = {v for comp in record.values() if isinstance(comp, dict) for v in comp.values() if isinstance(v, str)}
+        for actor in actors:
+            if actor in named and actor != task["person"]:
+                out.append((actor, f"Round {round_no + 1}: {task['person']} finished {task['action']} on "
+                                   f"{task['entity']} ({task.get('ending_event_id')}). What {task['person']} said it "
+                                   f"would do: {task['expects']}"))
+    return out
+
+
 def attempt_findings(bundle: dict[str, Any], causal: dict[str, Any]) -> list[dict[str, Any]]:
     """A start that refuses up front on a stock its own task uses up over time (Decision 007, layer 2).
 

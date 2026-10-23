@@ -67,7 +67,8 @@ class WorldBuilderServiceTests(unittest.TestCase):
             "reserved_usd": reserved,
         }))
 
-    def post(self, path: str, body: dict, *, origin: str | None = None, extra_headers: dict[str, str] | None = None):
+    def post(self, path: str, body: dict, *, origin: str | None = None, extra_headers: dict[str, str] | None = None,
+             timeout: float = 5):
         headers = {"Content-Type": "application/json"}
         if origin is not None:
             headers["Origin"] = origin
@@ -79,7 +80,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=5) as response:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
                 return response.status, json.loads(response.read())
         except urllib.error.HTTPError as error:
             return error.code, json.loads(error.read())
@@ -729,6 +730,45 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("raise-concern", rules.call_args.kwargs["guidance"])
         self.assertTrue(payload["dry_run_attempts"][0]["circling"])
         self.assertFalse(payload["dry_run"]["circling"])
+
+    def _saved_people_world(self, world: dict) -> dict:
+        return {**self._people_built(), "bundle": world["bundle"], "causal_model": world["causal_model"],
+                "people": [], "briefs": {}, "not_modeled": []}
+
+    def test_rules_with_no_task_that_can_fail_part_way_are_repaired_by_the_rules_retry(self):
+        # #128 slice 2, E1, on saved worlds with no AI calls: the first rules are the ones the c1r18 build kept (every
+        # remedy can only finish); the retry returns the c1r20 build's AI answers rebuilt with today's rules.
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from replay_build import replay
+        fixtures = Path(__file__).resolve().parent / "fixtures"
+        stuck = self._saved_people_world(json.loads((fixtures / "c1r18_waltzman_world.json").read_text()))
+        repaired = self._saved_people_world(replay(fixtures / "c1r20_waltzman_build.json"))
+        # a short test run is enough here: the part-way finding comes from the rules, not from the run
+        short = patch.multiple(service, DRY_RUN_TURNS_CONTINUING=4, DRY_RUN_TURNS_LATE=4)
+        short.start()
+        self.addCleanup(short.stop)
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "write_people_rules", side_effect=[stuck, repaired]) as rules:
+            status, payload = self.post("/generate-world", {"description": "people", "world_def": "auto"}, timeout=300)
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(rules.call_count, 2)
+        first = payload["dry_run_attempts"][0]
+        self.assertTrue(first["part_way_findings"])
+        self.assertIn(first["part_way_findings"][0], rules.call_args_list[1].kwargs["guidance"])
+        self.assertNotIn("part_way_findings", payload["dry_run"])  # the repaired rules were kept
+        self.assertTrue(any(t["can_fail_part_way"] for t in payload["dry_run"]["long_tasks"] if t["started_by"] == "person"))
+        # When the retry cannot repair them, the world is kept and its build record says so plainly.
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "write_people_rules", side_effect=[stuck, stuck]):
+            status, payload = self.post("/generate-world", {"description": "people", "world_def": "auto"}, timeout=300)
+        self.assertEqual(status, 200, payload)
+        self.assertTrue(payload["dry_run"]["part_way_findings"])
+        self.assertIn("no task a person starts can fail part-way", service._dry_run_sentence(payload["dry_run"], "ongoing"))
 
     def test_monthly_allowance_stop_is_said_plainly(self):
         class LLMBudgetExceededError(Exception):
