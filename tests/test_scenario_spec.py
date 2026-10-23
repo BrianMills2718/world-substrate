@@ -357,8 +357,10 @@ class GroupDecisionTests(unittest.TestCase):
         self.assertIn("deployment-completes", ids)
         self.assertEqual(self._decision()["status"], "deployed")
         # A concern about the running system suspends it until resolved (deploy6: closed at deployment, the world
-        # went still for 26 rounds).
-        self._do("country-b", "reopen-concern", matter=matter)
+        # went still for 26 rounds). Country B already reopened this concern once, so the second time it is the
+        # holder raising a new one on the same matter (MAX_REOPENS, MAX_NEW_CONCERNS).
+        self.assertEqual(self._offered("country-b", "reopen-concern"), [])
+        self._do("legal-group", "raise-new-concern", matter=matter)
         self._do("country-b", "make-support-conditional", matter=matter)
         self.assertIn("deployment-suspended", [e["rule_id"] for e in self.engine.advance(1)["events"]])
         self.assertEqual(self._decision()["status"], "suspended")
@@ -749,7 +751,7 @@ class HedgedCallTests(unittest.TestCase):
 class NewConcernTests(unittest.TestCase):
     """raise-new-concern: concerns keep coming, once per holder per work cycle (deploy7: rounds 11-30 empty)."""
 
-    def test_a_resolved_concern_can_be_raised_again_once_per_cycle(self):
+    def test_a_resolved_concern_can_be_raised_again_once(self):
         sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
         from compile_spec import REMEDY_TICKS, add_work_cycle, compile_spec
         from scripts.run_authored_world import build_engine
@@ -779,7 +781,8 @@ class NewConcernTests(unittest.TestCase):
         for _ in range(8):
             if any(e["rule_id"] == "work-cycle-restarts" for e in engine.advance(1)["events"]):
                 break
-        self.assertEqual(len(offered("legal-group", "raise-new-concern")), 1)
+        # a new work cycle does not bring it back: the answer given twice stands (MAX_NEW_CONCERNS, c1r20)
+        self.assertEqual(offered("legal-group", "raise-new-concern"), [])
 
 
 class ImpossibleCheckTests(unittest.TestCase):

@@ -26,7 +26,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
-from scripts.attempts import attempt_findings, long_tasks
+from scripts.attempts import attempt_findings, long_tasks, part_way_findings
 from scripts.generate_causal_model import DEFAULT_MODEL, generate_causal_model
 from scripts.generate_world_bundle import generate_world_bundle
 from scripts.world_dialogue import clarify, surprise_description
@@ -788,11 +788,14 @@ def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
         return head + ("; reached the finish line" if row.get("terminal_reached") else "; did not reach the finish line")
     never = row.get("never_offered") or []
     tasks = row.get("long_tasks")
-    fail = sorted({_words(t["action"]) for t in tasks or [] if t["can_fail_part_way"]})
+    fail = sorted({_words(t["action"]) for t in tasks or [] if t["can_fail_part_way"]
+                   and t.get("started_by", "person") == "person"})
+    world = sorted({_words(t["action"]) for t in tasks or [] if t.get("started_by") == "world"})
     return (head + ("; still busy at the end" if row.get("active_at_end") else "; went quiet by the end")
             + (f"; never possible: {', '.join(_words(k) for k in never)}" if never else "")
             + ("" if tasks is None else f"; can fail part-way: {', '.join(fail)}" if fail
-               else "; no task can fail part-way" if tasks else "; no task takes several rounds")
+               else "; no task a person starts can fail part-way" if tasks else "; no task takes several rounds")
+            + (f"; followed as the world's own tasks: {', '.join(world)}" if world else "")
             + ("; a move refuses up front on what its own task uses up" if row.get("attempt_findings") else ""))
 
 
@@ -1629,9 +1632,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         )
                     # Tasks that take several rounds (#128): a start must not refuse up front on what its own task
                     # uses up; that outcome plays out over rounds. A finding goes into the one rules retry.
-                    tasks = long_tasks(built["causal_model"])
-                    dry_row["long_tasks"] = [{"action": t["action"], "can_fail_part_way": t["can_fail_part_way"]}
-                                             for t in tasks]
+                    tasks = long_tasks(built["causal_model"], built["bundle"])
+                    dry_row["long_tasks"] = [{"action": t["action"], "started_by": t["started_by"],
+                                              "can_fail_part_way": t["can_fail_part_way"]} for t in tasks]
+                    # A world where every task people start can only finish (#128 slice 2, E1): the finding goes
+                    # into the rules retry, and the build record says so if it is kept anyway.
+                    part_way = part_way_findings(built["causal_model"])
+                    if part_way:
+                        dry_row["part_way_findings"] = [g["finding"] for g in part_way]
+                        score -= 1
+                        guidance += " " + " ".join(g["finding"] for g in part_way)
                     gates = attempt_findings(built["bundle"], built["causal_model"])
                     if gates:
                         dry_row["attempt_findings"] = [g["finding"] for g in gates]

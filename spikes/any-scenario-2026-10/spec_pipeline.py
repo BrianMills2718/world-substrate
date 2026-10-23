@@ -193,6 +193,40 @@ def merge_causal(compiled: dict[str, Any], generated: dict[str, Any]) -> tuple[d
     return merged, dropped
 
 
+DECISION_STATUS = "components.group_decision.status"
+
+
+def drop_decision_copies(causal: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """A generated move that reads the decision's status and sets a record to a value no rule ever sets back copies
+    the decision into that record, which then contradicts it once the decision moves on. The copy is removed: the
+    decision's own status says whether it is in effect (#128 slice 2, E4). 2026-10-23 c1r20: the partnership's
+    deploy move set `activation_state` to 'activated' while the decision was authorized (r9-e00009); authorization
+    was withdrawn in round 15, and people said "the system is already activated" for 35 rounds."""
+    rules = [*causal.get("mechanics", []), *causal.get("processes", [])]
+    def values(path: str) -> set[str]:
+        return {repr((e.get("value") or {}).get("literal")) for r in rules for e in r.get("effects", [])
+                if e.get("path") == path and e.get("op") == "set"}
+    dropped = []
+    for m in causal.get("mechanics", []):
+        if m.get("mechanic_id", "").startswith("decision.") or not any(
+                isinstance(c.get(side), dict) and (c[side].get("participant") or {}).get("path") == DECISION_STATUS
+                for c in m.get("checks", []) for side in ("left", "right")):
+            continue
+        kept = []
+        for e in m.get("effects", []):
+            value = e.get("value") or {}
+            one_way = (e.get("op") == "set" and "literal" in value and not isinstance(value["literal"], bool)
+                       and values(e["path"]) == {repr(value["literal"])})
+            if one_way:
+                dropped.append(f"generated mechanic {m['mechanic_id']}: setting {e['path'].removeprefix('components.')} "
+                               f"to {value['literal']!r} removed: it copied the decision's status into a record no "
+                               "rule sets back, so it would contradict the decision once it moves on")
+            else:
+                kept.append(e)
+        m["effects"] = kept
+    return causal, dropped
+
+
 def pin_named_slots(spec: ScenarioSpecV1, causal: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
     """A rule slot named after a specific record or moment accepts only that entity. Without this, a slot named
     `activation_decision_deadline` (category `moment`) accepted the weekly meeting, and an agent blocked deployment

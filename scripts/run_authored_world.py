@@ -155,6 +155,9 @@ def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
     return lines[-6:]
 
 
+WORLD = "world"  # who started a task a world process started (attempts.world_watchers)
+
+
 def _run_event_id(turn: int, event_id: str | None) -> str | None:
     """An event id unique across the whole run. Live play runs each round in a fresh Engine restored from the last
     snapshot, so the Engine's own ids start again every round (2026-10-16 Waltzman: e00001 named 40 different moves,
@@ -365,8 +368,10 @@ def run_world(
         raise ValueError("turn_offset must be a nonnegative integer")
     actors = actor_ids(engine, causal_model)
     trace_id = trace_id or f"world-builder-live-run-{uuid.uuid4().hex}"
-    # Tasks that take several rounds (#128): started by a move, ended by whatever is true in a later round.
+    # Tasks that take several rounds (#128): started by a move, ended by whatever is true in a later round. A task a
+    # world process starts (the rollout) is followed the same way, with "world" as the one who started it.
     watchers = attempts.task_watchers(causal_value)
+    world_watchers = attempts.world_watchers(causal_value, bundle)
     open_tasks = attempts.carried(underway, engine.world.material_dict()["entities"]) if watchers else []
     transcript: list[dict[str, Any]] = []
     seen: dict[str, int] = {}
@@ -634,13 +639,19 @@ def run_world(
                 if done is not None:
                     open_tasks.remove(task)
                     this_round.append(done)
-            open_tasks.extend(starting.pop(run_id, []) if run_id else [])
+            if run_id in starting:
+                open_tasks.extend(starting.pop(run_id))
+            elif run_id and world_watchers:
+                open_tasks.extend(attempts.started(world_watchers, WORLD, str(event.get("rule_id")), changes,
+                                                   round_no, run_id))
         underway_now = this_round + [{**t, "status": "underway"} for t in open_tasks]
         if residents is not None:
             # Each open or just-ended task, seen by the person who started it next round: their own expectation
             # beside the field as it is now. Nobody tells them it failed.
             entities = engine.world.material_dict()["entities"]
             for task in underway_now:
+                if task["person"] == WORLD:  # everyone sees the world's own tasks in its state
+                    continue
                 component, name = task["field"].split(".")[1:]
                 now = ((entities.get(task["entity"]) or {}).get("components") or {}).get(component, {}).get(name)
                 residents.observe(task["person"], f"Round {round_no + 1}: " + attempts.memory_line(task, now))
