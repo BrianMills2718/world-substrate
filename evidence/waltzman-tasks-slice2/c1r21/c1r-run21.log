@@ -1,0 +1,13 @@
+[2.2s] pressing Create simulation
+[2.5s] step: Sending your description… 0 s
+[9.8s] step: Working out who is involved and what each of them wants… 5.7 s
+[37.7s] step: ✓ Found what is known and when things happen · 4 pieces of information, 2 scheduled moments weekly partnership meeting activation decision deadline One sensor s
+[37.7s] step: ! Left out of the simulation The schema can describe that concerns slow meetings, reopen issues and affect co The scenario does not specify implementation steps
+[37.7s] step: Working out what each person can try to do… 32.5 s
+[49.5s] step: Writing the rules for what those attempts cause… · this is the longest step 46.7 s
+[88.2s] step: Test-running the rules with simple moves… 85 s
+[112.3s] run stage visible
+[604.1s] readout 200
+[607.4s] share {"ok":true,"share_id":"y19zgLJkTqiw","rounds":45}
+[607.9s] saved c1r-run21.json
+exit 0

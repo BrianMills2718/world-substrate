@@ -106,3 +106,13 @@ move, and people misreading visible state, are recorded problems, not part of th
   operating review each happen at most once per concern, so a concern is answered at most four times (free replay of
   45 rounds: 3 each). E3: the rollout is followed with `world` as its starter (free replay: started r22-e00472,
   finished r30-e00600). E4: the deploy move's copy of the decision into `activation_state` is removed at build time.
+- 2026-10-23: E1-E4 merged and deployed (#222, c403c79, health build_commit c403c79). E5: one live owner-allowance run
+  c1r21 (share `y19zgLJkTqiw`, 46 rounds, $0.2413 run log, 519 AI calls, 0 errors), read in full:
+  `evidence/waltzman-tasks-slice2/c1r21/TRACE_READ.md` (check_trace_reads passes). C1 items 1-7 pass. Build record:
+  both remedy moves and the rollout `can_fail_part_way: true`. 15 tasks: 5 failed part-way (the concern's holder
+  objected to someone else's remedy: r3-e00007, r3-e00013, r5-e00006, r5-e00010, r9-e00005), 10 finished, including
+  the world's rollout r8-e00018 to r17-e00005. Countries Amber and Birch noticed their stopped remedies in round 4 from
+  the concern's state. Most times any concern was resolved: 3. Nothing read "activated" while not deployed. Page fix
+  from the read: a stop now names the person and the move instead of the rule id. **Goal done.** Left for the next
+  slice: `answered` is a flag (the legal group still says the draft lacks a retention period), and readiness stays
+  `not_yet_activated` after the decision is deployed.

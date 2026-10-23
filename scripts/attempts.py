@@ -176,8 +176,14 @@ def ended(task: dict[str, Any], event: dict[str, Any], run_event_id: str | None,
         return None
     only_this = all(c.get("path") == full for c in changes)
     outcome = "failed" if only_this or mine.get("after") == task["before"] else "finished"
-    return {**task, "status": outcome, "ended_round": round_no, "ending_event_id": run_event_id,
+    done = {**task, "status": outcome, "ended_round": round_no, "ending_event_id": run_event_id,
             "ended_by": event.get("rule_id"), "ended_with": mine.get("after")}
+    # A person's move (rule id "decision.action.<kind>") ends it: name the move and who made it, as the page shows.
+    bearer = event.get("causal_bearer") or {}
+    if bearer.get("kind") == "actor" and str(done["ended_by"]).startswith("decision.action."):
+        done["ended_by"] = str(done["ended_by"]).removeprefix("decision.action.")
+        done["ended_by_person"] = bearer.get("id")
+    return done
 
 
 def carried(value: object, entities: dict[str, Any]) -> list[dict[str, Any]]:
