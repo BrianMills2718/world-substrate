@@ -1,0 +1,14 @@
+calls 500 errors 0 cost $0.2371
+round-1 trace world-builder-live/run/a5a301ff5a67495bbba4b88b03c88ec8
+17868 2026-10-23T22:03:46.251173+00:00 world-builder-concordia-resident ok 8145 persona: country-one | sees: none  
+17869 2026-10-23T22:03:46.285178+00:00 world-builder-concordia-resident ok 9278 persona: community-group | sees: ['info-community-notice-concern-to-country-four']  
+17870 2026-10-23T22:03:46.322234+00:00 world-builder-concordia-resident ok 8177 persona: country-four | sees: none  
+17871 2026-10-23T22:03:46.456698+00:00 world-builder-concordia-resident ok 17007 persona: technical-group | sees: ['info-technical-interface-concern-to-country-one']  
+17872 2026-10-23T22:03:46.558379+00:00 world-builder-concordia-resident ok 7002 persona: partnership | sees: none  
+17873 2026-10-23T22:03:46.737294+00:00 world-builder-concordia-resident ok 9272 persona: legal-group | sees: ['info-legal-retention-concern-to-country-two']  
+17874 2026-10-23T22:03:47.089933+00:00 world-builder-concordia-resident ok 6969 persona: regional-health-network | sees: none  
+17875 2026-10-23T22:03:47.103480+00:00 world-builder-concordia-resident ok 9197 persona: logistics-group | sees: ['info-logistics-backup-concern-to-country-three']  
+17876 2026-10-23T22:03:47.562624+00:00 world-builder-concordia-resident ok 8103 persona: country-two | sees: none  
+17877 2026-10-23T22:03:50.854830+00:00 world-builder-concordia-resident ok 8110 persona: country-three | sees: none  
+17878 2026-10-23T22:03:53.128519+00:00 world-builder-concordia-resident ok 7380 persona: country-three | sees: none  
+leaks 0 PASS

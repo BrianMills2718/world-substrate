@@ -1,0 +1,12 @@
+[1.4s] pressing Create simulation
+[1.5s] step: Sending your description… 0 s
+[10.6s] step: Working out who is involved and what each of them wants… 7.4 s
+[30.8s] step: ✓ Found what is known and when things happen · 4 pieces of information, 2 scheduled moments weekly member meeting activation deadline The end-to-end test has no
+[30.8s] step: ! Left out of the simulation The schema cannot encode the detailed dialogue, ordering of discussion, or exact 28.8 s
+[30.8s] step: Working out what each person can try to do… 28.8 s
+[43.9s] step: Writing the rules for what those attempts cause… · this is the longest step 41.9 s
+[114.4s] step: Test-running the rules with simple moves… 111.1 s
+[121.5s] run stage visible
+[505.7s] readout 200
+[508.9s] share {"ok":true,"share_id":"FQHXnP_TLKPi","rounds":45}
+[509.8s] saved c1r-run24.json
