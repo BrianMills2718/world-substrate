@@ -33,7 +33,7 @@ RESIDENT_SCHEMA: dict[str, Any] = {
     "properties": {
         "belief": {"type": "string", "description": "What you believe about your situation right now, in one or two sentences."},
         "action_id": {"type": "string", "description": "The action_id you choose, copied exactly from the brackets, or 'wait'."},
-        "expected_effect": {"type": "string", "description": "What you expect this to change, in one sentence."},
+        "expected_effect": {"type": "string", "description": "What you expect this to change, in one sentence. If the action starts work that takes several rounds, say concretely what that work will do or produce, since the others it concerns are told your words when it finishes."},
         "reasoning": {"type": "string", "description": "One sentence on why, from your own goals and what you know."},
     },
 }
