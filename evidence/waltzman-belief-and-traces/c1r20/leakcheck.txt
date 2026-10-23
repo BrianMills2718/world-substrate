@@ -1,0 +1,14 @@
+calls 503 errors 0 cost $0.2379
+trace ids with calls 48 of 48 ; without: []
+round-1 trace world-builder-live/run/498fb597f19342488eee78000a4ea954
+15823 2026-10-23T15:48:44.739099+00:00 world-builder-concordia-resident ok 7862 sees: none | persona: ?
+15824 2026-10-23T15:48:44.814763+00:00 world-builder-concordia-resident ok 9143 sees: ['community-group'] | persona: ?
+15825 2026-10-23T15:48:44.900225+00:00 world-builder-concordia-resident ok 9128 sees: ['technical-group'] | persona: ?
+15826 2026-10-23T15:48:44.916601+00:00 world-builder-concordia-resident ok 7875 sees: none | persona: ?
+15827 2026-10-23T15:48:44.940176+00:00 world-builder-concordia-resident ok 9079 sees: ['legal-group'] | persona: ?
+15828 2026-10-23T15:48:45.078430+00:00 world-builder-concordia-resident ok 7615 sees: none | persona: ?
+15829 2026-10-23T15:48:45.236194+00:00 world-builder-concordia-resident ok 7965 sees: none | persona: ?
+15830 2026-10-23T15:48:45.603997+00:00 world-builder-concordia-resident ok 7776 sees: none | persona: ?
+15831 2026-10-23T15:48:46.786394+00:00 world-builder-concordia-resident ok 9109 sees: ['logistics-group'] | persona: ?
+15832 2026-10-23T15:48:46.795887+00:00 world-builder-concordia-resident ok 7832 sees: none | persona: ?
+personas (from "You are <id>." in each prompt): 15823 country-four, 15824 community-group, 15825 technical-group, 15826 regional-health-network, 15827 legal-group, 15828 partnership, 15829 country-one, 15830 country-two, 15831 logistics-group, 15832 country-three. Each group's private text appears only in its own call; the six others see none.

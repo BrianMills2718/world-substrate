@@ -91,3 +91,12 @@ Brian's review of anything except D5's design approval; Waltzman; llm_client#283
   generated rules could never write `concern`, so a generated process may now stop a remedy part-way (status
   back to open) and the rules guidance asks for one when the description names something a remedy needs.
   The build check flags a start that refuses up front on a stock its own task uses up. Full check: 692 tests OK.
+- 2026-10-23: D5 done. #128 slice merged (#219, 6709fa9) and live. Live run c1r20 (6709fa9, share
+  `CzQMYempni_b`) read in full, all 46 rounds: passes C1 items 1-7 again (round 1 in about 115 s; all four
+  groups delivered in round 1; each group's private text only in its own round-1 call; readout 60/60; replay
+  with 0 AI calls). 21 tasks were followed from start to ending, all remedies, all finished one round later,
+  and the people cite their own task's progress and act on its result. No part-way failure or success: none
+  was possible, because the rules writer did not add the remedy stop the guidance asks for. Not rerun to look
+  for one. Evidence and open problems (remedies never answer the question in the concern, so Country Two
+  restarted its remedy about 14 times; deployment is started by a rule, so it is not followed as a task; the
+  deploy move marks the system activated before deployment) in `evidence/waltzman-belief-and-traces/c1r20/`.
