@@ -210,6 +210,19 @@ def carried(value: object, entities: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
+def task_words(attempt: dict[str, Any]) -> str | None:
+    """What a person said a task they started would do: the expected change, then the work's substance.
+
+    A separate `work` answer, because `expected_effect` predicts the record's change (2026-10-23 c1r23: Country B's own
+    remedy said only "mark the retention concern as under remedy for two ticks", so after it finished B reopened the
+    same question). Kept within the 600 characters the page sends back.
+    """
+    expected, work = attempt.get("expected_effect"), attempt.get("work")
+    if work and work.strip().lower().rstrip(".") not in ("none", "n/a", ""):
+        expected = f"{expected or ''} The work: {work.strip()}".strip()
+    return expected[:600] if expected else None
+
+
 def memory_line(task: dict[str, Any], now: Any) -> str:
     """What the person who started a task sees of it in a later round: their own expectation and the field now."""
     name = task["field"].rsplit(".", 1)[-1].replace("_", " ")

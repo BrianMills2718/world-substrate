@@ -29,11 +29,12 @@ REPO = Path(__file__).resolve().parents[1]
 RESIDENT_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["belief", "action_id", "expected_effect", "reasoning"],
+    "required": ["belief", "action_id", "expected_effect", "work", "reasoning"],
     "properties": {
         "belief": {"type": "string", "description": "What you believe about your situation right now, in one or two sentences."},
         "action_id": {"type": "string", "description": "The action_id you choose, copied exactly from the brackets, or 'wait'."},
-        "expected_effect": {"type": "string", "description": "What you expect this to change, in one sentence. If the action starts work that takes several rounds, say concretely what that work will do or produce, since the others it concerns are told your words when it finishes."},
+        "expected_effect": {"type": "string", "description": "What you expect this to change, in one sentence."},
+        "work": {"type": "string", "description": "If the action starts work that takes several rounds, what that work will concretely decide, do or produce (for a concern: your answer to its question, or that it leaves the question open), since you and the others it concerns are shown these words when it finishes. Otherwise 'none'."},
         "reasoning": {"type": "string", "description": "One sentence on why, from your own goals and what you know."},
     },
 }
@@ -112,9 +113,10 @@ class Residents:
         self.agents[actor].observe(text)
 
     def choose(self, actor: str, offered: list[str], context: dict[str, Any]) -> dict[str, Any]:
-        """The resident's attempt: belief, action_id (an offered id or wait), expected_effect, reasoning."""
+        """The resident's attempt: belief, action_id (an offered id or wait), expected_effect, work, reasoning."""
         if not offered:
-            return {"belief": None, "action_id": WAIT, "expected_effect": None, "reasoning": "wait: no offered action"}
+            return {"belief": None, "action_id": WAIT, "expected_effect": None, "work": None,
+                    "reasoning": "wait: no offered action"}
         self.acts[actor].request = {"offered": offered, "context": context}
         spec = entity_lib.ActionSpec(call_to_action="Choose one offered action.", output_type=entity_lib.OutputType.FREE)
         value = json.loads(self.agents[actor].act(spec) or "{}")

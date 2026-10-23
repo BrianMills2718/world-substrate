@@ -376,10 +376,10 @@ class RepairBayLiveProofTests(unittest.TestCase):
 
         def call_llm_json_schema(model, messages, schema, **kwargs):
             self.assertEqual(kwargs["task"], "world-builder-concordia-resident")
-            self.assertEqual(schema["required"], ["belief", "action_id", "expected_effect", "reasoning"])
+            self.assertEqual(schema["required"], ["belief", "action_id", "expected_effect", "work", "reasoning"])
             action_id = schema["properties"]["action_id"]["enum"][0]
             return ({"belief": "The apple is ripe and nobody holds it.", "action_id": action_id,
-                     "expected_effect": "I will hold the apple.", "reasoning": "it is my goal"},
+                     "expected_effect": "I will hold the apple.", "work": "none", "reasoning": "it is my goal"},
                     types.SimpleNamespace(cost=0.001))
 
         fake.render_prompt = render_prompt
