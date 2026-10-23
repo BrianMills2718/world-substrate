@@ -92,16 +92,17 @@ PEOPLE_WORLD_BUDGET = 1.30
 WORLD_KIND_BUDGET = 0.01
 WORLD_DEFS = ("things", "people", "auto")
 MAX_BRIEF_CHARS = 4000
-# Rules-step retry escalates to a stronger model. Measured 2026-10-05 on six
-# descriptions: default model finished 11/24 builds, this model 6/6, at about
-# $0.037 vs $0.003 per rules call, so it is used only when the cheap attempt
-# does not reach its finish line.
-# Since 2026-10-16 the same WORLD_BUILDER_STRONG_MODEL setting as scripts/people_world.py (luna by default, for
-# cost, at Brian's request; sol when sharing with an outside reader).
+# The model for the rules retries, set by WORLD_BUILDER_STRONG_MODEL (also scripts/people_world.py). History:
+# 2026-10-05, the same six descriptions (scripts/measure_world_builder.py): gpt-5.6-luna finished 11/24 builds,
+# gpt-5.6-sol 6/6, so the retry moved to sol. 2026-10-16, Brian: gpt-6-luna for everything for cost, sol only when
+# sharing with Waltzman. 2026-10-23, the same six descriptions, four rounds, gpt-6-luna for every call: 23/24
+# finished (the miss had correct rules; a 12-round test was too short for them), $0.0032 per build
+# (evidence/luna-rules-2026-10-23). gpt-6-luna stays the default.
 RULES_RETRY_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-6-luna"
 RULES_RETRY_JUSTIFICATION = (
     "World Builder rules retry: the first rules did not let the described world reach its finish line; "
-    "the retry uses WORLD_BUILDER_STRONG_MODEL (sol measured 6/6 vs luna 11/24 on 2026-10-05)."
+    "the retry uses WORLD_BUILDER_STRONG_MODEL (gpt-6-luna measured 23/24 on 2026-10-23, against "
+    "gpt-5.6-luna 11/24 and gpt-5.6-sol 6/6 on 2026-10-05)."
 )
 DRY_RUN_TURNS = 12
 # Ongoing/open worlds must stay alive past the first visible run: live, an open

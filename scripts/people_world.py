@@ -28,8 +28,10 @@ PIPELINE = Path(__file__).resolve().parents[1] / "spikes/any-scenario-2026-10"
 # high. we can switch to sol when we share with waltzman". One setting, WORLD_BUILDER_STRONG_MODEL, picks the model
 # for the people and their rules (and the rules retry in world_builder_service); set it to
 # openrouter/openai/gpt-5.6-sol to go back. On 2026-10-07 eight luna rule attempts failed where sol succeeded, before
-# the compiled decision and moments existed; whether luna now suffices is what the next runs test. gpt-6-luna since
-# 2026-10-16 (Brian asked for "gpt6 luna"; half the price of gpt-5.6-luna, and llm_client's default).
+# the compiled decision and moments existed. gpt-6-luna since 2026-10-16 (Brian asked for "gpt6 luna"; half the price
+# of gpt-5.6-luna, and llm_client's default). Tested since: the live Waltzman gate C1-C6 passed with gpt-6-luna for
+# every call (2026-10-21, evidence/best-of-all-worlds/final-b7d1dc5, #198), and two Waltzman builds on 2026-10-23
+# cost $0.05 each against $0.5-0.65 with sol on 2026-10-16 (evidence/luna-rules-2026-10-23).
 PEOPLE_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-6-luna"
 PEOPLE_MODEL_WHY = (
     "World Builder people world: the scenario spec and its rules are the whole world definition; the model is set "
