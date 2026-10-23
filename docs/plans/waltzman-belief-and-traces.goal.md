@@ -73,3 +73,8 @@ Brian's review of anything except D5's design approval; Waltzman; llm_client#283
 - 2026-10-22: D2 live run c1r18 (936153d) read in full: fails C1 item 3 (technical and logistics groups were
   never offered their own message; the 256-move discovery cap cut them off). Fixed in #211 (4b48f22, live);
   evidence in `evidence/waltzman-belief-and-traces/c1r18/`. Rerun c1r19 at 4b48f22.
+- 2026-10-22: D2 done. Live run c1r19 (4b48f22, share `SvqRPn-_hgxL`) read in full, all 46 rounds: passes C1
+  items 1-7 (all four groups delivered in round 1; readout 51/51; replay with 0 AI calls). Evidence in
+  `evidence/waltzman-belief-and-traces/c1r19/`. Open problems seen while reading are listed there (seeded
+  recipient memory, retry changes the move but keeps the first `said`, logistics/Country Three reopen loop,
+  confusing state labels). D1-D4 done; D5 waits for Brian's approval of the D3 design.
