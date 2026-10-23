@@ -85,6 +85,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 - **Simulation time:** the canonical represented timeline for world actions/processes; it is distinct from browser/render time.
 - **Process/institution cadence:** when a world mechanism becomes eligible to act on that timeline; different mechanisms need not share one rate.
 - **Duration-bearing activity:** represented ongoing work such as travel, repair, testing, transport, or meetings when elapsed time/interruption matters; completion is another world transition opportunity.
+- **Task under way (attempt from belief, #128):** a person's move that only starts a duration-bearing activity (sets a field a world process watches); later rounds' processes advance it and end it, stopped part-way or finished, from what is true then. `scripts/attempts.py` finds starts and endings in the Engine's events; the person is told each round what they expected beside what they see; the page lists tasks under way. Design: `docs/plans/attempt-from-belief/`.
 - **Cognition cadence:** when a private resident runtime wakes to deliberate/replan; by default this should be driven by meaningful events rather than every low-level world step.
 - **Projection state:** possible / enabled / active / realized relationship status derived for visualization from mechanics, current state, and retained history.
 - **Core overlay:** generic read-only projection of residents, information, resources, processes, authority, or causal history.
