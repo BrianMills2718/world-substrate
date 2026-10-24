@@ -7,7 +7,7 @@ package's open questions: Q6 (one round run twice), Q10 (the readout quotes the 
 refusal is not linked to its cause). All three are in the substrate's run loop or readout, so they affect every world
 on every run. Q13 asks Brian whether this comes before the roadmap's hardening queue; the recommendation and default
 are this goal. Not adopted until Brian answers Q13 or starts it.
-Profile: continuous-light.
+**Execution profile:** continuous-light
 
 ## Roadmap
 
