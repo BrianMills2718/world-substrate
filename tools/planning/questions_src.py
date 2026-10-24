@@ -1,7 +1,7 @@
 Q = [
  dict(id="Q1", short="Rules retry never runs here", question="The build's rules retry is skipped once 80 s have passed, and in the canonical Waltzman build the test run starts at 85-111 s. Should the cut-off, or the order of the build steps, change so the retry can repair a world?",
   blocks="whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower",
-  resolves_with="An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
+  resolves_with="An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
   owner="agent", status="open", sources=["scripts/world_builder_service.py:263","scripts/world_builder_service.py:1667","docs/plans/waltzman-tasks-slice2.goal.md:100","evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"], touches=["rules-retry","test-run","build"]),
  dict(id="Q2", short="A refusal is not linked to its cause", question="When several people want the one shared thing in a round, each loser is told 'your choice was no longer allowed after earlier moves this round; choose again' and is shown the round's earlier moves (who, which rule), so it can see who moved. It is not told which of its moves was refused or which earlier move blocked it, and the record does not link the refusal to that move. Should the retry prompt and the row name the refused move and the blocking event?",
   blocks="whether a reader of a run (or the readout) can say why a person's move was refused, in any world",
@@ -48,7 +48,7 @@ Q = [
  dict(id="Q12", short="When a people-world run ends", question="A people-world run ends at the round cap even when nothing has changed for 20 rounds. Should it stop when the decision is settled and nothing changes?",
   blocks="how long visitors watch a run, and its cost",
   resolves_with="This is a product call on what a finished story looks like; no test settles it.",
-  owner="brian", status="open", recommendation="Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for 6 rounds, and say so on the page.",
+  owner="brian", status="open", recommendation="Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for one full operating-review period (6 rounds, compile_spec.py:442), and say so on the page.",
   default="Runs keep ending at the round cap the visitor picked.",
   sources=["evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md","scripts/run_authored_world.py:732"], touches=["run-loop","group-decision"]),
  dict(id="Q13", short="Which hardening first", question="The roadmap's hardening queue (executable-law fingerprint, role-specific write scopes, explicit move-cap overflow) and the run-loop fixes above (Q2, Q6) compete for the next goal. Which comes first?",

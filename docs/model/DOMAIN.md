@@ -29,8 +29,8 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 | **Approval record** (`approval`) | A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:418` |
 | **World fingerprint** (`fingerprint`) | A short hash of the bundle and rules that ties builds, rounds and shares to one world. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:381` |
 | **Information item** (`information`) | A piece of information with a source and per-recipient deliveries; hidden until delivered. | `docs/model/ODD.md:260` | `src/world_substrate/information.py:57` |
-| **Run loop** (`run-loop`) | Each round: everyone decides, picks are submitted in a rotating order, then processes run. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:460` |
-| **Lost race** (`contention`) | When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:536` |
+| **Run loop** (`run-loop`) | Each round: everyone decides, picks are submitted in a rotating order, then processes run. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:335` |
+| **Lost race** (`contention`) | When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:544` |
 | **Resident** (`resident`) | One Concordia AI agent per person: sees its brief, memory and what it can see, answers belief, move, expected effect and work. | `docs/model/ODD.md (11.3)` | `scripts/concordia_residents.py:29` |
 | **Task** (`task`) | A watched field value that takes several rounds, started by a person or the world, ended by a process: finished or failed part-way. | `docs/model/ODD.md (11.4)` | `scripts/attempts.py:17` |
 | **Finished-task notice** (`notice`) | What the other people a finished task names are told, in the starter's own words about the work. | `docs/model/ODD.md (11.4)` | `scripts/attempts.py:234` |
@@ -39,6 +39,7 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 | **Scripted test run** (`test-run`) | The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. | `docs/model/ODD.md (11.2)` | `scripts/world_builder_service.py:1607` |
 | **Run log** (`run-log`) | One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. | `docs/model/ODD.md:254` | `scripts/world_builder_service.py:478` |
 | **Readout** (`readout`) | One AI summary of a run whose every cited event id is checked against the run. | `docs/model/ODD.md (11.5)` | `scripts/run_readout.py:125` |
+| **Scene replay** (`scene-replay`) | The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. | `docs/model/ODD.md (11.5)` | `scripts/render_scene_replay.py:398` |
 | **Share link and replay** (`share`) | A saved run rebuilt from the run log that a visitor replays with no AI calls. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:598` |
 | **Daily allowance** (`budget`) | Visitor $3/day, owner $5/day; spend fails closed. | `docs/model/ODD.md:252` | `scripts/world_builder_service.py:51` |
 

@@ -97,7 +97,9 @@
    "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/planning-package/review-page/"
   },
   "cold_review": {
-   "status": "missing"
+   "status": "present",
+   "path": "docs/planning/cold-review.md",
+   "verdict": "pass"
   }
  }
 }

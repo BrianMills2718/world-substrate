@@ -20,11 +20,11 @@ Profile: continuous-light.
 
 ## The problem, in one example
 
-The page once sent one round's `/run` twice and the server ran and billed both (#225). Separately, seven people in
-the Waltzman world each want to settle the one agenda item in round 14. The first succeeds. Each of the other six is
-told "your choice was no longer allowed after earlier moves this round; choose again"
+The page once sent one round's `/run` twice and the server ran and billed both (#225). Separately, in round 14 of
+the Waltzman run the community group settles the one agenda item and seven others had wanted it too (c1r24
+TRACE_READ.md:307). Each loser is told "your choice was no longer allowed after earlier moves this round; choose again"
 (`scripts/run_authored_world.py:544-545`) and shown the round's moves so far, so it can see that the community group
-settled (c1r24 call 18016). But the prompt does not name which of its moves was refused, and the row does not record
+settled (for example country-one, c1r24 call 18016). But the prompt does not name which of its moves was refused, and the row does not record
 which event blocked it, so a reader of the run cannot say why without re-deriving the order. Then the "What happened"
 readout quotes each retried person's first words next to the move its retry made (`scripts/run_readout.py:93`).
 

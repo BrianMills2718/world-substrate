@@ -7,7 +7,7 @@
    "short": "Rules retry never runs here",
    "question": "The build's rules retry is skipped once 80 s have passed, and in the canonical Waltzman build the test run starts at 85-111 s. Should the cut-off, or the order of the build steps, change so the retry can repair a world?",
    "blocks": "whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower",
-   "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
+   "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -211,7 +211,7 @@
    "resolves_with": "This is a product call on what a finished story looks like; no test settles it.",
    "owner": "brian",
    "status": "open",
-   "recommendation": "Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for 6 rounds, and say so on the page.",
+   "recommendation": "Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for one full operating-review period (6 rounds, compile_spec.py:442), and say so on the page.",
    "default": "Runs keep ending at the round cap the visitor picked.",
    "sources": [
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",

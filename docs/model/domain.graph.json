@@ -129,13 +129,13 @@
    "id": "run-loop",
    "label": "Run loop",
    "kind": "Substrate",
-   "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:460."
+   "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:335."
   },
   {
    "id": "contention",
    "label": "Lost race",
    "kind": "Substrate",
-   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:536."
+   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:544."
   },
   {
    "id": "resident",
@@ -184,6 +184,12 @@
    "label": "Readout",
    "kind": "Substrate",
    "explain": "One AI summary of a run whose every cited event id is checked against the run. Code: scripts/run_readout.py:125."
+  },
+  {
+   "id": "scene-replay",
+   "label": "Scene replay",
+   "kind": "Substrate",
+   "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:398."
   },
   {
    "id": "share",
@@ -423,228 +429,240 @@
   },
   {
    "id": "e21",
+   "source": "run-log",
+   "target": "scene-replay",
+   "label": "feeds"
+  },
+  {
+   "id": "e22",
+   "source": "share",
+   "target": "scene-replay",
+   "label": "replays as"
+  },
+  {
+   "id": "e23",
    "source": "run-loop",
    "target": "resident",
    "label": "asks"
   },
   {
-   "id": "e22",
+   "id": "e24",
    "source": "run-loop",
    "target": "move",
    "label": "submits"
   },
   {
-   "id": "e23",
+   "id": "e25",
    "source": "run-loop",
    "target": "contention",
    "label": "can produce"
   },
   {
-   "id": "e24",
+   "id": "e26",
    "source": "resident",
    "target": "task",
    "label": "starts"
   },
   {
-   "id": "e25",
+   "id": "e27",
    "source": "process",
    "target": "task",
    "label": "ends"
   },
   {
-   "id": "e26",
+   "id": "e28",
    "source": "task",
    "target": "notice",
    "label": "finished, sends"
   },
   {
-   "id": "e27",
+   "id": "e29",
    "source": "notice",
    "target": "resident",
    "label": "shown to"
   },
   {
-   "id": "e28",
+   "id": "e30",
    "source": "build",
    "target": "test-run",
    "label": "runs"
   },
   {
-   "id": "e29",
+   "id": "e31",
    "source": "build",
    "target": "rules-retry",
    "label": "may run"
   },
   {
-   "id": "e30",
+   "id": "e32",
    "source": "rules-retry",
    "target": "gen-rules",
    "label": "rewrites"
   },
   {
-   "id": "e31",
+   "id": "e33",
    "source": "test-run",
    "target": "task",
    "label": "lists long"
   },
   {
-   "id": "e32",
+   "id": "e34",
    "source": "run-log",
    "target": "share",
    "label": "rebuilds"
   },
   {
-   "id": "e33",
+   "id": "e35",
    "source": "run-log",
    "target": "readout",
    "label": "feeds"
   },
   {
-   "id": "e34",
+   "id": "e36",
    "source": "budget",
    "target": "build",
    "label": "limits"
   },
   {
-   "id": "e35",
+   "id": "e37",
    "source": "budget",
    "target": "resident",
    "label": "limits"
   },
   {
-   "id": "e36",
+   "id": "e38",
    "source": "people-world",
    "target": "person",
    "label": "has"
   },
   {
-   "id": "e37",
+   "id": "e39",
    "source": "people-world",
    "target": "group-decision",
    "label": "may have"
   },
   {
-   "id": "e38",
+   "id": "e40",
    "source": "people-world",
    "target": "moment",
    "label": "has"
   },
   {
-   "id": "e39",
+   "id": "e41",
    "source": "people-world",
    "target": "work-cycle",
    "label": "has"
   },
   {
-   "id": "e40",
+   "id": "e42",
    "source": "people-world",
    "target": "communicate",
    "label": "has"
   },
   {
-   "id": "e41",
+   "id": "e43",
    "source": "communicate",
    "target": "information",
    "label": "delivers"
   },
   {
-   "id": "e42",
+   "id": "e44",
    "source": "information",
    "target": "concern",
    "label": "may carry"
   },
   {
-   "id": "e43",
+   "id": "e45",
    "source": "concern",
    "target": "support",
    "label": "makes conditional"
   },
   {
-   "id": "e44",
+   "id": "e46",
    "source": "support",
    "target": "group-decision",
    "label": "counts toward"
   },
   {
-   "id": "e45",
+   "id": "e47",
    "source": "remedy",
    "target": "concern",
    "label": "resolves"
   },
   {
-   "id": "e46",
+   "id": "e48",
    "source": "group-decision",
    "target": "agenda",
    "label": "holds"
   },
   {
-   "id": "e47",
+   "id": "e49",
    "source": "group-decision",
    "target": "rollout",
    "label": "starts"
   },
   {
-   "id": "e48",
+   "id": "e50",
    "source": "rollout",
    "target": "task",
    "label": "is a"
   },
   {
-   "id": "e49",
+   "id": "e51",
    "source": "remedy",
    "target": "task",
    "label": "is a"
   },
   {
-   "id": "e50",
+   "id": "e52",
    "source": "review",
    "target": "concern",
    "label": "may reopen"
   },
   {
-   "id": "e51",
+   "id": "e53",
    "source": "gen-rules",
    "target": "agenda",
    "label": "may add to"
   },
   {
-   "id": "e52",
+   "id": "e54",
    "source": "gen-rules",
    "target": "remedy",
    "label": "may stop"
   },
   {
-   "id": "e53",
+   "id": "e55",
    "source": "person",
    "target": "resident",
    "label": "briefs"
   },
   {
-   "id": "e54",
+   "id": "e56",
    "source": "build",
    "target": "gen-rules",
    "label": "writes"
   },
   {
-   "id": "e55",
+   "id": "e57",
    "source": "build",
    "target": "people-world",
    "label": "builds"
   },
   {
-   "id": "e56",
+   "id": "e58",
    "source": "harness-build",
    "target": "build",
    "label": "would replace"
   },
   {
-   "id": "e57",
+   "id": "e59",
    "source": "waltzman-ref",
    "target": "world",
    "label": "adds components to one"
   },
   {
-   "id": "e58",
+   "id": "e60",
    "source": "law-fingerprint",
    "target": "fingerprint",
    "label": "would extend"

@@ -98,7 +98,9 @@ window.PAGE_DATA = {
     "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/planning-package/review-page/"
    },
    "cold_review": {
-    "status": "missing"
+    "status": "present",
+    "path": "docs/planning/cold-review.md",
+    "verdict": "pass"
    }
   }
  },
@@ -108,7 +110,7 @@ window.PAGE_DATA = {
    "short": "Rules retry never runs here",
    "question": "The build's rules retry is skipped once 80 s have passed, and in the canonical Waltzman build the test run starts at 85-111 s. Should the cut-off, or the order of the build steps, change so the retry can repair a world?",
    "blocks": "whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower",
-   "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
+   "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -312,7 +314,7 @@ window.PAGE_DATA = {
    "resolves_with": "This is a product call on what a finished story looks like; no test settles it.",
    "owner": "brian",
    "status": "open",
-   "recommendation": "Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for 6 rounds, and say so on the page.",
+   "recommendation": "Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for one full operating-review period (6 rounds, compile_spec.py:442), and say so on the page.",
    "default": "Runs keep ending at the round cap the visitor picked.",
    "sources": [
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
@@ -612,13 +614,13 @@ window.PAGE_DATA = {
     "id": "run-loop",
     "label": "Run loop",
     "kind": "Substrate",
-    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:460."
+    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:335."
    },
    {
     "id": "contention",
     "label": "Lost race",
     "kind": "Substrate",
-    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:536."
+    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:544."
    },
    {
     "id": "resident",
@@ -667,6 +669,12 @@ window.PAGE_DATA = {
     "label": "Readout",
     "kind": "Substrate",
     "explain": "One AI summary of a run whose every cited event id is checked against the run. Code: scripts/run_readout.py:125."
+   },
+   {
+    "id": "scene-replay",
+    "label": "Scene replay",
+    "kind": "Substrate",
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:398."
    },
    {
     "id": "share",
@@ -906,228 +914,240 @@ window.PAGE_DATA = {
    },
    {
     "id": "e21",
+    "source": "run-log",
+    "target": "scene-replay",
+    "label": "feeds"
+   },
+   {
+    "id": "e22",
+    "source": "share",
+    "target": "scene-replay",
+    "label": "replays as"
+   },
+   {
+    "id": "e23",
     "source": "run-loop",
     "target": "resident",
     "label": "asks"
    },
    {
-    "id": "e22",
+    "id": "e24",
     "source": "run-loop",
     "target": "move",
     "label": "submits"
    },
    {
-    "id": "e23",
+    "id": "e25",
     "source": "run-loop",
     "target": "contention",
     "label": "can produce"
    },
    {
-    "id": "e24",
+    "id": "e26",
     "source": "resident",
     "target": "task",
     "label": "starts"
    },
    {
-    "id": "e25",
+    "id": "e27",
     "source": "process",
     "target": "task",
     "label": "ends"
    },
    {
-    "id": "e26",
+    "id": "e28",
     "source": "task",
     "target": "notice",
     "label": "finished, sends"
    },
    {
-    "id": "e27",
+    "id": "e29",
     "source": "notice",
     "target": "resident",
     "label": "shown to"
    },
    {
-    "id": "e28",
+    "id": "e30",
     "source": "build",
     "target": "test-run",
     "label": "runs"
    },
    {
-    "id": "e29",
+    "id": "e31",
     "source": "build",
     "target": "rules-retry",
     "label": "may run"
    },
    {
-    "id": "e30",
+    "id": "e32",
     "source": "rules-retry",
     "target": "gen-rules",
     "label": "rewrites"
    },
    {
-    "id": "e31",
+    "id": "e33",
     "source": "test-run",
     "target": "task",
     "label": "lists long"
    },
    {
-    "id": "e32",
+    "id": "e34",
     "source": "run-log",
     "target": "share",
     "label": "rebuilds"
    },
    {
-    "id": "e33",
+    "id": "e35",
     "source": "run-log",
     "target": "readout",
     "label": "feeds"
    },
    {
-    "id": "e34",
+    "id": "e36",
     "source": "budget",
     "target": "build",
     "label": "limits"
    },
    {
-    "id": "e35",
+    "id": "e37",
     "source": "budget",
     "target": "resident",
     "label": "limits"
    },
    {
-    "id": "e36",
+    "id": "e38",
     "source": "people-world",
     "target": "person",
     "label": "has"
    },
    {
-    "id": "e37",
+    "id": "e39",
     "source": "people-world",
     "target": "group-decision",
     "label": "may have"
    },
    {
-    "id": "e38",
+    "id": "e40",
     "source": "people-world",
     "target": "moment",
     "label": "has"
    },
    {
-    "id": "e39",
+    "id": "e41",
     "source": "people-world",
     "target": "work-cycle",
     "label": "has"
    },
    {
-    "id": "e40",
+    "id": "e42",
     "source": "people-world",
     "target": "communicate",
     "label": "has"
    },
    {
-    "id": "e41",
+    "id": "e43",
     "source": "communicate",
     "target": "information",
     "label": "delivers"
    },
    {
-    "id": "e42",
+    "id": "e44",
     "source": "information",
     "target": "concern",
     "label": "may carry"
    },
    {
-    "id": "e43",
+    "id": "e45",
     "source": "concern",
     "target": "support",
     "label": "makes conditional"
    },
    {
-    "id": "e44",
+    "id": "e46",
     "source": "support",
     "target": "group-decision",
     "label": "counts toward"
    },
    {
-    "id": "e45",
+    "id": "e47",
     "source": "remedy",
     "target": "concern",
     "label": "resolves"
    },
    {
-    "id": "e46",
+    "id": "e48",
     "source": "group-decision",
     "target": "agenda",
     "label": "holds"
    },
    {
-    "id": "e47",
+    "id": "e49",
     "source": "group-decision",
     "target": "rollout",
     "label": "starts"
    },
    {
-    "id": "e48",
+    "id": "e50",
     "source": "rollout",
     "target": "task",
     "label": "is a"
    },
    {
-    "id": "e49",
+    "id": "e51",
     "source": "remedy",
     "target": "task",
     "label": "is a"
    },
    {
-    "id": "e50",
+    "id": "e52",
     "source": "review",
     "target": "concern",
     "label": "may reopen"
    },
    {
-    "id": "e51",
+    "id": "e53",
     "source": "gen-rules",
     "target": "agenda",
     "label": "may add to"
    },
    {
-    "id": "e52",
+    "id": "e54",
     "source": "gen-rules",
     "target": "remedy",
     "label": "may stop"
    },
    {
-    "id": "e53",
+    "id": "e55",
     "source": "person",
     "target": "resident",
     "label": "briefs"
    },
    {
-    "id": "e54",
+    "id": "e56",
     "source": "build",
     "target": "gen-rules",
     "label": "writes"
    },
    {
-    "id": "e55",
+    "id": "e57",
     "source": "build",
     "target": "people-world",
     "label": "builds"
    },
    {
-    "id": "e56",
+    "id": "e58",
     "source": "harness-build",
     "target": "build",
     "label": "would replace"
    },
    {
-    "id": "e57",
+    "id": "e59",
     "source": "waltzman-ref",
     "target": "world",
     "label": "adds components to one"
    },
    {
-    "id": "e58",
+    "id": "e60",
     "source": "law-fingerprint",
     "target": "fingerprint",
     "label": "would extend"
@@ -1504,6 +1524,6 @@ window.PAGE_DATA = {
   "**Decision 008 versus the live build.** Decision 008 says worlds are built in an agent harness that drafts, checks and edits; the live service builds with fixed calls and a rules retry and does not import `scripts/world_harness.py` (open question Q14).",
   "**The wiki's 'Concepts and terminology' versus this model.** The wiki (`docs/wiki/README.md`) defines engine-level terms only; people, concerns, support, tasks and residents are defined here and in ODD section 11, not there."
  ],
- "next_plan": "# Goal: no round runs or bills twice, and a run's record says why each move was refused\n\nPlanning package: docs/planning/planning-package.json\n\nFollows [waltzman-tasks-slice2.goal.md](waltzman-tasks-slice2.goal.md), which is done. Chosen from the planning\npackage's open questions: Q6 (one round run twice), Q10 (the readout quotes the wrong words after a retry) and Q2 (a\nrefusal is not linked to its cause). All three are in the substrate's run loop or readout, so they affect every world\non every run. Q13 asks Brian whether this comes before the roadmap's hardening queue; the recommendation and default\nare this goal. Not adopted until Brian answers Q13 or starts it.\nProfile: continuous-light.\n\n## Roadmap\n\n| # | Goal | Depends on | Why here | Status |\n| --- | --- | --- | --- | --- |\n| 1 | best-of-all-worlds.goal.md | – | the live World Builder | done |\n| 2 | waltzman-belief-and-traces.goal.md | 1 | enforced trace reads; #128 design and first slice | done |\n| 3 | waltzman-tasks-slice2.goal.md | 2 | tasks that can fail part-way | done |\n| 4 | this goal | 3 | double-billed rounds and records that misattribute words or refusals, in any world | open |\n\n## The problem, in one example\n\nThe page once sent one round's `/run` twice and the server ran and billed both (#225). Separately, seven people in\nthe Waltzman world each want to settle the one agenda item in round 14. The first succeeds. Each of the other six is\ntold \"your choice was no longer allowed after earlier moves this round; choose again\"\n(`scripts/run_authored_world.py:544-545`) and shown the round's moves so far, so it can see that the community group\nsettled (c1r24 call 18016). But the prompt does not name which of its moves was refused, and the row does not record\nwhich event blocked it, so a reader of the run cannot say why without re-deriving the order. Then the \"What happened\"\nreadout quotes each retried person's first words next to the move its retry made (`scripts/run_readout.py:93`).\n\n## Canonical example\n\nA second `/run` for the same round is refused without spending and the page shows the first result. On a free replay\nof a saved world (the c1r24 Waltzman world, and the truck world), when several people pick the same one-of-a-kind move\nin a round, each refused row names its refused move and the blocking event id, the retry prompt names both, and the\nreadout quotes the retry's own words.\n\n## Done when\n\n- **F1. No round runs twice.** The service refuses a second `/run` for the same session, round and base revision with\n  no AI spend, and the page shows the first result. Test sends the same round twice.\n- **F2. The readout quotes the words behind the move that ran.** For a retried move the readout quotes\n  `said_on_retry`, as the scene replay already does (Q10). Tested on free replays of two saved worlds with no AI calls\n  (stand-in residents).\n- **F3. A refusal names its cause.** A row whose pick was refused after an earlier move records the refused move and\n  the blocking event id, and the retry prompt names both (Q2). Tested as F2.\n- **F4. One live owner-allowance canonical run** at the deployed commit, read in full (`run-log.jsonl` and a\n  `TRACE_READ.md` that `scripts/check_trace_reads.py` passes), reporting every lost race and what each loser did next.\n\nJudge each criterion from the full trace of the run it names (llm_client trace ids, Engine event ids, run log), not\nfrom a reported status.\n\n## Boundaries\n\nworld-substrate and its own deploy only. Merge after `scripts/check_project.py` exits 0; deploy and confirm the live\ncommit through the health endpoint; publish-checker before anything new goes public. Owner allowance only; visitor\nallowance stays $3/day. Free replays before the one paid run. No Waltzman-specific code paths. Never restart WSL.\n\n## Forbidden substitutes\n\nHand-edited runs; scripted moves presented as AI; a fix that only changes the Waltzman agenda; rerunning until a\nbehaviour appears.\n\n## Stop rules\n\nStop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence; report it and what\nwould unblock it. Revalidate after three increments or about four hours.\n\n## Do not gate on\n\nBrian's review; agenda content (Q3); the notice wording (Q4).\n\n## Progress\n\n- 2026-10-24: goal written from the planning package (Q2, Q6, Q10).\n- 2026-10-24: Q2 corrected twice after cold reviews: losers are already asked to choose again and shown the round's\n  moves (call 18016); what is missing is the link from a refusal to the move that caused it. Criteria reordered.\n",
+ "next_plan": "# Goal: no round runs or bills twice, and a run's record says why each move was refused\n\nPlanning package: docs/planning/planning-package.json\n\nFollows [waltzman-tasks-slice2.goal.md](waltzman-tasks-slice2.goal.md), which is done. Chosen from the planning\npackage's open questions: Q6 (one round run twice), Q10 (the readout quotes the wrong words after a retry) and Q2 (a\nrefusal is not linked to its cause). All three are in the substrate's run loop or readout, so they affect every world\non every run. Q13 asks Brian whether this comes before the roadmap's hardening queue; the recommendation and default\nare this goal. Not adopted until Brian answers Q13 or starts it.\nProfile: continuous-light.\n\n## Roadmap\n\n| # | Goal | Depends on | Why here | Status |\n| --- | --- | --- | --- | --- |\n| 1 | best-of-all-worlds.goal.md | – | the live World Builder | done |\n| 2 | waltzman-belief-and-traces.goal.md | 1 | enforced trace reads; #128 design and first slice | done |\n| 3 | waltzman-tasks-slice2.goal.md | 2 | tasks that can fail part-way | done |\n| 4 | this goal | 3 | double-billed rounds and records that misattribute words or refusals, in any world | open |\n\n## The problem, in one example\n\nThe page once sent one round's `/run` twice and the server ran and billed both (#225). Separately, in round 14 of\nthe Waltzman run the community group settles the one agenda item and seven others had wanted it too (c1r24\nTRACE_READ.md:307). Each loser is told \"your choice was no longer allowed after earlier moves this round; choose again\"\n(`scripts/run_authored_world.py:544-545`) and shown the round's moves so far, so it can see that the community group\nsettled (for example country-one, c1r24 call 18016). But the prompt does not name which of its moves was refused, and the row does not record\nwhich event blocked it, so a reader of the run cannot say why without re-deriving the order. Then the \"What happened\"\nreadout quotes each retried person's first words next to the move its retry made (`scripts/run_readout.py:93`).\n\n## Canonical example\n\nA second `/run` for the same round is refused without spending and the page shows the first result. On a free replay\nof a saved world (the c1r24 Waltzman world, and the truck world), when several people pick the same one-of-a-kind move\nin a round, each refused row names its refused move and the blocking event id, the retry prompt names both, and the\nreadout quotes the retry's own words.\n\n## Done when\n\n- **F1. No round runs twice.** The service refuses a second `/run` for the same session, round and base revision with\n  no AI spend, and the page shows the first result. Test sends the same round twice.\n- **F2. The readout quotes the words behind the move that ran.** For a retried move the readout quotes\n  `said_on_retry`, as the scene replay already does (Q10). Tested on free replays of two saved worlds with no AI calls\n  (stand-in residents).\n- **F3. A refusal names its cause.** A row whose pick was refused after an earlier move records the refused move and\n  the blocking event id, and the retry prompt names both (Q2). Tested as F2.\n- **F4. One live owner-allowance canonical run** at the deployed commit, read in full (`run-log.jsonl` and a\n  `TRACE_READ.md` that `scripts/check_trace_reads.py` passes), reporting every lost race and what each loser did next.\n\nJudge each criterion from the full trace of the run it names (llm_client trace ids, Engine event ids, run log), not\nfrom a reported status.\n\n## Boundaries\n\nworld-substrate and its own deploy only. Merge after `scripts/check_project.py` exits 0; deploy and confirm the live\ncommit through the health endpoint; publish-checker before anything new goes public. Owner allowance only; visitor\nallowance stays $3/day. Free replays before the one paid run. No Waltzman-specific code paths. Never restart WSL.\n\n## Forbidden substitutes\n\nHand-edited runs; scripted moves presented as AI; a fix that only changes the Waltzman agenda; rerunning until a\nbehaviour appears.\n\n## Stop rules\n\nStop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence; report it and what\nwould unblock it. Revalidate after three increments or about four hours.\n\n## Do not gate on\n\nBrian's review; agenda content (Q3); the notice wording (Q4).\n\n## Progress\n\n- 2026-10-24: goal written from the planning package (Q2, Q6, Q10).\n- 2026-10-24: Q2 corrected twice after cold reviews: losers are already asked to choose again and shown the round's\n  moves (call 18016); what is missing is the link from a refusal to the move that caused it. Criteria reordered.\n",
  "built_from": "6a8e37e"
 };
