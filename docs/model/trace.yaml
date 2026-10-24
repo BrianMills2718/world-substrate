@@ -84,6 +84,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
+    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
@@ -94,6 +95,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
+    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -105,6 +107,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
+    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -115,6 +118,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
+    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -125,6 +129,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
+    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot

@@ -187,6 +187,14 @@ The default project check validates navigation, authority surfaces, links, contr
 python scripts/check_project.py
 ```
 
+The tests need `pydantic` and Concordia, which the plain system Python lacks. This command supplies them and is the
+one the planning package's counts come from:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 \
+  --with pytest python scripts/check_project.py
+```
+
 Useful deterministic probes include:
 
 ```sh

@@ -1,0 +1,674 @@
+{
+ "schema": "typed-graph/v1",
+ "kinds": {
+  "Substrate": {
+   "label": "Substrate code (every world)",
+   "color": "#1f4e79",
+   "explain": "Fixed code every world runs through: the Engine, compiler, run loop, service, records."
+  },
+  "Family": {
+   "label": "Fixed people-world part",
+   "color": "#3b6fa8",
+   "explain": "Fixed code every people world gets from compile_spec.py; the group-decision family is added when the description has a decision."
+  },
+  "PerWorld": {
+   "label": "Written per world by an AI",
+   "color": "#d9822b",
+   "explain": "Not code: an AI writes it for each described world during the build."
+  },
+  "Reference": {
+   "label": "Waltzman reference code only",
+   "color": "#7a8491",
+   "explain": "Hand-written code for the Waltzman reference world; no generated world uses it."
+  },
+  "Theory": {
+   "label": "In documents only",
+   "color": "#8a8a8a",
+   "dashed": true,
+   "explain": "Named in decisions or the roadmap, not on the live path."
+  }
+ },
+ "nodes": [
+  {
+   "id": "world",
+   "label": "World",
+   "kind": "Substrate",
+   "explain": "The one canonical world during a run: entities with typed components, a tick and a revision. Code: src/world_substrate/engine.py."
+  },
+  {
+   "id": "engine",
+   "label": "Engine",
+   "kind": "Substrate",
+   "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:558."
+  },
+  {
+   "id": "event",
+   "label": "Event",
+   "kind": "Substrate",
+   "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:505."
+  },
+  {
+   "id": "move",
+   "label": "Move (action)",
+   "kind": "Substrate",
+   "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:49."
+  },
+  {
+   "id": "process",
+   "label": "Process",
+   "kind": "Substrate",
+   "explain": "A rule the world runs by itself each tick when its checks hold. Code: src/world_substrate/engine.py:762."
+  },
+  {
+   "id": "compiler",
+   "label": "Compiler",
+   "kind": "Substrate",
+   "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:456."
+  },
+  {
+   "id": "policy",
+   "label": "Policy",
+   "kind": "Substrate",
+   "explain": "What chooses a person's move (scripted, an AI model or a resident): it can only pick an offered move; installed mechanics, not its words, decide what happens. Code: src/world_substrate/policy.py:50."
+  },
+  {
+   "id": "sense",
+   "label": "Linguistic Core sense and roles",
+   "kind": "Substrate",
+   "explain": "The meaning and participant roles of a move kind, supplied by Linguistic Core; never its effects, quantities or timing. Code: src/world_substrate/semantic.py:15."
+  },
+  {
+   "id": "profile",
+   "label": "Frozen mechanic profile",
+   "kind": "Substrate",
+   "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. Code: src/world_substrate/profile.py:266."
+  },
+  {
+   "id": "write-scope",
+   "label": "Declared write scope",
+   "kind": "Substrate",
+   "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:93."
+  },
+  {
+   "id": "causal-trace",
+   "label": "Causal trace",
+   "kind": "Substrate",
+   "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: scripts/world_builder_service.py:1822."
+  },
+  {
+   "id": "world-kind",
+   "label": "World kind",
+   "kind": "Substrate",
+   "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:113."
+  },
+  {
+   "id": "builder",
+   "label": "World Builder and its bundle",
+   "kind": "Substrate",
+   "explain": "The public page and service where a person describes a world, approves its rules and watches it run; a build's output is an authoring bundle. Code: scripts/world_builder_service.py."
+  },
+  {
+   "id": "approval",
+   "label": "Approval record",
+   "kind": "Substrate",
+   "explain": "A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. Code: scripts/world_builder_service.py:418."
+  },
+  {
+   "id": "fingerprint",
+   "label": "World fingerprint",
+   "kind": "Substrate",
+   "explain": "A short hash of the bundle and rules that ties builds, rounds and shares to one world. Code: scripts/world_builder_service.py:381."
+  },
+  {
+   "id": "information",
+   "label": "Information item",
+   "kind": "Substrate",
+   "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered. Code: src/world_substrate/information.py:57."
+  },
+  {
+   "id": "run-loop",
+   "label": "Run loop",
+   "kind": "Substrate",
+   "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:335."
+  },
+  {
+   "id": "contention",
+   "label": "Lost race",
+   "kind": "Substrate",
+   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:544."
+  },
+  {
+   "id": "resident",
+   "label": "Resident",
+   "kind": "Substrate",
+   "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, answers belief, move, expected effect and work. Code: scripts/concordia_residents.py:29."
+  },
+  {
+   "id": "task",
+   "label": "Task",
+   "kind": "Substrate",
+   "explain": "A watched field value that takes several rounds, started by a person or the world, ended by a process: finished or failed part-way. Code: scripts/attempts.py:17."
+  },
+  {
+   "id": "notice",
+   "label": "Finished-task notice",
+   "kind": "Substrate",
+   "explain": "What the other people a finished task names are told, in the starter's own words about the work. Code: scripts/attempts.py:234."
+  },
+  {
+   "id": "build",
+   "label": "Build",
+   "kind": "Substrate",
+   "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1538."
+  },
+  {
+   "id": "rules-retry",
+   "label": "Rules retry",
+   "kind": "Substrate",
+   "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s. Code: scripts/world_builder_service.py:263."
+  },
+  {
+   "id": "test-run",
+   "label": "Scripted test run",
+   "kind": "Substrate",
+   "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1607."
+  },
+  {
+   "id": "run-log",
+   "label": "Run log",
+   "kind": "Substrate",
+   "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:478."
+  },
+  {
+   "id": "readout",
+   "label": "Readout",
+   "kind": "Substrate",
+   "explain": "One AI summary of a run whose every cited event id is checked against the run. Code: scripts/run_readout.py:125."
+  },
+  {
+   "id": "scene-replay",
+   "label": "Scene replay",
+   "kind": "Substrate",
+   "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:398."
+  },
+  {
+   "id": "share",
+   "label": "Share link and replay",
+   "kind": "Substrate",
+   "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:598."
+  },
+  {
+   "id": "budget",
+   "label": "Daily allowance",
+   "kind": "Substrate",
+   "explain": "Visitor $3/day, owner $5/day; spend fails closed. Code: scripts/world_builder_service.py:51."
+  },
+  {
+   "id": "people-world",
+   "label": "People world",
+   "kind": "Family",
+   "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:225."
+  },
+  {
+   "id": "communicate",
+   "label": "Communicate rule",
+   "kind": "Family",
+   "explain": "The reviewed move that delivers an information item to its recipient. Code: spikes/any-scenario-2026-10/compile_spec.py."
+  },
+  {
+   "id": "moment",
+   "label": "Scheduled moment",
+   "kind": "Family",
+   "explain": "A countdown that happens every so many rounds (a weekly meeting, a deadline). Code: spikes/any-scenario-2026-10/compile_spec.py:48."
+  },
+  {
+   "id": "work-cycle",
+   "label": "Work cycle",
+   "kind": "Family",
+   "explain": "Each action at most once per person per cycle of at least 3 rounds. Code: spikes/any-scenario-2026-10/compile_spec.py:517."
+  },
+  {
+   "id": "group-decision",
+   "label": "Group decision",
+   "kind": "Family",
+   "explain": "A decision with support, deadline, deployment and review; changed only by fixed rules. Code: spikes/any-scenario-2026-10/compile_spec.py:86."
+  },
+  {
+   "id": "concern",
+   "label": "Concern",
+   "kind": "Family",
+   "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by. Code: spikes/any-scenario-2026-10/compile_spec.py:70."
+  },
+  {
+   "id": "support",
+   "label": "Support",
+   "kind": "Family",
+   "explain": "A member's stance on the decision: none, full or conditional on a concern. Code: spikes/any-scenario-2026-10/compile_spec.py:66."
+  },
+  {
+   "id": "remedy",
+   "label": "Remedy",
+   "kind": "Family",
+   "explain": "A fix of a concern that takes 2 rounds; it can be stopped part-way by the concern's holder objecting. Code: spikes/any-scenario-2026-10/compile_spec.py:332."
+  },
+  {
+   "id": "agenda",
+   "label": "Agenda count",
+   "kind": "Family",
+   "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Code: scripts/people_world.py:279."
+  },
+  {
+   "id": "rollout",
+   "label": "Rollout",
+   "kind": "Family",
+   "explain": "The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Code: spikes/any-scenario-2026-10/compile_spec.py:399."
+  },
+  {
+   "id": "review",
+   "label": "Operating review",
+   "kind": "Family",
+   "explain": "Every 6 rounds after deployment; may reopen each resolved concern once. Code: spikes/any-scenario-2026-10/compile_spec.py:442."
+  },
+  {
+   "id": "person",
+   "label": "Person and brief",
+   "kind": "PerWorld",
+   "explain": "A person the spec names, with goals and beliefs, and the brief only their own resident reads. Code: scripts/people_world.py:355."
+  },
+  {
+   "id": "gen-rules",
+   "label": "Generated actions and rules",
+   "kind": "PerWorld",
+   "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. Code: scripts/people_world.py:260."
+  },
+  {
+   "id": "waltzman-ref",
+   "label": "Waltzman reference components",
+   "kind": "Reference",
+   "explain": "Trust, risk, readiness and commitment components and analyses of the hand-written Waltzman world. Code: reference_worlds/waltzman/components.py:11."
+  },
+  {
+   "id": "harness-build",
+   "label": "Build in an agent harness",
+   "kind": "Theory",
+   "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it. Code: scripts/world_harness.py."
+  },
+  {
+   "id": "law-fingerprint",
+   "label": "Executable-law fingerprint",
+   "kind": "Theory",
+   "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version. Code: —."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "source": "engine",
+   "target": "world",
+   "label": "changes"
+  },
+  {
+   "id": "e1",
+   "source": "engine",
+   "target": "event",
+   "label": "writes"
+  },
+  {
+   "id": "e2",
+   "source": "move",
+   "target": "engine",
+   "label": "submitted to"
+  },
+  {
+   "id": "e3",
+   "source": "process",
+   "target": "engine",
+   "label": "run by"
+  },
+  {
+   "id": "e4",
+   "source": "compiler",
+   "target": "move",
+   "label": "installs"
+  },
+  {
+   "id": "e5",
+   "source": "compiler",
+   "target": "process",
+   "label": "installs"
+  },
+  {
+   "id": "e6",
+   "source": "approval",
+   "target": "compiler",
+   "label": "approves output of"
+  },
+  {
+   "id": "e7",
+   "source": "fingerprint",
+   "target": "approval",
+   "label": "named in"
+  },
+  {
+   "id": "e8",
+   "source": "policy",
+   "target": "move",
+   "label": "chooses an offered"
+  },
+  {
+   "id": "e9",
+   "source": "resident",
+   "target": "policy",
+   "label": "is a"
+  },
+  {
+   "id": "e10",
+   "source": "sense",
+   "target": "move",
+   "label": "gives meaning to"
+  },
+  {
+   "id": "e11",
+   "source": "compiler",
+   "target": "profile",
+   "label": "freezes"
+  },
+  {
+   "id": "e12",
+   "source": "approval",
+   "target": "profile",
+   "label": "names"
+  },
+  {
+   "id": "e13",
+   "source": "profile",
+   "target": "write-scope",
+   "label": "declares"
+  },
+  {
+   "id": "e14",
+   "source": "engine",
+   "target": "write-scope",
+   "label": "enforces"
+  },
+  {
+   "id": "e15",
+   "source": "event",
+   "target": "causal-trace",
+   "label": "makes up"
+  },
+  {
+   "id": "e16",
+   "source": "causal-trace",
+   "target": "readout",
+   "label": "evidence for"
+  },
+  {
+   "id": "e17",
+   "source": "builder",
+   "target": "build",
+   "label": "runs"
+  },
+  {
+   "id": "e18",
+   "source": "build",
+   "target": "world-kind",
+   "label": "decides first"
+  },
+  {
+   "id": "e19",
+   "source": "world-kind",
+   "target": "people-world",
+   "label": "chooses"
+  },
+  {
+   "id": "e20",
+   "source": "builder",
+   "target": "share",
+   "label": "serves"
+  },
+  {
+   "id": "e21",
+   "source": "run-log",
+   "target": "scene-replay",
+   "label": "feeds"
+  },
+  {
+   "id": "e22",
+   "source": "share",
+   "target": "scene-replay",
+   "label": "replays as"
+  },
+  {
+   "id": "e23",
+   "source": "run-loop",
+   "target": "resident",
+   "label": "asks"
+  },
+  {
+   "id": "e24",
+   "source": "run-loop",
+   "target": "move",
+   "label": "submits"
+  },
+  {
+   "id": "e25",
+   "source": "run-loop",
+   "target": "contention",
+   "label": "can produce"
+  },
+  {
+   "id": "e26",
+   "source": "resident",
+   "target": "task",
+   "label": "starts"
+  },
+  {
+   "id": "e27",
+   "source": "process",
+   "target": "task",
+   "label": "ends"
+  },
+  {
+   "id": "e28",
+   "source": "task",
+   "target": "notice",
+   "label": "finished, sends"
+  },
+  {
+   "id": "e29",
+   "source": "notice",
+   "target": "resident",
+   "label": "shown to"
+  },
+  {
+   "id": "e30",
+   "source": "build",
+   "target": "test-run",
+   "label": "runs"
+  },
+  {
+   "id": "e31",
+   "source": "build",
+   "target": "rules-retry",
+   "label": "may run"
+  },
+  {
+   "id": "e32",
+   "source": "rules-retry",
+   "target": "gen-rules",
+   "label": "rewrites"
+  },
+  {
+   "id": "e33",
+   "source": "test-run",
+   "target": "task",
+   "label": "lists long"
+  },
+  {
+   "id": "e34",
+   "source": "run-log",
+   "target": "share",
+   "label": "rebuilds"
+  },
+  {
+   "id": "e35",
+   "source": "run-log",
+   "target": "readout",
+   "label": "feeds"
+  },
+  {
+   "id": "e36",
+   "source": "budget",
+   "target": "build",
+   "label": "limits"
+  },
+  {
+   "id": "e37",
+   "source": "budget",
+   "target": "resident",
+   "label": "limits"
+  },
+  {
+   "id": "e38",
+   "source": "people-world",
+   "target": "person",
+   "label": "has"
+  },
+  {
+   "id": "e39",
+   "source": "people-world",
+   "target": "group-decision",
+   "label": "may have"
+  },
+  {
+   "id": "e40",
+   "source": "people-world",
+   "target": "moment",
+   "label": "has"
+  },
+  {
+   "id": "e41",
+   "source": "people-world",
+   "target": "work-cycle",
+   "label": "has"
+  },
+  {
+   "id": "e42",
+   "source": "people-world",
+   "target": "communicate",
+   "label": "has"
+  },
+  {
+   "id": "e43",
+   "source": "communicate",
+   "target": "information",
+   "label": "delivers"
+  },
+  {
+   "id": "e44",
+   "source": "information",
+   "target": "concern",
+   "label": "may carry"
+  },
+  {
+   "id": "e45",
+   "source": "concern",
+   "target": "support",
+   "label": "makes conditional"
+  },
+  {
+   "id": "e46",
+   "source": "support",
+   "target": "group-decision",
+   "label": "counts toward"
+  },
+  {
+   "id": "e47",
+   "source": "remedy",
+   "target": "concern",
+   "label": "resolves"
+  },
+  {
+   "id": "e48",
+   "source": "group-decision",
+   "target": "agenda",
+   "label": "holds"
+  },
+  {
+   "id": "e49",
+   "source": "group-decision",
+   "target": "rollout",
+   "label": "starts"
+  },
+  {
+   "id": "e50",
+   "source": "rollout",
+   "target": "task",
+   "label": "is a"
+  },
+  {
+   "id": "e51",
+   "source": "remedy",
+   "target": "task",
+   "label": "is a"
+  },
+  {
+   "id": "e52",
+   "source": "review",
+   "target": "concern",
+   "label": "may reopen"
+  },
+  {
+   "id": "e53",
+   "source": "gen-rules",
+   "target": "agenda",
+   "label": "may add to"
+  },
+  {
+   "id": "e54",
+   "source": "gen-rules",
+   "target": "remedy",
+   "label": "may stop"
+  },
+  {
+   "id": "e55",
+   "source": "person",
+   "target": "resident",
+   "label": "briefs"
+  },
+  {
+   "id": "e56",
+   "source": "build",
+   "target": "gen-rules",
+   "label": "writes"
+  },
+  {
+   "id": "e57",
+   "source": "build",
+   "target": "people-world",
+   "label": "builds"
+  },
+  {
+   "id": "e58",
+   "source": "harness-build",
+   "target": "build",
+   "label": "would replace"
+  },
+  {
+   "id": "e59",
+   "source": "waltzman-ref",
+   "target": "world",
+   "label": "adds components to one"
+  },
+  {
+   "id": "e60",
+   "source": "law-fingerprint",
+   "target": "fingerprint",
+   "label": "would extend"
+  }
+ ],
+ "layout": {
+  "algorithm": "force"
+ }
+}
