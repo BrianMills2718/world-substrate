@@ -4,7 +4,7 @@ description: "World Builder builds worlds inside an agent harness (Codex on Open
 
 # Decision 008: Build worlds inside an agent harness, not with bare LLM calls
 
-Governs: scripts/people_world.py, scripts/world_builder_service.py (people-world build), spikes/any-scenario-2026-10
+Governs: scripts/people_world.py, scripts/world_builder_service.py, spikes/any-scenario-2026-10
 
 **Status:** accepted (implementation in progress)
 **Date:** 2026-10-16

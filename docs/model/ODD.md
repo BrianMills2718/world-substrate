@@ -4,7 +4,7 @@ description: ODD-style model of the World Substrate software system, its entitie
 
 # World Substrate as a software system: an ODD-style model
 
-Status: implemented-system description at commit `d18ead6` (2026-10-06); the any-scenario pipeline, information items and linked process participants added at `2e409ab` (2026-10-08). It describes what the code does, not target architecture. Machine-readable twin: [world_substrate_model.toml](world_substrate_model.toml), checked against the code by `tests/test_system_model.py`. What each view shows of this model: [VIEW_COVERAGE.md](VIEW_COVERAGE.md).
+Status: implemented-system description at commit `d18ead6` (2026-10-06); the any-scenario pipeline, information items and linked process participants added at `2e409ab` (2026-10-08); people worlds on the live path, the group-decision family, task tracking, live residents, readout and share links added at `6a8e37e` (2026-10-24, section 11). It describes what the code does, not target architecture. Machine-readable twin: [world_substrate_model.toml](world_substrate_model.toml), checked against the code by `tests/test_system_model.py`. What each view shows of this model: [VIEW_COVERAGE.md](VIEW_COVERAGE.md).
 
 **Two levels, kept apart.** World Substrate *hosts* world models: Kitchen, Orchard, Repair Bay, Waltzman, each with its own entities, rules and outcomes. This document is **not** about any of those worlds. It models the *software system that holds them*: what it stores (worlds, rule proposals, approvals, runs, logs), the processes that change what it stores, and the records each process writes. A "rule" below is a stored object the system compiles and enforces; what a particular rule means inside a particular world is out of scope.
 
@@ -87,7 +87,7 @@ C4Container
 - The Engine: one canonical world per run, atomic commit or refusal, declared write scopes enforced, read scopes recorded, causal events.
 - The run loop that offers actions, takes one choice per actor per round and advances processes; the read-only projections and existing renderers; the World Builder pages and API; run log and budget ledger.
 - Information items and their per-recipient delivery (`src/world_substrate/information.py`), applied by `Engine.observe` to every world.
-- The describe-any-scenario pipeline spike (`spikes/any-scenario-2026-10/`, [Decision 007](../decisions/007-any-scenario-path.md)): offline scripts that reuse the World Builder generators, compiler and Engine. Not deployed; nothing on the World Builder path calls it. Its residents run on Concordia (`gdm-concordia==2.4.0`), which is outside.
+- The describe-any-scenario pipeline spike (`spikes/any-scenario-2026-10/`, [Decision 007](../decisions/007-any-scenario-path.md)): offline scripts that reuse the World Builder generators, compiler and Engine. Most of it is offline, but since the people-world path (section 11) the live World Builder imports two of its modules, `compile_spec` and `spec_pipeline` (`scripts/people_world.py:76-77`). Its residents run on Concordia (`gdm-concordia==2.4.0`), which is outside.
 
 **Outside** (hosted on commodity runtimes, or simply not ours):
 
@@ -235,7 +235,7 @@ Each rule below is enforced by the cited code.
 
 **8.4 Event record** (`engine.py:505-556`). Fields: `event_id, causal_bearer, semantic_binding, observation, tick, world_revision, rule_id, rule_version, cause, status, checks, declared_read_paths, declared_write_paths, changes, hash_before, hash_after`, plus `causal_parent_event_ids` when a rule declares hard ancestry and `information_context` when the observation carried information.
 
-**8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 16 processes (`MAX_PROCESSES`, `:27`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer (RULE-DERIVED-AUTHORITY).
+**8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 28 processes (`MAX_PROCESSES`, `:29`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer (RULE-DERIVED-AUTHORITY).
 
 **8.6 Installer and freeze** (`scripts/run_authored_world.py:48-67`, `src/world_substrate/profile.py:110-279`). Each mechanic and process package is validated; any `reject` finding aborts the run. `freeze()` hashes packages + findings (sha256, first 16 hex) and forbids further installs (RULE-FROZEN-PROFILE).
 
@@ -249,7 +249,7 @@ Each rule below is enforced by the cited code.
 
 **8.11 Dry run scoring** (`scripts/world_builder_service.py:783-849`). Up to two mechanic attempts; each is run scripted for a fixed number of rounds. Task worlds score 2 if the finish line is reached, else 1; ongoing worlds score 3 (alive, everyone acted), 2 (alive), 1; a run error scores 0. Ties prefer fewer idle actors. The best attempt is returned.
 
-**8.12 Budget** (`scripts/world_builder_service.py:137-220`). Cap $0.50/day for visitors, $5.00 for the owner. Each LLM request reserves up to its own cap (world $0.20, mechanics $0.12, run $0.12) from what remains, then settles to the recorded trace cost; an unreadable cost charges the whole reservation; an unreadable ledger refuses spend (RULE-BUDGET-FAILS-CLOSED).
+**8.12 Budget** (`scripts/world_builder_service.py:137-220`). Cap $3.00/day for visitors (`DAILY_LLM_BUDGET`, `:51`), $5.00 for the owner (`OWNER_DAILY_BUDGET`, `:59`, its own ledger file). Each LLM request reserves up to its own cap (world $0.20, mechanics $0.12, run $0.12) from what remains, then settles to the recorded trace cost; an unreadable cost charges the whole reservation; an unreadable ledger refuses spend (RULE-BUDGET-FAILS-CLOSED).
 
 **8.13 Run log** (`scripts/world_builder_service.py:290-402`; with 8.8 continuation, RULE-DURABLE-RUN-RECORD). One JSON line per response to a logged path, except a `202 Accepted` job start (the job's final response is logged instead). Full artifacts are kept for `/generate-world` (bundle, causal model, dry run) and `/run` (summary, transcript, final snapshot; and the request's bundle and causal model when not continued); `/clarify` and `/surprise` keep their text; other logged paths keep only response key names (G4). A failed write only prints to stdout (`:401-402`).
 
@@ -281,3 +281,82 @@ Issue #106 (actors that move to the same place stack on one point) **does show u
 On this path, generated worlds therefore have the kinds that section 4.2 marks lacking or unused: people with profiles, information items with recipients, and scheduled moments. The older outline path is still available as `--world-def odd`.
 
 The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its evidence folders (`truck`, `hospital`, `linked`, `scenario-spec`, `waltzman`, `waltzman-spec` under `spikes/any-scenario-2026-10/evidence/`), the substrate component kinds (`information`, `delivery`) and the process link kinds are checked against the code by `tests/test_system_model.py`. Its two views (`scenario_replay`, `scenario_state_panel`) and gaps G12-G16 are in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The pipeline is a spike under an adopted plan (`docs/plans/scenario_actors_kept.md` changes `odd_brief` and `model.json`); when it changes a record, the drift test fails until this model is updated. Plan for this extension: [system_model_pipeline.md](../plans/system_model_pipeline.md).
+
+## 11. People worlds on the live path (added 2026-10-24, at `6a8e37e`)
+
+Since the goals `best-of-all-worlds`, `waltzman-belief-and-traces` and `waltzman-tasks-slice2`, the World Builder builds
+a world about people, not only a world about things. This section is what that path stores, changes and records.
+Which ideas are fixed substrate code and which are written per world by an AI is drawn in the domain model,
+[DOMAIN.md](DOMAIN.md).
+
+### 11.1 Two kinds of rules in one people world
+
+- **Fixed rules every people world gets** (`spikes/any-scenario-2026-10/compile_spec.py`, imported by
+  `scripts/people_world.py:76`): the reviewed `communicate` rule; moment processes; a work cycle (`work` record, each
+  action at most once per person per cycle of at least 3 rounds, `compile_spec.py:517-617`); and, when the description
+  has a group decision (`:687`), the **group-decision family**: `support`, `concern` and `group_decision` records
+  (`:66-101`), moves (give / make conditional / restore support, resolve a concern or one's own, object to a remedy,
+  raise a new concern, reopen a concern, put a matter on the agenda, settle an agenda matter, call or bring back the
+  decision) and processes (a remedy takes 2 rounds, `:123`, `:332-342`; an open delivered concern makes its decider's
+  support conditional, `:316-331`; deadline authorization, postponement, rejection; deployment over 6 rounds,
+  `:399-441`; an operating review every 6 rounds that may reopen each resolved concern once, `:442-470`).
+- **Rules written per world by an AI** (the stronger model writes the spec; `gpt-6-luna` the actions and rules,
+  `scripts/people_world.py:35`): the people, their goals, beliefs and briefs, information items, scheduled moments, the
+  actions the fixed rules do not cover, and their rules and processes, including any process that stops a remedy.
+- **What generated rules may write** (`spec_pipeline.py:132-193`): never the fixed records (information, delivery,
+  moment, support, concern, group decision), with two exceptions: a move may add or subtract `agenda_items`, and a
+  process may stop a remedy (status back to `open`). `group_decision.agenda_items` is a bare count: an agenda item has
+  no content (`scripts/people_world.py:279`).
+
+### 11.2 Build (`/generate-world`, people path, `scripts/world_builder_service.py:1538-1711`)
+
+Spec (one call) -> compile the fixed rules -> actions (one call) -> rules for uncovered actions (one call) -> assembly
+(`people_world.assemble_people_world`, `:325-361`: drop impossible checks, limit to the work cycle, merge, drop a
+decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199-233`), pin slots) -> scripted test run
+-> score. Each long call is sent twice and the first good answer is kept (`people_world.py:190-212`).
+
+- **Rules retry:** at most 2 attempts (`:1560`), skipped when the score is 4 or more, the budget left is under $0.15,
+  or more than `PEOPLE_REWRITE_BY_S` = 80 s have passed (`:263`, `:1665-1669`). In the canonical Waltzman build the test
+  run starts at 85-111 s, so the retry never runs there (open question Q1).
+- **Test-run record** (`:1623-1657`): circling, stalled actors, `long_tasks` (each task kind, who starts it, and
+  `can_fail_part_way`), `part_way_findings` (E1, `scripts/attempts.py:131-146`) and `attempt_findings`; each lowers the
+  score by 1.
+- The build streams up to 40 progress steps through `/jobs/<id>` (`:342-343`, `:722-736`).
+
+### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:335-760`)
+
+- **Resident:** one Concordia agent per person (`scripts/concordia_residents.py`), memory of up to 12 notes,
+  round-tripped through the page. It answers `belief, action_id, expected_effect, work, reasoning` (`:29-40`). It is
+  shown the world summary, its brief, its memory, its own state, what it can see, up to 6 recent moves, and the offered
+  moves plus `wait`. Other people's `work` records are hidden (`run_authored_world.py:132-142`).
+- **Round order:** everyone decides first (in parallel), the picks are submitted in a rotating order, then
+  `advance(1)` runs due processes, then tasks are started and ended from the round's events (`:460-646`).
+- **A lost race:** when an earlier pick changed the state, the same move is resubmitted if still offered, otherwise
+  the actor chooses again once; if nothing is left it gets `nothing_left` (`:536-572`). The actor is not told who
+  took the thing (open question Q2).
+- **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said_on_retry`, `started_task`, `belief`, `expects`;
+  each round records `world_events` and `underway`.
+
+### 11.4 Tasks (`scripts/attempts.py`)
+
+A **task** is a watched field value that takes several rounds: started by a person's move or by a world process (the
+rollout), ended by a process event. It records who started it, when, what they expected (`task_words`: the expected
+change plus the person's own words about the work, at most 600 characters), and how it ended: finished, or failed
+part-way (the ending event put the field back), with the ending event id and who ended it (`:17`, `:157-187`). Open
+tasks travel with the page between rounds (`carried`, at most 24, `:190-210`). A task's starter sees a memory line
+about it; the other people a finished task names see a notice with its words (`:226-255`).
+
+### 11.5 Records the service now keeps
+
+- **Approval record** (`approval_id, approved_at, approved_by, mechanic_profile_id, world_fingerprint`,
+  `world_builder_service.py:418-427`); every round names it (`:1992-1993`). A continued round must bring back a state
+  sealed by this server (HMAC, `:404-415`, `:1908-1914`).
+- **World fingerprint:** the first 16 hex of sha256 over the bundle and causal model, with whole floats as integers
+  (`:381-401`, fixed in #228).
+- **Run log lines** add `trace_ids`, `allowance`, `job_id`, `world_fingerprint`; a `/run` line keeps resident memory,
+  approval, final snapshot and engine events (`:478-546`).
+- **Readout** (`/readout`, `scripts/run_readout.py`): one AI call with lens `coordination` (people world) or `flow`
+  (things world); every event id it cites is checked against the run (`:125-157`).
+- **Share** (`/share`, `shares.sqlite`): rebuilt only from logged successful `/run` rows on one fingerprint, from round
+  1, unbroken (`:598-656`); the page replays it with no AI calls.
+- **Budget:** visitor $3.00/day, owner $5.00/day on its own ledger (`:51`, `:59`, `:71-74`).

@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>World Substrate Planning</title>
+<style>
+:root{
+  --bg:#f7f8fa;--panel:#ffffff;--ink:#1d2430;--muted:#5d6876;--line:#d9dee5;
+  --blue:#2f6fb5;--blue-bg:#e8f0fa;--orange:#b35c00;--orange-bg:#fff2e0;--grey:#7a8491;--chip:#eef1f5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141a;--panel:#161d26;--ink:#e6ebf1;--muted:#9aa7b6;--line:#2a3440;
+    --blue:#7fb2ea;--blue-bg:#16263a;--orange:#f0a030;--orange-bg:#3a2a12;--grey:#8d98a6;--chip:#202a35;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f141a;--panel:#161d26;--ink:#e6ebf1;--muted:#9aa7b6;--line:#2a3440;
+  --blue:#7fb2ea;--blue-bg:#16263a;--orange:#f0a030;--orange-bg:#3a2a12;--grey:#8d98a6;--chip:#202a35;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:20px 16px 8px;max-width:1280px;margin:0 auto}
+h1{margin:0 0 6px;font-size:22px}
+.lede{margin:0;color:var(--muted);max-width:860px}
+nav{display:flex;gap:8px;padding:12px 16px 0;max-width:1280px;margin:0 auto;flex-wrap:wrap}
+nav button{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 14px;border-radius:8px;font:inherit;cursor:pointer}
+nav button[aria-selected="true"]{border-color:var(--blue);box-shadow:inset 0 -3px 0 var(--blue);font-weight:600}
+main{max-width:1280px;margin:0 auto;padding:12px 16px 32px}
+.view{display:none}.view.on{display:block}
+.intro{margin:0 0 10px;color:var(--muted);max-width:900px}
+.parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:0 0 16px}
+.part{border:1px solid var(--line);border-left:6px solid var(--blue);background:var(--panel);border-radius:12px;padding:10px 12px}
+.part.notok{border-left:6px dashed var(--orange)}
+.part h3{margin:0;font-size:15px}.part p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.part .st{font-size:13px;font-weight:600}
+.ok{color:var(--blue)}.bad{color:var(--orange)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--blue);background:var(--chip);font-weight:600}
+.sw{width:14px;height:14px;border-radius:4px;flex:none;border:1px solid rgba(0,0,0,.2)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.graph{--gv-bg:var(--panel);--gv-ink:var(--ink);--gv-node-bg:var(--panel);--gv-line:var(--line);--gv-edge:var(--grey);--gv-ext:var(--grey);--gv-edge-text:var(--muted);--gv-focus:var(--blue);--gv-dots:var(--line);
+  height:min(72vh,720px);min-height:420px;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
+aside{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:14px;align-self:start;max-height:72vh;overflow:auto}
+aside h2{margin:0 0 6px;font-size:17px}
+aside dl{margin:0}aside dt{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:10px}
+aside dd{margin:2px 0 0}
+.hint{color:var(--muted);font-size:14px}
+.tag{display:inline-block;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;border:1px solid}
+.tag.brian{background:var(--orange-bg);color:var(--orange);border-color:var(--orange)}
+.tag.agent{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+.tag.resolved{color:var(--grey);border-color:var(--grey);border-style:dashed}
+table{border-collapse:collapse;width:100%;font-size:14px;margin-top:6px;background:var(--panel)}
+td,th{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.qlist{list-style:none;margin:12px 0 0;padding:0}
+.qlist li{margin:0 0 6px}
+.qlist button{all:unset;cursor:pointer;display:block;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);width:100%;box-sizing:border-box}
+.qlist button:hover,.qlist button:focus-visible{border-color:var(--blue)}
+.decide{border:1px solid var(--orange);background:var(--orange-bg);border-radius:12px;padding:12px 14px;margin:0 0 14px}
+.decide h2{margin:0 0 6px;font-size:17px;color:var(--orange)}
+.decide ol{margin:0;padding-left:20px}.decide li{margin:0 0 8px}
+.disagree{margin:12px 0 0;padding-left:20px}.disagree li{margin:0 0 8px}
+.mermaid{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 12px;overflow-x:auto}
+.plan{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px 18px;max-width:900px}
+code{font-size:13px;background:var(--chip);padding:0 4px;border-radius:4px}
+footer{max-width:1280px;margin:0 auto;padding:0 16px 24px;color:var(--muted);font-size:13px}
+a{color:var(--blue)}
+#graph-domain{height:min(130vh,1300px)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}
+.plan{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+  <h1>World Substrate: planning package</h1>
+  <p class="lede" id="lede"></p>
+</header>
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-view="status">Where it stands</button>
+  <button role="tab" aria-selected="false" data-view="questions">Open questions</button>
+  <button role="tab" aria-selected="false" data-view="domain">Domain model</button>
+  <button role="tab" aria-selected="false" data-view="context">System context</button>
+  <button role="tab" aria-selected="false" data-view="plan">Next plan</button>
+</nav>
+<main>
+  <section class="view on" id="view-status">
+    <div class="decide" id="decide"></div>
+    <p class="intro">The eight parts a compliant plan must have. Blue, solid edge: present and checked.
+    Orange, dashed edge: missing or failing.</p>
+    <div class="parts" id="parts"></div>
+    <h2 style="font-size:17px;margin:0 0 4px">Checks run on commit <code id="rev"></code></h2>
+    <p class="intro">Every check with its command, exit status and counts. A check that found problems names the
+    open question that tracks the fix.</p>
+    <div class="tablewrap"><table id="checks"><thead><tr><th>Check</th><th>Result</th><th>Counts</th><th>Tracked by</th><th>Command</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="view" id="view-questions">
+    <p class="intro">Open questions about the system (left), each linked to the concepts it bears on (right, grey;
+    dashed means not in code). Orange: Brian's call, with a recommendation and a default. Blue: checking can settle it.
+    Questions about how the repository is run, and settled ones, are in the full list below the map. Click a box for details.</p>
+    <div class="chips" id="qchips"></div>
+    <p class="hint" id="qoffmap"></p>
+    <div class="layout">
+      <div class="graph" id="graph-questions"></div>
+      <aside id="detail-questions" aria-live="polite"><p class="hint">Pick a question to see what it blocks and how it is settled.</p></aside>
+    </div>
+    <ul class="qlist" id="qlist"></ul>
+  </section>
+
+  <section class="view" id="view-domain">
+    <p class="intro">The ideas the project is about and how they relate. Dark blue: substrate code every world runs through. Light blue: fixed code every people world gets. Orange: written per world by an AI. Grey: the hand-written Waltzman reference only. Dashed: in documents only, not on the live path. A problem is a substrate problem when it lives in a blue box. Click a box for its definition.</p>
+    <div class="chips" id="dchips"></div>
+    <div class="layout">
+      <div class="graph" id="graph-domain"></div>
+      <aside id="detail-domain" aria-live="polite"><p class="hint">Pick a concept to see its definition and what it connects to.</p></aside>
+    </div>
+    <h2 style="font-size:17px;margin:16px 0 0">Where the documents disagree</h2>
+    <ol class="disagree" id="disagree"></ol>
+  </section>
+
+  <section class="view" id="view-context">
+    <p class="intro">What is inside World Substrate and what it talks to: the context and container views from
+    <code>docs/model/ODD.md</code> (section 3). Section 11 of the same file describes the live people-world path.</p>
+    <div id="diagrams"></div>
+  </section>
+
+  <section class="view" id="view-plan">
+    <p class="intro">The next goal the open questions call for: a person who loses a race is told and chooses again, and no round runs twice (Q2, Q6, Q10). Written, not started: it waits on your answer to Q13, and is the default if you don't answer.</p>
+    <div class="plan" id="plan"></div>
+  </section>
+</main>
+<footer id="foot"></footer>
+<script src="graph-viewer.js"></script>
+<script src="data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+const D = window.PAGE_DATA;
+const M = D.manifest;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+const Q = Object.fromEntries(D.questions.map(q => [q.id, q]));
+const PART_LABEL = {checks:"Checks, with counts", open_questions:"Open questions", system_model:"System model",
+  domain_model:"Domain model", diagrams:"Diagrams", plan:"Next plan", review_page:"Review page", cold_review:"Cold review"};
+const PART_TAB = {open_questions:"questions", domain_model:"domain", system_model:"context", diagrams:"questions", plan:"plan"};
+
+const nOpen = D.questions.filter(q => q.status === "open").length;
+const brian = D.questions.filter(q => q.status === "open" && q.owner === "brian");
+document.getElementById("lede").textContent =
+  `What the project is about, what is still unsettled, and what to do next. Built from the repository's own files at commit ${D.built_from}: `
+  + `${D.questions.length} questions (${nOpen} open, ${brian.length} of them your call), `
+  + `${D.domain.nodes.length} concepts, and the checks below.`;
+document.getElementById("rev").textContent = M.subject_revision.slice(0, 7);
+
+// Your calls first
+document.getElementById("decide").innerHTML = `<h2>${brian.length} calls for you (each has a default if you don't answer)</h2><ol>`
+  + brian.map(q => `<li><b>${esc(q.id)}: ${esc(q.short)}.</b> ${esc(q.question)}<br><b>Recommended:</b> ${esc(q.recommendation)}<br>`
+    + `<span class="hint"><b>If you don't answer:</b> ${esc(q.default)}</span></li>`).join("") + "</ol>";
+
+// Parts
+const partsEl = document.getElementById("parts");
+for (const [name, label] of Object.entries(PART_LABEL)) {
+  const p = M.parts[name] || {status:"missing"};
+  const ok = p.status === "present" && !(name === "cold_review" && p.verdict !== "pass");
+  const where = p.path ? `<code>${esc(p.path)}</code>` : (p.items ? p.items.map(i => `<code>${esc(i.path)}</code>`).join(" ") : "");
+  const st = ok ? `<span class="st ok">Present</span>` : `<span class="st bad">${p.status === "present" ? "Verdict: " + esc(p.verdict) : "Missing"}</span>`;
+  const tab = PART_TAB[name];
+  partsEl.insertAdjacentHTML("beforeend", `<div class="part${ok ? "" : " notok"}"><h3>${label}</h3>${st}<p>${where}</p>`
+    + (tab ? `<p><a href="#${tab}" data-go="${tab}">Show</a></p>` : "") + "</div>");
+}
+
+// Checks
+const tbody = document.querySelector("#checks tbody");
+for (const r of M.parts.checks.results) {
+  const counts = Object.entries(r.counts).map(([k, v]) => `${v} ${k}`).join(", ");
+  const problem = r.tracked_by;
+  tbody.insertAdjacentHTML("beforeend", `<tr><td>${esc(r.name)}</td>`
+    + `<td class="${problem ? "bad" : "ok"}">${problem ? "Found problems" : "Clean"} (exit ${r.exit_status})</td>`
+    + `<td>${esc(counts)}</td><td>${problem ? `<a href="#questions" data-q="${esc(problem)}">${esc(problem)}</a>` : "none"}</td>`
+    + `<td><code>${esc(r.command)}</code></td></tr>`);
+}
+
+// Tabs
+const viewers = {};
+function show(view) {
+  document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === view));
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + view));
+  if (view === "questions" && !viewers.questions) mountQuestions();
+  if (view === "domain" && !viewers.domain) mountDomain();
+  if (view === "context") drawDiagrams();
+  history.replaceState(null, "", "#" + view);
+}
+document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => show(b.dataset.view)));
+document.addEventListener("click", e => {
+  const go = e.target.closest("[data-go]"), q = e.target.closest("[data-q]");
+  if (go) { e.preventDefault(); show(go.dataset.go); }
+  if (q) { e.preventDefault(); show("questions"); pickQuestion(q.dataset.q); viewers.questions && viewers.questions.select(q.dataset.q); }
+});
+
+function legend(el, graph, onPick) {
+  el.innerHTML = "";
+  for (const [k, kind] of Object.entries(graph.kinds)) {
+    if (!graph.nodes.some(n => n.kind === k)) continue;
+    const b = document.createElement("button");
+    b.className = "chip"; b.setAttribute("aria-pressed", "false"); b.title = kind.explain || "";
+    b.innerHTML = `<span class="sw" style="background:${kind.color};${kind.dashed ? "border-style:dashed" : ""}"></span>${esc(kind.label)} (${graph.nodes.filter(n => n.kind === k).length})`;
+    b.addEventListener("click", () => {
+      const on = b.getAttribute("aria-pressed") !== "true";
+      el.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", String(on));
+      onPick(on ? graph.nodes.filter(n => n.kind === k).map(n => n.id) : null);
+    });
+    el.appendChild(b);
+  }
+}
+
+function questionHtml(q) {
+  const tag = q.status === "resolved" ? `<span class="tag resolved">Settled</span>`
+    : q.owner === "brian" ? `<span class="tag brian">Your call</span>` : `<span class="tag agent">Checking can settle it</span>`;
+  return `<h2>${esc(q.id)}: ${esc(q.short)}</h2>${tag}<p>${esc(q.question)}</p><dl>`
+    + `<dt>Blocks</dt><dd>${esc(q.blocks)}</dd><dt>Settled by</dt><dd>${esc(q.resolves_with)}</dd>`
+    + (q.recommendation ? `<dt>Recommended</dt><dd>${esc(q.recommendation)}</dd>` : "")
+    + (q.default ? `<dt>If unanswered</dt><dd>${esc(q.default)}</dd>` : "")
+    + (q.evidence ? `<dt>Evidence</dt><dd>${esc(q.evidence)}</dd>` : "")
+    + `<dt>Sources</dt><dd>${q.sources.map(s => `<code>${esc(s)}</code>`).join(" ")}</dd></dl>`;
+}
+function pickQuestion(id) {
+  const el = document.getElementById("detail-questions");
+  if (Q[id]) el.innerHTML = questionHtml(Q[id]);
+  else {
+    const n = D.domain.nodes.find(n => n.id === id);
+    const qs = D.questions.filter(q => (q.touches || []).includes(id));
+    el.innerHTML = n ? `<h2>${esc(n.label)}</h2><p>${esc(n.explain)}</p><dl><dt>Questions on it</dt><dd>${qs.map(q => `<a href="#questions" data-q="${q.id}">${q.id}</a>`).join(", ")}</dd></dl>` : "";
+  }
+}
+function mountQuestions() {
+  const g = D.question_map;
+  viewers.questions = GraphViewer.mount(document.getElementById("graph-questions"),
+    {graph: g, onSelect: p => p && p.type === "node" && pickQuestion(p.id)});
+  legend(document.getElementById("qchips"), g, ids => viewers.questions.highlight(ids));
+  const off = D.questions.filter(q => q.status === "open" && !(q.touches || []).length);
+  document.getElementById("qoffmap").textContent = off.length ? `Not on the map, because they touch no concept: ${off.map(q => q.id + (q.owner === "brian" ? " (your call)" : "")).join(", ")}. They are in the list below.` : "";
+  const order = q => q.status === "resolved" ? 3 : q.owner === "brian" ? 0 : (q.touches || []).length ? 1 : 2;
+  document.getElementById("qlist").innerHTML = [...D.questions].sort((a, b) => order(a) - order(b)).map(q =>
+    `<li><button data-q="${q.id}">${q.status === "resolved" ? '<span class="tag resolved">Settled</span>' : q.owner === "brian" ? '<span class="tag brian">Your call</span>' : (q.touches || []).length ? '<span class="tag agent">Agent</span>' : '<span class="tag agent">Process</span>'} <b>${q.id}: ${esc(q.short)}</b><br><span class="hint">${esc(q.question)}</span></button></li>`).join("");
+}
+function mountDomain() {
+  const g = D.domain;
+  const byId = Object.fromEntries(g.nodes.map(n => [n.id, n]));
+  viewers.domain = GraphViewer.mount(document.getElementById("graph-domain"), {graph: g, onSelect: p => {
+    const el = document.getElementById("detail-domain");
+    if (!p) return;
+    if (p.type === "node") {
+      const n = byId[p.id], kind = g.kinds[n.kind];
+      const links = g.edges.filter(e => e.source === n.id || e.target === n.id)
+        .map(e => e.source === n.id ? `${esc(e.label)} → ${esc(byId[e.target].label)}` : `${esc(byId[e.source].label)} → ${esc(e.label)} → this`);
+      const qs = D.questions.filter(q => (q.touches || []).includes(n.id));
+      el.innerHTML = `<h2>${esc(n.label)}</h2><p class="hint">${esc(kind.label)}</p><p>${esc(n.explain)}</p><dl>`
+        + `<dt>Links</dt><dd>${links.join("<br>")}</dd>`
+        + (qs.length ? `<dt>Open questions on it</dt><dd>${qs.map(q => `<a href="#questions" data-q="${q.id}">${q.id}</a>`).join(", ")}</dd>` : "")
+        + `</dl>`;
+    }
+  }});
+  legend(document.getElementById("dchips"), g, ids => viewers.domain.highlight(ids));
+}
+const inline = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+document.getElementById("disagree").innerHTML = D.disagreements.map(d => `<li>${inline(d)}</li>`).join("");
+
+let drawn = false;
+function drawDiagrams() {
+  if (drawn || !window.mermaid) return; drawn = true;
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  mermaid.initialize({startOnLoad: false, theme: dark ? "dark" : "neutral", securityLevel: "strict"});
+  const host = document.getElementById("diagrams");
+  D.context_diagrams.forEach((src, i) => host.insertAdjacentHTML("beforeend", `<pre class="mermaid" id="m${i}">${esc(src)}</pre>`));
+  mermaid.run({querySelector: "#diagrams .mermaid"});
+}
+document.getElementById("plan").innerHTML = window.marked ? marked.parse(D.next_plan) : `<pre>${esc(D.next_plan)}</pre>`;
+document.getElementById("foot").innerHTML = `Generated by <code>tools/planning/build_review_page.py</code> from
+  <code>docs/planning/planning-package.json</code> and the files it names, at commit ${esc(D.built_from)}.
+  Check: <code>validate_planning_package.py</code> (company-planning skill <code>planning-compliance</code>).
+  Graphs: the shared Representation Router graph viewer.`;
+
+const start = (location.hash || "").slice(1);
+if (["questions", "domain", "context", "plan"].includes(start)) show(start);
+</script>
+</body>
+</html>

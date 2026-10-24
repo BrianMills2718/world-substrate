@@ -1,0 +1,413 @@
+{
+ "schema": "typed-graph/v1",
+ "kinds": {
+  "AgentQuestion": {
+   "label": "Checking can settle it",
+   "color": "#3b6fa8",
+   "explain": "An open question an agent can settle by reading, running or testing."
+  },
+  "BrianQuestion": {
+   "label": "Brian's call",
+   "color": "#d9822b",
+   "explain": "A product or priority question; it carries a recommendation and a default."
+  },
+  "Concept": {
+   "label": "Concept",
+   "color": "#7a8491",
+   "explain": "A domain-model concept; open the Domain model tab for its definition."
+  }
+ },
+ "nodes": [
+  {
+   "id": "Q1",
+   "label": "Q1: Rules retry never runs here",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower."
+  },
+  {
+   "id": "Q2",
+   "label": "Q2: Losers of a race are not told",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether every world's run loop wastes most people's turns whenever one thing is contested, and whether residents can reason about losing."
+  },
+  {
+   "id": "Q3",
+   "label": "Q3: Agenda item has no content",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether the group-decision family's agenda needs content or should be dropped."
+  },
+  {
+   "id": "Q4",
+   "label": "Q4: Notice only as good as the words",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether E2 (a fix carries its substance) holds for every world or only when residents happen to write specific words."
+  },
+  {
+   "id": "Q5",
+   "label": "Q5: People misread visible state",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether to change how state is shown to residents or leave it as model error."
+  },
+  {
+   "id": "Q6",
+   "label": "Q6: One round run twice",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: wasted spend and shares that keep only one of two runs."
+  },
+  {
+   "id": "Q7",
+   "label": "Q7: Losing hedge keeps running",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: about $0.03 per build and misleading calls in the build trace."
+  },
+  {
+   "id": "Q8",
+   "label": "Q8: Rules check a resource but never claim it",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether a finished build is faithful to what was described."
+  },
+  {
+   "id": "Q9",
+   "label": "Q9: Test run too short for some tasks",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: builds wrongly scored as failing and the rewrite spend they cause."
+  },
+  {
+   "id": "Q10",
+   "label": "Q10: Retry keeps the first words",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether the transcript's words match the move that ran."
+  },
+  {
+   "id": "Q11",
+   "label": "Q11: Memory seeded before delivery",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether beliefs can run ahead of what the world has shown a person."
+  },
+  {
+   "id": "Q12",
+   "label": "Q12: When a people-world run ends",
+   "kind": "BrianQuestion",
+   "explain": "Blocks: how long visitors watch a run, and its cost."
+  },
+  {
+   "id": "Q13",
+   "label": "Q13: Which hardening first",
+   "kind": "BrianQuestion",
+   "explain": "Blocks: the next goal."
+  },
+  {
+   "id": "Q14",
+   "label": "Q14: Agent-harness build not live",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether build repairs come from a harness or from the rules retry (Q1)."
+  },
+  {
+   "id": "Q17",
+   "label": "Q17: Offline pipeline views",
+   "kind": "BrianQuestion",
+   "explain": "Blocks: whether work goes into the offline pipeline at all."
+  },
+  {
+   "id": "agenda",
+   "label": "Agenda count",
+   "kind": "Concept",
+   "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content."
+  },
+  {
+   "id": "build",
+   "label": "Build",
+   "kind": "Concept",
+   "explain": "Description to spec, actions, rules, assembly, scripted test run and score."
+  },
+  {
+   "id": "concern",
+   "label": "Concern",
+   "kind": "Concept",
+   "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by."
+  },
+  {
+   "id": "contention",
+   "label": "Lost race",
+   "kind": "Concept",
+   "explain": "When an earlier pick changed the state, a later pick is resubmitted or re-chosen once; if nothing is left the person gets nothing_left and is not told why."
+  },
+  {
+   "id": "gen-rules",
+   "label": "Generated actions and rules",
+   "kind": "Concept",
+   "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled."
+  },
+  {
+   "id": "group-decision",
+   "label": "Group decision",
+   "kind": "Concept",
+   "explain": "A decision with support, deadline, deployment and review; changed only by fixed rules."
+  },
+  {
+   "id": "harness-build",
+   "label": "Build in an agent harness",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
+  },
+  {
+   "id": "information",
+   "label": "Information item",
+   "kind": "Concept",
+   "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered."
+  },
+  {
+   "id": "law-fingerprint",
+   "label": "Executable-law fingerprint",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version."
+  },
+  {
+   "id": "notice",
+   "label": "Finished-task notice",
+   "kind": "Concept",
+   "explain": "What the other people a finished task names are told, in the starter's own words about the work."
+  },
+  {
+   "id": "resident",
+   "label": "Resident",
+   "kind": "Concept",
+   "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, answers belief, move, expected effect and work."
+  },
+  {
+   "id": "rules-retry",
+   "label": "Rules retry",
+   "kind": "Concept",
+   "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s."
+  },
+  {
+   "id": "run-loop",
+   "label": "Run loop",
+   "kind": "Concept",
+   "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run."
+  },
+  {
+   "id": "share",
+   "label": "Share link and replay",
+   "kind": "Concept",
+   "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls."
+  },
+  {
+   "id": "task",
+   "label": "Task",
+   "kind": "Concept",
+   "explain": "A watched field value that takes several rounds, started by a person or the world, ended by a process: finished or failed part-way."
+  },
+  {
+   "id": "test-run",
+   "label": "Scripted test run",
+   "kind": "Concept",
+   "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way."
+  }
+ ],
+ "edges": [
+  {
+   "id": "Q1-rules-retry",
+   "source": "Q1",
+   "target": "rules-retry",
+   "label": "bears on"
+  },
+  {
+   "id": "Q1-test-run",
+   "source": "Q1",
+   "target": "test-run",
+   "label": "bears on"
+  },
+  {
+   "id": "Q1-build",
+   "source": "Q1",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q2-contention",
+   "source": "Q2",
+   "target": "contention",
+   "label": "bears on"
+  },
+  {
+   "id": "Q2-run-loop",
+   "source": "Q2",
+   "target": "run-loop",
+   "label": "bears on"
+  },
+  {
+   "id": "Q2-resident",
+   "source": "Q2",
+   "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q3-agenda",
+   "source": "Q3",
+   "target": "agenda",
+   "label": "bears on"
+  },
+  {
+   "id": "Q3-group-decision",
+   "source": "Q3",
+   "target": "group-decision",
+   "label": "bears on"
+  },
+  {
+   "id": "Q4-notice",
+   "source": "Q4",
+   "target": "notice",
+   "label": "bears on"
+  },
+  {
+   "id": "Q4-task",
+   "source": "Q4",
+   "target": "task",
+   "label": "bears on"
+  },
+  {
+   "id": "Q4-concern",
+   "source": "Q4",
+   "target": "concern",
+   "label": "bears on"
+  },
+  {
+   "id": "Q5-resident",
+   "source": "Q5",
+   "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q5-group-decision",
+   "source": "Q5",
+   "target": "group-decision",
+   "label": "bears on"
+  },
+  {
+   "id": "Q6-run-loop",
+   "source": "Q6",
+   "target": "run-loop",
+   "label": "bears on"
+  },
+  {
+   "id": "Q6-share",
+   "source": "Q6",
+   "target": "share",
+   "label": "bears on"
+  },
+  {
+   "id": "Q7-build",
+   "source": "Q7",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q7-gen-rules",
+   "source": "Q7",
+   "target": "gen-rules",
+   "label": "bears on"
+  },
+  {
+   "id": "Q8-gen-rules",
+   "source": "Q8",
+   "target": "gen-rules",
+   "label": "bears on"
+  },
+  {
+   "id": "Q8-test-run",
+   "source": "Q8",
+   "target": "test-run",
+   "label": "bears on"
+  },
+  {
+   "id": "Q9-test-run",
+   "source": "Q9",
+   "target": "test-run",
+   "label": "bears on"
+  },
+  {
+   "id": "Q10-contention",
+   "source": "Q10",
+   "target": "contention",
+   "label": "bears on"
+  },
+  {
+   "id": "Q10-resident",
+   "source": "Q10",
+   "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q11-resident",
+   "source": "Q11",
+   "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q11-information",
+   "source": "Q11",
+   "target": "information",
+   "label": "bears on"
+  },
+  {
+   "id": "Q12-run-loop",
+   "source": "Q12",
+   "target": "run-loop",
+   "label": "bears on"
+  },
+  {
+   "id": "Q12-group-decision",
+   "source": "Q12",
+   "target": "group-decision",
+   "label": "bears on"
+  },
+  {
+   "id": "Q13-contention",
+   "source": "Q13",
+   "target": "contention",
+   "label": "bears on"
+  },
+  {
+   "id": "Q13-run-loop",
+   "source": "Q13",
+   "target": "run-loop",
+   "label": "bears on"
+  },
+  {
+   "id": "Q13-law-fingerprint",
+   "source": "Q13",
+   "target": "law-fingerprint",
+   "label": "bears on"
+  },
+  {
+   "id": "Q14-harness-build",
+   "source": "Q14",
+   "target": "harness-build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q14-build",
+   "source": "Q14",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q14-rules-retry",
+   "source": "Q14",
+   "target": "rules-retry",
+   "label": "bears on"
+  },
+  {
+   "id": "Q17-build",
+   "source": "Q17",
+   "target": "build",
+   "label": "bears on"
+  }
+ ],
+ "layout": {
+  "direction": "RIGHT"
+ }
+}
