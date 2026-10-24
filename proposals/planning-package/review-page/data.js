@@ -372,11 +372,13 @@ window.PAGE_DATA = {
    "short": "Goals skip the package gate",
    "question": "This repository's work ran as /goal documents, which never pass plan adoption, so nothing required a planning package. Should writing a goal require one?",
    "blocks": "whether the next goal can again run without a current system model and question list",
-   "resolves_with": "An argument: Brian approved on 2026-10-21 that every plan carries a planning package; a goal is a plan. The fix belongs in the goal-writing skill (authoring-goals): a goal document names its package or an exemption.",
-   "owner": "agent",
+   "resolves_with": "An argument: Brian approved on 2026-10-21 that every plan carries a planning package, and a goal is a plan. But a hard check would refuse new goals in every repository that has no package yet, so how strictly to enforce it is a priority call.",
+   "owner": "brian",
    "status": "open",
+   "recommendation": "Make the goal validator (agent-skills, skills/authoring-goals/scripts/validate_goal_authority.py) refuse a goal document without a 'Planning package:' line or a named exemption, so goal-driven repositories meet the same gate as adopted plans.",
+   "default": "The goal-writing skill only tells authors to name the package; nothing refuses a goal without one. This repository's next goal already names its package.",
    "sources": [
-    "~/.claude/skills/authoring-goals/SKILL.md",
+    "~/code2/agent-skills/skills/authoring-goals/SKILL.md",
     "docs/plans/waltzman-tasks-slice2.goal.md:1"
    ],
    "touches": []
