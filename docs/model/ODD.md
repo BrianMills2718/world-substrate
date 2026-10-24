@@ -103,7 +103,7 @@ Full field lists with sources are in the model file's `[[entities]]`. In plain w
 
 | Entity | What it is | State that matters |
 | --- | --- | --- |
-| Description | the words a person writes | text, world kind (task / ongoing) |
+| Description | the words a person writes | text, world kind (task / ongoing / open, `scripts/world_builder_service.py:113`), about people or things (`scripts/people_world.py:81`) |
 | AuthoringBundle | what exists: world, components, entities, action signatures, presentation | represented structure only, no law |
 | CausalModel | proposed law: one mechanic per action kind, up to 6 processes, optional finish line | checks, effects, selectors, terminal |
 | CausalReview | what the compiler says that law may touch | derived reads, writes, limits, tests |
@@ -335,7 +335,8 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
 - **A lost race:** when an earlier pick changed the state, the same move is resubmitted if still offered. Otherwise
   the resident is told "your choice was no longer allowed after earlier moves this round; choose again" and chooses
   once more from the new offer (`:536-556`); if that choice is nothing or `wait`, its row reads `nothing_left`
-  (`:570-572`). It is never told who took the thing or what changed (open question Q2).
+  (`:570-572`). The retry prompt also shows the round's earlier moves (who, which rule, `:547`, `:145-155`), but not
+  which of them blocked the choice, and the row does not link the refusal to that event (open question Q2).
 - **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said` (the words behind the first choice),
   `said_on_retry` (the retry's words, `:599-600`), `started_task`, `belief`, `expects`; each round records
   `world_events` and `underway`. The readout quotes `said` only (`scripts/run_readout.py:93`; open question Q10).

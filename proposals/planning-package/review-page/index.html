@@ -130,7 +130,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}
   </section>
 
   <section class="view" id="view-plan">
-    <p class="intro">The next goal the open questions call for: a person who loses a race is told and chooses again, and no round runs twice (Q2, Q6, Q10). Written, not started: it waits on your answer to Q13, and is the default if you don't answer.</p>
+    <p class="intro">The next goal the open questions call for: no round runs or bills twice, and a run's record says why each move was refused (Q6, Q10, Q2). Written, not started: it waits on your answer to Q13, and is the default if you don't answer.</p>
     <div class="plan" id="plan"></div>
   </section>
 </main>
@@ -251,7 +251,11 @@ function mountQuestions() {
 function mountDomain() {
   const g = D.domain;
   const byId = Object.fromEntries(g.nodes.map(n => [n.id, n]));
-  viewers.domain = GraphViewer.mount(document.getElementById("graph-domain"), {graph: g, onSelect: p => {
+  const frame = document.getElementById("graph-domain");
+  viewers.domain = GraphViewer.mount(frame, {graph: g,
+    // Size the frame to the drawing's shape so the fitted map fills it instead of floating in an empty band.
+    onLayout: ({width, height}) => { frame.style.height = Math.max(420, Math.min(1600, frame.clientWidth * height / width)) + "px"; viewers.domain && viewers.domain.fit(); },
+    onSelect: p => {
     const el = document.getElementById("detail-domain");
     if (!p) return;
     if (p.type === "node") {

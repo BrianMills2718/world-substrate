@@ -26,9 +26,9 @@
   },
   {
    "id": "Q2",
-   "label": "Q2: Losers of a race are not told",
+   "label": "Q2: A refusal is not linked to its cause",
    "kind": "AgentQuestion",
-   "explain": "Blocks: whether every world's run loop wastes most people's turns whenever one thing is contested, and whether residents can reason about losing."
+   "explain": "Blocks: whether a reader of a run (or the readout) can say why a person's move was refused, in any world."
   },
   {
    "id": "Q3",
@@ -112,7 +112,7 @@
    "id": "contention",
    "label": "Lost race",
    "kind": "Concept",
-   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing."
+   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left."
   },
   {
    "id": "gen-rules",

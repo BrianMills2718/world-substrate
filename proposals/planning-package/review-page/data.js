@@ -47,7 +47,8 @@ window.PAGE_DATA = {
      },
      {
       "name": "project check (tests, system model, docs)",
-      "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py (counts from its unittest runner, 'Neutral runtime tests: Ran N tests')",
+      "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py",
+      "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
       "exit_status": 0,
       "counts": {
        "tests_run": 710,
@@ -124,14 +125,15 @@ window.PAGE_DATA = {
   },
   {
    "id": "Q2",
-   "short": "Losers of a race are not told",
-   "question": "When several people want the one shared thing in a round, each loser is told only that its choice 'was no longer allowed after earlier moves this round' and is asked once to choose again; if it then picks nothing or waits, its row reads nothing_left. It is never told who took the thing or what changed. Should the retry prompt say who took it and what it changed?",
-   "blocks": "whether every world's run loop wastes most people's turns whenever one thing is contested, and whether residents can reason about losing",
-   "resolves_with": "Prior art settles the direction: Concordia's game master tells an actor what happened to its attempt. An argument settles that the fix belongs in the run loop, not in any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each loser's retry prompt names who took the thing.",
+   "short": "A refusal is not linked to its cause",
+   "question": "When several people want the one shared thing in a round, each loser is told 'your choice was no longer allowed after earlier moves this round; choose again' and is shown the round's earlier moves (who, which rule), so it can see who moved. It is not told which of its moves was refused or which earlier move blocked it, and the record does not link the refusal to that move. Should the retry prompt and the row name the refused move and the blocking event?",
+   "blocks": "whether a reader of a run (or the readout) can say why a person's move was refused, in any world",
+   "resolves_with": "An argument settles it: the run loop already knows which submitted event changed the revision before the loser's pick, so naming it costs nothing and belongs in the run loop, not any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each refused row names its blocking event id. Starting point: c1r24 call 18016 shows the round's moves but not the link.",
    "owner": "agent",
    "status": "open",
    "sources": [
     "scripts/run_authored_world.py:544",
+    "scripts/run_authored_world.py:547",
     "scripts/run_authored_world.py:572",
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
     "evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:125"
@@ -145,9 +147,9 @@ window.PAGE_DATA = {
   {
    "id": "Q3",
    "short": "Agenda item has no content",
-   "question": "group_decision.agenda_items is a bare count, so an agenda item says nothing. Is that why people put the decision on the agenda and settle it again for 25 rounds?",
+   "question": "People put the decision on the agenda and settle it again for 25 rounds (c1r24 r22-r46). Is that because group_decision.agenda_items is a bare count, so an item says nothing, or because put-matter-on-agenda and settle-agenda-matter are offered every work cycle at no cost?",
    "blocks": "whether the group-decision family's agenda needs content or should be dropped",
-   "resolves_with": "An argument makes it likely (the partnership said at c1r24 round 40 it should not add an item 'when I lack information'). One counterexample settles it: a free replay of a saved world with an agenda item that names its matter, checking whether the put-and-settle churn stops.",
+   "resolves_with": "An argument makes the content cause likely (the partnership said at c1r24 round 40 it should not add an item 'when I lack information'), but the residents' behaviour cannot be shown on a free replay, which uses scripted moves with no AI. It needs one paid owner-allowance run, and only once Q12 or a goal makes the agenda matter: the result decides whether to give items content, cost them, or drop the count. A free replay can only check that items carry content.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -329,7 +331,7 @@ window.PAGE_DATA = {
    "resolves_with": "A priority call; the argument for the run-loop fixes is that they affect every world on every run today.",
    "owner": "brian",
    "status": "open",
-   "recommendation": "Do the run-loop fixes first (Q2 losers told who took it, Q6 no double run), then the executable-law fingerprint.",
+   "recommendation": "Do the run-loop fixes first (Q6 no double run, Q10 readout words, Q2 refusal linked to its cause), then the executable-law fingerprint.",
    "default": "The next goal is the run-loop fixes (docs/plans/run-loop-contention.goal.md).",
    "sources": [
     "roadmap/README.md:359",
@@ -616,7 +618,7 @@ window.PAGE_DATA = {
     "id": "contention",
     "label": "Lost race",
     "kind": "Substrate",
-    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing. Code: scripts/run_authored_world.py:536."
+    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:536."
    },
    {
     "id": "resident",
@@ -1132,7 +1134,7 @@ window.PAGE_DATA = {
    }
   ],
   "layout": {
-   "direction": "DOWN"
+   "algorithm": "force"
   }
  },
  "question_map": {
@@ -1163,9 +1165,9 @@ window.PAGE_DATA = {
    },
    {
     "id": "Q2",
-    "label": "Q2: Losers of a race are not told",
+    "label": "Q2: A refusal is not linked to its cause",
     "kind": "AgentQuestion",
-    "explain": "Blocks: whether every world's run loop wastes most people's turns whenever one thing is contested, and whether residents can reason about losing."
+    "explain": "Blocks: whether a reader of a run (or the readout) can say why a person's move was refused, in any world."
    },
    {
     "id": "Q3",
@@ -1249,7 +1251,7 @@ window.PAGE_DATA = {
     "id": "contention",
     "label": "Lost race",
     "kind": "Concept",
-    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing."
+    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left."
    },
    {
     "id": "gen-rules",
@@ -1502,6 +1504,6 @@ window.PAGE_DATA = {
   "**Decision 008 versus the live build.** Decision 008 says worlds are built in an agent harness that drafts, checks and edits; the live service builds with fixed calls and a rules retry and does not import `scripts/world_harness.py` (open question Q14).",
   "**The wiki's 'Concepts and terminology' versus this model.** The wiki (`docs/wiki/README.md`) defines engine-level terms only; people, concerns, support, tasks and residents are defined here and in ODD section 11, not there."
  ],
- "next_plan": "# Goal: a person who loses a race is told who took it, and nobody's round runs twice\n\nPlanning package: docs/planning/planning-package.json\n\nFollows [waltzman-tasks-slice2.goal.md](waltzman-tasks-slice2.goal.md), which is done. Chosen from the planning\npackage's open questions: Q2 (losers of a race are not told) and Q6 (one round run twice), both in the substrate's run\nloop, so they affect every world on every run. Q13 asks Brian whether this comes before the roadmap's hardening queue;\nthe recommendation and default are this goal. Not adopted until Brian answers Q13 or starts it.\nProfile: continuous-light.\n\n## Roadmap\n\n| # | Goal | Depends on | Why here | Status |\n| --- | --- | --- | --- | --- |\n| 1 | best-of-all-worlds.goal.md | – | the live World Builder | done |\n| 2 | waltzman-belief-and-traces.goal.md | 1 | enforced trace reads; #128 design and first slice | done |\n| 3 | waltzman-tasks-slice2.goal.md | 2 | tasks that can fail part-way | done |\n| 4 | this goal | 3 | the run loop wastes most people's turns whenever one thing is contested, in any world | open |\n\n## The problem, in one example\n\nSeven people in the Waltzman world each want to settle the one agenda item in round 14. The first succeeds. Each of\nthe other six is told only \"your choice was no longer allowed after earlier moves this round; choose again\"\n(`scripts/run_authored_world.py:544-545`) and asked once more; with nothing useful left most wait, and their rows read\n`nothing_left` (`:570-572`). None is told who settled it or what changed, so none can reason about the loss. A world\nwith one fire and five firefighters does the same. The \"What happened\" readout then quotes each loser's first words\nnext to the move its retry made (`scripts/run_readout.py:93`). Separately, the page once sent one\nround's `/run` twice and the server ran and billed both (#225).\n\n## Canonical example\n\nOn a free replay of a saved world (the c1r24 Waltzman world, and the truck world), when several people pick the same\none-of-a-kind move in a round, each loser's retry prompt and row say who took it and what it changed, and the\nreadout quotes the retry's own words. A second `/run` for the same round is refused without spending.\n\n## Done when\n\n- **F1. A loser is told who took it.** A row whose move lost a race records who took the thing and the event id, and\n  the loser's retry prompt contains both. Tested on free replays of two saved worlds with no AI calls (stand-in\n  residents).\n- **F2. The readout quotes the words behind the move that ran.** For a retried move the readout quotes\n  `said_on_retry`, as the scene replay already does (Q10). Tested as F1.\n- **F3. No round runs twice.** The service refuses a second `/run` for the same session, round and base revision with\n  no AI spend, and the page shows the first result. Test sends the same round twice.\n- **F4. One live owner-allowance canonical run** at the deployed commit, read in full (`run-log.jsonl` and a\n  `TRACE_READ.md` that `scripts/check_trace_reads.py` passes), reporting every lost race and what each loser did next.\n\nJudge each criterion from the full trace of the run it names (llm_client trace ids, Engine event ids, run log), not\nfrom a reported status.\n\n## Boundaries\n\nworld-substrate and its own deploy only. Merge after `scripts/check_project.py` exits 0; deploy and confirm the live\ncommit through the health endpoint; publish-checker before anything new goes public. Owner allowance only; visitor\nallowance stays $3/day. Free replays before the one paid run. No Waltzman-specific code paths. Never restart WSL.\n\n## Forbidden substitutes\n\nHand-edited runs; scripted moves presented as AI; a fix that only changes the Waltzman agenda; rerunning until a\nbehaviour appears.\n\n## Stop rules\n\nStop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence; report it and what\nwould unblock it. Revalidate after three increments or about four hours.\n\n## Do not gate on\n\nBrian's review; agenda content (Q3); the notice wording (Q4).\n\n## Progress\n\n- 2026-10-24: goal written from the planning package (Q2, Q6, Q10).\n- 2026-10-24: Q2 and F2 corrected after the cold review: losers are already asked to choose again; what is missing is\n  who took it.\n",
+ "next_plan": "# Goal: no round runs or bills twice, and a run's record says why each move was refused\n\nPlanning package: docs/planning/planning-package.json\n\nFollows [waltzman-tasks-slice2.goal.md](waltzman-tasks-slice2.goal.md), which is done. Chosen from the planning\npackage's open questions: Q6 (one round run twice), Q10 (the readout quotes the wrong words after a retry) and Q2 (a\nrefusal is not linked to its cause). All three are in the substrate's run loop or readout, so they affect every world\non every run. Q13 asks Brian whether this comes before the roadmap's hardening queue; the recommendation and default\nare this goal. Not adopted until Brian answers Q13 or starts it.\nProfile: continuous-light.\n\n## Roadmap\n\n| # | Goal | Depends on | Why here | Status |\n| --- | --- | --- | --- | --- |\n| 1 | best-of-all-worlds.goal.md | – | the live World Builder | done |\n| 2 | waltzman-belief-and-traces.goal.md | 1 | enforced trace reads; #128 design and first slice | done |\n| 3 | waltzman-tasks-slice2.goal.md | 2 | tasks that can fail part-way | done |\n| 4 | this goal | 3 | double-billed rounds and records that misattribute words or refusals, in any world | open |\n\n## The problem, in one example\n\nThe page once sent one round's `/run` twice and the server ran and billed both (#225). Separately, seven people in\nthe Waltzman world each want to settle the one agenda item in round 14. The first succeeds. Each of the other six is\ntold \"your choice was no longer allowed after earlier moves this round; choose again\"\n(`scripts/run_authored_world.py:544-545`) and shown the round's moves so far, so it can see that the community group\nsettled (c1r24 call 18016). But the prompt does not name which of its moves was refused, and the row does not record\nwhich event blocked it, so a reader of the run cannot say why without re-deriving the order. Then the \"What happened\"\nreadout quotes each retried person's first words next to the move its retry made (`scripts/run_readout.py:93`).\n\n## Canonical example\n\nA second `/run` for the same round is refused without spending and the page shows the first result. On a free replay\nof a saved world (the c1r24 Waltzman world, and the truck world), when several people pick the same one-of-a-kind move\nin a round, each refused row names its refused move and the blocking event id, the retry prompt names both, and the\nreadout quotes the retry's own words.\n\n## Done when\n\n- **F1. No round runs twice.** The service refuses a second `/run` for the same session, round and base revision with\n  no AI spend, and the page shows the first result. Test sends the same round twice.\n- **F2. The readout quotes the words behind the move that ran.** For a retried move the readout quotes\n  `said_on_retry`, as the scene replay already does (Q10). Tested on free replays of two saved worlds with no AI calls\n  (stand-in residents).\n- **F3. A refusal names its cause.** A row whose pick was refused after an earlier move records the refused move and\n  the blocking event id, and the retry prompt names both (Q2). Tested as F2.\n- **F4. One live owner-allowance canonical run** at the deployed commit, read in full (`run-log.jsonl` and a\n  `TRACE_READ.md` that `scripts/check_trace_reads.py` passes), reporting every lost race and what each loser did next.\n\nJudge each criterion from the full trace of the run it names (llm_client trace ids, Engine event ids, run log), not\nfrom a reported status.\n\n## Boundaries\n\nworld-substrate and its own deploy only. Merge after `scripts/check_project.py` exits 0; deploy and confirm the live\ncommit through the health endpoint; publish-checker before anything new goes public. Owner allowance only; visitor\nallowance stays $3/day. Free replays before the one paid run. No Waltzman-specific code paths. Never restart WSL.\n\n## Forbidden substitutes\n\nHand-edited runs; scripted moves presented as AI; a fix that only changes the Waltzman agenda; rerunning until a\nbehaviour appears.\n\n## Stop rules\n\nStop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence; report it and what\nwould unblock it. Revalidate after three increments or about four hours.\n\n## Do not gate on\n\nBrian's review; agenda content (Q3); the notice wording (Q4).\n\n## Progress\n\n- 2026-10-24: goal written from the planning package (Q2, Q6, Q10).\n- 2026-10-24: Q2 corrected twice after cold reviews: losers are already asked to choose again and shown the round's\n  moves (call 18016); what is missing is the link from a refusal to the move that caused it. Criteria reordered.\n",
  "built_from": "6a8e37e"
 };

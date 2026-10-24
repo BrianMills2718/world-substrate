@@ -13,7 +13,7 @@ kinds = {k: {"label": l, "color": c, **({"dashed": True} if d else {}), "explain
 g = {"schema": "typed-graph/v1", "kinds": kinds,
      "nodes": [{"id": i, "label": l, "kind": k, "explain": f"{d} Code: {c}."} for i, l, k, d, s, c in NODES],
      "edges": [{"id": f"e{n}", "source": a, "target": b, "label": lab} for n, (a, b, lab) in enumerate(EDGES)],
-     "layout": {"direction": "DOWN"}}
+     "layout": {"algorithm": "force"}}
 for a, b, _ in EDGES: assert a in ids and b in ids, (a, b)
 json.dump(g, open(R + 'docs/model/domain.graph.json', 'w'), indent=1, ensure_ascii=False)
 for q in Q:

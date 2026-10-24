@@ -135,7 +135,7 @@
    "id": "contention",
    "label": "Lost race",
    "kind": "Substrate",
-   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing. Code: scripts/run_authored_world.py:536."
+   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:536."
   },
   {
    "id": "resident",
@@ -651,6 +651,6 @@
   }
  ],
  "layout": {
-  "direction": "DOWN"
+  "algorithm": "force"
  }
 }

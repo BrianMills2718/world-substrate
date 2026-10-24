@@ -46,7 +46,8 @@
     },
     {
      "name": "project check (tests, system model, docs)",
-     "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py (counts from its unittest runner, 'Neutral runtime tests: Ran N tests')",
+     "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py",
+     "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
      "exit_status": 0,
      "counts": {
       "tests_run": 710,
