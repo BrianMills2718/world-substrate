@@ -47,7 +47,7 @@ window.PAGE_DATA = {
      },
      {
       "name": "project check (tests, system model, docs)",
-      "command": "scripts/check_project.py",
+      "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py (counts from its unittest runner, 'Neutral runtime tests: Ran N tests')",
       "exit_status": 0,
       "counts": {
        "tests_run": 710,
@@ -112,7 +112,7 @@ window.PAGE_DATA = {
    "status": "open",
    "sources": [
     "scripts/world_builder_service.py:263",
-    "scripts/world_builder_service.py:1665",
+    "scripts/world_builder_service.py:1667",
     "docs/plans/waltzman-tasks-slice2.goal.md:100",
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"
    ],
@@ -125,13 +125,13 @@ window.PAGE_DATA = {
   {
    "id": "Q2",
    "short": "Losers of a race are not told",
-   "question": "When several people want the one shared thing in a round, all but one get nothing_left and are not told who took it. Should the loser be told and get to choose again from what is now offered?",
+   "question": "When several people want the one shared thing in a round, each loser is told only that its choice 'was no longer allowed after earlier moves this round' and is asked once to choose again; if it then picks nothing or waits, its row reads nothing_left. It is never told who took the thing or what changed. Should the retry prompt say who took it and what it changed?",
    "blocks": "whether every world's run loop wastes most people's turns whenever one thing is contested, and whether residents can reason about losing",
-   "resolves_with": "Prior art settles the direction: Concordia's game master tells an actor what happened to its attempt. An argument settles that the fix belongs in the run loop, not in any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each loser's next prompt names who took the thing.",
+   "resolves_with": "Prior art settles the direction: Concordia's game master tells an actor what happened to its attempt. An argument settles that the fix belongs in the run loop, not in any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each loser's retry prompt names who took the thing.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "scripts/run_authored_world.py:536",
+    "scripts/run_authored_world.py:544",
     "scripts/run_authored_world.py:572",
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
     "evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:125"
@@ -181,14 +181,16 @@ window.PAGE_DATA = {
   {
    "id": "Q5",
    "short": "People misread visible state",
-   "question": "People say 'deployed but not authorized' and readiness stays not_yet_activated after deployment. Is this a state label the residents are shown, or the model misreading correct state?",
+   "question": "People say 'deployed but not authorized' while the decision is deployed. Is this a state label the residents are shown, or the model misreading correct state?",
    "blocks": "whether to change how state is shown to residents or leave it as model error",
    "resolves_with": "One counterexample settles it: open the resident prompt of one such round (c1r24 round 15, logistics) and read what the status field said.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "A label the residents are shown. Logistics' call 18032 (c1r24) shows the decision as 'status deployed, support 5' (correct) and its own member record as 'approved False, authorized False': two fields every person gets and no rule ever writes (compile_spec.py:33-34, set at :626). Filed as #231.",
    "sources": [
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
-    "BrianMills2718/world-substrate#212"
+    "spikes/any-scenario-2026-10/compile_spec.py:33",
+    "BrianMills2718/world-substrate#231"
    ],
    "touches": [
     "resident",
@@ -215,15 +217,16 @@ window.PAGE_DATA = {
   {
    "id": "Q7",
    "short": "Losing hedge keeps running",
-   "question": "Each long build call is sent twice; does the losing copy still run and make its own repair call (#226)?",
+   "question": "Each long build call is sent twice; does the losing copy still run to the end (#226)?",
    "blocks": "about $0.03 per build and misleading calls in the build trace",
-   "resolves_with": "Reading the code settles it: check whether _settle_late_hedges stops the losing copy's repair call; if not, cancel it once a winner is kept.",
+   "resolves_with": "Reading the code settles it.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "Yes. hedged() returns the first good copy and never stops the other (people_world.py:195-212); _settle_late_hedges only reserves budget for it and charges its cost when it ends (world_builder_service.py:266-285). Whether to cancel it stays with #226.",
    "sources": [
     "BrianMills2718/world-substrate#226",
     "scripts/world_builder_service.py:266",
-    "scripts/people_world.py:190"
+    "scripts/people_world.py:195"
    ],
    "touches": [
     "build",
@@ -239,8 +242,7 @@ window.PAGE_DATA = {
    "owner": "agent",
    "status": "open",
    "sources": [
-    "BrianMills2718/world-substrate#218",
-    "roadmap/README.md:106"
+    "BrianMills2718/world-substrate#218"
    ],
    "touches": [
     "gen-rules",
@@ -266,18 +268,20 @@ window.PAGE_DATA = {
   {
    "id": "Q10",
    "short": "Retry keeps the first words",
-   "question": "When a resident's move is retried after a lost race, its first 'said' is kept even when the move changed. Should the retry ask again?",
-   "blocks": "whether the transcript's words match the move that ran",
-   "resolves_with": "Reading the code settles where the words are kept (run_authored_world.py:550); the fix is to record the retry's own words, checked on a free replay.",
+   "question": "After a lost race the retry's own words are stored as said_on_retry, but the 'What happened' readout quotes only said, the words behind the first choice, next to the move the retry made. Should the readout quote the retry's words?",
+   "blocks": "whether the readout's quoted words match the move that ran",
+   "resolves_with": "Reading the code settles it: the row keeps both (run_authored_world.py:584, :599-600) and the scene replay already prefers said_on_retry (render_scene_replay.py:398), but run_readout.py:93 reads said only. Make the readout prefer said_on_retry the same way and check it on a free replay.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "BrianMills2718/world-substrate#212",
-    "scripts/run_authored_world.py:550"
+    "scripts/run_authored_world.py:584",
+    "scripts/run_authored_world.py:599",
+    "scripts/run_readout.py:93",
+    "scripts/render_scene_replay.py:398"
    ],
    "touches": [
     "contention",
-    "resident"
+    "readout"
    ]
   },
   {
@@ -287,7 +291,8 @@ window.PAGE_DATA = {
    "blocks": "whether beliefs can run ahead of what the world has shown a person",
    "resolves_with": "One counterexample settles it: read the round-1 prompts of run c1r24 (calls 17868-17878) for a recipient that mentions its concern before delivery.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "No. In c1r24 round 1 the four countries that receive concerns see none of them (calls 17868, 17870, 17876, 17877-17878: 'sees: none'); each group sees only its own (leakcheck.txt, leaks 0). The concerns were delivered later in round 1 (r1-e00001, r1-e00011, r1-e00013, r1-e00019).",
    "sources": [
     "BrianMills2718/world-substrate#212",
     "evidence/waltzman-tasks-slice2/c1r24/leakcheck.txt"
@@ -324,7 +329,7 @@ window.PAGE_DATA = {
    "resolves_with": "A priority call; the argument for the run-loop fixes is that they affect every world on every run today.",
    "owner": "brian",
    "status": "open",
-   "recommendation": "Do the run-loop fixes first (Q2 losers told and choose again, Q6 no double run), then the executable-law fingerprint.",
+   "recommendation": "Do the run-loop fixes first (Q2 losers told who took it, Q6 no double run), then the executable-law fingerprint.",
    "default": "The next goal is the run-loop fixes (docs/plans/run-loop-contention.goal.md).",
    "sources": [
     "roadmap/README.md:359",
@@ -527,7 +532,7 @@ window.PAGE_DATA = {
     "id": "move",
     "label": "Move (action)",
     "kind": "Substrate",
-    "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:367."
+    "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:49."
    },
    {
     "id": "process",
@@ -539,7 +544,49 @@ window.PAGE_DATA = {
     "id": "compiler",
     "label": "Compiler",
     "kind": "Substrate",
-    "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:367."
+    "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:456."
+   },
+   {
+    "id": "policy",
+    "label": "Policy",
+    "kind": "Substrate",
+    "explain": "What chooses a person's move (scripted, an AI model or a resident): it can only pick an offered move; installed mechanics, not its words, decide what happens. Code: src/world_substrate/policy.py:50."
+   },
+   {
+    "id": "sense",
+    "label": "Linguistic Core sense and roles",
+    "kind": "Substrate",
+    "explain": "The meaning and participant roles of a move kind, supplied by Linguistic Core; never its effects, quantities or timing. Code: src/world_substrate/semantic.py:15."
+   },
+   {
+    "id": "profile",
+    "label": "Frozen mechanic profile",
+    "kind": "Substrate",
+    "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. Code: src/world_substrate/profile.py:266."
+   },
+   {
+    "id": "write-scope",
+    "label": "Declared write scope",
+    "kind": "Substrate",
+    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:93."
+   },
+   {
+    "id": "causal-trace",
+    "label": "Causal trace",
+    "kind": "Substrate",
+    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: scripts/world_builder_service.py:1822."
+   },
+   {
+    "id": "world-kind",
+    "label": "World kind",
+    "kind": "Substrate",
+    "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:113."
+   },
+   {
+    "id": "builder",
+    "label": "World Builder and its bundle",
+    "kind": "Substrate",
+    "explain": "The public page and service where a person describes a world, approves its rules and watches it run; a build's output is an authoring bundle. Code: scripts/world_builder_service.py."
    },
    {
     "id": "approval",
@@ -569,7 +616,7 @@ window.PAGE_DATA = {
     "id": "contention",
     "label": "Lost race",
     "kind": "Substrate",
-    "explain": "When an earlier pick changed the state, a later pick is resubmitted or re-chosen once; if nothing is left the person gets nothing_left and is not told why. Code: scripts/run_authored_world.py:536."
+    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing. Code: scripts/run_authored_world.py:536."
    },
    {
     "id": "resident",
@@ -779,228 +826,306 @@ window.PAGE_DATA = {
    },
    {
     "id": "e8",
+    "source": "policy",
+    "target": "move",
+    "label": "chooses an offered"
+   },
+   {
+    "id": "e9",
+    "source": "resident",
+    "target": "policy",
+    "label": "is a"
+   },
+   {
+    "id": "e10",
+    "source": "sense",
+    "target": "move",
+    "label": "gives meaning to"
+   },
+   {
+    "id": "e11",
+    "source": "compiler",
+    "target": "profile",
+    "label": "freezes"
+   },
+   {
+    "id": "e12",
+    "source": "approval",
+    "target": "profile",
+    "label": "names"
+   },
+   {
+    "id": "e13",
+    "source": "profile",
+    "target": "write-scope",
+    "label": "declares"
+   },
+   {
+    "id": "e14",
+    "source": "engine",
+    "target": "write-scope",
+    "label": "enforces"
+   },
+   {
+    "id": "e15",
+    "source": "event",
+    "target": "causal-trace",
+    "label": "makes up"
+   },
+   {
+    "id": "e16",
+    "source": "causal-trace",
+    "target": "readout",
+    "label": "evidence for"
+   },
+   {
+    "id": "e17",
+    "source": "builder",
+    "target": "build",
+    "label": "runs"
+   },
+   {
+    "id": "e18",
+    "source": "build",
+    "target": "world-kind",
+    "label": "decides first"
+   },
+   {
+    "id": "e19",
+    "source": "world-kind",
+    "target": "people-world",
+    "label": "chooses"
+   },
+   {
+    "id": "e20",
+    "source": "builder",
+    "target": "share",
+    "label": "serves"
+   },
+   {
+    "id": "e21",
     "source": "run-loop",
     "target": "resident",
     "label": "asks"
    },
    {
-    "id": "e9",
+    "id": "e22",
     "source": "run-loop",
     "target": "move",
     "label": "submits"
    },
    {
-    "id": "e10",
+    "id": "e23",
     "source": "run-loop",
     "target": "contention",
     "label": "can produce"
    },
    {
-    "id": "e11",
+    "id": "e24",
     "source": "resident",
     "target": "task",
     "label": "starts"
    },
    {
-    "id": "e12",
+    "id": "e25",
     "source": "process",
     "target": "task",
     "label": "ends"
    },
    {
-    "id": "e13",
+    "id": "e26",
     "source": "task",
     "target": "notice",
     "label": "finished, sends"
    },
    {
-    "id": "e14",
+    "id": "e27",
     "source": "notice",
     "target": "resident",
     "label": "shown to"
    },
    {
-    "id": "e15",
+    "id": "e28",
     "source": "build",
     "target": "test-run",
     "label": "runs"
    },
    {
-    "id": "e16",
+    "id": "e29",
     "source": "build",
     "target": "rules-retry",
     "label": "may run"
    },
    {
-    "id": "e17",
+    "id": "e30",
     "source": "rules-retry",
     "target": "gen-rules",
     "label": "rewrites"
    },
    {
-    "id": "e18",
+    "id": "e31",
     "source": "test-run",
     "target": "task",
     "label": "lists long"
    },
    {
-    "id": "e19",
+    "id": "e32",
     "source": "run-log",
     "target": "share",
     "label": "rebuilds"
    },
    {
-    "id": "e20",
+    "id": "e33",
     "source": "run-log",
     "target": "readout",
     "label": "feeds"
    },
    {
-    "id": "e21",
+    "id": "e34",
     "source": "budget",
     "target": "build",
     "label": "limits"
    },
    {
-    "id": "e22",
+    "id": "e35",
     "source": "budget",
     "target": "resident",
     "label": "limits"
    },
    {
-    "id": "e23",
+    "id": "e36",
     "source": "people-world",
     "target": "person",
     "label": "has"
    },
    {
-    "id": "e24",
+    "id": "e37",
     "source": "people-world",
     "target": "group-decision",
     "label": "may have"
    },
    {
-    "id": "e25",
+    "id": "e38",
     "source": "people-world",
     "target": "moment",
     "label": "has"
    },
    {
-    "id": "e26",
+    "id": "e39",
     "source": "people-world",
     "target": "work-cycle",
     "label": "has"
    },
    {
-    "id": "e27",
+    "id": "e40",
     "source": "people-world",
     "target": "communicate",
     "label": "has"
    },
    {
-    "id": "e28",
+    "id": "e41",
     "source": "communicate",
     "target": "information",
     "label": "delivers"
    },
    {
-    "id": "e29",
+    "id": "e42",
     "source": "information",
     "target": "concern",
     "label": "may carry"
    },
    {
-    "id": "e30",
+    "id": "e43",
     "source": "concern",
     "target": "support",
     "label": "makes conditional"
    },
    {
-    "id": "e31",
+    "id": "e44",
     "source": "support",
     "target": "group-decision",
     "label": "counts toward"
    },
    {
-    "id": "e32",
+    "id": "e45",
     "source": "remedy",
     "target": "concern",
     "label": "resolves"
    },
    {
-    "id": "e33",
+    "id": "e46",
     "source": "group-decision",
     "target": "agenda",
     "label": "holds"
    },
    {
-    "id": "e34",
+    "id": "e47",
     "source": "group-decision",
     "target": "rollout",
     "label": "starts"
    },
    {
-    "id": "e35",
+    "id": "e48",
     "source": "rollout",
     "target": "task",
     "label": "is a"
    },
    {
-    "id": "e36",
+    "id": "e49",
     "source": "remedy",
     "target": "task",
     "label": "is a"
    },
    {
-    "id": "e37",
+    "id": "e50",
     "source": "review",
     "target": "concern",
     "label": "may reopen"
    },
    {
-    "id": "e38",
+    "id": "e51",
     "source": "gen-rules",
     "target": "agenda",
     "label": "may add to"
    },
    {
-    "id": "e39",
+    "id": "e52",
     "source": "gen-rules",
     "target": "remedy",
     "label": "may stop"
    },
    {
-    "id": "e40",
+    "id": "e53",
     "source": "person",
     "target": "resident",
     "label": "briefs"
    },
    {
-    "id": "e41",
+    "id": "e54",
     "source": "build",
     "target": "gen-rules",
     "label": "writes"
    },
    {
-    "id": "e42",
+    "id": "e55",
     "source": "build",
     "target": "people-world",
     "label": "builds"
    },
    {
-    "id": "e43",
+    "id": "e56",
     "source": "harness-build",
     "target": "build",
     "label": "would replace"
    },
    {
-    "id": "e44",
+    "id": "e57",
     "source": "waltzman-ref",
     "target": "world",
     "label": "adds components to one"
    },
    {
-    "id": "e45",
+    "id": "e58",
     "source": "law-fingerprint",
     "target": "fingerprint",
     "label": "would extend"
@@ -1055,22 +1180,10 @@ window.PAGE_DATA = {
     "explain": "Blocks: whether E2 (a fix carries its substance) holds for every world or only when residents happen to write specific words."
    },
    {
-    "id": "Q5",
-    "label": "Q5: People misread visible state",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: whether to change how state is shown to residents or leave it as model error."
-   },
-   {
     "id": "Q6",
     "label": "Q6: One round run twice",
     "kind": "AgentQuestion",
     "explain": "Blocks: wasted spend and shares that keep only one of two runs."
-   },
-   {
-    "id": "Q7",
-    "label": "Q7: Losing hedge keeps running",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: about $0.03 per build and misleading calls in the build trace."
    },
    {
     "id": "Q8",
@@ -1088,13 +1201,7 @@ window.PAGE_DATA = {
     "id": "Q10",
     "label": "Q10: Retry keeps the first words",
     "kind": "AgentQuestion",
-    "explain": "Blocks: whether the transcript's words match the move that ran."
-   },
-   {
-    "id": "Q11",
-    "label": "Q11: Memory seeded before delivery",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: whether beliefs can run ahead of what the world has shown a person."
+    "explain": "Blocks: whether the readout's quoted words match the move that ran."
    },
    {
     "id": "Q12",
@@ -1142,7 +1249,7 @@ window.PAGE_DATA = {
     "id": "contention",
     "label": "Lost race",
     "kind": "Concept",
-    "explain": "When an earlier pick changed the state, a later pick is resubmitted or re-chosen once; if nothing is left the person gets nothing_left and is not told why."
+    "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing."
    },
    {
     "id": "gen-rules",
@@ -1164,12 +1271,6 @@ window.PAGE_DATA = {
     "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
    },
    {
-    "id": "information",
-    "label": "Information item",
-    "kind": "Concept",
-    "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered."
-   },
-   {
     "id": "law-fingerprint",
     "label": "Executable-law fingerprint",
     "kind": "Concept",
@@ -1181,6 +1282,12 @@ window.PAGE_DATA = {
     "label": "Finished-task notice",
     "kind": "Concept",
     "explain": "What the other people a finished task names are told, in the starter's own words about the work."
+   },
+   {
+    "id": "readout",
+    "label": "Readout",
+    "kind": "Concept",
+    "explain": "One AI summary of a run whose every cited event id is checked against the run."
    },
    {
     "id": "resident",
@@ -1287,18 +1394,6 @@ window.PAGE_DATA = {
     "label": "bears on"
    },
    {
-    "id": "Q5-resident",
-    "source": "Q5",
-    "target": "resident",
-    "label": "bears on"
-   },
-   {
-    "id": "Q5-group-decision",
-    "source": "Q5",
-    "target": "group-decision",
-    "label": "bears on"
-   },
-   {
     "id": "Q6-run-loop",
     "source": "Q6",
     "target": "run-loop",
@@ -1308,18 +1403,6 @@ window.PAGE_DATA = {
     "id": "Q6-share",
     "source": "Q6",
     "target": "share",
-    "label": "bears on"
-   },
-   {
-    "id": "Q7-build",
-    "source": "Q7",
-    "target": "build",
-    "label": "bears on"
-   },
-   {
-    "id": "Q7-gen-rules",
-    "source": "Q7",
-    "target": "gen-rules",
     "label": "bears on"
    },
    {
@@ -1347,21 +1430,9 @@ window.PAGE_DATA = {
     "label": "bears on"
    },
    {
-    "id": "Q10-resident",
+    "id": "Q10-readout",
     "source": "Q10",
-    "target": "resident",
-    "label": "bears on"
-   },
-   {
-    "id": "Q11-resident",
-    "source": "Q11",
-    "target": "resident",
-    "label": "bears on"
-   },
-   {
-    "id": "Q11-information",
-    "source": "Q11",
-    "target": "information",
+    "target": "readout",
     "label": "bears on"
    },
    {
@@ -1431,6 +1502,6 @@ window.PAGE_DATA = {
   "**Decision 008 versus the live build.** Decision 008 says worlds are built in an agent harness that drafts, checks and edits; the live service builds with fixed calls and a rules retry and does not import `scripts/world_harness.py` (open question Q14).",
   "**The wiki's 'Concepts and terminology' versus this model.** The wiki (`docs/wiki/README.md`) defines engine-level terms only; people, concerns, support, tasks and residents are defined here and in ODD section 11, not there."
  ],
- "next_plan": "# Goal: a person who loses a race is told, and nobody's round runs twice\n\nPlanning package: docs/planning/planning-package.json\n\nFollows [waltzman-tasks-slice2.goal.md](waltzman-tasks-slice2.goal.md), which is done. Chosen from the planning\npackage's open questions: Q2 (losers of a race are not told) and Q6 (one round run twice), both in the substrate's run\nloop, so they affect every world on every run. Q13 asks Brian whether this comes before the roadmap's hardening queue;\nthe recommendation and default are this goal. Not adopted until Brian answers Q13 or starts it.\nProfile: continuous-light.\n\n## Roadmap\n\n| # | Goal | Depends on | Why here | Status |\n| --- | --- | --- | --- | --- |\n| 1 | best-of-all-worlds.goal.md | – | the live World Builder | done |\n| 2 | waltzman-belief-and-traces.goal.md | 1 | enforced trace reads; #128 design and first slice | done |\n| 3 | waltzman-tasks-slice2.goal.md | 2 | tasks that can fail part-way | done |\n| 4 | this goal | 3 | the run loop wastes most people's turns whenever one thing is contested, in any world | open |\n\n## The problem, in one example\n\nSeven people in the Waltzman world each want to settle the one agenda item in round 14. The first succeeds. The\nother six get `nothing_left` (`scripts/run_authored_world.py:572`) and lose their turn without being told that someone\nelse got there first. A world with one fire and five firefighters does the same. Separately, the page once sent one\nround's `/run` twice and the server ran and billed both (#225).\n\n## Canonical example\n\nOn a free replay of a saved world (the c1r24 Waltzman world, and the truck world), when several people pick the same\none-of-a-kind move in a round, each loser's row says who took it, the loser chooses again from the moves now offered\n(or waits), and its next prompt names what happened. A second `/run` for the same round is refused without spending.\n\n## Done when\n\n- **F1. A loser is told.** A row whose move lost a race records who took the thing and the event id, and the loser's\n  next resident prompt contains it. Tested on free replays of two saved worlds with no AI calls (stand-in residents).\n- **F2. A loser chooses again.** The loser is offered the moves now possible, once, and its new choice and its own\n  words are recorded (closes the \"retry keeps the first said\" problem, Q10). Tested as F1.\n- **F3. No round runs twice.** The service refuses a second `/run` for the same session, round and base revision with\n  no AI spend, and the page shows the first result. Test sends the same round twice.\n- **F4. One live owner-allowance canonical run** at the deployed commit, read in full (`run-log.jsonl` and a\n  `TRACE_READ.md` that `scripts/check_trace_reads.py` passes), reporting every lost race and what each loser did next.\n\nJudge each criterion from the full trace of the run it names (llm_client trace ids, Engine event ids, run log), not\nfrom a reported status.\n\n## Boundaries\n\nworld-substrate and its own deploy only. Merge after `scripts/check_project.py` exits 0; deploy and confirm the live\ncommit through the health endpoint; publish-checker before anything new goes public. Owner allowance only; visitor\nallowance stays $3/day. Free replays before the one paid run. No Waltzman-specific code paths. Never restart WSL.\n\n## Forbidden substitutes\n\nHand-edited runs; scripted moves presented as AI; a fix that only changes the Waltzman agenda; rerunning until a\nbehaviour appears.\n\n## Stop rules\n\nStop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence; report it and what\nwould unblock it. Revalidate after three increments or about four hours.\n\n## Do not gate on\n\nBrian's review; agenda content (Q3); the notice wording (Q4).\n\n## Progress\n\n- 2026-10-24: goal written from the planning package (Q2, Q6, Q10).\n",
+ "next_plan": "# Goal: a person who loses a race is told who took it, and nobody's round runs twice\n\nPlanning package: docs/planning/planning-package.json\n\nFollows [waltzman-tasks-slice2.goal.md](waltzman-tasks-slice2.goal.md), which is done. Chosen from the planning\npackage's open questions: Q2 (losers of a race are not told) and Q6 (one round run twice), both in the substrate's run\nloop, so they affect every world on every run. Q13 asks Brian whether this comes before the roadmap's hardening queue;\nthe recommendation and default are this goal. Not adopted until Brian answers Q13 or starts it.\nProfile: continuous-light.\n\n## Roadmap\n\n| # | Goal | Depends on | Why here | Status |\n| --- | --- | --- | --- | --- |\n| 1 | best-of-all-worlds.goal.md | – | the live World Builder | done |\n| 2 | waltzman-belief-and-traces.goal.md | 1 | enforced trace reads; #128 design and first slice | done |\n| 3 | waltzman-tasks-slice2.goal.md | 2 | tasks that can fail part-way | done |\n| 4 | this goal | 3 | the run loop wastes most people's turns whenever one thing is contested, in any world | open |\n\n## The problem, in one example\n\nSeven people in the Waltzman world each want to settle the one agenda item in round 14. The first succeeds. Each of\nthe other six is told only \"your choice was no longer allowed after earlier moves this round; choose again\"\n(`scripts/run_authored_world.py:544-545`) and asked once more; with nothing useful left most wait, and their rows read\n`nothing_left` (`:570-572`). None is told who settled it or what changed, so none can reason about the loss. A world\nwith one fire and five firefighters does the same. The \"What happened\" readout then quotes each loser's first words\nnext to the move its retry made (`scripts/run_readout.py:93`). Separately, the page once sent one\nround's `/run` twice and the server ran and billed both (#225).\n\n## Canonical example\n\nOn a free replay of a saved world (the c1r24 Waltzman world, and the truck world), when several people pick the same\none-of-a-kind move in a round, each loser's retry prompt and row say who took it and what it changed, and the\nreadout quotes the retry's own words. A second `/run` for the same round is refused without spending.\n\n## Done when\n\n- **F1. A loser is told who took it.** A row whose move lost a race records who took the thing and the event id, and\n  the loser's retry prompt contains both. Tested on free replays of two saved worlds with no AI calls (stand-in\n  residents).\n- **F2. The readout quotes the words behind the move that ran.** For a retried move the readout quotes\n  `said_on_retry`, as the scene replay already does (Q10). Tested as F1.\n- **F3. No round runs twice.** The service refuses a second `/run` for the same session, round and base revision with\n  no AI spend, and the page shows the first result. Test sends the same round twice.\n- **F4. One live owner-allowance canonical run** at the deployed commit, read in full (`run-log.jsonl` and a\n  `TRACE_READ.md` that `scripts/check_trace_reads.py` passes), reporting every lost race and what each loser did next.\n\nJudge each criterion from the full trace of the run it names (llm_client trace ids, Engine event ids, run log), not\nfrom a reported status.\n\n## Boundaries\n\nworld-substrate and its own deploy only. Merge after `scripts/check_project.py` exits 0; deploy and confirm the live\ncommit through the health endpoint; publish-checker before anything new goes public. Owner allowance only; visitor\nallowance stays $3/day. Free replays before the one paid run. No Waltzman-specific code paths. Never restart WSL.\n\n## Forbidden substitutes\n\nHand-edited runs; scripted moves presented as AI; a fix that only changes the Waltzman agenda; rerunning until a\nbehaviour appears.\n\n## Stop rules\n\nStop as blocked only after 3 attempts on the same reproduced blocker produce no new evidence; report it and what\nwould unblock it. Revalidate after three increments or about four hours.\n\n## Do not gate on\n\nBrian's review; agenda content (Q3); the notice wording (Q4).\n\n## Progress\n\n- 2026-10-24: goal written from the planning package (Q2, Q6, Q10).\n- 2026-10-24: Q2 and F2 corrected after the cold review: losers are already asked to choose again; what is missing is\n  who took it.\n",
  "built_from": "6a8e37e"
 };

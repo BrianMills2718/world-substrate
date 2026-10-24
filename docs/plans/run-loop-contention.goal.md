@@ -1,4 +1,4 @@
-# Goal: a person who loses a race is told, and nobody's round runs twice
+# Goal: a person who loses a race is told who took it, and nobody's round runs twice
 
 Planning package: docs/planning/planning-package.json
 
@@ -19,23 +19,27 @@ Profile: continuous-light.
 
 ## The problem, in one example
 
-Seven people in the Waltzman world each want to settle the one agenda item in round 14. The first succeeds. The
-other six get `nothing_left` (`scripts/run_authored_world.py:572`) and lose their turn without being told that someone
-else got there first. A world with one fire and five firefighters does the same. Separately, the page once sent one
+Seven people in the Waltzman world each want to settle the one agenda item in round 14. The first succeeds. Each of
+the other six is told only "your choice was no longer allowed after earlier moves this round; choose again"
+(`scripts/run_authored_world.py:544-545`) and asked once more; with nothing useful left most wait, and their rows read
+`nothing_left` (`:570-572`). None is told who settled it or what changed, so none can reason about the loss. A world
+with one fire and five firefighters does the same. The "What happened" readout then quotes each loser's first words
+next to the move its retry made (`scripts/run_readout.py:93`). Separately, the page once sent one
 round's `/run` twice and the server ran and billed both (#225).
 
 ## Canonical example
 
 On a free replay of a saved world (the c1r24 Waltzman world, and the truck world), when several people pick the same
-one-of-a-kind move in a round, each loser's row says who took it, the loser chooses again from the moves now offered
-(or waits), and its next prompt names what happened. A second `/run` for the same round is refused without spending.
+one-of-a-kind move in a round, each loser's retry prompt and row say who took it and what it changed, and the
+readout quotes the retry's own words. A second `/run` for the same round is refused without spending.
 
 ## Done when
 
-- **F1. A loser is told.** A row whose move lost a race records who took the thing and the event id, and the loser's
-  next resident prompt contains it. Tested on free replays of two saved worlds with no AI calls (stand-in residents).
-- **F2. A loser chooses again.** The loser is offered the moves now possible, once, and its new choice and its own
-  words are recorded (closes the "retry keeps the first said" problem, Q10). Tested as F1.
+- **F1. A loser is told who took it.** A row whose move lost a race records who took the thing and the event id, and
+  the loser's retry prompt contains both. Tested on free replays of two saved worlds with no AI calls (stand-in
+  residents).
+- **F2. The readout quotes the words behind the move that ran.** For a retried move the readout quotes
+  `said_on_retry`, as the scene replay already does (Q10). Tested as F1.
 - **F3. No round runs twice.** The service refuses a second `/run` for the same session, round and base revision with
   no AI spend, and the page shows the first result. Test sends the same round twice.
 - **F4. One live owner-allowance canonical run** at the deployed commit, read in full (`run-log.jsonl` and a
@@ -67,3 +71,5 @@ Brian's review; agenda content (Q3); the notice wording (Q4).
 ## Progress
 
 - 2026-10-24: goal written from the planning package (Q2, Q6, Q10).
+- 2026-10-24: Q2 and F2 corrected after the cold review: losers are already asked to choose again; what is missing is
+  who took it.

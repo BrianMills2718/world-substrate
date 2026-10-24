@@ -43,22 +43,10 @@
    "explain": "Blocks: whether E2 (a fix carries its substance) holds for every world or only when residents happen to write specific words."
   },
   {
-   "id": "Q5",
-   "label": "Q5: People misread visible state",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: whether to change how state is shown to residents or leave it as model error."
-  },
-  {
    "id": "Q6",
    "label": "Q6: One round run twice",
    "kind": "AgentQuestion",
    "explain": "Blocks: wasted spend and shares that keep only one of two runs."
-  },
-  {
-   "id": "Q7",
-   "label": "Q7: Losing hedge keeps running",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: about $0.03 per build and misleading calls in the build trace."
   },
   {
    "id": "Q8",
@@ -76,13 +64,7 @@
    "id": "Q10",
    "label": "Q10: Retry keeps the first words",
    "kind": "AgentQuestion",
-   "explain": "Blocks: whether the transcript's words match the move that ran."
-  },
-  {
-   "id": "Q11",
-   "label": "Q11: Memory seeded before delivery",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: whether beliefs can run ahead of what the world has shown a person."
+   "explain": "Blocks: whether the readout's quoted words match the move that ran."
   },
   {
    "id": "Q12",
@@ -130,7 +112,7 @@
    "id": "contention",
    "label": "Lost race",
    "kind": "Concept",
-   "explain": "When an earlier pick changed the state, a later pick is resubmitted or re-chosen once; if nothing is left the person gets nothing_left and is not told why."
+   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing."
   },
   {
    "id": "gen-rules",
@@ -152,12 +134,6 @@
    "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
   },
   {
-   "id": "information",
-   "label": "Information item",
-   "kind": "Concept",
-   "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered."
-  },
-  {
    "id": "law-fingerprint",
    "label": "Executable-law fingerprint",
    "kind": "Concept",
@@ -169,6 +145,12 @@
    "label": "Finished-task notice",
    "kind": "Concept",
    "explain": "What the other people a finished task names are told, in the starter's own words about the work."
+  },
+  {
+   "id": "readout",
+   "label": "Readout",
+   "kind": "Concept",
+   "explain": "One AI summary of a run whose every cited event id is checked against the run."
   },
   {
    "id": "resident",
@@ -275,18 +257,6 @@
    "label": "bears on"
   },
   {
-   "id": "Q5-resident",
-   "source": "Q5",
-   "target": "resident",
-   "label": "bears on"
-  },
-  {
-   "id": "Q5-group-decision",
-   "source": "Q5",
-   "target": "group-decision",
-   "label": "bears on"
-  },
-  {
    "id": "Q6-run-loop",
    "source": "Q6",
    "target": "run-loop",
@@ -296,18 +266,6 @@
    "id": "Q6-share",
    "source": "Q6",
    "target": "share",
-   "label": "bears on"
-  },
-  {
-   "id": "Q7-build",
-   "source": "Q7",
-   "target": "build",
-   "label": "bears on"
-  },
-  {
-   "id": "Q7-gen-rules",
-   "source": "Q7",
-   "target": "gen-rules",
    "label": "bears on"
   },
   {
@@ -335,21 +293,9 @@
    "label": "bears on"
   },
   {
-   "id": "Q10-resident",
+   "id": "Q10-readout",
    "source": "Q10",
-   "target": "resident",
-   "label": "bears on"
-  },
-  {
-   "id": "Q11-resident",
-   "source": "Q11",
-   "target": "resident",
-   "label": "bears on"
-  },
-  {
-   "id": "Q11-information",
-   "source": "Q11",
-   "target": "information",
+   "target": "readout",
    "label": "bears on"
   },
   {

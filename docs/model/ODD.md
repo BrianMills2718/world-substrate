@@ -300,8 +300,9 @@ Which ideas are fixed substrate code and which are written per world by an AI is
   decision) and processes (a remedy takes 2 rounds, `:123`, `:332-342`; an open delivered concern makes its decider's
   support conditional, `:316-331`; deadline authorization, postponement, rejection; deployment over 6 rounds,
   `:399-441`; an operating review every 6 rounds that may reopen each resolved concern once, `:442-470`).
-- **Rules written per world by an AI** (the stronger model writes the spec; `gpt-6-luna` the actions and rules,
-  `scripts/people_world.py:35`): the people, their goals, beliefs and briefs, information items, scheduled moments, the
+- **Rules written per world by an AI** (`PEOPLE_MODEL`, `gpt-6-luna` unless `WORLD_BUILDER_STRONG_MODEL` names
+  another, `scripts/people_world.py:35`, writes the spec, `:225`, and the rules, `:265`; the actions use
+  `DEFAULT_MODEL`, `:241`, also `gpt-6-luna`, `scripts/generate_causal_model.py:28`): the people, their goals, beliefs and briefs, information items, scheduled moments, the
   actions the fixed rules do not cover, and their rules and processes, including any process that stops a remedy.
 - **What generated rules may write** (`spec_pipeline.py:132-193`): never the fixed records (information, delivery,
   moment, support, concern, group decision), with two exceptions: a move may add or subtract `agenda_items`, and a
@@ -316,7 +317,7 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
 -> score. Each long call is sent twice and the first good answer is kept (`people_world.py:190-212`).
 
 - **Rules retry:** at most 2 attempts (`:1560`), skipped when the score is 4 or more, the budget left is under $0.15,
-  or more than `PEOPLE_REWRITE_BY_S` = 80 s have passed (`:263`, `:1665-1669`). In the canonical Waltzman build the test
+  or more than `PEOPLE_REWRITE_BY_S` = 80 s have passed (`:263`, `:1665-1669`; the time check is `:1667`). In the canonical Waltzman build the test
   run starts at 85-111 s, so the retry never runs there (open question Q1).
 - **Test-run record** (`:1623-1657`): circling, stalled actors, `long_tasks` (each task kind, who starts it, and
   `can_fail_part_way`), `part_way_findings` (E1, `scripts/attempts.py:131-146`) and `attempt_findings`; each lowers the
@@ -331,11 +332,16 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
   moves plus `wait`. Other people's `work` records are hidden (`run_authored_world.py:132-142`).
 - **Round order:** everyone decides first (in parallel), the picks are submitted in a rotating order, then
   `advance(1)` runs due processes, then tasks are started and ended from the round's events (`:460-646`).
-- **A lost race:** when an earlier pick changed the state, the same move is resubmitted if still offered, otherwise
-  the actor chooses again once; if nothing is left it gets `nothing_left` (`:536-572`). The actor is not told who
-  took the thing (open question Q2).
-- **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said_on_retry`, `started_task`, `belief`, `expects`;
-  each round records `world_events` and `underway`.
+- **A lost race:** when an earlier pick changed the state, the same move is resubmitted if still offered. Otherwise
+  the resident is told "your choice was no longer allowed after earlier moves this round; choose again" and chooses
+  once more from the new offer (`:536-556`); if that choice is nothing or `wait`, its row reads `nothing_left`
+  (`:570-572`). It is never told who took the thing or what changed (open question Q2).
+- **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said` (the words behind the first choice),
+  `said_on_retry` (the retry's words, `:599-600`), `started_task`, `belief`, `expects`; each round records
+  `world_events` and `underway`. The readout quotes `said` only (`scripts/run_readout.py:93`; open question Q10).
+- **Member flags:** every person's `member` record carries `authorized` and `approved`, both False and never written
+  by any rule (`spikes/any-scenario-2026-10/compile_spec.py:33-34`, `:626`); residents see them, and in c1r24 one read
+  its own `authorized False` as the decision not being authorized (#231).
 
 ### 11.4 Tasks (`scripts/attempts.py`)
 

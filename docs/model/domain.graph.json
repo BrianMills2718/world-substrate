@@ -51,7 +51,7 @@
    "id": "move",
    "label": "Move (action)",
    "kind": "Substrate",
-   "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:367."
+   "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:49."
   },
   {
    "id": "process",
@@ -63,7 +63,49 @@
    "id": "compiler",
    "label": "Compiler",
    "kind": "Substrate",
-   "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:367."
+   "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:456."
+  },
+  {
+   "id": "policy",
+   "label": "Policy",
+   "kind": "Substrate",
+   "explain": "What chooses a person's move (scripted, an AI model or a resident): it can only pick an offered move; installed mechanics, not its words, decide what happens. Code: src/world_substrate/policy.py:50."
+  },
+  {
+   "id": "sense",
+   "label": "Linguistic Core sense and roles",
+   "kind": "Substrate",
+   "explain": "The meaning and participant roles of a move kind, supplied by Linguistic Core; never its effects, quantities or timing. Code: src/world_substrate/semantic.py:15."
+  },
+  {
+   "id": "profile",
+   "label": "Frozen mechanic profile",
+   "kind": "Substrate",
+   "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. Code: src/world_substrate/profile.py:266."
+  },
+  {
+   "id": "write-scope",
+   "label": "Declared write scope",
+   "kind": "Substrate",
+   "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:93."
+  },
+  {
+   "id": "causal-trace",
+   "label": "Causal trace",
+   "kind": "Substrate",
+   "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: scripts/world_builder_service.py:1822."
+  },
+  {
+   "id": "world-kind",
+   "label": "World kind",
+   "kind": "Substrate",
+   "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:113."
+  },
+  {
+   "id": "builder",
+   "label": "World Builder and its bundle",
+   "kind": "Substrate",
+   "explain": "The public page and service where a person describes a world, approves its rules and watches it run; a build's output is an authoring bundle. Code: scripts/world_builder_service.py."
   },
   {
    "id": "approval",
@@ -93,7 +135,7 @@
    "id": "contention",
    "label": "Lost race",
    "kind": "Substrate",
-   "explain": "When an earlier pick changed the state, a later pick is resubmitted or re-chosen once; if nothing is left the person gets nothing_left and is not told why. Code: scripts/run_authored_world.py:536."
+   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again; if it then picks nothing it gets nothing_left. It is never told who took the thing. Code: scripts/run_authored_world.py:536."
   },
   {
    "id": "resident",
@@ -303,228 +345,306 @@
   },
   {
    "id": "e8",
+   "source": "policy",
+   "target": "move",
+   "label": "chooses an offered"
+  },
+  {
+   "id": "e9",
+   "source": "resident",
+   "target": "policy",
+   "label": "is a"
+  },
+  {
+   "id": "e10",
+   "source": "sense",
+   "target": "move",
+   "label": "gives meaning to"
+  },
+  {
+   "id": "e11",
+   "source": "compiler",
+   "target": "profile",
+   "label": "freezes"
+  },
+  {
+   "id": "e12",
+   "source": "approval",
+   "target": "profile",
+   "label": "names"
+  },
+  {
+   "id": "e13",
+   "source": "profile",
+   "target": "write-scope",
+   "label": "declares"
+  },
+  {
+   "id": "e14",
+   "source": "engine",
+   "target": "write-scope",
+   "label": "enforces"
+  },
+  {
+   "id": "e15",
+   "source": "event",
+   "target": "causal-trace",
+   "label": "makes up"
+  },
+  {
+   "id": "e16",
+   "source": "causal-trace",
+   "target": "readout",
+   "label": "evidence for"
+  },
+  {
+   "id": "e17",
+   "source": "builder",
+   "target": "build",
+   "label": "runs"
+  },
+  {
+   "id": "e18",
+   "source": "build",
+   "target": "world-kind",
+   "label": "decides first"
+  },
+  {
+   "id": "e19",
+   "source": "world-kind",
+   "target": "people-world",
+   "label": "chooses"
+  },
+  {
+   "id": "e20",
+   "source": "builder",
+   "target": "share",
+   "label": "serves"
+  },
+  {
+   "id": "e21",
    "source": "run-loop",
    "target": "resident",
    "label": "asks"
   },
   {
-   "id": "e9",
+   "id": "e22",
    "source": "run-loop",
    "target": "move",
    "label": "submits"
   },
   {
-   "id": "e10",
+   "id": "e23",
    "source": "run-loop",
    "target": "contention",
    "label": "can produce"
   },
   {
-   "id": "e11",
+   "id": "e24",
    "source": "resident",
    "target": "task",
    "label": "starts"
   },
   {
-   "id": "e12",
+   "id": "e25",
    "source": "process",
    "target": "task",
    "label": "ends"
   },
   {
-   "id": "e13",
+   "id": "e26",
    "source": "task",
    "target": "notice",
    "label": "finished, sends"
   },
   {
-   "id": "e14",
+   "id": "e27",
    "source": "notice",
    "target": "resident",
    "label": "shown to"
   },
   {
-   "id": "e15",
+   "id": "e28",
    "source": "build",
    "target": "test-run",
    "label": "runs"
   },
   {
-   "id": "e16",
+   "id": "e29",
    "source": "build",
    "target": "rules-retry",
    "label": "may run"
   },
   {
-   "id": "e17",
+   "id": "e30",
    "source": "rules-retry",
    "target": "gen-rules",
    "label": "rewrites"
   },
   {
-   "id": "e18",
+   "id": "e31",
    "source": "test-run",
    "target": "task",
    "label": "lists long"
   },
   {
-   "id": "e19",
+   "id": "e32",
    "source": "run-log",
    "target": "share",
    "label": "rebuilds"
   },
   {
-   "id": "e20",
+   "id": "e33",
    "source": "run-log",
    "target": "readout",
    "label": "feeds"
   },
   {
-   "id": "e21",
+   "id": "e34",
    "source": "budget",
    "target": "build",
    "label": "limits"
   },
   {
-   "id": "e22",
+   "id": "e35",
    "source": "budget",
    "target": "resident",
    "label": "limits"
   },
   {
-   "id": "e23",
+   "id": "e36",
    "source": "people-world",
    "target": "person",
    "label": "has"
   },
   {
-   "id": "e24",
+   "id": "e37",
    "source": "people-world",
    "target": "group-decision",
    "label": "may have"
   },
   {
-   "id": "e25",
+   "id": "e38",
    "source": "people-world",
    "target": "moment",
    "label": "has"
   },
   {
-   "id": "e26",
+   "id": "e39",
    "source": "people-world",
    "target": "work-cycle",
    "label": "has"
   },
   {
-   "id": "e27",
+   "id": "e40",
    "source": "people-world",
    "target": "communicate",
    "label": "has"
   },
   {
-   "id": "e28",
+   "id": "e41",
    "source": "communicate",
    "target": "information",
    "label": "delivers"
   },
   {
-   "id": "e29",
+   "id": "e42",
    "source": "information",
    "target": "concern",
    "label": "may carry"
   },
   {
-   "id": "e30",
+   "id": "e43",
    "source": "concern",
    "target": "support",
    "label": "makes conditional"
   },
   {
-   "id": "e31",
+   "id": "e44",
    "source": "support",
    "target": "group-decision",
    "label": "counts toward"
   },
   {
-   "id": "e32",
+   "id": "e45",
    "source": "remedy",
    "target": "concern",
    "label": "resolves"
   },
   {
-   "id": "e33",
+   "id": "e46",
    "source": "group-decision",
    "target": "agenda",
    "label": "holds"
   },
   {
-   "id": "e34",
+   "id": "e47",
    "source": "group-decision",
    "target": "rollout",
    "label": "starts"
   },
   {
-   "id": "e35",
+   "id": "e48",
    "source": "rollout",
    "target": "task",
    "label": "is a"
   },
   {
-   "id": "e36",
+   "id": "e49",
    "source": "remedy",
    "target": "task",
    "label": "is a"
   },
   {
-   "id": "e37",
+   "id": "e50",
    "source": "review",
    "target": "concern",
    "label": "may reopen"
   },
   {
-   "id": "e38",
+   "id": "e51",
    "source": "gen-rules",
    "target": "agenda",
    "label": "may add to"
   },
   {
-   "id": "e39",
+   "id": "e52",
    "source": "gen-rules",
    "target": "remedy",
    "label": "may stop"
   },
   {
-   "id": "e40",
+   "id": "e53",
    "source": "person",
    "target": "resident",
    "label": "briefs"
   },
   {
-   "id": "e41",
+   "id": "e54",
    "source": "build",
    "target": "gen-rules",
    "label": "writes"
   },
   {
-   "id": "e42",
+   "id": "e55",
    "source": "build",
    "target": "people-world",
    "label": "builds"
   },
   {
-   "id": "e43",
+   "id": "e56",
    "source": "harness-build",
    "target": "build",
    "label": "would replace"
   },
   {
-   "id": "e44",
+   "id": "e57",
    "source": "waltzman-ref",
    "target": "world",
    "label": "adds components to one"
   },
   {
-   "id": "e45",
+   "id": "e58",
    "source": "law-fingerprint",
    "target": "fingerprint",
    "label": "would extend"
