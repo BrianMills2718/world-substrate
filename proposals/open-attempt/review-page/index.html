@@ -107,8 +107,8 @@ a{color:var(--have)}
 <h2>Built in three slices, each one a working World Builder</h2>
 <div class="tablewrap"><table>
 <tr><th>Slice</th><th>What lands</th><th>Shown by</th></tr>
-<tr><td>1</td><td>People say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
-<tr><td>2</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing the last</td></tr>
+<tr><td>1</td><td>The rules writer makes places, ways between them and walls; then people say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
+<tr><td>2</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
 <tr><td>3</td><td>Skill rolls, seeded and recorded, read only from recorded skill</td><td>The helicopter example, and the same words giving different dice at skill 0 and 3</td></tr>
 </table></div>
 
@@ -133,17 +133,18 @@ wall:{title:"Sam walks into the wall",setup:"Airfield office. A brick wall stand
 ["grey","meant","Sam believes the hangar is just behind this wall and expects to get there quickly.","belief, expected_effect (memory and record only)"],
 ["miss","attempt","\"I walk east through the wall into the hangar.\"","attempt"],
 ["miss","interpret","Move, from the office to the hangar. Words used: \"walk\", \"into the hangar\".","{kind: move, roles: {mover: sam, to: hangar}, quoted_span: …}"],
-["have","check","Refused: the way from the office to the hangar is blocked by the brick wall. Nothing changes.","status: refused · failed check names wall_1"],
-["have","notice","Sam sees: you walk into the wall; it does not give.","observation to sam"]],
-out:"Nothing is blocked before it happens: Sam really tried, and the wall is why it failed. Today Sam would never have been offered the wall at all."},
+["have","check","Refused: the way from the office to the hangar is blocked by the brick wall. Nothing changes.","status: refused · failed check names the wall"],
+["have","notice","Sam is told the move was refused and why.","observation to sam"]],
+out:"Nothing is blocked before it happens: Sam really tried, and the wall is why it failed. Today Sam would never have been offered the wall at all. This needs the rules writer to make places and a wall check; today's generated worlds have none, so that comes first in slice 1."},
 glass:{title:"Ana knocks the glass off the desk",setup:"A glass of water sits on the desk in the office. Lee is in the hangar next door.",stages:["decide","attempt","interpret","check","apply","react","notice"],ev:[
 ["miss","attempt","\"I sweep my arm across the desk.\"","attempt"],
 ["miss","interpret","Push, the glass off the desk.","{kind: push, roles: {pusher: ana, thing: glass_1}}"],
 ["have","carry out","The glass is no longer on the desk.","event e1"],
 ["miss","reaction","Falls: nothing holds it up, so it lands on the floor.","event e2 · parent e1"],
 ["miss","reaction","Breaks: it is fragile and it fell.","event e3 · parent e2"],
-["miss","reaction","Spills: a broken glass holding water empties it on the floor; a crash sound is made.","event e4 · parent e3"],
-["have","notice","Lee, in the hangar, hears a crash from the office.","observation to lee · parent e4"]],
+["miss","reaction","Spills: a broken glass holding water empties it on the floor.","event e4 · parent e3"],
+["miss","reaction","Crash sound: a breaking glass makes a noise.","event e5 · parent e3"],
+["have","notice","Lee, in the hangar, hears a crash from the office.","observation to lee, from e5"]],
 out:"Five events in one moment, each naming what caused it. Today the fall would wait for the next round and fire once."},
 heli:{title:"Sam tries to fly the helicopter",setup:"Sam has never flown: piloting skill 0. Sam is in the cockpit.",stages:["decide","attempt","interpret","check","roll","apply","react","notice"],ev:[
 ["grey","meant","Sam expects to lift off smoothly and fly to the coast.","expected_effect (never read by rules)"],

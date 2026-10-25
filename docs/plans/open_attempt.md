@@ -101,8 +101,9 @@ due. Rules:
 - order inside one wave is the registry's fixed order, recorded in the events.
 
 Glass: `push glass` moves it off the desk → `falls` (unsupported object above floor) → `breaks`
-(fragile and fell) → `spills` (container broke while holding water) and a crash sound → the person
-next door hears it through `information`. All in one moment, five events, each citing the one before.
+(fragile and fell) → `spills` (container broke while holding water) and, also from `breaks`, a `crash sound` event. Five events in
+one moment: fall cites push, break cites fall, and spill and sound both cite break. The person next
+door then learns of the sound through `information`; that is an observation, not a sixth event.
 
 ### Piece 3. Skill rolls (copy: Blades in the Dark action roll, GURPS defaults, progress clocks)
 
@@ -117,7 +118,7 @@ outcomes: {full: [effects], partial: [effects], fail: [effects]}}`.
 - The dice come from a seeded generator (`seed = hash(run_seed, event_id)`), and the values are
   recorded in the event, so a replay reproduces them and a reader can check them.
 - Only the skill path is read. The attempt's wording never reaches the roll.
-- Long tasks reuse the existing in-flight process progress (`Engine._progress`, `engine.py:321`); a roll can advance or set back that progress, like a Blades progress clock.
+- Long tasks: a roll's outcome effects may write the counter field a process already reads (the world field behind `Engine._progress`, `engine.py:321`, which only reports it), so a partial result moves a task's counter less than a full one, like a Blades progress clock.
 
 Helicopter: Sam (piloting 0) is in the cockpit (gate passes), rolls two dice, keeps the lower; on
 1-3 the `fail` effects crash the helicopter, damaging it and injuring Sam, and Piece 2 carries on
@@ -140,23 +141,31 @@ Helicopter: Sam (piloting 0) is in the cockpit (gate passes), rolls two dice, ke
 | Id | Check | Run and what its trace must show |
 | --- | --- | --- |
 | A1 | Interpreter schema has no success or outcome field | `pytest tests/test_open_attempt.py::test_schema_has_no_outcome` output |
-| A2 | "Fly the helicopter to the coast" never binds to `walk` | fixture run on the generated airfield world; the command records `kind: pilot`, `quoted_span` "fly the helicopter" |
-| A3 | Walking through the wall is refused, wall named | the canonical run's event for Sam's wall attempt: `status: refused`, failed check names the wall entity |
+| A2 | "Fly the helicopter to the coast" never binds to `move` | fixture run on the generated airfield world; the command records `kind: pilot`, `quoted_span` "fly the helicopter" |
+| A3 | Walking through the wall is refused, wall named | the canonical run's event for Sam's wall attempt: `status: refused`, failed check names the wall entity. Depends on Q23 (below) |
 | A4 | An unmatched attempt changes nothing and is listed | the canonical run's build record `unmatched_attempts` list, and the event's before/after equal |
-| A5 | The glass chain completes in one moment | canonical run: one moment with push, fall, break, spill, sound events, each citing the previous as parent; the neighbour's observation includes the sound |
+| A5 | The glass chain completes in one moment | canonical run: one moment with push, fall, break, spill and sound events; fall cites push, break cites fall, spill and sound cite break. Judged separately: the neighbour's observation for that moment includes the sound |
 | A6 | A self-feeding reaction is refused whole | `tests/test_open_attempt.py` loop fixture: status refused, world unchanged, cap reason recorded |
 | A7 | Skill, not wording, sets the dice | fixture: identical attempt text, piloting 0 and 3; events show 2-keep-lower versus 3 dice, seed recorded |
-| A8 | Existing worlds replay unchanged | `scripts/check_project.py` on each slice's merge commit, test count and exit 0 quoted in the PR |
+| A8 | Existing worlds replay unchanged | `scripts/check_project.py` on each slice's merge commit, exit 0, with these replay tests named passing in the quoted output: `test_action_envelopes` (unsupported and malformed envelopes replay), `test_first_fill.test_fill_tick_and_replay_match_exactly`, `test_greenhouse_zero_review.test_replay_regenerates_exactly_through_generic_renderer`, `test_castaway_zero_review.test_zero_review_replay_regenerates_exactly` |
 | A9 | The canonical run is fully traced | `evidence/open-attempt/<run>/run-log.jsonl` plus `TRACE_READ.md` passing `scripts/check_trace_reads.py`; read by the implementing agent before reporting |
 
 ## Slices, in order
 
 | Slice | What lands | State | Checks |
 | --- | --- | --- | --- |
-| S1 | Open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | fully_specifiable_now | A1-A4, A8, A9 (on a free replay first, then one owner-allowance run) |
+| S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | conditional (on Q23's first step) | A1-A4, A8, A9 (on a free replay first, then one owner-allowance run) |
 | S2 | `timing: immediately` processes run to a fixpoint inside one moment | fully_specifiable_now | A5, A6, A8 |
 | S3 | `roll` on action mechanics, seeded and recorded; rules writer prompt can declare it | fully_specifiable_now | A7, A8, then the full canonical run for A9 |
 | S4 | AI game master for unmatched attempts | human_decision_required (D2) | none until decided |
+
+**Kinds the canonical airfield world must contain** (generated, never hand-written): `move` between
+places with a check that the way between is open (the wall), `push` an object, `pilot` a craft to a
+place, and `speak`. Today's generated worlds are economy-style (`make-leads`, `shape-slats`) and
+nothing in `scripts/generate_causal_model.py` asks for places, ways between them or blocking. That is
+open question **Q23**, and it is the first step of S1: generate the airfield world, read its
+mechanics, and if `move` lacks a passability check, change the rules writer's prompt and schema so
+it writes one (never hand-edit the world). A3 cannot pass until Q23 is closed.
 
 Each slice is its own pull request and leaves a working World Builder. S1 alone already lets a
 resident walk into the wall. The rules writer (`scripts/generate_causal_model.py`, its process and mechanic schemas) learns `timing` in S2 and
