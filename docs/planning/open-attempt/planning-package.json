@@ -1,0 +1,105 @@
+{
+ "schema_version": "1.0",
+ "record_type": "planning_package",
+ "repository": "BrianMills2718/world-substrate",
+ "subject_revision": "1bdf40b9edd59f351f4fbea66d6209d96d6cfbe8",
+ "request": "Brian 2026-10-25 \"yes\" (to: write a short design for free-form attempts plus the fallback for unmatched attempts, then knock-on effects and skill rolls, tracing the wall, glass and helicopter examples, with a review page)",
+ "parts": {
+  "checks": {
+   "status": "present",
+   "path": "docs/planning/checks.txt",
+   "results": [
+    {
+     "name": "durable documents (arc42)",
+     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
+     "exit_status": 0,
+     "counts": {
+      "findings": 0
+     }
+    },
+    {
+     "name": "project navigation",
+     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
+     "exit_status": 0,
+     "counts": {
+      "findings": 0
+     }
+    },
+    {
+     "name": "repository format",
+     "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
+     "exit_status": 1,
+     "counts": {
+      "compliant": 0,
+      "of": 1
+     },
+     "tracked_by": "Q15"
+    },
+    {
+     "name": "trace reads",
+     "command": "python3 scripts/check_trace_reads.py",
+     "exit_status": 0,
+     "counts": {
+      "runs": 9,
+      "problems": 0
+     }
+    },
+    {
+     "name": "project check (tests, system model, docs)",
+     "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py",
+     "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
+     "exit_status": 0,
+     "counts": {
+      "tests_run": 710,
+      "failed": 0,
+      "skipped": 2
+     }
+    }
+   ]
+  },
+  "open_questions": {
+   "status": "present",
+   "path": "docs/planning/open-questions.json"
+  },
+  "system_model": {
+   "status": "present",
+   "path": "docs/model/ODD.md"
+  },
+  "domain_model": {
+   "status": "present",
+   "path": "docs/model/domain.graph.json",
+   "glossary": "docs/model/DOMAIN.md"
+  },
+  "diagrams": {
+   "status": "present",
+   "items": [
+    {
+     "path": "docs/model/ODD.md",
+     "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
+    },
+    {
+     "path": "docs/model/domain.graph.json",
+     "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
+    },
+    {
+     "path": "docs/model/open-questions.graph.json",
+     "question": "Which concepts carry the unsettled questions, and whose call is each?"
+    }
+   ]
+  },
+  "plan": {
+   "status": "present",
+   "path": "docs/plans/open_attempt.md"
+  },
+  "review_page": {
+   "status": "present",
+   "path": "proposals/open-attempt/review-page/index.html",
+   "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/"
+  },
+  "cold_review": {
+   "status": "present",
+   "path": "docs/planning/open-attempt/cold-review.md",
+   "verdict": "pass"
+  }
+ }
+}
