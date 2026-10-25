@@ -100,6 +100,14 @@ Current product fixtures have narrower roles:
 - **Warehouse Rush** — retained draft evidence of a real generated-law/representation omission and minimal repair; not active roadmap work.
 - **Waltzman Coordination Lab** — current integrated product deliverable and public demo.
 
+The steps a visitor takes to get the result end to end, which every plan's outcome step names one of:
+
+1. Describe a situation in plain words on https://brianmills.dev/world-builder/ and press Create simulation.
+2. The builder generates the world (places, things, people, the moves they may attempt) and its rules.
+3. The residents act in the generated world each round, and the installed rules decide each effect (accepted, refused with the failing check, or changed state that later rules react to).
+4. The page shows the rollout round by round, with each event's cause and the build record.
+5. The visitor reads why things happened, follows a cause back, and can replay the saved run for free.
+
 ## Current truth
 
 State, not milestone narrative:

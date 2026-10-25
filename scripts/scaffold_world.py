@@ -99,6 +99,9 @@ def validate_bundle(value: object) -> dict[str, Any]:
             for fname, item in declared.items():
                 if not _type_ok(item["type"], fields[fname]): raise BundleError(f"entity {eid} value {cname}.{fname} does not match {item['type']}")
     for entity in entities:
+        place = entity.get("location")
+        if place is not None and place not in entity_ids and place != world["location"]:
+            raise BundleError(f"entity {entity['id']} location names unknown place {place!r}")
         for cname, fields in (entity.get("components") or {}).items():
             declared = {f["name"]: f for f in component_map[cname]["fields"]}
             for fname, item in declared.items():

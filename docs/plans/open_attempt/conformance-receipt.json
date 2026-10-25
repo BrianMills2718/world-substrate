@@ -1,10 +1,10 @@
 {
   "schema_version": "planning-method-conformance-receipt.v1",
   "record_type": "planning_method_conformance_receipt",
-  "receipt_id": "RECEIPT-open_attempt-a1373ee1c019",
+  "receipt_id": "RECEIPT-open_attempt-1775ec98f87f",
   "plan": {
     "plan_ref": "docs/plans/open_attempt.md",
-    "plan_sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+    "plan_sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
   },
   "path_decision": {
     "ref": "docs/plans/open_attempt/path-decision.json",
@@ -26,7 +26,7 @@
   },
   "activation": {
     "facts_ref": "docs/plans/open_attempt/activation-facts.json",
-    "facts_sha256": "80ef68847aff77d050159a357156a70ba48e58a219ef3bc7d48e9860d26c4f16",
+    "facts_sha256": "3ac38f69d6b1958e573e990e03406823effd58bb29938e2f0d5a5e191bc04c81",
     "facts": {
       "shared_mechanism": true,
       "empirical_comparison_proposed": false,
@@ -126,10 +126,10 @@
   },
   "checklist": {
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:a350b320478fec3030dfc38f05412d824136f9f559d090809a678fe5e28107f4",
-    "definition_sha256": "1190389e690c733cfdb39dd0c740af2d98d9983a2952a203d73d635fd4573bfa",
+    "revision": "sha256:90f1af5052a699c127a69dbf013e8caffca874ba515536c242c1bd653ae2840b",
+    "definition_sha256": "a4e218f1d2942a23f7a6498ea8c866efe467a9b2d676d99c6c5d59a538779019",
     "bundle_ref": "docs/plans/open_attempt/checklist.json",
-    "bundle_sha256": "e1f03c795a515d48a37425e6d88ffa2975051b69bac650339fb4e779a94030d5",
+    "bundle_sha256": "dd23230aad32837897d62e2301cee4e4b071aaf415409cc07ce9aac6cc0a137f",
     "coverage": "complete",
     "definition_matches_recompilation": true
   },
@@ -147,7 +147,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#actor-and-result",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -193,7 +193,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#requirements",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -220,7 +220,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#success-and-disproof",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -247,7 +247,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#success-and-disproof",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -274,7 +274,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#when-a-run-fails-or-surprises-us",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -301,7 +301,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#trace-visibility",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -328,20 +328,20 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#project-outcome",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         },
         {
           "ref": "roadmap/README.md#actor-recurring-job-and-investment-boundary",
-          "sha256": "b6cd1291244864b7cd888d0967d2a9a639f98fa231ac5f395d42a9723db4a675"
+          "sha256": "6a695c8082b46dda88f7ea3087844570f38467a61dd5e388b1c3742ce275ba3a"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/61ae2a18c836/CORE-PROJECT-OUTCOME",
+        "trace_id": "company-planning/method-conformance/open_attempt/e2dea4f7057d/CORE-PROJECT-OUTCOME",
         "model": "claude-code/haiku",
         "verdict": "pass",
-        "materiality": "non_material",
+        "materiality": "material",
         "missing": null,
-        "rationale": "The plan carries the required `Project outcome:` line naming roadmap/README.md#actor-recurring-job-and-investment-boundary. The outcome record explicitly states all four parts: the actor (World Builder visitor), the recurring job and baseline (visitor describes a world, watches people act under fixed rules today), the inspectable result (run page and build record showing attempts, rules' effects, and causation), and stage/boundary (prototype, owner allowance, no new services). The plan's actor explicitly matches the outcome's actor and is confirmed in the plan's own alignment statement.",
+        "rationale": "The plan names a record (roadmap/README.md#actor-recurring-job-and-investment-boundary) that explicitly states all four required parts: the visitor actor, the recurring job (describing a world and watching people act), the inspectable result (run page and build record), and the investment boundary (prototype stage, this repo, spend caps). The plan's actor is the same as the record's actor, and the plan explicitly states it \"serves that actor directly.\"",
         "reused": false
       },
       "suggested_action": null
@@ -359,11 +359,11 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#outcome-step",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         },
         {
           "ref": "roadmap/README.md#canonical-outcome-probe",
-          "sha256": "b6cd1291244864b7cd888d0967d2a9a639f98fa231ac5f395d42a9723db4a675"
+          "sha256": "6a695c8082b46dda88f7ea3087844570f38467a61dd5e388b1c3742ce275ba3a"
         },
         {
           "ref": "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
@@ -371,12 +371,12 @@
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/61ae2a18c836/CORE-OUTCOME-FIRST",
+        "trace_id": "company-planning/method-conformance/open_attempt/e2dea4f7057d/CORE-OUTCOME-FIRST",
         "model": "claude-code/haiku",
         "verdict": "pass",
         "materiality": "material",
         "missing": null,
-        "rationale": "All four required lines are explicitly present with valid content: the outcome probe is named with path and heading, the observed artifact is cited and confirmed to exist, the step is described, and the class is stated as \"vertical\" — an appropriate choice for a plan that reaches inspectable results through every probe step and ends in traced runs.",
+        "rationale": "The plan's `## Outcome step` section provides all four required lines: `Outcome probe: roadmap/README.md#canonical-outcome-probe` (probe exists and is shown in evidence); `Observed: evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md` (artifact existence explicitly confirmed in evidence header); `Step: step 3 of the probe, \"the residents act in the generated world each round, and the installed rules decide each effect\"` (exact match to step 3 of the canonical probe listed); `Class: vertical` (justified: the plan changes step 3 end to end across generator, resident, engine, and page, ending in a live traced run a person can inspect, not a component-only improvement). The probe is already observed, so component-while-unobserved does not disqualify it.",
         "reused": false
       },
       "suggested_action": null
@@ -394,7 +394,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": null,
@@ -413,7 +413,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#system-model",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -440,7 +440,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#capability-reuse",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -467,7 +467,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#authority-and-non-goals",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -494,7 +494,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#irreversible-actions-and-spend",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -521,7 +521,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#uncertainties",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -548,16 +548,16 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#activation-facts",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/61ae2a18c836/CORE-ACTIVATION-FACTS",
+        "trace_id": "company-planning/method-conformance/open_attempt/e2dea4f7057d/CORE-ACTIVATION-FACTS",
         "model": "claude-code/haiku",
         "verdict": "pass",
-        "materiality": "non_material",
+        "materiality": "material",
         "missing": null,
-        "rationale": "The plan declares four activation facts: shared_mechanism (true), empirical_comparison_proposed (false), llm_central (true), and irreversible_or_spend_action (true). Each matches the plan's actual triggers: it adds shared mechanisms, does not propose experiments, centrally depends on the attempt interpreter LLM call, and authorizes owner allowance spend. No declared fact is false when the plan triggers it. Optional facts claims_external_standard and aes_governed_target are correctly shown as false.",
+        "rationale": "The plan triggers three activation facts: shared_mechanism (explicitly stated: \"new shared mechanism, contract, or algorithm\" in the engine and interpreter), llm_central (explicitly stated: \"behavior that centrally depends on LLM calls\" for attempt interpretation), and irreversible_or_spend_action (explicitly stated: \"Spend: owner allowance only...at most $3.00 across S1\"). The declared activation facts show all three as true. Facts not triggered (empirical_comparison_proposed, claims_external_standard, aes_governed_target) are correctly declared false. No triggered fact is declared false.",
         "reused": false
       },
       "suggested_action": null
@@ -575,7 +575,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#prior-art-and-ownership",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -602,7 +602,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#prior-art-and-ownership",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -629,7 +629,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#llm-call-boundary",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -656,7 +656,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#llm-call-boundary",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -683,7 +683,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#durable-documents",
-          "sha256": "a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e"
+          "sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd"
         }
       ],
       "semantic": {
@@ -715,11 +715,11 @@
   "conformance_report": {
     "schema_version": "1.0",
     "record_type": "planning_conformance_report",
-    "report_id": "REPORT-open_attempt-a1373ee1c019",
+    "report_id": "REPORT-open_attempt-1775ec98f87f",
     "snapshot_ref": "SNAPSHOT-open_attempt",
-    "snapshot_revision": "sha256:e1f03c795a515d48a37425e6d88ffa2975051b69bac650339fb4e779a94030d5",
+    "snapshot_revision": "sha256:dd23230aad32837897d62e2301cee4e4b071aaf415409cc07ce9aac6cc0a137f",
     "packet_ref": "docs/plans/open_attempt.md",
-    "packet_revision": "sha256:a1373ee1c019617081bf051f9855902a5e728191ba008b9beba5c3060f45a91e",
+    "packet_revision": "sha256:1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd",
     "structural_status": "pass",
     "semantic_review_status": "complete",
     "diagnostics": [],
@@ -742,7 +742,7 @@
     "client": "claude-code",
     "session": "3f2afcba-8b98-435a-88b2-f9246c2942bb"
   },
-  "started_at": "2026-10-25T23:31:28Z",
-  "completed_at": "2026-10-25T23:33:10Z",
-  "duration_ms": 105639
+  "started_at": "2026-10-25T23:44:49Z",
+  "completed_at": "2026-10-25T23:45:29Z",
+  "duration_ms": 40524
 }

@@ -50,6 +50,22 @@ class GenerateWorldBundleTests(unittest.TestCase):
         contract = json.loads(_messages("a pencil supply network", "ongoing")[1]["content"])["contract"]
         self.assertTrue(any("one action per kind of goods" in rule for rule in contract["rules"]))
 
+    def test_contract_asks_for_places_and_the_ways_between_them(self):
+        # open_attempt Q23: separate rooms were plain entities and everyone stood at the world location.
+        from scripts.generate_world_bundle import _messages
+        contract = json.loads(_messages("an office and a hangar with a wall between", "task")[1]["content"])["contract"]
+        self.assertIn("optional location", contract["entities"])
+        self.assertTrue(any("category 'place'" in rule and "'way'" in rule for rule in contract["rules"]))
+
+    def test_unknown_starting_place_is_refused(self):
+        from scripts.scaffold_world import BundleError, validate_bundle
+        bundle = json.loads(json.dumps(ORCHARD))
+        bundle["entities"][0]["location"] = "no-such-place"
+        with self.assertRaisesRegex(BundleError, "unknown place 'no-such-place'"):
+            validate_bundle(bundle)
+        bundle["entities"][0]["location"] = bundle["entities"][1]["id"]
+        validate_bundle(bundle)
+
     def test_redesign_sends_the_previous_structure_and_the_test_run(self):
         # #187: the structure is redesigned from what the test run showed, not only the rules.
         module, call = fake_llm(json.dumps(ORCHARD))

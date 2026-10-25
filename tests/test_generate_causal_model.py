@@ -48,6 +48,14 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
             }
             self.assertEqual(stated[entity_id], actual, entity_id)
 
+    def test_context_asks_actions_on_things_to_check_the_actor_is_there(self):
+        # open_attempt Q23: fly never checked Sam was in the hangar with the helicopter.
+        from scripts.generate_causal_model import _context
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        rules = _context(bundle)["authority_rules"]
+        self.assertTrue(any("actor's location.location_id" in rule for rule in rules))
+        self.assertTrue(any("there is no 'or'" in rule for rule in rules))
+
     def test_generation_caps_provider_output_tokens(self):
         bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
         causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())

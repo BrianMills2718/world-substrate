@@ -35,6 +35,15 @@
     "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-ACTIVATION-FACTS",
     "verdict": "unresolved"
   },
+  "2608c33be99f91ee334024052293f9ad792b8a170c408ebaa537a5bb69180ab3": {
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "materiality": "non_material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "Every declared activation fact is explicitly justified in the plan text. True facts (shared_mechanism, llm_central, irreversible_or_spend_action) are grounded in the plan's three pieces and budgeting sections. False facts (empirical_comparison_proposed, claims_external_standard, aes_governed_target) are either justified in-plan or correctly assessed as absent from the plan's scope.",
+    "trace_id": "company-planning/method-conformance/open_attempt/116693dc7843/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
   "28a92cd7d38fcf390e53740e68c2e16df222963d5ee64f3d347eec4bb722f2c7": {
     "item_id": "OV-LLM-CALL-BOUNDARY",
     "materiality": "material",
@@ -152,6 +161,15 @@
     "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-TRACE-REVIEW",
     "verdict": "unresolved"
   },
+  "60665503a700c079e15327f1af2ff0cf69efa88baafdb77efe75c55ca2af2e33": {
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan names a record (roadmap/README.md#actor-recurring-job-and-investment-boundary) that explicitly states all four required parts: the visitor actor, the recurring job (describing a world and watching people act), the inspectable result (run page and build record), and the investment boundary (prototype stage, this repo, spend caps). The plan's actor is the same as the record's actor, and the plan explicitly states it \"serves that actor directly.\"",
+    "trace_id": "company-planning/method-conformance/open_attempt/e2dea4f7057d/CORE-PROJECT-OUTCOME",
+    "verdict": "pass"
+  },
   "63553029c0bd54f1aa2b1b87878d2bb1e7a3eebb09e254a3bbcd713f99316067": {
     "item_id": "CORE-CAPABILITY-REUSE",
     "materiality": "material",
@@ -240,6 +258,15 @@
     "model": "claude-code/haiku",
     "rationale": "The plan correctly cites the record location and connects the plan's actor (World Builder visitor) to the outcome's actor. The record clearly states the actor (\"A user describes a bounded world\") and the inspectable result (the acceptance criteria describing what can be inspected). However, the record does not explicitly state what the actor currently does as a recurring job or frame the baseline for that job in relation to the plan's goals. The investment boundary is stated in the plan but absent from the record itself.",
     "trace_id": "company-planning/method-conformance/open_attempt/96c26a108aeb/CORE-PROJECT-OUTCOME",
+    "verdict": "unresolved"
+  },
+  "8bdab2efa7160620bd5bac9e4ff82311636c6b181e0d1c6ecdb4e6f2669b7a81": {
+    "item_id": "CORE-OUTCOME-FIRST",
+    "materiality": "material",
+    "missing": "The canonical outcome probe is described as M1 baseline characteristics and current product fixtures (Kitchen, Greenhouse, Orchard, Repair Bay, Warehouse Rush, Waltzman Coordination Lab), but does not explicitly enumerate its steps as \"the steps a person takes to get the project's result end to end.\" Without the probe broken into explicit steps, the named step (\"a resident acts in the generated world and the installed rules decide the effect\") cannot be verified as actually part of the cited probe's enumeration.",
+    "model": "claude-code/haiku",
+    "rationale": "The Outcome step section is complete with all four required lines present and properly formatted: Outcome probe cites roadmap/README.md#canonical-outcome-probe, Observed cites a traced artifact, Step names a step, and Class is \"vertical.\" The canonical outcome probe content is provided in the evidence. However, the requirement specifies the probe should be \"the steps a person takes to get the project's result end to end,\" yet the quoted evidence describes the probe as M1's characteristics plus product fixture roles, not as enumerated steps. This makes it impossible to verify the plan's named step is actually step of the probe rather than an inferred interpretation.",
+    "trace_id": "company-planning/method-conformance/open_attempt/116693dc7843/CORE-OUTCOME-FIRST",
     "verdict": "unresolved"
   },
   "8f022c0e663a3789dad04337c542c22b5c1d65d207c04c3c08dcb6838529369c": {
@@ -359,6 +386,15 @@
     "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-REQUIREMENTS-TRACED",
     "verdict": "unresolved"
   },
+  "bb9db989616c92e2860d900f17d9abac5aa38ace1519adbc90b7deca7720e191": {
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan triggers three activation facts: shared_mechanism (explicitly stated: \"new shared mechanism, contract, or algorithm\" in the engine and interpreter), llm_central (explicitly stated: \"behavior that centrally depends on LLM calls\" for attempt interpretation), and irreversible_or_spend_action (explicitly stated: \"Spend: owner allowance only...at most $3.00 across S1\"). The declared activation facts show all three as true. Facts not triggered (empirical_comparison_proposed, claims_external_standard, aes_governed_target) are correctly declared false. No triggered fact is declared false.",
+    "trace_id": "company-planning/method-conformance/open_attempt/e2dea4f7057d/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
   "c2a4768c92bffedc0352ae8af275e4893d4caaff339d8fdb543ba0c273eed2e0": {
     "item_id": "CORE-CAPABILITY-REUSE",
     "materiality": "non_material",
@@ -366,6 +402,15 @@
     "model": "claude-code/haiku",
     "rationale": "The evidence explicitly states \"No catalogue entry fits, because none of which interpret actions or run rules,\" directly answering the requirement's third pathway with a substantive reason. It correctly identifies that `llm_client` reuse is outside the catalogue scope and explicitly declares no new cross-project capability is added, naming the consumer context (\"World Builder run loop\").",
     "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-CAPABILITY-REUSE",
+    "verdict": "pass"
+  },
+  "cc99735f2288901d73725d88a3ca6854a3405424ae5693b9b70a6c0b0793c172": {
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan states \"Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary\" and the referenced record explicitly provides all four required parts: **Actor** (\"a World Builder visitor (or Brian as owner)\"), **Recurring job and baseline** (\"the visitor describes a situation in plain words...and watches the generated people act under the installed rules. Today...each person picks from the moves the rules already allow\"), **Inspectable result** (\"the run page and its build record: what each person tried, what the rules did and why, every event with its cause\"), and **Stage and investment boundary** (\"prototype stage, one agent at a time; this repository and its own deploy only...\"). The plan's actor (\"World Builder visitor...who pastes a scenario and watches the generated people act\") is the same as the outcome's actor, and the plan explicitly states \"This plan serves that actor directly.\"",
+    "trace_id": "company-planning/method-conformance/open_attempt/116693dc7843/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
   "cefecdb2d52224f7a57e85cd7ad072916688af004ba127e85321893dc5b8ba68": {
@@ -393,6 +438,15 @@
     "model": "claude-code/haiku",
     "rationale": "The evidence explicitly names the provider (OpenRouter, gpt-6-luna), spend authority (Brian's owner allowance, granted 2026-10-25), and authentic-run condition (interpretation becomes authoritative only as a recorded command after an authentic live run). All three elements the requirement specifies are present.",
     "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/OV-LLM-AUTHORITY-PROMOTION",
+    "verdict": "pass"
+  },
+  "dd2ae22b9b29716d8b230267cb82e11cff44e0b99c55378ade372117a1765605": {
+    "item_id": "CORE-OUTCOME-FIRST",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan's `## Outcome step` section provides all four required lines: `Outcome probe: roadmap/README.md#canonical-outcome-probe` (probe exists and is shown in evidence); `Observed: evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md` (artifact existence explicitly confirmed in evidence header); `Step: step 3 of the probe, \"the residents act in the generated world each round, and the installed rules decide each effect\"` (exact match to step 3 of the canonical probe listed); `Class: vertical` (justified: the plan changes step 3 end to end across generator, resident, engine, and page, ending in a live traced run a person can inspect, not a component-only improvement). The probe is already observed, so component-while-unobserved does not disqualify it.",
+    "trace_id": "company-planning/method-conformance/open_attempt/e2dea4f7057d/CORE-OUTCOME-FIRST",
     "verdict": "pass"
   },
   "e3ad9e2e06cf7bd78555108aeb1127162d74cff741fb3b3f3dfde1c5d5cf733f": {

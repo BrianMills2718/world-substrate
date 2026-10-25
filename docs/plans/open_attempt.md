@@ -31,6 +31,12 @@ conflict_surfaces:
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/model/, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: tests/, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: evidence/open-attempt/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_world_bundle.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_causal_model.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/scaffold_world.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/world_builder_service.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/open-attempt.goal.md, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/open_attempt.verdicts.json, access: write}
 ---
 # Plan: open attempts, knock-on effects that run to the end, and skill rolls
 
@@ -62,7 +68,7 @@ request and at most $3.00 of owner allowance; no new service, engine or reposito
 
 Outcome probe: `roadmap/README.md#canonical-outcome-probe`
 Observed: `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md`
-Step: a resident acts in the generated world and the installed rules decide the effect
+Step: step 3 of the probe, "the residents act in the generated world each round, and the installed rules decide each effect"
 Class: vertical
 
 Each slice changes that step end to end (generator, resident, engine, page) and ends in a live traced run.

@@ -421,6 +421,15 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "Never check ownership.owner_ref or portable.portable on an entity whose initial_builtin_state "
             "value is null, unless one of your own effects sets that value first; use component fields instead.",
             "A participant's selector must list in `components` every component whose fields that participant's checks or effects read or write.",
+            # open_attempt Q23, 2026-10-25 (evidence/open-attempt/q23/after-fix/): fly checked the helicopter was in
+            # the hangar but not that Sam was, so Sam could take off from the office on the far side of a brick wall.
+            "When entities start in different places (initial_builtin_state location values differ), an action that "
+            "uses, takes, operates or talks to a thing or person must check that the actor's location.location_id "
+            "equals that participant's location.location_id.",
+            # Q23 rules2: move required the destination to equal both sides of the wall at once, so it could never pass.
+            "Every check must hold at the same time; there is no 'or'. Never require one value to equal two different "
+            "fields. For a way between two places, require the actor's location to equal the way's first place "
+            "field and the destination to equal its second, and name the reverse direction in limits.",
             "Checks and effects must use only allowed_state_paths.",
             "Do not invent source code, hidden state, or new entities.",
             "An action should change only state causally implied by its description and represented world.",

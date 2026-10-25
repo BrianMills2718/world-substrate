@@ -1,0 +1,184 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "attempt-helicopter-flight",
+      "version": "1",
+      "action_kind": "fly-helicopter",
+      "rationale": "Represent the described attempt as a completed flight only when Sam and the selected helicopter are at the same location. No represented state supports requirements about training, fuel, weather, or flight safety.",
+      "actor_selector": {
+        "categories": [
+          "actor",
+          "trainee"
+        ],
+        "components": [
+          "trainee"
+        ]
+      },
+      "participants": {
+        "helicopter": {
+          "categories": [
+            "aircraft"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "Sam and the helicopter are at the same location",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "helicopter",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the selected helicopter is the one being attempted",
+          "left": {
+            "action_field": "helicopter"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "helicopter"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "components.trainee.flights_completed",
+          "op": "add",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "limits": [
+        "This records a flight as completed when the action is accepted; the represented state cannot distinguish an unsuccessful attempt from a successful one.",
+        "The mechanic does not model flight safety, training, fuel, weather, or destination."
+      ],
+      "tests": [
+        "Sam and the helicopter share a location: the action increments Sam's completed flights by one.",
+        "Sam and the helicopter are at different locations: the action is refused and no flight is recorded.",
+        "A non-aircraft entity supplied as the helicopter is refused."
+      ],
+      "semantic_bindings": []
+    }
+  ],
+  "terminal": {
+    "mode": "any",
+    "selector": {
+      "categories": [
+        "trainee"
+      ],
+      "components": [
+        "trainee"
+      ]
+    },
+    "checks": [
+      {
+        "path": "components.trainee.flights_completed",
+        "op": "gte",
+        "value": 1
+      }
+    ]
+  },
+  "review": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "mechanic_id": "attempt-helicopter-flight",
+        "action_kind": "fly-helicopter",
+        "rationale": "Represent the described attempt as a completed flight only when Sam and the selected helicopter are at the same location. No represented state supports requirements about training, fuel, weather, or flight safety.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.trainee",
+          "entities.<actor>.components.trainee.flights_completed",
+          "entities.<actor>.location.location_id",
+          "entities.<helicopter>.category_ids",
+          "entities.<helicopter>.location.location_id"
+        ],
+        "writes": [
+          "entities.<actor>.components.trainee.flights_completed",
+          "entities.<actor>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "Sam and the helicopter are at the same location",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "helicopter",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the selected helicopter is the one being attempted",
+            "left": {
+              "action_field": "helicopter"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "helicopter"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.trainee.flights_completed",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "This records a flight as completed when the action is accepted; the represented state cannot distinguish an unsuccessful attempt from a successful one.",
+          "The mechanic does not model flight safety, training, fuel, weather, or destination."
+        ],
+        "tests": [
+          "Sam and the helicopter share a location: the action increments Sam's completed flights by one.",
+          "Sam and the helicopter are at different locations: the action is refused and no flight is recorded.",
+          "A non-aircraft entity supplied as the helicopter is refused."
+        ]
+      }
+    ],
+    "processes": [],
+    "terminal": {
+      "mode": "any",
+      "selector": {
+        "categories": [
+          "trainee"
+        ],
+        "components": [
+          "trainee"
+        ]
+      },
+      "checks": [
+        {
+          "path": "components.trainee.flights_completed",
+          "op": "gte",
+          "value": 1
+        }
+      ]
+    }
+  }
+}

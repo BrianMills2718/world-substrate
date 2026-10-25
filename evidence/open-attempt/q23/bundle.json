@@ -1,0 +1,196 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "first-flight",
+    "label": "First Flight",
+    "summary": "Sam can attempt a first flight in the helicopter from the small airfield.",
+    "location": "small-airfield",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "trainee",
+      "fields": [
+        {
+          "name": "flights_completed",
+          "type": "integer",
+          "default": 0
+        }
+      ]
+    },
+    {
+      "name": "aircraft",
+      "fields": [
+        {
+          "name": "hangar_id",
+          "type": "entity_ref",
+          "default": "hangar"
+        }
+      ]
+    },
+    {
+      "name": "surface",
+      "fields": [
+        {
+          "name": "room_id",
+          "type": "entity_ref",
+          "default": "office"
+        }
+      ]
+    },
+    {
+      "name": "barrier",
+      "fields": [
+        {
+          "name": "room_a_id",
+          "type": "entity_ref",
+          "default": "office"
+        },
+        {
+          "name": "room_b_id",
+          "type": "entity_ref",
+          "default": "hangar"
+        },
+        {
+          "name": "material",
+          "type": "string",
+          "default": "brick"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "office",
+      "label": "Airfield office",
+      "categories": [
+        "place"
+      ],
+      "components": {}
+    },
+    {
+      "id": "hangar",
+      "label": "Hangar",
+      "categories": [
+        "place"
+      ],
+      "components": {}
+    },
+    {
+      "id": "wall",
+      "label": "Brick wall",
+      "categories": [
+        "wall"
+      ],
+      "components": {
+        "barrier": {
+          "room_a_id": "office",
+          "room_b_id": "hangar",
+          "material": "brick"
+        }
+      }
+    },
+    {
+      "id": "desk",
+      "label": "Desk",
+      "categories": [
+        "surface"
+      ],
+      "owner_ref": "place:office",
+      "components": {
+        "surface": {
+          "room_id": "office"
+        }
+      }
+    },
+    {
+      "id": "water-glass",
+      "label": "Glass of water",
+      "categories": [
+        "drink"
+      ],
+      "portable": true,
+      "owner_ref": "entity:desk",
+      "components": {}
+    },
+    {
+      "id": "helicopter",
+      "label": "Helicopter",
+      "categories": [
+        "aircraft"
+      ],
+      "owner_ref": "place:hangar",
+      "components": {
+        "aircraft": {
+          "hangar_id": "hangar"
+        }
+      }
+    },
+    {
+      "id": "sam",
+      "label": "Sam",
+      "categories": [
+        "actor",
+        "trainee"
+      ],
+      "components": {
+        "trainee": {
+          "flights_completed": 0
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "fly-helicopter",
+      "description": "Attempt a flight in the helicopter.",
+      "fields": [
+        {
+          "name": "helicopter",
+          "type": "entity_ref"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "office": {
+        "kind": "emoji",
+        "value": "\ud83c\udfe2"
+      },
+      "wall": {
+        "kind": "emoji",
+        "value": "\ud83e\uddf1"
+      },
+      "surface": {
+        "kind": "emoji",
+        "value": "\ud83e\ude91"
+      },
+      "drink": {
+        "kind": "emoji",
+        "value": "\ud83e\udd5b"
+      },
+      "aircraft": {
+        "kind": "emoji",
+        "value": "\ud83d\ude81"
+      },
+      "trainee": {
+        "kind": "emoji",
+        "value": "\ud83e\uddd1\u200d\u2708\ufe0f"
+      }
+    },
+    "category_assets": {
+      "place": "office",
+      "wall": "wall",
+      "surface": "surface",
+      "drink": "drink",
+      "aircraft": "aircraft",
+      "actor": "trainee",
+      "trainee": "trainee"
+    },
+    "station_roles": {
+      "surface": "workstation",
+      "aircraft": "goal"
+    }
+  }
+}
