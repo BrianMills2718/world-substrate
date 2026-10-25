@@ -8,6 +8,8 @@ reviewed_through: 2026-10-25
 
 > **Research, not a decision.** This survey answers one question Brian asked on 2026-10-24: are we inventing our own framework for a simulator where agents may *try anything*, the world decides what happens, and effects spread on their own? Accepted doctrine stays in [the decisions](../decisions/). The three detailed reports are in [flexible-simulator-prior-art-2026-10/](flexible-simulator-prior-art-2026-10/): [formal theory](flexible-simulator-prior-art-2026-10/formal.md), [games and interactive fiction](flexible-simulator-prior-art-2026-10/games.md), [LLM-agent platforms](flexible-simulator-prior-art-2026-10/llm-sims.md). Each one has a per-framework coverage table, its sources, and a list of claims it could not verify.
 
+Clickable version: [the loop page](https://hive.brianmills.dev/plans/world-substrate/main/proposals/flexible-simulator/review-page/) (source `proposals/flexible-simulator/review-page/index.html`) traces each example through one attempt-to-commit loop.
+
 ## Bottom line
 
 No single framework does the whole job, but almost every *part* has a well-developed standard. We should take those parts' names and rules and not invent our own. World Substrate's existing rule (agents state intents; only installed mechanics decide consequences; one atomic commit or refusal with recorded cause) is the same shape as the newest published work (Orchestrated Reality, [arXiv 2606.16014](https://arxiv.org/abs/2606.16014); IVIE, [arXiv 2606.13348](https://arxiv.org/abs/2606.13348)). So starting over is not needed. Three things are missing, and each has prior art to copy:
