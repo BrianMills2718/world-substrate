@@ -91,7 +91,7 @@ a{color:var(--have)}
 <div>The matched rule proposes changes to the world. It does not write them yet.</div>
 <div class="from">From: Inform 7 carry-out rules; PDDL action effects</div></div>
 <div class="arrow">↓</div>
-<div class="step miss" data-s="ripple"><span class="t">6. Knock-on effects, repeated until quiet</span><span class="tag">missing: only within one rule today</span>
+<div class="step miss" data-s="ripple"><span class="t">6. Knock-on effects, repeated until quiet</span><span class="tag">partly: rules react on the next time step, once each</span>
 <div>Standing rules react to the proposed change: unsupported things fall, falling glass breaks, heard words reach listeners. Repeat until nothing new fires.</div>
 <div class="from">From: C+ / BC+ static laws; Event Calculus triggers; PDDL+ events; Flecs observers</div></div>
 <div class="arrow">↓</div>
@@ -149,20 +149,20 @@ glass:{t:"Push a glass off a table",path:["decide","attempt","carry","ripple","c
 ["Knock-on","Standing rule: unsupported things fall. Then: glass hitting the floor breaks. Then: the sound reaches the room. Repeat until nothing new fires."],
 ["Commit","Moved, fell, broke and sounded all land as one change, each step with its cause."],
 ["Who notices","Everyone in the room hears the crash."]],
-v:"Our biggest gap: today knock-on effects happen only inside one rule. Copy C+ static laws and Event Calculus triggers. Ready-made tests: World of Workflows and SIMMER."},
+v:"Our biggest gap. Today a standing rule (a "process") can react, but only on the next time step and once per step, so a chain like fall, break, sound takes several steps and can stall. Copy C+ static laws and Event Calculus triggers. Ready-made tests: World of Workflows and SIMMER."},
 clock:{t:"A clock strikes",path:["attempt","carry","commit","sense"],steps:[
 ["Wake","No decision. The clock's own timer fires at the hour."],
 ["Carry out","Its rule proposes: chime."],
 ["Commit","Recorded, caused by the clock's schedule."],
 ["Who notices","People within earshot hear it."]],
-v:"DEVS calls this an internal transition, versus the door's external one. Covered: Cybernetic Influence's wake triggers, SimPy for scheduling."},
+v:"DEVS calls this an internal transition, versus the door's external one. Covered: World Substrate's process rules fire when due on each time step; Cybernetic Influence has wake triggers."},
 chair:{t:"Sit on a chair",path:["decide","attempt","check","carry","commit"],steps:[
 ["Decide","A tired person looks for somewhere to sit. The chair shows up as an option because they are next to it. It is a hint, not a gate."],
 ["Attempt","They sit."],
 ["Check","The chair holds up to its weight limit. This person is under it."],
 ["Carry out","The rule proposes: person is seated on the chair."],
 ["Commit","Lands."]],
-v:"The chair never acts: a BFO disposition. Sims-style \"advertisements\" are a good hint channel. An affordance view (what can this agent do with that thing) is missing but is only a view over records, not new rules."},
+v:"The chair never acts: a BFO disposition. Sims-style \"advertisements\" are a good hint channel. World Substrate already builds this view: each actor gets an affordance page derived from the world's records and rules (Engine.discover)."},
 think:{t:"Think something over",path:["decide","attempt","carry","commit"],steps:[
 ["Decide","A person decides to work out who sent the letter."],
 ["Attempt","Thought, aimed at themself."],
