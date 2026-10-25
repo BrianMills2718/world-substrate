@@ -53,6 +53,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | Multi-timescale time/process model | [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) |
 | Competitive / adjacent systems | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
 | Off-the-shelf candidates to evaluate (not decisions) | [Off-the-shelf candidates 2026-09-25](../research/off-the-shelf-candidates-2026-09-25.md) |
+| Prior art for a flexible simulator (attempts, affordances, knock-on effects) | [Flexible simulator prior art 2026-10](../research/flexible-simulator-prior-art-2026-10.md) |
 | Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
 | Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
 | CVS analytical-model structural import | [CVS Situation IR structural import v0](../contracts/cvs-situation-import-v0.md) |
