@@ -24,6 +24,19 @@ The product thesis remains:
 > **Generative worlds with executable laws.**
 > Generative-World Builder on top; rigorous causal world engine underneath.
 
+### Actor, recurring job and investment boundary
+
+- **Actor:** a World Builder visitor (or Brian as owner) at <https://brianmills.dev/world-builder/>.
+- **Recurring job and baseline:** the visitor describes a situation in plain words, presses Create
+  simulation, and watches the generated people act under the installed rules. Today (2026-10-25) each
+  person picks from the moves the rules already allow, so impossible attempts, same-moment knock-on
+  chains and skill-shaped failures never appear (`docs/plans/open_attempt.md`, "Current truth").
+- **Inspectable result:** the run page and its build record: what each person tried, what the rules
+  did and why, every event with its cause.
+- **Stage and investment boundary:** prototype stage, one agent at a time; this repository and its own
+  deploy only; visitor spend capped at $3/day; owner runs on Brian's owner allowance after a free replay;
+  no new service, engine or repository without Brian's yes.
+
 ### Causal product contract
 
 A World Substrate causal claim explains why a transition occurred **inside the represented world under the installed mechanics that governed that run**.

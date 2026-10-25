@@ -1,0 +1,443 @@
+{
+  "087fe877ac4d62100524ded979f77c69bad836137a5158dc5b66d4b68a98a2b1": {
+    "item_id": "CORE-TRACE-DEBUGGING",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "All nine elements are explicitly present. The evidence specifies the separate procedure, preservation of run and trace ids, the trace-reading sequence, divergence citation, four classification categories (with \"unused or contradicted\" representing evidence returned but not used/contradicted in context), linking repairs to new traced runs with `TRACE_READ.md`, original failure retention, the investigation-not-repair bar for unresolved diagnoses, and the independence of review completeness from run verdict.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/CORE-TRACE-DEBUGGING",
+    "verdict": "pass"
+  },
+  "13807156f33a07cfc1da7c99ab41d0a1d33a8967ce7f0fcd3e4272339f958698": {
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan's declared activation facts correctly identify what it triggers. Shared_mechanism is true because the plan adds new mechanisms to the core engine (interpretation, timing on processes, rolls on mechanics\u2014all used by every world): \"Owner: World Substrate's rules layer (Decision 006). Parallel-implementation check: no second command path, engine or scheduler; every attempt still enters through Engine.submit\". LLM_central is true because the plan's Piece 1 centrally depends on a new attempt interpreter call: \"One new call: the attempt interpreter, through llm_client\". Irreversible_or_spend_action is true: \"Spend: owner allowance only, after a free replay; at most $1.00 per owner run and $3.00 across S1\". Empirical_comparison_proposed is false\u2014the plan's A7 check (identical attempt text with skill 0 and 3) is explicitly a fixture verification, which \"is verification and does not trigger it\". Claims_external_standard is correctly false: \"The plan copies established methods (Inform 7, Event Calculus, Blades in the Dark, GURPS) but claims conformance to none of them, so claims_external_standard is false.\" No fact that the plan triggers is declared false.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "15cde1d654060c162ab22de9b84d34761a72649769b9080eef49b17a503405e5": {
+    "item_id": "OV-DURABLE-DOCS-DECLARED",
+    "materiality": "material",
+    "missing": "The `.agentic/repo.yaml` file is not quoted to prove the `durable_documents` block exists; the `Durable documents:` line is missing element IDs/rules (should be `system_model#RULE-...` per the example, not bare `system_model`); proof that roles are actually declared is asserted but not shown.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence asserts that roles are \"declared in `.agentic/repo.yaml`\" without quoting that file or its `durable_documents` block. The requirement's example format is `Durable documents: system_model#RULE-LOAN-OVERDUE, decisions`, but the evidence shows only `Durable documents: system_model, plans`\u2014omitting the required element IDs or rule names for the system_model role. The completion check command is present and correct, but the prerequisite declaration and the line format do not match the stated requirement.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/OV-DURABLE-DOCS-DECLARED",
+    "verdict": "unresolved"
+  },
+  "218e678a6bec19670e2c80a50a2ba475cb0e1feab7393be7c1a51e4281f7b9cd": {
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "materiality": "material",
+    "missing": "claims_external_standard must be declared true, not false. The plan extensively cites and claims to copy external standards: Inform 7, Voyager-style attempts, C+/Event Calculus, Blades in the Dark, and GURPS defaults.",
+    "model": "claude-code/haiku",
+    "rationale": "CORE-ACTIVATION-FACTS forbids declaring false any fact the plan triggers. The plan triggers claims_external_standard because it explicitly presents Pieces 1-3 as copying/extending external standards (\"copy: Inform 7 'try' plus Voyager-style attempts\", \"copy: C+ / Event Calculus ramification\", \"copy: Blades in the Dark action roll, GURPS defaults\"), yet the declared facts show it as false. This gap could affect which checks and reviews are required for adoption.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-ACTIVATION-FACTS",
+    "verdict": "unresolved"
+  },
+  "28a92cd7d38fcf390e53740e68c2e16df222963d5ee64f3d347eec4bb722f2c7": {
+    "item_id": "OV-LLM-CALL-BOUNDARY",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly names all three required elements. The model call graph is described as \"resident call \u2192 attempt interpreter call \u2192 no further model call per round,\" with ordering and cardinality. Structured result boundaries are specified: resident replies as `{belief, attempt, expected_effect, work, reasoning}` and attempt interpreter as `(kind, roles, quoted_span or unmatched, nearest_kind, why)`. Tracing is described: \"recorded in run-log.jsonl with its trace id\" and \"recorded as the command,\" establishing how calls are captured and retrieved.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/OV-LLM-CALL-BOUNDARY",
+    "verdict": "pass"
+  },
+  "2d59d0e1c37c91b669c5f7e5b320934792e51595a57c79b810847f41e17ef5f0": {
+    "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly names the actor (\"World Builder visitor and Brian as owner\"), states the desired result (what the run page and build record show about each person's attempt), and provides a stable, concrete example (the airfield office scenario with specific actions and mechanical outcomes). All three elements the requirement asks for are present and substantive.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-ACTOR-RESULT-EXAMPLE",
+    "verdict": "pass"
+  },
+  "2ed3336e8e18829120c4131a545a5a6c200423e49a1ce1b7d45f47c6661606d7": {
+    "item_id": "CORE-TRACE-DEBUGGING",
+    "materiality": "material",
+    "missing": "The evidence does not state that review completeness is separate from the run verdict. The procedure covers investigation and repair sequencing, but does not address whether a run can have an assigned verdict (pass/fail) independent of whether its review is complete.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence provides a procedure for handling failed runs\u2014preserving them, reading full traces, classifying failure sources, and requiring new traces for repairs. However, it does not explicitly address the requirement's assertion that \"review completeness is separate from the run verdict,\" which would govern whether an incomplete diagnosis can block action or verdict assignment.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-TRACE-DEBUGGING",
+    "verdict": "unresolved"
+  },
+  "2fa47437f43a605ef4bab631438055023c6ba958137097a257ca3be983edc36e": {
+    "item_id": "CORE-TRACE-VISIBILITY",
+    "materiality": "material",
+    "missing": "How to open/access recorded traces (no methodology stated); who examines run traces in the general case beyond World Builder; when examination occurs in the workflow (only \"before reporting\" stated for World Builder); confirmation that ordinary runs are sampled broadly, not just for World Builder.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence specifies WHERE traces are recorded (`run-log.jsonl`, `TRACE_READ.md`) and WHAT content they contain (comprehensive: inputs, steps, calls, reasoning, output, kept for ordinary runs). However, it does not state HOW to open one \u2014 no instructions or methodology for accessing the traces. For WHO examines and WHEN, the evidence names \"The implementing agent\" and \"before reporting\" only for World Builder runs; the general statement in the first bullet does not name examiners or timing. The requirement asks the plan to name both parties and timing across the changes it builds.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/CORE-TRACE-VISIBILITY",
+    "verdict": "unresolved"
+  },
+  "3074b18db7edc6ea642a7b37ad115974d299eda4aa50c65e17ead4f2cb3cf06b": {
+    "item_id": "CORE-OUTCOME-FIRST",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The quoted evidence includes a complete `## Outcome step` section with all four required lines: (1) `Outcome probe: \\`roadmap/README.md#canonical-outcome-probe\\`` naming the probe path and heading; (2) `Observed: \\`evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md\\`` naming the committed artifact; (3) `Step: a resident acts in the generated world and the installed rules decide the effect` describing the probe step; (4) `Class: vertical` providing a valid class value. The evidence also includes the canonical outcome probe content (showing \"## Canonical outcome probe\" and its product fixture roles) and confirms artifact existence via the summary statement \"artifact evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md exists\".",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
+  "3a48b38b42883072248c44eb9e3b2f76904f4a87b4ac84fbc30a55d69a1c2a0f": {
+    "item_id": "CORE-OUTCOME-FIRST",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "All four required lines are explicitly present with valid content: the outcome probe is named with path and heading, the observed artifact is cited and confirmed to exist, the step is described, and the class is stated as \"vertical\" \u2014 an appropriate choice for a plan that reaches inspectable results through every probe step and ends in traced runs.",
+    "trace_id": "company-planning/method-conformance/open_attempt/61ae2a18c836/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
+  "43778f88b8586e081ffdf321cd306449492055f0901abe154966499d7be3765f": {
+    "item_id": "CORE-SUCCESS-DISPROOF",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly defines both success and disproof. Success is operationalized as \"A1-A9 pass, each judged from the full trace,\" mapping nine concrete checks to seven claimed properties (R1-R7). Disproof lists five specific conditions: interpreter outputs carrying outcomes, unauthorized world changes, level-0 pilot clean flights, non-deterministic dice, and replay calls to models. Critically, the plan names direct checks (\"judged from the full trace of the run\") rather than stand-in metrics, with methodology specified: \"the implementing agent reads every refused, unmatched and rolled attempt and a sample of ordinary ones in the named run's `run-log.jsonl`.\" Named runs are cited in order, eliminating ambiguity about which evidence grounds each claim.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-SUCCESS-DISPROOF",
+    "verdict": "pass"
+  },
+  "4992968da0e3bc36f7c51d4486d85c90b9960a9edecd28bf3fd5c502d4846d91": {
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "materiality": "non_material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan carries the required `Project outcome:` line naming roadmap/README.md#actor-recurring-job-and-investment-boundary. The outcome record explicitly states all four parts: the actor (World Builder visitor), the recurring job and baseline (visitor describes a world, watches people act under fixed rules today), the inspectable result (run page and build record showing attempts, rules' effects, and causation), and stage/boundary (prototype, owner allowance, no new services). The plan's actor explicitly matches the outcome's actor and is confirmed in the plan's own alignment statement.",
+    "trace_id": "company-planning/method-conformance/open_attempt/61ae2a18c836/CORE-PROJECT-OUTCOME",
+    "verdict": "pass"
+  },
+  "50e16114ce97cc2edc5c0b9ac59c01acf541fe8f816b83fe4153874b13bae459": {
+    "item_id": "CORE-OUTCOME-FIRST",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The `## Outcome step` section explicitly provides all four required lines: outcome probe path, observed artifact path, step description, and class label (vertical). The artifact is confirmed to exist and the probe is observed, satisfying the preconditions for a vertical-class plan adoption.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
+  "5301d277b34732953a94fe43fe038aa6a020b544ef086c239c61a7c4cc3a911a": {
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "materiality": "material",
+    "missing": "The outcome record lacks explicit statement of: (1) the recurring job the actor performs today and its baseline state; (2) the specific, inspectable result this plan delivers to change that baseline; (3) the stage and investment boundary specific to this plan; (4) explicit connection between the plan's \"visitor\" actor and the outcome's \"user describing a world\" actor.",
+    "model": "claude-code/haiku",
+    "rationale": "The plan correctly cites `roadmap/README.md#outcome-and-success-criteria` as its outcome record. However, that record is a general World Substrate product vision (end goal, product thesis, demo acceptance criteria, prototype completion) rather than a four-part outcome statement. The record does not state what recurring job the actor does now, what baseline exists, or what inspectable result this plan produces to change it\u2014only what the eventual platform should accomplish. The requirement requires all four parts; the record provides only an abstract vision.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/CORE-PROJECT-OUTCOME",
+    "verdict": "unresolved"
+  },
+  "5684133dda1ab3e6b2090a653f2cf560daf529c8e2082a687b39bef95bcaddeb": {
+    "item_id": "CORE-SUCCESS-DISPROOF",
+    "materiality": "material",
+    "missing": "Definition of what criteria A1-A9 test; explicit statement of the plan's claimed properties that success measures and disproof conditions are meant to verify",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence provides concrete disproof conditions and references \"A1-A9 pass, each judged from the full trace\"\u2014a direct check rather than a stand-in. However, it never states what A1-A9 actually test or what properties the plan claims to achieve. Without this definition, a reader cannot verify whether the success measures and disproof conditions directly test the claimed properties (as required) or serve as proxies. The evidence names criteria and a review process but stops short of the foundational claim the requirement asks for.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-SUCCESS-DISPROOF",
+    "verdict": "unresolved"
+  },
+  "573c417d4f84f02db1ed63918fa40b4cd8fdf5db86670acfb9a99c0052824422": {
+    "item_id": "CORE-UNCERTAINTIES",
+    "materiality": "material",
+    "missing": "The interpreter cost uncertainty has no named owner and no explicit resolution evidence. The quote states it will be \"measured in S1's first run\" but does not specify what measurement or threshold would constitute resolution of the uncertainty.",
+    "model": "claude-code/haiku",
+    "rationale": "Q23 and Q22/D2 each name an owner, satisfying the \"owner OR evidence\" condition. The interpreter cost uncertainty names neither an owner nor explicit resolution criteria\u2014only that measurement will occur. This gap means the uncertainty is not fully characterized per the requirement.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-UNCERTAINTIES",
+    "verdict": "unresolved"
+  },
+  "5d205b3faee901c3658c2cf0778d3515c223047077a62c053e8e1030f8e7ebd7": {
+    "item_id": "CORE-TRACE-REVIEW",
+    "materiality": "material",
+    "missing": "The criteria A1-A9 are referenced as expected-pass items to be judged from trace, but the quoted evidence does not define, enumerate, or detail what each of A1-A9 entails. The requirement also asks for the plan to name the specific run to be examined; the evidence uses a placeholder `<run>` instead of an actual run identifier.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence does state where the trace lives (`evidence/open-attempt/<run>/run-log.jsonl`) and what to examine in it (refused, unmatched, rolled attempts), satisfying some elements. However, the requirement demands that success criteria be named and that their judgment from trace be explicit; citing \"A1-A9 expected pass\" without defining those criteria, and using a placeholder for the run identifier rather than naming it, leaves the core requirement unmet.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-TRACE-REVIEW",
+    "verdict": "unresolved"
+  },
+  "63553029c0bd54f1aa2b1b87878d2bb1e7a3eebb09e254a3bbcd713f99316067": {
+    "item_id": "CORE-CAPABILITY-REUSE",
+    "materiality": "material",
+    "missing": "The evidence claims reuse of `llm_client` but does not name it as an entry from `reuse_candidates.yml` or `capability_registry.yml` (by id, key, or provided-id); if `llm_client` is a new capability, the evidence does not name its first consumer.",
+    "model": "claude-code/haiku",
+    "rationale": "The requirement explicitly fails plans that \"claim reuse without naming the catalogue entry or id reused.\" The quoted evidence states \"Model calls reuse the shared `llm_client`\" but provides no reference to the catalogue structure (no id, key, or provided-id from the named files), leaving it unestablished whether this reuse is drawn from the catalogue or is an undocumented artifact. If `llm_client` is new, the requirement also mandates naming the first consumer, which is absent.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-CAPABILITY-REUSE",
+    "verdict": "unresolved"
+  },
+  "6e2c1fc6da6597e6154afd9a4ec8e7c9d2d505f33621e4ab727712821902b5d9": {
+    "item_id": "OV-DURABLE-DOCS-DECLARED",
+    "materiality": "material",
+    "missing": "The completion verification requirement: `Durable documents: docs/model/ODD.md, docs/model/world_substrate_model.toml, docs/model/VIEW_COVERAGE.md, docs/planning/open-questions.json` names documents as file paths, but the requirement specifies that: (1) the plan's success evidence or done-when must include running `durable_docs_check.py --plan <this plan> --range <adoption revision>..HEAD` at completion, (2) that command must be required to exit 0, and (3) each named role must be declared in the repository's `.agentic/repo.yaml` block. The quoted evidence shows the durable documents line itself but omits the completion check and its success criterion. Additionally, the format names file paths rather than the `system_model#ELEMENT-ID` format described in the requirement's example, and does not show whether these items are declared in repo.yaml.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly states `Durable documents: docs/model/ODD.md, docs/model/world_substrate_model.toml, docs/model/VIEW_COVERAGE.md, docs/planning/open-questions.json`, which satisfies the presence of the line itself. However, the requirement demands three additional elements that do not appear in the quoted evidence: the `durable_docs_check.py` completion check in the success evidence, the requirement that it exits 0, and confirmation that each named item matches a declared durable role in `.agentic/repo.yaml`.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/OV-DURABLE-DOCS-DECLARED",
+    "verdict": "unresolved"
+  },
+  "709cc2c97814e502d4e053f4136506f2e493b00939e8d3338a589188fce566b3": {
+    "item_id": "OV-PRIOR-ART-PARALLEL-CHECK",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly names two complementary checks that together would detect a silent parallel implementation: a concrete structural check (`grep -n \"def submit\" src/world_substrate/engine.py` staying at one hit) and a consumer-path observation (every attempt enters through `Engine.submit`). These directly detect whether a second command path, engine, or scheduler implementation exists.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/OV-PRIOR-ART-PARALLEL-CHECK",
+    "verdict": "pass"
+  },
+  "7937768709c6a34af1b4a51629b73df78894ea340c9acad44be51bb1699ee466": {
+    "item_id": "CORE-IRREVERSIBLE-SPEND",
+    "materiality": "material",
+    "missing": "Explicit boundary (spending limit) named for owner allowance spend; clarity on whether \"measured in S1's first run\" constitutes containment boundary or only tracking.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence names authorization (owner only) and one boundary ($3/day visitor), but the owner allowance spend has no stated boundary. A material spend category cannot claim containment through authorization and replay alone without naming what the actual spending limit is.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-IRREVERSIBLE-SPEND",
+    "verdict": "unresolved"
+  },
+  "793c96594506450e6de6fd2db29a8ce7bc146902047eccbd03dbb28f91d8a6e1": {
+    "item_id": "CORE-AUTHORITY-NONGOALS",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The quoted evidence explicitly names Brian as the authority holder (\"Brian's 'yes' on 2026-10-25\") and enumerates six specific non-goals (organisations as agents, the code/fast-model/LLM decider spectrum, thinking as an effector, moving off Concordia 2.4.0, a clingo cross-check, any change to Cybernetic Influence v3). Both elements the requirement asks for are substantively present.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-AUTHORITY-NONGOALS",
+    "verdict": "pass"
+  },
+  "7f333451f171bc50545bdf86705d321d8d267ef6ecbc9c99296dc6a363c92d57": {
+    "item_id": "OV-LLM-CALL-BOUNDARY",
+    "materiality": "material",
+    "missing": "The resident call's structured result boundary (what fields it returns, whether it has a success field, etc.); the resident call's tracing approach (how its output is recorded, whether it can be re-read, what happens on failure).",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence fully specifies the call graph and completely describes the attempt interpreter's result structure and tracing. However, the resident call\u2014which is part of the call graph and also produces a structured result\u2014is named only as \"(existing)\" with neither its result boundary nor its tracing behavior documented in the quoted section.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/OV-LLM-CALL-BOUNDARY",
+    "verdict": "unresolved"
+  },
+  "816c330bd4e1106a785425694bec07733a78690a275992037d00a32fe26e9f89": {
+    "item_id": "CORE-TRACE-DEBUGGING",
+    "materiality": "material",
+    "missing": "Explicit statement that this procedure is distinct from anticipated failure modes; specific naming of \"each tool call arguments/results\" and \"final output\" as required reading elements (evidence uses \"interpreter and resident calls and events,\" which may not be fully equivalent); explicit requirement to link the repair back to the original failure.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence establishes most elements: it names the section \"When a run fails or surprises us\" (separate procedure exists), requires keeping the run and trace ids, reading \"full inputs, prompts, interpreter and resident calls and events,\" citing divergence, classifying evidence into the four stated categories, requiring \"a new traced run\" for verification with \"the original stays,\" and separating \"review completeness\" from the run verdict. However, it does not explicitly state this procedure's distinction from anticipated failure modes\u2014only structure implies it. The evidence uses \"interpreter and resident calls and events\" rather than the requirement's specific \"each tool call arguments/results\" and \"final output,\" and does not explicitly require linking the repair back to the original failure (it states verification and retention separately). These omissions affect traceability and diagnostic completeness.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-TRACE-DEBUGGING",
+    "verdict": "unresolved"
+  },
+  "830a915c9dd1da7669f4ea79c664ebaeeeb8ee0dbaa01bf66657cf3697ae4b12": {
+    "item_id": "OV-LLM-AUTHORITY-PROMOTION",
+    "materiality": "material",
+    "missing": "The provider identity (which LLM provider), spend authority naming, and explicit statement of the authentic-run condition as a prerequisite for promotion",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence describes the call mechanism (`llm_client`) and authority boundaries but does not explicitly name the LLM provider, does not state who has spend authority, and does not articulate an explicit authentic-run condition that must be verified before promotion occurs. The architectural constraint \"only `Engine.submit` writes\" prevents unauthorized promotion but is not presented as a condition to be checked.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/OV-LLM-AUTHORITY-PROMOTION",
+    "verdict": "unresolved"
+  },
+  "89615969d7a0e4438d25f5824a33ccc44b5a0e0231965b614e13e3e3174b62d4": {
+    "item_id": "CORE-SYSTEM-MODEL",
+    "materiality": "material",
+    "missing": "Explicit explanation of material omissions: elements or model areas that exist but are not being changed by this work, and the reason each is excluded",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence provides the model link (docs/model/ODD.md), lists four system-model elements being added, specifies what each examined run must show for verification, names source-linked views (VIEW_COVERAGE.md), cites concrete drift checks (\"drift test must fail on a renamed field\"), and commits to reconciliation in the same PR (\"Each slice updates ODD.md, world_substrate_model.toml and tests/test_system_model.py in the same pull request\"). However, it does not address material omissions\u2014the requirement explicitly mandates that the plan \"explains material omissions without imposing a fixed diagram quota\" for maintained repositories. The evidence lists only what is added and relied upon, without stating whether existing model elements are intentionally excluded from this work and why.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-SYSTEM-MODEL",
+    "verdict": "unresolved"
+  },
+  "8a6b6018771588146d7c4cef0ce7636d4da787f341fb88431e7b3ef42cd8821b": {
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "materiality": "material",
+    "missing": "Two of the four required parts are not explicitly stated in the outcome record:\n\n1. **Recurring job that actor does today and its baseline**: The record describes what the system will do (\"the user watches and interrogates the result through a dynamic visual surface\") and what's been established (\"persistent typed canonical state\", \"state-derived affordances\", \"scripted/human/LLM selection outside consequence authority\"), but does not explicitly state the actor's recurring job *today* or frame those established features as the baseline. The plan states \"today each person can only pick from moves the rules already allow, so impossible attempts (the wall), knock-on chains and untrained failures never appear\" \u2014 the record does not.\n\n2. **Investment boundary**: The record states the stage (\"Prototype phase \u2014 complete\") but does not state the investment boundary (cost, scope, constraints). The plan states \"$3.00 of owner allowance\", \"three slices, each one pull request\", and \"no new service, engine or repository\" \u2014 the record provides no equivalent statement.",
+    "model": "claude-code/haiku",
+    "rationale": "The plan correctly cites the record location and connects the plan's actor (World Builder visitor) to the outcome's actor. The record clearly states the actor (\"A user describes a bounded world\") and the inspectable result (the acceptance criteria describing what can be inspected). However, the record does not explicitly state what the actor currently does as a recurring job or frame the baseline for that job in relation to the plan's goals. The investment boundary is stated in the plan but absent from the record itself.",
+    "trace_id": "company-planning/method-conformance/open_attempt/96c26a108aeb/CORE-PROJECT-OUTCOME",
+    "verdict": "unresolved"
+  },
+  "8f022c0e663a3789dad04337c542c22b5c1d65d207c04c3c08dcb6838529369c": {
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan explicitly declares all triggered activation facts as true: shared_mechanism (true), llm_central (true), and irreversible_or_spend_action (true). Non-triggered facts are correctly declared false. No triggered fact is declared false, satisfying the requirement.",
+    "trace_id": "company-planning/method-conformance/open_attempt/96c26a108aeb/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "90245bb0c541c062dabea7bd8447be8970c902b1bcd868b7549e1415c9567709": {
+    "item_id": "CORE-IRREVERSIBLE-SPEND",
+    "materiality": "material",
+    "missing": "For irreversible actions: explicit naming of boundaries, authorization requirements, and containment mechanisms. The evidence states \"Nothing irreversible\" and explains why (merges are PRs, deploys redeployable) but does not name governance boundaries, who authorizes, or how irreversible actions are prevented if any occur.",
+    "model": "claude-code/haiku",
+    "rationale": "The spend governance is complete: boundaries ($1.00/owner run, $3.00 across S1, $3/day visitors), authorization (owner allowance only after free replay), and containment (max_budget enforcement with stop/report) are all explicitly named. For irreversible actions, the evidence asserts \"Nothing irreversible\" but does not substantively name boundaries, authorization, or containment\u2014it explains design choices (PR-based merges, redeployable deploys) rather than stating governance controls.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-IRREVERSIBLE-SPEND",
+    "verdict": "unresolved"
+  },
+  "9aae7478fbc03f5cb7f094f2709773bc8e43e792e021bbe22c4eae8c3998dd4b": {
+    "item_id": "CORE-OUTCOME-FIRST",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan explicitly includes all four required lines in the `## Outcome step` section: (1) `Outcome probe: roadmap/README.md#canonical-outcome-probe`; (2) `Observed: evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md`; (3) `Step: a resident acts in the generated world and the installed rules decide the effect`; (4) `Class: vertical`. The evidence confirms the probe and artifact exist and the class assignment (vertical: \"reach an inspectable result through every probe step\") matches what the plan builds\u2014end-to-end slices through generator, resident, engine, and page, each ending in a traced run. The named step is demonstrably a step of the cited probe: the canonical outcome probe describes the Waltzman Coordination Lab as the \"current integrated product deliverable and public demo,\" and the step describes the core operation (resident acting, rules deciding effects) that occurs within that deliverable.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
+  "9b83f8844ec6a37f14426418f0a925febe5aaada6407ae9c445214d7ba45f4c9": {
+    "item_id": "CORE-TRACE-VISIBILITY",
+    "materiality": "material",
+    "missing": "**Exemption for pure document edits**: The requirement explicitly states \"A plan whose change has no runs (a pure document edit) passes only when it states that exemption and its reason.\" The evidence describes trace visibility for runs but does not address or exempt plans whose changes involve no runs at all.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence fully documents what traces contain (inputs, steps, model calls with arguments and results, reasoning, output) and confirms they are kept for ordinary runs, not only failures. It explicitly names who examines them (the implementing agent) and when (before reporting), and confirms a sample of ordinary runs is included, not only failures. However, the requirement has two distinct parts: trace visibility FOR runs, AND an exemption clause FOR cases with no runs. The evidence addresses the first comprehensively but omits the second entirely\u2014there is no statement that pure document edits are exempt from trace visibility requirements and no stated reason for that exemption.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-TRACE-VISIBILITY",
+    "verdict": "unresolved"
+  },
+  "a2b797b2cdca39f657d09203e884136ccd23f53d27ae26346e3db5fcd9935256": {
+    "item_id": "CORE-UNCERTAINTIES",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly lists three material uncertainties, each with an owner assigned (agent, Brian, agent) and resolution paths specified. The requirement is fully satisfied: the plan lists uncertainties and each has both owner and resolution evidence.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-UNCERTAINTIES",
+    "verdict": "pass"
+  },
+  "a61e81ebc68bd9945fc1e1dfc1316ccbdb76be054d0dd00d71d6d5dfce2be958": {
+    "item_id": "CORE-TRACE-REVIEW",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly names four runs where traces are examined (s1-replay, s1-airfield, s2-airfield, s3-airfield), specifies what must be read from each (`run-log.jsonl`, including \"every refused, unmatched and rolled attempt\"), and maps nine acceptance criteria (A1-A9) to those runs: \"each criterion A1-A9 is expected `pass`\" and \"each judged from the full trace of the run it names.\" Success and disproof are defined as trace properties, not outcomes alone.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-TRACE-REVIEW",
+    "verdict": "pass"
+  },
+  "a70276ceb6e43fdc962dd86363b8222d3c93ccdf15bb25026d35510f13dd861f": {
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan explicitly states: \"Project outcome: roadmap/README.md#outcome-and-success-criteria\" and provides this supporting statement: \"This plan serves that actor directly: it changes what World Builder residents can do.\" The referenced outcome record at that location contains all four required elements: (1) **Actor**: \"A user describes a bounded world conversationally\" and \"residents/processes inhabit the world; the world evolves under installed mechanics\" (stated in End goal); (2) **Recurring job and baseline**: \"The substrate phase has established: persistent typed canonical state, bounded actor observations and state-derived affordances...\" (Prototype phase\u2014complete section); (3) **Inspectable result**: \"the user watches and interrogates the result through a dynamic visual surface\" (End goal); (4) **Stage and investment boundary**: \"These criteria are now satisfied for the promoted stakeholder slice\" and \"Durable saved user worlds/runs, broad second-domain proof... remain outside that completed promotion gate\" (Waltzman demo acceptance criteria and closing remarks). The plan's actor (World Builder visitor) is connected to the outcome's actor (users/residents) through the explicit statement that it \"changes what World Builder residents can do.\"",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-PROJECT-OUTCOME",
+    "verdict": "pass"
+  },
+  "a75183f715cee5982ba54c5da673c8a76cc6bf1c05e68651f21b247a97df01f8": {
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan triggers three activation facts: (1) **shared_mechanism** \u2014 the plan adds the attempt interpreter, `timing: \"immediately\"` processes, and `roll` mechanics to World Substrate's shared rules layer (\"Owner: World Substrate's rules layer\"); (2) **llm_central** \u2014 the plan centrally depends on LLM calls via the \"one typed light-model call\u2026 reads the attempt\" interpreter invoked \"one per attempt\"; (3) **irreversible_or_spend_action** \u2014 the plan explicitly proposes \"Spend: owner allowance only\u2026 at most $1.00 per owner run and $3.00 across S1\". All three triggered facts are declared true in the activation-facts.json. The three false-declared facts (empirical_comparison_proposed, claims_external_standard, aes_governed_target) are not triggered: no comparative experiment is proposed; the plan \"copies established methods\u2026 but claims conformance to none of them\"; and no AES target is created.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "a7b54cd9eb7fecc390bc39878f9cef878e734e6ebe3a9ea7f862cad12c63f741": {
+    "item_id": "CORE-TRACE-VISIBILITY",
+    "materiality": "material",
+    "missing": "The evidence states that `run-log.jsonl` records \"every request, interpreter and resident call with llm_client trace ids, every event with dice,\" and that the implementing agent reads samples before reporting. However, it does not explicitly list the specific elements the requirement names: inputs, every step, each tool/model call with arguments **and results**, model's reasoning, and output. The evidence gestures at comprehensive tracing but leaves ambiguous whether all these discrete elements are actually captured and preserved.",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence establishes WHERE traces are kept (run-log.jsonl beside runs, TRACE_READ.md per round), WHO examines them (implementing agent), WHEN (before reporting), and that ordinary runs are included (\"sample of ordinary ones\"). However, it stops short of explicitly stating that the log contains each of the named components: inputs, steps, tool/model calls with both arguments **and** results, model's reasoning, and output. Phrases like \"every request\" and \"llm_client trace ids\" imply detailed logging but do not substantively enumerate the full set of elements the requirement names.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-TRACE-VISIBILITY",
+    "verdict": "unresolved"
+  },
+  "af2b2e1cef0eb9ae7692622165f9650c369361d451e39b961a844a8b9ca893c8": {
+    "item_id": "OV-PRIOR-ART-DISPOSITION",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly documents the search outcomes from a prior-art document, identifies ownership (World Substrate rules layer, Decision 006), names internal lineage components (Engine.submit, DeclaredProcess, DeclaredActionMechanic), credits external prior art sources (Inform 7, Voyager, Event Calculus, Blades in the Dark, GURPS), lists three specific candidates, and assigns each a valid disposition (\"extend\"). A verification check confirms the implementation strategy aligns with the disposition.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/OV-PRIOR-ART-DISPOSITION",
+    "verdict": "pass"
+  },
+  "b338bdfd6493220589e32709899a95da2f1ebe6145d5ef6cec82b790e7081abe": {
+    "item_id": "CORE-TRACE-VISIBILITY",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly provides all five required elements: where traces live, how to open them, their complete contents (inputs through output), retention for ordinary runs, and who examines them when (with sample coverage of 5+ ordinary attempts per run). The exemption for document-only changes is also stated.",
+    "trace_id": "company-planning/method-conformance/open_attempt/96c26a108aeb/CORE-TRACE-VISIBILITY",
+    "verdict": "pass"
+  },
+  "b5f74fadfc679da8e92fbf6fac79782b24b88c1353c0cd724a63f95152a0157f": {
+    "item_id": "CORE-SYSTEM-MODEL",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly links the system model (`docs/model/ODD.md`), names all added elements (`attempt interpretation`, `unmatched_attempts`, `timing`, `roll`), and specifies what the trace must show for each: the command's `interpretation` record with trace id; the build record's `unmatched_attempts`; reaction events citing their parent; each roll's seed and dice. It explains what is NOT changed and why (actors, places, information reach, tasks, budget ledger). For a maintained repository, it cites entry points (ODD.md and VIEW_COVERAGE.md) and names source-linked views. Material omissions are explained. Concrete drift checks are stated (\"drift test must fail on a renamed field before it passes\"). The reconciliation obligation is explicit: \"Each slice updates ODD.md, `world_substrate_model.toml` and `tests/test_system_model.py` in the same pull request.\" All discovery, view, freshness, and reconciliation obligations are present, not bare.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-SYSTEM-MODEL",
+    "verdict": "pass"
+  },
+  "b853a6f0f36290afa0b38018593314195df66bb762fc0218db5a9e7a95548978": {
+    "item_id": "CORE-REQUIREMENTS-TRACED",
+    "materiality": "material",
+    "missing": "Individual status for each check (A1\u2013A9). The evidence states \"all open until their slice merges\" but does not explicitly assign each check a clear status (passing, failing, planned, or deferred with reason).",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence lists 7 requirements with sources and control checks (A1\u2013A9), satisfying most of the requirement. However, the requirement explicitly asks for \"each [check's] status\" from the set {passing, failing, planned and not yet run, deferred with stated reason}. The evidence groups all under \"all open\" but does not state whether A1 is planned, A2 is planned, etc., leaving which checks are currently passing, failing, or blocked unclear.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-REQUIREMENTS-TRACED",
+    "verdict": "unresolved"
+  },
+  "c2a4768c92bffedc0352ae8af275e4893d4caaff339d8fdb543ba0c273eed2e0": {
+    "item_id": "CORE-CAPABILITY-REUSE",
+    "materiality": "non_material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly states \"No catalogue entry fits, because none of which interpret actions or run rules,\" directly answering the requirement's third pathway with a substantive reason. It correctly identifies that `llm_client` reuse is outside the catalogue scope and explicitly declares no new cross-project capability is added, naming the consumer context (\"World Builder run loop\").",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-CAPABILITY-REUSE",
+    "verdict": "pass"
+  },
+  "cefecdb2d52224f7a57e85cd7ad072916688af004ba127e85321893dc5b8ba68": {
+    "item_id": "OV-DURABLE-DOCS-DECLARED",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly provides all required elements: a `Durable documents:` line naming five durable roles in the correct format (`system_model#ENT-ACTION-ENVELOPE, system_model#PROC-TRANSITION, system_model#PROC-PROCESS-TICK, system_model#ENT-RUN-RECORD, plans`); confirmation that each named role is declared (system_model roles in `.agentic/repo.yaml` lines 3\u20138 with trace: `docs/model/trace.yaml`, and plans role in `.agentic/repo.yaml`); and the completion check requirement as a done-when: \"At completion of each slice, `python3 ~/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --plan docs/plans/open_attempt.md --range <adoption revision>..HEAD` must exit 0,\" which matches the required command format and exit-0 requirement.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/OV-DURABLE-DOCS-DECLARED",
+    "verdict": "pass"
+  },
+  "d645f193d53f563afb800f88b3b373472b40e2675af5255018f0e1f64eab079f": {
+    "item_id": "OV-LLM-AUTHORITY-PROMOTION",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly names OpenRouter as the provider, Brian's owner allowance as the spend authority with grant date, and the authentic-run condition (recorded command after live run only, with promotion to authority refused by construction until then). All three named elements are substantive and directly stated.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/OV-LLM-AUTHORITY-PROMOTION",
+    "verdict": "pass"
+  },
+  "dca51ee8de997df857c7541ee7c333b83baff07ace99e933b24390bcf3c6d8fa": {
+    "item_id": "OV-LLM-AUTHORITY-PROMOTION",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly names the provider (OpenRouter, gpt-6-luna), spend authority (Brian's owner allowance, granted 2026-10-25), and authentic-run condition (interpretation becomes authoritative only as a recorded command after an authentic live run). All three elements the requirement specifies are present.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/OV-LLM-AUTHORITY-PROMOTION",
+    "verdict": "pass"
+  },
+  "e3ad9e2e06cf7bd78555108aeb1127162d74cff741fb3b3f3dfde1c5d5cf733f": {
+    "item_id": "CORE-IRREVERSIBLE-SPEND",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly addresses all three required elements. It names the irreversible actions (or lack thereof with justification), specifies clear boundaries for both actions and spend, identifies Brian as the authorizer with a dated approval, and describes multiple containment mechanisms (stopping before irreversibility, health-check rollback, budget enforcement). The requirement is substantively satisfied.",
+    "trace_id": "company-planning/method-conformance/open_attempt/b6773d4e0dfd/CORE-IRREVERSIBLE-SPEND",
+    "verdict": "pass"
+  },
+  "ec13c4a6d448a8aaae5197862b93bc42762d60d741a7a90d153347548c285853": {
+    "item_id": "OV-LLM-CALL-BOUNDARY",
+    "materiality": "material",
+    "missing": "Model call graph (showing multiple calls, their sequencing, dependencies, and relationships)",
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly describes the structured result boundary for one call\u2014\"typed output (`kind`, `roles`, `quoted_span` or `unmatched`, `nearest_kind`, `why`), no success field\"\u2014and partially describes tracing (\"recorded as the command and never re-read by rules or replay\"). However, a \"call graph\" requires showing how multiple calls relate, their order, and dependencies; the evidence describes only the \"attempt interpreter\" call through `llm_client` in isolation, not a graph of calls.",
+    "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/OV-LLM-CALL-BOUNDARY",
+    "verdict": "unresolved"
+  },
+  "ef43079392b32baa15334af84288470d12dda59d86a47f4736899c377007d16a": {
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "materiality": "non_material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan declares four activation facts: shared_mechanism (true), empirical_comparison_proposed (false), llm_central (true), and irreversible_or_spend_action (true). Each matches the plan's actual triggers: it adds shared mechanisms, does not propose experiments, centrally depends on the attempt interpreter LLM call, and authorizes owner allowance spend. No declared fact is false when the plan triggers it. Optional facts claims_external_standard and aes_governed_target are correctly shown as false.",
+    "trace_id": "company-planning/method-conformance/open_attempt/61ae2a18c836/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "f478cf7145ccf7137066089d672c9bbc165e77f17d4a8f8cd452a11eadf0cc79": {
+    "item_id": "CORE-REQUIREMENTS-TRACED",
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence presents a complete, named requirements table where each of seven requirements (R1\u2013R7) cites its source, names a check (A1\u2013A9 verifications), and explicitly states no deferrals. The preamble clarifies that \"the claimed property is the requirement itself,\" confirming no hidden standards or contracts are omitted from the list.",
+    "trace_id": "company-planning/method-conformance/open_attempt/7a030443ca6e/CORE-REQUIREMENTS-TRACED",
+    "verdict": "pass"
+  },
+  "fd1631d98105284fb148279f22c4920096bf3c70f870ee16925971ed56740317": {
+    "item_id": "CORE-OUTCOME-FIRST",
+    "materiality": "non_material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "All four required lines are present with correct structure and values. The probe is cited and its content is quoted in the evidence; the artifact is confirmed to exist; the step is demonstrably part of the described probe sequence; and the class \"vertical\" matches a plan that builds end-to-end capability through every step, ending in inspectable traced runs.",
+    "trace_id": "company-planning/method-conformance/open_attempt/96c26a108aeb/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  }
+}

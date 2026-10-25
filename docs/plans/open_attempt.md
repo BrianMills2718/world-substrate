@@ -3,7 +3,9 @@ plan_id: "open-attempt"
 dependencies: []
 dependencies_reviewed: "2026-10-25"
 planning_path: durable_solo
-status: proposed
+planning_path_ref: docs/plans/open_attempt/path-decision.json
+method_conformance_receipt: docs/plans/open_attempt/conformance-receipt.json
+status: adopted
 goal:
   outcome: "World Builder residents say in their own words what they physically try, instead of picking from a list; the world's rules decide what happens, knock-on effects run to the end inside the same moment, and a person's recorded skill (never how expert their words sound) decides how a risky attempt turns out."
   canonical_example: "A World Builder world generated from 'A small airfield office: a brick wall between the office and the hangar, a glass of water on the desk, a helicopter in the hangar, and Sam, a trainee who has never flown'. In one run Sam tries to walk through the wall and nothing happens, with the wall named as the cause; someone knocks the glass off the desk and in the same event chain it falls, breaks, the water spills and the person in the next room hears it; Sam tries to fly the helicopter and a recorded roll from Sam's piloting level 0 gives a crash or a rough landing, never a clean flight from good wording."
@@ -13,20 +15,22 @@ goal:
   do_not_gate_on: "letting an AI game master invent effects for attempts no rule covers (Decision D2, deferred); organisations, the decider spectrum and thinking-as-effector (later designs); a clingo cross-check of the reaction rules; Brian's review of a run."
   stop_after: 3
 conflict_surfaces:
-  - {kind: repository_path, path: docs/plans/open_attempt.md, access: write}
-  - {kind: repository_path, path: proposals/open-attempt/review-page/, access: write}
-  - {kind: repository_path, path: docs/planning/open-attempt/, access: write}
-  - {kind: repository_path, path: docs/planning/open-questions.json, access: write}
-  - {kind: repository_path, path: scripts/concordia_residents.py, access: write}
-  - {kind: repository_path, path: scripts/run_authored_world.py, access: write}
-  - {kind: repository_path, path: prompts/, access: write}
-  - {kind: repository_path, path: src/world_substrate/attempt.py, access: write}
-  - {kind: repository_path, path: src/world_substrate/engine.py, access: write}
-  - {kind: repository_path, path: src/world_substrate/action_authoring.py, access: write}
-  - {kind: repository_path, path: src/world_substrate/rules.py, access: write}
-  - {kind: repository_path, path: docs/model/, access: write}
-  - {kind: repository_path, path: tests/, access: write}
-  - {kind: repository_path, path: evidence/open-attempt/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/open_attempt.md, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/open_attempt/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: roadmap/README.md, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: proposals/open-attempt/review-page/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/planning/open-attempt/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/planning/open-questions.json, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/concordia_residents.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/run_authored_world.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: prompts/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/attempt.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/engine.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/action_authoring.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/rules.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/model/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: tests/, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: evidence/open-attempt/, access: write}
 ---
 # Plan: open attempts, knock-on effects that run to the end, and skill rolls
 
@@ -35,7 +39,33 @@ Planning package: docs/planning/open-attempt/planning-package.json
 Review page: [proposals/open-attempt/review-page/](../../proposals/open-attempt/review-page/index.html), live at
 <https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/>.
 
-Project outcome: [roadmap/README.md](../../roadmap/README.md) (generative living worlds on top, rigorous causal engine underneath; the World Builder is the visitor-facing surface).
+## Actor and result
+
+**Actor:** a World Builder visitor (and Brian as owner) who pastes a scenario and watches the
+generated people act. **Result they can inspect:** the run page and its build record show each
+person's own-words attempt, what the rules made of it, and why it worked, failed or did nothing.
+**Stable example:** the airfield office in the front matter's `canonical_example`: Sam walks into
+the wall and is refused with the wall named; the glass chain runs in one moment; Sam's untrained
+flight rolls two dice keep-lower.
+
+## Project outcome
+
+Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary (generative living worlds on top, rigorous causal engine underneath; the World Builder is the visitor-facing surface). This plan serves that actor directly: the roadmap's "user describing a world" is the
+World Builder visitor of the Actor section. **Recurring job and baseline:** a visitor describes a world and
+watches its people act; today each person can only pick from moves the rules already allow, so impossible
+attempts (the wall), knock-on chains and untrained failures never appear. **Inspectable result this plan
+delivers:** the run page and build record of the airfield world showing the wall refusal, the glass chain
+and the rolled crash. **Stage and investment boundary:** prototype stage; three slices, each one pull
+request and at most $3.00 of owner allowance; no new service, engine or repository.
+
+## Outcome step
+
+Outcome probe: `roadmap/README.md#canonical-outcome-probe`
+Observed: `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md`
+Step: a resident acts in the generated world and the installed rules decide the effect
+Class: vertical
+
+Each slice changes that step end to end (generator, resident, engine, page) and ends in a live traced run.
 
 ## Why, in one example
 
@@ -124,7 +154,13 @@ Helicopter: Sam (piloting 0) is in the cockpit (gate passes), rolls two dice, ke
 1-3 the `fail` effects crash the helicopter, damaging it and injuring Sam, and Piece 2 carries on
 (fuel leaks, alarm sounds, the ground crew hears it).
 
-## Requirements, failure modes and controls
+## Requirements
+
+What Brian asked, plus what the plan's own claims imply; each row names its check in the acceptance table below. Status per check: A1-A4 planned in S1; A5-A6 planned in S2; A7 planned in S3; A8 planned in every slice
+(run on each merge commit); A9 planned in S1 (open-attempt part) and completed in S3 (full chain). None is
+deferred. The claimed property is the requirement itself (an impossible attempt is refused with its cause,
+a chain finishes, skill sets the dice), never a count of passing tests.
+
 
 | Id | Requirement (source) | Fails when | Control |
 | --- | --- | --- | --- |
@@ -149,6 +185,36 @@ Helicopter: Sam (piloting 0) is in the cockpit (gate passes), rolls two dice, ke
 | A7 | Skill, not wording, sets the dice | fixture: identical attempt text, piloting 0 and 3; events show 2-keep-lower versus 3 dice, seed recorded |
 | A8 | Existing worlds replay unchanged | `scripts/check_project.py` on each slice's merge commit, exit 0, with these replay tests named passing in the quoted output: `test_action_envelopes` (unsupported and malformed envelopes replay), `test_first_fill.test_fill_tick_and_replay_match_exactly`, `test_greenhouse_zero_review.test_replay_regenerates_exactly_through_generic_renderer`, `test_castaway_zero_review.test_zero_review_replay_regenerates_exactly` |
 | A9 | The canonical run is fully traced | `evidence/open-attempt/<run>/run-log.jsonl` plus `TRACE_READ.md` passing `scripts/check_trace_reads.py`; read by the implementing agent before reporting |
+
+## Success and disproof
+
+The plan claims three properties: (1) residents state any physical attempt and only installed rules
+decide its effect (R1-R3, checked by A1-A4); (2) knock-on effects run to the end inside one moment or the
+moment is refused whole (R4, A5-A6); (3) recorded skill, not wording, decides risky outcomes (R5, A7);
+with replay unchanged (R6, A8) and every run fully readable (R7, A9).
+
+**Success:** A1-A9 pass, each judged from the full trace of the run it names. **Disproof:** any one
+of these in the canonical run's trace: an interpreter output carrying a success or outcome; a wall
+attempt that changes the world or is refused without naming the wall; a pilot attempt by a level-0
+person that ends in a clean flight; dice whose seed is not `hash(run_seed, event_id)`; a replay that
+calls a model. Trace review: the implementing agent reads every refused, unmatched and rolled attempt
+and a sample of ordinary ones in the named run's `run-log.jsonl` and writes `TRACE_READ.md`; each criterion
+A1-A9 is expected `pass`. Runs are named in order: `evidence/open-attempt/s1-replay/` (free replay of a
+saved world), `evidence/open-attempt/s1-airfield/` (first owner-allowance run, judged for A2-A4 and A9),
+`evidence/open-attempt/s2-airfield/` (A5), `evidence/open-attempt/s3-airfield/` (A7 and the full A9);
+A1, A6 and A8 are judged from the named pytest and `check_project.py` output saved beside each run.
+
+## When a run fails or surprises us
+
+This is separate from the anticipated failure modes in the Requirements table: it covers what we did not
+foresee. Keep the run and its trace ids; read the full inputs, prompts, each model and tool call's arguments and results,
+intermediate stages (interpretation, checks, reactions, rolls) and the final output (build record, page)
+before choosing a fix; cite where it diverged; classify it evidence absent, unused or
+contradicted, invalid expectation, or unresolved. An unresolved cause permits investigation, not a
+repair. A repair is verified by a new traced run whose `TRACE_READ.md` links the original run and the divergence it
+fixes; the original stays. Never rerun until a behavior
+appears and report only that run. Review completeness never changes the run verdict: a run's pass or fail
+comes from its trace against A1-A9, and an incomplete review leaves the claim unreported, not passed.
 
 ## Slices, in order
 
@@ -183,22 +249,105 @@ resident walk into the wall. The rules writer (`scripts/generate_causal_model.py
 - **D3 (made, technical):** reactions are a `timing` field on the existing process declaration, not a
   new rule type, so they reuse its selector, checks, effects, linked participants and write scopes.
 
-## Model, traces and reuse
+## System model
 
-- **System model:** [docs/model/ODD.md](../model/ODD.md). S1 adds an `attempt interpretation` record
+- Model: [docs/model/ODD.md](../model/ODD.md); relied on: RULE-ATOMIC-COMMIT-OR-REFUSAL (a refused attempt changes nothing), RULE-PROJECTION-FROM-CANONICAL-ONLY (the page shows only recorded events). Adds: `attempt interpretation` (adds), `unmatched_attempts` (adds), `timing` (adds), `roll` (adds).
+- Not changed, and why: actors, places, information reach (`world_substrate.information`), tasks and
+  the budget ledger keep their current model elements; this plan only changes how a move is chosen,
+  how reactions run and how a mechanic resolves, so their definitions stand. RULE-BUDGET-FAILS-CLOSED,
+  RULE-FROZEN-PROFILE and RULE-DERIVED-AUTHORITY are relied on unchanged.
+- Views: [docs/model/VIEW_COVERAGE.md](../model/VIEW_COVERAGE.md) records which view shows each element; each slice adds its rows there.
+- The trace must show, per element: the command's `interpretation` record with the interpreter's trace id; the build record's `unmatched_attempts`; reaction events citing their parent; each roll's seed and dice.
+- S1 adds an `attempt interpretation` record
   (command field) and the `unmatched_attempts` build-record list; S2 adds the `timing` process field and
   the reaction-wave events; S3 adds the `roll` mechanic field and the event's `roll` record. Each slice
   updates ODD.md, `world_substrate_model.toml` and `tests/test_system_model.py` in the same pull request,
   and the drift test must fail on a renamed field before it passes.
-- **Traces:** World Builder runs keep `run-log.jsonl` (every request, interpreter and resident call with
+## Trace visibility
+
+- Each run's `run-log.jsonl` records: the inputs (scenario text, world bundle hash, run seed); every step
+  (round, actor, attempt text); each model call (resident, interpreter, rules writer) with its prompt
+  messages, arguments, typed result and `llm_client` trace id; the model's reasoning where it returns it
+  (the resident's `reasoning` field); every engine event with before/after, failed checks, reaction parent
+  and dice; and the output (build record, page JSON). Kept for ordinary runs, not only failures. No slice is a pure document edit, so no slice
+claims the no-run exemption; this adoption commit alone is document-only and runs nothing.
+- How to open one: `evidence/open-attempt/<run>/run-log.jsonl` is one JSON object per line (`jq . <file>`);
+  the live run's page links its share id, and `llm_client` trace ids open in its trace store
+  (`python -m llm_client traces --trace-id <id>`). Who reads and when: the implementing agent reads every run's
+  trace before reporting that slice, including the free replay and fixture runs; every failure or surprise
+  in full, and at least five ordinary attempts per run chosen across rounds and actors. This plan has no runs
+  other than World Builder runs and the test suite, whose output is saved beside each run.
+- World Builder runs keep `run-log.jsonl` (every request, interpreter and resident call with
   `llm_client` trace ids, every event with dice) beside the run; `TRACE_READ.md` per round. The
   implementing agent reads every refused, unmatched and rolled attempt in the canonical run and a sample
   of ordinary ones before reporting.
-- **Capability reuse:** No catalogue entry fits, because `reuse_candidates.yml` and
+## Capability reuse
+
+No catalogue entry fits, because `reuse_candidates.yml` and
   `capability_registry.yml` hold approvals, notifications, scheduling, document-to-text and search
-  wrappers, none of which interpret actions or run rules. Model calls reuse the shared `llm_client`.
+  wrappers, none of which interpret actions or run rules. Model calls go through the workspace's shared
+`llm_client` (listed in `~/code2/workspace/docs/capabilities.md`, not a catalogue entry). No new
+cross-project capability is added; the interpreter's first and only consumer is the World Builder run loop.
 
-## Non-goals
+## Prior art and ownership
 
-Organisations as agents, the code/fast-model/LLM decider spectrum, thinking as an effector, moving off
+Disposition per piece, from [flexible-simulator-prior-art-2026-10.md](../research/flexible-simulator-prior-art-2026-10.md): open attempt **extends** the existing unsupported-action path and `Engine.submit` (copying Inform 7 "try" and Voyager-style attempts); knock-on effects **extend** `DeclaredProcess` (copying C+/Event Calculus ramification); skill rolls **extend** `DeclaredActionMechanic` (copying Blades in the Dark and GURPS defaults). Owner: World Substrate's rules layer (Decision 006). Parallel-implementation check: no second command path, engine or scheduler; every attempt still enters through `Engine.submit`, and `grep -n "def submit" src/world_substrate/engine.py` stays one hit.
+
+## LLM call boundary
+
+Call graph per round: resident call (one per actor, existing) -> attempt interpreter call (one per attempt,
+new, after the resident's reply, before `Engine.submit`) -> no further model call; rules, reactions and
+rolls are code. The rules writer's calls (existing, at build time) change only in prompt and schema.
+Provider: OpenRouter, model `openrouter/openai/gpt-6-luna` (the World Builder's `DEFAULT_MODEL`,
+`scripts/run_authored_world.py:36`). Spend authority: Brian's owner allowance, granted for this plan on
+2026-10-25. An interpretation becomes authoritative only as a recorded command after an authentic live
+run; fixtures may use recorded interpretations but are never reported as live.
+
+Existing resident call (unchanged boundary except the field): typed reply `{belief, attempt, expected_effect,
+work, reasoning}`; `attempt` replaces `action_id`; it has no success field either; the reply is recorded in
+`run-log.jsonl` with its trace id and is never re-read by rules or replay; a failed or malformed reply records
+the actor as waiting, as today.
+
+One new call: the attempt interpreter, through `llm_client`, typed output (`kind`, `roles`, `quoted_span` or `unmatched`, `nearest_kind`, `why`), no success field. Its output is recorded as the command and never re-read by rules or replay; it has no authority to change state, and promotion of its output to authority is refused by construction (only `Engine.submit` writes). Failure: a malformed or failed call records the attempt as unmatched with the error, never a guessed move.
+
+## Irreversible actions and spend
+
+Nothing irreversible is planned: merges are pull requests (revert with git) and deploys of World Builder's
+own service are redeployable from the previous commit. Boundary: no deletion of saved worlds or run
+records, no outreach, no change to other repositories. If a step would be irreversible, it stops and goes
+to Brian first (core rules: "Ask first only for irreversible actions"); authorization for everything in
+this plan is Brian's 2026-10-25 "yes". Containment: the deploy is checked through the health endpoint's
+build commit and rolled back to the prior commit if it fails. Spend: owner allowance only, after a free replay; at most $1.00 per owner run and $3.00 across S1
+(stop and report if a run would exceed it, enforced by the run's `max_budget`); the visitor allowance
+stays $3/day.
+
+## Uncertainties
+
+- Q23 (agent): does the rules writer give `move` a way-open check? Settled by generating the airfield world and reading it; S1's first step.
+- Q22 / D2 (Brian): AI game master for unmatched attempts; default "nothing comes of it" stays.
+- Interpreter cost per attempt (owner: agent): resolved by S1's first owner run's ledger; if interpreter
+  calls add more than 30% to the run's cost, S1 batches one interpreter call per round before merging.
+
+## Activation facts
+
+Recorded in [activation-facts.json](open_attempt/activation-facts.json): shared mechanism yes (engine and generator are shared by every world), no empirical comparison, LLM central yes, spend yes (owner allowance). Route: [path-decision.json](open_attempt/path-decision.json), durable_solo. The plan copies established methods (Inform 7, Event Calculus, Blades in the Dark,
+GURPS) but claims conformance to none of them, so `claims_external_standard` is false.
+
+## Durable documents
+
+Durable documents: system_model#ENT-ACTION-ENVELOPE, system_model#PROC-TRANSITION, system_model#PROC-PROCESS-TICK, system_model#ENT-RUN-RECORD, plans
+
+S1 changes ENT-ACTION-ENVELOPE (the command gains its interpretation) and ENT-RUN-RECORD (the build
+record gains `unmatched_attempts`); S2 changes PROC-PROCESS-TICK and PROC-TRANSITION (reaction waves);
+S3 changes PROC-TRANSITION (rolls). Each ID is in `docs/model/trace.yaml` today. The roles are declared
+in `.agentic/repo.yaml` lines 3-8: `system_model: {prose: docs/model/ODD.md, trace: docs/model/trace.yaml}`
+and `plans: docs/plans/`. At completion of each slice, `python3
+~/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --plan
+docs/plans/open_attempt.md --range <adoption revision>..HEAD` must exit 0.
+
+## Authority and non-goals
+
+**Authority:** Brian's "yes" on 2026-10-25 to adopt this plan and start S1; one agent writes; world-substrate and its own deploy only; Cybernetic Influence v3 and Concordia read-only.
+
+**Non-goals:** Organisations as agents, the code/fast-model/LLM decider spectrum, thinking as an effector, moving off
 Concordia 2.4.0, a clingo cross-check, and any change to Cybernetic Influence v3. Each comes after this.
