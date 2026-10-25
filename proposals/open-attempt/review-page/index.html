@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Attempts Design</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1d2329;--muted:#5d6670;--line:#c9ced3;--card:#fff;
+--have:#1f5fa8;--have-bg:#e6effa;--miss:#b85c00;--miss-bg:#fdf0e1;--grey:#6b7280;--grey-bg:#f0f1f3;--hi:#1d2329}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181b;--fg:#e7eaed;--muted:#9aa3ac;--line:#3a4148;--card:#1d2125;
+--have:#7fb2ee;--have-bg:#1b2d44;--miss:#f0a454;--miss-bg:#3a2a17;--grey:#a3abb4;--grey-bg:#262a2f;--hi:#e7eaed}}
+:root[data-theme="dark"]{--bg:#15181b;--fg:#e7eaed;--muted:#9aa3ac;--line:#3a4148;--card:#1d2125;
+--have:#7fb2ee;--have-bg:#1b2d44;--miss:#f0a454;--miss-bg:#3a2a17;--grey:#a3abb4;--grey-bg:#262a2f;--hi:#e7eaed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:17px;margin:26px 0 8px}
+.lede{color:var(--muted);margin:0 0 14px;max-width:800px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin:0 0 14px}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+.sw.have{background:var(--have-bg);border:2px solid var(--have)}
+.sw.miss{background:var(--miss-bg);border:2px dashed var(--miss)}
+.sw.grey{background:var(--grey-bg);border:2px solid var(--grey)}
+.examples{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.examples button{font:inherit;font-size:14px;padding:6px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.examples button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px}
+@media (max-width:820px){.layout{grid-template-columns:1fr}.trace{order:-1}}
+.stages{display:flex;flex-direction:column}
+.stage{border-radius:8px;padding:9px 12px;background:var(--card);border:2px solid var(--line)}
+.stage.have{border-color:var(--have);background:var(--have-bg)}
+.stage.miss{border-style:dashed;border-color:var(--miss);background:var(--miss-bg)}
+.stage .t{font-weight:600}
+.stage .tag{font-size:12px;font-weight:600;margin-left:6px}
+.stage.have .tag{color:var(--have)} .stage.miss .tag{color:var(--miss)}
+.stage .d{font-size:14px}
+.stage.dim{opacity:.35}
+.arrow{text-align:center;color:var(--muted);height:18px;line-height:18px}
+.trace{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;align-self:start}
+.trace h3{font-size:16px;margin:0 0 4px}
+.trace .setup{font-size:13px;color:var(--muted);margin:0 0 10px}
+.ev{display:grid;grid-template-columns:86px 1fr;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.ev:first-of-type{border-top:0}
+.ev .who{font-size:12px;font-weight:600;padding:2px 6px;border-radius:4px;align-self:start;text-align:center}
+.ev .who.have{color:var(--have);background:var(--have-bg)}
+.ev .who.miss{color:var(--miss);background:var(--miss-bg);border:1px dashed var(--miss)}
+.ev .who.grey{color:var(--grey);background:var(--grey-bg)}
+.ev .rec{font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);margin-top:2px;word-break:break-word}
+.ev.indent{margin-left:18px}
+.outcome{margin-top:10px;padding-top:8px;border-top:2px solid var(--line);font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+.decision{border:2px solid var(--miss);border-radius:8px;padding:10px 14px;background:var(--miss-bg);max-width:820px}
+.decision b{color:var(--miss)}
+footer{margin-top:26px;font-size:13px;color:var(--muted)}
+a{color:var(--have)}
+</style>
+</head>
+<body>
+<main>
+<h1>People try anything; the world decides</h1>
+<p class="lede">Design for three missing pieces of World Substrate. Today a person in a World Builder world picks from a list of moves the rules already allow, so nobody ever walks into a wall. With this design they say what they try in their own words, the world's rules decide what happens, knock-on effects run to the end on their own, and a person's recorded skill decides how a risky attempt turns out. Pick an example to see what the run's record would show.</p>
+<div class="legend">
+<span class="chip"><span class="sw have"></span>Blue, solid: already in World Substrate</span>
+<span class="chip"><span class="sw miss"></span>Orange, dashed: added by this design</span>
+<span class="chip"><span class="sw grey"></span>Grey: what the person meant (kept, never read by rules)</span>
+</div>
+<div class="examples" role="group" aria-label="Examples">
+<button data-ex="wall" aria-pressed="true">Walk through a wall</button>
+<button data-ex="glass">Knock a glass off the desk</button>
+<button data-ex="heli">Fly a helicopter untrained</button>
+<button data-ex="odd">Try something no rule covers</button>
+</div>
+<div class="layout">
+<div class="stages" id="stages">
+<div class="stage have" data-s="decide"><span class="t">1. Decide</span><span class="tag">have</span>
+<div class="d">The person's AI model writes what they believe, what they expect and why. These stay in their memory and the record.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="attempt"><span class="t">2. Say the attempt</span><span class="tag">new, piece 1</span>
+<div class="d">One sentence of what they physically do. The list of known moves is shown as a hint, not a limit.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="interpret"><span class="t">3. Interpret</span><span class="tag">new, piece 1</span>
+<div class="d">A small AI call names which kind of move it is and who or what each part refers to, quoting the words it used. It cannot say whether the move works.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="check"><span class="t">4. Check</span><span class="tag">have</span>
+<div class="d">The world's rules check the move. A failed check refuses it, names the cause, and changes nothing.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="roll"><span class="t">5. Skill roll</span><span class="tag">new, piece 3</span>
+<div class="d">Only for risky moves the rules mark. Dice count comes from the person's recorded skill; the dice are recorded.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="apply"><span class="t">6. Carry out</span><span class="tag">have</span>
+<div class="d">The rule's effects change the world, all at once or not at all.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="react"><span class="t">7. Knock-on effects to the end</span><span class="tag">new, piece 2</span>
+<div class="d">Rules marked "immediately" fire on the new state, again and again, until nothing more happens, all in the same moment. Each cites what caused it.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="notice"><span class="t">8. Who notices</span><span class="tag">have</span>
+<div class="d">Only people who could see or hear it learn of it.</div></div>
+</div>
+<div class="trace" id="trace" aria-live="polite"></div>
+</div>
+
+<h2>Built in three slices, each one a working World Builder</h2>
+<div class="tablewrap"><table>
+<tr><th>Slice</th><th>What lands</th><th>Shown by</th></tr>
+<tr><td>1</td><td>People say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
+<tr><td>2</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing the last</td></tr>
+<tr><td>3</td><td>Skill rolls, seeded and recorded, read only from recorded skill</td><td>The helicopter example, and the same words giving different dice at skill 0 and 3</td></tr>
+</table></div>
+
+<h2>What could go wrong, and what catches it</h2>
+<div class="tablewrap"><table>
+<tr><th>Risk</th><th>Catch</th></tr>
+<tr><td>The interpreter turns "fly the helicopter" into a safe walk</td><td>It must quote the words behind each part; a test checks this exact case; the run's read-through samples ordinary attempts</td></tr>
+<tr><td>The interpreter decides what succeeds</td><td>Its answer has no place to say success or failure; only the rules refuse</td></tr>
+<tr><td>Fluent wording makes an untrained pilot land safely</td><td>The roll reads only the recorded skill; the attempt's words never reach it</td></tr>
+<tr><td>A knock-on effect feeds itself forever</td><td>Each rule fires once per thing per moment, at most 32 in all; over the cap the whole moment is refused and nothing changes</td></tr>
+<tr><td>Replays of saved worlds change</td><td>Interpretations and dice are stored, so a replay never calls the AI or rolls again; all existing replay tests must pass</td></tr>
+</table></div>
+
+<h2>One choice for you</h2>
+<div class="decision"><b>Decision:</b> when someone tries something no rule covers, should an AI game master be allowed to invent a rough effect, marked "coarse" in the record? <b>Recommendation: not yet.</b> For now the person is told "nothing comes of it" and the attempt is listed so the next build's rules writer can add a real rule. That keeps every effect coming from a written rule. If you don't answer, it stays that way and slices 1 to 3 go ahead.</div>
+
+<footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/open_attempt.md">docs/plans/open_attempt.md</a> · Framework survey: <a href="../../flexible-simulator/review-page/">the loop page</a> and <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/research/flexible-simulator-prior-art-2026-10.md">survey document</a> · Methods copied: Inform 7 "try", C+ and Event Calculus knock-on effects, Blades in the Dark action rolls with GURPS defaults.</footer>
+</main>
+<script>
+const EX={
+wall:{title:"Sam walks into the wall",setup:"Airfield office. A brick wall stands between the office and the hangar. Sam is in the office.",stages:["decide","attempt","interpret","check"],ev:[
+["grey","meant","Sam believes the hangar is just behind this wall and expects to get there quickly.","belief, expected_effect (memory and record only)"],
+["miss","attempt","\"I walk east through the wall into the hangar.\"","attempt"],
+["miss","interpret","Move, from the office to the hangar. Words used: \"walk\", \"into the hangar\".","{kind: move, roles: {mover: sam, to: hangar}, quoted_span: …}"],
+["have","check","Refused: the way from the office to the hangar is blocked by the brick wall. Nothing changes.","status: refused · failed check names wall_1"],
+["have","notice","Sam sees: you walk into the wall; it does not give.","observation to sam"]],
+out:"Nothing is blocked before it happens: Sam really tried, and the wall is why it failed. Today Sam would never have been offered the wall at all."},
+glass:{title:"Ana knocks the glass off the desk",setup:"A glass of water sits on the desk in the office. Lee is in the hangar next door.",stages:["decide","attempt","interpret","check","apply","react","notice"],ev:[
+["miss","attempt","\"I sweep my arm across the desk.\"","attempt"],
+["miss","interpret","Push, the glass off the desk.","{kind: push, roles: {pusher: ana, thing: glass_1}}"],
+["have","carry out","The glass is no longer on the desk.","event e1"],
+["miss","reaction","Falls: nothing holds it up, so it lands on the floor.","event e2 · parent e1"],
+["miss","reaction","Breaks: it is fragile and it fell.","event e3 · parent e2"],
+["miss","reaction","Spills: a broken glass holding water empties it on the floor; a crash sound is made.","event e4 · parent e3"],
+["have","notice","Lee, in the hangar, hears a crash from the office.","observation to lee · parent e4"]],
+out:"Five events in one moment, each naming what caused it. Today the fall would wait for the next round and fire once."},
+heli:{title:"Sam tries to fly the helicopter",setup:"Sam has never flown: piloting skill 0. Sam is in the cockpit.",stages:["decide","attempt","interpret","check","roll","apply","react","notice"],ev:[
+["grey","meant","Sam expects to lift off smoothly and fly to the coast.","expected_effect (never read by rules)"],
+["miss","attempt","\"I start the engine, pull up on the collective and fly to the coast.\"","attempt"],
+["miss","interpret","Pilot the helicopter, to the coast.","{kind: pilot, roles: {pilot: sam, craft: heli_1, to: coast}}"],
+["have","check","In the cockpit, the helicopter has fuel: the move may go ahead.","checks pass"],
+["miss","roll","Piloting 0: roll two dice, keep the lower. Rolled 5 and 2, keep 2: fail.","roll: {skill: 0, dice: [5,2], kept: 2, seed: …}"],
+["have","carry out","The fail effects: the helicopter lurches and crashes back onto the pad. It is damaged and Sam is hurt.","event e1"],
+["miss","reaction","Fuel leaks from the damaged tank; the hangar alarm sounds.","events e2, e3 · parents e1, e2"],
+["have","notice","The ground crew hear the alarm and see the wreck.","observations"]],
+out:"However expert Sam's words sound, the dice come only from the recorded skill. A trained pilot at skill 3 rolls three dice and keeps the highest."},
+odd:{title:"Sam tries to talk to the helicopter",setup:"No rule in this world lets a machine be talked to.",stages:["decide","attempt","interpret","notice"],ev:[
+["miss","attempt","\"I ask the helicopter nicely to start itself.\"","attempt"],
+["miss","interpret","No kind of move in this world fits. Nearest: speak.","{unmatched: true, nearest_kind: speak, why: …}"],
+["have","record","Recorded as unsupported. Nothing changes.","status: unsupported · before = after"],
+["have","notice","Sam sees: you ask the helicopter to start; nothing comes of it.","observation to sam"],
+["miss","build record","Listed under unmatched attempts, so the next build's rules writer can add a rule if one is wanted.","unmatched_attempts[]"]],
+out:"No effect is made up. Whether an AI game master may ever invent one is the one choice below."}};
+function show(k){const e=EX[k];
+document.querySelectorAll(".examples button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ex===k?"true":"false"));
+document.querySelectorAll(".stage").forEach(s=>s.classList.toggle("dim",!e.stages.includes(s.dataset.s)));
+let h="<h3>"+e.title+"</h3><p class='setup'>"+e.setup+"</p>";
+for(const [c,w,t,r] of e.ev){h+="<div class='ev"+(w==="reaction"?" indent":"")+"'><span class='who "+c+"'>"+w+"</span><div>"+t+"<div class='rec'>"+r+"</div></div></div>";}
+h+="<div class='outcome'>"+e.out+"</div>";document.getElementById("trace").innerHTML=h;}
+document.querySelectorAll(".examples button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.ex)));
+show("wall");
+</script>
+</body>
+</html>
