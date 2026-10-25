@@ -1971,6 +1971,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
                         start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
                         briefs=briefs, resident_memory=resident_memory, underway=underway,
+                        # Residents say what they try in their own words (docs/plans/open_attempt.md).
+                        open_attempts=policy == "resident",
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:

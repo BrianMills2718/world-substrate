@@ -249,6 +249,12 @@ source = "spikes/any-scenario-2026-10/run_scenario.py:50"
 state = ["LLM fields: see [pipeline].attempt_fields", "record: tick, actor, belief, belief_as_of, cited_observations, decision (offered | continue | unlisted), expected_effect, offered[], unlisted_intent, performed {action, status, event_id, action_record} | {status continue | no_rule | ruling ...}, observed_effect"]
 
 [[entities]]
+name = "AttemptReading"
+what = "Live play with open attempts: one typed light-model reading of a resident's own words into one installed action kind and its field values (no success or outcome field). Checked against the world (known entity ids, quoted words found in the attempt, every field given) or marked unmatched; kept on the run row as attempt {text, reading}. The envelope it produces is the recorded command, so replay never calls the model."
+source = "src/world_substrate/attempt.py:81"
+state = ["kind | wait | unmatched", "fields {name: value}", "quoted_spans {name: words}", "nearest_kind", "why"]
+
+[[entities]]
 name = "ScenarioRun"
 what = "One run of a generated model with residents (a run-<stamp>/ folder inside the model folder): every Engine event, every attempt, per-tick process changes, the final observed world, a summary, and the bundle/causal model after mid-run rules."
 source = "spikes/any-scenario-2026-10/run_scenario.py:148"
@@ -321,7 +327,7 @@ schedule = "at the start of every run"
 
 [[processes]]
 name = "run"
-what = "Fresh or continued run: builds the Engine, then per round each actor (rotating order) discovers offered actions, a policy (scripted least-recent move, or LLM) picks one, Engine.submit commits or refuses; a lost race retries once; then Engine.advance(1) runs due processes."
+what = "Fresh or continued run: builds the Engine, then per round each actor (rotating order) discovers offered actions, a policy (scripted least-recent move, or LLM) picks one, or with open_attempts a resident says what it tries and attempt.interpret reads it into one typed move (unmatched -> kind unmatched-attempt, recorded as unsupported_action, listed in summary.unmatched_attempts); Engine.submit commits or refuses; a lost race retries once; then Engine.advance(1) runs due processes."
 source = "scripts/run_authored_world.py:215"
 routes = ["POST /run"]
 changes = ["World", "Entity", "Run", "Snapshot"]

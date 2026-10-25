@@ -39,6 +39,17 @@ RESIDENT_SCHEMA: dict[str, Any] = {
     },
 }
 
+# Open attempts (docs/plans/open_attempt.md): the person says in their own words what they physically try, in place of
+# an offered action_id. src/world_substrate/attempt.py reads the words into one typed move; the rules decide its effect.
+OPEN_SCHEMA: dict[str, Any] = json.loads(json.dumps(RESIDENT_SCHEMA))
+OPEN_SCHEMA["required"] = ["belief", "attempt", "expected_effect", "work", "reasoning"]
+del OPEN_SCHEMA["properties"]["action_id"]
+OPEN_SCHEMA["properties"]["attempt"] = {
+    "type": "string",
+    "description": "What you physically try to do this turn, in your own words, naming the people, things and places "
+                   "involved; or 'wait'.",
+}
+
 
 def _clip(text: str) -> str:
     return text if len(text) <= MEMORY_ITEM_CHARS else text[: MEMORY_ITEM_CHARS - 3] + "..."
@@ -68,19 +79,23 @@ class ResidentMemory(entity_component.ContextComponent):
 class ResidentAct(entity_component.ActingComponent):
     """One typed llm_client call returning belief, offered action and expected effect (the spike's LLMAttemptAct)."""
 
-    def __init__(self, actor: str, *, model: str, trace_id: str, max_budget: float):
+    def __init__(self, actor: str, *, model: str, trace_id: str, max_budget: float, open_attempts: bool = False):
         super().__init__()
         self._actor, self._model, self._trace, self._budget = actor, model, trace_id, max_budget
+        self._open = open_attempts
         self.request: dict[str, Any] = {}
         self.cost = 0.0
 
     def get_action_attempt(self, context: Any, action_spec: entity_lib.ActionSpec) -> str:
         from llm_client import call_llm_json_schema, render_prompt
 
-        schema = json.loads(json.dumps(RESIDENT_SCHEMA))
-        schema["properties"]["action_id"]["enum"] = list(self.request["offered"]) + [WAIT]
+        if self._open:
+            schema, prompt = json.loads(json.dumps(OPEN_SCHEMA)), "prompts/concordia_resident_open_attempt.yaml"
+        else:
+            schema, prompt = json.loads(json.dumps(RESIDENT_SCHEMA)), "prompts/concordia_resident_policy.yaml"
+            schema["properties"]["action_id"]["enum"] = list(self.request["offered"]) + [WAIT]
         memory = "\n".join(str(v) for v in context.values() if v)
-        messages = render_prompt(REPO / "prompts/concordia_resident_policy.yaml", **self.request["context"], memory=memory)
+        messages = render_prompt(REPO / prompt, **self.request["context"], memory=memory)
         value, result = call_llm_json_schema(
             self._model, messages, schema, schema_name="world_substrate_concordia_resident",
             task="world-builder-concordia-resident", trace_id=self._trace, max_budget=self._budget,
@@ -100,8 +115,10 @@ class Residents:
     """The Concordia agents for one live request, one per person."""
 
     def __init__(self, actors: list[str], *, model: str, trace_id: str, max_budget: float,
-                 memory: dict[str, list[str]] | None = None):
-        self.acts = {a: ResidentAct(a, model=model, trace_id=trace_id, max_budget=max_budget) for a in actors}
+                 memory: dict[str, list[str]] | None = None, open_attempts: bool = False):
+        self.open_attempts = open_attempts
+        self.acts = {a: ResidentAct(a, model=model, trace_id=trace_id, max_budget=max_budget,
+                                    open_attempts=open_attempts) for a in actors}
         self.memory = {a: ResidentMemory((memory or {}).get(a)) for a in actors}
         self.agents = {
             a: entity_agent_with_logging.EntityAgentWithLogging(
@@ -113,7 +130,15 @@ class Residents:
         self.agents[actor].observe(text)
 
     def choose(self, actor: str, offered: list[str], context: dict[str, Any]) -> dict[str, Any]:
-        """The resident's attempt: belief, action_id (an offered id or wait), expected_effect, work, reasoning."""
+        """The resident's attempt: belief, action_id (an offered id or wait), expected_effect, work, reasoning.
+
+        With open attempts it is `attempt` (their own words) in place of action_id, asked even when nothing is offered.
+        """
+        if self.open_attempts:
+            self.acts[actor].request = {"offered": offered, "context": context}
+            spec = entity_lib.ActionSpec(call_to_action="Say what you try.", output_type=entity_lib.OutputType.FREE)
+            value = json.loads(self.agents[actor].act(spec) or "{}")
+            return {k: (str(value[k]) if value.get(k) is not None else None) for k in OPEN_SCHEMA["required"]}
         if not offered:
             return {"belief": None, "action_id": WAIT, "expected_effect": None, "work": None,
                     "reasoning": "wait: no offered action"}

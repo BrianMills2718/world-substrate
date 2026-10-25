@@ -12,7 +12,7 @@ entities:
   - id: ENT-WORLD
     what: canonical typed world state with a material hash and a revision counter (ODD 4)
   - id: ENT-ACTION-ENVELOPE
-    what: a policy's submitted intent, validated before any rule runs (ODD 4, 8.1)
+    what: a policy's submitted intent, validated before any rule runs; with open attempts, the typed reading of a resident's own words, or an unmatched-attempt envelope carrying them (ODD 4, 8.1, 11.3)
   - id: ENT-RULE-PROPOSAL
     what: a model-authored mechanics proposal awaiting compiler review (ODD 4, 8.6)
   - id: ENT-FROZEN-PROFILE
