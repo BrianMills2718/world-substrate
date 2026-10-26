@@ -51,18 +51,25 @@ rules:
   - id: RULE-ATOMIC-COMMIT-OR-REFUSAL
     statement: >-
       A transition either commits every write and increments the world revision once, or is refused
-      (malformed envelope, stale revision) with the material hash unchanged and the refusal recorded.
+      (malformed envelope, stale revision, knock-on effects past the reaction limit) with the material hash
+      unchanged and the refusal recorded.
     owner: src/world_substrate/engine.py
+    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): a moment whose reactions pass 32 is refused whole; tests pass
     checks:
       - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
       - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
+      - tests/test_open_attempt.py::test_a_chain_past_the_reaction_limit_is_refused_whole
+      - tests/test_open_attempt.py::test_a_reaction_that_keeps_itself_due_fires_once_per_moment
+      - tests/test_open_attempt.py::test_a_round_whose_reactions_do_not_settle_is_undone
     decisions:
       - docs/decisions/003-semantic-mechanical-boundary.md
+      - docs/decisions/009-same-moment-knock-on-effects.md
   - id: RULE-WRITE-SCOPE
     statement: >-
       A rule or process may write only the components it declared; reaching undeclared state refuses the
       action or stops the tick with nothing changed, and the refusal replays identically.
     owner: src/world_substrate/engine.py
+    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): reactions go through the same _apply_process scope checks; tests pass
     checks:
       - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
       - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
@@ -74,6 +81,7 @@ rules:
     statement: >-
       Precondition checks and process due-tests only read; one that writes is refused and the tick is rolled back.
     owner: src/world_substrate/engine.py
+    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): due_bindings runs through _readonly_call like due; tests pass
     checks:
       - tests/test_rule_authority.py::test_checks_are_refused_if_they_write
       - tests/test_rule_authority.py::test_due_cannot_write_and_the_tick_is_rolled_back
@@ -84,7 +92,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
-    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
+    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for process timing (S2): timing is validated, reads/writes still derived; tests pass
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
@@ -95,7 +103,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: fe8c492664ce64396732917dfb2fc1238032c625  # re-read 2026-10-25 for open attempts (S1): statement holds, tests pass
+    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): the transcript only adds reactions rows; profile still frozen before the run; tests pass
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime

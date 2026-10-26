@@ -49,7 +49,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | The system itself as a checked model (entities, processes, records, view coverage gaps) | [System model](../model/ODD.md) · [View coverage](../model/VIEW_COVERAGE.md) |
 | What the substrate is made of (concepts, typed kinds, what is built vs theory) | [Domain model](../model/DOMAIN.md) · [Metamodel](../model/METAMODEL.md) |
 | What the project does not yet know, and the plan it calls for | [Open questions](../planning/open-questions.json) · [Repo planning package](../planning/planning-package.json) · [Open-attempt package](../planning/open-attempt/planning-package.json); review pages at `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt}/review-page/` |
-| Next build: free-form attempts, same-moment knock-on effects, skill rolls | [Open-attempt plan](../plans/open_attempt.md) |
+| Open-attempt plan: free-form attempts (S1, built), same-moment knock-on effects (S2, built; ODD 8.20), skill rolls (S3, next) | [Open-attempt plan](../plans/open_attempt.md) |
 | Scope: governed-rules layer on commodity runtimes | [Decision 006](../decisions/006-governed-rules-layer-scope.md) |
 | Any-scenario path / build worlds in an agent harness | [Decision 007](../decisions/007-any-scenario-path.md) · [Decision 008](../decisions/008-build-worlds-in-an-agent-harness.md) |
 | Same-moment knock-on effects are rule semantics, not engine capability | [Decision 009](../decisions/009-same-moment-knock-on-effects.md) |

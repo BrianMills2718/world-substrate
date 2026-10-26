@@ -27,6 +27,7 @@ PROCESS_SCHEMA_VERSION = "world-substrate-process-mechanic/v0"
 # Compiled rules (scheduled moments, remedies, a group decision's deadline, deployment and operating review) take up to
 # 17 processes and a generated model may add more (generate_causal_model's schema), so the engine bound holds both with room to spare.
 MAX_PROCESSES = 28
+PROCESS_TIMINGS = ("each_round", "immediately")
 MAX_DISCOVERED_ACTIONS = 256
 
 OPS = {
@@ -264,6 +265,10 @@ class DeclaredProcess:
     # Optional linked participants: name -> {"link": ..., "selector": ...}. Each is resolved from the
     # matching entity `it` (see PROCESS_LINKS), so one process event can change linked entities.
     participants: dict[str, dict[str, Any]] = field(default_factory=dict)
+    # "each_round" (the default) runs once per round; "immediately" runs as a
+    # knock-on effect inside the moment whose event made it due (glass pushed off
+    # a desk falls, then breaks, in the same moment).
+    timing: str = "each_round"
 
     def package(self) -> MechanicPackage:
         return MechanicPackage(
@@ -288,10 +293,17 @@ class DeclaredProcess:
         missing = sorted(required - set(value))
         if missing:
             raise ActionDeclarationError(f"process is missing: {missing}")
-        unknown = sorted(set(value) - required - {"schema_version", "version", "limits", "participants"})
+        unknown = sorted(
+            set(value) - required - {"schema_version", "version", "limits", "participants", "timing"}
+        )
         if unknown:
             raise ActionDeclarationError(f"unknown process keys: {unknown}")
         process_id = _nonempty(value["process_id"], "process_id")
+        timing = value.get("timing", "each_round")
+        if timing not in PROCESS_TIMINGS:
+            raise ActionDeclarationError(
+                f"process {process_id} timing must be one of {list(PROCESS_TIMINGS)}, got {timing!r}"
+            )
         selector = _selector(value["selector"], bundle, f"process {process_id} selector")
         signature: dict[str, Any] = {"fields": []}
         linked = _process_participants(value.get("participants") or {}, bundle, process_id)
@@ -316,6 +328,7 @@ class DeclaredProcess:
             )),
             write_paths=_derived_writes(effects),
             participants=linked,
+            timing=timing,
         )
 
 
@@ -329,6 +342,7 @@ class CompiledProcessMechanic:
         self.order = order
         self.read_paths = declared.read_paths
         self.write_paths = declared.write_paths
+        self.timing = declared.timing
 
     def _matching(self, world: World) -> list[dict[str, str]]:
         """One binding per matching entity `it` (times each combination of linked participants)."""
@@ -355,8 +369,21 @@ class CompiledProcessMechanic:
     def due(self, world: World) -> bool:
         return bool(self._matching(world))
 
+    def due_bindings(self, world: World) -> list[dict[str, str]]:
+        """The participant bindings this process would act on now (each has `it`)."""
+        return self._matching(world)
+
+    def apply_to(self, world: World, event_id: str, entity_ids: list[str]) -> None:
+        """Apply the effects only where `it` is one of ``entity_ids`` (one reaction wave)."""
+        self._apply(world, event_id, set(entity_ids))
+
     def apply_with_event_id(self, world: World, event_id: str | None) -> None:
+        self._apply(world, event_id, None)
+
+    def _apply(self, world: World, event_id: str | None, only: set[str] | None) -> None:
         for participants in self._matching(world):
+            if only is not None and participants["it"] not in only:
+                continue
             touched: set[str] = set()
             for effect in self.declared.effects:
                 value = _resolve_expr(effect["value"], world, {}, participants, event_id)

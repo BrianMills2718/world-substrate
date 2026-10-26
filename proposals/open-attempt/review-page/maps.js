@@ -60,7 +60,7 @@ window.MAPS = {
     "id": "process",
     "label": "Process",
     "kind": "Substrate",
-    "explain": "A rule the world runs by itself each tick when its checks hold. Code: src/world_substrate/engine.py:829."
+    "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:829."
    },
    {
     "id": "compiler",
@@ -347,8 +347,8 @@ window.MAPS = {
    {
     "id": "knock-on-now",
     "label": "Knock-on that runs now",
-    "kind": "Theory",
-    "explain": "Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). Code: none yet."
+    "kind": "Substrate",
+    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:884."
    },
    {
     "id": "skill-roll",
@@ -1026,12 +1026,6 @@ window.MAPS = {
     "explain": "Blocks: the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done."
    },
    {
-    "id": "Q28",
-    "label": "Q28: Reuse the spill and damage rules",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: how S2's glass chain is built, and whether generated and reference worlds share physics."
-   },
-   {
     "id": "Q30",
     "label": "Q30: Build accepted with a task never possible",
     "kind": "AgentQuestion",
@@ -1145,13 +1139,6 @@ window.MAPS = {
     "kind": "Concept",
     "dashed": true,
     "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
-   },
-   {
-    "id": "knock-on-now",
-    "label": "Knock-on that runs now",
-    "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it)."
    },
    {
     "id": "mechanisms",
@@ -1310,24 +1297,6 @@ window.MAPS = {
     "id": "Q26-run-loop",
     "source": "Q26",
     "target": "run-loop",
-    "label": "bears on"
-   },
-   {
-    "id": "Q28-mechanisms",
-    "source": "Q28",
-    "target": "mechanisms",
-    "label": "bears on"
-   },
-   {
-    "id": "Q28-knock-on-now",
-    "source": "Q28",
-    "target": "knock-on-now",
-    "label": "bears on"
-   },
-   {
-    "id": "Q28-gen-rules",
-    "source": "Q28",
-    "target": "gen-rules",
     "label": "bears on"
    },
    {

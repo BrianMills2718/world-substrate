@@ -413,6 +413,10 @@ def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities:
         if raw.get("world_changes"):
             # Changes the world's own processes made this round, with no actor acting (#126).
             frame["world_changes"] = list(raw["world_changes"])
+        if raw.get("reactions"):
+            # Knock-on effects (open_attempt S2), each shown after the event that set it off.
+            frame["reactions"] = [{"rule": r["rule_id"], "after": list(r.get("caused_by_rule") or [])}
+                                  for r in raw["reactions"]]
         placed_positions = _station_layout_positions(profile, item_state)
         if placed_positions:
             frame["placed_positions"] = placed_positions
@@ -449,13 +453,20 @@ def render_html(trace: dict[str, Any], profile: dict[str, Any], world_entities: 
     payload = json.dumps(frames, separators=(",", ":")).replace("</", "<\\/")
     # A blue strip for process-made changes, kept apart from the actors' moves.
     # Added only when a round has one, so replays without processes stay byte-identical.
-    by_itself = any(frame.get("world_changes") for frame in frames)
+    by_itself = any(frame.get("world_changes") or frame.get("reactions") for frame in frames)
     by_css = (".byitself{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);z-index:20;background:#1f4f8a;color:white;"
               "border:2px solid #9cc3ee;border-radius:999px;padding:6px 13px;font-size:12px;white-space:nowrap;max-width:90%;"
               "overflow:hidden;text-overflow:ellipsis}.byitself[hidden]{display:none}") if by_itself else ""
     by_html = ("<div class='byitself' id='byitself' hidden title='Changes the world made by itself this round, "
                "from its own rules, with nobody acting'></div>") if by_itself else ""
-    by_js = (";const by=(f.world_changes||[]).map(c=>String(c).replace(/[-_]/g,' ')),bx=document.getElementById('byitself');"
+    # Knock-on effects add their own script only when a run has one, so existing replays stay byte-identical.
+    by_list = (
+        "const nm=c=>String(c).replace(/[-_]/g,' '),by=(f.world_changes||[]).map(nm).concat((f.reactions||[]).map("
+        "r=>nm(r.rule)+(r.after.length?' (after '+r.after.map(nm).join(', ')+')':'')))"
+        if any(frame.get("reactions") for frame in frames)
+        else "const by=(f.world_changes||[]).map(c=>String(c).replace(/[-_]/g,' '))"
+    )
+    by_js = (";" + by_list + ",bx=document.getElementById('byitself');"
              "bx.hidden=!by.length;bx.textContent=by.length?'By itself: '+by.join(', '):''") if by_itself else ""
     profile_payload = deepcopy(profile)
     profile_payload["resolved_assets"] = assets

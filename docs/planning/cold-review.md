@@ -1,67 +1,23 @@
-# Cold review, repo-wide package (rounds 4 to 7)
+# Cold review, repo planning package, round 9
 
-Reviewer: `planning-compliance-reviewer` subagent, a re-review given the round-3 report (R1–R7). Earlier rounds: 1 through 3 were revise; the round-3 findings were fixed in `fdaf2ed` and `c028b4b`.
+Reviewer: `company-planning:planning-compliance-reviewer` subagent, 2026-10-26, given the round-8 report.
+Reviewed revision: f8dc6daa76de3c84e195d1027cdde126d7de354c (read at HEAD 76a6acd, which adds only the package rebuild)
+Verdict: pass
 
-**Validator:** 8 of 8 parts ok. 4 of 5 substance checks ok; the one failure was the expected `cold_review.reviewed_revision is absent`, which this report supplies. 105 citations resolve, 57 concepts are implemented and 5 dashed, 39 concepts are relied on, and 29 of 29 types map. Exit 1 before this report was recorded.
+Scope: the delta since d305058 (`git diff d305058 76a6acd`, 15 files). Round 8 (at d305058) was a pass; its findings were notes.
 
-**Rerun checks:** `check_project.py` ran 718 tests, OK, 2 skipped, exit 0, matching the manifest. `check_trace_reads.py` reported 11 runs, 0 problems, exit 0, also matching.
+- **Validator:** `validate_planning_package.py --repo . docs/planning/planning-package.json` reported 4 of 5 substance checks ok; the one failure was `cold_review.reviewed_revision` still at d305058, expected until this review is recorded. Freshness ok ("built from f8dc6daa76de, 0 commits of work since").
+- **Counts:** `docs/planning/open-questions.json` has 42 questions, 16 open and 26 resolved, as at d305058. Its only change is the Q42 evidence wording, which now names the 3 calls with no finish reason (round-8 note fixed).
+- **Manifest delta:** `tests_run` 718 to 728, `subject_revision` f8dc6da, `knock-on-now` anchored at `engine.py:884`, where `_settle` starts.
+- **Docs:** `roadmap/README.md` and `docs/wiki/README.md` say S2 is built with the live generated run owed, matching code and plan. ODD 8.20 and `docs/model/trace.yaml` name both the renamed limit test and the new once-per-moment test.
+- **Rerun:** `tests/test_open_attempt.py` 12 passed, exit 0.
+- **Regression:** none found.
 
-## Previous findings
+Findings:
 
-- R1 fixed. Both manifests name each package's role, `docs/plans/open_attempt.md:53` states it, and the two pages cross-link (Q41 resolved).
-- R2 fixed. Both `relies_on` lists hold the same 39 concepts, including approval and fingerprint.
-- R3 fixed. Q8 and F3 (`docs/plans/open_attempt.md:440`) exempt fixed facts, using the airfield wall's `components.boundary.passable` (`tests/fixtures/airfield-s1-live.json:392`) as the example.
-- R4 fixed. The graph has nodes for `mechanic` (`action_authoring.py:456`), `entity-component` (`model.py:223`) and `run-seed` (theory only).
-- R5 fixed. `people-world` cites `ODD.md:285`, `rollout` cites `compile_spec.py:436`, `exchange` cites `exchange.py:68` and `transition-envelope-v0.md:42`, and `check` cites `rules.py:48`.
-- R6 fixed. Q35 is resolved: `attempt.py:81` refuses unknown kinds and entities, and `engine.py:582` decides every move. Q36 is open and names its checks.
-- R7 not fixed. A minor label overlap in the context diagram. Weight: note.
+- note, `docs/planning/checks.txt`: the round-8 note asked it to name `scripts/build_metamodel.py`. Moot now: the project check in it was rerun at the subject revision itself (728 tests, exit 0), so no later-commit disclosure is needed.
+- note, `docs/planning/planning-package.json`: set `cold_review.reviewed_revision` to this revision (done when this report was saved).
 
-## New findings (all notes)
+Unsure about: nothing material. The reviewer did not run `check_project.py` (as instructed); the 728-test count comes from `checks.txt`.
 
-- The fix list said `check` cites `ODD.md:229`, but the graph cites `rules.py:48`, which is the better citation. Note.
-- Q36's proposed resolution is an argument plus a check, with no paid run. Acceptable. Note.
-- 19 questions remain open. The reviewer did not re-audit each one this round. Q27 is correctly Brian's decision. Note.
-- The page loads its local data and viewer, shows the 718-test check value, and the cross-link resolves. It was not rendered in a browser during the review; it was rendered separately by Playwright, with 0 console errors. Note.
-
-Unsure: whether the R7 overlap is gone, and whether all 19 open questions are truly unanswered.
-
-Reviewed revision (round 4): c028b4b66639189e168ddb76b97cf93bae60d3e6, verdict pass.
-
-## Round 5 (commit f645471): pass
-
-Reviewed only the change since round 4, `git diff c028b4b f645471`, which fixed findings against the sibling open-attempt package that shares this ledger and model:
-- Q36 drops a check that would always be empty (`read_interpretation` sets nearest_kind to the matched kind);
-- Q39 now cites `attempt.py:94` and `:129`;
-- the metamodel's "Attempt reading" now includes the wait reading.
-The rebuilt `open-questions.json`, `metamodel.graph.json`, `METAMODEL.md` and `data.js` agree with their sources. The validator had 8 of 8 parts ok; freshness ok. checks.txt records 718 tests OK, exit 0.
-
-- Note: Q36 cites `attempt.py:122` for the matched-kind return, which is at `:123` (:122 is the unmatched return, which also sets nearest_kind to kind). This does not change the conclusion.
-
-Reviewed revision (round 5): f6454711cca548331f7b17d05aef66d69c3aa787, verdict pass.
-
-## Round 6 (commit cd4a1fd): pass
-
-Re-review of `git diff 389f3f8 cd4a1fd`, which records Brian's answer to Q27 (2026-10-26, "i approve"): Decision 009, Q27 resolved, the plan re-adopted, and the roadmap, AGENTS.md and catalog updated. The page data (`proposals/planning-package/review-page/data.js`) shows Q27 resolved with Decision 009 as its source, 18 open questions as in the ledger, and `built_from` cd4a1fd. No remaining text contradicts the decision. Decision 009 claims no more than the approved recommendation. The validator had 8 of 8 parts and 107 citations resolving. Check counts match checks.txt (718 tests, exit 0; md_files 135).
-
-- Note: Q27 keeps its old `default` and `blocks` text beside its resolved status. They are kept as the record of what was asked.
-- Note: the round-5 text above ("19 questions remain open", "Q27 is Brian's decision") was true at f645471 and is superseded by this round.
-
-Reviewed revision (round 6): cd4a1fdd52247736007866e4653841db401af04a, verdict pass.
-
-## Round 7 (commit b2216ee): pass
-
-Re-review of Brian's answer to D2/Q22 (2026-10-26, "whatever you think is best as long as we are company plannign complant", taken as the recommended "not yet"), the wiki routes and a test fix, given the round-6 report. The round-6 note (Q27 keeps its old `default` text as a record) still holds and is not a defect.
-
-- Validator: 8 of 8 parts ok; 17 open and 24 resolved questions, 62 concepts, 4 diagrams; 107 citations resolve; 29 of 29 types map onto `scientific-hypergraph@7b0638fe0aef`; freshness ok from `b2216ee`. The only failing substance check was "cold review read this revision", which this record supplies.
-- Reruns: `check_trace_reads.py` 11 runs, 0 problems, exit 0; `durable_docs_check.py --arc42` 0 findings, exit 0; `md_file_cap.py` 136 md files, cap exception, 0 orphans, exit 0. All match the manifest. The 718-test project check was taken from `checks.txt`, not rerun.
-- Q22's resolution is consistent everywhere it appears: `docs/plans/open_attempt.md:15`, `:160`, `:268`, `:304`, `:421`; `docs/model/ODD.md:366`; `src/world_substrate/attempt.py:8-11`; the open-questions graph and both review pages (17 open, 24 resolved). It agrees with the code, where an attempt no rule covers already comes to nothing (`scripts/run_authored_world.py:669`).
-- The test fix (`tests/test_world_builder_service.py:748-749`) only lifts `PEOPLE_REWRITE_BY_S` so the rules-retry test no longer depends on machine speed.
-
-Notes (none blocking):
-1. Q22's evidence is a quoted session message with no decision record. Accepted: the ledger, the plan and the ODD quote it.
-2. The open-attempt page said "Nothing is waiting on you" while Q16 and Q17 are still Brian's. Fixed: it now says "Nothing in this plan is waiting on you".
-3. `checks.txt` had dropped the project check's "Planning path" and "Pinned source records checked: 16" lines. Fixed: the full summary is back.
-4. The 17 remaining open questions were not re-audited this round; nothing in this change touches them, so the round 4 to 6 audits stand.
-
-Reviewed revision: b2216ee55011c2a38f669579ca01c34563c5cc78
 Verdict: pass

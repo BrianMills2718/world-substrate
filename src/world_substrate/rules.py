@@ -398,6 +398,24 @@ class DeclaresProcessCausalParents(Protocol):
 
 
 @runtime_checkable
+class ReactsImmediately(Protocol):
+    """A process that can run as a knock-on effect inside the moment that made it due.
+
+    ``timing`` is ``"each_round"`` (run by ``Engine.advance``) or ``"immediately"``
+    (run by the engine right after an event commits, until nothing more is due).
+    The engine fires each (process, entity) pair at most once per moment, so it
+    asks which bindings are due (each names its entity ``it`` plus any linked
+    participants) and applies the effects to exactly those entities ``it``.
+    """
+
+    timing: str
+
+    def due_bindings(self, world: World) -> list[dict[str, str]]: ...
+
+    def apply_to(self, world: World, event_id: str, entity_ids: list[str]) -> None: ...
+
+
+@runtime_checkable
 class ReceivesProcessEventId(Protocol):
     """A process that needs its coordinator-minted event id while applying.
 

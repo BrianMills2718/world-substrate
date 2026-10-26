@@ -147,3 +147,251 @@ class OpenAttemptTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# --- Slice S2: knock-on effects (plan piece 2, checks A5 and A6) -----------------------------------------------
+# The glass world below is a declared fixture, written here because it exercises the engine's settle loop (waves,
+# parents, cap), not generation; the canonical run uses the rules writer's own output.
+
+def _lit(v):
+    return {"literal": v}
+
+
+def _it(path):
+    return {"participant": {"name": "it", "path": path}}
+
+
+GLASS_BUNDLE = {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {"id": "glass-desk", "label": "A glass on a desk", "location": "study",
+              "summary": "Sam can push a glass of water off a desk; the neighbour next door can hear it break."},
+    "components": [
+        {"name": "glass", "fields": [
+            {"name": "on_desk", "type": "boolean", "default": True},
+            {"name": "height", "type": "integer", "default": 1},
+            {"name": "fragile", "type": "boolean", "default": True},
+            {"name": "fell", "type": "boolean", "default": False},
+            {"name": "broken", "type": "boolean", "default": False},
+            {"name": "water", "type": "integer", "default": 1},
+            {"name": "sound", "type": "entity_ref", "default": "crash-sound"},
+        ]},
+        {"name": "floor", "fields": [{"name": "wet", "type": "boolean", "default": False}]},
+        {"name": "information", "fields": [
+            {"name": "content", "type": "string", "default": "a sound"},
+            {"name": "source_id", "type": "string", "default": "unknown"},
+            {"name": "channel_id", "type": "string", "default": "air"},
+            {"name": "visibility", "type": "string", "default": "public"},
+            {"name": "active", "type": "boolean", "default": False},
+        ]},
+    ],
+    "actions": [{"kind": "push", "description": "Push something.", "fields": [{"name": "thing", "type": "entity_ref"}]}],
+    "entities": [
+        {"id": "study", "label": "Study", "categories": ["place"], "components": {}},
+        {"id": "next-door", "label": "Next door", "categories": ["place"], "components": {}},
+        {"id": "sam", "label": "Sam", "categories": ["actor"], "components": {}, "location": "study"},
+        {"id": "neighbour", "label": "Neighbour", "categories": ["actor"], "components": {}, "location": "next-door"},
+        {"id": "glass", "label": "Glass of water", "categories": ["glass"], "location": "study",
+         "components": {"glass": {"on_desk": True, "height": 1, "fragile": True, "fell": False, "broken": False,
+                                  "water": 1, "sound": "crash-sound"}}},
+        {"id": "study-floor", "label": "Study floor", "categories": ["floor"], "location": "study",
+         "components": {"floor": {"wet": False}}},
+        # The crash carries through the wall: a public information item next door, silent until the glass breaks.
+        {"id": "crash-sound", "label": "Crash of breaking glass", "categories": ["sound"], "location": "next-door",
+         "components": {"information": {"content": "a crash of breaking glass", "source_id": "glass",
+                                        "channel_id": "through-the-wall", "visibility": "public",
+                                        "active": False}}},
+    ],
+    "presentation": {"assets": {}, "category_assets": {}, "station_roles": {}},
+}
+
+GLASS_SELECTOR = {"categories": ["glass"], "components": ["glass"]}
+
+
+def _process(pid, checks, effects, participants=None, timing="immediately", selector=GLASS_SELECTOR):
+    row = {"process_id": pid, "rationale": pid, "selector": selector, "checks": checks, "effects": effects,
+           "timing": timing}
+    if participants:
+        row["participants"] = participants
+    return row
+
+
+GLASS_RULES = {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [{
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "push-thing", "version": "1", "action_kind": "push",
+        "rationale": "Pushing a glass slides it off the desk.",
+        "actor_selector": {"categories": ["actor"], "components": []},
+        "participants": {"thing": GLASS_SELECTOR}, "parameters": {},
+        "checks": [{"label": "the glass is on the desk", "left": {"participant": {"name": "thing",
+                    "path": "components.glass.on_desk"}}, "op": "eq", "right": _lit(True)}],
+        "effects": [{"participant": "thing", "path": "components.glass.on_desk", "op": "set", "value": _lit(False)}],
+        "limits": ["Only a glass on the desk can be pushed."],
+        "tests": ["Pushing the glass leaves it off the desk."], "semantic_bindings": ["thing is what is pushed"],
+    }],
+    "terminal": None,
+    "processes": [
+        _process("falls", [
+            {"label": "nothing holds it up", "left": _it("components.glass.on_desk"), "op": "eq", "right": _lit(False)},
+            {"label": "it is above the floor", "left": _it("components.glass.height"), "op": "gt", "right": _lit(0)},
+        ], [
+            {"participant": "it", "path": "components.glass.height", "op": "set", "value": _lit(0)},
+            {"participant": "it", "path": "components.glass.fell", "op": "set", "value": _lit(True)},
+        ]),
+        _process("breaks", [
+            {"label": "it is fragile", "left": _it("components.glass.fragile"), "op": "eq", "right": _lit(True)},
+            {"label": "it fell", "left": _it("components.glass.fell"), "op": "eq", "right": _lit(True)},
+            {"label": "it is whole", "left": _it("components.glass.broken"), "op": "eq", "right": _lit(False)},
+        ], [{"participant": "it", "path": "components.glass.broken", "op": "set", "value": _lit(True)}]),
+        _process("spills", [
+            {"label": "it broke", "left": _it("components.glass.broken"), "op": "eq", "right": _lit(True)},
+            {"label": "it held water", "left": _it("components.glass.water"), "op": "gt", "right": _lit(0)},
+        ], [
+            {"participant": "it", "path": "components.glass.water", "op": "set", "value": _lit(0)},
+            {"participant": "floor", "path": "components.floor.wet", "op": "set", "value": _lit(True)},
+        ], participants={"floor": {"link": "co_located", "selector": {"categories": ["floor"],
+                                                                      "components": ["floor"]}}}),
+        _process("crash-sound", [
+            {"label": "it broke", "left": _it("components.glass.broken"), "op": "eq", "right": _lit(True)},
+        ], [{"participant": "noise", "path": "components.information.active", "op": "set", "value": _lit(True)}],
+            participants={"noise": {"link": "ref:glass.sound", "selector": {"categories": ["sound"],
+                                                                         "components": ["information"]}}}),
+    ],
+}
+
+
+def _push(engine):
+    offered = engine.discover("sam", kind="push")["available"]
+    return engine.submit(dict(offered[0]["action"], controller="test"))
+
+
+class KnockOnEffectTests(unittest.TestCase):
+    def test_glass_chain_completes_in_one_moment(self):  # A5 (declared fixture)
+        engine, _, _ = build_engine(GLASS_BUNDLE, GLASS_RULES)
+        result = _push(engine)
+        self.assertEqual(result["status"], "accepted")
+        push = result["event"]
+        by_rule = {e["rule_id"]: e for e in result["reactions"]}
+        self.assertEqual([e["rule_id"] for e in result["reactions"]], ["falls", "breaks", "spills", "crash-sound"])
+        self.assertEqual(by_rule["falls"]["causal_parent_event_ids"], [push["event_id"]])
+        self.assertEqual(by_rule["breaks"]["causal_parent_event_ids"], [by_rule["falls"]["event_id"]])
+        self.assertEqual(by_rule["spills"]["causal_parent_event_ids"], [by_rule["breaks"]["event_id"]])
+        self.assertEqual(by_rule["crash-sound"]["causal_parent_event_ids"], [by_rule["breaks"]["event_id"]])
+        # One moment: one command, no tick passed, every event caused by that command.
+        self.assertEqual(len(engine.world.commands), 1)
+        self.assertEqual({e["cause"] for e in engine.world.events}, {push["cause"]})
+        self.assertEqual({e["tick"] for e in engine.world.events}, {0})
+        floor = engine.world.entities["study-floor"].as_dict()["components"]["floor"]
+        self.assertTrue(floor["wet"])
+        # Judged separately: the neighbour hears it through information, an observation and not a sixth event.
+        heard = engine.observe("neighbour")
+        self.assertIn("crash-sound", json.dumps(heard))
+        self.assertEqual(len(engine.world.events), 5)
+        self.assertTrue(engine.replay()["ok"])
+
+    def test_run_record_and_round_picture_show_each_reaction_with_its_cause(self):
+        from scripts.run_authored_world import render_run
+        trace, _, compiled = run_world(GLASS_BUNDLE, GLASS_RULES, policy="scripted", max_turns=1)
+        reactions = trace["transcript"][0]["reactions"]
+        self.assertEqual([(r["rule_id"], r["caused_by_rule"]) for r in reactions],
+                         [("falls", ["push-thing"]), ("breaks", ["falls"]), ("spills", ["breaks"]),
+                          ("crash-sound", ["breaks"])])
+        self.assertEqual(trace["transcript"][0]["world_changes"], [])
+        kept = {e["event_id"] for e in trace["engine_events"]}
+        self.assertLessEqual({p for r in reactions for p in r["caused_by"]}, kept)
+        html = render_run(GLASS_BUNDLE, trace, compiled)
+        frames = json.loads(html.split("const FRAMES=", 1)[1].split(";const PROFILE=", 1)[0])
+        self.assertEqual(frames[0]["reactions"][1], {"rule": "breaks", "after": ["falls"]})
+        self.assertIn("(after ", html)
+
+    def test_state_panel_lists_each_reaction_in_its_moment_with_its_cause(self):
+        import tempfile
+        sys.path.insert(0, str(REPO / "spikes/any-scenario-2026-10"))
+        from render_run import state_rounds
+        engine, _, _ = build_engine(GLASS_BUNDLE, GLASS_RULES)
+        _push(engine)
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp)
+            (run_dir / "events.jsonl").write_text("".join(json.dumps(e) + "\n" for e in engine.world.events))
+            (run_dir / "attempts.jsonl").write_text("")
+            (run_dir / "summary.json").write_text("{}")
+            rows = state_rounds(run_dir, GLASS_BUNDLE, 1)[0]["events"]
+        self.assertEqual([r["rule"] for r in rows], ["push-thing", "falls", "breaks", "spills", "crash-sound"])
+        self.assertNotIn("after", rows[0])
+        self.assertEqual([p["rule"] for p in rows[2]["after"]], ["falls"])
+        self.assertEqual([p["rule"] for p in rows[4]["after"]], ["breaks"])
+
+    def test_reactions_do_not_run_each_round(self):
+        engine, _, _ = build_engine(GLASS_BUNDLE, GLASS_RULES)
+        engine.world.entities["glass"].components["glass"].on_desk = False
+        self.assertEqual(engine.advance(1)["events"], [])
+
+    def _domino_engine(self, wind=False):
+        # A row of 40 glasses where each one's fall knocks over the next: more than 32 reactions in one moment.
+        bundle = json.loads(json.dumps(GLASS_BUNDLE))
+        bundle["components"][0]["fields"].append({"name": "next", "type": "entity_ref", "default": "glass-00"})
+        glasses = [f"glass-{i:02d}" for i in range(40)]
+        bundle["entities"] = [e for e in bundle["entities"] if e["id"] != "glass"] + [
+            {"id": g, "label": g, "categories": ["glass"], "location": "study",
+             "components": {"glass": {"on_desk": True, "height": 1, "fragile": False, "fell": False, "broken": False,
+                                      "water": 0, "sound": "crash-sound",
+                                      "next": glasses[(i + 1) % len(glasses)]}}}
+            for i, g in enumerate(glasses)]
+        rules = json.loads(json.dumps(GLASS_RULES))
+        rules["processes"] = [_process("knocks-over-next", [
+            {"label": "it fell", "left": _it("components.glass.on_desk"), "op": "eq", "right": _lit(False)},
+            {"label": "the next one stands", "left": {"participant": {"name": "next", "path": "components.glass.on_desk"}},
+             "op": "eq", "right": _lit(True)},
+        ], [{"participant": "next", "path": "components.glass.on_desk", "op": "set", "value": _lit(False)}],
+            participants={"next": {"link": "ref:glass.next", "selector": GLASS_SELECTOR}})]
+        if wind:
+            next(e for e in bundle["entities"] if e["id"] == "glass-00")["categories"].append("by-window")
+            rules["processes"].insert(0, _process("wind-topples-first", [
+                {"label": "it stands", "left": _it("components.glass.on_desk"), "op": "eq", "right": _lit(True)},
+            ], [{"participant": "it", "path": "components.glass.on_desk", "op": "set", "value": _lit(False)}],
+                timing="each_round", selector={"categories": ["glass", "by-window"], "components": ["glass"]}))
+        return build_engine(bundle, rules)
+
+    def test_a_chain_past_the_reaction_limit_is_refused_whole(self):  # A6
+        engine, _, _ = self._domino_engine()
+        before = engine.world.material_dict()
+        offered = [o for o in engine.discover("sam", kind="push")["available"]
+                   if o["action"]["thing"] == "glass-00"]
+        result = engine.submit(dict(offered[0]["action"], controller="test"))
+        self.assertEqual(result["status"], "reaction_limit")
+        failed = [c for c in result["event"]["checks"] if not c["ok"]]
+        self.assertEqual([c["label"] for c in failed], ["Knock-on effects settle within 32 reactions"])
+        after = engine.world.material_dict()
+        after.pop("revision"), before.pop("revision")
+        self.assertEqual(after, before)
+        self.assertEqual(len(engine.world.events), 1)
+        self.assertTrue(engine.replay()["ok"])
+
+    def test_a_reaction_that_keeps_itself_due_fires_once_per_moment(self):  # R4 once-per-pair
+        rules = json.loads(json.dumps(GLASS_RULES))
+        rules["processes"].append(_process("settles-on-floor", [
+            {"label": "it fell", "left": _it("components.glass.on_desk"), "op": "eq", "right": _lit(False)},
+        ], [{"participant": "it", "path": "components.glass.height", "op": "set", "value": _lit(0)}]))
+        engine, _, _ = build_engine(GLASS_BUNDLE, rules)
+        result = _push(engine)
+        self.assertEqual(result["status"], "accepted")
+        fired = [e for e in engine.world.events if e.get("rule_id") == "settles-on-floor"]
+        self.assertEqual(len(fired), 1)  # still due after it fires; the once-per-pair rule stops it
+        self.assertEqual(engine.world.entities["glass"].as_dict()["components"]["glass"]["height"], 0)
+        self.assertTrue(engine.replay()["ok"])
+
+    def test_a_round_whose_reactions_do_not_settle_is_undone(self):
+        engine, _, _ = self._domino_engine(wind=True)
+        before = engine.world.material_dict()
+        result = engine.advance(1)
+        self.assertEqual(result["status"], "reaction_limit")
+        self.assertEqual([e["rule_id"] for e in result["events"]], ["wind-topples-first"])
+        self.assertEqual(engine.world.material_dict(), before)
+        self.assertEqual(engine.world.commands[-1]["status"], "reaction_limit")
+        self.assertTrue(engine.replay()["ok"])
+
+    def test_timing_must_be_known(self):
+        rules = json.loads(json.dumps(GLASS_RULES))
+        rules["processes"][0]["timing"] = "later"
+        with self.assertRaisesRegex(Exception, "timing must be one of"):
+            build_engine(GLASS_BUNDLE, rules)

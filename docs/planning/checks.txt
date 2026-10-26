@@ -1,7 +1,7 @@
-Checks run 2026-10-26 on branch docs/wiki-routes-planning at subject revision b2216ee.
+Checks run 2026-10-26 on branch feat/s2-immediate-processes at subject revision f8dc6da.
 
 == durable documents (arc42): python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
-durable-docs: mode=repo repo=/home/brian/code2/world-substrate-wt-wiki findings=0 (none), exit 0
+durable-docs: mode=repo repo=/home/brian/code2/world-substrate findings=0 (none), exit 0
 exit 0
 
 == project navigation: python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .
@@ -26,7 +26,7 @@ exit 0
 
 == project check: PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py
 World Substrate project check passed.
-Neutral runtime tests: Ran 718 tests in 1125.782s · OK (skipped=2)
+Neutral runtime tests: Ran 728 tests in 362.647s · OK (skipped=2)
 Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
 Planning path: README.md -> roadmap/README.md -> active slice
 Pinned source records checked: 16
