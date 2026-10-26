@@ -415,6 +415,24 @@
     "build"
    ],
    "evidence": "No, then yes after a generic fix. The first generated airfield world put everyone at the one world location, had no move action, and its wall was read by no rule (evidence/open-attempt/q23/bundle.json, rules.json). Fixes: the bundle contract now offers each entity a starting place and asks for places, a move action with 'to' and 'way', and ways with a passable flag (scripts/generate_world_bundle.py); the validator refuses an unknown place (scripts/scaffold_world.py); the rules writer must check the actor is where the thing is, and is told checks have no 'or' (scripts/generate_causal_model.py). Regenerated world: walking through the brick wall fails 'the way is passable', flying from the office fails 'the aircraft is where the trainee is'; with the wall made passable in memory both succeed (evidence/open-attempt/q23/after-fix/probe.txt). Limit: a way works from its first place to its second only."
+  },
+  {
+   "id": "Q24",
+   "short": "Petri nets or TypeDB as carrier",
+   "question": "Could AlgebraicPetri (Petri transitions) or TypeDB (relations with role players) express World Substrate's action kinds and attempt readings well enough to adopt instead of the table in scripts/build_metamodel.py?",
+   "blocks": "whether the metamodel keeps its own action-kind and attempt-reading types or adopts an outside carrier for them",
+   "resolves_with": "Prior art: read AlgebraicPetri's typed Petri net and TypeDB's relation/role schema and map each onto action kind, role, check, effect and process; one type neither can hold (a process that runs by itself, a write scope) settles it as compose, not replace.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/model/METAMODEL.md:68",
+    "scripts/build_metamodel.py:30"
+   ],
+   "touches": [
+    "move",
+    "process",
+    "attempt-reading"
+   ]
   }
  ]
 }

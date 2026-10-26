@@ -298,6 +298,60 @@
    "label": "Executable-law fingerprint",
    "kind": "Theory",
    "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version. Code: —."
+  },
+  {
+   "id": "affordance",
+   "label": "Affordance (offered move)",
+   "kind": "Substrate",
+   "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:352."
+  },
+  {
+   "id": "check",
+   "label": "Check",
+   "kind": "Substrate",
+   "explain": "One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed. Code: src/world_substrate/rules.py:48."
+  },
+  {
+   "id": "attempt",
+   "label": "Attempt (in own words)",
+   "kind": "Substrate",
+   "explain": "What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. Code: src/world_substrate/attempt.py:149."
+  },
+  {
+   "id": "attempt-reading",
+   "label": "Attempt reading",
+   "kind": "Substrate",
+   "explain": "The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said. Code: src/world_substrate/attempt.py:81."
+  },
+  {
+   "id": "unmatched-attempt",
+   "label": "Unmatched attempt",
+   "kind": "Substrate",
+   "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer. Code: src/world_substrate/attempt.py:25."
+  },
+  {
+   "id": "observation",
+   "label": "Observation",
+   "kind": "Substrate",
+   "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:235."
+  },
+  {
+   "id": "place-way",
+   "label": "Place and way",
+   "kind": "Substrate",
+   "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; moving names its way and a closed way refuses it. Code: scripts/generate_world_bundle.py:96."
+  },
+  {
+   "id": "knock-on-now",
+   "label": "Knock-on that runs now",
+   "kind": "Theory",
+   "explain": "Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). Code: none yet."
+  },
+  {
+   "id": "skill-roll",
+   "label": "Skill roll",
+   "kind": "Theory",
+   "explain": "Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. Code: none yet."
   }
  ],
  "edges": [
@@ -666,6 +720,84 @@
    "source": "law-fingerprint",
    "target": "fingerprint",
    "label": "would extend"
+  },
+  {
+   "id": "e61",
+   "source": "engine",
+   "target": "affordance",
+   "label": "offers"
+  },
+  {
+   "id": "e62",
+   "source": "policy",
+   "target": "affordance",
+   "label": "chooses from"
+  },
+  {
+   "id": "e63",
+   "source": "move",
+   "target": "check",
+   "label": "requires"
+  },
+  {
+   "id": "e64",
+   "source": "resident",
+   "target": "attempt",
+   "label": "says"
+  },
+  {
+   "id": "e65",
+   "source": "attempt",
+   "target": "attempt-reading",
+   "label": "is read as"
+  },
+  {
+   "id": "e66",
+   "source": "attempt",
+   "target": "unmatched-attempt",
+   "label": "may be"
+  },
+  {
+   "id": "e67",
+   "source": "attempt-reading",
+   "target": "move",
+   "label": "names"
+  },
+  {
+   "id": "e68",
+   "source": "check",
+   "target": "event",
+   "label": "recorded in"
+  },
+  {
+   "id": "e69",
+   "source": "place-way",
+   "target": "move",
+   "label": "limits"
+  },
+  {
+   "id": "e70",
+   "source": "information",
+   "target": "observation",
+   "label": "filters"
+  },
+  {
+   "id": "e71",
+   "source": "observation",
+   "target": "resident",
+   "label": "feeds"
+  },
+  {
+   "id": "e72",
+   "source": "process",
+   "target": "knock-on-now",
+   "label": "extends to"
+  },
+  {
+   "id": "e73",
+   "source": "move",
+   "target": "skill-roll",
+   "label": "may need"
   }
  ],
  "layout": {

@@ -1,105 +1,181 @@
 {
- "schema_version": "1.0",
- "record_type": "planning_package",
- "repository": "BrianMills2718/world-substrate",
- "subject_revision": "6a8e37e26afc1aaab177d544f808ae560650d8b5",
- "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
- "parts": {
-  "checks": {
-   "status": "present",
-   "path": "docs/planning/checks.txt",
-   "results": [
-    {
-     "name": "durable documents (arc42)",
-     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-     "exit_status": 0,
-     "counts": {
-      "findings": 0
-     }
+  "schema_version": "1.0",
+  "record_type": "planning_package",
+  "repository": "BrianMills2718/world-substrate",
+  "subject_revision": "6a8e37e26afc1aaab177d544f808ae560650d8b5",
+  "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
+  "parts": {
+    "checks": {
+      "status": "present",
+      "path": "docs/planning/checks.txt",
+      "results": [
+        {
+          "name": "durable documents (arc42)",
+          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
+          "exit_status": 0,
+          "counts": {
+            "findings": 0
+          }
+        },
+        {
+          "name": "project navigation",
+          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
+          "exit_status": 0,
+          "counts": {
+            "findings": 0
+          }
+        },
+        {
+          "name": "repository format",
+          "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
+          "exit_status": 1,
+          "counts": {
+            "compliant": 0,
+            "of": 1
+          },
+          "tracked_by": "Q15"
+        },
+        {
+          "name": "trace reads",
+          "command": "python3 scripts/check_trace_reads.py",
+          "exit_status": 0,
+          "counts": {
+            "runs": 9,
+            "problems": 0
+          }
+        },
+        {
+          "name": "project check (tests, system model, docs)",
+          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py",
+          "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
+          "exit_status": 0,
+          "counts": {
+            "tests_run": 710,
+            "failed": 0,
+            "skipped": 2
+          }
+        }
+      ]
     },
-    {
-     "name": "project navigation",
-     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
-     "exit_status": 0,
-     "counts": {
-      "findings": 0
-     }
+    "open_questions": {
+      "status": "present",
+      "path": "docs/planning/open-questions.json"
     },
-    {
-     "name": "repository format",
-     "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
-     "exit_status": 1,
-     "counts": {
-      "compliant": 0,
-      "of": 1
-     },
-     "tracked_by": "Q15"
+    "system_model": {
+      "status": "present",
+      "path": "docs/model/ODD.md",
+      "executes_typed_rules": true,
+      "basis": "src/world_substrate/action_authoring.py:61",
+      "metamodel": {
+        "path": "docs/model/metamodel.graph.json",
+        "glossary": "docs/model/METAMODEL.md",
+        "maps_onto": {
+          "repository": "BrianMills2718/scientific-hypergraph",
+          "revision": "7b0638f1c30c83ffa5ec3bac4cbf2bbc0fca54e8",
+          "mapping": "docs/model/metamodel-mapping.json"
+        }
+      }
     },
-    {
-     "name": "trace reads",
-     "command": "python3 scripts/check_trace_reads.py",
-     "exit_status": 0,
-     "counts": {
-      "runs": 9,
-      "problems": 0
-     }
+    "domain_model": {
+      "status": "present",
+      "path": "docs/model/domain.graph.json",
+      "glossary": "docs/model/DOMAIN.md",
+      "implemented": {
+        "world": "src/world_substrate/engine.py",
+        "engine": "src/world_substrate/engine.py:558",
+        "event": "src/world_substrate/engine.py:505",
+        "move": "src/world_substrate/action_authoring.py:49",
+        "process": "src/world_substrate/engine.py:762",
+        "compiler": "src/world_substrate/action_authoring.py:456",
+        "policy": "src/world_substrate/policy.py:50",
+        "sense": "src/world_substrate/semantic.py:15",
+        "profile": "src/world_substrate/profile.py:266",
+        "write-scope": "src/world_substrate/engine.py:93",
+        "causal-trace": "scripts/world_builder_service.py:1822",
+        "world-kind": "scripts/world_builder_service.py:113",
+        "builder": "scripts/world_builder_service.py",
+        "approval": "scripts/world_builder_service.py:418",
+        "fingerprint": "scripts/world_builder_service.py:381",
+        "information": "src/world_substrate/information.py:57",
+        "run-loop": "scripts/run_authored_world.py:335",
+        "contention": "scripts/run_authored_world.py:544",
+        "resident": "scripts/concordia_residents.py:29",
+        "task": "scripts/attempts.py:17",
+        "notice": "scripts/attempts.py:234",
+        "build": "scripts/world_builder_service.py:1538",
+        "rules-retry": "scripts/world_builder_service.py:263",
+        "test-run": "scripts/world_builder_service.py:1607",
+        "run-log": "scripts/world_builder_service.py:478",
+        "readout": "scripts/run_readout.py:125",
+        "scene-replay": "scripts/render_scene_replay.py:398",
+        "share": "scripts/world_builder_service.py:598",
+        "budget": "scripts/world_builder_service.py:51",
+        "people-world": "scripts/people_world.py:225",
+        "communicate": "spikes/any-scenario-2026-10/compile_spec.py",
+        "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
+        "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
+        "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
+        "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
+        "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
+        "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
+        "agenda": "scripts/people_world.py:279",
+        "rollout": "spikes/any-scenario-2026-10/compile_spec.py:399",
+        "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
+        "person": "scripts/people_world.py:355",
+        "gen-rules": "scripts/people_world.py:260",
+        "waltzman-ref": "reference_worlds/waltzman/components.py:11",
+        "affordance": "src/world_substrate/engine.py:352",
+        "check": "src/world_substrate/rules.py:48",
+        "attempt": "src/world_substrate/attempt.py:149",
+        "attempt-reading": "src/world_substrate/attempt.py:81",
+        "unmatched-attempt": "src/world_substrate/attempt.py:25",
+        "observation": "src/world_substrate/engine.py:235",
+        "place-way": "scripts/generate_world_bundle.py:96"
+      }
     },
-    {
-     "name": "project check (tests, system model, docs)",
-     "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py",
-     "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
-     "exit_status": 0,
-     "counts": {
-      "tests_run": 710,
-      "failed": 0,
-      "skipped": 2
-     }
+    "diagrams": {
+      "status": "present",
+      "items": [
+        {
+          "path": "docs/model/ODD.md",
+          "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
+        },
+        {
+          "path": "docs/model/domain.graph.json",
+          "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
+        },
+        {
+          "path": "docs/model/open-questions.graph.json",
+          "question": "Which concepts carry the unsettled questions, and whose call is each?"
+        },
+        {
+          "path": "docs/model/metamodel.graph.json",
+          "question": "What kinds of things can any world's rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?"
+        }
+      ]
+    },
+    "plan": {
+      "status": "present",
+      "path": "docs/plans/run-loop-contention.goal.md",
+      "relies_on": [
+        "run-loop",
+        "contention",
+        "event",
+        "move",
+        "check",
+        "resident",
+        "readout"
+      ]
+    },
+    "review_page": {
+      "status": "present",
+      "path": "proposals/planning-package/review-page/index.html",
+      "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/planning-package/review-page/"
+    },
+    "cold_review": {
+      "status": "present",
+      "path": "docs/planning/cold-review.md",
+      "verdict": "pass"
     }
-   ]
-  },
-  "open_questions": {
-   "status": "present",
-   "path": "docs/planning/open-questions.json"
-  },
-  "system_model": {
-   "status": "present",
-   "path": "docs/model/ODD.md"
-  },
-  "domain_model": {
-   "status": "present",
-   "path": "docs/model/domain.graph.json",
-   "glossary": "docs/model/DOMAIN.md"
-  },
-  "diagrams": {
-   "status": "present",
-   "items": [
-    {
-     "path": "docs/model/ODD.md",
-     "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
-    },
-    {
-     "path": "docs/model/domain.graph.json",
-     "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
-    },
-    {
-     "path": "docs/model/open-questions.graph.json",
-     "question": "Which concepts carry the unsettled questions, and whose call is each?"
-    }
-   ]
-  },
-  "plan": {
-   "status": "present",
-   "path": "docs/plans/run-loop-contention.goal.md"
-  },
-  "review_page": {
-   "status": "present",
-   "path": "proposals/planning-package/review-page/index.html",
-   "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/planning-package/review-page/"
-  },
-  "cold_review": {
-   "status": "present",
-   "path": "docs/planning/cold-review.md",
-   "verdict": "pass"
   }
- }
 }

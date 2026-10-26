@@ -287,7 +287,9 @@ The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its 
 Since the goals `best-of-all-worlds`, `waltzman-belief-and-traces` and `waltzman-tasks-slice2`, the World Builder builds
 a world about people, not only a world about things. This section is what that path stores, changes and records.
 Which ideas are fixed substrate code and which are written per world by an AI is drawn in the domain model,
-[DOMAIN.md](DOMAIN.md).
+[DOMAIN.md](DOMAIN.md). The kinds of things any world's rules relate (entity, component, place, move kind, check, effect,
+process, affordance, attempt, observation) and how each maps onto the shared hypergraph kernel are in the metamodel,
+[METAMODEL.md](METAMODEL.md), built by `scripts/build_metamodel.py`.
 
 ### 11.1 Two kinds of rules in one people world
 

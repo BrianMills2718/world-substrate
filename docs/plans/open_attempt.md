@@ -37,6 +37,8 @@ conflict_surfaces:
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/world_builder_service.py, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/open-attempt.goal.md, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/open_attempt.verdicts.json, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/build_metamodel.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/planning/planning-package.json, access: write}
 ---
 # Plan: open attempts, knock-on effects that run to the end, and skill rolls
 
@@ -258,11 +260,30 @@ resident walk into the wall. The rules writer (`scripts/generate_causal_model.py
 ## System model
 
 - Model: [docs/model/ODD.md](../model/ODD.md); relied on: RULE-ATOMIC-COMMIT-OR-REFUSAL (a refused attempt changes nothing), RULE-PROJECTION-FROM-CANONICAL-ONLY (the page shows only recorded events). Adds: `attempt interpretation` (adds), `unmatched_attempts` (adds), `timing` (adds), `roll` (adds).
+- Scope: the system model is this repository's own (world-substrate only, linked from the documentation entry point
+  `docs/wiki/README.md`), not a shared model. The one shared artefact it touches is the
+  scientific-hypergraph kernel, which it reads at a pinned revision and never changes; the mapping
+  onto it lives here (`docs/model/metamodel-mapping.json`).
+- Types: [docs/model/METAMODEL.md](../model/METAMODEL.md) (built by `scripts/build_metamodel.py`) holds the
+  world's own types this plan relies on (action kind, role, check, effect, process, affordance, decider,
+  attempt, attempt reading, unmatched attempt, event, observation) and the two it plans (same-moment
+  knock-on, skill roll), each mapped onto the scientific-hypergraph kernel at `7b0638f`. Its reuse-gate
+  table records the formalisms checked before minting them (bounded-design typed-relational reference,
+  rule 1); AlgebraicPetri and TypeDB are open question Q24. S2 and S3 flip their type to built in that
+  table in the same pull request.
 - Not changed, and why: actors, places, information reach (`world_substrate.information`), tasks and
   the budget ledger keep their current model elements; this plan only changes how a move is chosen,
   how reactions run and how a mechanic resolves, so their definitions stand. RULE-BUDGET-FAILS-CLOSED,
   RULE-FROZEN-PROFILE and RULE-DERIVED-AUTHORITY are relied on unchanged.
-- Views: [docs/model/VIEW_COVERAGE.md](../model/VIEW_COVERAGE.md) records which view shows each element; each slice adds its rows there.
+- Views: [docs/model/VIEW_COVERAGE.md](../model/VIEW_COVERAGE.md) records which view shows each element; each slice adds its rows there. Per element:
+  - `attempt interpretation` (`AttemptReading`): `owner_run_log` shows it (`GET /runs?full=1` keeps the
+    transcript, `scripts/world_builder_service.py:1011`); `home` does not yet, gap G17; S1 closes G17
+    or records why not.
+  - `unmatched_attempts`: `owner_run_log` shows it in the run summary (`GET /runs` keeps `summary`,
+    written at `scripts/run_authored_world.py:800`); `home` does not yet, gap G17.
+  - `timing` and the reaction wave (S2): `round_replay` and `scenario_state_panel` must show each
+    reaction event with its parent; S2 adds the row.
+  - `roll` (S3): `scenario_state_panel` must show each roll's seed and dice; S3 adds the row.
 - The trace must show, per element: the command's `interpretation` record with the interpreter's trace id; the build record's `unmatched_attempts`; reaction events citing their parent; each roll's seed and dice.
 - S1 adds an `attempt interpretation` record
   (command field) and the `unmatched_attempts` build-record list; S2 adds the `timing` process field and

@@ -1,0 +1,373 @@
+{
+ "schema": "typed-graph/v1",
+ "kinds": {
+  "state": {
+   "label": "World state",
+   "color": "#3b6fb6",
+   "explain": "What exists: things, their kinds and their typed fields."
+  },
+  "rules": {
+   "label": "Rules",
+   "color": "#c26a1b",
+   "explain": "What can change and how: action kinds, checks, effects, processes."
+  },
+  "acting": {
+   "label": "Acting",
+   "color": "#6b7280",
+   "explain": "How a decider's choice becomes a recorded event."
+  },
+  "noticing": {
+   "label": "Noticing",
+   "color": "#2f8f9d",
+   "explain": "How an actor comes to know what happened."
+  }
+ },
+ "nodes": [
+  {
+   "id": "world",
+   "label": "World",
+   "kind": "state",
+   "explain": "The one canonical world of a run: entities, a tick, a revision and the events so far."
+  },
+  {
+   "id": "category",
+   "label": "Category (kind of thing)",
+   "kind": "state",
+   "explain": "What kind of thing an entity is (person, place, door, helicopter); rules select by category."
+  },
+  {
+   "id": "entity",
+   "label": "Entity (thing)",
+   "kind": "state",
+   "explain": "Any thing in the world, a person, a wall or a glass alike, with a stable id and typed components."
+  },
+  {
+   "id": "component",
+   "label": "Component (state field)",
+   "kind": "state",
+   "explain": "A typed field on an entity (location, water level, passable, role); the only thing effects change. A disposition (a wall cannot be walked through) is a component value plus the checks that read it."
+  },
+  {
+   "id": "place",
+   "label": "Place and way",
+   "kind": "state",
+   "explain": "Places are entities of category place; a way joins two places and has a passable field; moving needs a passable way."
+  },
+  {
+   "id": "action-kind",
+   "label": "Action kind (effector)",
+   "kind": "rules",
+   "explain": "Something an actor can try, with named participant roles, checks and effects, compiled before use."
+  },
+  {
+   "id": "role",
+   "label": "Participant role",
+   "kind": "rules",
+   "explain": "A named slot of an action kind (actor, to, way, aircraft) and the categories that may fill it."
+  },
+  {
+   "id": "sense",
+   "label": "Sense binding",
+   "kind": "rules",
+   "explain": "The meaning and participant roles Linguistic Core gives an action kind; never its effects."
+  },
+  {
+   "id": "check",
+   "label": "Check (precondition)",
+   "kind": "rules",
+   "explain": "A test a move or process must pass against current state (the way is passable, the trainee can fly); a failed check refuses the move with the check named."
+  },
+  {
+   "id": "effect",
+   "label": "Effect",
+   "kind": "rules",
+   "explain": "A change to one component path that runs when every check holds, inside the declared write scope."
+  },
+  {
+   "id": "write-scope",
+   "label": "Declared write scope",
+   "kind": "rules",
+   "explain": "The paths a rule may change; the Engine refuses any change outside them."
+  },
+  {
+   "id": "process",
+   "label": "Process (knock-on rule)",
+   "kind": "rules",
+   "explain": "A rule the world runs by itself each round for every matching entity whose checks hold; this is how effects propagate (plants dry out, lessons arrive)."
+  },
+  {
+   "id": "knock-on-now",
+   "label": "Same-moment knock-on",
+   "kind": "rules",
+   "dashed": true,
+   "explain": "A process with timing immediately, run to a fixpoint inside the same moment as the move that triggered it (planned slice S2 of docs/plans/open_attempt.md). Planned, not built."
+  },
+  {
+   "id": "skill-roll",
+   "label": "Skill roll",
+   "kind": "rules",
+   "dashed": true,
+   "explain": "A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3). Planned, not built."
+  },
+  {
+   "id": "terminal",
+   "label": "Terminal condition",
+   "kind": "rules",
+   "explain": "A state-derived stop: when its checks hold over the selected entities, the task ends one way."
+  },
+  {
+   "id": "profile",
+   "label": "Frozen mechanic profile",
+   "kind": "rules",
+   "explain": "The validated rules of one world frozen under an id before any run."
+  },
+  {
+   "id": "affordance",
+   "label": "Affordance (offered move)",
+   "kind": "acting",
+   "explain": "A move an actor can make now: an action kind with participants bound and its checks holding, as Engine.discover lists it."
+  },
+  {
+   "id": "decider",
+   "label": "Decider (policy)",
+   "kind": "acting",
+   "explain": "What chooses an actor's next move: scripted, an AI menu chooser or a Concordia resident."
+  },
+  {
+   "id": "attempt",
+   "label": "Attempt (free text)",
+   "kind": "acting",
+   "explain": "What a resident says it tries, in its own words; never executable."
+  },
+  {
+   "id": "attempt-reading",
+   "label": "Attempt reading",
+   "kind": "acting",
+   "explain": "The interpreter's typed reading of an attempt: an action kind and participants, with no outcome field, or no match."
+  },
+  {
+   "id": "unmatched",
+   "label": "Unmatched attempt",
+   "kind": "acting",
+   "explain": "An attempt no action kind covers; it changes nothing and is listed in the run's build record."
+  },
+  {
+   "id": "typed-action",
+   "label": "Typed action (command)",
+   "kind": "acting",
+   "explain": "The envelope submitted to the Engine: actor, action kind, bound participants, base revision."
+  },
+  {
+   "id": "event",
+   "label": "Event",
+   "kind": "acting",
+   "explain": "The record of one attempt or process step: status, every check and its result, the changes, the cause and an id like r14-e00012."
+  },
+  {
+   "id": "observation",
+   "label": "Observation (sensor)",
+   "kind": "noticing",
+   "explain": "What one actor can see of the world now, filtered by place and by information delivery."
+  },
+  {
+   "id": "information",
+   "label": "Information and delivery (channel)",
+   "kind": "noticing",
+   "explain": "An information entity and its delivery rows: who has been told what, by which channel, and when; a word said across the world reaches no one without a delivery."
+  }
+ ],
+ "edges": [
+  {
+   "id": "m1",
+   "source": "world",
+   "target": "entity",
+   "label": "holds"
+  },
+  {
+   "id": "m2",
+   "source": "entity",
+   "target": "category",
+   "label": "is a"
+  },
+  {
+   "id": "m3",
+   "source": "entity",
+   "target": "component",
+   "label": "has"
+  },
+  {
+   "id": "m4",
+   "source": "place",
+   "target": "entity",
+   "label": "is an"
+  },
+  {
+   "id": "m5",
+   "source": "action-kind",
+   "target": "role",
+   "label": "declares"
+  },
+  {
+   "id": "m6",
+   "source": "sense",
+   "target": "role",
+   "label": "names"
+  },
+  {
+   "id": "m7",
+   "source": "role",
+   "target": "category",
+   "label": "filled by"
+  },
+  {
+   "id": "m8",
+   "source": "action-kind",
+   "target": "check",
+   "label": "requires"
+  },
+  {
+   "id": "m9",
+   "source": "action-kind",
+   "target": "effect",
+   "label": "produces"
+  },
+  {
+   "id": "m10",
+   "source": "process",
+   "target": "check",
+   "label": "requires"
+  },
+  {
+   "id": "m11",
+   "source": "process",
+   "target": "effect",
+   "label": "produces"
+  },
+  {
+   "id": "m12",
+   "source": "effect",
+   "target": "component",
+   "label": "changes"
+  },
+  {
+   "id": "m13",
+   "source": "effect",
+   "target": "write-scope",
+   "label": "bounded by"
+  },
+  {
+   "id": "m14",
+   "source": "check",
+   "target": "component",
+   "label": "reads"
+  },
+  {
+   "id": "m15",
+   "source": "knock-on-now",
+   "target": "process",
+   "label": "is a timing of"
+  },
+  {
+   "id": "m16",
+   "source": "skill-roll",
+   "target": "effect",
+   "label": "varies"
+  },
+  {
+   "id": "m17",
+   "source": "terminal",
+   "target": "check",
+   "label": "requires"
+  },
+  {
+   "id": "m18",
+   "source": "profile",
+   "target": "action-kind",
+   "label": "freezes"
+  },
+  {
+   "id": "m19",
+   "source": "profile",
+   "target": "process",
+   "label": "freezes"
+  },
+  {
+   "id": "m20",
+   "source": "affordance",
+   "target": "action-kind",
+   "label": "offers"
+  },
+  {
+   "id": "m21",
+   "source": "decider",
+   "target": "affordance",
+   "label": "chooses from"
+  },
+  {
+   "id": "m22",
+   "source": "decider",
+   "target": "attempt",
+   "label": "says"
+  },
+  {
+   "id": "m23",
+   "source": "attempt",
+   "target": "attempt-reading",
+   "label": "read as"
+  },
+  {
+   "id": "m24",
+   "source": "attempt",
+   "target": "unmatched",
+   "label": "or"
+  },
+  {
+   "id": "m25",
+   "source": "attempt-reading",
+   "target": "typed-action",
+   "label": "becomes"
+  },
+  {
+   "id": "m26",
+   "source": "decider",
+   "target": "typed-action",
+   "label": "submits"
+  },
+  {
+   "id": "m27",
+   "source": "typed-action",
+   "target": "event",
+   "label": "recorded as"
+  },
+  {
+   "id": "m28",
+   "source": "process",
+   "target": "event",
+   "label": "recorded as"
+  },
+  {
+   "id": "m29",
+   "source": "event",
+   "target": "component",
+   "label": "changes"
+  },
+  {
+   "id": "m30",
+   "source": "observation",
+   "target": "entity",
+   "label": "shows"
+  },
+  {
+   "id": "m31",
+   "source": "observation",
+   "target": "information",
+   "label": "filtered by"
+  },
+  {
+   "id": "m32",
+   "source": "observation",
+   "target": "decider",
+   "label": "feeds"
+  }
+ ]
+}

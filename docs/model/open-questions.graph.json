@@ -91,6 +91,12 @@
    "explain": "Blocks: whether work goes into the offline pipeline at all."
   },
   {
+   "id": "Q24",
+   "label": "Q24: Petri nets or TypeDB as carrier",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether the metamodel keeps its own action-kind and attempt-reading types or adopts an outside carrier for them."
+  },
+  {
    "id": "agenda",
    "label": "Agenda count",
    "kind": "Concept",
@@ -187,6 +193,24 @@
    "label": "Scripted test run",
    "kind": "Concept",
    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way."
+  },
+  {
+   "id": "move",
+   "label": "Move (action)",
+   "kind": "Concept",
+   "explain": "Something a person may try; its rule has checks and effects, compiled before use."
+  },
+  {
+   "id": "process",
+   "label": "Process",
+   "kind": "Concept",
+   "explain": "A rule the world runs by itself each tick when its checks hold."
+  },
+  {
+   "id": "attempt-reading",
+   "label": "Attempt reading",
+   "kind": "Concept",
+   "explain": "The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said."
   }
  ],
  "edges": [
@@ -350,6 +374,24 @@
    "id": "Q17-build",
    "source": "Q17",
    "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q24-move",
+   "source": "Q24",
+   "target": "move",
+   "label": "bears on"
+  },
+  {
+   "id": "Q24-process",
+   "source": "Q24",
+   "target": "process",
+   "label": "bears on"
+  },
+  {
+   "id": "Q24-attempt-reading",
+   "source": "Q24",
+   "target": "attempt-reading",
    "label": "bears on"
   }
  ],
