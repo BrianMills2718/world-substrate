@@ -47,6 +47,7 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | ScenarioModel (`model.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | CheckReport (`checks.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | Attempt (`attempts.jsonl`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | n/a |
+| Attempt reading (`AttemptReading`) | missing (G17) | n/a | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | RuleChange (mid-run rule or ruling) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | shown (G16 fixed) |
 
 Notes on the rows:
@@ -64,7 +65,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G1. Authored-world runs keep no engine event records
 
-- **Model:** every attempt writes one Engine event (`src/world_substrate/engine.py:505`): bearer, binding, observation, checks, declared read/write paths, `changes`, `hash_before`/`hash_after`. Root `AGENTS.md` tells investigators to read "the retained causal trace".
+- **Model:** every attempt writes one Engine event (`src/world_substrate/engine.py:529`): bearer, binding, observation, checks, declared read/write paths, `changes`, `hash_before`/`hash_after`. Root `AGENTS.md` tells investigators to read "the retained causal trace".
 - **Code:** the authored-world run trace (`scripts/run_authored_world.py:405-446`) keeps `summary`, `transcript` and `final_snapshot`; `World.snapshot()` drops commands and events (`src/world_substrate/model.py:416`). The run log keeps the same (`scripts/world_builder_service.py:360-367`). The native-coordination path does keep them (`scripts/run_native_coordination.py:604`, `:1107`), so the two run paths differ.
 - **Effect:** no view, and no retained file, can say which state paths an action changed or show the world hash chain for a Builder run; the engine's `stale_revision` event behind a `nothing_left` row is lost.
 - **Reproduced: yes.** `run_authored_world.py` on `examples/world_authoring/repair-bay-v0.json` produced a trace with keys `actors, cost_usd, final_snapshot, mechanic_profile_id, model, schema_version, summary, transcript, world`, with no events. A local service run of the same world wrote run-log `/run` results with keys `final_snapshot, mover, summary, transcript`.
@@ -81,7 +82,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G3. /build approval screen hides installed processes
 
-- **Model:** processes are installed law: they run every round with their own checks and writes (`src/world_substrate/engine.py:762`); `CausalReview` lists them (`src/world_substrate/action_authoring.py:418`). Ongoing worlds always get 1-4 of them (`scripts/generate_causal_model.py:237`).
+- **Model:** processes are installed law: they run every round with their own checks and writes (`src/world_substrate/engine.py:829`); `CausalReview` lists them (`src/world_substrate/action_authoring.py:418`). Ongoing worlds always get 1-4 of them (`scripts/generate_causal_model.py:237`).
 - **View:** the mechanics section renders `causalReview.mechanics` and the terminal only (`scripts/world_builder_app.js:270-274`); `review.processes` is never read. The Approve button sits under that list (`:275`).
 - **Reproduced: yes.** Playwright on `evidence/renders/world-builder-v0.html` with a generated-mechanics response for the embedded Orchard world plus one process `regrow` ("Picked fruit grows back."): after generating, the Approve button appeared, the page text contained the mechanic but neither `regrow` nor "grows back". The home page does show processes (`world_builder_home.html:412`).
 
@@ -121,7 +122,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G8. Round replay carries no trace of process-made changes
 
-- **Model:** due processes commit `accepted` events each round via `Engine.advance` (`engine.py:762`); the transcript lists them as `world_changes`.
+- **Model:** due processes commit `accepted` events each round via `Engine.advance` (`engine.py:829`); the transcript lists them as `world_changes`.
 - **View:** the round replay builds frames from accepted actor actions (`scripts/render_scene_replay.py:237`) and never reads `world_changes` (0 matches). The home feed does print them ("By itself: ...", `world_builder_home.html:542`).
 - **Reproduced: partly.** A 4-round scripted run of the Orchard world with the `regrow` process committed one process event in round 1; the rendered replay HTML contains no mention of `regrow`. Whether the picture still shows the resulting state change (for example a fruit's stage) was not checked.
 
@@ -186,6 +187,12 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Reproduced: yes.** Waltzman run (10 attempts: 6 offered, 3 unlisted, 1 continue): in the browser the page text contained the belief "Country A currently supports activation" but not the unlisted intent ("Propose a time-boxed ..."), not the ruling reason ("No rule could be added ..."), not any expected effect or cited observation, and not the rules id `12d71aa7843fec08` (G7); the transcript data held exactly one `no_action` row, the `continue` attempt.
 
 - **Fixed 2026-10-22 (#209).** The panel adds "What each person tried this round": belief, what they saw, decision, the off-menu intent, what they did, what they expected, what they observed and the game master's ruling. A `continue` decision is its own status and is labelled "continue" in the picture, not "wait". Waltzman page, round 2: Country A "continue"; Country B's intent "Propose a time-boxed cross-country review ..." and ruling "No rule could be added ...". Tests: `test_g16_continue_is_not_shown_as_waiting`, `test_g16_each_attempt_is_shown_in_full_with_the_game_masters_ruling`.
+
+### G17. The run page does not show what a person tried in their own words or that an attempt matched nothing
+
+- **Model:** with open attempts each run row keeps `attempt {text, reading}` and the run summary lists `unmatched_attempts` (`scripts/run_authored_world.py`, ODD 11.3).
+- **View:** the run page's round text reads `row.belief` and `row.expects` (`scripts/world_builder_home.html:627-629`) and never `row.attempt` or `summary.unmatched_attempts`, so a visitor sees the move but not the words behind it, and an attempt that changed nothing shows only as waiting.
+- **Reproduced: from the page source and the S1 live run's rows.** The live run with residents (`evidence/open-attempt/s1-airfield/`, 2026-10-26) keeps `attempt {text, reading}` on every row and 15 refused or unmatched attempts, and the round text above reads neither the attempt words nor the unmatched list (`grep -n "row.attempt\|unmatched_attempts" scripts/world_builder_home.html` finds no hit). The owner run log keeps both (`transcript`, `summary`). Open question Q26; S1 is not done until it closes.
 
 ## Not verified
 

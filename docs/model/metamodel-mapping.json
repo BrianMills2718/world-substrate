@@ -1,0 +1,171 @@
+{
+ "record_type": "metamodel_mapping",
+ "schema_version": "1.0",
+ "metamodel": "docs/model/metamodel.graph.json",
+ "kernel": {
+  "repository": "BrianMills2718/scientific-hypergraph",
+  "revision": "7b0638fe0aef41c772bb181996516f98be479597",
+  "path": "wiki/reference/metamodel/hypergraph-kernel-v2.json"
+ },
+ "mappings": [
+  {
+   "node": "world",
+   "relation": "specializes",
+   "maps_to": "scientific-hypergraph-v2 document",
+   "why": "a world is one model document of elements and relation instances, plus a clock the kernel lacks"
+  },
+  {
+   "node": "category",
+   "relation": "same",
+   "maps_to": "sci:instanceOf type",
+   "why": "an entity's category is the type it is an instance of"
+  },
+  {
+   "node": "entity",
+   "relation": "specializes",
+   "maps_to": "sci:ModelElement",
+   "why": "every entity is a model element; World Substrate adds components"
+  },
+  {
+   "node": "component",
+   "relation": "composes",
+   "maps_to": "sci:RelationInstance (holder, value)",
+   "why": "a component value is a binary relation instance between an entity and a value"
+  },
+  {
+   "node": "place",
+   "relation": "specializes",
+   "maps_to": "sci:ModelElement",
+   "why": "a place is a model element like any entity; location components point at it"
+  },
+  {
+   "node": "way",
+   "relation": "specializes",
+   "maps_to": "sci:ModelElement",
+   "why": "a way is an entity, so a model element like a place; its two place references compose relation instances (way, from place) and (way, to place), and passable is a component on it"
+  },
+  {
+   "node": "action-kind",
+   "relation": "specializes",
+   "maps_to": "sci:RelationType",
+   "why": "an action kind is an n-ary relation type whose roles are its participants; the kernel has no effects"
+  },
+  {
+   "node": "rule-interface",
+   "relation": "no_counterpart",
+   "why": "an executable interface; the kernel holds no code"
+  },
+  {
+   "node": "registry",
+   "relation": "no_counterpart",
+   "why": "a runtime table of executable rules, outside the kernel"
+  },
+  {
+   "node": "causal-parent",
+   "relation": "specializes",
+   "maps_to": "sci:RelationInstance (event, parent event)",
+   "why": "a directed relation instance between two applied events"
+  },
+  {
+   "node": "role",
+   "relation": "same",
+   "maps_to": "sci:RoleType",
+   "why": "a participant role is a declared role of the relation type, with a participant-type constraint"
+  },
+  {
+   "node": "sense",
+   "relation": "composes",
+   "maps_to": "sci:declaresRole",
+   "why": "a sense supplies the role declarations the relation type carries"
+  },
+  {
+   "node": "check",
+   "relation": "no_counterpart",
+   "why": "the kernel stores relations, not evaluable conditions"
+  },
+  {
+   "node": "effect",
+   "relation": "no_counterpart",
+   "why": "the kernel stores relations, not changes to state, so it has no evaluable effects"
+  },
+  {
+   "node": "write-scope",
+   "relation": "no_counterpart",
+   "why": "authority derived from the declaration; the kernel has no authority model"
+  },
+  {
+   "node": "process",
+   "relation": "no_counterpart",
+   "why": "an actorless effectful rule; the kernel has none"
+  },
+  {
+   "node": "knock-on-now",
+   "relation": "no_counterpart",
+   "why": "a timing rule over effectful processes; the kernel has none"
+  },
+  {
+   "node": "skill-roll",
+   "relation": "no_counterpart",
+   "why": "a stochastic effect; the kernel has none"
+  },
+  {
+   "node": "terminal",
+   "relation": "no_counterpart",
+   "why": "an evaluable condition; the kernel has none"
+  },
+  {
+   "node": "profile",
+   "relation": "no_counterpart",
+   "why": "a versioned package of executable rules, outside the kernel"
+  },
+  {
+   "node": "affordance",
+   "relation": "no_counterpart",
+   "why": "a query result derived from rules and state, not a stored relation"
+  },
+  {
+   "node": "decider",
+   "relation": "no_counterpart",
+   "why": "cognition outside the world; the kernel does not model agents"
+  },
+  {
+   "node": "attempt",
+   "relation": "no_counterpart",
+   "why": "natural language outside the world"
+  },
+  {
+   "node": "attempt-reading",
+   "relation": "specializes",
+   "maps_to": "sci:RelationInstance (proposed)",
+   "why": "a proposed instance of an action-kind relation type, not yet applied"
+  },
+  {
+   "node": "unmatched",
+   "relation": "no_counterpart",
+   "why": "a recorded refusal with no relation type to instantiate"
+  },
+  {
+   "node": "typed-action",
+   "relation": "specializes",
+   "maps_to": "sci:RelationInstance with sci:RoleBinding",
+   "why": "a typed action is a relation instance whose role bindings are its participants"
+  },
+  {
+   "node": "event",
+   "relation": "specializes",
+   "maps_to": "sci:RelationInstance",
+   "why": "an event is an applied relation instance plus check results, changes and causal parents"
+  },
+  {
+   "node": "observation",
+   "relation": "no_counterpart",
+   "why": "a per-actor view derived from state, not a stored relation"
+  },
+  {
+   "node": "information",
+   "relation": "specializes",
+   "maps_to": "sci:RelationInstance (information, recipient)",
+   "why": "a delivery is a relation instance between a piece of information and a recipient"
+  }
+ ]
+}

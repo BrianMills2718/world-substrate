@@ -79,11 +79,13 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}
 <header>
   <h1>World Substrate: planning package</h1>
   <p class="lede" id="lede"></p>
+  <p class="lede">This is the repository-wide package. The plan it points at has its own package and page: <a href="../../open-attempt/review-page/">People try anything; the world decides</a>. Both share one set of checks, questions and models (Q41).</p>
 </header>
 <nav role="tablist">
   <button role="tab" aria-selected="true" data-view="status">Where it stands</button>
   <button role="tab" aria-selected="false" data-view="questions">Open questions</button>
   <button role="tab" aria-selected="false" data-view="domain">Domain model</button>
+  <button role="tab" aria-selected="false" data-view="metamodel">Rules metamodel</button>
   <button role="tab" aria-selected="false" data-view="context">System context</button>
   <button role="tab" aria-selected="false" data-view="plan">Next plan</button>
 </nav>
@@ -123,6 +125,15 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}
     <ol class="disagree" id="disagree"></ol>
   </section>
 
+  <section class="view" id="view-metamodel">
+    <p class="intro">The kinds of things any world's rules can relate, whichever world it is: entities and their fields, places and ways, moves with their checks and effects, processes, attempts and what each person notices. Colour is the layer; dashed boxes are planned, not built. Click a type for its definition, where it is in the code, and how it maps onto the scientific-hypergraph kernel. Glossary: <code>docs/model/METAMODEL.md</code>.</p>
+    <div class="chips" id="mchips"></div>
+    <div class="layout">
+      <div class="graph" id="graph-metamodel"></div>
+      <aside id="detail-metamodel" aria-live="polite"><p class="hint">Pick a type to see its definition and its kernel counterpart.</p></aside>
+    </div>
+  </section>
+
   <section class="view" id="view-context">
     <p class="intro">What is inside World Substrate and what it talks to: the context and container views from
     <code>docs/model/ODD.md</code> (section 3). Section 11 of the same file describes the live people-world path.</p>
@@ -130,7 +141,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}
   </section>
 
   <section class="view" id="view-plan">
-    <p class="intro">The next goal the open questions call for: no round runs or bills twice, and a run's record says why each move was refused (Q6, Q10, Q2). Written, not started: it waits on your answer to Q13, and is the default if you don't answer.</p>
+    <p class="intro">The plan this package names (<code>docs/plans/open_attempt.md</code>, adopted): people say in their own words what they try (S1, built, not yet done), knock-on effects run to the end in one moment (S2), and recorded skill sets risky outcomes (S3). Its "Fixes settled by argument" table lists the small fixes the open questions already answer.</p>
     <div class="plan" id="plan"></div>
   </section>
 </main>
@@ -146,7 +157,7 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt
 const Q = Object.fromEntries(D.questions.map(q => [q.id, q]));
 const PART_LABEL = {checks:"Checks, with counts", open_questions:"Open questions", system_model:"System model",
   domain_model:"Domain model", diagrams:"Diagrams", plan:"Next plan", review_page:"Review page", cold_review:"Cold review"};
-const PART_TAB = {open_questions:"questions", domain_model:"domain", system_model:"context", diagrams:"questions", plan:"plan"};
+const PART_TAB = {open_questions:"questions", domain_model:"domain", system_model:"metamodel", diagrams:"questions", plan:"plan"};
 
 const nOpen = D.questions.filter(q => q.status === "open").length;
 const brian = D.questions.filter(q => q.status === "open" && q.owner === "brian");
@@ -191,6 +202,7 @@ function show(view) {
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + view));
   if (view === "questions" && !viewers.questions) mountQuestions();
   if (view === "domain" && !viewers.domain) mountDomain();
+  if (view === "metamodel" && !viewers.metamodel) mountMetamodel();
   if (view === "context") drawDiagrams();
   history.replaceState(null, "", "#" + view);
 }
@@ -271,6 +283,25 @@ function mountDomain() {
   }});
   legend(document.getElementById("dchips"), g, ids => viewers.domain.highlight(ids));
 }
+function mountMetamodel() {
+  const g = D.metamodel, maps = Object.fromEntries(D.metamodel_mapping.mappings.map(m => [m.node, m]));
+  const byId = Object.fromEntries(g.nodes.map(n => [n.id, n]));
+  const frame = document.getElementById("graph-metamodel");
+  viewers.metamodel = GraphViewer.mount(frame, {graph: g,
+    onLayout: ({width, height}) => { frame.style.height = Math.max(420, Math.min(1400, frame.clientWidth * height / width)) + "px"; viewers.metamodel && viewers.metamodel.fit(); },
+    onSelect: p => {
+    const el = document.getElementById("detail-metamodel");
+    if (!p || p.type !== "node") return;
+    const n = byId[p.id], kind = g.kinds[n.kind] || {label: n.kind}, m = maps[n.id];
+    const links = g.edges.filter(e => e.source === n.id || e.target === n.id)
+      .map(e => e.source === n.id ? `${esc(e.label)} → ${esc(byId[e.target].label)}` : `${esc(byId[e.source].label)} → ${esc(e.label)} → this`);
+    const kernel = !m ? "not mapped" : m.relation === "no_counterpart" ? `no counterpart: ${esc(m.why)}` : `${esc(m.relation)} <code>${esc(m.maps_to)}</code>: ${esc(m.why)}`;
+    el.innerHTML = `<h2>${esc(n.label)}</h2><p class="hint">${esc(kind.label)}${n.dashed ? ", planned" : ""}</p><p>${esc(n.explain)}</p><dl>`
+      + `<dt>Kernel (scientific-hypergraph ${esc(D.metamodel_mapping.kernel.revision.slice(0, 7))})</dt><dd>${kernel}</dd>`
+      + `<dt>Links</dt><dd>${links.join("<br>")}</dd></dl>`;
+  }});
+  legend(document.getElementById("mchips"), g, ids => viewers.metamodel.highlight(ids));
+}
 const inline = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
 document.getElementById("disagree").innerHTML = D.disagreements.map(d => `<li>${inline(d)}</li>`).join("");
 
@@ -290,7 +321,7 @@ document.getElementById("foot").innerHTML = `Generated by <code>tools/planning/b
   Graphs: the shared Representation Router graph viewer.`;
 
 const start = (location.hash || "").slice(1);
-if (["questions", "domain", "context", "plan"].includes(start)) show(start);
+if (["questions", "domain", "metamodel", "context", "plan"].includes(start)) show(start);
 </script>
 </body>
 </html>

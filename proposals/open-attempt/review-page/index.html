@@ -56,6 +56,15 @@ th{font-size:13px;color:var(--muted)}
 .tablewrap{overflow-x:auto}
 .decision{border:2px solid var(--miss);border-radius:8px;padding:10px 14px;background:var(--miss-bg);max-width:820px}
 .decision b{color:var(--miss)}
+.types .grp{font-size:13px;color:var(--fg);background:var(--grey-bg);text-transform:none}
+.types .tag{font-size:11px;font-weight:600;margin-left:4px}.types .tag.have{color:var(--have)}.types .tag.miss{color:var(--miss)}
+h3.sub{font-size:15px;margin:18px 0 6px}
+ul.plain{margin:0 0 10px;padding-left:20px}ul.plain li{margin:4px 0}
+.qs td{overflow-wrap:anywhere}.pkg .tag{white-space:nowrap;font-size:12px;font-weight:600;padding:1px 6px;border-radius:4px}.pkg .tag.have{color:var(--have);background:var(--have-bg)}.pkg .tag.miss{color:var(--miss);background:var(--miss-bg);border:1px dashed var(--miss)}
+#map-domain{height:900px}#map-questions{height:640px}
+.graph{--gv-bg:var(--card);--gv-ink:var(--fg);--gv-node-bg:var(--card);--gv-line:var(--line);--gv-edge:var(--grey);--gv-ext:var(--grey);--gv-edge-text:var(--muted);--gv-focus:var(--have);--gv-dots:var(--line);
+min-height:420px;border:1px solid var(--line);border-radius:8px;background:var(--card);overflow:hidden;margin:0 0 6px}
+.mapinfo{font-size:14px;margin:0 0 14px;max-width:820px}
 footer{margin-top:26px;font-size:13px;color:var(--muted)}
 a{color:var(--have)}
 </style>
@@ -63,10 +72,11 @@ a{color:var(--have)}
 <body>
 <main>
 <h1>People try anything; the world decides</h1>
-<p class="lede">Design for three missing pieces of World Substrate. Today a person in a World Builder world picks from a list of moves the rules already allow, so nobody ever walks into a wall. With this design they say what they try in their own words, the world's rules decide what happens, knock-on effects run to the end on their own, and a person's recorded skill decides how a risky attempt turns out. Pick an example to see what the run's record would show.</p>
+<p class="lede">Design for three missing pieces of World Substrate. The first is built: since slice 1 (merged 2026-10-25) a person in a World Builder world says what they try in their own words instead of picking from a list, and only the world's rules decide what happens, so walking into a wall is refused with the wall named. Still to come: knock-on effects that run to the end on their own (slice 2), and a person's recorded skill deciding how a risky attempt turns out (slice 3). The first live airfield run with AI residents (2026-10-26) showed residents moving every round and the wall refused by name, but no resident reached the helicopter, so the skill and knock-on cases were not yet exercised live; slice 1 is built, not done. Pick an example to see what the run's record shows, or will show.</p>
+<p class="lede">This page is the plan's own package. The repository-wide package, with every open question and the system context, is on <a href="../../planning-package/review-page/">World Substrate: planning package</a>; both share one set of checks, questions and models (Q41).</p>
 <div class="legend">
-<span class="chip"><span class="sw have"></span>Blue, solid: already in World Substrate</span>
-<span class="chip"><span class="sw miss"></span>Orange, dashed: added by this design</span>
+<span class="chip"><span class="sw have"></span>Blue, solid: in World Substrate now (S1 added attempts and interpreting)</span>
+<span class="chip"><span class="sw miss"></span>Orange, dashed: added by a later slice (S2 knock-ons, S3 rolls)</span>
 <span class="chip"><span class="sw grey"></span>Grey: what the person meant (kept, never read by rules)</span>
 </div>
 <div class="examples" role="group" aria-label="Examples">
@@ -80,10 +90,10 @@ a{color:var(--have)}
 <div class="stage have" data-s="decide"><span class="t">1. Decide</span><span class="tag">have</span>
 <div class="d">The person's AI model writes what they believe, what they expect and why. These stay in their memory and the record.</div></div>
 <div class="arrow">↓</div>
-<div class="stage miss" data-s="attempt"><span class="t">2. Say the attempt</span><span class="tag">new, piece 1</span>
+<div class="stage have" data-s="attempt"><span class="t">2. Say the attempt</span><span class="tag">built in S1</span>
 <div class="d">One sentence of what they physically do. The list of known moves is shown as a hint, not a limit.</div></div>
 <div class="arrow">↓</div>
-<div class="stage miss" data-s="interpret"><span class="t">3. Interpret</span><span class="tag">new, piece 1</span>
+<div class="stage have" data-s="interpret"><span class="t">3. Interpret</span><span class="tag">built in S1</span>
 <div class="d">A small AI call names which kind of move it is and who or what each part refers to, quoting the words it used. It cannot say whether the move works.</div></div>
 <div class="arrow">↓</div>
 <div class="stage have" data-s="check"><span class="t">4. Check</span><span class="tag">have</span>
@@ -106,10 +116,10 @@ a{color:var(--have)}
 
 <h2>Built in three slices, each one a working World Builder</h2>
 <div class="tablewrap"><table>
-<tr><th>Slice</th><th>What lands</th><th>Shown by</th></tr>
-<tr><td>1</td><td>The rules writer makes places, ways between them and walls; then people say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
-<tr><td>2</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
-<tr><td>3</td><td>Skill rolls, seeded and recorded, read only from recorded skill</td><td>The helicopter example, and the same words giving different dice at skill 0 and 3</td></tr>
+<tr><th>Slice</th><th>State</th><th>What lands</th><th>Shown by</th></tr>
+<tr><td>1</td><td><b style="color:var(--have)">Built</b>, merged (pull requests 239, 242 and 247); <b style="color:var(--miss)">not done</b>: the live airfield run (2026-10-26) moved every resident each round, but the helicopter was unreachable (issue 244), so two acceptance checks wait on a scripted run on the saved airfield world, and the run page does not yet show each own-words attempt (Q26)</td><td>The rules writer makes places, ways between them and walls; then people say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
+<tr><td>2</td><td><b style="color:var(--miss)">Planned</b>, <b>waits on your answer to the second choice below (Q27)</b></td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
+<tr><td>3</td><td><b style="color:var(--miss)">Planned</b></td><td>Skill rolls, seeded and recorded, read only from recorded skill</td><td>The helicopter example, and the same words giving different dice at skill 0 and 3</td></tr>
 </table></div>
 
 <h2>What could go wrong, and what catches it</h2>
@@ -122,8 +132,95 @@ a{color:var(--have)}
 <tr><td>Replays of saved worlds change</td><td>Interpretations and dice are stored, so a replay never calls the AI or rolls again; all existing replay tests must pass</td></tr>
 </table></div>
 
-<h2>One choice for you</h2>
-<div class="decision"><b>Decision:</b> when someone tries something no rule covers, should an AI game master be allowed to invent a rough effect, marked "coarse" in the record? <b>Recommendation: not yet.</b> For now the person is told "nothing comes of it" and the attempt is listed so the next build's rules writer can add a real rule. That keeps every effect coming from a written rule. If you don't answer, it stays that way and slices 1 to 3 go ahead.</div>
+<!-- types:start -->
+<h2>The types the world is built from</h2>
+<p class="lede">Every thing, move, rule and notice the steps above use is one of these types. Blue "built" means World Substrate has it today; orange "planned" means a later slice of this plan adds it. The last column says how each one maps onto the shared scientific-hypergraph kernel (revision <code>7b0638f</code>), so the types are not a framework made up here. Before minting them, these formalisms were checked: PDDL and PDDL+ (closest: a move kind is a PDDL action, and PDDL+ has processes and events), Event Calculus (source of the knock-on design), onto-canon6, and the repository's own projection onto Linguistic Core's relation-schema.v1. The continuous-equation formats (SBML, CellML, Modelica and others) were not checked further: they hold continuous equations, and these rules are discrete checks and effects. Petri nets and TypeDB were weighed and composed rather than adopted (Q24, resolved): Petri-net transition semantics are reused for linked process participants, but neither carries per-observer noticing or named refusals. Full table: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/METAMODEL.md">METAMODEL.md</a>.</p>
+<div class="tablewrap"><table class="types"><thead><tr><th>Type</th><th>What it is</th><th>On the shared kernel</th></tr></thead><tbody>
+<tr><th colspan="3" class="grp">What the world holds</th></tr>
+<tr><td><b>World</b> <span class="tag have">built</span></td><td>The one canonical world of a run: entities, a tick, a revision and the events so far.</td><td>specializes scientific-hypergraph-v2 document</td></tr>
+<tr><td><b>Category (kind of thing)</b> <span class="tag have">built</span></td><td>What kind of thing an entity is (person, place, door, helicopter); rules select by category.</td><td>same sci:instanceOf type</td></tr>
+<tr><td><b>Entity (thing)</b> <span class="tag have">built</span></td><td>Any thing in the world, a person, a wall or a glass alike, with a stable id and typed components.</td><td>specializes sci:ModelElement</td></tr>
+<tr><td><b>Component (state field)</b> <span class="tag have">built</span></td><td>A typed field on an entity (location, water level, passable, role); the only thing effects change. A disposition (a wall cannot be walked through) is a component value plus the checks that read it. Held in Entity.components; each component type is registered by register_component (model.py:188).</td><td>composes sci:RelationInstance (holder, value)</td></tr>
+<tr><td><b>Place</b> <span class="tag have">built</span></td><td>An entity of category place; every other entity&#x27;s location names the place it is in.</td><td>specializes sci:ModelElement</td></tr>
+<tr><td><b>Way between places</b> <span class="tag have">built</span></td><td>What lies between two places (a door, a brick wall): an entity naming both places with a passable field; moving names its way and needs it passable. Until fix F6 lands (Q25, settled by argument), a way works from its first place to its second only.</td><td>specializes sci:ModelElement</td></tr>
+<tr><th colspan="3" class="grp">How someone acts</th></tr>
+<tr><td><b>Hard causal parent</b> <span class="tag have">built</span></td><td>An earlier event a rule declares as mechanically supporting this one (opt-in, DeclaresCausalParents); kept apart from information a person merely had in mind. S2&#x27;s reactions cite their trigger this way.</td><td>specializes sci:RelationInstance (event, parent event)</td></tr>
+<tr><td><b>Affordance (offered move)</b> <span class="tag have">built</span></td><td>A move an actor can make now: an action kind with participants bound and its checks holding, as Engine.discover lists it.</td><td>no_counterpart</td></tr>
+<tr><td><b>Decider (policy)</b> <span class="tag have">built</span></td><td>What chooses an actor&#x27;s next move: scripted, an AI menu chooser or a Concordia resident.</td><td>no_counterpart</td></tr>
+<tr><td><b>Attempt (free text)</b> <span class="tag have">built</span></td><td>What a resident says it tries, in its own words; never executable.</td><td>no_counterpart</td></tr>
+<tr><td><b>Attempt reading</b> <span class="tag have">built</span></td><td>The interpreter&#x27;s typed reading of an attempt: an action kind and participants, with no outcome field, a wait, or no match.</td><td>specializes sci:RelationInstance (proposed)</td></tr>
+<tr><td><b>Unmatched attempt</b> <span class="tag have">built</span></td><td>An attempt no action kind covers; it changes nothing and is listed in the run&#x27;s build record.</td><td>no_counterpart</td></tr>
+<tr><td><b>Typed action (command)</b> <span class="tag have">built</span></td><td>The envelope submitted to the Engine: actor, action kind, bound participants, base revision.</td><td>specializes sci:RelationInstance with sci:RoleBinding</td></tr>
+<tr><td><b>Event</b> <span class="tag have">built</span></td><td>The record of one attempt or process step: status, every check and its result, the changes, the cause and an id like r14-e00012.</td><td>specializes sci:RelationInstance</td></tr>
+<tr><th colspan="3" class="grp">What the rules do</th></tr>
+<tr><td><b>Action kind (effector)</b> <span class="tag have">built</span></td><td>Something an actor can try, with named participant roles, checks and effects, compiled before use (a generated DeclaredActionMechanic) or hand-written (FillRule and the other mechanisms); either way the Engine runs it through the action-rule interface.</td><td>specializes sci:RelationType</td></tr>
+<tr><td><b>Action and process rule interface</b> <span class="tag have">built</span></td><td>What the Engine actually runs: an action rule discovers, checks and applies one action kind; a process rule says when it is due and applies; both declare read and write paths. Generated mechanics and the hand-written mechanisms library (FillRule, VesselFailureSpillProcess) both implement it.</td><td>no_counterpart</td></tr>
+<tr><td><b>Rule registry</b> <span class="tag have">built</span></td><td>The sole lookup surface for the action and process rules installed in one world, in a fixed order.</td><td>no_counterpart</td></tr>
+<tr><td><b>Participant role</b> <span class="tag have">built</span></td><td>A named slot of an action kind (actor, to, way, aircraft) and the categories that may fill it.</td><td>same sci:RoleType</td></tr>
+<tr><td><b>Sense binding</b> <span class="tag have">built</span></td><td>The meaning and participant roles Linguistic Core gives an action kind; never its effects.</td><td>composes sci:declaresRole</td></tr>
+<tr><td><b>Check (precondition)</b> <span class="tag have">built</span></td><td>A test a move or process must pass against current state (the way is passable, the trainee can fly); a failed check refuses the move with the check named.</td><td>no_counterpart</td></tr>
+<tr><td><b>Effect</b> <span class="tag have">built</span></td><td>A change to one component path that runs when every check holds, inside the declared write scope.</td><td>no_counterpart</td></tr>
+<tr><td><b>Declared write scope</b> <span class="tag have">built</span></td><td>The paths a rule may change; the Engine refuses any change outside them.</td><td>no_counterpart</td></tr>
+<tr><td><b>Process (knock-on rule)</b> <span class="tag have">built</span></td><td>A rule the world runs by itself each round for every matching entity whose checks hold; this is how effects propagate (plants dry out, lessons arrive).</td><td>no_counterpart</td></tr>
+<tr><td><b>Same-moment knock-on</b> <span class="tag miss">planned</span></td><td>A process with timing immediately, run to a fixpoint inside the same moment as the move that triggered it (planned slice S2 of docs/plans/open_attempt.md). Planned, not built.</td><td>no_counterpart</td></tr>
+<tr><td><b>Skill roll</b> <span class="tag miss">planned</span></td><td>A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3). Planned, not built.</td><td>no_counterpart</td></tr>
+<tr><td><b>Terminal condition</b> <span class="tag have">built</span></td><td>A state-derived stop: when its checks hold over the selected entities, the task ends one way.</td><td>no_counterpart</td></tr>
+<tr><td><b>Frozen mechanic profile</b> <span class="tag have">built</span></td><td>The validated rules of one world frozen under an id before any run.</td><td>no_counterpart</td></tr>
+<tr><th colspan="3" class="grp">Who learns of it</th></tr>
+<tr><td><b>Observation (sensor)</b> <span class="tag have">built</span></td><td>What one actor can see of the world now, filtered by place and by information delivery.</td><td>no_counterpart</td></tr>
+<tr><td><b>Information and delivery (channel)</b> <span class="tag have">built</span></td><td>An information entity and its delivery rows: who has been told what, by which channel, and when; a word said across the world reaches no one without a delivery.</td><td>specializes sci:RelationInstance (information, recipient)</td></tr>
+</tbody></table></div>
+<!-- types:end -->
+<!-- package:start -->
+<h2>The planning package behind this page</h2>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch model/operational-ontology at subject revision f645471); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
+<tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>repository format</td><td>compliant 0, of 1 (tracked as Q15)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>trace reads</td><td>runs 11, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project check (tests, system model, docs)</td><td>tests run 718, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 134, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
+</tbody></table></div>
+<h3 class="sub">Open questions: 19 open, 22 resolved</h3>
+<p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
+<div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
+<tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
+<tr><td><b>Q3</b> Agenda item has no content</td><td>agent</td><td>whether the group-decision family&#x27;s agenda needs content or should be dropped</td></tr>
+<tr><td><b>Q12</b> When a people-world run ends</td><td>Brian</td><td>how long visitors watch a run, and its cost</td></tr>
+<tr><td><b>Q14</b> Harness build time not measured</td><td>agent</td><td>when the harness replaces the fixed build calls and the rules retry (Q1) on the live path</td></tr>
+<tr><td><b>Q15</b> Repository format files not yet added</td><td>agent</td><td>whether the repo-format check passes</td></tr>
+<tr><td><b>Q16</b> Goals skip the package gate</td><td>Brian</td><td>whether the next goal can again run without a current system model and question list</td></tr>
+<tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
+<tr><td><b>Q22</b> Effects no rule covers</td><td>Brian</td><td>slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin</td></tr>
+<tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
+<tr><td><b>Q27</b> Is S2&#x27;s fixpoint engine capability</td><td>Brian</td><td>slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it</td></tr>
+<tr><td><b>Q28</b> Reuse the spill and damage rules</td><td>agent</td><td>how S2&#x27;s glass chain is built, and whether generated and reference worlds share physics</td></tr>
+<tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
+<tr><td><b>Q31</b> Refusal reason reads as a fact</td><td>agent</td><td>whether a person, and a reader of the run, can tell why a move was refused</td></tr>
+<tr><td><b>Q32</b> Readout picks the wrong lens</td><td>agent</td><td>whether a run&#x27;s readout describes the world the visitor wrote</td></tr>
+<tr><td><b>Q33</b> Seeded roll versus no randomness</td><td>agent</td><td>S3&#x27;s design, A7 and the full canonical run (A9)</td></tr>
+<tr><td><b>Q34</b> Read scopes recorded, not enforced</td><td>agent</td><td>whether causal links built from declared reads are complete: F1&#x27;s blocked_by_event names the event that changed what a refused move&#x27;s failed checks read, and Piece 2&#x27;s reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause</td></tr>
+<tr><td><b>Q36</b> How a misreading is caught</td><td>agent</td><td>R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings</td></tr>
+<tr><td><b>Q37</b> Added doorway listed as left out</td><td>agent</td><td>A3 on any newly built airfield world, and whether a visitor can see what the builder added</td></tr>
+<tr><td><b>Q38</b> Does S1 close #128</td><td>agent</td><td>whether #128 stays open on the board</td></tr>
+</tbody></table></div>
+<h3 class="sub">Diagrams</h3>
+<ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
+<p>Cold review of this package: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/cold-review.md">cold-review.md</a>.</p>
+<!-- package:end -->
+<!-- maps:start -->
+<h2>The maps behind the plan</h2>
+<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 62 ideas, 91 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
+<div class="graph" id="map-domain"></div>
+<p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (19 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<div class="graph" id="map-questions"></div>
+<p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
+<!-- maps:end -->
+<h2>Two choices for you</h2>
+<div class="decision"><b>Decision 1 (D2, Q22):</b> when someone tries something no rule covers, should an AI game master be allowed to invent a rough effect, marked "coarse" in the record? <b>Recommendation: not yet.</b> For now the person is told "nothing comes of it" and the attempt is listed so the next build's rules writer can add a real rule. That keeps every effect coming from a written rule. If you don't answer, it stays that way and slice 3 goes ahead.</div>
+<div class="decision"><b>Decision 2 (Q27):</b> slice 2 runs knock-on effects to the end inside one moment (the shelf tips, the glass falls and breaks, all in the same moment). Does that count as the new "engine capability" the project rules forbid? <b>Recommendation: allow it.</b> It runs inside the engine's existing all-or-nothing commit with no new clock, loop or scheduler, is capped at 32 reactions (the whole moment is refused past that), and only rules that ask to happen "immediately" use it. Running it on simulator rounds instead would make the glass fall in one round and break in the next. If you don't answer, slice 2 waits, slices 1 and 3 go ahead, and knock-on effects keep running once per round as today.</div>
 
 <footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/open_attempt.md">docs/plans/open_attempt.md</a> · Framework survey: <a href="../../flexible-simulator/review-page/">the loop page</a> and <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/research/flexible-simulator-prior-art-2026-10.md">survey document</a> · Methods copied: Inform 7 "try", C+ and Event Calculus knock-on effects, Blades in the Dark action rolls with GURPS defaults.</footer>
 </main>
@@ -131,14 +228,14 @@ a{color:var(--have)}
 const EX={
 wall:{title:"Sam walks into the wall",setup:"Airfield office. A brick wall stands between the office and the hangar. Sam is in the office.",stages:["decide","attempt","interpret","check"],ev:[
 ["grey","meant","Sam believes the hangar is just behind this wall and expects to get there quickly.","belief, expected_effect (memory and record only)"],
-["miss","attempt","\"I walk east through the wall into the hangar.\"","attempt"],
-["miss","interpret","Move, from the office to the hangar. Words used: \"walk\", \"into the hangar\".","{kind: move, roles: {mover: sam, to: hangar}, quoted_span: …}"],
-["have","check","Refused: the way from the office to the hangar is blocked by the brick wall. Nothing changes.","status: refused · failed check names the wall"],
+["have","attempt","\"I walk east through the wall into the hangar.\"","attempt"],
+["have","interpret","Move, to the hangar, through the brick wall. Words used: \"walk\", \"through the wall\", \"into the hangar\".","{kind: move, roles: {to: hangar, way: brick-wall}, quoted_span: …}"],
+["have","check","Refused: the check \"the way is passable\" fails on the brick wall. Nothing changes.","status: refused · failed check: the way is passable (brick-wall)"],
 ["have","notice","Sam is told the move was refused and why.","observation to sam"]],
-out:"Nothing is blocked before it happens: Sam really tried, and the wall is why it failed. Today Sam would never have been offered the wall at all. This needs the rules writer to make places and a wall check; today's generated worlds have none, so that comes first in slice 1."},
+out:"Nothing is blocked before it happens: Sam really tried, and the wall is why it failed. Before slice 1, Sam was never offered the wall at all. Slice 1 taught the rules writer to make places, ways and a wall check; a regenerated airfield world refuses this walk with \"the way is passable\" failed. One known limit: a way works in one direction only, so Sam could not walk back through a door (open question Q25)."},
 glass:{title:"Ana knocks the glass off the desk",setup:"A glass of water sits on the desk in the office. Lee is in the hangar next door.",stages:["decide","attempt","interpret","check","apply","react","notice"],ev:[
-["miss","attempt","\"I sweep my arm across the desk.\"","attempt"],
-["miss","interpret","Push, the glass off the desk.","{kind: push, roles: {pusher: ana, thing: glass_1}}"],
+["have","attempt","\"I sweep my arm across the desk.\"","attempt"],
+["have","interpret","Push, the glass off the desk.","{kind: push, roles: {pusher: ana, thing: glass_1}}"],
 ["have","carry out","The glass is no longer on the desk.","event e1"],
 ["miss","reaction","Falls: nothing holds it up, so it lands on the floor.","event e2 · parent e1"],
 ["miss","reaction","Breaks: it is fragile and it fell.","event e3 · parent e2"],
@@ -148,8 +245,8 @@ glass:{title:"Ana knocks the glass off the desk",setup:"A glass of water sits on
 out:"Five events in one moment, each naming what caused it. Today the fall would wait for the next round and fire once."},
 heli:{title:"Sam tries to fly the helicopter",setup:"Sam has never flown: piloting skill 0. Sam is in the cockpit.",stages:["decide","attempt","interpret","check","roll","apply","react","notice"],ev:[
 ["grey","meant","Sam expects to lift off smoothly and fly to the coast.","expected_effect (never read by rules)"],
-["miss","attempt","\"I start the engine, pull up on the collective and fly to the coast.\"","attempt"],
-["miss","interpret","Pilot the helicopter, to the coast.","{kind: pilot, roles: {pilot: sam, craft: heli_1, to: coast}}"],
+["have","attempt","\"I start the engine, pull up on the collective and fly to the coast.\"","attempt"],
+["have","interpret","Pilot the helicopter, to the coast.","{kind: pilot, roles: {pilot: sam, craft: heli_1, to: coast}}"],
 ["have","check","In the cockpit, the helicopter has fuel: the move may go ahead.","checks pass"],
 ["miss","roll","Piloting 0: roll two dice, keep the lower. Rolled 5 and 2, keep 2: fail.","roll: {skill: 0, dice: [5,2], kept: 2, seed: …}"],
 ["have","carry out","The fail effects: the helicopter lurches and crashes back onto the pad. It is damaged and Sam is hurt.","event e1"],
@@ -157,11 +254,11 @@ heli:{title:"Sam tries to fly the helicopter",setup:"Sam has never flown: piloti
 ["have","notice","The ground crew hear the alarm and see the wreck.","observations"]],
 out:"However expert Sam's words sound, the dice come only from the recorded skill. A trained pilot at skill 3 rolls three dice and keeps the highest."},
 odd:{title:"Sam tries to talk to the helicopter",setup:"No rule in this world lets a machine be talked to.",stages:["decide","attempt","interpret","notice"],ev:[
-["miss","attempt","\"I ask the helicopter nicely to start itself.\"","attempt"],
-["miss","interpret","No kind of move in this world fits. Nearest: speak.","{unmatched: true, nearest_kind: speak, why: …}"],
+["have","attempt","\"I ask the helicopter nicely to start itself.\"","attempt"],
+["have","interpret","No kind of move in this world fits. Nearest: speak.","{unmatched: true, nearest_kind: speak, why: …}"],
 ["have","record","Recorded as unsupported. Nothing changes.","status: unsupported · before = after"],
 ["have","notice","Sam sees: you ask the helicopter to start; nothing comes of it.","observation to sam"],
-["miss","build record","Listed under unmatched attempts, so the next build's rules writer can add a rule if one is wanted.","unmatched_attempts[]"]],
+["have","build record","Listed under unmatched attempts, so the next build's rules writer can add a rule if one is wanted.","unmatched_attempts[]"]],
 out:"No effect is made up. Whether an AI game master may ever invent one is the one choice below."}};
 function show(k){const e=EX[k];
 document.querySelectorAll(".examples button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ex===k?"true":"false"));
@@ -171,6 +268,30 @@ for(const [c,w,t,r] of e.ev){h+="<div class='ev"+(w==="reaction"?" indent":"")+"
 h+="<div class='outcome'>"+e.out+"</div>";document.getElementById("trace").innerHTML=h;}
 document.querySelectorAll(".examples button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.ex)));
 show("wall");
+</script>
+<script src="../../planning-package/review-page/graph-viewer.js"></script>
+<script src="maps.js"></script>
+<script>
+for (const [key, el] of [["domain", "map-domain"], ["questions", "map-questions"]]) {
+  const g = window.MAPS[key], byId = Object.fromEntries(g.nodes.map(n => [n.id, n]));
+  const info = document.getElementById(el + "-info");
+  const frame = document.getElementById(el);
+  // Mount only once the map is on screen: laid out while hidden, the viewer draws its links with no positions.
+  const io = new IntersectionObserver(entries => {
+    if (!entries.some(x => x.isIntersecting)) return;
+    io.disconnect();
+    // As on the planning-package page: size the frame to the drawing's shape, then fit it.
+    const viewer = GraphViewer.mount(frame, {graph: g,
+      onLayout: ({width, height}) => { frame.style.height = Math.max(420, Math.min(1400, frame.clientWidth * height / width)) + "px"; viewer && viewer.fit(); },
+      onSelect: p => {
+      if (!p || p.type !== "node") return;
+      const n = byId[p.id], k = g.kinds[n.kind];
+      info.replaceChildren(Object.assign(document.createElement("b"), {textContent: n.label}),
+        document.createTextNode(" (" + (k ? k.label : n.kind) + "): " + n.explain));
+    }});
+  });
+  io.observe(frame);
+}
 </script>
 </body>
 </html>

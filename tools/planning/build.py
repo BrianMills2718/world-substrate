@@ -11,7 +11,7 @@ R = str(__import__('pathlib').Path(__file__).resolve().parents[2]) + '/'
 ids = {n[0] for n in NODES}
 kinds = {k: {"label": l, "color": c, **({"dashed": True} if d else {}), "explain": e} for k, (l, c, d, e) in KINDS.items()}
 g = {"schema": "typed-graph/v1", "kinds": kinds,
-     "nodes": [{"id": i, "label": l, "kind": k, "explain": f"{d} Code: {c}."} for i, l, k, d, s, c in NODES],
+     "nodes": [{"id": i, "label": l, "kind": k, "explain": f"{d} Code: {c}." if c != "—" else f"{d} Code: none yet."} for i, l, k, d, s, c in NODES],
      "edges": [{"id": f"e{n}", "source": a, "target": b, "label": lab} for n, (a, b, lab) in enumerate(EDGES)],
      "layout": {"algorithm": "force"}}
 for a, b, _ in EDGES: assert a in ids and b in ids, (a, b)
@@ -23,7 +23,7 @@ json.dump({"schema_version": "1.0", "record_type": "open_questions", "questions"
 qk = {"AgentQuestion": {"label": "Checking can settle it", "color": "#3b6fa8", "explain": "An open question an agent can settle by reading, running or testing."},
       "BrianQuestion": {"label": "Brian's call", "color": "#d9822b", "explain": "A product or priority question; it carries a recommendation and a default."},
       "Concept": {"label": "Concept", "color": "#7a8491", "explain": "A domain-model concept; open the Domain model tab for its definition."}}
-open_q = [q for q in Q if q['status'] == 'open' and q['touches']]
+open_q = [q for q in Q if q['status'] == 'open']  # every open question, including ones that touch no concept
 used = sorted({t for q in open_q for t in q['touches']})
 byid = {n[0]: n for n in NODES}
 qm = {"schema": "typed-graph/v1", "kinds": qk,

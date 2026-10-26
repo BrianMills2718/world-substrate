@@ -346,7 +346,7 @@ schedule = "once per submitted attempt"
 [[processes]]
 name = "advance"
 what = "Engine.advance: tick+1, then every due process (in declared order) applies on a detached candidate; an out-of-scope process write raises and restores the pre-tick world (no event is written)."
-source = "src/world_substrate/engine.py:762"
+source = "src/world_substrate/engine.py:829"
 routes = []
 changes = ["World", "Entity"]
 writes = ["accepted", "advance"]
@@ -498,7 +498,7 @@ schedule = "offline, by hand"
 
 # ------------------------------------------------- engine event statuses -----
 # Every attempted transition writes one event dict into World.events
-# (engine.py:505 builds it): event_id, causal_bearer, semantic_binding,
+# (engine.py:529 builds it): event_id, causal_bearer, semantic_binding,
 # observation, tick, world_revision, rule_id, rule_version, cause, status,
 # checks, declared_read_paths, declared_write_paths, changes, hash_before,
 # hash_after, plus causal_parent_event_ids / information_context when present.
@@ -1277,6 +1277,10 @@ element = "Attempt"
 views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "n/a", scenario_replay = "partial", scenario_state_panel = "n/a" }
 
 [[coverage]]
+element = "AttemptReading"
+views = { home = "missing", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "n/a", scenario_state_panel = "n/a" }
+
+[[coverage]]
 element = "RuleChange"
 views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "n/a", scenario_replay = "partial", scenario_state_panel = "partial" }
 
@@ -1380,3 +1384,9 @@ id = "G16"
 title = "Scenario replay drops most of each attempt and the game master's ruling; 'continue' shows as no_action"
 reproduced = "yes"
 status = "fixed"
+
+[[gaps]]
+id = "G17"
+title = "The run page does not show what a person tried in their own words or that an attempt matched nothing"
+reproduced = "no"
+status = "open"

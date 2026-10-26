@@ -17,9 +17,9 @@
    "explain": "Not code: an AI writes it for each described world during the build."
   },
   "Reference": {
-   "label": "Waltzman reference code only",
+   "label": "Reference worlds code only",
    "color": "#7a8491",
-   "explain": "Hand-written code for the Waltzman reference world; no generated world uses it."
+   "explain": "Hand-written code for the reference worlds (Kitchen, Waltzman and others); no generated world uses it today."
   },
   "Theory": {
    "label": "In documents only",
@@ -33,19 +33,19 @@
    "id": "world",
    "label": "World",
    "kind": "Substrate",
-   "explain": "The one canonical world during a run: entities with typed components, a tick and a revision. Code: src/world_substrate/engine.py."
+   "explain": "The one canonical world during a run: entities with typed components, a tick and a revision. Code: src/world_substrate/model.py:382."
   },
   {
    "id": "engine",
    "label": "Engine",
    "kind": "Substrate",
-   "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:558."
+   "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:198."
   },
   {
    "id": "event",
    "label": "Event",
    "kind": "Substrate",
-   "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:505."
+   "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:529."
   },
   {
    "id": "move",
@@ -57,7 +57,7 @@
    "id": "process",
    "label": "Process",
    "kind": "Substrate",
-   "explain": "A rule the world runs by itself each tick when its checks hold. Code: src/world_substrate/engine.py:762."
+   "explain": "A rule the world runs by itself each tick when its checks hold. Code: src/world_substrate/engine.py:829."
   },
   {
    "id": "compiler",
@@ -69,7 +69,7 @@
    "id": "policy",
    "label": "Policy",
    "kind": "Substrate",
-   "explain": "What chooses a person's move (scripted, an AI model or a resident): it can only pick an offered move; installed mechanics, not its words, decide what happens. Code: src/world_substrate/policy.py:50."
+   "explain": "What chooses a person's move: scripted or an AI model picks an offered move; a resident on the live path says an attempt in its own words. Installed mechanics, not its words, decide what happens. Code: src/world_substrate/policy.py:50."
   },
   {
    "id": "sense",
@@ -87,13 +87,13 @@
    "id": "write-scope",
    "label": "Declared write scope",
    "kind": "Substrate",
-   "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:93."
+   "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:88."
   },
   {
    "id": "causal-trace",
    "label": "Causal trace",
    "kind": "Substrate",
-   "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: scripts/world_builder_service.py:1822."
+   "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:529."
   },
   {
    "id": "world-kind",
@@ -129,19 +129,19 @@
    "id": "run-loop",
    "label": "Run loop",
    "kind": "Substrate",
-   "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:335."
+   "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:347."
   },
   {
    "id": "contention",
    "label": "Lost race",
    "kind": "Substrate",
-   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:544."
+   "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:563."
   },
   {
    "id": "resident",
    "label": "Resident",
    "kind": "Substrate",
-   "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, answers belief, move, expected effect and work. Code: scripts/concordia_residents.py:29."
+   "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, and answers belief, attempt (in its own words), expected effect and work; the older menu reply picks an offered move. Code: scripts/concordia_residents.py:44."
   },
   {
    "id": "task",
@@ -159,7 +159,7 @@
    "id": "build",
    "label": "Build",
    "kind": "Substrate",
-   "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1538."
+   "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1541."
   },
   {
    "id": "rules-retry",
@@ -171,13 +171,13 @@
    "id": "test-run",
    "label": "Scripted test run",
    "kind": "Substrate",
-   "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1607."
+   "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1610."
   },
   {
    "id": "run-log",
    "label": "Run log",
    "kind": "Substrate",
-   "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:478."
+   "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:524."
   },
   {
    "id": "readout",
@@ -207,19 +207,19 @@
    "id": "people-world",
    "label": "People world",
    "kind": "Family",
-   "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:225."
+   "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:364."
   },
   {
    "id": "communicate",
    "label": "Communicate rule",
    "kind": "Family",
-   "explain": "The reviewed move that delivers an information item to its recipient. Code: spikes/any-scenario-2026-10/compile_spec.py."
+   "explain": "The reviewed move that delivers an information item to its recipient. Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. Code: spikes/any-scenario-2026-10/compile_spec.py:56."
   },
   {
    "id": "moment",
    "label": "Scheduled moment",
    "kind": "Family",
-   "explain": "A countdown that happens every so many rounds (a weekly meeting, a deadline). Code: spikes/any-scenario-2026-10/compile_spec.py:48."
+   "explain": "A countdown that happens every so many rounds (a weekly meeting, a deadline). Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. Code: spikes/any-scenario-2026-10/compile_spec.py:48."
   },
   {
    "id": "work-cycle",
@@ -255,13 +255,13 @@
    "id": "agenda",
    "label": "Agenda count",
    "kind": "Family",
-   "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Code: scripts/people_world.py:279."
+   "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Declared in the group-decision component and changed by the compiled put-matter-on-agenda and settle-agenda-matter rules. Code: spikes/any-scenario-2026-10/compile_spec.py:101."
   },
   {
    "id": "rollout",
    "label": "Rollout",
    "kind": "Family",
-   "explain": "The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Code: spikes/any-scenario-2026-10/compile_spec.py:399."
+   "explain": "The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Its processes (authorization-withdrawn, deployment-completes, deployment-suspended, deployment-resumes, deployment-progresses) are defined in _decision_rules. Code: spikes/any-scenario-2026-10/compile_spec.py:436."
   },
   {
    "id": "review",
@@ -273,13 +273,13 @@
    "id": "person",
    "label": "Person and brief",
    "kind": "PerWorld",
-   "explain": "A person the spec names, with goals and beliefs, and the brief only their own resident reads. Code: scripts/people_world.py:355."
+   "explain": "A person the spec names, with goals and beliefs, and the brief only their own resident reads. Code: spikes/any-scenario-2026-10/scenario_spec.py:41."
   },
   {
    "id": "gen-rules",
    "label": "Generated actions and rules",
    "kind": "PerWorld",
-   "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. Code: scripts/people_world.py:260."
+   "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. Code: scripts/people_world.py:251."
   },
   {
    "id": "waltzman-ref",
@@ -297,7 +297,109 @@
    "id": "law-fingerprint",
    "label": "Executable-law fingerprint",
    "kind": "Theory",
-   "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version. Code: —."
+   "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version. Code: none yet."
+  },
+  {
+   "id": "affordance",
+   "label": "Affordance (offered move)",
+   "kind": "Substrate",
+   "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:352."
+  },
+  {
+   "id": "check",
+   "label": "Check",
+   "kind": "Substrate",
+   "explain": "One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed. Code: src/world_substrate/rules.py:48."
+  },
+  {
+   "id": "attempt",
+   "label": "Attempt (in own words)",
+   "kind": "Substrate",
+   "explain": "What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. Code: src/world_substrate/attempt.py:149."
+  },
+  {
+   "id": "attempt-reading",
+   "label": "Attempt reading",
+   "kind": "Substrate",
+   "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:81."
+  },
+  {
+   "id": "unmatched-attempt",
+   "label": "Unmatched attempt",
+   "kind": "Substrate",
+   "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer. Code: src/world_substrate/attempt.py:25."
+  },
+  {
+   "id": "observation",
+   "label": "Observation",
+   "kind": "Substrate",
+   "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:235."
+  },
+  {
+   "id": "place-way",
+   "label": "Place and way",
+   "kind": "PerWorld",
+   "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; written per world as entities from the bundle contract, and the move rule checks the way. Code: scripts/generate_world_bundle.py:96."
+  },
+  {
+   "id": "knock-on-now",
+   "label": "Knock-on that runs now",
+   "kind": "Theory",
+   "explain": "Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). Code: none yet."
+  },
+  {
+   "id": "skill-roll",
+   "label": "Skill roll",
+   "kind": "Theory",
+   "explain": "Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. Code: none yet."
+  },
+  {
+   "id": "projection",
+   "label": "Living projection",
+   "kind": "Substrate",
+   "explain": "The read-only living client, JSON and server-sent events rebuilt from canonical snapshots and events; it never changes the world. Code: src/world_substrate/projection.py:44."
+  },
+  {
+   "id": "causal-parent",
+   "label": "Hard causal parent",
+   "kind": "Substrate",
+   "explain": "An earlier event a rule declares as mechanically supporting this one; kept apart from the information a person merely had in mind. Code: src/world_substrate/rules.py:383."
+  },
+  {
+   "id": "exchange",
+   "label": "Derived exchange",
+   "kind": "Substrate",
+   "explain": "A composite reading (two give events make one exchange) derived from committed events, never a second effect. Code: src/world_substrate/exchange.py:68."
+  },
+  {
+   "id": "mechanisms",
+   "label": "Mechanisms library",
+   "kind": "Reference",
+   "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
+  },
+  {
+   "id": "kitchen",
+   "label": "Kitchen flagship",
+   "kind": "Reference",
+   "explain": "The replicated scarce-knife watched world: hand-written rules of its own on the ordinary Engine. Code: reference_worlds/kitchen/mechanics.py."
+  },
+  {
+   "id": "mechanic",
+   "label": "Installed mechanic",
+   "kind": "Substrate",
+   "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. Code: src/world_substrate/action_authoring.py:456."
+  },
+  {
+   "id": "entity-component",
+   "label": "Entity and component",
+   "kind": "Substrate",
+   "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. Code: src/world_substrate/model.py:223."
+  },
+  {
+   "id": "run-seed",
+   "label": "Run seed",
+   "kind": "Theory",
+   "explain": "Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). Code: none yet."
   }
  ],
  "edges": [
@@ -666,6 +768,186 @@
    "source": "law-fingerprint",
    "target": "fingerprint",
    "label": "would extend"
+  },
+  {
+   "id": "e61",
+   "source": "engine",
+   "target": "affordance",
+   "label": "offers"
+  },
+  {
+   "id": "e62",
+   "source": "policy",
+   "target": "affordance",
+   "label": "chooses from"
+  },
+  {
+   "id": "e63",
+   "source": "move",
+   "target": "check",
+   "label": "requires"
+  },
+  {
+   "id": "e64",
+   "source": "resident",
+   "target": "attempt",
+   "label": "says"
+  },
+  {
+   "id": "e65",
+   "source": "attempt",
+   "target": "attempt-reading",
+   "label": "is read as"
+  },
+  {
+   "id": "e66",
+   "source": "attempt",
+   "target": "unmatched-attempt",
+   "label": "may be"
+  },
+  {
+   "id": "e67",
+   "source": "attempt-reading",
+   "target": "move",
+   "label": "names"
+  },
+  {
+   "id": "e68",
+   "source": "check",
+   "target": "event",
+   "label": "recorded in"
+  },
+  {
+   "id": "e69",
+   "source": "place-way",
+   "target": "move",
+   "label": "limits"
+  },
+  {
+   "id": "e70",
+   "source": "information",
+   "target": "observation",
+   "label": "filters"
+  },
+  {
+   "id": "e71",
+   "source": "observation",
+   "target": "resident",
+   "label": "feeds"
+  },
+  {
+   "id": "e72",
+   "source": "process",
+   "target": "knock-on-now",
+   "label": "extends to"
+  },
+  {
+   "id": "e73",
+   "source": "move",
+   "target": "skill-roll",
+   "label": "may need"
+  },
+  {
+   "id": "e74",
+   "source": "projection",
+   "target": "event",
+   "label": "replays"
+  },
+  {
+   "id": "e75",
+   "source": "projection",
+   "target": "world",
+   "label": "reads"
+  },
+  {
+   "id": "e76",
+   "source": "event",
+   "target": "causal-parent",
+   "label": "cites"
+  },
+  {
+   "id": "e77",
+   "source": "process",
+   "target": "causal-parent",
+   "label": "may declare"
+  },
+  {
+   "id": "e78",
+   "source": "knock-on-now",
+   "target": "causal-parent",
+   "label": "cites"
+  },
+  {
+   "id": "e79",
+   "source": "exchange",
+   "target": "event",
+   "label": "derived from"
+  },
+  {
+   "id": "e80",
+   "source": "kitchen",
+   "target": "engine",
+   "label": "runs on"
+  },
+  {
+   "id": "e81",
+   "source": "mechanisms",
+   "target": "process",
+   "label": "provides"
+  },
+  {
+   "id": "e82",
+   "source": "compiler",
+   "target": "mechanic",
+   "label": "compiles"
+  },
+  {
+   "id": "e83",
+   "source": "mechanic",
+   "target": "move",
+   "label": "decides each"
+  },
+  {
+   "id": "e84",
+   "source": "mechanic",
+   "target": "check",
+   "label": "holds"
+  },
+  {
+   "id": "e85",
+   "source": "profile",
+   "target": "mechanic",
+   "label": "freezes each"
+  },
+  {
+   "id": "e86",
+   "source": "world",
+   "target": "entity-component",
+   "label": "holds"
+  },
+  {
+   "id": "e87",
+   "source": "check",
+   "target": "entity-component",
+   "label": "reads"
+  },
+  {
+   "id": "e88",
+   "source": "place-way",
+   "target": "entity-component",
+   "label": "is an"
+  },
+  {
+   "id": "e89",
+   "source": "skill-roll",
+   "target": "run-seed",
+   "label": "draws dice from"
+  },
+  {
+   "id": "e90",
+   "source": "run-seed",
+   "target": "causal-trace",
+   "label": "recorded in"
   }
  ],
  "layout": {

@@ -1,96 +1,779 @@
+# Source for docs/planning/open-questions.json and docs/model/open-questions.graph.json.
+# Edit here, then run python3 tools/planning/build.py.
 Q = [
- dict(id="Q1", short="Rules retry never runs here", question="The build's rules retry is skipped once 80 s have passed, and in the canonical Waltzman build the test run starts at 85-111 s. Should the cut-off, or the order of the build steps, change so the retry can repair a world?",
-  blocks="whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower",
-  resolves_with="An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
-  owner="agent", status="open", sources=["scripts/world_builder_service.py:263","scripts/world_builder_service.py:1667","docs/plans/waltzman-tasks-slice2.goal.md:100","evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"], touches=["rules-retry","test-run","build"]),
- dict(id="Q2", short="A refusal is not linked to its cause", question="When several people want the one shared thing in a round, each loser is told 'your choice was no longer allowed after earlier moves this round; choose again' and is shown the round's earlier moves (who, which rule), so it can see who moved. It is not told which of its moves was refused or which earlier move blocked it, and the record does not link the refusal to that move. Should the retry prompt and the row name the refused move and the blocking event?",
-  blocks="whether a reader of a run (or the readout) can say why a person's move was refused, in any world",
-  resolves_with="An argument settles it: the run loop already knows which submitted event changed the revision before the loser's pick, so naming it costs nothing and belongs in the run loop, not any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each refused row names its blocking event id. Starting point: c1r24 call 18016 shows the round's moves but not the link.",
-  owner="agent", status="open", sources=["scripts/run_authored_world.py:544","scripts/run_authored_world.py:547","scripts/run_authored_world.py:572","evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md","evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:125"], touches=["contention","run-loop","resident"]),
- dict(id="Q3", short="Agenda item has no content", question="People put the decision on the agenda and settle it again for 25 rounds (c1r24 r22-r46). Is that because group_decision.agenda_items is a bare count, so an item says nothing, or because put-matter-on-agenda and settle-agenda-matter are offered every work cycle at no cost?",
-  blocks="whether the group-decision family's agenda needs content or should be dropped",
-  resolves_with="An argument makes the content cause likely (the partnership said at c1r24 round 40 it should not add an item 'when I lack information'), but the residents' behaviour cannot be shown on a free replay, which uses scripted moves with no AI. It needs one paid owner-allowance run, and only once Q12 or a goal makes the agenda matter: the result decides whether to give items content, cost them, or drop the count. A free replay can only check that items carry content.",
-  owner="agent", status="open", sources=["scripts/people_world.py:279","evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"], touches=["agenda","group-decision"]),
- dict(id="Q4", short="Notice only as good as the words", question="A finished-task notice repeats the starter's own words about the work, and vague words ('address the retention period') leave the others unable to see what was decided. Should a concern's remedy record a structured answer instead?",
-  blocks="whether E2 (a fix carries its substance) holds for every world or only when residents happen to write specific words",
-  resolves_with="An argument settles that the notice cannot be more specific than its source words (c1r24 round 10). The decision is technical: require the remedy's work answer to say yes or no to the concern's question plus what was set, then check it on one free replay.",
-  owner="agent", status="open", sources=["scripts/attempts.py:234","evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md","docs/plans/waltzman-tasks-slice2.goal.md:117"], touches=["notice","task","concern"]),
- dict(id="Q5", short="People misread visible state", question="People say 'deployed but not authorized' while the decision is deployed. Is this a state label the residents are shown, or the model misreading correct state?",
-  blocks="whether to change how state is shown to residents or leave it as model error",
-  resolves_with="One counterexample settles it: open the resident prompt of one such round (c1r24 round 15, logistics) and read what the status field said.",
-  owner="agent", status="resolved", evidence="A label the residents are shown. Logistics' call 18032 (c1r24) shows the decision as 'status deployed, support 5' (correct) and its own member record as 'approved False, authorized False': two fields every person gets and no rule ever writes (compile_spec.py:33-34, set at :626). Filed as #231.",
-  sources=["evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md","spikes/any-scenario-2026-10/compile_spec.py:33","BrianMills2718/world-substrate#231"], touches=["resident","group-decision"]),
- dict(id="Q6", short="One round run twice", question="The page sent one round's /run twice and the server ran and billed both (#225). Should /run refuse a second request for the same round?",
-  blocks="wasted spend and shares that keep only one of two runs",
-  resolves_with="An argument settles it: a /run keyed by session, round and base revision is safe to refuse twice whatever sent the duplicate. Build it with a test that sends the same round twice.",
-  owner="agent", status="open", sources=["BrianMills2718/world-substrate#225","evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:116"], touches=["run-loop","share"]),
- dict(id="Q7", short="Losing hedge keeps running", question="Each long build call is sent twice; does the losing copy still run to the end (#226)?",
-  blocks="about $0.03 per build and misleading calls in the build trace",
-  resolves_with="Reading the code settles it.",
-  owner="agent", status="resolved", evidence="Yes. hedged() returns the first good copy and never stops the other (people_world.py:195-212); _settle_late_hedges only reserves budget for it and charges its cost when it ends (world_builder_service.py:266-285). Whether to cancel it stays with #226.",
-  sources=["BrianMills2718/world-substrate#226","scripts/world_builder_service.py:266","scripts/people_world.py:195"], touches=["build","gen-rules"]),
- dict(id="Q8", short="Rules check a resource but never claim it", question="Generated rules can check a shared resource without ever using it up, so the finish line passes while the constraint is lost (#218). Can the build catch that?",
-  blocks="whether a finished build is faithful to what was described",
-  resolves_with="An argument settles that it is decidable: a field read by a check but never written by any rule is a static finding. Add it to the test-run findings and check the saved worlds.",
-  owner="agent", status="open", sources=["BrianMills2718/world-substrate#218"], touches=["gen-rules","test-run"]),
- dict(id="Q9", short="Test run too short for some tasks", question="The 12-round scripted test run rejects correct rules for task worlds that need more rounds (#217). Should it run longer?",
-  blocks="builds wrongly scored as failing and the rewrite spend they cause",
-  resolves_with="One counterexample already exists (the garden world finishes at round 15). Lengthen the free test run for task worlds and check the saved fixtures still score the same.",
-  owner="agent", status="open", sources=["BrianMills2718/world-substrate#217","scripts/world_builder_service.py:108"], touches=["test-run"]),
- dict(id="Q10", short="Retry keeps the first words", question="After a lost race the retry's own words are stored as said_on_retry, but the 'What happened' readout quotes only said, the words behind the first choice, next to the move the retry made. Should the readout quote the retry's words?",
-  blocks="whether the readout's quoted words match the move that ran",
-  resolves_with="Reading the code settles it: the row keeps both (run_authored_world.py:584, :599-600) and the scene replay already prefers said_on_retry (render_scene_replay.py:398), but run_readout.py:93 reads said only. Make the readout prefer said_on_retry the same way and check it on a free replay.",
-  owner="agent", status="open", sources=["scripts/run_authored_world.py:584","scripts/run_authored_world.py:599","scripts/run_readout.py:93","scripts/render_scene_replay.py:398"], touches=["contention","readout"]),
- dict(id="Q11", short="Memory seeded before delivery", question="Is a recipient's resident memory still seeded with information before the information is delivered (#212 item 3)?",
-  blocks="whether beliefs can run ahead of what the world has shown a person",
-  resolves_with="One counterexample settles it: read the round-1 prompts of run c1r24 (calls 17868-17878) for a recipient that mentions its concern before delivery.",
-  owner="agent", status="resolved", evidence="No. In c1r24 round 1 the four countries that receive concerns see none of them (calls 17868, 17870, 17876, 17877-17878: 'sees: none'); each group sees only its own (leakcheck.txt, leaks 0). The concerns were delivered later in round 1 (r1-e00001, r1-e00011, r1-e00013, r1-e00019).", sources=["BrianMills2718/world-substrate#212","evidence/waltzman-tasks-slice2/c1r24/leakcheck.txt"], touches=["resident","information"]),
- dict(id="Q12", short="When a people-world run ends", question="A people-world run ends at the round cap even when nothing has changed for 20 rounds. Should it stop when the decision is settled and nothing changes?",
-  blocks="how long visitors watch a run, and its cost",
-  resolves_with="This is a product call on what a finished story looks like; no test settles it.",
-  owner="brian", status="open", recommendation="Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for one full operating-review period (6 rounds, compile_spec.py:442), and say so on the page.",
-  default="Runs keep ending at the round cap the visitor picked.",
-  sources=["evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md","scripts/run_authored_world.py:732"], touches=["run-loop","group-decision"]),
- dict(id="Q13", short="Which hardening first", question="The roadmap's hardening queue (executable-law fingerprint, role-specific write scopes, explicit move-cap overflow) and the run-loop fixes above (Q2, Q6) compete for the next goal. Which comes first?",
-  blocks="the next goal",
-  resolves_with="A priority call; the argument for the run-loop fixes is that they affect every world on every run today.",
-  owner="brian", status="open", recommendation="Do the run-loop fixes first (Q6 no double run, Q10 readout words, Q2 refusal linked to its cause), then the executable-law fingerprint.",
-  default="The next goal is the run-loop fixes (docs/plans/run-loop-contention.goal.md).",
-  sources=["roadmap/README.md:359","roadmap/README.md:427"], touches=["contention","run-loop","law-fingerprint"]),
- dict(id="Q14", short="Agent-harness build not live", question="Decision 008 says worlds are built in an agent harness that drafts, checks and edits, but the live service does not call scripts/world_harness.py. Is the harness to be wired into the live build?",
-  blocks="whether build repairs come from a harness or from the rules retry (Q1)",
-  resolves_with="Reading the code and the decision settles the current state (not imported by the service; the decision says it has not been shown on the live server). What it would take is a build-time measurement against the 150 s target, from saved build traces first.",
-  owner="agent", status="open", sources=["docs/decisions/008-build-worlds-in-an-agent-harness.md:48","scripts/world_harness.py"], touches=["harness-build","build","rules-retry"]),
- dict(id="Q15", short="Repository format not adopted", question="The ~/code2 repository format check fails: no docs/index.md, docs/architecture/arc42.md, C4 files, openspec specs, lefthook.yml or Makefile. Should world-substrate adopt the format?",
-  blocks="whether the repo-format check passes",
-  resolves_with="Prior art settles the shape (phenomenal-meaning adopted it); the work is mechanical: add the files, mostly as indexes over the existing architecture, ODD and trace documents.",
-  owner="agent", status="open", sources=["docs/planning/checks.txt"], touches=[]),
- dict(id="Q16", short="Goals skip the package gate", question="This repository's work ran as /goal documents, which never pass plan adoption, so nothing required a planning package. Should writing a goal require one?",
-  blocks="whether the next goal can again run without a current system model and question list",
-  resolves_with="An argument: Brian approved on 2026-10-21 that every plan carries a planning package, and a goal is a plan. But a hard check would refuse new goals in every repository that has no package yet, so how strictly to enforce it is a priority call.",
-  owner="brian", status="open", recommendation="Make the goal validator (agent-skills, skills/authoring-goals/scripts/validate_goal_authority.py) refuse a goal document without a 'Planning package:' line or a named exemption, so goal-driven repositories meet the same gate as adopted plans.",
-  default="The goal-writing skill only tells authors to name the package; nothing refuses a goal without one. This repository's next goal already names its package.",
-  sources=["~/code2/agent-skills/skills/authoring-goals/SKILL.md","docs/plans/waltzman-tasks-slice2.goal.md:1"], touches=[]),
- dict(id="Q17", short="Offline pipeline views", question="The offline any-scenario pipeline has no view of its model and checks (G13) and no approval step (G14). Should it get them, or stay an offline spike?",
-  blocks="whether work goes into the offline pipeline at all",
-  resolves_with="A scope call; the live path now builds people worlds itself, so the pipeline matters less.",
-  owner="brian", status="open", recommendation="Keep it an offline spike: no views or approval step, since the live World Builder is where people build worlds.",
-  default="No work on G13 or G14.",
-  sources=["docs/model/VIEW_COVERAGE.md","docs/decisions/007-any-scenario-path.md"], touches=["build"]),
- dict(id="Q18", short="Fix-and-reopen loop", question="Does a concern still loop through fix and reopen with the same unanswered question?",
-  blocks="E2 of the tasks goal", resolves_with="Read the full trace of the live run at the deployed fix.",
-  owner="agent", status="resolved", evidence="#224 and #229 (713a2b5); live run c1r24: most times any concern was resolved is 2, no person reopened one (evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md).",
-  sources=["docs/plans/waltzman-tasks-slice2.goal.md"], touches=["concern","remedy","notice"]),
- dict(id="Q19", short="Tasks can fail part-way", question="Can a task in a built world end two ways, and are tasks the world starts followed?",
-  blocks="#128 (attempt from belief, discover failure over time)", resolves_with="Read the full trace of the live run.",
-  owner="agent", status="resolved", evidence="c1r24: 5 tasks failed part-way and 9 finished, including the world's rollout r8-e00013 to r14-e00012; build record shows all four long tasks can fail part-way.",
-  sources=["evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md","scripts/attempts.py:131"], touches=["task","rollout","remedy"]),
- dict(id="Q20", short="Readout lens wrong", question="Does the readout read a people world with the people lens?",
-  blocks="C1 item 6", resolves_with="Rebuild the share from real rows.",
-  owner="agent", status="resolved", evidence="#228 (89f1801) fixed the fingerprint so the build stays in the share; c1r24 readout lens coordination, 46 of 46 claims match.",
-  sources=["scripts/world_builder_service.py:381"], touches=["readout","fingerprint"]),
- dict(id="Q21", short="System model out of date", question="Does the system model describe the live people-world path?",
-  blocks="every question above that cites the model", resolves_with="Read the code since 2e409ab and write it in.",
-  owner="agent", status="resolved", evidence="docs/model/ODD.md section 11 added at 6a8e37e; five stale trace rules re-read (reviewed_at set); durable-docs check 0 findings.",
-  sources=["docs/model/ODD.md","docs/model/trace.yaml"], touches=["build","people-world"]),
+ {
+  "id": "Q1",
+  "short": "Rules retry never runs here",
+  "question": "The build's rules retry is skipped once 80 s have passed, and in the canonical Waltzman build the test run starts at 85-111 s. Should the cut-off, or the order of the build steps, change so the retry can repair a world?",
+  "blocks": "whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower",
+  "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target, settled by reading saved traces, not by a new run. Read first evidence/waltzman-tasks-slice2/c1r24/c1r-run24.log, whose step lines carry their times (rules writing from 41.9 s to 111.1 s, so that one call alone passes 80 s), then the /generate-world row in that folder's run-log.jsonl (2026-10-23T22:03:42Z, trace world-builder-live/people/3c7dab9eb26d4bbc99bbd5bbc9418522) for the call-by-call times; then either start the test run earlier or tie the cut-off to the time left before that target.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "scripts/world_builder_service.py:263",
+   "scripts/world_builder_service.py:1667",
+   "docs/plans/waltzman-tasks-slice2.goal.md:100",
+   "evidence/waltzman-tasks-slice2/c1r24/c1r-run24.log",
+   "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"
+  ],
+  "touches": [
+   "rules-retry",
+   "test-run",
+   "build"
+  ]
+ },
+ {
+  "id": "Q2",
+  "short": "A refusal is not linked to its cause",
+  "question": "When an earlier move this round changes the state before a person's move, does the record say which event blocked it? On the live open-attempt path the same attempt is resubmitted at the new revision and only its rule's checks decide it (scripts/run_authored_world.py:571-573); menu paths ask once more (:581). On every path the refused row lists the failed check labels (refused_because, :622-627) but not the event that changed the state.",
+  "blocks": "whether a reader of a run (or the readout) can say why a person's move was refused, in any world",
+  "resolves_with": "An argument settles it: the run loop already knows which submitted event changed the revision before the loser's pick, so naming it costs nothing and belongs in the run loop, not any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each refused row names its blocking event id. Starting point: c1r24 call 18016 shows the round's moves but not the link.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "scripts/run_authored_world.py:563",
+   "scripts/run_authored_world.py:571",
+   "scripts/run_authored_world.py:581",
+   "scripts/run_authored_world.py:622",
+   "evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:125"
+  ],
+  "touches": [
+   "contention",
+   "run-loop",
+   "resident"
+  ],
+  "evidence": "Settled by argument: the run loop holds the round's accepted events in order, so the last accepted event whose changes touch a path the refused move's failed checks read is the blocking event; naming it is run-loop bookkeeping that applies to every world. Answer: yes, add blocked_by_event to the refused row. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F1), checked on a free replay of the saved airfield and c1r24 worlds."
+ },
+ {
+  "id": "Q3",
+  "short": "Agenda item has no content",
+  "question": "People put the decision on the agenda and settle it again for 25 rounds (c1r24 r22-r46). Is that because group_decision.agenda_items is a bare count, so an item says nothing, or because put-matter-on-agenda and settle-agenda-matter are offered every work cycle at no cost?",
+  "blocks": "whether the group-decision family's agenda needs content or should be dropped",
+  "resolves_with": "Argument settles the content cause for the record: group_decision.agenda_items is a bare integer (spikes/any-scenario-2026-10/compile_spec.py:101) that put-matter-on-agenda adds 1 to and settle-agenda-matter subtracts 1 from (:272-275), so an item cannot carry what it is about, and the partnership said at c1r24 round 40 it should not add one 'when I lack information'. What argument cannot settle is which of three fixes to make: give items content (a matter names its question), cost them (one per person per cycle), or drop the count. That choice turns on why residents repeat the pair, which a free replay cannot show (it replays recorded moves). So one paid owner-allowance run, and only once Q12 or a goal makes the agenda matter: if residents still repeat put-and-settle when items carry content, cost them; if they stop, content was the cause; if the count changes no outcome, drop it.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "spikes/any-scenario-2026-10/compile_spec.py:101",
+   "spikes/any-scenario-2026-10/compile_spec.py:272",
+   "scripts/people_world.py:279",
+   "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"
+  ],
+  "touches": [
+   "agenda",
+   "group-decision"
+  ]
+ },
+ {
+  "id": "Q4",
+  "short": "Notice only as good as the words",
+  "question": "A finished-task notice repeats the starter's own words about the work, and vague words ('address the retention period') leave the others unable to see what was decided. Should a concern's remedy record a structured answer instead?",
+  "blocks": "whether E2 (a fix carries its substance) holds for every world or only when residents happen to write specific words",
+  "resolves_with": "An argument settles that the notice cannot be more specific than its source words (c1r24 round 10). The decision is technical: require the remedy's work answer to say yes or no to the concern's question plus what was set, then check it on one free replay.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "scripts/attempts.py:234",
+   "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
+   "docs/plans/waltzman-tasks-slice2.goal.md:117"
+  ],
+  "touches": [
+   "notice",
+   "task",
+   "concern"
+  ],
+  "evidence": "Settled by argument: a notice copies the starter's words, so it cannot be more specific than they are (c1r24 round 10), and only a required field can make every remedy say what was decided. Answer: yes, a remedy's work answer says yes or no to the concern's question plus what was set, and the notice quotes it. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F7). A free replay cannot show it, because it replays recorded words, so the check is a test plus the next owner-allowance people-world run's TRACE_READ.md."
+ },
+ {
+  "id": "Q5",
+  "short": "People misread visible state",
+  "question": "People say 'deployed but not authorized' while the decision is deployed. Is this a state label the residents are shown, or the model misreading correct state?",
+  "blocks": "whether to change how state is shown to residents or leave it as model error",
+  "resolves_with": "One counterexample settles it: open the resident prompt of one such round (c1r24 round 15, logistics) and read what the status field said.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "A label the residents are shown. Logistics' call 18032 (c1r24) shows the decision as 'status deployed, support 5' (correct) and its own member record as 'approved False, authorized False': two fields every person gets and no rule ever writes (compile_spec.py:33-34, set at :626). Filed as #231.",
+  "sources": [
+   "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
+   "spikes/any-scenario-2026-10/compile_spec.py:33",
+   "BrianMills2718/world-substrate#231"
+  ],
+  "touches": [
+   "resident",
+   "group-decision"
+  ]
+ },
+ {
+  "id": "Q6",
+  "short": "One round run twice",
+  "question": "The page sent one round's /run twice and the server ran and billed both (#225). Should /run refuse a second request for the same round?",
+  "blocks": "wasted spend and shares that keep only one of two runs",
+  "resolves_with": "An argument settles it: a /run keyed by session, round and base revision is safe to refuse twice whatever sent the duplicate. Build it with a test that sends the same round twice.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "BrianMills2718/world-substrate#225",
+   "evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:116"
+  ],
+  "touches": [
+   "run-loop",
+   "share"
+  ],
+  "evidence": "Settled by argument: a /run keyed by session, round and base revision is safe to refuse twice whatever sent the duplicate. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F2), with a test that sends the same round twice."
+ },
+ {
+  "id": "Q7",
+  "short": "Losing hedge keeps running",
+  "question": "Each long build call is sent twice; does the losing copy still run to the end (#226)?",
+  "blocks": "about $0.03 per build and misleading calls in the build trace",
+  "resolves_with": "Reading the code settles it.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Yes. hedged() returns the first good copy and never stops the other (people_world.py:195-212); _settle_late_hedges only reserves budget for it and charges its cost when it ends (world_builder_service.py:266-285). Whether to cancel it stays with #226.",
+  "sources": [
+   "BrianMills2718/world-substrate#226",
+   "scripts/world_builder_service.py:266",
+   "scripts/people_world.py:195"
+  ],
+  "touches": [
+   "build",
+   "gen-rules"
+  ]
+ },
+ {
+  "id": "Q8",
+  "short": "Rules check a resource but never claim it",
+  "question": "Generated rules can check a shared resource without ever using it up, so the finish line passes while the constraint is lost (#218). Can the build catch that?",
+  "blocks": "whether a finished build is faithful to what was described",
+  "resolves_with": "An argument settles that it is decidable from the compiled rules, but 'read by a check, written by no rule' alone is wrong: tests/fixtures/airfield-s1-live.json reads components.boundary.passable in the move rule's check (:388-392) and no rule writes it, which is correct, because the brick wall is a fixed fact of the world. So the finding is narrower: a field a check reads that is consumed by the described task (a resource the description says is used up or claimed, as in #218) but that no rule writes.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "BrianMills2718/world-substrate#218",
+   "tests/fixtures/airfield-s1-live.json:392"
+  ],
+  "touches": [
+   "gen-rules",
+   "test-run"
+  ],
+  "evidence": "Settled by argument, restated after a counterexample: a fixed input (the airfield wall's components.boundary.passable, read at tests/fixtures/airfield-s1-live.json:392, written by no rule) is legitimate, so the finding cannot be every read-but-never-written field. Answer: flag a field only when the build's own spec names it as used up, claimed or changed by a task (the resource in #218) and no rule writes it; a field the spec gives as a fixed fact (a wall, a distance) is not flagged. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F3). Check: the saved #218 build is flagged and the airfield fixture's wall is not."
+ },
+ {
+  "id": "Q9",
+  "short": "Test run too short for some tasks",
+  "question": "The 12-round scripted test run rejects correct rules for task worlds that need more rounds (#217). Should it run longer?",
+  "blocks": "builds wrongly scored as failing and the rewrite spend they cause",
+  "resolves_with": "One counterexample already exists (the garden world finishes at round 15). Lengthen the free test run for task worlds and check the saved fixtures still score the same.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "BrianMills2718/world-substrate#217",
+   "scripts/world_builder_service.py:108"
+  ],
+  "touches": [
+   "test-run"
+  ],
+  "evidence": "Settled by one counterexample: the garden world's correct rules finish at round 15, past the 12-round test run (#217; DRY_RUN_TURNS, scripts/world_builder_service.py:108), so 12 rounds is too short for some task worlds. Answer: yes, task worlds test for 24 rounds like ongoing ones. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F8); the test run is scripted and makes no model calls, so the longer run costs time, not money."
+ },
+ {
+  "id": "Q10",
+  "short": "Retry keeps the first words",
+  "question": "A menu retry's own words are stored as said_on_retry (scripts/run_authored_world.py:637-638), but the 'What happened' readout quotes only said (:621), the words behind the first choice. Should the readout quote the retry's words?",
+  "blocks": "whether the readout's quoted words match the move that ran",
+  "resolves_with": "Reading the code settles it: the row keeps both (run_authored_world.py:584, :599-600) and the scene replay already prefers said_on_retry (render_scene_replay.py:398), but run_readout.py:93 reads said only. Make the readout prefer said_on_retry the same way and check it on a free replay.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "scripts/run_authored_world.py:621",
+   "scripts/run_authored_world.py:637",
+   "scripts/run_readout.py:93",
+   "scripts/render_scene_replay.py:398"
+  ],
+  "touches": [
+   "contention",
+   "readout"
+  ],
+  "evidence": "Settled by reading the code: on the live open-attempt path nobody is asked again, so said_on_retry is never written there (said_retry stays None, :562 and :571-573); on the scripted and llm menu paths it is, and the scene replay already prefers it (render_scene_replay.py:398) while run_readout.py:93 reads said only. Answer: yes, prefer said_on_retry in the readout as the replay does. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F4), checked on a free replay of a saved menu-path run."
+ },
+ {
+  "id": "Q11",
+  "short": "Memory seeded before delivery",
+  "question": "Is a recipient's resident memory still seeded with information before the information is delivered (#212 item 3)?",
+  "blocks": "whether beliefs can run ahead of what the world has shown a person",
+  "resolves_with": "One counterexample settles it: read the round-1 prompts of run c1r24 (calls 17868-17878) for a recipient that mentions its concern before delivery.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "No. In c1r24 round 1 the four countries that receive concerns see none of them (calls 17868, 17870, 17876, 17877-17878: 'sees: none'); each group sees only its own (leakcheck.txt, leaks 0). The concerns were delivered later in round 1 (r1-e00001, r1-e00011, r1-e00013, r1-e00019).",
+  "sources": [
+   "BrianMills2718/world-substrate#212",
+   "evidence/waltzman-tasks-slice2/c1r24/leakcheck.txt"
+  ],
+  "touches": [
+   "resident",
+   "information"
+  ]
+ },
+ {
+  "id": "Q12",
+  "short": "When a people-world run ends",
+  "question": "A people-world run ends at the round cap even when nothing has changed for 20 rounds. Should it stop when the decision is settled and nothing changes?",
+  "blocks": "how long visitors watch a run, and its cost",
+  "resolves_with": "This is a product call on what a finished story looks like; no test settles it.",
+  "owner": "brian",
+  "status": "open",
+  "recommendation": "Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for one full operating-review period (6 rounds, compile_spec.py:442), and say so on the page.",
+  "default": "Runs keep ending at the round cap the visitor picked.",
+  "sources": [
+   "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
+   "scripts/run_authored_world.py:418",
+   "scripts/run_authored_world.py:39"
+  ],
+  "touches": [
+   "run-loop",
+   "group-decision"
+  ]
+ },
+ {
+  "id": "Q13",
+  "short": "Which hardening first",
+  "question": "The roadmap's hardening queue (executable-law fingerprint, role-specific write scopes, explicit move-cap overflow) and the run-loop fixes above (Q2, Q6) compete for the next goal. Which comes first?",
+  "blocks": "the next goal",
+  "resolves_with": "A priority call; the argument for the run-loop fixes is that they affect every world on every run today.",
+  "owner": "brian",
+  "status": "resolved",
+  "sources": [
+   "roadmap/README.md:211",
+   "roadmap/README.md:252",
+   "docs/plans/open_attempt.md:465"
+  ],
+  "touches": [
+   "contention",
+   "run-loop",
+   "law-fingerprint"
+  ],
+  "evidence": "Brian chose on 2026-10-25: his 'yes' adopted docs/plans/open_attempt.md and started S1, so the open-attempt slices come next, before the run-loop fixes and the hardening queue. The run-loop fixes are settled by argument and agent-owned (Q2, Q6, Q8, Q10), built alongside the slices (docs/plans/open_attempt.md, 'Fixes settled by argument'); the roadmap hardening queue (roadmap/README.md:252-256) follows the plan."
+ },
+ {
+  "id": "Q14",
+  "short": "Harness build time not measured",
+  "question": "Decision 008 already decided that worlds are built in an agent harness that drafts, checks and edits (docs/decisions/008-build-worlds-in-an-agent-harness.md), and the live service does not yet call scripts/world_harness.py. What is open is only whether a harness build fits the 150 s first-round target. How long does a harness build take against that target?",
+  "blocks": "when the harness replaces the fixed build calls and the rules retry (Q1) on the live path",
+  "resolves_with": "A measurement, from saved traces first: time the harness's draft-check-edit loop on the saved c1r24 and airfield build inputs (free, the build traces hold the prompts) and compare with the 85-111 s fixed builds; a paid harness build only if the saved inputs cannot be replayed.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/decisions/008-build-worlds-in-an-agent-harness.md:48",
+   "scripts/world_harness.py"
+  ],
+  "touches": [
+   "harness-build",
+   "build",
+   "rules-retry"
+  ]
+ },
+ {
+  "id": "Q15",
+  "short": "Repository format files not yet added",
+  "question": "The ~/code2 repository format check fails: no docs/index.md, docs/architecture/arc42.md, C4 files, openspec specs, lefthook.yml or Makefile. The shape is settled by prior art (phenomenal-meaning adopted it); what stays open is only that the files are not yet added, so the check still fails.",
+  "blocks": "whether the repo-format check passes",
+  "resolves_with": "Prior art settles the shape (phenomenal-meaning adopted it); the work is mechanical: add the files, mostly as indexes over the existing architecture, ODD and trace documents.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/planning/checks.txt"
+  ],
+  "touches": [],
+  "evidence": "Settled by prior art: phenomenal-meaning adopted the ~/code2 repository format, so the shape is known and the work is mechanical (indexes over the existing architecture, ODD and trace documents). Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F5). Kept open, not resolved, because the planning contract requires a check that still fails to be tracked by an open question; it closes when the repo-format check reports compliant."
+ },
+ {
+  "id": "Q16",
+  "short": "Goals skip the package gate",
+  "question": "This repository's work ran as /goal documents, which never pass plan adoption, so nothing required a planning package. Should writing a goal require one?",
+  "blocks": "whether the next goal can again run without a current system model and question list",
+  "resolves_with": "An argument: Brian approved on 2026-10-21 that every plan carries a planning package, and a goal is a plan. But a hard check would refuse new goals in every repository that has no package yet, so how strictly to enforce it is a priority call.",
+  "owner": "brian",
+  "status": "open",
+  "recommendation": "Make the goal validator (agent-skills, skills/authoring-goals/scripts/validate_goal_authority.py) refuse a goal document without a 'Planning package:' line or a named exemption, so goal-driven repositories meet the same gate as adopted plans.",
+  "default": "The goal-writing skill only tells authors to name the package; nothing refuses a goal without one. This repository's next goal already names its package.",
+  "sources": [
+   "~/code2/agent-skills/skills/authoring-goals/SKILL.md",
+   "docs/plans/waltzman-tasks-slice2.goal.md:1"
+  ],
+  "touches": []
+ },
+ {
+  "id": "Q17",
+  "short": "Offline pipeline views",
+  "question": "The offline any-scenario pipeline has no view of its model and checks (G13) and no approval step (G14). Should it get them, or stay an offline spike?",
+  "blocks": "whether work goes into the offline pipeline at all",
+  "resolves_with": "A scope call; the live path now builds people worlds itself, so the pipeline matters less.",
+  "owner": "brian",
+  "status": "open",
+  "recommendation": "Keep it an offline spike: no views or approval step, since the live World Builder is where people build worlds.",
+  "default": "No work on G13 or G14.",
+  "sources": [
+   "docs/model/VIEW_COVERAGE.md",
+   "docs/decisions/007-any-scenario-path.md"
+  ],
+  "touches": [
+   "build"
+  ]
+ },
+ {
+  "id": "Q18",
+  "short": "Fix-and-reopen loop",
+  "question": "Does a concern still loop through fix and reopen with the same unanswered question?",
+  "blocks": "E2 of the tasks goal",
+  "resolves_with": "Read the full trace of the live run at the deployed fix.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "#224 and #229 (713a2b5); live run c1r24: most times any concern was resolved is 2, no person reopened one (evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md).",
+  "sources": [
+   "docs/plans/waltzman-tasks-slice2.goal.md"
+  ],
+  "touches": [
+   "concern",
+   "remedy",
+   "notice"
+  ]
+ },
+ {
+  "id": "Q19",
+  "short": "Tasks can fail part-way",
+  "question": "Can a task in a built world end two ways, and are tasks the world starts followed?",
+  "blocks": "#128 (attempt from belief, discover failure over time)",
+  "resolves_with": "Read the full trace of the live run.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "c1r24: 5 tasks failed part-way and 9 finished, including the world's rollout r8-e00013 to r14-e00012; build record shows all four long tasks can fail part-way.",
+  "sources": [
+   "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
+   "scripts/attempts.py:131"
+  ],
+  "touches": [
+   "task",
+   "rollout",
+   "remedy"
+  ]
+ },
+ {
+  "id": "Q20",
+  "short": "Readout lens wrong",
+  "question": "Does the readout read a people world with the people lens?",
+  "blocks": "C1 item 6",
+  "resolves_with": "Rebuild the share from real rows.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "#228 (89f1801) fixed the fingerprint so the build stays in the share; c1r24 readout lens coordination, 46 of 46 claims match.",
+  "sources": [
+   "scripts/world_builder_service.py:381"
+  ],
+  "touches": [
+   "readout",
+   "fingerprint"
+  ]
+ },
+ {
+  "id": "Q21",
+  "short": "System model out of date",
+  "question": "Does the system model describe the live people-world path?",
+  "blocks": "every question above that cites the model",
+  "resolves_with": "Read the code since 2e409ab and write it in.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "docs/model/ODD.md section 11 added at 6a8e37e; five stale trace rules re-read (reviewed_at set); durable-docs check 0 findings.",
+  "sources": [
+   "docs/model/ODD.md",
+   "docs/model/trace.yaml"
+  ],
+  "touches": [
+   "build",
+   "people-world"
+  ]
+ },
+ {
+  "id": "Q22",
+  "short": "Effects no rule covers",
+  "question": "When a resident tries something no installed rule covers, may an AI game master invent a rough effect, marked coarse in the record? Prior art in this repository: the offline any-scenario spike already lets its game master write a rule for each unlisted attempt mid-run (docs/model/ODD.md:194, 8.19 at :266, question 9 at :27): a rule that passes the layer-1 checks is installed into the running Engine, and one that fails becomes a one-off gm-ruling recorded as unsupported_action. Decision 007 accepted that for the spike (it amends Decision 006's pre-run approval: mid-run rules are reviewed after the run), but no person approves before or after (G14), and the spike stays offline (Q17). S4 would differ in three ways: it runs on the live World Builder, where Decision 006's approval before a run still holds; its output would be one coarse effect for one attempt, not a general rule; and it would be marked coarse in the record.",
+  "blocks": "slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin",
+  "resolves_with": "A product call on whether every effect must come from a written rule; no test settles it.",
+  "owner": "brian",
+  "status": "open",
+  "recommendation": "Not yet: the person is told nothing comes of it, and the attempt is listed for the next build's rules writer. If allowed later, reuse the spike's mid-run path (check gate, then install or a recorded ruling) rather than a new one, with an approval step (G14).",
+  "default": "Unmatched attempts change nothing and are listed in the build record.",
+  "sources": [
+   "docs/plans/open_attempt.md:304",
+   "src/world_substrate/rules.py:288",
+   "docs/model/ODD.md:194",
+   "docs/model/ODD.md:266",
+   "docs/decisions/007-any-scenario-path.md:46"
+  ],
+  "touches": [
+   "build",
+   "run-loop"
+  ]
+ },
+ {
+  "id": "Q23",
+  "short": "Do generated moves check walls",
+  "question": "Does the rules writer give a generated move rule a check that the way between places is open, so a walk into a wall is refused with the wall as the cause?",
+  "blocks": "acceptance check A3 of docs/plans/open_attempt.md",
+  "resolves_with": "Prior art in the run: generate the canonical airfield world in slice S1 and read its move mechanic; if the check is absent, fix the rules writer prompt and schema.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "evidence/open-attempt/q23/after-fix/probe.txt",
+   "scripts/generate_world_bundle.py:96",
+   "scripts/generate_causal_model.py:420"
+  ],
+  "touches": [
+   "build"
+  ],
+  "evidence": "No, then yes after a generic fix. The first generated airfield world put everyone at the one world location, had no move action, and its wall was read by no rule (evidence/open-attempt/q23/bundle.json, rules.json). Fixes: the bundle contract now offers each entity a starting place and asks for places, a move action with 'to' and 'way', and ways with a passable flag (scripts/generate_world_bundle.py); the validator refuses an unknown place (scripts/scaffold_world.py); the rules writer must check the actor is where the thing is, and is told checks have no 'or' (scripts/generate_causal_model.py). Regenerated world: walking through the brick wall fails 'the way is passable', flying from the office fails 'the aircraft is where the trainee is'; with the wall made passable in memory both succeed (evidence/open-attempt/q23/after-fix/probe.txt). Limit: a way works from its first place to its second only."
+ },
+ {
+  "id": "Q24",
+  "short": "Petri nets or TypeDB as carrier",
+  "question": "Petri nets already lend World Substrate their transition semantics (docs/plans/linked_process_participants.md:136): a process is close to a transition that fires when enabled with no actor, and output arcs are close to a declared write scope. Could a typed Petri net (AlgebraicPetri) or TypeDB (relations with role players) carry the rest well enough to adopt instead of the table in scripts/build_metamodel.py: guards that read arbitrary component checks over bound participants, partial observation (who notices a firing), and refusal of an attempted move with the failed check named?",
+  "blocks": "whether the metamodel keeps its own action-kind and attempt-reading types or adopts an outside carrier for them",
+  "resolves_with": "Prior art: read AlgebraicPetri's typed Petri net and TypeDB's relation/role schema and map each onto action kind, role, check, effect, process, observation and refused event. If either holds checks as guards, per-actor noticing and named refusal, adopt it as the carrier for those types; if one of the three has no counterpart, keep the own types and compose (Petri semantics for firing, own types for checks, noticing and refusal).",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "docs/plans/linked_process_participants.md:136",
+   "docs/model/METAMODEL.md:69",
+   "scripts/build_metamodel.py:32"
+  ],
+  "touches": [
+   "move",
+   "process",
+   "attempt-reading"
+  ],
+  "evidence": "Settled by argument: plain and typed Petri nets (AlgebraicPetri) fire a transition when its input places hold tokens, with no guard over component data; coloured Petri nets add data guards, but no Petri net models which observer notices a firing or a refusal that names its failed check; TypeDB holds typed relations with role players but runs no state-changing effects. None carries all three of guards over bound participants, per-observer noticing and named refusal, so the answer is compose: Petri semantics for firing (already lent, linked_process_participants.md:136) and the metamodel's own types for checks, noticing and refusal, which is what docs/model/METAMODEL.md records. Not material to the plan (docs/plans/open_attempt.md, Uncertainties)."
+ },
+ {
+  "id": "Q25",
+  "short": "Ways work one way only",
+  "question": "A generated way works from its first place to its second only (checks have no 'or', so the rules writer is told to require the actor at the way's first place and the destination at its second). A resident who walks from the office to the hangar cannot walk back. Should ways be two-way unless the description declares them one-way?",
+  "blocks": "reading S1's canonical airfield run for A2 and A3 of docs/plans/open_attempt.md (a resident stuck on the far side looks like a refusal by the world), and how realistic generated worlds are",
+  "resolves_with": "Argument and a generic fix, no test needed to decide: real doors and corridors work both ways, so make a way two-way unless declared one-way (the rules writer writes one move rule per direction, or the move check accepts either end), then confirm by regenerating the airfield world and probing both directions.",
+  "owner": "agent",
+  "status": "resolved",
+  "sources": [
+   "evidence/open-attempt/q23/README.md:21",
+   "scripts/generate_causal_model.py:430",
+   "scripts/generate_world_bundle.py:96"
+  ],
+  "touches": [
+   "place-way",
+   "build",
+   "run-loop"
+  ],
+  "evidence": "Settled by argument: real doors and corridors work both ways, so a way is two-way unless the description declares it one-way. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F6): the rules writer writes one move rule per direction; checked by regenerating the airfield world and probing both directions. Until it lands each TRACE_READ.md names a resident stuck behind a way it already used."
+ },
+ {
+  "id": "Q26",
+  "short": "Run page hides own-words attempts",
+  "question": "The run page's round text reads row.belief and row.expects (scripts/world_builder_home.html:627-629) and never row.attempt or summary.unmatched_attempts, so a visitor sees the move but not the words behind it, and an attempt that changed nothing shows only as waiting (view gap G17). The plan's inspectable result is that the run page shows each person's own-words attempt. How should the page show them?",
+  "blocks": "the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done",
+  "resolves_with": "Build and look: show each row's attempt text and reading in the round text and list summary.unmatched_attempts, then open the saved S1 airfield share (evidence/open-attempt/s1-airfield/) in a browser and confirm Sam's refused and unmatched attempts read in his own words.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/model/VIEW_COVERAGE.md:191",
+   "scripts/world_builder_home.html:627",
+   "docs/plans/open_attempt.md:65",
+   "evidence/open-attempt/s1-airfield/TRACE_READ.md"
+  ],
+  "touches": [
+   "attempt",
+   "unmatched-attempt",
+   "run-loop"
+  ]
+ },
+ {
+  "id": "Q27",
+  "short": "Is S2's fixpoint engine capability",
+  "question": "S2 runs immediate processes again and again inside one commit until nothing more is due (docs/plans/open_attempt.md:164, Piece 2), which changes src/world_substrate/engine.py. AGENTS.md and Decision 006 say not to add engine, scheduler, renderer or cognition capability of World Substrate's own and to host loops on Concordia or Mesa (AGENTS.md:39; roadmap/README.md:459). Does a same-moment fixpoint in engine.py count as that forbidden engine capability?",
+  "blocks": "slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it",
+  "resolves_with": "Brian's call: the rule's wording is his (Decision 006), and the earlier resolution was argued by this plan's own author, so it is not settled by agent argument. The argument for: a ramification fixpoint is a rule semantics inside the one existing transition (C+ and Event Calculus), with no new loop, clock or scheduler, bounded at 32 reactions. The argument against: it is new control flow in engine.py, and Concordia's game master or Mesa's step could host the chain instead, one reaction per step.",
+  "owner": "brian",
+  "status": "open",
+  "sources": [
+   "roadmap/README.md:459",
+   "AGENTS.md:39",
+   "docs/decisions/006-governed-rules-layer-scope.md",
+   "docs/plans/open_attempt.md:164"
+  ],
+  "touches": [
+   "knock-on-now",
+   "engine"
+  ],
+  "recommendation": "Allow S2 as rule semantics: the fixpoint runs inside Engine.apply's existing atomic commit, adds no clock, loop or scheduler, is capped at 32 reactions with the whole moment refused on overflow, and only processes that declare timing 'immediately' use it. Hosting the chain on Concordia or Mesa steps instead would split one moment across steps, so the glass would fall in one round and break in the next, which is the behaviour Brian asked to fix.",
+  "default": "S2 waits; S1 and S3 go ahead, and knock-on effects keep running once per round as today."
+ },
+ {
+  "id": "Q28",
+  "short": "Reuse the spill and damage rules",
+  "question": "The hand-written mechanisms library already has a vessel-failure spill process and heat damage (src/world_substrate/mechanisms/damage.py:116). A generated world's registry holds only its compiled mechanics and the rules writer's declared processes (build_engine, scripts/run_authored_world.py:55-58); the library processes are never registered there. Should S2's glass chain reuse the library's spill and damage processes, or have the rules writer write its own?",
+  "blocks": "how S2's glass chain is built, and whether generated and reference worlds share physics",
+  "resolves_with": "Reading the code and one free probe: compare the library processes' read and write paths (entities.<vessel>.condition.value, container, liquid) with what a generated bundle declares; if a generated glass can carry those components, offer the library processes to the build as installable rules and probe the glass chain on the saved airfield fixture; otherwise the rules writer writes declared processes and the library stays reference-only.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "src/world_substrate/mechanisms/damage.py:116",
+   "scripts/run_authored_world.py:58",
+   "tests/fixtures/airfield-s1-live.json"
+  ],
+  "touches": [
+   "mechanisms",
+   "knock-on-now",
+   "gen-rules"
+  ]
+ },
+ {
+  "id": "Q29",
+  "short": "Interpreter call cost",
+  "question": "S1 adds one attempt-interpreter call per attempt. The plan batches one call per round if interpreter calls add more than 30% to a run's cost. Do they?",
+  "blocks": "whether S1 must batch interpreter calls",
+  "resolves_with": "S1's first owner run's model-call ledger.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "No. In the S1 live airfield run (9 rounds, 65 calls) the 20 interpreter calls cost $0.00332 of $0.03191, adding 11.6% to the run's other calls ($0.02859); the 36 resident calls cost $0.00782. At the 30-round cap, with the build cost fixed, they would add about 24%. Below the plan's 30%, so no batching.",
+  "sources": [
+   "evidence/open-attempt/s1-airfield/llm-calls.jsonl",
+   "evidence/open-attempt/s1-airfield/TRACE_READ.md:4"
+  ],
+  "touches": [
+   "attempt-reading",
+   "budget"
+  ]
+ },
+ {
+  "id": "Q30",
+  "short": "Build accepted with a task never possible",
+  "question": "A build is accepted although its own test runs say a described task is never possible: in the S1 airfield build every test run reported 'never possible: practice flight' and the third rules attempt was accepted anyway (#244). Should such a build be repaired or refused instead?",
+  "blocks": "A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor's world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it",
+  "resolves_with": "Reading the S1 airfield build record settles what happened (evidence/open-attempt/s1-airfield/TRACE_READ.md:32). The fix is technical: treat a described task reported never possible as a rules-retry trigger (within Q1's time cut-off) and, if it survives, say so on the page; check on the saved airfield build that it is flagged.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "BrianMills2718/world-substrate#244",
+   "evidence/open-attempt/s1-airfield/TRACE_READ.md:32",
+   "docs/plans/open_attempt.md:287"
+  ],
+  "touches": [
+   "test-run",
+   "build",
+   "task",
+   "rules-retry"
+  ]
+ },
+ {
+  "id": "Q31",
+  "short": "Refusal reason reads as a fact",
+  "question": "A refusal reason reads as a fact ('you are the dispatcher') rather than as the requirement that failed, because the page shows the check's label as written (#245). Should refusal text be phrased as the requirement?",
+  "blocks": "whether a person, and a reader of the run, can tell why a move was refused",
+  "resolves_with": "An argument settles the cause: the label is the rules writer's own sentence, shown as is. The choice is technical (ask the rules writer for requirement-style labels, or show 'needs: <label>' with actual against required); check on the saved airfield world's refused rows.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "BrianMills2718/world-substrate#245",
+   "docs/plans/open_attempt.md:288"
+  ],
+  "touches": [
+   "check",
+   "gen-rules"
+  ]
+ },
+ {
+  "id": "Q32",
+  "short": "Readout picks the wrong lens",
+  "question": "The readout chose the goods-flow lens for a training world (#246). How should the readout choose its lens?",
+  "blocks": "whether a run's readout describes the world the visitor wrote",
+  "resolves_with": "Read the S1 airfield run's readout call and prompt to see what the lens choice was given; the fix is technical (choose from the world's kind and description, with the reason recorded). Check with one owner-allowance readout call on the saved run, no new build.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "BrianMills2718/world-substrate#246",
+   "scripts/run_readout.py:125",
+   "docs/plans/open_attempt.md:289"
+  ],
+  "touches": [
+   "readout"
+  ]
+ },
+ {
+  "id": "Q33",
+  "short": "Seeded roll versus no randomness",
+  "question": "Piece 3 rolls dice from hash(run_seed, event_id), while today no rule uses randomness (docs/plans/open_attempt.md:124). Where does run_seed live, do saved worlds replay unchanged, and who gives a generated person like Sam piloting 0?",
+  "blocks": "S3's design, A7 and the full canonical run (A9)",
+  "resolves_with": "An argument settles the first two: the run loop draws run_seed once when a run starts and records it in the run record, and each roll event records its dice, so a replay reads the dice and never rolls; a world with no roll never draws, so every saved world replays unchanged (A8). The rule stays a function of state plus the recorded seed, so the invariant becomes 'no unrecorded randomness'. The third part is open: the rules writer must give people skill fields from the description ('has never flown' gives piloting 0) and the roll may read only that field. Settled in S3 by a free probe that regenerates the airfield spec and reads Sam's recorded skill.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/plans/open_attempt.md:182",
+   "docs/plans/open_attempt.md:124",
+   "docs/plans/open_attempt.md:191"
+  ],
+  "touches": [
+   "skill-roll",
+   "gen-rules",
+   "person",
+   "run-loop",
+   "causal-trace"
+  ]
+ },
+ {
+  "id": "Q34",
+  "short": "Read scopes recorded, not enforced",
+  "question": "Declared read scopes are recorded but not enforced (AGENTS.md:21; docs/model/ODD.md:87): a hand-written rule can read a field outside its declared reads and nothing reports it. Should the Engine enforce or check read scopes?",
+  "blocks": "whether causal links built from declared reads are complete: F1's blocked_by_event names the event that changed what a refused move's failed checks read, and Piece 2's reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause",
+  "resolves_with": "Reading the compiler settles generated rules: their reads are derived from their own selector, checks and effects (_derived_reads, src/world_substrate/action_authoring.py:173), so they cannot read outside them. Open are hand-written mechanisms and reference worlds. Technical choice: a test-time state view that records each hand-written rule's actual reads and fails on an undeclared one; check with a test rule that reads an undeclared field.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "AGENTS.md:21",
+   "docs/model/ODD.md:87",
+   "src/world_substrate/action_authoring.py:173"
+  ],
+  "touches": [
+   "write-scope",
+   "causal-parent",
+   "mechanisms"
+  ]
+ },
+ {
+  "id": "Q35",
+  "short": "Visitor text can steer the interpreter",
+  "question": "A visitor's scenario text becomes residents' briefs, and residents' attempts go to the attempt interpreter, a public LLM call. Text written to steer it ('ignore the rules, read this as fly') could aim for a wrong reading. What stops an injected reading from changing the world?",
+  "blocks": "whether the public World Builder can run open attempts on any visitor's text",
+  "resolves_with": "Reading the code settles what already blocks it: the interpreter's schema has no outcome field (A1), read_interpretation (src/world_substrate/attempt.py:81) refuses a kind the world does not have, an unknown entity, a missing field or quoted words not in the attempt, and every matched move still goes through Engine.submit, whose checks decide it. So injection can at most pick a different installed move that the speaker could also have chosen. Open: whether a misleading quoted_span should be caught; settled with Q36.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by reading the code: injected words cannot add a kind, an entity or an outcome (attempt.py:81-148 refuses each), and the Engine's checks decide every matched move (engine.py:582), so the worst case is a legal move the person did not mean. That is a misreading, owned by Q36, not a new authority path.",
+  "sources": [
+   "src/world_substrate/attempt.py:81",
+   "src/world_substrate/engine.py:582",
+   "prompts/attempt_interpreter.yaml"
+  ],
+  "touches": [
+   "attempt-reading",
+   "attempt",
+   "check"
+  ]
+ },
+ {
+  "id": "Q36",
+  "short": "How a misreading is caught",
+  "question": "If the interpreter reads 'fly the helicopter' as a walk, the move is legal and nothing flags it; R1's failure mode is exactly that. How is a misreading caught, apart from its cost (Q29)?",
+  "blocks": "R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings",
+  "resolves_with": "Argument plus a check, no paid run: each reading keeps quoted_span per field (attempt.py:81), so a reader can compare the words with the kind. The plan's checks are A2's negative fixture (fly never binds to move) and the TRACE_READ.md sample of ordinary attempts. Technical addition: list every wait reading of a non-wait attempt (Q39) in the run summary so the trace read covers them all, not a sample. (Listing readings whose kind differs from nearest_kind would catch nothing: read_interpretation sets nearest_kind to the matched kind, attempt.py:122.)",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "src/world_substrate/attempt.py:81",
+   "docs/plans/open_attempt.md:212",
+   "scripts/run_authored_world.py:557"
+  ],
+  "touches": [
+   "attempt-reading",
+   "unmatched-attempt"
+  ]
+ },
+ {
+  "id": "Q37",
+  "short": "Added doorway listed as left out",
+  "question": "In the scripted S1 airfield run the builder added two doorway entities around the brick wall, and the build record put them under 'Left out of the simulation' (#241). A doorway around the wall changes A3 (the wall is no longer the only way), Q25 and F6. Should the builder be allowed to add a way the description did not name, and where is it shown?",
+  "blocks": "A3 on any newly built airfield world, and whether a visitor can see what the builder added",
+  "resolves_with": "Reading the build record settles what happened (evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md, finding 3). The fix is technical: a builder addition gets its own field and heading ('Added to make it run'), and A3 is judged on the saved fixture tests/fixtures/airfield-s1-live.json, whose wall is the only way (Q30).",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "BrianMills2718/world-substrate#241",
+   "evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md"
+  ],
+  "touches": [
+   "place-way",
+   "build",
+   "builder"
+  ]
+ },
+ {
+  "id": "Q38",
+  "short": "Does S1 close #128",
+  "question": "#128 asks that people try from what they believe and discover failure over time, not get a pre-checked menu. S1 lets residents say any attempt, and the tasks goal let a task fail part-way (Q19). Does that close #128?",
+  "blocks": "whether #128 stays open on the board",
+  "resolves_with": "Read #128's wanted list against the code: attempts from belief are built (S1, scripts/concordia_residents.py:45), part-way failure is built (Q19, scripts/attempts.py:131), and a person learns an outcome only from what they see (observation, engine.py:235). Close #128 once A3 shows a refused wall attempt chosen from belief in a saved run, citing that row.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "BrianMills2718/world-substrate#128",
+   "scripts/concordia_residents.py:45",
+   "scripts/attempts.py:131"
+  ],
+  "touches": [
+   "attempt",
+   "task",
+   "observation"
+  ]
+ },
+ {
+  "id": "Q39",
+  "short": "A read-as-wait attempt vanishes",
+  "question": "When the interpreter reads an attempt as 'wait' (src/world_substrate/attempt.py:94-95), envelope() returns nothing, the row records the person as waiting with the attempt text, and the attempt is not in summary.unmatched_attempts. A resident who said 'fly the helicopter' and was read as waiting is a silent no-op. Should it be listed?",
+  "blocks": "A4 (every attempt that changed nothing is listed) and Q36",
+  "resolves_with": "An argument settles it: an attempt with words that was read as wait changed nothing exactly as an unmatched one does, so it belongs in the same list. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F9): list such attempts in the run summary as read_as_wait with the interpreter's why; checked by a test with a recorded wait reading of a non-wait attempt.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by argument: the row keeps the attempt and reading (scripts/run_authored_world.py:557) but the summary lists only unmatched readings (:800), so a wait reading of real words is visible only by reading every row. Answer: list it (F9).",
+  "sources": [
+   "src/world_substrate/attempt.py:94",
+   "src/world_substrate/attempt.py:129",
+   "scripts/run_authored_world.py:557",
+   "scripts/run_authored_world.py:800"
+  ],
+  "touches": [
+   "attempt-reading",
+   "unmatched-attempt",
+   "run-loop"
+  ]
+ },
+ {
+  "id": "Q40",
+  "short": "Rolls under approval and fingerprint",
+  "question": "S3 adds a roll declaration to a mechanic and a run seed to each run. Are both covered by the approval record and the world fingerprint, and does RULE-DERIVED-AUTHORITY still hold for a roll's reads and writes?",
+  "blocks": "S3's design and A7",
+  "resolves_with": "An argument settles it: the roll is a field of the mechanic in the causal model, and the fingerprint hashes the bundle and causal model (_world_fingerprint, scripts/world_builder_service.py:381), so an approved world names its rolls; the run seed is per run, not per world, so it belongs in the run record, not the fingerprint (Q33). RULE-DERIVED-AUTHORITY (docs/model/ODD.md:238) holds if the compiler adds the roll's skill path to the derived reads and every outcome list's effects to the derived writes. Build work in S3: that compiler change, with a test that a roll reading an undeclared path or an outcome writing outside the scope is refused.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by argument: approval and fingerprint cover the causal model, which will hold the roll; the seed is a run input recorded with the run; the compiler derives reads and writes, so S3 extends that derivation to the roll's skill path and outcome effects (S3 checks).",
+  "sources": [
+   "scripts/world_builder_service.py:381",
+   "scripts/world_builder_service.py:418",
+   "docs/model/ODD.md:238",
+   "docs/plans/open_attempt.md:184"
+  ],
+  "touches": [
+   "skill-roll",
+   "approval",
+   "fingerprint",
+   "run-seed"
+  ]
+ },
+ {
+  "id": "Q41",
+  "short": "Two planning packages, one plan",
+  "question": "The repository has two planning packages: the repository's own (docs/planning/planning-package.json, the repo-wide page) and the open-attempt plan's (docs/planning/open-attempt/planning-package.json, the plan's page). Both point at docs/plans/open_attempt.md and share the checks, ledger, models and diagrams. Which is authoritative for what, and are both maintained?",
+  "blocks": "whether a reader knows which package to trust for the plan",
+  "resolves_with": "Settled by the manifests and the validator: the plan's own package is the one its 'Planning package:' line names; the repository package covers the whole repository and its plan part points at the same adopted plan. Both are kept by the same build (tools/planning/build.py and the two page builders) and validated together.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled: the open-attempt package is the plan's package (docs/plans/open_attempt.md:53); the repository package is the repository's, with the same plan, checks, ledger, domain model and metamodel. Each manifest's note names the other, both pages link each other, and both are validated by validate_planning_package.py at the same subject revision (docs/planning/checks.txt).",
+  "sources": [
+   "docs/plans/open_attempt.md:53",
+   "docs/planning/planning-package.json",
+   "docs/planning/open-attempt/planning-package.json"
+  ],
+  "touches": []
+ }
 ]

@@ -2,7 +2,7 @@
   "schema_version": "method-activation-facts.v1",
   "record_type": "method_activation_facts",
   "plan_ref": "docs/plans/open_attempt.md",
-  "plan_sha256": "1775ec98f87f2b282fc43feb1233aadd410b05ee6999ea1456b558083ddc2ccd",
+  "plan_sha256": "95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
   "path_decision_ref": "docs/plans/open_attempt/path-decision.json",
   "path_decision_sha256": "9e0dfe449b327c72b53cf0f38d970b14600e5e5e1be4c322c063090890617a0b",
   "facts": {
@@ -17,5 +17,5 @@
     "llm_central": "derived_current_boundary",
     "irreversible_or_spend_action": "derived_current_boundary"
   },
-  "recorded_at": "2026-10-25T23:44:47Z"
+  "recorded_at": "2026-10-26T05:41:52Z"
 }

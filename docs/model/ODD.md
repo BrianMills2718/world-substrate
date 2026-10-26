@@ -34,7 +34,7 @@ Each pattern is something a check or a person could observe. VIEW_COVERAGE.md re
 | # | Pattern | Where it is observable |
 | --- | --- | --- |
 | P1 | Every submitted attempt produces exactly one Engine event and one command; commands replay to identical statuses. | `World.events`, `World.commands`, `Engine.replay_commands` (`src/world_substrate/engine.py:879`) |
-| P2 | A refused attempt leaves `hash_before == hash_after` and the revision unchanged. | event `changes` empty; `hash_*` (`engine.py:505-545`) |
+| P2 | A refused attempt leaves `hash_before == hash_after` and the revision unchanged. | event `changes` empty; `hash_*` (`engine.py:529-580`) |
 | P3 | `revision` rises by exactly one per committed event; `tick` rises by one per round. | `engine.py:667`, `:842`, `advance` |
 | P4 | No `/run` or `/compare-native-coordination` executes without `approved: true`; every `/run` recompiles the causal model before any policy or model call. | HTTP 409 (`scripts/world_builder_service.py:998-1000`); compile at `:1006` |
 | P5 | Causal-model action kinds equal the bundle's action kinds, exactly. | `src/world_substrate/action_authoring.py:383-391` |
@@ -224,16 +224,16 @@ Each rule below is enforced by the cited code.
 
 **8.1 Envelope validation** (`src/world_substrate/engine.py:409-433`). An attempt must be an object with string keys, nonempty `actor`, `kind`, `controller`, and an integer `base_revision`; otherwise one `invalid_action` event and command are written with the claimed actor (`:464-503`). An unknown kind becomes `unsupported_action` (`:577`); a payload the rule cannot parse is `invalid_action`.
 
-**8.2 Transition** (`engine.py:558-723`), in order:
+**8.2 Transition** (`engine.py:582-747`), in order:
 1. revision check: `base_revision` must equal the world's revision (`:566`); false -> `stale_revision` (`:613`);
 2. rule checks run on a detached candidate; if checks mutated it -> `scope_violation` (`:595`; checks only read, RULE-CHECKS-ARE-READ-ONLY); any failed check -> `precondition_failed` (`:617`);
 3. the rule applies to the candidate; a write to engine-owned state -> `scope_violation` (`:647`);
 4. revision += 1 (`:667`); the diff must fall inside the rule's declared `write_paths` for the entities named by the attempt (`:669-674`) -> else `scope_violation` (`:678`; RULE-WRITE-SCOPE);
 5. commit: the candidate replaces the world (`:722`), one `accepted` event (`:695`) and one `action` command (`:716`).
 
-**8.3 Process tick** (`engine.py:762-877`). `advance(n)` writes one `advance` command per tick (`:773`), increments the tick, and applies each due process in declared order on a candidate; each commit writes an `accepted` event (`:856`). An out-of-scope process write raises `ScopeViolation`; `advance` restores the pre-tick world (`:801`) and re-raises, so **no event records the defective process**: the failure surfaces as a request error instead.
+**8.3 Process tick** (`engine.py:786-902`). `advance(n)` writes one `advance` command per tick (`:797`), increments the tick, and applies each due process in declared order on a candidate; each commit writes an `accepted` event (`:885`). An out-of-scope process write raises `ScopeViolation`; `advance` restores the pre-tick world (`:825`) and re-raises, so **no event records the defective process**: the failure surfaces as a request error instead.
 
-**8.4 Event record** (`engine.py:505-556`). Fields: `event_id, causal_bearer, semantic_binding, observation, tick, world_revision, rule_id, rule_version, cause, status, checks, declared_read_paths, declared_write_paths, changes, hash_before, hash_after`, plus `causal_parent_event_ids` when a rule declares hard ancestry and `information_context` when the observation carried information.
+**8.4 Event record** (`engine.py:529-580`). Fields: `event_id, causal_bearer, semantic_binding, observation, tick, world_revision, rule_id, rule_version, cause, status, checks, declared_read_paths, declared_write_paths, changes, hash_before, hash_after`, plus `causal_parent_event_ids` when a rule declares hard ancestry and `information_context` when the observation carried information.
 
 **8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 28 processes (`MAX_PROCESSES`, `:29`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer (RULE-DERIVED-AUTHORITY).
 
@@ -257,7 +257,7 @@ Each rule below is enforced by the cited code.
 
 **8.15 Living-scene frames** (`src/world_substrate/living_scene.py:38-49`, `:380-405`, `:532`). Feedback accepts every engine status (plus three legacy names) and exposes check labels and verdicts only, never operands; a frame shows effects only for events whose rule has a declared visual. Renderer placement: an actor's latest `actor.move_to` sets its point; actors with the same target share one point (`scripts/render_living_scene.py:129`, `scripts/render_composed_living_scene.py:106`; issue #106, G9).
 
-**8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:248`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:553`; RULE-INFORMATION-IS-NOT-CAUSE).
+**8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:235`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:577`; RULE-INFORMATION-IS-NOT-CAUSE).
 
 **8.17 Linked process participants** (`action_authoring.py:672-741`). Names other than `it`/`actor`; each `{link, selector}`; link one of `PROCESS_LINKS` or `ref:<component>.<field>` naming an `entity_ref` field. Bindings are the product of each link's candidates; an empty link drops the binding. Effects may target any participant by name.
 
@@ -287,7 +287,9 @@ The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its 
 Since the goals `best-of-all-worlds`, `waltzman-belief-and-traces` and `waltzman-tasks-slice2`, the World Builder builds
 a world about people, not only a world about things. This section is what that path stores, changes and records.
 Which ideas are fixed substrate code and which are written per world by an AI is drawn in the domain model,
-[DOMAIN.md](DOMAIN.md).
+[DOMAIN.md](DOMAIN.md). The kinds of things any world's rules relate (entity, component, place, move kind, check, effect,
+process, affordance, attempt, observation) and how each maps onto the shared hypergraph kernel are in the metamodel,
+[METAMODEL.md](METAMODEL.md), built by `scripts/build_metamodel.py`.
 
 ### 11.1 Two kinds of rules in one people world
 
@@ -322,24 +324,35 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
 - **Test-run record** (`:1623-1657`): circling, stalled actors, `long_tasks` (each task kind, who starts it, and
   `can_fail_part_way`), `part_way_findings` (E1, `scripts/attempts.py:131-146`) and `attempt_findings`; each lowers the
   score by 1.
+- **Places and ways** (since Q23, 2026-10-25): when a description names separate places, the bundle contract asks the
+  world-writing AI for place entities, every other entity's starting `location`, a move action with `to` and `way`
+  fields, and ways (a door, a brick wall) with a `passable` flag (`scripts/generate_world_bundle.py:94-100`); the
+  bundle validator refuses an unknown place (`scripts/scaffold_world.py:101-104`), and the rules writer must give the move rule
+  checks that the actor is at the way and the way is passable (`scripts/generate_causal_model.py:424-432`). Places and
+  ways are written per world; the substrate has no place type of its own. A way works from its first place to its
+  second only (Q25).
 - The build streams up to 40 progress steps through `/jobs/<id>` (`:342-343`, `:722-736`).
 
-### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:335-760`)
+### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:347-815`)
 
 - **Resident:** one Concordia agent per person (`scripts/concordia_residents.py`), memory of up to 12 notes,
-  round-tripped through the page. It answers `belief, action_id, expected_effect, work, reasoning` (`:29-40`). It is
+  round-tripped through the page. On the live path (open attempts, below) it answers `belief, attempt, expected_effect,
+  work, reasoning` (`OPEN_SCHEMA`, `:44-52`); the older menu reply has `action_id` in place of `attempt` (`:29-40`). It is
   shown the world summary, its brief, its memory, its own state, what it can see, up to 6 recent moves, and the offered
   moves plus `wait`. Other people's `work` records are hidden (`run_authored_world.py:132-142`).
 - **Round order:** everyone decides first (in parallel), the picks are submitted in a rotating order, then
   `advance(1)` runs due processes, then tasks are started and ended from the round's events (`:460-646`).
-- **A lost race:** when an earlier pick changed the state, the same move is resubmitted if still offered. Otherwise
-  the resident is told "your choice was no longer allowed after earlier moves this round; choose again" and chooses
-  once more from the new offer (`:536-556`); if that choice is nothing or `wait`, its row reads `nothing_left`
-  (`:570-572`). The retry prompt also shows the round's earlier moves (who, which rule, `:547`, `:145-155`), but not
-  which of them blocked the choice, and the row does not link the refusal to that event (open question Q2).
-- **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said` (the words behind the first choice),
-  `said_on_retry` (the retry's words, `:599-600`), `started_task`, `belief`, `expects`; each round records
-  `world_events` and `underway`. The readout quotes `said` only (`scripts/run_readout.py:93`; open question Q10).
+- **A lost race:** when an earlier pick changed the state (`stale_revision`, `:563`), an open attempt is resubmitted
+  as the same attempt at the new revision and only its rule's checks decide it; nobody is asked again (`:571-573`).
+  On the older menu paths (scripted, `llm`, menu residents) the same move is resubmitted if still offered, otherwise the
+  person chooses once more from the new offer (`:574-605`; the resident is told "choose again", `:581`), and an empty
+  choice reads `nothing_left` (`:606-608`). On every path the refused row lists the failed check labels
+  (`refused_because`, `:622-627`) but not the event that changed the state before it (open question Q2, resolved by
+  argument; the fix is listed in `docs/plans/open_attempt.md`).
+- **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said` (the words behind the first choice, `:621`),
+  `said_on_retry` (a menu retry's words, `:637-638`; never written on the open-attempt path, where nobody is asked
+  again), `started_task`, `belief`, `expects`; each round records `world_events` and `underway`. The readout quotes
+  `said` only (`scripts/run_readout.py:93`; open question Q10, resolved: it matters only on the menu paths).
 - **Open attempts (live default since S1 of `docs/plans/open_attempt.md`, `run_world(open_attempts=True)`):** the
   resident answers `attempt` (its own words) in place of `action_id`, from
   `prompts/concordia_resident_open_attempt.yaml`, which shows the offered moves as "things you know you can do here".

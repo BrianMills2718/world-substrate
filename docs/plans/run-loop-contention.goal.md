@@ -1,5 +1,7 @@
 # Goal: no round runs or bills twice, and a run's record says why each move was refused
 
+**Superseded 2026-10-26, never adopted.** Brian's 2026-10-25 "yes" made [open_attempt.md](open_attempt.md) the active plan (Q13, resolved), and this goal's resident "choose again" prompt is no longer on the live path (open attempts resubmit, `scripts/run_authored_world.py:571-573`). Its three fixes are settled by argument and listed in open_attempt.md, "Fixes settled by argument" (F1 = Q2, F2 = Q6, F4 = Q10). Kept as the record of how they were chosen.
+
 Planning package: docs/planning/planning-package.json
 
 Follows [waltzman-tasks-slice2.goal.md](waltzman-tasks-slice2.goal.md), which is done. Chosen from the planning

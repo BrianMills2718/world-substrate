@@ -1,32 +1,41 @@
-# Cold review of the planning package
+# Cold review, repo-wide package (rounds 4 and 5)
 
-Reviewer: the `company-planning:planning-compliance-reviewer` subagent, a fresh read with no session context. This is an
-agent review, not Brian's approval.
+Reviewer: `planning-compliance-reviewer` subagent, a re-review given the round-3 report (R1–R7). Earlier rounds: 1 through 3 were revise; the round-3 findings were fixed in `fdaf2ed` and `c028b4b`.
 
-| Round | Commit | Verdict | What it found |
-| --- | --- | --- | --- |
-| 1 | a895f7f | revise | The project-check command could not be reproduced as recorded. Q2 claimed losers are never asked to choose again (they are, `run_authored_world.py:544-556`). Q10 cited a comment. Q5, Q7 and Q11 were answerable now. Q1 and Q8 had wrong cites. ODD 11.1 had the models wrong. The domain model lacked policy, Linguistic Core senses, frozen profile, write scope, causal trace, world kind and the World Builder. The page loaded libraries from a CDN. |
-| 2 | 3673408 | revise | Q2 still claimed losers are never told who took the thing; the retry prompt shows the round's earlier moves (c1r24 call 18016). The same false sentence was in ODD 11.3, DOMAIN and the next goal. Q3 proposed a free replay that cannot show AI behaviour. The manifest command carried a note. The page caption was stale. The domain map was unreadable at its starting zoom. |
-| 3 | 0ef2c35 | **pass** | No premise errors. Minor: the goal's round-14 counts, Q1 not saying no observed world needed repair, no scene-replay concept, two weak code anchors, Q12's "6 rounds" uncited. All five were fixed after the pass. The context diagram's label overlap (mermaid C4) was left as is. |
+**Validator:** 8 of 8 parts ok. 4 of 5 substance checks ok; the one failure was the expected `cold_review.reviewed_revision is absent`, which this report supplies. 105 citations resolve, 57 concepts are implemented and 5 dashed, 39 concepts are relied on, and 29 of 29 types map. Exit 1 before this report was recorded.
 
-Round 3 checks, reproduced by the reviewer against the sources:
+**Rerun checks:** `check_project.py` ran 718 tests, OK, 2 skipped, exit 0, matching the manifest. `check_trace_reads.py` reported 11 runs, 0 problems, exit 0, also matching.
 
-- Q2: call 18016's prompt ends with "your choice was no longer allowed after earlier moves this round; choose again".
-  It also carries "What just happened: - community-group: decision.action.settle-agenda-matter"
-  (`run_authored_world.py:547`). Neither the prompt nor the row names the refused move or the blocking event.
-- Q3: the round-40 quote is at `c1r24/TRACE_READ.md:110` and `:602`. It names both hypotheses and ties the paid run
-  to a decision.
-- Q5: call 18032 shows `status deployed, support 5` together with `approved False, authorized False`. This matches
-  `compile_spec.py:33-34` and `:626`.
-- Q11: calls 17868, 17870 and 17876-17878 carry no concern items.
-- Q1: start times of 85, 101 and 111 s against the 80 s cut-off (`world_builder_service.py:263`).
-- Q9: #217. Q10: `run_authored_world.py:584`, `:599-600`, `run_readout.py:93`, `render_scene_replay.py:398`.
-- Q13 and Q14: the cited roadmap lines and Decision 008:48.
-- The plan follows from Q6, Q10 and Q2. Its F1-F3 are testable on free replays, with one paid run for F4.
-- The page shows all eight parts. Its checks table matches the manifest.
+## Previous findings
 
-The project check was reproduced by round 2 with the recorded command: 710 tests, OK (skipped=2), exit 0. It was
-rerun at 0ef2c35 with the same result.
+- R1 fixed. Both manifests name each package's role, `docs/plans/open_attempt.md:53` states it, and the two pages cross-link (Q41 resolved).
+- R2 fixed. Both `relies_on` lists hold the same 39 concepts, including approval and fingerprint.
+- R3 fixed. Q8 and F3 (`docs/plans/open_attempt.md:440`) exempt fixed facts, using the airfield wall's `components.boundary.passable` (`tests/fixtures/airfield-s1-live.json:392`) as the example.
+- R4 fixed. The graph has nodes for `mechanic` (`action_authoring.py:456`), `entity-component` (`model.py:223`) and `run-seed` (theory only).
+- R5 fixed. `people-world` cites `ODD.md:285`, `rollout` cites `compile_spec.py:436`, `exchange` cites `exchange.py:68` and `transition-envelope-v0.md:42`, and `check` cites `rules.py:48`.
+- R6 fixed. Q35 is resolved: `attempt.py:81` refuses unknown kinds and entities, and `engine.py:582` decides every move. Q36 is open and names its checks.
+- R7 not fixed. A minor label overlap in the context diagram. Weight: note.
 
-Lesson from rounds 1 and 2: a "people are never told X" premise is checked against an actual saved prompt, not only
-against the code path that adds one line to it.
+## New findings (all notes)
+
+- The fix list said `check` cites `ODD.md:229`, but the graph cites `rules.py:48`, which is the better citation. Note.
+- Q36's proposed resolution is an argument plus a check, with no paid run. Acceptable. Note.
+- 19 questions remain open. The reviewer did not re-audit each one this round. Q27 is correctly Brian's decision. Note.
+- The page loads its local data and viewer, shows the 718-test check value, and the cross-link resolves. It was not rendered in a browser during the review; it was rendered separately by Playwright, with 0 console errors. Note.
+
+Unsure: whether the R7 overlap is gone, and whether all 19 open questions are truly unanswered.
+
+Reviewed revision (round 4): c028b4b66639189e168ddb76b97cf93bae60d3e6, verdict pass.
+
+## Round 5 (commit f645471): pass
+
+Reviewed only the change since round 4, `git diff c028b4b f645471`, which fixed findings against the sibling open-attempt package that shares this ledger and model:
+- Q36 drops a check that would always be empty (`read_interpretation` sets nearest_kind to the matched kind);
+- Q39 now cites `attempt.py:94` and `:129`;
+- the metamodel's "Attempt reading" now includes the wait reading.
+The rebuilt `open-questions.json`, `metamodel.graph.json`, `METAMODEL.md` and `data.js` agree with their sources. The validator had 8 of 8 parts ok; freshness ok. checks.txt records 718 tests OK, exit 0.
+
+- Note: Q36 cites `attempt.py:122` for the matched-kind return, which is at `:123` (:122 is the unmatched return, which also sets nearest_kind to kind). This does not change the conclusion.
+
+Reviewed revision: f6454711cca548331f7b17d05aef66d69c3aa787
+Verdict: pass

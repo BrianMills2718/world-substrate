@@ -454,5 +454,6 @@ Every candidate came out as compose, not adopt. Brian approved the narrow govern
 1. hardening that protects existing behaviour (the queue above: executable-law fingerprint, role-specific write scopes, explicit affordance overflow, mechanic exceptions as recorded refusals);
 2. keeping the public World Builder backend healthy on the VPS (restored 2026-10-05; deploy with personal-vps `apps/world-builder/deploy.sh`);
 3. when a world first needs LLM residents or spatial/sweep structure, hosting it on Concordia or Mesa per the disposition instead of extending the native loop.
+4. the adopted open-attempt plan ([docs/plans/open_attempt.md](../docs/plans/open_attempt.md), Brian's "yes" on 2026-10-25): open attempts (S1, built) and skill rolls (S3). Same-moment knock-on effects (S2) wait on Brian's answer to open question Q27: whether a fixpoint inside the one existing commit in `engine.py` counts as the engine capability this roadmap and Decision 006 forbid (recommendation: it does not; default: S2 waits).
 
 Do not add engine, scheduler, renderer or cognition capability of World Substrate's own.

@@ -1,10 +1,11 @@
-Checks run 2026-10-24 on branch planning/compliance (subject revision 6a8e37e plus this package).
+Checks run 2026-10-26 on branch model/operational-ontology at subject revision f645471.
 
 == durable documents (arc42): python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
-durable-docs: mode=repo repo=/home/brian/code2/world-substrate-wt/readout findings=0 (none), exit 0
+durable-docs: mode=repo repo=/home/brian/code2/world-substrate-wt-ontology findings=0 (none), exit 0
 exit 0
 
 == project navigation: python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .
+DELEGATED wiki/index.md: workspace wiki rule; project-wiki/v1 schema not applied; reachability, cap and layout are checked by python3 ~/code/project-meta/scripts/md_file_cap.py --repo R
 REPORT ONLY: 0 finding(s); semantic truth and approval were not evaluated
 exit 0
 
@@ -14,12 +15,18 @@ RESULT repo-format compliant=0 of=1 exit=1
 exit 1
 
 == trace reads: python3 scripts/check_trace_reads.py
-RESULT runs=9 problems=0
+RESULT runs=11 problems=0
+exit 0
+
+== wiki and Markdown cap: python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo .
+EXCEPTION    134/180  BrianMills2718/world-substrate  -- Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from wiki/catalog.md.
+REPO  BrianMills2718/world-substrate  md=134  cap=exception  reach=ok(0)  layout=undeclared(0)  durable=ok(0)
+md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=1 orphans=0 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=1 findings=0 undeclared=0   exit 0
 exit 0
 
 == project check: PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py
 World Substrate project check passed.
-Neutral runtime tests: Ran 710 tests in 109.091s · OK (skipped=2)
+Neutral runtime tests: Ran 718 tests in 158.069s · OK (skipped=2)
 Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
 Planning path: README.md -> roadmap/README.md -> active slice
 Pinned source records checked: 16
