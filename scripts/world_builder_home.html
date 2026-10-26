@@ -159,7 +159,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
             <option value="people">People with their own goals</option>
             <option value="things">Things and the steps of a job</option>
           </select></label>
-        <label class="small" title="Instead of simple automatic moves (each person takes the allowed move they did least recently), an AI picks each person’s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses each person’s moves</label>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
         <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
       </div>
@@ -219,7 +218,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <h2 id="run-h">Your world is running</h2>
         <div class="row live-controls">
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
-      <label class="small muted" title="On: an AI chooses each person’s move (a few seconds per round, costs a little). Off: each person takes the first move the rules allow (instant, free). You can switch while it plays."><input type="checkbox" id="ai-live"> AI chooses each move</label>
     </div>
     <p class="small muted" id="live-status" role="status"></p>
     <div id="stuck-note"></div>
@@ -575,8 +573,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       const data = await apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
       if (gen !== buildGen) return;
       renderReview(data);
-      // People worlds are played by AI members, each reading their own brief (2026-10-15).
-      if (data.world_def === "people") $("ai-moves").checked = true;
       // Pressing Create simulation is the approval (2026-10-15); the rules stay one click away.
       if (data.dry_run.ok) startLive();
     } catch (err) {
@@ -672,7 +668,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Brian, 2026-10-06: "we should probably have some 'are you still there after
   // 100 moves' that pauses and the user can unpause".
   const CHECK_IN_ROUNDS = 100, STUCK_ROUNDS = 15;
-  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, ROUND_PAUSE_MS = 1500, REPLAY_PAUSE_MS = 600;
+  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, REPLAY_PAUSE_MS = 600;
   let live = null;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   function setTip(el, text) {
@@ -764,15 +760,16 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
 
   async function fetchRounds() {
-    const ai = $("ai-moves").checked;
-    // AI moves are played by Concordia residents, each with its own memory carried from round to round, who say in
+    // Every move is chosen by an AI (Brian, 2026-10-26: "it seems dumb to even have ai doesnt choose move as an
+    // option"). Moves are played by Concordia residents, each with its own memory carried from round to round, who say in
     // their own words what they try (docs/plans/open_attempt.md). People worlds add each person's brief; in a things
     // world a resident knows the world, its own state and what it sees.
-    const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "resident" : "scripted", turns: 1 };
-    if (ai) { if (world.briefs) request.briefs = world.briefs; if (live.memory) request.resident_memory = live.memory; }
+    const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: "resident", turns: 1 };
+    if (world.briefs) request.briefs = world.briefs;
+    if (live.memory) request.resident_memory = live.memory;
     if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
-    // Simple moves are instant, so ask directly; AI rounds take a few seconds and go through a job.
-    return ai ? apiJob("/run", request, 1000) : api("/run", request);
+    // AI rounds take a few seconds and go through a job.
+    return apiJob("/run", request, 1000);
   }
 
   async function playLoop() {
@@ -831,16 +828,15 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         live.why = `Paused after ${CHECK_IN_ROUNDS} rounds. Still watching? Press Play to carry on.`;
       }
       renderLive();
-      // Simple moves are instant; pause so each round can be read. AI rounds take long enough already.
+      // A replay is instant; pause so each round can be read. AI rounds take long enough already.
       if (live.playing && live.replay) await sleep(REPLAY_PAUSE_MS);
-      else if (live.playing && !$("ai-moves").checked) await sleep(ROUND_PAUSE_MS);
     }
   }
 
   function play() {
     if (!live || live.finished) return;
     live.gen++; live.playing = true; live.sincePlay = 0;
-    live.why = live.replay ? "Replaying the recorded rounds; nothing is being decided now." : $("ai-moves").checked ? "An AI is choosing each move, so each round takes a few seconds." : "";
+    live.why = live.replay ? "Replaying the recorded rounds; nothing is being decided now." : "An AI is choosing each move, so each round takes a few seconds.";
     renderLive(); playLoop();
   }
   function pause() {
@@ -857,10 +853,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
              sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded };
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
-    $("share-btn").hidden = live.replay; $("ai-live").parentElement.hidden = live.replay;
+    $("share-btn").hidden = live.replay;
     $("replay").closest("details").hidden = live.replay;  // a recording has no picture yet
     $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
-    $("ai-live").checked = $("ai-moves").checked;
     show("run");
     play();
   }
@@ -996,7 +991,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); refreshBuild(); $("dialogue").hidden = true; build(); });
   $("rules-btn").addEventListener("click", () => { pause(); show("review"); });
   $("play-btn").addEventListener("click", () => { if (live && live.playing) pause(); else play(); });
-  $("ai-live").addEventListener("change", () => { $("ai-moves").checked = $("ai-live").checked; if (live && live.playing) live.why = $("ai-live").checked ? "An AI is choosing each move, so each round takes a few seconds." : ""; });
   $("strip").addEventListener("click", () => { $("detail").dataset.touched = "1"; });
   $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
   $("change-btn").addEventListener("click", () => show("describe"));

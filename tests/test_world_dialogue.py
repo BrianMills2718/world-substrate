@@ -35,7 +35,7 @@ class WorldDialogueTests(unittest.TestCase):
         self.assertFalse(out["ready"])
         sent = call.call_args.args[1]
         self.assertEqual(sent[0]["role"], "system")
-        self.assertIn("cannot represent clocks", sent[0]["content"])
+        self.assertIn("cannot yet roll dice", sent[0]["content"])
         self.assertEqual(sent[-1], {"role": "user", "content": "gardeners and a watering can"})
 
     def test_reply_shape_is_bounded(self):

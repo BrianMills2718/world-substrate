@@ -37,6 +37,17 @@ SIZE_RULES = [
     "At least one entity is an actor that can act (give it a component such as worker/person and a clear category).",
     "Every action must be something an actor in this world could plausibly do repeatedly until the situation resolves.",
     "Represent the state the actions change (e.g. stage, count, location) as component fields with typed defaults.",
+    # Brian, 2026-10-26, on an I, Pencil world that left out revenue, prices, distances, delivery times and
+    # packaging: "why are we leaving these out". Each is ordinary represented state.
+    "Represent money and value the description mentions: a number field for each actor's or business's cash, "
+    "and a price field on what is sold; a sale or purchase action moves the goods one way and the money the "
+    "other. Represent feelings or relationships (mood, trust, hunger) as number fields when they change what "
+    "people do.",
+    "Represent anything that takes several rounds (a delivery on the road, a shipment, a journey, a "
+    "deadline) as an integer field counting the rounds left, set by the action that starts it, so a rule "
+    "process can count it down each round and finish it at zero; a longer distance is a larger starting count.",
+    "Represent packaging, containers and small materials the description names as their own entities or "
+    "counted stock rather than dropping them.",
     "Follow world_kind_rule: a task world must be able to finish (represented state from which 'done' can be read); ongoing and open worlds must have state that keeps changing.",
 ]
 
@@ -62,8 +73,10 @@ def _contract() -> dict[str, Any]:
         ),
         "not_modeled": (
             "Top-level list of short plain-English strings naming every part of the description you could NOT "
-            "represent with this format (for example deadlines, clocks, probabilities, money, distances). "
-            "Use [] only if everything was represented."
+            "represent with this format. Almost everything can be: money, prices, revenue, wages, feelings and "
+            "distances are number fields; places are entities; packaging and small materials are entities or "
+            "counted stock; delivery and travel times and deadlines are round counts. List only what truly cannot "
+            "be (dice-roll chance, real clock time). Use [] when everything was represented."
         ),
         "rules": [
             "Every entity component object must list exactly the component's declared fields, with values of the declared type.",
@@ -106,9 +119,9 @@ def _contract() -> dict[str, Any]:
 
 WORLD_KINDS = ("task", "ongoing", "open")
 SIZE_BY_KIND = {
-    "task": "2 to 10 entities; 1 to 4 components; 1 to 4 actions.",
+    "task": "2 to 16 entities; 1 to 6 components; 1 to 6 actions.",
     "ongoing": (
-        "A whole working system, typically 10 to 30 entities with at most 12 that can act, up to 8 components and 3 to 8 actions. Model it "
+        "A whole working system, typically 10 to 40 entities with at most 12 that can act, up to 10 components and 3 to 12 actions. Model it "
         "as a chain or web of specialists: several actors, each with their own role who can only do their own "
         "step (for a supply chain: raw-material producers, processors, makers of parts, assembly, transport, "
         "shops, customers), with intermediate goods passed between them as counted stock (integer quantity "

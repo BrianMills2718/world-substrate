@@ -26,10 +26,15 @@ MAX_TURNS = 12
 MAX_MESSAGE_CHARS = 2000
 MAX_DESCRIPTION_CHARS = 2000
 
+# Brian, 2026-10-26: "i dont get why there is antyhgin we cant model?". Money, prices, feelings and amounts are
+# number fields; places and the ways between them are entities; travel or delivery time is a count that goes down
+# each round. Only true chance and real clock time stay out until skill rolls (open_attempt S3).
 SCOPE = (
-    "The simulator handles small, turn-based situations: 2 to 10 named things, a few people or machines who "
-    "act, things they share, use or move, simple counts and stages, and a clear finish line. It cannot "
-    "represent clocks or deadlines, probabilities, money, distances or feelings."
+    "The simulator runs turn-based situations: named people, machines, places and things; what they share, use, "
+    "make, buy, sell or move; amounts of anything (stock, money, prices, wages, distance, hunger, trust, mood) as "
+    "numbers; stages; places and what lies between them; and things that take several rounds (a delivery on the "
+    "road, bread rising, a deadline in rounds) as a count that goes down each round. It cannot yet roll dice "
+    "(true chance) or follow real clock time; describe those as rounds and amounts instead."
 )
 
 WORLD_KINDS = ("task", "ongoing", "open")
@@ -130,8 +135,9 @@ def clarify(
         + " Each turn: briefly reflect what you understood, then ask at most three short questions that would "
         "most change the simulation (who acts, what they share or use, what blocks what, what counts as "
         "finished), each with two to four short suggested answers the visitor can click; every suggested answer "
-        "must be something the simulator can represent (no money, clocks, chance or distances). Do not ask about "
-        "things the simulator cannot represent; if the visitor mentions them, say plainly they will be left out. "
+        "must be something the simulator can represent. Money, prices, distances, travel times, deadlines and "
+        "feelings can all be represented as numbers, places and rounds, so ask about them when they matter. If the "
+        "visitor wants true chance or real clock time, suggest how to say it in rounds and amounts instead. "
         "Always also write the best complete description so far (two to four sentences, concrete names and "
         "counts). Set ready true when the description has actors, the things they use, and (for a task world) a "
         "finish line or (for ongoing and open worlds) what keeps changing by itself. "
