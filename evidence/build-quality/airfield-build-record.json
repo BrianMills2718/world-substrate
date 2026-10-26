@@ -1,0 +1,1670 @@
+{
+ "ok": true,
+ "description": "A small airfield office: a brick wall between the office and the hangar, a glass of water on the desk, a helicopter in the hangar, and Sam, a trainee who has never flown.",
+ "world_kind": "ongoing",
+ "not_modeled": [],
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "airfield-office",
+   "label": "Airfield Office",
+   "summary": "Sam and the airfield crew manage recurring flight training and upkeep around an office and hangar.",
+   "location": "airfield-office",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "person",
+    "fields": [
+     {
+      "name": "role",
+      "type": "string",
+      "default": "trainee"
+     },
+     {
+      "name": "flights",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   },
+   {
+    "name": "aircraft",
+    "fields": [
+     {
+      "name": "fuel",
+      "type": "integer",
+      "default": 8
+     },
+     {
+      "name": "service_needed",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "water_stock",
+    "fields": [
+     {
+      "name": "glasses",
+      "type": "integer",
+      "default": 1
+     }
+    ]
+   },
+   {
+    "name": "partition",
+    "fields": [
+     {
+      "name": "place_a",
+      "type": "entity_ref",
+      "default": "office"
+     },
+     {
+      "name": "place_b",
+      "type": "entity_ref",
+      "default": "hangar"
+     },
+     {
+      "name": "passable",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "flight_queue",
+    "fields": [
+     {
+      "name": "waiting",
+      "type": "integer",
+      "default": 1
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "office",
+    "label": "Airfield office",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "hangar",
+    "label": "Hangar",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "brick-wall",
+    "label": "Brick wall",
+    "categories": [
+     "barrier"
+    ],
+    "components": {
+     "partition": {
+      "place_a": "office",
+      "place_b": "hangar",
+      "passable": false
+     }
+    }
+   },
+   {
+    "id": "office-door",
+    "label": "Office door",
+    "categories": [
+     "passage"
+    ],
+    "components": {
+     "partition": {
+      "place_a": "office",
+      "place_b": "hangar",
+      "passable": true
+     }
+    }
+   },
+   {
+    "id": "hangar-door",
+    "label": "Hangar door",
+    "categories": [
+     "passage"
+    ],
+    "components": {
+     "partition": {
+      "place_a": "hangar",
+      "place_b": "office",
+      "passable": true
+     }
+    }
+   },
+   {
+    "id": "sam",
+    "label": "Sam",
+    "categories": [
+     "actor",
+     "trainee"
+    ],
+    "location": "office",
+    "components": {
+     "person": {
+      "role": "trainee",
+      "flights": 0
+     }
+    }
+   },
+   {
+    "id": "instructor",
+    "label": "Flight instructor",
+    "categories": [
+     "actor",
+     "mechanic"
+    ],
+    "location": "office",
+    "components": {
+     "person": {
+      "role": "mechanic",
+      "flights": 0
+     }
+    }
+   },
+   {
+    "id": "mechanic",
+    "label": "Aircraft mechanic",
+    "categories": [
+     "actor",
+     "mechanic"
+    ],
+    "location": "hangar",
+    "components": {
+     "person": {
+      "role": "mechanic",
+      "flights": 0
+     }
+    }
+   },
+   {
+    "id": "dispatcher",
+    "label": "Flight dispatcher",
+    "categories": [
+     "actor",
+     "dispatcher"
+    ],
+    "location": "office",
+    "components": {
+     "person": {
+      "role": "dispatcher",
+      "flights": 0
+     }
+    }
+   },
+   {
+    "id": "helicopter",
+    "label": "Helicopter",
+    "categories": [
+     "aircraft"
+    ],
+    "location": "hangar",
+    "components": {
+     "aircraft": {
+      "fuel": 8,
+      "service_needed": false
+     }
+    }
+   },
+   {
+    "id": "glass-of-water",
+    "label": "Glass of water",
+    "categories": [
+     "water",
+     "drink"
+    ],
+    "portable": true,
+    "owner_ref": "place:office",
+    "location": "office",
+    "components": {}
+   },
+   {
+    "id": "water-supply",
+    "label": "Water supply",
+    "categories": [
+     "supply"
+    ],
+    "location": "office",
+    "components": {
+     "water_stock": {
+      "glasses": 1
+     }
+    }
+   },
+   {
+    "id": "flight-board",
+    "label": "Flight board",
+    "categories": [
+     "work-queue"
+    ],
+    "location": "office",
+    "components": {
+     "flight_queue": {
+      "waiting": 1
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "dispatch-flight",
+    "description": "Assign a waiting training flight to the instructor and trainee.",
+    "fields": [
+     {
+      "name": "trainee",
+      "type": "entity_ref"
+     },
+     {
+      "name": "instructor",
+      "type": "entity_ref"
+     },
+     {
+      "name": "board",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "conduct-training-flight",
+    "description": "Conduct a training flight with the trainee in the helicopter.",
+    "fields": [
+     {
+      "name": "trainee",
+      "type": "entity_ref"
+     },
+     {
+      "name": "helicopter",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "service-helicopter",
+    "description": "Inspect and service the helicopter.",
+    "fields": [
+     {
+      "name": "helicopter",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "refill-water",
+    "description": "Use the water supply to refill the glass.",
+    "fields": [
+     {
+      "name": "supply",
+      "type": "entity_ref"
+     },
+     {
+      "name": "glass",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "move",
+    "description": "Move to a destination place through a represented passage.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "way",
+      "type": "entity_ref"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "place": {
+     "kind": "emoji",
+     "value": "\ud83c\udfe2"
+    },
+    "actor": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1"
+    },
+    "aircraft": {
+     "kind": "emoji",
+     "value": "\ud83d\ude81"
+    },
+    "water": {
+     "kind": "emoji",
+     "value": "\ud83e\udd5b"
+    },
+    "barrier": {
+     "kind": "emoji",
+     "value": "\ud83e\uddf1"
+    },
+    "mechanic": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1\u200d\ud83d\udd27"
+    },
+    "work_queue": {
+     "kind": "emoji",
+     "value": "\ud83d\udccb"
+    },
+    "passage": {
+     "kind": "emoji",
+     "value": "\ud83d\udeaa"
+    }
+   },
+   "category_assets": {
+    "place": "place",
+    "trainee": "actor",
+    "instructor": "actor",
+    "dispatcher": "actor",
+    "mechanic": "mechanic",
+    "aircraft": "aircraft",
+    "water": "water",
+    "barrier": "barrier",
+    "work-queue": "work_queue",
+    "passage": "passage"
+   },
+   "station_roles": {
+    "aircraft": "workstation",
+    "water": "source",
+    "work-queue": "source"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "dispatch-flight",
+    "version": "1",
+    "action_kind": "dispatch-flight",
+    "rationale": "A dispatcher can assign a waiting flight to a trainee and instructor; the represented queue count decreases, while no assignment record exists.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "dispatcher"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "trainee": {
+      "categories": [
+       "actor",
+       "trainee"
+      ],
+      "components": [
+       "person"
+      ]
+     },
+     "instructor": {
+      "categories": [
+       "actor",
+       "mechanic"
+      ],
+      "components": [
+       "person"
+      ]
+     },
+     "board": {
+      "categories": [
+       "work-queue"
+      ],
+      "components": [
+       "flight_queue"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "The dispatcher is in the office",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The trainee is in the office",
+      "left": {
+       "participant": {
+        "name": "trainee",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The instructor is in the office",
+      "left": {
+       "participant": {
+        "name": "instructor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The flight board is in the office",
+      "left": {
+       "participant": {
+        "name": "board",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The trainee has the trainee role",
+      "left": {
+       "participant": {
+        "name": "trainee",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "trainee"
+      }
+     },
+     {
+      "label": "The instructor has the mechanic role",
+      "left": {
+       "participant": {
+        "name": "instructor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "mechanic"
+      }
+     },
+     {
+      "label": "A flight is waiting",
+      "left": {
+       "participant": {
+        "name": "board",
+        "path": "components.flight_queue.waiting"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "board",
+      "path": "components.flight_queue.waiting",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "No represented field records which trainee or instructor received the assignment.",
+     "This action consumes one waiting flight; it does not conduct the flight."
+    ],
+    "tests": [
+     "With a waiting flight and all listed people and board in the office, dispatch reduces waiting by one.",
+     "Refuse dispatch when the board has no waiting flights or any required person is elsewhere."
+    ],
+    "semantic_bindings": [
+     "The dispatcher performs the assignment.",
+     "The waiting count on the flight board represents unassigned flights."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "conduct-training-flight",
+    "version": "1",
+    "action_kind": "conduct-training-flight",
+    "rationale": "A trainee at the helicopter can conduct a flight when it has fuel and is not marked as needing service; the represented flight count and fuel change.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "trainee"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "trainee": {
+      "categories": [
+       "actor",
+       "trainee"
+      ],
+      "components": [
+       "person"
+      ]
+     },
+     "helicopter": {
+      "categories": [
+       "aircraft"
+      ],
+      "components": [
+       "aircraft"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "The trainee has the trainee role",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "trainee"
+      }
+     },
+     {
+      "label": "The trainee is at the helicopter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "helicopter",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The helicopter has fuel",
+      "left": {
+       "participant": {
+        "name": "helicopter",
+        "path": "components.aircraft.fuel"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The helicopter does not need service",
+      "left": {
+       "participant": {
+        "name": "helicopter",
+        "path": "components.aircraft.service_needed"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.flights",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "helicopter",
+      "path": "components.aircraft.fuel",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "helicopter",
+      "path": "components.aircraft.service_needed",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The model has no flight duration, route, instructor participation, or record of the trainee being aboard beyond the action description.",
+     "One unit of fuel is used per represented training flight; no unstated fuel capacity or flight consequences are modeled."
+    ],
+    "tests": [
+     "When the trainee is at a fueled, serviceable helicopter, the flight increments flights, consumes one fuel, and marks service needed.",
+     "Refuse if the trainee is not at the helicopter, the helicopter has no fuel, or it needs service."
+    ],
+    "semantic_bindings": [
+     "The action actor is the trainee conducting the flight.",
+     "Fuel use and service need are represented on the helicopter."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "service-helicopter",
+    "version": "1",
+    "action_kind": "service-helicopter",
+    "rationale": "An aircraft mechanic at the helicopter can clear its represented service-needed condition; no parts, service duration, or other maintenance state is represented.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "mechanic"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "helicopter": {
+      "categories": [
+       "aircraft"
+      ],
+      "components": [
+       "aircraft"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "The mechanic has the mechanic role",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "mechanic"
+      }
+     },
+     {
+      "label": "The mechanic is at the helicopter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "helicopter",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The helicopter needs service",
+      "left": {
+       "participant": {
+        "name": "helicopter",
+        "path": "components.aircraft.service_needed"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "helicopter",
+      "path": "components.aircraft.service_needed",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "limits": [
+     "This represents clearing the service-needed flag only; no fuel is added and no unrepresented maintenance work is recorded.",
+     "The instructor also has the mechanic role in the initial state, so the role check alone does not distinguish the crew members."
+    ],
+    "tests": [
+     "A mechanic at a helicopter marked as needing service clears that flag.",
+     "Refuse if the mechanic is elsewhere or the helicopter does not need service."
+    ],
+    "semantic_bindings": [
+     "The actor's mechanic role gates the servicing action.",
+     "The helicopter's service-needed flag is the represented service condition."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "refill-water",
+    "version": "1",
+    "action_kind": "refill-water",
+    "rationale": "Using one glass-worth from the represented supply is modeled as consuming one available glass; the glass has no represented fill state to change.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": []
+    },
+    "participants": {
+     "supply": {
+      "categories": [
+       "supply"
+      ],
+      "components": [
+       "water_stock"
+      ]
+     },
+     "glass": {
+      "categories": [
+       "water",
+       "drink"
+      ],
+      "components": []
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "The actor is with the water supply",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "supply",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The glass is with the water supply",
+      "left": {
+       "participant": {
+        "name": "glass",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "supply",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The glass is portable",
+      "left": {
+       "participant": {
+        "name": "glass",
+        "path": "portable.portable"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "The water supply has a glass available",
+      "left": {
+       "participant": {
+        "name": "supply",
+        "path": "components.water_stock.glasses"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "supply",
+      "path": "components.water_stock.glasses",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The glass has no represented contents or fullness field, so the action cannot mark it filled.",
+     "This action does not change glass ownership or location and does not represent drinking."
+    ],
+    "tests": [
+     "When actor, supply, and portable glass are together and stock is positive, one supply glass is consumed.",
+     "Refuse when the actor or glass is away from the supply, the glass is not portable, or no stock remains."
+    ],
+    "semantic_bindings": [
+     "The supply's glass count represents available water portions.",
+     "The glass entity has no state that distinguishes empty from refilled."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "move-through-passage",
+    "version": "1",
+    "action_kind": "move",
+    "rationale": "Moving through a represented passable way changes the actor's location to the way's destination endpoint.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": []
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "place"
+      ],
+      "components": []
+     },
+     "way": {
+      "categories": [
+       "passage"
+      ],
+      "components": [
+       "partition"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "The way is passable",
+      "left": {
+       "participant": {
+        "name": "way",
+        "path": "components.partition.passable"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "The actor is at the way's first place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "way",
+        "path": "components.partition.place_a"
+       }
+      }
+     },
+     {
+      "label": "The destination is the way's second place",
+      "left": {
+       "action_field": "to"
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "way",
+        "path": "components.partition.place_b"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "location.location_id",
+      "op": "set",
+      "value": {
+       "action_field": "to"
+      }
+     }
+    ],
+    "limits": [
+     "Only the way's place_a-to-place_b direction is represented here; reverse travel requires a way whose place_a is the actor's current place and whose place_b is the destination.",
+     "This moves only the actor, not carried or co-located things; no linked movement is represented."
+    ],
+    "tests": [
+     "An actor at a passable way's first endpoint can move to its second endpoint.",
+     "Refuse movement through a non-passable way, from the wrong endpoint, or to a destination that is not the way's second endpoint."
+    ],
+    "semantic_bindings": [
+     "A passage's partition endpoints define the represented route.",
+     "The actor's location changes to the requested destination."
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "new-flight-demand",
+    "rationale": "The airfield is an ongoing training operation; new waiting flight demand replenishes the queue over time rather than allowing it to run down permanently.",
+    "selector": {
+     "categories": [
+      "work-queue"
+     ],
+     "components": [
+      "flight_queue"
+     ]
+    },
+    "checks": [],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.flight_queue.waiting",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "timing": "each_round"
+   }
+  ],
+  "terminal": null
+ },
+ "review": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "mechanic_id": "dispatch-flight",
+    "action_kind": "dispatch-flight",
+    "rationale": "A dispatcher can assign a waiting flight to a trainee and instructor; the represented queue count decreases, while no assignment record exists.",
+    "reads": [
+     "entities.<actor>.category_ids",
+     "entities.<actor>.components.person",
+     "entities.<actor>.location.location_id",
+     "entities.<board>.category_ids",
+     "entities.<board>.components.flight_queue",
+     "entities.<board>.components.flight_queue.waiting",
+     "entities.<board>.location.location_id",
+     "entities.<instructor>.category_ids",
+     "entities.<instructor>.components.person",
+     "entities.<instructor>.components.person.role",
+     "entities.<instructor>.location.location_id",
+     "entities.<trainee>.category_ids",
+     "entities.<trainee>.components.person",
+     "entities.<trainee>.components.person.role",
+     "entities.<trainee>.location.location_id"
+    ],
+    "writes": [
+     "entities.<board>.components.flight_queue.waiting",
+     "entities.<board>.last_cause_event_id"
+    ],
+    "checks": [
+     {
+      "label": "The dispatcher is in the office",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The trainee is in the office",
+      "left": {
+       "participant": {
+        "name": "trainee",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The instructor is in the office",
+      "left": {
+       "participant": {
+        "name": "instructor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The flight board is in the office",
+      "left": {
+       "participant": {
+        "name": "board",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "office"
+      }
+     },
+     {
+      "label": "The trainee has the trainee role",
+      "left": {
+       "participant": {
+        "name": "trainee",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "trainee"
+      }
+     },
+     {
+      "label": "The instructor has the mechanic role",
+      "left": {
+       "participant": {
+        "name": "instructor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "mechanic"
+      }
+     },
+     {
+      "label": "A flight is waiting",
+      "left": {
+       "participant": {
+        "name": "board",
+        "path": "components.flight_queue.waiting"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "board",
+      "path": "components.flight_queue.waiting",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "No represented field records which trainee or instructor received the assignment.",
+     "This action consumes one waiting flight; it does not conduct the flight."
+    ],
+    "tests": [
+     "With a waiting flight and all listed people and board in the office, dispatch reduces waiting by one.",
+     "Refuse dispatch when the board has no waiting flights or any required person is elsewhere."
+    ]
+   },
+   {
+    "mechanic_id": "conduct-training-flight",
+    "action_kind": "conduct-training-flight",
+    "rationale": "A trainee at the helicopter can conduct a flight when it has fuel and is not marked as needing service; the represented flight count and fuel change.",
+    "reads": [
+     "entities.<actor>.category_ids",
+     "entities.<actor>.components.person",
+     "entities.<actor>.components.person.flights",
+     "entities.<actor>.components.person.role",
+     "entities.<actor>.location.location_id",
+     "entities.<helicopter>.category_ids",
+     "entities.<helicopter>.components.aircraft",
+     "entities.<helicopter>.components.aircraft.fuel",
+     "entities.<helicopter>.components.aircraft.service_needed",
+     "entities.<helicopter>.location.location_id",
+     "entities.<trainee>.category_ids",
+     "entities.<trainee>.components.person"
+    ],
+    "writes": [
+     "entities.<actor>.components.person.flights",
+     "entities.<actor>.last_cause_event_id",
+     "entities.<helicopter>.components.aircraft.fuel",
+     "entities.<helicopter>.components.aircraft.service_needed",
+     "entities.<helicopter>.last_cause_event_id"
+    ],
+    "checks": [
+     {
+      "label": "The trainee has the trainee role",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "trainee"
+      }
+     },
+     {
+      "label": "The trainee is at the helicopter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "helicopter",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The helicopter has fuel",
+      "left": {
+       "participant": {
+        "name": "helicopter",
+        "path": "components.aircraft.fuel"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The helicopter does not need service",
+      "left": {
+       "participant": {
+        "name": "helicopter",
+        "path": "components.aircraft.service_needed"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.flights",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "helicopter",
+      "path": "components.aircraft.fuel",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "helicopter",
+      "path": "components.aircraft.service_needed",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The model has no flight duration, route, instructor participation, or record of the trainee being aboard beyond the action description.",
+     "One unit of fuel is used per represented training flight; no unstated fuel capacity or flight consequences are modeled."
+    ],
+    "tests": [
+     "When the trainee is at a fueled, serviceable helicopter, the flight increments flights, consumes one fuel, and marks service needed.",
+     "Refuse if the trainee is not at the helicopter, the helicopter has no fuel, or it needs service."
+    ]
+   },
+   {
+    "mechanic_id": "service-helicopter",
+    "action_kind": "service-helicopter",
+    "rationale": "An aircraft mechanic at the helicopter can clear its represented service-needed condition; no parts, service duration, or other maintenance state is represented.",
+    "reads": [
+     "entities.<actor>.category_ids",
+     "entities.<actor>.components.person",
+     "entities.<actor>.components.person.role",
+     "entities.<actor>.location.location_id",
+     "entities.<helicopter>.category_ids",
+     "entities.<helicopter>.components.aircraft",
+     "entities.<helicopter>.components.aircraft.service_needed",
+     "entities.<helicopter>.location.location_id"
+    ],
+    "writes": [
+     "entities.<helicopter>.components.aircraft.service_needed",
+     "entities.<helicopter>.last_cause_event_id"
+    ],
+    "checks": [
+     {
+      "label": "The mechanic has the mechanic role",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "mechanic"
+      }
+     },
+     {
+      "label": "The mechanic is at the helicopter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "helicopter",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The helicopter needs service",
+      "left": {
+       "participant": {
+        "name": "helicopter",
+        "path": "components.aircraft.service_needed"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "helicopter",
+      "path": "components.aircraft.service_needed",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "limits": [
+     "This represents clearing the service-needed flag only; no fuel is added and no unrepresented maintenance work is recorded.",
+     "The instructor also has the mechanic role in the initial state, so the role check alone does not distinguish the crew members."
+    ],
+    "tests": [
+     "A mechanic at a helicopter marked as needing service clears that flag.",
+     "Refuse if the mechanic is elsewhere or the helicopter does not need service."
+    ]
+   },
+   {
+    "mechanic_id": "refill-water",
+    "action_kind": "refill-water",
+    "rationale": "Using one glass-worth from the represented supply is modeled as consuming one available glass; the glass has no represented fill state to change.",
+    "reads": [
+     "entities.<actor>.category_ids",
+     "entities.<actor>.location.location_id",
+     "entities.<glass>.category_ids",
+     "entities.<glass>.location.location_id",
+     "entities.<glass>.portable.portable",
+     "entities.<supply>.category_ids",
+     "entities.<supply>.components.water_stock",
+     "entities.<supply>.components.water_stock.glasses",
+     "entities.<supply>.location.location_id"
+    ],
+    "writes": [
+     "entities.<supply>.components.water_stock.glasses",
+     "entities.<supply>.last_cause_event_id"
+    ],
+    "checks": [
+     {
+      "label": "The actor is with the water supply",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "supply",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The glass is with the water supply",
+      "left": {
+       "participant": {
+        "name": "glass",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "supply",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "The glass is portable",
+      "left": {
+       "participant": {
+        "name": "glass",
+        "path": "portable.portable"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "The water supply has a glass available",
+      "left": {
+       "participant": {
+        "name": "supply",
+        "path": "components.water_stock.glasses"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "supply",
+      "path": "components.water_stock.glasses",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The glass has no represented contents or fullness field, so the action cannot mark it filled.",
+     "This action does not change glass ownership or location and does not represent drinking."
+    ],
+    "tests": [
+     "When actor, supply, and portable glass are together and stock is positive, one supply glass is consumed.",
+     "Refuse when the actor or glass is away from the supply, the glass is not portable, or no stock remains."
+    ]
+   },
+   {
+    "mechanic_id": "move-through-passage",
+    "action_kind": "move",
+    "rationale": "Moving through a represented passable way changes the actor's location to the way's destination endpoint.",
+    "reads": [
+     "entities.<actor>.category_ids",
+     "entities.<actor>.location.location_id",
+     "entities.<to>.category_ids",
+     "entities.<way>.category_ids",
+     "entities.<way>.components.partition",
+     "entities.<way>.components.partition.passable",
+     "entities.<way>.components.partition.place_a",
+     "entities.<way>.components.partition.place_b"
+    ],
+    "writes": [
+     "entities.<actor>.last_cause_event_id",
+     "entities.<actor>.location.location_id"
+    ],
+    "checks": [
+     {
+      "label": "The way is passable",
+      "left": {
+       "participant": {
+        "name": "way",
+        "path": "components.partition.passable"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "The actor is at the way's first place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "way",
+        "path": "components.partition.place_a"
+       }
+      }
+     },
+     {
+      "label": "The destination is the way's second place",
+      "left": {
+       "action_field": "to"
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "way",
+        "path": "components.partition.place_b"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "location.location_id",
+      "op": "set",
+      "value": {
+       "action_field": "to"
+      }
+     }
+    ],
+    "limits": [
+     "Only the way's place_a-to-place_b direction is represented here; reverse travel requires a way whose place_a is the actor's current place and whose place_b is the destination.",
+     "This moves only the actor, not carried or co-located things; no linked movement is represented."
+    ],
+    "tests": [
+     "An actor at a passable way's first endpoint can move to its second endpoint.",
+     "Refuse movement through a non-passable way, from the wrong endpoint, or to a destination that is not the way's second endpoint."
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "new-flight-demand",
+    "rationale": "The airfield is an ongoing training operation; new waiting flight demand replenishes the queue over time rather than allowing it to run down permanently.",
+    "selector": {
+     "categories": [
+      "work-queue"
+     ],
+     "components": [
+      "flight_queue"
+     ]
+    },
+    "checks": [],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.flight_queue.waiting",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "writes": [
+     "entities.<it>.components.flight_queue.waiting",
+     "entities.<it>.last_cause_event_id"
+    ]
+   }
+  ],
+  "terminal": null
+ },
+ "dry_run": {
+  "ok": true,
+  "turns": 24,
+  "terminal_reached": false,
+  "accepted_actions": 96,
+  "world_changes": 24,
+  "active_at_end": true,
+  "idle_actors": [],
+  "stalled_actors": [],
+  "moves_at_end": [
+   "conduct-training-flight",
+   "move",
+   "service-helicopter"
+  ],
+  "never_offered": [],
+  "first_turn": 1,
+  "last_turn": 24,
+  "circling": false,
+  "conjuring_processes": [],
+  "moving_processes": [],
+  "second_source_processes": [],
+  "knock_on_processes": []
+ },
+ "dry_run_attempts": [
+  {
+   "ok": true,
+   "turns": 24,
+   "terminal_reached": false,
+   "accepted_actions": 24,
+   "world_changes": 24,
+   "active_at_end": true,
+   "idle_actors": [
+    "instructor",
+    "mechanic",
+    "sam"
+   ],
+   "stalled_actors": [
+    "instructor",
+    "mechanic",
+    "sam"
+   ],
+   "moves_at_end": [
+    "dispatch-flight"
+   ],
+   "never_offered": [
+    "conduct-training-flight",
+    "move",
+    "service-helicopter"
+   ],
+   "first_turn": 1,
+   "last_turn": 24,
+   "circling": true,
+   "conjuring_processes": [],
+   "moving_processes": [],
+   "second_source_processes": [],
+   "knock_on_processes": []
+  },
+  {
+   "ok": true,
+   "turns": 24,
+   "terminal_reached": false,
+   "accepted_actions": 27,
+   "world_changes": 26,
+   "active_at_end": true,
+   "idle_actors": [],
+   "stalled_actors": [
+    "dispatcher",
+    "instructor",
+    "sam"
+   ],
+   "moves_at_end": [
+    "service-helicopter"
+   ],
+   "never_offered": [
+    "conduct-training-flight"
+   ],
+   "first_turn": 1,
+   "last_turn": 24,
+   "circling": true,
+   "conjuring_processes": [],
+   "moving_processes": [],
+   "second_source_processes": [],
+   "knock_on_processes": []
+  },
+  {
+   "ok": true,
+   "turns": 24,
+   "terminal_reached": false,
+   "accepted_actions": 96,
+   "world_changes": 24,
+   "active_at_end": true,
+   "idle_actors": [],
+   "stalled_actors": [],
+   "moves_at_end": [
+    "conduct-training-flight",
+    "move",
+    "service-helicopter"
+   ],
+   "never_offered": [],
+   "first_turn": 1,
+   "last_turn": 24,
+   "circling": false,
+   "conjuring_processes": [],
+   "moving_processes": [],
+   "second_source_processes": [],
+   "knock_on_processes": []
+  }
+ ],
+ "cost_usd": 0.01753931,
+ "daily_cost_usd": 0.01753931,
+ "trace_id": "world-builder-live/world/eaa759fdd3dc45db92c619967dc0832b"
+}
