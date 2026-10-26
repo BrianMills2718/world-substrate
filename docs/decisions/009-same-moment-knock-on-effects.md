@@ -4,7 +4,7 @@ description: "Knock-on effects that declare timing 'immediately' run to the end 
 
 # Decision 009: Same-moment knock-on effects are rule semantics, not new engine capability
 
-Governs: src/world_substrate/engine.py (Engine.apply), docs/plans/open_attempt.md slice S2
+Governs: src/world_substrate/engine.py, docs/plans/open_attempt.md
 
 **Status:** accepted
 **Date:** 2026-10-26
