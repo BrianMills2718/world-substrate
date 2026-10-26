@@ -942,6 +942,12 @@ window.MAPS = {
     "explain": "Blocks: whether build repairs come from a harness or from the rules retry (Q1)."
    },
    {
+    "id": "Q15",
+    "label": "Q15: Repository format files not yet added",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether the repo-format check passes."
+   },
+   {
     "id": "Q16",
     "label": "Q16: Goals skip the package gate",
     "kind": "BrianQuestion",

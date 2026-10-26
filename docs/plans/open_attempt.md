@@ -182,21 +182,21 @@ Helicopter: Sam (piloting 0) is in the cockpit (gate passes), rolls two dice, ke
 ## Requirements
 
 What Brian asked, plus what the plan's own claims imply; each row names its check in the acceptance table below. Status per check: S1 is built (merged `fe8c492`, #239): A1 (`tests/test_open_attempt.py`) and A8 (`scripts/check_project.py`) were checked in its pull request, and the owner-allowance airfield run with residents (`evidence/open-attempt/s1-airfield/`, 2026-10-26, merged in #247)
-judged A4 and A9 pass and left A2 and A3 not exercised (see the S1 live result below); A5-A6 planned in S2; A7 planned in S3; A8 planned in every slice
+judged A4 and A9 passing (its TRACE_READ.md passes `scripts/check_trace_reads.py` and samples ordinary attempts, which is R1's trace check) and left A2 and A3 planned and not yet run: the live run never reached the helicopter or the wall, so both run next on the saved airfield world `tests/fixtures/airfield-s1-live.json` (see the S1 live result below); A5-A6 planned in S2; A7 planned in S3; A8 planned in every slice
 (run on each merge commit); A9 planned in S1 (open-attempt part) and completed in S3 (full chain). None is
 deferred. The claimed property is the requirement itself (an impossible attempt is refused with its cause,
 a chain finishes, skill sets the dice), never a count of passing tests.
 
 
-| Id | Requirement (source) | Fails when | Control |
-| --- | --- | --- | --- |
-| R1 | Residents can try anything their body can do (Brian 2026-10-24) | The interpreter quietly maps "fly the helicopter" to a safe move | `quoted_span` per role; A2 negative fixture; TRACE_READ samples ordinary attempts |
-| R2 | The world, not the interpreter, decides what happens (Decision 003; AGENTS.md "installed mechanics alone") | The interpreter refuses or judges success | No success field in its schema (A1); refusals only come from rule checks |
-| R3 | Impossible attempts fail with a cause (Brian 2026-10-24) | A wall attempt is dropped instead of recorded | A3: refused event names the failed check |
-| R4 | Knock-on effects run on their own to the end (Brian 2026-10-24) | A chain stops after one step, or loops | A5, A6: once-per-pair rule, cap of 32, whole moment refused on overflow |
-| R5 | Skill decides risky outcomes, not wording (Brian 2026-10-24: LLM knowledge must not leak) | Dice depend on the attempt text, or outcomes are written by the model | A7: same attempt, skill 0 versus 3, different dice pools; dice only from seed |
-| R6 | Saved worlds and replays keep working (AGENTS.md invariants) | Replay calls the model or rerolls | A8: every retained replay test unchanged; rolls and interpretations replay from records |
-| R7 | Every run is readable in full (core rules) | An interpretation or roll is missing from the trace | A9: run-log.jsonl has each interpreter call's trace id, each roll's dice; TRACE_READ.md passes |
+| Id | Requirement (source) | Fails when | Control | Status |
+| --- | --- | --- | --- | --- |
+| R1 | Residents can try anything their body can do (Brian 2026-10-24) | The interpreter quietly maps "fly the helicopter" to a safe move | `quoted_span` per role; A2 negative fixture; TRACE_READ samples ordinary attempts | Passing in part: the S1 live run TRACE_READ samples ordinary attempts and passes; A2 planned and not yet run (fixture run next) |
+| R2 | The world, not the interpreter, decides what happens (Decision 003; AGENTS.md "installed mechanics alone") | The interpreter refuses or judges success | No success field in its schema (A1); refusals only come from rule checks | Passing: A1 in #239 |
+| R3 | Impossible attempts fail with a cause (Brian 2026-10-24) | A wall attempt is dropped instead of recorded | A3: refused event names the failed check | Planned and not yet run: A3 on the saved airfield world next |
+| R4 | Knock-on effects run on their own to the end (Brian 2026-10-24) | A chain stops after one step, or loops | A5, A6: once-per-pair rule, cap of 32, whole moment refused on overflow | Planned and not yet run (S2) |
+| R5 | Skill decides risky outcomes, not wording (Brian 2026-10-24: LLM knowledge must not leak) | Dice depend on the attempt text, or outcomes are written by the model | A7: same attempt, skill 0 versus 3, different dice pools; dice only from seed | Planned and not yet run (S3) |
+| R6 | Saved worlds and replays keep working (AGENTS.md invariants) | Replay calls the model or rerolls | A8: every retained replay test unchanged; rolls and interpretations replay from records | Passing at the S1 merge (A8); planned for S2 and S3 merges |
+| R7 | Every run is readable in full (core rules) | An interpretation or roll is missing from the trace | A9: run-log.jsonl has each interpreter call's trace id, each roll's dice; TRACE_READ.md passes | Passing for S1 (A9 on the live run); full chain planned in S3 |
 
 ## Acceptance checks
 

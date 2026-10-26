@@ -180,7 +180,7 @@ a{color:var(--have)}
 <tr><td>project check (tests, system model, docs)</td><td>tests run 710, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>wiki and Markdown cap</td><td>md files 134, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 11 open, 18 resolved</h3>
+<h3 class="sub">Open questions: 12 open, 17 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -189,6 +189,7 @@ a{color:var(--have)}
 <tr><td><b>Q9</b> Test run too short for some tasks</td><td>agent</td><td>builds wrongly scored as failing and the rewrite spend they cause</td></tr>
 <tr><td><b>Q12</b> When a people-world run ends</td><td>Brian</td><td>how long visitors watch a run, and its cost</td></tr>
 <tr><td><b>Q14</b> Agent-harness build not live</td><td>agent</td><td>whether build repairs come from a harness or from the rules retry (Q1)</td></tr>
+<tr><td><b>Q15</b> Repository format files not yet added</td><td>agent</td><td>whether the repo-format check passes</td></tr>
 <tr><td><b>Q16</b> Goals skip the package gate</td><td>Brian</td><td>whether the next goal can again run without a current system model and question list</td></tr>
 <tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
 <tr><td><b>Q22</b> Effects no rule covers</td><td>Brian</td><td>slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin</td></tr>
@@ -204,7 +205,7 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 59 ideas, 82 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (11 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (12 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->
