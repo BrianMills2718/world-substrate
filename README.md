@@ -187,13 +187,18 @@ The default project check validates navigation, authority surfaces, links, contr
 python scripts/check_project.py
 ```
 
-The tests need `pydantic` and Concordia, which the plain system Python lacks. This command supplies them and is the
-one the planning package's counts come from:
+The tests need `pydantic`, Concordia, `pytest` and `pytest-xdist` (the suite runs in parallel, one file per
+worker), which the plain system Python lacks. This command supplies them and is the one the planning package's counts
+come from:
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 \
-  --with pytest python scripts/check_project.py
+  --with pytest --with pytest-xdist python scripts/check_project.py
 ```
+
+A pass on a clean checkout stamps its tree in `~/.cache/world-substrate/passed-trees/`; `scripts/deploy_world_builder.sh`
+skips the gate for a tree that already passed (a squash merge keeps the pull request's tree). While developing, run
+only the test files a change touches (`python -m pytest tests/test_x.py -n 8`) and the full check once before merge.
 
 Useful deterministic probes include:
 
