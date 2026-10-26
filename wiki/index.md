@@ -22,6 +22,7 @@ Canonical general world-substrate engine: typed state, registered deterministic 
 - [System model](../docs/model/ODD.md) — the implemented software system, with C4 diagrams; its enforced rules, owners and tests are in [trace.yaml](../docs/model/trace.yaml)
 - [Decision records](../docs/decisions/001-project-scope.md) — Decisions 001-007; each names the rules it governs
 - [Describe-any-scenario: YuLan-OneSim comparison on the Waltzman scenario](../spikes/any-scenario-2026-10/evidence/onesim-comparison.md)
+- [Catalog of every other document](catalog.md) — plans, audits, contracts, research notes and saved-run trace reads, by folder
 - [Plan: one scenario metamodel joined from existing pieces](../docs/plans/scenario_metamodel.md) and its [/goal launcher](../docs/plans/scenario-metamodel.goal.md)
 
 ## Coverage and unknowns
