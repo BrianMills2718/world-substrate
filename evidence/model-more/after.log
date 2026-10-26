@@ -1,0 +1,6 @@
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm)
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+16:51:26 - LiteLLM:WARNING: logging_worker.py:161 - LoggingWorker: event loop changed; carried 1 pending and revived 0 dequeued logging task(s) onto the new loop
+16:51:44 - LiteLLM:WARNING: logging_worker.py:161 - LoggingWorker: event loop changed; carried 2 pending and revived 0 dequeued logging task(s) onto the new loop
+model-more/bundle/afd3c9be87fa40888352fd1a13e45170 0.00200033 []
+EXIT 0

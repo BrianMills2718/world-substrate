@@ -431,6 +431,12 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "fragile thing that fell breaks, a broken container spills, a breaking thing makes a sound), make it a "
             "process with timing immediately whose checks name the state that change leaves; each step of a chain "
             "is its own process. Keep timing each_round for what takes time (drying, growing, travelling, fuel).",
+            # 2026-10-26 (evidence/model-more/): a pencil world's truck had a rounds_left field, but deliver-boxes
+            # handed the boxes over at once and no process counted it down, so the journey took no time.
+            "When an entity has an integer field counting rounds left (a delivery on the road, a journey, a job "
+            "under way, a deadline), the action that starts it sets that count and does not finish it at once; add "
+            "a process with timing each_round that lowers the count by 1 while it is above 0, and make the arrival "
+            "or completion (goods reaching their destination, the job done) depend on the count being 0.",
             "Checks on location/ownership/portable paths must agree with initial_builtin_state "
             "(null means unset), so that at least one action is possible from the starting state.",
             "Never check ownership.owner_ref or portable.portable on an entity whose initial_builtin_state "

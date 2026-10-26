@@ -1,0 +1,449 @@
+{
+  "trace_id": "model-more/bundle/27bbdf1aed5c414f9ed3a47601a5adb1",
+  "cost": 0.0018783,
+  "not_modeled": [
+    "The amount of clay used to make leads.",
+    "The quantities of erasers, brass ferrules, and paint used in finishing pencils.",
+    "The distinct destinations and individual stock levels of shops across the country."
+  ],
+  "bundle": {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {
+      "id": "pencil-supply-chain",
+      "label": "Pencil Supply Chain",
+      "summary": "A recurring supply chain makes pencils from cedar and graphite and supplies them to shops and customers.",
+      "location": "pennsylvania",
+      "content_version": 1
+    },
+    "components": [
+      {
+        "name": "inventory",
+        "fields": [
+          {
+            "name": "logs",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "slats",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "graphite",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "leads",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencils",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "boxes",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "worker",
+        "fields": [
+          {
+            "name": "role",
+            "type": "string",
+            "default": "worker"
+          }
+        ]
+      },
+      {
+        "name": "passage",
+        "fields": [
+          {
+            "name": "place_a",
+            "type": "entity_ref",
+            "default": "oregon"
+          },
+          {
+            "name": "place_b",
+            "type": "entity_ref",
+            "default": "pennsylvania"
+          },
+          {
+            "name": "passable",
+            "type": "boolean",
+            "default": true
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "oregon",
+        "label": "Oregon",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "sri-lanka",
+        "label": "Sri Lanka",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "pennsylvania",
+        "label": "Pennsylvania",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "shops-countrywide",
+        "label": "Shops across the country",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "oregon-to-pennsylvania-route",
+        "label": "Route from Oregon to Pennsylvania",
+        "categories": [
+          "passage"
+        ],
+        "components": {
+          "passage": {
+            "place_a": "oregon",
+            "place_b": "pennsylvania",
+            "passable": true
+          }
+        }
+      },
+      {
+        "id": "sri-lanka-to-pennsylvania-route",
+        "label": "Route from Sri Lanka to Pennsylvania",
+        "categories": [
+          "passage"
+        ],
+        "components": {
+          "passage": {
+            "place_a": "sri-lanka",
+            "place_b": "pennsylvania",
+            "passable": true
+          }
+        }
+      },
+      {
+        "id": "pennsylvania-to-shops-route",
+        "label": "Route from Pennsylvania to the shops",
+        "categories": [
+          "passage"
+        ],
+        "components": {
+          "passage": {
+            "place_a": "pennsylvania",
+            "place_b": "shops-countrywide",
+            "passable": true
+          }
+        }
+      },
+      {
+        "id": "oregon-loggers",
+        "label": "Oregon loggers",
+        "categories": [
+          "logger",
+          "actor"
+        ],
+        "location": "oregon",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "leads": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "cut cedar"
+          }
+        }
+      },
+      {
+        "id": "cedar-mill",
+        "label": "Cedar mill",
+        "categories": [
+          "mill",
+          "actor"
+        ],
+        "location": "oregon",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "leads": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "saw logs into slats"
+          }
+        }
+      },
+      {
+        "id": "sri-lanka-lead-works",
+        "label": "Sri Lanka graphite and lead works",
+        "categories": [
+          "graphite-works",
+          "actor"
+        ],
+        "location": "sri-lanka",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "leads": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "mine graphite and mix it with clay into leads"
+          }
+        }
+      },
+      {
+        "id": "pennsylvania-factory",
+        "label": "Pennsylvania pencil factory",
+        "categories": [
+          "factory",
+          "actor"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "leads": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "assemble and finish pencils, then pack them"
+          }
+        }
+      },
+      {
+        "id": "truck-driver",
+        "label": "Truck driver",
+        "categories": [
+          "carrier",
+          "actor"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "leads": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "deliver boxes to shops"
+          }
+        }
+      },
+      {
+        "id": "pencil-shops",
+        "label": "Pencil shops",
+        "categories": [
+          "shop",
+          "actor"
+        ],
+        "location": "shops-countrywide",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "leads": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "sell pencils"
+          }
+        }
+      },
+      {
+        "id": "customers",
+        "label": "Customers",
+        "categories": [
+          "customer"
+        ],
+        "location": "shops-countrywide",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "leads": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "kind": "cut-cedar",
+        "description": "Cut cedar and add logs to the logger's stock.",
+        "fields": []
+      },
+      {
+        "kind": "saw-logs",
+        "description": "Take logs from the named logger and saw them into slats.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "make-leads",
+        "description": "Mine graphite and mix it with clay into leads.",
+        "fields": []
+      },
+      {
+        "kind": "assemble-pencils",
+        "description": "Take slats from the named mill and leads from the named lead works, then glue, paint, and fit erasers and brass ferrules to make pencils.",
+        "fields": [
+          {
+            "name": "mill",
+            "type": "entity_ref"
+          },
+          {
+            "name": "lead_works",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "pack-pencils",
+        "description": "Pack pencils from the factory's stock into boxes.",
+        "fields": []
+      },
+      {
+        "kind": "deliver-boxes",
+        "description": "Carry boxes from the named factory to the named shop.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "sell-pencils",
+        "description": "Sell pencils from the shop's stock to the named customer.",
+        "fields": [
+          {
+            "name": "customer",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "move",
+        "description": "Move to a named place through a named passage.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "way",
+            "type": "entity_ref"
+          }
+        ]
+      }
+    ],
+    "presentation": {
+      "assets": {
+        "logger": {
+          "kind": "emoji",
+          "value": "\ud83e\ude93"
+        },
+        "mill": {
+          "kind": "emoji",
+          "value": "\ud83e\udeb5"
+        },
+        "graphite_works": {
+          "kind": "emoji",
+          "value": "\u26cf\ufe0f"
+        },
+        "factory": {
+          "kind": "emoji",
+          "value": "\u270f\ufe0f"
+        },
+        "carrier": {
+          "kind": "emoji",
+          "value": "\ud83d\ude9a"
+        },
+        "shop": {
+          "kind": "emoji",
+          "value": "\ud83c\udfea"
+        },
+        "customer": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1"
+        },
+        "place": {
+          "kind": "emoji",
+          "value": "\ud83d\udccd"
+        },
+        "passage": {
+          "kind": "emoji",
+          "value": "\ud83d\udee3\ufe0f"
+        }
+      },
+      "category_assets": {
+        "logger": "logger",
+        "mill": "mill",
+        "graphite-works": "graphite_works",
+        "factory": "factory",
+        "carrier": "carrier",
+        "shop": "shop",
+        "customer": "customer",
+        "place": "place",
+        "passage": "passage"
+      },
+      "station_roles": {
+        "logger": "source",
+        "mill": "workstation",
+        "graphite-works": "workstation",
+        "factory": "workstation",
+        "shop": "goal"
+      }
+    }
+  }
+}

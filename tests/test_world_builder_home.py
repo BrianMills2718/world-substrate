@@ -18,7 +18,11 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("if (data.dry_run.ok) startLive();", self.page)
         # Runs are requested only by the live-play loop.
         self.assertEqual(self.page.count('apiJob("/run"'), 1)
-        self.assertEqual(self.page.count('api("/run"'), 1)
+        # Every move is chosen by an AI (Brian, 2026-10-26), so there is no instant scripted request any more.
+        self.assertEqual(self.page.count('api("/run"'), 0)
+        self.assertNotIn('id="ai-moves"', self.page)
+        self.assertNotIn('id="ai-live"', self.page)
+        self.assertIn('policy: "resident"', self.page)
         # The rules stay one click away, and rerunning from them is still possible.
         self.assertIn(">See how it works</button>", self.page)
         self.assertIn('$("approve-btn").addEventListener("click", () => { if (world) delete world.shared; startLive(); });', self.page)
