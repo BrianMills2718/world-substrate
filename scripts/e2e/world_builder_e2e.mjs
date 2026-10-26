@@ -48,9 +48,8 @@ async function buildAndRun(p, kind, log) {
     await p.waitForFunction((n) => Number((document.querySelector('#outcome').textContent.match(/^Round (\d+)/) || [0, 0])[1]) > n, at, { timeout: LONG });
     log('resumed', (await p.textContent('#outcome')).trim());
     if (process.env.E2E_AI) {
-      // Switch to AI moves mid-play: the next rounds are chosen by the AI.
+      // Every round is chosen by the AI; watch two more go by.
       const before = await round();
-      await p.check('#ai-live');
       await p.waitForFunction((n) => Number((document.querySelector('#outcome').textContent.match(/^Round (\d+)/) || [0, 0])[1]) >= n + 2, before, { timeout: LONG });
       log('ai rounds', `${(await p.textContent('#outcome')).trim()} | ${(await p.textContent('#feed li')).trim()}`);
     }

@@ -19,6 +19,7 @@ import urllib.request
 from pathlib import Path
 
 PAGE = Path(__file__).resolve().parent / "world_builder_home.html"
+GRAPH_VIEWER = Path(__file__).resolve().parent / "vendor/graph-viewer.js"
 
 
 def handler(api: str) -> type[http.server.BaseHTTPRequestHandler]:
@@ -50,10 +51,18 @@ def handler(api: str) -> type[http.server.BaseHTTPRequestHandler]:
         def do_GET(self) -> None:  # noqa: N802
             if self.path.startswith("/world-builder/api"):
                 return self._proxy()
-            if self.path.rstrip("/") == "/world-builder":
+            path = self.path.split("?", 1)[0]
+            if path.rstrip("/") == "/world-builder":
                 data = PAGE.read_bytes()
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(data)
+                return
+            if path == "/world-builder/graph-viewer.js":
+                data = GRAPH_VIEWER.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/javascript; charset=utf-8")
                 self.end_headers()
                 self.wfile.write(data)
                 return

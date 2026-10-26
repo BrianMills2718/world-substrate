@@ -1,0 +1,31 @@
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm)
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+16:58:57 - LiteLLM:WARNING: logging_worker.py:161 - LoggingWorker: event loop changed; carried 1 pending and revived 0 dequeued logging task(s) onto the new loop
+Traceback (most recent call last):
+  File "/home/brian/code2/world-substrate-wt-scope/scripts/generate_causal_model.py", line 545, in generate_causal_model
+    compiled = CausalModel.from_dict(value, bundle=bundle)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-scope/src/world_substrate/action_authoring.py", line 418, in from_dict
+    mechanics = tuple(
+                ^^^^^^
+  File "/home/brian/code2/world-substrate-wt-scope/src/world_substrate/action_authoring.py", line 419, in <genexpr>
+    DeclaredActionMechanic.from_dict(row, bundle=bundle) for row in raw
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-scope/src/world_substrate/action_authoring.py", line 167, in from_dict
+    checks = _checks(value["checks"], bundle, signature, selectors)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-scope/src/world_substrate/action_authoring.py", line 984, in _checks
+    _validate_comparison(
+  File "/home/brian/code2/world-substrate-wt-scope/src/world_substrate/action_authoring.py", line 966, in _validate_comparison
+    raise ActionDeclarationError(f"{label} contains comparison requires string/list compatibility")
+world_substrate.action_authoring.ActionDeclarationError: checks[4] contains comparison requires string/list compatibility
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/brian/code2/world-substrate-wt-scope/evidence/model-more/run_rules.py", line 9, in <module>
+    causal, result = generate_causal_model(bundle, trace_id=trace, world_kind="ongoing")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-scope/scripts/generate_causal_model.py", line 569, in generate_causal_model
+    raise ValueError(f"causal proposal remained invalid after one repair: {last_error}") from last_error
+ValueError: causal proposal remained invalid after one repair: checks[4] contains comparison requires string/list compatibility

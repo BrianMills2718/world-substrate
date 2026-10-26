@@ -125,6 +125,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   .readout .mech.missing { border-left-style: dashed; border-left-color: #8a8f98; }
   .readout .verdict { font-weight: 600; }
   .readout ul { margin: 4px 0 0 18px; padding: 0; font-size: 14px; }
+  .net-frame { height: 62vh; min-height: 380px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+    --gv-bg: #0b1013; --gv-ink: var(--text); --gv-node-bg: #151c20; --gv-line: var(--line); --gv-edge: #7d8a90;
+    --gv-ext: #7d8a90; --gv-edge-text: var(--muted); --gv-focus: var(--accent); --gv-dots: #1d2529; --gv-node-tint: 22%; }
+  .net-key { display: inline-block; width: 16px; height: 12px; border: 2px solid; border-radius: 3px; vertical-align: middle; margin-right: 4px; }
+  .net-legend { margin: 4px 0 6px; }
 </style>
 </head>
 <body>
@@ -159,7 +164,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
             <option value="people">People with their own goals</option>
             <option value="things">Things and the steps of a job</option>
           </select></label>
-        <label class="small" title="Instead of simple automatic moves (each person takes the allowed move they did least recently), an AI picks each person’s move: a few seconds per round and costs a little"><input type="checkbox" id="ai-moves"> AI chooses each person’s moves</label>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
         <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
       </div>
@@ -219,13 +223,18 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <h2 id="run-h">Your world is running</h2>
         <div class="row live-controls">
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
-      <label class="small muted" title="On: an AI chooses each person’s move (a few seconds per round, costs a little). Off: each person takes the first move the rules allow (instant, free). You can switch while it plays."><input type="checkbox" id="ai-live"> AI chooses each move</label>
     </div>
     <p class="small muted" id="live-status" role="status"></p>
     <div id="stuck-note"></div>
     <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
     <details class="picture" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
     <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
+    </details>
+    <details class="picture" id="network" open><summary title="Show or hide the whole world as a network: who and what exists, where each one is, which moves the rules allow and what changes by itself. What changed in the latest round is lit up.">Network</summary>
+    <div class="legend net-legend"><span><span class="net-key" style="border-color:#6fa8dc"></span>chooses moves</span><span><span class="net-key" style="border-color:#7d8a90"></span>place</span><span><span class="net-key" style="border-color:#a9b5ba"></span>thing</span><span><span class="net-key" style="border-color:#f0a35e"></span>move the rules allow</span><span><span class="net-key" style="border-color:#f0a35e;border-style:dashed"></span>changes by itself</span></div>
+    <p class="small muted" id="net-caption" role="status"></p>
+    <div class="net-frame" id="net-graph" aria-label="The world as a network"></div>
+    <p class="detail" id="net-detail"></p>
     </details>
     <ol class="feed" id="feed" aria-label="What just happened, newest round first"></ol>
     <ul class="underway" id="underway" aria-label="Tasks that take several rounds: under way, stopped part-way, or finished" hidden></ul>
@@ -575,8 +584,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       const data = await apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
       if (gen !== buildGen) return;
       renderReview(data);
-      // People worlds are played by AI members, each reading their own brief (2026-10-15).
-      if (data.world_def === "people") $("ai-moves").checked = true;
       // Pressing Create simulation is the approval (2026-10-15); the rules stay one click away.
       if (data.dry_run.ok) startLive();
     } catch (err) {
@@ -672,7 +679,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Brian, 2026-10-06: "we should probably have some 'are you still there after
   // 100 moves' that pauses and the user can unpause".
   const CHECK_IN_ROUNDS = 100, STUCK_ROUNDS = 15;
-  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, ROUND_PAUSE_MS = 1500, REPLAY_PAUSE_MS = 600;
+  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, REPLAY_PAUSE_MS = 600;
   let live = null;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   function setTip(el, text) {
@@ -718,6 +725,141 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     list.hidden = !items.length;
   }
 
+  // The world as a network (2026-10-26, Brian liked Cybernetic Influence v3's map of the world): a typed-graph/v1
+  // document drawn by the shared representation-router graph-viewer (scripts/vendor/graph-viewer.js). Boxes are
+  // who and what exists; each move the rules allow is an orange box linked to who can make it and what it uses;
+  // each change the world makes by itself is a dashed orange box linked to what it changes.
+  function worldNetwork(bundle, causalModel) {
+    const ents = bundle.entities || [], ids = new Set(ents.map((e) => e.id));
+    const words = (s) => String(s).replace(/[-_]+/g, " ");
+    const nodes = [], edges = [], seen = new Set();
+    const node = (id, label, kind) => { if (!seen.has(id)) { seen.add(id); nodes.push({ id, label, kind }); } };
+    const link = (source, target, label) => {
+      const id = `${source}>${target}:${label}`;
+      if (source !== target && !seen.has(id)) { seen.add(id); edges.push({ id, source, target, label }); }
+    };
+    const matches = (e, sel) => (sel.categories || []).every((c) => (e.categories || []).includes(c))
+      && (sel.components || []).every((c) => (e.components || {})[c] !== undefined);
+    // A selector that names nothing would link a rule to everything; leave those links out.
+    const picks = (sel) => (sel && ((sel.categories || []).length || (sel.components || []).length)) ? ents.filter((e) => matches(e, sel)) : [];
+    // Whoever some rule lets act chooses moves, whatever its categories say (a pencil mine is not a person).
+    const acting = new Set(((causalModel && causalModel.mechanics) || []).flatMap((m) => picks(m.actor_selector).map((e) => e.id)));
+    ents.forEach((e) => {
+      const cats = e.categories || [];
+      node("e:" + e.id, e.label || e.id, acting.has(e.id) || cats.includes("actor") ? "actor" : cats.includes("place") ? "place" : "thing");
+    });
+    ents.forEach((e) => {
+      if (ids.has(e.location)) link("e:" + e.id, "e:" + e.location, "is in");
+      const owner = String(e.owner_ref || "").split(":").pop();
+      if (ids.has(owner) && owner !== e.location) link("e:" + e.id, "e:" + owner, "belongs to");
+      Object.values(e.components || {}).forEach((fields) => Object.entries(fields || {}).forEach(([name, v]) => {
+        if (typeof v === "string" && ids.has(v)) link("e:" + e.id, "e:" + v, words(name));
+      }));
+    });
+    ((causalModel && causalModel.mechanics) || []).forEach((m) => {
+      const a = "a:" + m.action_kind;
+      node(a, words(m.action_kind), "action");
+      picks(m.actor_selector).forEach((e) => link("e:" + e.id, a, "can"));
+      Object.entries(m.participants || {}).forEach(([role, sel]) => picks(sel).forEach((e) => link(a, "e:" + e.id, words(role))));
+    });
+    ((causalModel && causalModel.processes) || []).forEach((p) => {
+      const id = "p:" + p.process_id;
+      node(id, words(p.process_id), "process");
+      picks(p.selector).forEach((e) => link(id, "e:" + e.id, "changes"));
+    });
+    return {
+      schema: "typed-graph/v1",
+      kinds: {
+        actor: { label: "Chooses moves", color: "#6fa8dc", explain: "Someone (or something) that chooses its own moves." },
+        place: { label: "Place", color: "#7d8a90", explain: "Somewhere people and things can be." },
+        thing: { label: "Thing", color: "#a9b5ba", explain: "Anything else in the world." },
+        action: { label: "Move", color: "#f0a35e", explain: "A move the rules allow: linked from who can make it, and to what it uses." },
+        process: { label: "By itself", color: "#f0a35e", dashed: true, explain: "A change the world makes on its own every round." },
+      },
+      nodes, edges, layout: {},
+    };
+  }
+  // Node ids a round touched: who acted, the move, what it used and changed, and what changed by itself.
+  function roundTouched(turn) {
+    const ids = new Set();
+    const ent = (path) => { const m = /^entities\.([^.]+)\./.exec(path || ""); if (m) ids.add("e:" + m[1]); };
+    Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+      if (row.status !== "accepted") return;
+      ids.add("e:" + actor);
+      if (row.did) { ids.add("a:" + row.did.kind); Object.entries(row.did).forEach(([k, v]) => { if (k !== "kind" && typeof v === "string") ids.add("e:" + v); }); }
+      (row.changes || []).forEach((c) => ent(c.path));
+    });
+    (turn.world_changes || []).forEach((rule) => ids.add("p:" + rule));
+    (turn.world_events || []).forEach((ev) => (ev.changes || []).forEach((c) => ent(c.path)));
+    return ids;
+  }
+  // Keep a copy of every entity and apply each round's recorded changes, so "is in" links follow people as they move.
+  function applyRound(entities, turn) {
+    const changes = [];
+    Object.values(turn.actors || {}).forEach((row) => changes.push(...(row.changes || [])));
+    (turn.world_events || []).forEach((ev) => changes.push(...(ev.changes || [])));
+    changes.forEach((c) => {
+      const m = /^entities\.([^.]+)\.(.+)$/.exec(c.path || "");
+      const e = m && entities.find((x) => x.id === m[1]);
+      if (!e) return;
+      if (m[2] === "location" || m[2] === "location.location_id") { e.location = c.after; return; }
+      const parts = m[2].split(".");
+      let at = e;
+      for (const p of parts.slice(0, -1)) { if (at[p] === undefined || at[p] === null) at[p] = {}; at = at[p]; }
+      at[parts[parts.length - 1]] = c.after;
+    });
+  }
+  let netViewer = null, netLoading = null;
+  function loadGraphViewer() {
+    if (window.GraphViewer) return Promise.resolve();
+    netLoading = netLoading || new Promise((resolve, reject) => {
+      const s = document.createElement("script"); s.src = "graph-viewer.js";
+      s.onload = resolve; s.onerror = () => { netLoading = null; reject(new Error("graph-viewer.js did not load")); };
+      document.head.append(s);
+    });
+    return netLoading;
+  }
+  function netDescribe(id) {
+    if (!live || !live.net) return "";
+    const e = id && id.startsWith("e:") && live.net.entities.find((x) => "e:" + x.id === id);
+    if (e) {
+      const parts = [];
+      if (e.location) parts.push("is in " + labelFor(e.location));
+      Object.values(e.components || {}).forEach((f) => Object.entries(f || {}).forEach(([k, v]) => parts.push(`${field(k)}: ${valueText(v)}`)));
+      return `${e.label}: ${parts.join(" · ") || "nothing recorded about it"}.`;
+    }
+    const m = id && id.startsWith("a:") && ((world.review || {}).mechanics || []).find((x) => "a:" + x.action_kind === id);
+    if (m) return `${words(m.action_kind)}: only if ${(m.checks || []).map((c) => c.label).join("; ") || "always allowed"}.`;
+    const p = id && id.startsWith("p:") && ((world.review || {}).processes || []).find((x) => "p:" + x.process_id === id);
+    return p ? `${words(p.process_id)}: ${p.rationale}` : "";
+  }
+  async function renderNetwork() {
+    const box = $("network");
+    box.hidden = !live || !world;
+    if (box.hidden || !box.open) return;
+    if (!live.net) live.net = { entities: JSON.parse(JSON.stringify(world.bundle.entities)), applied: 0, shape: "" };
+    while (live.net.applied < live.rounds.length) applyRound(live.net.entities, live.rounds[live.net.applied++]);
+    const graph = worldNetwork({ ...world.bundle, entities: live.net.entities }, world.causal_model);
+    try { await loadGraphViewer(); }
+    catch (err) { $("net-caption").textContent = "The network picture could not load: " + err.message; return; }
+    const shape = JSON.stringify(graph.edges.map((e) => e.id));
+    if (!netViewer) {
+      // A highlight sent before the first layout is lost, so send the latest one again once it is drawn.
+      netViewer = GraphViewer.mount($("net-graph"), { graph, onSelect: (pick) => { $("net-detail").textContent = pick ? netDescribe(pick.id) : ""; },
+        onLayout: () => { if (live && live.net) netViewer.highlight(live.net.lit); } });
+    } else if (shape !== live.net.shape) netViewer.update(graph);
+    live.net.shape = shape;
+    const turn = live.rounds[live.rounds.length - 1];
+    const lit = turn ? [...roundTouched(turn)].filter((id) => graph.nodes.some((n) => n.id === id)) : [];
+    const litSet = new Set(lit);
+    graph.edges.forEach((e) => { if (litSet.has(e.source) && litSet.has(e.target)) lit.push(e.id); });
+    live.net.lit = lit.length ? lit : null;
+    netViewer.highlight(live.net.lit);
+    $("net-caption").textContent = turn
+      ? (litSet.size ? `Lit up: what round ${turn.turn} used or changed. Select a box to see its state now.` : `Nothing changed in round ${turn.turn}. Select a box to see its state now.`)
+      : "Before round 1. Select a box to see its state.";
+  }
+
   function renderLive() {
     const t = live.totals, n = live.rounds.length;
     const last = n ? live.rounds[n - 1].turn : 0;
@@ -753,6 +895,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         + ". Open “Why things were refused” to see what is blocking them.";
       note.append(n);
     }
+    renderNetwork();
   }
 
   function recentMoves() {
@@ -764,15 +907,16 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
 
   async function fetchRounds() {
-    const ai = $("ai-moves").checked;
-    // AI moves are played by Concordia residents, each with its own memory carried from round to round, who say in
+    // Every move is chosen by an AI (Brian, 2026-10-26: "it seems dumb to even have ai doesnt choose move as an
+    // option"). Moves are played by Concordia residents, each with its own memory carried from round to round, who say in
     // their own words what they try (docs/plans/open_attempt.md). People worlds add each person's brief; in a things
     // world a resident knows the world, its own state and what it sees.
-    const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: ai ? "resident" : "scripted", turns: 1 };
-    if (ai) { if (world.briefs) request.briefs = world.briefs; if (live.memory) request.resident_memory = live.memory; }
+    const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: "resident", turns: 1 };
+    if (world.briefs) request.briefs = world.briefs;
+    if (live.memory) request.resident_memory = live.memory;
     if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
-    // Simple moves are instant, so ask directly; AI rounds take a few seconds and go through a job.
-    return ai ? apiJob("/run", request, 1000) : api("/run", request);
+    // AI rounds take a few seconds and go through a job.
+    return apiJob("/run", request, 1000);
   }
 
   async function playLoop() {
@@ -831,16 +975,15 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         live.why = `Paused after ${CHECK_IN_ROUNDS} rounds. Still watching? Press Play to carry on.`;
       }
       renderLive();
-      // Simple moves are instant; pause so each round can be read. AI rounds take long enough already.
+      // A replay is instant; pause so each round can be read. AI rounds take long enough already.
       if (live.playing && live.replay) await sleep(REPLAY_PAUSE_MS);
-      else if (live.playing && !$("ai-moves").checked) await sleep(ROUND_PAUSE_MS);
     }
   }
 
   function play() {
     if (!live || live.finished) return;
     live.gen++; live.playing = true; live.sincePlay = 0;
-    live.why = live.replay ? "Replaying the recorded rounds; nothing is being decided now." : $("ai-moves").checked ? "An AI is choosing each move, so each round takes a few seconds." : "";
+    live.why = live.replay ? "Replaying the recorded rounds; nothing is being decided now." : "An AI is choosing each move, so each round takes a few seconds.";
     renderLive(); playLoop();
   }
   function pause() {
@@ -857,10 +1000,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
              sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded };
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
-    $("share-btn").hidden = live.replay; $("ai-live").parentElement.hidden = live.replay;
+    $("share-btn").hidden = live.replay;
     $("replay").closest("details").hidden = live.replay;  // a recording has no picture yet
     $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
-    $("ai-live").checked = $("ai-moves").checked;
+    $("net-detail").textContent = "";
     show("run");
     play();
   }
@@ -996,7 +1139,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); refreshBuild(); $("dialogue").hidden = true; build(); });
   $("rules-btn").addEventListener("click", () => { pause(); show("review"); });
   $("play-btn").addEventListener("click", () => { if (live && live.playing) pause(); else play(); });
-  $("ai-live").addEventListener("change", () => { $("ai-moves").checked = $("ai-live").checked; if (live && live.playing) live.why = $("ai-live").checked ? "An AI is choosing each move, so each round takes a few seconds." : ""; });
+  $("network").addEventListener("toggle", () => { if ($("network").open) renderNetwork(); });
   $("strip").addEventListener("click", () => { $("detail").dataset.touched = "1"; });
   $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
   $("change-btn").addEventListener("click", () => show("describe"));

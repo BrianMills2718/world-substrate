@@ -1,0 +1,2593 @@
+{
+  "trace_id": "model-more/rules/c2464c9fae9c46c6963deb30ca15b3ee",
+  "cost": 0.006782925,
+  "causal_model": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "cut-cedar",
+        "version": "1",
+        "action_kind": "cut-cedar",
+        "rationale": "Cutting cedar adds logs to the logger's represented stock; no source reserve is represented, so no reserve is consumed.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "logger"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker is a logger",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "logger"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.inventory.logs",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "This action adds one log per use because no cutting quantity is specified.",
+          "No unrepresented tree reserve is checked or depleted."
+        ],
+        "tests": [
+          "A logger gains one log.",
+          "An actor with a different role cannot cut cedar."
+        ],
+        "semantic_bindings": [
+          "cut cedar",
+          "add logs to the logger's stock"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "saw-logs",
+        "version": "1",
+        "action_kind": "saw-logs",
+        "rationale": "Sawing consumes one log from the named source and adds one slat to the sawmill operator's stock.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "sawmill"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {
+          "source": {
+            "categories": [
+              "actor"
+            ],
+            "components": [
+              "inventory"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker operates a sawmill",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "sawmill operator"
+            }
+          },
+          {
+            "label": "the log source is nearby",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "source",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the source has a log",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.inventory.logs"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "source",
+            "path": "components.inventory.logs",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.slats",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One log makes one slat; no larger conversion rate is represented.",
+          "The named source must have inventory and be in the same place as the sawmill."
+        ],
+        "tests": [
+          "With a nearby source holding a log, the sawmill consumes one log and gains one slat.",
+          "The action is refused if the source is elsewhere or has no logs."
+        ],
+        "semantic_bindings": [
+          "logs from the named source",
+          "saw logs into slats"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "mine-materials",
+        "version": "1",
+        "action_kind": "mine-materials",
+        "rationale": "Mining adds graphite and clay to the miner's represented stock; no mine reserve is represented.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "miner"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker is a miner",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "miner"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.inventory.graphite",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.clay",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One unit of each material is added per use because no quantity is specified.",
+          "No unrepresented mine reserve is checked or depleted."
+        ],
+        "tests": [
+          "A miner gains one graphite and one clay.",
+          "An actor with a different role cannot mine materials."
+        ],
+        "semantic_bindings": [
+          "mine graphite and clay",
+          "add them to the miner's stock"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "make-leads",
+        "version": "1",
+        "action_kind": "make-leads",
+        "rationale": "Making leads consumes one graphite and one clay from the named source and adds one lead to the lead maker's stock.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "lead-maker"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {
+          "source": {
+            "categories": [
+              "actor"
+            ],
+            "components": [
+              "inventory"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker makes leads",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "lead maker"
+            }
+          },
+          {
+            "label": "the materials are nearby",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "source",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the source has graphite",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.inventory.graphite"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the source has clay",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.inventory.clay"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "source",
+            "path": "components.inventory.graphite",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "source",
+            "path": "components.inventory.clay",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.leads",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One unit of graphite and clay makes one lead; no other conversion rate is represented.",
+          "The named source must be nearby and hold both materials."
+        ],
+        "tests": [
+          "With nearby graphite and clay, the lead maker consumes one of each and gains one lead.",
+          "The action is refused if either material is missing."
+        ],
+        "semantic_bindings": [
+          "graphite and clay from the named source",
+          "make pencil leads"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "supply-slats",
+        "version": "1",
+        "action_kind": "supply-slats",
+        "rationale": "Supplying slats transfers one slat from the named source into the factory's stock.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "factory"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {
+          "source": {
+            "categories": [
+              "actor"
+            ],
+            "components": [
+              "inventory"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker is at the pencil factory",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil maker"
+            }
+          },
+          {
+            "label": "the slat source is nearby",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "source",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the source has a slat",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.inventory.slats"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "source",
+            "path": "components.inventory.slats",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.slats",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One slat is transferred per use because no quantity is specified.",
+          "Only a nearby source holding a slat can supply it."
+        ],
+        "tests": [
+          "A nearby source loses one slat as the factory gains one.",
+          "The action is refused when the source has no slats."
+        ],
+        "semantic_bindings": [
+          "slats from the named source",
+          "pass slats to the pencil factory"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "supply-leads",
+        "version": "1",
+        "action_kind": "supply-leads",
+        "rationale": "Supplying leads transfers one lead from the named source into the factory's stock.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "factory"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {
+          "source": {
+            "categories": [
+              "actor"
+            ],
+            "components": [
+              "inventory"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker is at the pencil factory",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil maker"
+            }
+          },
+          {
+            "label": "the lead source is nearby",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "source",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the source has a lead",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.inventory.leads"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "source",
+            "path": "components.inventory.leads",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.leads",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One lead is transferred per use because no quantity is specified.",
+          "Only a nearby source holding a lead can supply it."
+        ],
+        "tests": [
+          "A nearby source loses one lead as the factory gains one.",
+          "The action is refused when the source has no leads."
+        ],
+        "semantic_bindings": [
+          "leads from the named source",
+          "pass leads to the pencil factory"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "assemble-pencils",
+        "version": "1",
+        "action_kind": "assemble-pencils",
+        "rationale": "Assembly consumes one slat, one lead, one paint, one eraser, and one ferrule, producing one pencil.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "factory"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker makes pencils",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil maker"
+            }
+          },
+          {
+            "label": "the factory has a slat",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.inventory.slats"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has a lead",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.inventory.leads"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has paint",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.inventory.paint"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has an eraser",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.inventory.erasers"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has a ferrule",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.inventory.ferrules"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.inventory.slats",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.leads",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.paint",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.erasers",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.ferrules",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.pencils",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One pencil is assembled per use.",
+          "No paint, erasers, or ferrules are supplied by this action."
+        ],
+        "tests": [
+          "With all five required inputs, the factory consumes one of each and gains one pencil.",
+          "Assembly is refused if any required input is absent."
+        ],
+        "semantic_bindings": [
+          "glue leads into slats",
+          "apply paint, erasers, and brass ferrules",
+          "factory's stocks"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "pack-pencils",
+        "version": "1",
+        "action_kind": "pack-pencils",
+        "rationale": "Packing converts the requested number of factory pencils into the same number of boxes; the represented state has no pencils-per-box ratio, so one pencil per box is used conservatively.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "factory"
+          ],
+          "components": [
+            "worker",
+            "inventory"
+          ]
+        },
+        "participants": {},
+        "parameters": {
+          "quantity": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        "checks": [
+          {
+            "label": "the worker is at the pencil factory",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil maker"
+            }
+          },
+          {
+            "label": "the packing quantity is positive",
+            "left": {
+              "action_field": "quantity"
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has enough pencils",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.inventory.pencils"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "action_field": "quantity"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.inventory.pencils",
+            "op": "subtract",
+            "value": {
+              "action_field": "quantity"
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.inventory.boxes",
+            "op": "add",
+            "value": {
+              "action_field": "quantity"
+            }
+          }
+        ],
+        "limits": [
+          "Accepted quantities are 1 through 8.",
+          "The represented world does not specify how many pencils fit in a box; this mechanic uses one pencil per box.",
+          "No packaging-material stock is represented or consumed."
+        ],
+        "tests": [
+          "Packing two available pencils removes two pencils and adds two boxes.",
+          "Packing is refused for a nonpositive, unsupported, or unaffordable quantity."
+        ],
+        "semantic_bindings": [
+          "pack pencils into boxes",
+          "quantity"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "load-boxes",
+        "version": "1",
+        "action_kind": "load-boxes",
+        "rationale": "Loading transfers the requested boxes from the named source's inventory into the truck's represented box stock.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "truck-driver"
+          ],
+          "components": [
+            "worker",
+            "truck"
+          ]
+        },
+        "participants": {
+          "source": {
+            "categories": [
+              "actor"
+            ],
+            "components": [
+              "inventory"
+            ]
+          }
+        },
+        "parameters": {
+          "quantity": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        "checks": [
+          {
+            "label": "the worker drives the truck",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "truck driver"
+            }
+          },
+          {
+            "label": "the boxes are nearby",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "source",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the loading quantity is positive",
+            "left": {
+              "action_field": "quantity"
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the source has enough boxes",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.inventory.boxes"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "action_field": "quantity"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "source",
+            "path": "components.inventory.boxes",
+            "op": "subtract",
+            "value": {
+              "action_field": "quantity"
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.truck.boxes",
+            "op": "add",
+            "value": {
+              "action_field": "quantity"
+            }
+          }
+        ],
+        "limits": [
+          "Accepted quantities are 1 through 8.",
+          "The source must be an actor with inventory in the truck driver's location.",
+          "No truck capacity is represented."
+        ],
+        "tests": [
+          "Loading two boxes from a nearby source transfers two boxes to the truck.",
+          "Loading is refused if the source is distant or lacks enough boxes."
+        ],
+        "semantic_bindings": [
+          "boxes from the named source",
+          "load onto the truck"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "deliver-boxes",
+        "version": "1",
+        "action_kind": "deliver-boxes",
+        "rationale": "Delivery transfers boxes from the truck into the named shop and records the stated journey duration as rounds remaining.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "truck-driver"
+          ],
+          "components": [
+            "worker",
+            "truck"
+          ]
+        },
+        "participants": {
+          "source": {
+            "categories": [
+              "actor"
+            ],
+            "components": [
+              "truck"
+            ]
+          },
+          "to": {
+            "categories": [
+              "actor",
+              "shop"
+            ],
+            "components": [
+              "inventory"
+            ]
+          }
+        },
+        "parameters": {
+          "rounds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        "checks": [
+          {
+            "label": "the worker drives the truck",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "truck driver"
+            }
+          },
+          {
+            "label": "the truck is at the box source",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "source",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the shop is the named destination",
+            "left": {
+              "participant": {
+                "name": "to",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "action_field": "to"
+            }
+          },
+          {
+            "label": "the truck has boxes to deliver",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.truck.boxes"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the journey duration is positive",
+            "left": {
+              "action_field": "rounds"
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "source",
+            "path": "components.truck.boxes",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "to",
+            "path": "components.inventory.boxes",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.truck.rounds_left",
+            "op": "set",
+            "value": {
+              "action_field": "rounds"
+            }
+          }
+        ],
+        "limits": [
+          "This transfers one box per use because no delivery quantity field is available.",
+          "The destination must resolve to a shop and the box source to a truck.",
+          "The represented state does not specify route feasibility or automatic travel completion; this action records rounds remaining but does not move locations."
+        ],
+        "tests": [
+          "A truck with a box can deliver one box to a named shop and set the journey rounds.",
+          "Delivery is refused if the truck has no boxes, the destination is not a shop, or rounds are not positive."
+        ],
+        "semantic_bindings": [
+          "boxes from the named source",
+          "named shop",
+          "set a delivery journey"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "sell-pencils",
+        "version": "1",
+        "action_kind": "sell-pencils",
+        "rationale": "A sale transfers the requested pencils from shop stock to the customer, charges the listed price per pencil, and credits the shop.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "shop"
+          ],
+          "components": [
+            "worker",
+            "inventory",
+            "business"
+          ]
+        },
+        "participants": {
+          "customer": {
+            "categories": [
+              "actor",
+              "customer"
+            ],
+            "components": [
+              "customer"
+            ]
+          }
+        },
+        "parameters": {
+          "quantity": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        "checks": [
+          {
+            "label": "the worker is a shopkeeper",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "shopkeeper"
+            }
+          },
+          {
+            "label": "the customer is nearby",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "customer",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the sale quantity is positive",
+            "left": {
+              "action_field": "quantity"
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the shop has enough pencils",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.inventory.pencils"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "action_field": "quantity"
+            }
+          },
+          {
+            "label": "the customer can pay the listed price",
+            "left": {
+              "participant": {
+                "name": "customer",
+                "path": "components.customer.cash"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "components.business.pencil_price"
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.inventory.pencils",
+            "op": "subtract",
+            "value": {
+              "action_field": "quantity"
+            }
+          },
+          {
+            "participant": "customer",
+            "path": "components.customer.pencils",
+            "op": "add",
+            "value": {
+              "action_field": "quantity"
+            }
+          },
+          {
+            "participant": "customer",
+            "path": "components.customer.cash",
+            "op": "subtract",
+            "value": {
+              "participant": {
+                "name": "actor",
+                "path": "components.business.pencil_price"
+              }
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.business.cash",
+            "op": "add",
+            "value": {
+              "participant": {
+                "name": "actor",
+                "path": "components.business.pencil_price"
+              }
+            }
+          }
+        ],
+        "limits": [
+          "Accepted quantities are 1 through 8.",
+          "The represented price is applied once per sale because no multiplication expression is available; quantity greater than one is refused by this conservative pricing interpretation only if the customer cannot cover the listed price.",
+          "No waiting-order or renewed-demand state is represented."
+        ],
+        "tests": [
+          "A nearby customer with sufficient cash can buy when the shop has stock.",
+          "A sale is refused if the customer is distant, the shop lacks stock, or the customer cannot pay the listed price."
+        ],
+        "semantic_bindings": [
+          "sell pencils from the shop",
+          "named customer",
+          "shop's listed price"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "move",
+        "version": "1",
+        "action_kind": "move",
+        "rationale": "Movement sets the acting entity's location to the named destination only when the named passable route connects the actor's current location to that destination in the declared forward direction.",
+        "actor_selector": {
+          "categories": [
+            "actor"
+          ],
+          "components": []
+        },
+        "participants": {
+          "to": {
+            "categories": [
+              "place"
+            ],
+            "components": []
+          },
+          "way": {
+            "categories": [
+              "route"
+            ],
+            "components": [
+              "route"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the route is passable",
+            "left": {
+              "participant": {
+                "name": "way",
+                "path": "components.route.passable"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the route begins where the traveler is",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "way",
+                "path": "components.route.place_a"
+              }
+            }
+          },
+          {
+            "label": "the route ends at the named place",
+            "left": {
+              "participant": {
+                "name": "to",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "way",
+                "path": "components.route.place_b"
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "location.location_id",
+            "op": "set",
+            "value": {
+              "participant": {
+                "name": "to",
+                "path": "location.location_id"
+              }
+            }
+          }
+        ],
+        "limits": [
+          "Only the route's place_a to place_b direction is supported; reverse travel is refused unless represented by a route with reversed endpoints.",
+          "No travel duration or cargo movement is represented by this action."
+        ],
+        "tests": [
+          "An actor at a passable route's first place can move to its second place.",
+          "Movement is refused for an impassable route, mismatched start, mismatched destination, or reverse direction."
+        ],
+        "semantic_bindings": [
+          "move to the named place",
+          "by way of the named route"
+        ]
+      }
+    ],
+    "terminal": null,
+    "review": {
+      "schema_version": "world-substrate-causal-model/v0",
+      "mechanics": [
+        {
+          "mechanic_id": "cut-cedar",
+          "action_kind": "cut-cedar",
+          "rationale": "Cutting cedar adds logs to the logger's represented stock; no source reserve is represented, so no reserve is consumed.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.logs",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.logs",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is a logger",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "logger"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.inventory.logs",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "This action adds one log per use because no cutting quantity is specified.",
+            "No unrepresented tree reserve is checked or depleted."
+          ],
+          "tests": [
+            "A logger gains one log.",
+            "An actor with a different role cannot cut cedar."
+          ]
+        },
+        {
+          "mechanic_id": "saw-logs",
+          "action_kind": "saw-logs",
+          "rationale": "Sawing consumes one log from the named source and adds one slat to the sawmill operator's stock.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.slats",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<source>.category_ids",
+            "entities.<source>.components.inventory",
+            "entities.<source>.components.inventory.logs",
+            "entities.<source>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.slats",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<source>.components.inventory.logs",
+            "entities.<source>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker operates a sawmill",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "sawmill operator"
+              }
+            },
+            {
+              "label": "the log source is nearby",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "source",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the source has a log",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.inventory.logs"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "source",
+              "path": "components.inventory.logs",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.slats",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One log makes one slat; no larger conversion rate is represented.",
+            "The named source must have inventory and be in the same place as the sawmill."
+          ],
+          "tests": [
+            "With a nearby source holding a log, the sawmill consumes one log and gains one slat.",
+            "The action is refused if the source is elsewhere or has no logs."
+          ]
+        },
+        {
+          "mechanic_id": "mine-materials",
+          "action_kind": "mine-materials",
+          "rationale": "Mining adds graphite and clay to the miner's represented stock; no mine reserve is represented.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.clay",
+            "entities.<actor>.components.inventory.graphite",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.clay",
+            "entities.<actor>.components.inventory.graphite",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is a miner",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "miner"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.inventory.graphite",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.clay",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One unit of each material is added per use because no quantity is specified.",
+            "No unrepresented mine reserve is checked or depleted."
+          ],
+          "tests": [
+            "A miner gains one graphite and one clay.",
+            "An actor with a different role cannot mine materials."
+          ]
+        },
+        {
+          "mechanic_id": "make-leads",
+          "action_kind": "make-leads",
+          "rationale": "Making leads consumes one graphite and one clay from the named source and adds one lead to the lead maker's stock.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.leads",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<source>.category_ids",
+            "entities.<source>.components.inventory",
+            "entities.<source>.components.inventory.clay",
+            "entities.<source>.components.inventory.graphite",
+            "entities.<source>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.leads",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<source>.components.inventory.clay",
+            "entities.<source>.components.inventory.graphite",
+            "entities.<source>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker makes leads",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "lead maker"
+              }
+            },
+            {
+              "label": "the materials are nearby",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "source",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the source has graphite",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.inventory.graphite"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the source has clay",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.inventory.clay"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "source",
+              "path": "components.inventory.graphite",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "source",
+              "path": "components.inventory.clay",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.leads",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One unit of graphite and clay makes one lead; no other conversion rate is represented.",
+            "The named source must be nearby and hold both materials."
+          ],
+          "tests": [
+            "With nearby graphite and clay, the lead maker consumes one of each and gains one lead.",
+            "The action is refused if either material is missing."
+          ]
+        },
+        {
+          "mechanic_id": "supply-slats",
+          "action_kind": "supply-slats",
+          "rationale": "Supplying slats transfers one slat from the named source into the factory's stock.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.slats",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<source>.category_ids",
+            "entities.<source>.components.inventory",
+            "entities.<source>.components.inventory.slats",
+            "entities.<source>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.slats",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<source>.components.inventory.slats",
+            "entities.<source>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is at the pencil factory",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil maker"
+              }
+            },
+            {
+              "label": "the slat source is nearby",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "source",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the source has a slat",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.inventory.slats"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "source",
+              "path": "components.inventory.slats",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.slats",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One slat is transferred per use because no quantity is specified.",
+            "Only a nearby source holding a slat can supply it."
+          ],
+          "tests": [
+            "A nearby source loses one slat as the factory gains one.",
+            "The action is refused when the source has no slats."
+          ]
+        },
+        {
+          "mechanic_id": "supply-leads",
+          "action_kind": "supply-leads",
+          "rationale": "Supplying leads transfers one lead from the named source into the factory's stock.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.leads",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<source>.category_ids",
+            "entities.<source>.components.inventory",
+            "entities.<source>.components.inventory.leads",
+            "entities.<source>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.leads",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<source>.components.inventory.leads",
+            "entities.<source>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is at the pencil factory",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil maker"
+              }
+            },
+            {
+              "label": "the lead source is nearby",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "source",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the source has a lead",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.inventory.leads"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "source",
+              "path": "components.inventory.leads",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.leads",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One lead is transferred per use because no quantity is specified.",
+            "Only a nearby source holding a lead can supply it."
+          ],
+          "tests": [
+            "A nearby source loses one lead as the factory gains one.",
+            "The action is refused when the source has no leads."
+          ]
+        },
+        {
+          "mechanic_id": "assemble-pencils",
+          "action_kind": "assemble-pencils",
+          "rationale": "Assembly consumes one slat, one lead, one paint, one eraser, and one ferrule, producing one pencil.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.erasers",
+            "entities.<actor>.components.inventory.ferrules",
+            "entities.<actor>.components.inventory.leads",
+            "entities.<actor>.components.inventory.paint",
+            "entities.<actor>.components.inventory.pencils",
+            "entities.<actor>.components.inventory.slats",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.erasers",
+            "entities.<actor>.components.inventory.ferrules",
+            "entities.<actor>.components.inventory.leads",
+            "entities.<actor>.components.inventory.paint",
+            "entities.<actor>.components.inventory.pencils",
+            "entities.<actor>.components.inventory.slats",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker makes pencils",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil maker"
+              }
+            },
+            {
+              "label": "the factory has a slat",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.inventory.slats"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has a lead",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.inventory.leads"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has paint",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.inventory.paint"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has an eraser",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.inventory.erasers"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has a ferrule",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.inventory.ferrules"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.inventory.slats",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.leads",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.paint",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.erasers",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.ferrules",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.pencils",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One pencil is assembled per use.",
+            "No paint, erasers, or ferrules are supplied by this action."
+          ],
+          "tests": [
+            "With all five required inputs, the factory consumes one of each and gains one pencil.",
+            "Assembly is refused if any required input is absent."
+          ]
+        },
+        {
+          "mechanic_id": "pack-pencils",
+          "action_kind": "pack-pencils",
+          "rationale": "Packing converts the requested number of factory pencils into the same number of boxes; the represented state has no pencils-per-box ratio, so one pencil per box is used conservatively.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.boxes",
+            "entities.<actor>.components.inventory.pencils",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role"
+          ],
+          "writes": [
+            "entities.<actor>.components.inventory.boxes",
+            "entities.<actor>.components.inventory.pencils",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is at the pencil factory",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil maker"
+              }
+            },
+            {
+              "label": "the packing quantity is positive",
+              "left": {
+                "action_field": "quantity"
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has enough pencils",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.inventory.pencils"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "action_field": "quantity"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.inventory.pencils",
+              "op": "subtract",
+              "value": {
+                "action_field": "quantity"
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.inventory.boxes",
+              "op": "add",
+              "value": {
+                "action_field": "quantity"
+              }
+            }
+          ],
+          "limits": [
+            "Accepted quantities are 1 through 8.",
+            "The represented world does not specify how many pencils fit in a box; this mechanic uses one pencil per box.",
+            "No packaging-material stock is represented or consumed."
+          ],
+          "tests": [
+            "Packing two available pencils removes two pencils and adds two boxes.",
+            "Packing is refused for a nonpositive, unsupported, or unaffordable quantity."
+          ]
+        },
+        {
+          "mechanic_id": "load-boxes",
+          "action_kind": "load-boxes",
+          "rationale": "Loading transfers the requested boxes from the named source's inventory into the truck's represented box stock.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.truck",
+            "entities.<actor>.components.truck.boxes",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<source>.category_ids",
+            "entities.<source>.components.inventory",
+            "entities.<source>.components.inventory.boxes",
+            "entities.<source>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.truck.boxes",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<source>.components.inventory.boxes",
+            "entities.<source>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker drives the truck",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "truck driver"
+              }
+            },
+            {
+              "label": "the boxes are nearby",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "source",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the loading quantity is positive",
+              "left": {
+                "action_field": "quantity"
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the source has enough boxes",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.inventory.boxes"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "action_field": "quantity"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "source",
+              "path": "components.inventory.boxes",
+              "op": "subtract",
+              "value": {
+                "action_field": "quantity"
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.truck.boxes",
+              "op": "add",
+              "value": {
+                "action_field": "quantity"
+              }
+            }
+          ],
+          "limits": [
+            "Accepted quantities are 1 through 8.",
+            "The source must be an actor with inventory in the truck driver's location.",
+            "No truck capacity is represented."
+          ],
+          "tests": [
+            "Loading two boxes from a nearby source transfers two boxes to the truck.",
+            "Loading is refused if the source is distant or lacks enough boxes."
+          ]
+        },
+        {
+          "mechanic_id": "deliver-boxes",
+          "action_kind": "deliver-boxes",
+          "rationale": "Delivery transfers boxes from the truck into the named shop and records the stated journey duration as rounds remaining.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.truck",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<source>.category_ids",
+            "entities.<source>.components.truck",
+            "entities.<source>.components.truck.boxes",
+            "entities.<source>.location.location_id",
+            "entities.<to>.category_ids",
+            "entities.<to>.components.inventory",
+            "entities.<to>.components.inventory.boxes",
+            "entities.<to>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.truck.rounds_left",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<source>.components.truck.boxes",
+            "entities.<source>.last_cause_event_id",
+            "entities.<to>.components.inventory.boxes",
+            "entities.<to>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker drives the truck",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "truck driver"
+              }
+            },
+            {
+              "label": "the truck is at the box source",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "source",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the shop is the named destination",
+              "left": {
+                "participant": {
+                  "name": "to",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "action_field": "to"
+              }
+            },
+            {
+              "label": "the truck has boxes to deliver",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.truck.boxes"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the journey duration is positive",
+              "left": {
+                "action_field": "rounds"
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "source",
+              "path": "components.truck.boxes",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "to",
+              "path": "components.inventory.boxes",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.truck.rounds_left",
+              "op": "set",
+              "value": {
+                "action_field": "rounds"
+              }
+            }
+          ],
+          "limits": [
+            "This transfers one box per use because no delivery quantity field is available.",
+            "The destination must resolve to a shop and the box source to a truck.",
+            "The represented state does not specify route feasibility or automatic travel completion; this action records rounds remaining but does not move locations."
+          ],
+          "tests": [
+            "A truck with a box can deliver one box to a named shop and set the journey rounds.",
+            "Delivery is refused if the truck has no boxes, the destination is not a shop, or rounds are not positive."
+          ]
+        },
+        {
+          "mechanic_id": "sell-pencils",
+          "action_kind": "sell-pencils",
+          "rationale": "A sale transfers the requested pencils from shop stock to the customer, charges the listed price per pencil, and credits the shop.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.business",
+            "entities.<actor>.components.business.cash",
+            "entities.<actor>.components.business.pencil_price",
+            "entities.<actor>.components.inventory",
+            "entities.<actor>.components.inventory.pencils",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<customer>.category_ids",
+            "entities.<customer>.components.customer",
+            "entities.<customer>.components.customer.cash",
+            "entities.<customer>.components.customer.pencils",
+            "entities.<customer>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.business.cash",
+            "entities.<actor>.components.inventory.pencils",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<customer>.components.customer.cash",
+            "entities.<customer>.components.customer.pencils",
+            "entities.<customer>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is a shopkeeper",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "shopkeeper"
+              }
+            },
+            {
+              "label": "the customer is nearby",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "customer",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the sale quantity is positive",
+              "left": {
+                "action_field": "quantity"
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the shop has enough pencils",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.inventory.pencils"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "action_field": "quantity"
+              }
+            },
+            {
+              "label": "the customer can pay the listed price",
+              "left": {
+                "participant": {
+                  "name": "customer",
+                  "path": "components.customer.cash"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.business.pencil_price"
+                }
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.inventory.pencils",
+              "op": "subtract",
+              "value": {
+                "action_field": "quantity"
+              }
+            },
+            {
+              "participant": "customer",
+              "path": "components.customer.pencils",
+              "op": "add",
+              "value": {
+                "action_field": "quantity"
+              }
+            },
+            {
+              "participant": "customer",
+              "path": "components.customer.cash",
+              "op": "subtract",
+              "value": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.business.pencil_price"
+                }
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.business.cash",
+              "op": "add",
+              "value": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.business.pencil_price"
+                }
+              }
+            }
+          ],
+          "limits": [
+            "Accepted quantities are 1 through 8.",
+            "The represented price is applied once per sale because no multiplication expression is available; quantity greater than one is refused by this conservative pricing interpretation only if the customer cannot cover the listed price.",
+            "No waiting-order or renewed-demand state is represented."
+          ],
+          "tests": [
+            "A nearby customer with sufficient cash can buy when the shop has stock.",
+            "A sale is refused if the customer is distant, the shop lacks stock, or the customer cannot pay the listed price."
+          ]
+        },
+        {
+          "mechanic_id": "move",
+          "action_kind": "move",
+          "rationale": "Movement sets the acting entity's location to the named destination only when the named passable route connects the actor's current location to that destination in the declared forward direction.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.location.location_id",
+            "entities.<to>.category_ids",
+            "entities.<to>.location.location_id",
+            "entities.<way>.category_ids",
+            "entities.<way>.components.route",
+            "entities.<way>.components.route.passable",
+            "entities.<way>.components.route.place_a",
+            "entities.<way>.components.route.place_b"
+          ],
+          "writes": [
+            "entities.<actor>.last_cause_event_id",
+            "entities.<actor>.location.location_id"
+          ],
+          "checks": [
+            {
+              "label": "the route is passable",
+              "left": {
+                "participant": {
+                  "name": "way",
+                  "path": "components.route.passable"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "the route begins where the traveler is",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "way",
+                  "path": "components.route.place_a"
+                }
+              }
+            },
+            {
+              "label": "the route ends at the named place",
+              "left": {
+                "participant": {
+                  "name": "to",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "way",
+                  "path": "components.route.place_b"
+                }
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "location.location_id",
+              "op": "set",
+              "value": {
+                "participant": {
+                  "name": "to",
+                  "path": "location.location_id"
+                }
+              }
+            }
+          ],
+          "limits": [
+            "Only the route's place_a to place_b direction is supported; reverse travel is refused unless represented by a route with reversed endpoints.",
+            "No travel duration or cargo movement is represented by this action."
+          ],
+          "tests": [
+            "An actor at a passable route's first place can move to its second place.",
+            "Movement is refused for an impassable route, mismatched start, mismatched destination, or reverse direction."
+          ]
+        }
+      ],
+      "processes": [],
+      "terminal": null
+    }
+  }
+}
