@@ -229,6 +229,18 @@ class Engine:
         self._component_types = _world_component_types(world)
         self._initial_snapshot = world.snapshot()
 
+    def scratch(self) -> "Engine":
+        """A detached copy for previewing moves: same rules, its own world and an empty log.
+
+        The copy comes from a world this engine already validated, so it skips the constructor's
+        validation and initial snapshot (a preview never replays)."""
+        copy = Engine.__new__(Engine)
+        copy.world = deepcopy(self.world, {id(self.world.commands): [], id(self.world.events): []})
+        copy.registry = self.registry
+        copy._component_types = self._component_types
+        copy._initial_snapshot = self._initial_snapshot
+        return copy
+
     def initial_snapshot(self) -> dict[str, Any]:
         """Return the versioned initial state required for independent replay."""
         return deepcopy(self._initial_snapshot)
