@@ -144,5 +144,6 @@ Every reader document in this repository that the [wiki index](index.md) does no
 
 - [Trace read: first S1 owner run on the airfield (scripted moves, no residents)](../evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md)
 - [Trace read: S1 live airfield run with AI residents](../evidence/open-attempt/s1-airfield/TRACE_READ.md)
+- [Trace read: S2 live airfield run with AI residents](../evidence/open-attempt/s2-airfield/TRACE_READ.md)
 - [Q23: do generated moves check walls? (2026-10-25)](../evidence/open-attempt/q23/README.md)
 - [Q28: can generated worlds reuse the library damage processes? (2026-10-26)](../evidence/open-attempt/q28/README.md)
