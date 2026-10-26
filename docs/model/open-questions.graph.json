@@ -61,12 +61,6 @@
    "explain": "Blocks: whether work goes into the offline pipeline at all."
   },
   {
-   "id": "Q22",
-   "label": "Q22: Effects no rule covers",
-   "kind": "BrianQuestion",
-   "explain": "Blocks: slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin."
-  },
-  {
    "id": "Q26",
    "label": "Q26: Run page hides own-words attempts",
    "kind": "AgentQuestion",
@@ -339,18 +333,6 @@
    "id": "Q17-build",
    "source": "Q17",
    "target": "build",
-   "label": "bears on"
-  },
-  {
-   "id": "Q22-build",
-   "source": "Q22",
-   "target": "build",
-   "label": "bears on"
-  },
-  {
-   "id": "Q22-run-loop",
-   "source": "Q22",
-   "target": "run-loop",
    "label": "bears on"
   },
   {

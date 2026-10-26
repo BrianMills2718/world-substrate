@@ -398,7 +398,8 @@
    "blocks": "slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin",
    "resolves_with": "A product call on whether every effect must come from a written rule; no test settles it.",
    "owner": "brian",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "Brian, in session 2026-10-26: \"whatever you think is best as long as we are company plannign complant\", answering D2 after being given this recommendation (not yet). S4 is deliberately deferred; the plan and its review page now say so.",
    "recommendation": "Not yet: the person is told nothing comes of it, and the attempt is listed for the next build's rules writer. If allowed later, reuse the spike's mid-run path (check gate, then install or a recorded ruling) rather than a new one, with an approval step (G14).",
    "default": "Unmatched attempts change nothing and are listed in the build record.",
    "sources": [

@@ -32,7 +32,7 @@ def _replace(text: str, name: str, section: str) -> str:
     if start in text:
         a, b = text.index(start), text.index(end) + len(end)
         return text[:a] + section + text[b:]
-    return text.replace("<h2>One choice for you</h2>", section + "<h2>One choice for you</h2>", 1)
+    return text.replace("<h2>Your decisions</h2>", section + "<h2>Your decisions</h2>", 1)
 
 
 def types_section() -> str:

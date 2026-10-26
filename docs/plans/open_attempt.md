@@ -12,7 +12,7 @@ goal:
   forbidden_substitutes: "hand-edited specs, rules or runs; an interpreter that decides success; outcomes written by an LLM rather than by an installed rule; a roll whose dice come from the attempt's wording; a scripted move presented as an attempt; Waltzman-specific code paths; runs without run-log.jsonl and a TRACE_READ.md that scripts/check_trace_reads.py passes; rerunning until a behavior appears and reporting only that run."
   boundaries: "world-substrate and its own deploy only; Cybernetic Influence v3 and Concordia read-only; each slice merges after scripts/check_project.py exits 0 on the committed change; existing saved worlds still replay unchanged; owner allowance only, visitor allowance stays $3/day; free replays of saved worlds before any paid run; publish-checker before anything new goes public."
   done_when: "Acceptance checks A1-A9 below pass, each judged from the full trace of the run it names."
-  do_not_gate_on: "letting an AI game master invent effects for attempts no rule covers (Decision D2, deferred); organisations, the decider spectrum and thinking-as-effector (later designs); a clingo cross-check of the reaction rules; Brian's review of a run."
+  do_not_gate_on: "letting an AI game master invent effects for attempts no rule covers (Decision D2: not yet, Brian 2026-10-26); organisations, the decider spectrum and thinking-as-effector (later designs); a clingo cross-check of the reaction rules; Brian's review of a run."
   stop_after: 3
 conflict_surfaces:
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/open_attempt.md, access: write}
@@ -157,7 +157,7 @@ inside the existing commit.
 4. **Unmatched fallback (v1).** An attempt that matches no kind is recorded through the existing
    unsupported path: nothing in the world changes, the person sees "you try to …; nothing comes of
    it", and the build record lists every unmatched attempt so the rules writer can add a rule in the
-   next build. Letting an AI game master invent an effect is Decision D2, deferred.
+   next build. Letting an AI game master invent an effect is Decision D2: not yet (Brian, 2026-10-26).
 5. **Who notices.** Unchanged: `world_substrate.information` decides who perceives the result.
    Shouting to someone overseas succeeds as speech and reaches only those in hearing range.
 
@@ -268,7 +268,7 @@ comes from its trace against A1-A9, and an incomplete review leaves the claim un
 | S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | built, not done: merged `fe8c492` (#239); page fix `87b4aa2` (#242); live run `evidence/open-attempt/s1-airfield/` (#247): A4 and A9 pass, A2 and A3 not exercised; the run page does not yet show own-words attempts (Q26) | A1, A8 at merge; free replay `evidence/open-attempt/s1-replay/replay.txt` exit 0; A4, A9 on the owner-allowance run; still owed: A2 and A3 on the saved world `tests/fixtures/airfield-s1-live.json`, and Q26 |
 | S2 | `timing: immediately` processes run to a fixpoint inside one moment | fully_specifiable_now (Q27 answered by Brian 2026-10-26, Decision 009) | A5, A6, A8 |
 | S3 | `roll` on action mechanics, seeded and recorded; rules writer prompt can declare it; the compiler adds the roll's skill path to derived reads and every outcome's effects to derived writes (Q40) | fully_specifiable_now | A7, A8, a test that a roll outside its derived scope is refused, then the full canonical run for A9 |
-| S4 | AI game master for unmatched attempts | human_decision_required (D2) | none until decided |
+| S4 | AI game master for unmatched attempts | deliberately_deferred (D2 answered "not yet" by Brian 2026-10-26) | none; reopened only by a new decision |
 
 **Kinds the canonical airfield world must contain** (generated, never hand-written): `move` between
 places with a check that the way between is open (the wall), `push` an object, `pilot` a craft to a
@@ -301,7 +301,7 @@ resident walk into the wall. The rules writer (`scripts/generate_causal_model.py
   and not the resident's own model. Reason: words to (kind, roles) is meaning, which our rules say
   is never read with regex; a separate call keeps the resident from steering its own interpretation.
   Cost: one extra small call per attempt, measured in S1's first run against the visitor $3/day cap.
-- **D2 (Brian's call, deferred):** for attempts no rule covers, should an AI game master be allowed
+- **D2 (Brian's call, decided 2026-10-26: not yet):** for attempts no rule covers, should an AI game master be allowed
   to invent a rough effect, marked "coarse" in the record? Recommendation: not now. v1 says "nothing
   comes of it" and lists the attempt for the rules writer. If not answered, v1 stays. Prior art in this
   repository: the offline any-scenario spike already lets its game master write a rule mid-run for each unlisted
@@ -418,7 +418,7 @@ The material uncertainties, listed in full as of 2026-10-26: each below could ch
 - Q31 (#245) and Q32 (#246) (agent, open): a refusal reason reads as a fact rather than a requirement, and the readout picked the goods-flow lens for a training world; neither changes an acceptance check's verdict, both change what a reader of the S1 run sees.
 - Q33 (agent, open in part): S3's seeded roll is settled by argument for where `run_seed` lives (drawn once per run, recorded in the run record, dice recorded per roll event, so replay never rolls and saved worlds without rolls replay unchanged; the 'no randomness' row becomes 'no unrecorded randomness'); open is whether the rules writer gives a generated person a skill field from the description (Sam's piloting 0), checked by a free probe before S3. A7 and A9 depend on it.
 - Q34 (agent, open): read scopes are recorded, not enforced; compiled rules derive their reads from their own checks, so only hand-written rules could leave F1's `blocked_by_event` or a Piece 2 parent link incomplete. Settled by a test-time read check before F1 relies on reads of hand-written rules.
-- Q22 / D2 (Brian): AI game master for unmatched attempts; default "nothing comes of it" stays.
+- Q22 / D2 (Brian, resolved 2026-10-26): no AI game master yet; "nothing comes of it" stays.
 - Q36 (agent, open): how an interpreter misreading (a legal but wrong move) is caught; quoted spans, A2's negative fixture and a listed set of readings off their nearest kind, settled before A2 is judged. Injected visitor text cannot add a kind, entity or outcome (Q35, resolved).
 - Q37 (#241, agent, open): the builder added doorways around the wall and listed them as left out; A3 is judged on the saved fixture, whose wall is the only way.
 - Q38 (agent, open): #128 closes once A3 shows a refused wall attempt chosen from belief.
