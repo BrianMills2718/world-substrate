@@ -3,13 +3,13 @@
   "record_type": "method_adoption_decision",
   "decision": "adopted",
   "plan_ref": "docs/plans/open_attempt.md",
-  "plan_sha256": "aec40b386176b291f2cba267e6ee6f020224c819907708044294415fa5f0de26",
+  "plan_sha256": "30d6df1441f26892a8708866a357423f87ac6538b57f49b5db66bbf5e6f48520",
   "receipt_ref": "docs/plans/open_attempt/conformance-receipt.json",
-  "receipt_sha256": "1c5779627195b0f26dc11f703c0f93b3f3896d4953ce79d212eb1be383fc26aa",
+  "receipt_sha256": "461858957366713cbadd01c50c302967a0cd5b07734f5bb9196cc7027fed6aa2",
   "receipt_result": "pass",
   "reason_codes": [],
   "summary": [
     "pass: 21 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
   ],
-  "decided_at": "2026-10-26T03:06:41Z"
+  "decided_at": "2026-10-26T03:43:55Z"
 }

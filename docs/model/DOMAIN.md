@@ -13,30 +13,30 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 
 | Concept | Definition | Defined in | Code |
 | --- | --- | --- | --- |
-| **World** (`world`) | The one canonical world during a run: entities with typed components, a tick and a revision. | `docs/model/ODD.md:112` | `src/world_substrate/engine.py` |
-| **Engine** (`engine`) | Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. | `docs/model/ODD.md:227` | `src/world_substrate/engine.py:558` |
-| **Event** (`event`) | The record of one attempt or process step: status, checks, changes, an id like r14-e00012. | `docs/model/ODD.md:236` | `src/world_substrate/engine.py:505` |
+| **World** (`world`) | The one canonical world during a run: entities with typed components, a tick and a revision. | `docs/model/ODD.md:112` | `src/world_substrate/model.py:382` |
+| **Engine** (`engine`) | Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. | `docs/model/ODD.md:227` | `src/world_substrate/engine.py:198` |
+| **Event** (`event`) | The record of one attempt or process step: status, checks, changes, an id like r14-e00012. | `docs/model/ODD.md:236` | `src/world_substrate/engine.py:529` |
 | **Move (action)** (`move`) | Something a person may try; its rule has checks and effects, compiled before use. | `docs/model/ODD.md:108` | `src/world_substrate/action_authoring.py:49` |
-| **Process** (`process`) | A rule the world runs by itself each tick when its checks hold. | `docs/model/ODD.md:184` | `src/world_substrate/engine.py:762` |
+| **Process** (`process`) | A rule the world runs by itself each tick when its checks hold. | `docs/model/ODD.md:184` | `src/world_substrate/engine.py:829` |
 | **Compiler** (`compiler`) | Turns proposed rules into installed rules and derives what each may read and write. | `docs/model/ODD.md:238` | `src/world_substrate/action_authoring.py:456` |
 | **Policy** (`policy`) | What chooses a person's move (scripted, an AI model or a resident): it can only pick an offered move; installed mechanics, not its words, decide what happens. | `README.md:5` | `src/world_substrate/policy.py:50` |
 | **Linguistic Core sense and roles** (`sense`) | The meaning and participant roles of a move kind, supplied by Linguistic Core; never its effects, quantities or timing. | `README.md:113` | `src/world_substrate/semantic.py:15` |
 | **Frozen mechanic profile** (`profile`) | The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. | `docs/model/ODD.md:240` | `src/world_substrate/profile.py:266` |
-| **Declared write scope** (`write-scope`) | The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. | `AGENTS.md:21` | `src/world_substrate/engine.py:93` |
-| **Causal trace** (`causal-trace`) | The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. | `README.md:73` | `scripts/world_builder_service.py:1822` |
+| **Declared write scope** (`write-scope`) | The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. | `AGENTS.md:21` | `src/world_substrate/engine.py:88` |
+| **Causal trace** (`causal-trace`) | The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. | `README.md:73` | `scripts/world_builder_service.py:1825` |
 | **World kind** (`world-kind`) | Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. | `docs/model/ODD.md:106` | `scripts/world_builder_service.py:113` |
 | **World Builder and its bundle** (`builder`) | The public page and service where a person describes a world, approves its rules and watches it run; a build's output is an authoring bundle. | `README.md:65` | `scripts/world_builder_service.py` |
 | **Approval record** (`approval`) | A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:418` |
 | **World fingerprint** (`fingerprint`) | A short hash of the bundle and rules that ties builds, rounds and shares to one world. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:381` |
 | **Information item** (`information`) | A piece of information with a source and per-recipient deliveries; hidden until delivered. | `docs/model/ODD.md:260` | `src/world_substrate/information.py:57` |
-| **Run loop** (`run-loop`) | Each round: everyone decides, picks are submitted in a rotating order, then processes run. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:335` |
-| **Lost race** (`contention`) | When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:544` |
+| **Run loop** (`run-loop`) | Each round: everyone decides, picks are submitted in a rotating order, then processes run. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:347` |
+| **Lost race** (`contention`) | When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. | `docs/model/ODD.md (11.3)` | `scripts/run_authored_world.py:581` |
 | **Resident** (`resident`) | One Concordia AI agent per person: sees its brief, memory and what it can see, answers belief, move, expected effect and work. | `docs/model/ODD.md (11.3)` | `scripts/concordia_residents.py:29` |
 | **Task** (`task`) | A watched field value that takes several rounds, started by a person or the world, ended by a process: finished or failed part-way. | `docs/model/ODD.md (11.4)` | `scripts/attempts.py:17` |
 | **Finished-task notice** (`notice`) | What the other people a finished task names are told, in the starter's own words about the work. | `docs/model/ODD.md (11.4)` | `scripts/attempts.py:234` |
-| **Build** (`build`) | Description to spec, actions, rules, assembly, scripted test run and score. | `docs/model/ODD.md (11.2)` | `scripts/world_builder_service.py:1538` |
+| **Build** (`build`) | Description to spec, actions, rules, assembly, scripted test run and score. | `docs/model/ODD.md (11.2)` | `scripts/world_builder_service.py:1541` |
 | **Rules retry** (`rules-retry`) | A second rules attempt after a rejection or weak score; skipped after 80 s. | `docs/model/ODD.md (11.2)` | `scripts/world_builder_service.py:263` |
-| **Scripted test run** (`test-run`) | The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. | `docs/model/ODD.md (11.2)` | `scripts/world_builder_service.py:1607` |
+| **Scripted test run** (`test-run`) | The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. | `docs/model/ODD.md (11.2)` | `scripts/world_builder_service.py:1610` |
 | **Run log** (`run-log`) | One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. | `docs/model/ODD.md:254` | `scripts/world_builder_service.py:478` |
 | **Readout** (`readout`) | One AI summary of a run whose every cited event id is checked against the run. | `docs/model/ODD.md (11.5)` | `scripts/run_readout.py:125` |
 | **Scene replay** (`scene-replay`) | The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. | `docs/model/ODD.md (11.5)` | `scripts/render_scene_replay.py:398` |
