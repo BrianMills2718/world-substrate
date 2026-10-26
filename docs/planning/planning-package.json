@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "c9303a74fc3e6a588f03dda787225353b400889f",
+  "subject_revision": "4f752de276d7ced3dde024991ffb8949b552f38d",
   "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
   "parts": {
     "checks": {
@@ -40,7 +40,7 @@
           "command": "python3 scripts/check_trace_reads.py",
           "exit_status": 0,
           "counts": {
-            "runs": 9,
+            "runs": 11,
             "problems": 0
           }
         },
@@ -50,7 +50,7 @@
           "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
           "exit_status": 0,
           "counts": {
-            "tests_run": 710,
+            "tests_run": 718,
             "failed": 0,
             "skipped": 2
           }
