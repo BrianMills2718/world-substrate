@@ -297,7 +297,7 @@
    "id": "law-fingerprint",
    "label": "Executable-law fingerprint",
    "kind": "Theory",
-   "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version. Code: —."
+   "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version. Code: none yet."
   },
   {
    "id": "affordance",

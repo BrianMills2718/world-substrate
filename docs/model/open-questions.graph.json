@@ -91,22 +91,34 @@
    "explain": "Blocks: whether work goes into the offline pipeline at all."
   },
   {
+   "id": "Q22",
+   "label": "Q22: Effects no rule covers",
+   "kind": "BrianQuestion",
+   "explain": "Blocks: slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin."
+  },
+  {
    "id": "Q24",
    "label": "Q24: Petri nets or TypeDB as carrier",
    "kind": "AgentQuestion",
-   "explain": "Blocks: whether the metamodel keeps its own types for checks, noticing and named refusal or adopts an outside carrier (Petri transition semantics are already reused)."
+   "explain": "Blocks: whether the metamodel keeps its own action-kind and attempt-reading types or adopts an outside carrier for them."
   },
   {
    "id": "Q25",
    "label": "Q25: Ways work one way only",
    "kind": "AgentQuestion",
-   "explain": "Blocks: reading S1's canonical airfield run (A2, A3) and how realistic generated worlds are."
+   "explain": "Blocks: reading S1's canonical airfield run for A2 and A3 of docs/plans/open_attempt.md (a resident stuck on the far side looks like a refusal by the world), and how realistic generated worlds are."
   },
   {
    "id": "agenda",
    "label": "Agenda count",
    "kind": "Concept",
    "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content."
+  },
+  {
+   "id": "attempt-reading",
+   "label": "Attempt reading",
+   "kind": "Concept",
+   "explain": "The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said."
   },
   {
    "id": "build",
@@ -153,10 +165,28 @@
    "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version."
   },
   {
+   "id": "move",
+   "label": "Move (action)",
+   "kind": "Concept",
+   "explain": "Something a person may try; its rule has checks and effects, compiled before use."
+  },
+  {
    "id": "notice",
    "label": "Finished-task notice",
    "kind": "Concept",
    "explain": "What the other people a finished task names are told, in the starter's own words about the work."
+  },
+  {
+   "id": "place-way",
+   "label": "Place and way",
+   "kind": "Concept",
+   "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; moving names its way and a closed way refuses it."
+  },
+  {
+   "id": "process",
+   "label": "Process",
+   "kind": "Concept",
+   "explain": "A rule the world runs by itself each tick when its checks hold."
   },
   {
    "id": "readout",
@@ -199,30 +229,6 @@
    "label": "Scripted test run",
    "kind": "Concept",
    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way."
-  },
-  {
-   "id": "move",
-   "label": "Move (action)",
-   "kind": "Concept",
-   "explain": "Something a person may try; its rule has checks and effects, compiled before use."
-  },
-  {
-   "id": "process",
-   "label": "Process",
-   "kind": "Concept",
-   "explain": "A rule the world runs by itself each tick when its checks hold."
-  },
-  {
-   "id": "attempt-reading",
-   "label": "Attempt reading",
-   "kind": "Concept",
-   "explain": "The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said."
-  },
-  {
-   "id": "place-way",
-   "label": "Place and way",
-   "kind": "Concept",
-   "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable."
   }
  ],
  "edges": [
@@ -386,6 +392,18 @@
    "id": "Q17-build",
    "source": "Q17",
    "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q22-build",
+   "source": "Q22",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q22-run-loop",
+   "source": "Q22",
+   "target": "run-loop",
    "label": "bears on"
   },
   {

@@ -324,24 +324,35 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
 - **Test-run record** (`:1623-1657`): circling, stalled actors, `long_tasks` (each task kind, who starts it, and
   `can_fail_part_way`), `part_way_findings` (E1, `scripts/attempts.py:131-146`) and `attempt_findings`; each lowers the
   score by 1.
+- **Places and ways** (since Q23, 2026-10-25): when a description names separate places, the bundle contract asks the
+  world-writing AI for place entities, every other entity's starting `location`, a move action with `to` and `way`
+  fields, and ways (a door, a brick wall) with a `passable` flag (`scripts/generate_world_bundle.py:94-100`); the
+  bundle validator refuses an unknown place (`scripts/scaffold_world.py:101-104`), and the rules writer must give the move rule
+  checks that the actor is at the way and the way is passable (`scripts/generate_causal_model.py:424-432`). Places and
+  ways are written per world; the substrate has no place type of its own. A way works from its first place to its
+  second only (Q25).
 - The build streams up to 40 progress steps through `/jobs/<id>` (`:342-343`, `:722-736`).
 
 ### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:347-815`)
 
 - **Resident:** one Concordia agent per person (`scripts/concordia_residents.py`), memory of up to 12 notes,
-  round-tripped through the page. It answers `belief, action_id, expected_effect, work, reasoning` (`:29-40`). It is
+  round-tripped through the page. On the live path (open attempts, below) it answers `belief, attempt, expected_effect,
+  work, reasoning` (`OPEN_SCHEMA`, `:44-52`); the older menu reply has `action_id` in place of `attempt` (`:29-40`). It is
   shown the world summary, its brief, its memory, its own state, what it can see, up to 6 recent moves, and the offered
   moves plus `wait`. Other people's `work` records are hidden (`run_authored_world.py:132-142`).
 - **Round order:** everyone decides first (in parallel), the picks are submitted in a rotating order, then
   `advance(1)` runs due processes, then tasks are started and ended from the round's events (`:460-646`).
-- **A lost race:** when an earlier pick changed the state, the same move is resubmitted if still offered. Otherwise
-  the resident is told "your choice was no longer allowed after earlier moves this round; choose again" and chooses
-  once more from the new offer (`:536-556`); if that choice is nothing or `wait`, its row reads `nothing_left`
-  (`:570-572`). The retry prompt also shows the round's earlier moves (who, which rule, `:547`, `:145-155`), but not
-  which of them blocked the choice, and the row does not link the refusal to that event (open question Q2).
-- **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said` (the words behind the first choice),
-  `said_on_retry` (the retry's words, `:599-600`), `started_task`, `belief`, `expects`; each round records
-  `world_events` and `underway`. The readout quotes `said` only (`scripts/run_readout.py:93`; open question Q10).
+- **A lost race:** when an earlier pick changed the state (`stale_revision`, `:563`), an open attempt is resubmitted
+  as the same attempt at the new revision and only its rule's checks decide it; nobody is asked again (`:571-573`).
+  On the older menu paths (scripted, `llm`, menu residents) the same move is resubmitted if still offered, otherwise the
+  person chooses once more from the new offer (`:574-605`; the resident is told "choose again", `:581`), and an empty
+  choice reads `nothing_left` (`:606-608`). On every path the refused row lists the failed check labels
+  (`refused_because`, `:622-627`) but not the event that changed the state before it (open question Q2, resolved by
+  argument; the fix is listed in `docs/plans/open_attempt.md`).
+- **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said` (the words behind the first choice, `:621`),
+  `said_on_retry` (a menu retry's words, `:637-638`; never written on the open-attempt path, where nobody is asked
+  again), `started_task`, `belief`, `expects`; each round records `world_events` and `underway`. The readout quotes
+  `said` only (`scripts/run_readout.py:93`; open question Q10, resolved: it matters only on the menu paths).
 - **Open attempts (live default since S1 of `docs/plans/open_attempt.md`, `run_world(open_attempts=True)`):** the
   resident answers `attempt` (its own words) in place of `action_id`, from
   `prompts/concordia_resident_open_attempt.yaml`, which shows the offered moves as "things you know you can do here".
