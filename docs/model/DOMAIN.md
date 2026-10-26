@@ -42,7 +42,7 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 | **Scene replay** (`scene-replay`) | The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. | `docs/model/ODD.md (11.5)` | `scripts/render_scene_replay.py:398` |
 | **Share link and replay** (`share`) | A saved run rebuilt from the run log that a visitor replays with no AI calls. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:598` |
 | **Daily allowance** (`budget`) | Visitor $3/day, owner $5/day; spend fails closed. | `docs/model/ODD.md:252` | `scripts/world_builder_service.py:51` |
-| **Affordance (offered move)** (`affordance`) | A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. | `docs/plans/open_attempt.md:111` | `src/world_substrate/engine.py:352` |
+| **Affordance (offered move)** (`affordance`) | A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. | `docs/plans/open_attempt.md:118` | `src/world_substrate/engine.py:352` |
 | **Check** (`check`) | One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed. | `docs/model/ODD.md:229` | `src/world_substrate/rules.py:48` |
 | **Attempt (in own words)** (`attempt`) | What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. | `docs/model/ODD.md:348` | `src/world_substrate/attempt.py:149` |
 | **Attempt reading** (`attempt-reading`) | The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. | `docs/model/ODD.md:348` | `src/world_substrate/attempt.py:81` |
@@ -100,9 +100,9 @@ Named in decisions or the roadmap, not on the live path.
 | --- | --- | --- | --- |
 | **Build in an agent harness** (`harness-build`) | Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it. | `docs/decisions/008-build-worlds-in-an-agent-harness.md:48` | `scripts/world_harness.py` |
 | **Executable-law fingerprint** (`law-fingerprint`) | Roadmap hardening item: fingerprint the exact executable law and compiler version. | `roadmap/README.md:252` | `—` |
-| **Knock-on that runs now** (`knock-on-now`) | Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). | `docs/plans/open_attempt.md:157` | `—` |
-| **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:175` | `—` |
-| **Run seed** (`run-seed`) | Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). | `docs/plans/open_attempt.md:185` | `—` |
+| **Knock-on that runs now** (`knock-on-now`) | Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). | `docs/plans/open_attempt.md:164` | `—` |
+| **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:182` | `—` |
+| **Run seed** (`run-seed`) | Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). | `docs/plans/open_attempt.md:192` | `—` |
 
 ## Where the sources disagree
 

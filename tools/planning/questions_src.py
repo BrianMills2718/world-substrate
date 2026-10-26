@@ -243,7 +243,7 @@ Q = [
   "sources": [
    "roadmap/README.md:211",
    "roadmap/README.md:252",
-   "docs/plans/open_attempt.md:456"
+   "docs/plans/open_attempt.md:465"
   ],
   "touches": [
    "contention",
@@ -401,7 +401,7 @@ Q = [
   "recommendation": "Not yet: the person is told nothing comes of it, and the attempt is listed for the next build's rules writer. If allowed later, reuse the spike's mid-run path (check gate, then install or a recorded ruling) rather than a new one, with an approval step (G14).",
   "default": "Unmatched attempts change nothing and are listed in the build record.",
   "sources": [
-   "docs/plans/open_attempt.md:297",
+   "docs/plans/open_attempt.md:304",
    "src/world_substrate/rules.py:288",
    "docs/model/ODD.md:194",
    "docs/model/ODD.md:266",
@@ -493,7 +493,7 @@ Q = [
  {
   "id": "Q27",
   "short": "Is S2's fixpoint engine capability",
-  "question": "S2 runs immediate processes again and again inside one commit until nothing more is due (docs/plans/open_attempt.md:157, Piece 2), which changes src/world_substrate/engine.py. AGENTS.md and Decision 006 say not to add engine, scheduler, renderer or cognition capability of World Substrate's own and to host loops on Concordia or Mesa (AGENTS.md:39; roadmap/README.md:459). Does a same-moment fixpoint in engine.py count as that forbidden engine capability?",
+  "question": "S2 runs immediate processes again and again inside one commit until nothing more is due (docs/plans/open_attempt.md:164, Piece 2), which changes src/world_substrate/engine.py. AGENTS.md and Decision 006 say not to add engine, scheduler, renderer or cognition capability of World Substrate's own and to host loops on Concordia or Mesa (AGENTS.md:39; roadmap/README.md:459). Does a same-moment fixpoint in engine.py count as that forbidden engine capability?",
   "blocks": "slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it",
   "resolves_with": "Brian's call: the rule's wording is his (Decision 006), and the earlier resolution was argued by this plan's own author, so it is not settled by agent argument. The argument for: a ramification fixpoint is a rule semantics inside the one existing transition (C+ and Event Calculus), with no new loop, clock or scheduler, bounded at 32 reactions. The argument against: it is new control flow in engine.py, and Concordia's game master or Mesa's step could host the chain instead, one reaction per step.",
   "owner": "brian",
@@ -502,7 +502,7 @@ Q = [
    "roadmap/README.md:459",
    "AGENTS.md:39",
    "docs/decisions/006-governed-rules-layer-scope.md",
-   "docs/plans/open_attempt.md:157"
+   "docs/plans/open_attempt.md:164"
   ],
   "touches": [
    "knock-on-now",
@@ -559,7 +559,7 @@ Q = [
   "sources": [
    "BrianMills2718/world-substrate#244",
    "evidence/open-attempt/s1-airfield/TRACE_READ.md:32",
-   "docs/plans/open_attempt.md:280"
+   "docs/plans/open_attempt.md:287"
   ],
   "touches": [
    "test-run",
@@ -578,7 +578,7 @@ Q = [
   "status": "open",
   "sources": [
    "BrianMills2718/world-substrate#245",
-   "docs/plans/open_attempt.md:281"
+   "docs/plans/open_attempt.md:288"
   ],
   "touches": [
    "check",
@@ -596,7 +596,7 @@ Q = [
   "sources": [
    "BrianMills2718/world-substrate#246",
    "scripts/run_readout.py:125",
-   "docs/plans/open_attempt.md:282"
+   "docs/plans/open_attempt.md:289"
   ],
   "touches": [
    "readout"
@@ -605,15 +605,15 @@ Q = [
  {
   "id": "Q33",
   "short": "Seeded roll versus no randomness",
-  "question": "Piece 3 rolls dice from hash(run_seed, event_id), while today no rule uses randomness (docs/plans/open_attempt.md:117). Where does run_seed live, do saved worlds replay unchanged, and who gives a generated person like Sam piloting 0?",
+  "question": "Piece 3 rolls dice from hash(run_seed, event_id), while today no rule uses randomness (docs/plans/open_attempt.md:124). Where does run_seed live, do saved worlds replay unchanged, and who gives a generated person like Sam piloting 0?",
   "blocks": "S3's design, A7 and the full canonical run (A9)",
   "resolves_with": "An argument settles the first two: the run loop draws run_seed once when a run starts and records it in the run record, and each roll event records its dice, so a replay reads the dice and never rolls; a world with no roll never draws, so every saved world replays unchanged (A8). The rule stays a function of state plus the recorded seed, so the invariant becomes 'no unrecorded randomness'. The third part is open: the rules writer must give people skill fields from the description ('has never flown' gives piloting 0) and the roll may read only that field. Settled in S3 by a free probe that regenerates the airfield spec and reads Sam's recorded skill.",
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/open_attempt.md:175",
-   "docs/plans/open_attempt.md:117",
-   "docs/plans/open_attempt.md:184"
+   "docs/plans/open_attempt.md:182",
+   "docs/plans/open_attempt.md:124",
+   "docs/plans/open_attempt.md:191"
   ],
   "touches": [
    "skill-roll",
@@ -672,7 +672,7 @@ Q = [
   "status": "open",
   "sources": [
    "src/world_substrate/attempt.py:81",
-   "docs/plans/open_attempt.md:205",
+   "docs/plans/open_attempt.md:212",
    "scripts/run_authored_world.py:557"
   ],
   "touches": [
@@ -750,7 +750,7 @@ Q = [
    "scripts/world_builder_service.py:381",
    "scripts/world_builder_service.py:418",
    "docs/model/ODD.md:238",
-   "docs/plans/open_attempt.md:177"
+   "docs/plans/open_attempt.md:184"
   ],
   "touches": [
    "skill-roll",

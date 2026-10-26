@@ -110,11 +110,11 @@ TYPES = [
     ("knock-on-now", "Same-moment knock-on", "rules", False,
      "A process with timing immediately, run to a fixpoint inside the same moment as the move that "
      "triggered it (planned slice S2 of docs/plans/open_attempt.md).",
-     "docs/plans/open_attempt.md:157", "no_counterpart", "",
+     "docs/plans/open_attempt.md:164", "no_counterpart", "",
      "a timing rule over effectful processes; the kernel has none"),
     ("skill-roll", "Skill roll", "rules", False,
      "A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3).",
-     "docs/plans/open_attempt.md:175", "no_counterpart", "",
+     "docs/plans/open_attempt.md:182", "no_counterpart", "",
      "a stochastic effect; the kernel has none"),
     ("terminal", "Terminal condition", "rules", True,
      "A state-derived stop: when its checks hold over the selected entities, the task ends one way.",

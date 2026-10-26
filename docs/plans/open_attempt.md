@@ -89,6 +89,13 @@ Observed: `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md`
 Step: step 3 of the probe, "the residents act in the generated world each round, and the installed rules decide each effect"
 Class: vertical
 
+The observed proof is the c1r24 run: the last live run of the whole probe before this plan, the canonical
+Waltzman example driven through the real page (generate, 45 rounds, readout, share link `FQHXnP_TLKPi`, every
+round read). It shows step 3 working with residents picking from a move list, which is what this plan changes.
+S1's first live run of step 3 with free-form attempts is `evidence/open-attempt/s1-airfield/TRACE_READ.md`;
+it does not replace c1r24 as the probe's observed proof, because the knock-on and skill cases (A2, A3) were
+not exercised there and S1 is built, not done.
+
 Each slice changes that step end to end (generator, resident, engine, page) and ends in a live traced run.
 
 ## Why, in one example
@@ -384,6 +391,8 @@ work, reasoning}`; `attempt` replaces `action_id`; it has no success field eithe
 the actor as waiting, as today.
 
 One new call: the attempt interpreter, through `llm_client`, typed output (`kind`, which may be `wait`; `fields` rows of `field`, `value` and `quoted_span`; `nearest_kind`; `why`), checked into a reading or `unmatched` by `read_interpretation`, no success field. Its output is recorded as the command and never re-read by rules or replay; it has no authority to change state, and promotion of its output to authority is refused by construction (only `Engine.submit` writes). Failure: a malformed or failed call records the attempt as unmatched with the error, never a guessed move.
+
+Tracing: each run gets one trace id, `world-builder-live-run-<uuid4 hex>` (`scripts/run_authored_world.py:385`), passed to every resident call (`scripts/concordia_residents.py:101`) and every interpreter call (`src/world_substrate/attempt.py:158`), so all of a run's model calls share it; `llm_client` stores each call under that id in its `llm_calls` table (`~/projects/data/llm_observability.db`) with its task name, model, request messages, response, token counts, cost, latency, error and timestamp. The run's `run-log.jsonl` repeats the trace id beside each recorded reply and interpretation, so a run row links to its calls (Trace visibility, above).
 
 ## Irreversible actions and spend
 
