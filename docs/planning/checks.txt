@@ -1,4 +1,4 @@
-Checks run 2026-10-26 on branch model/operational-ontology at subject revision c028b4b.
+Checks run 2026-10-26 on branch model/operational-ontology at subject revision f645471.
 
 == durable documents (arc42): python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
 durable-docs: mode=repo repo=/home/brian/code2/world-substrate-wt-ontology findings=0 (none), exit 0
@@ -26,7 +26,7 @@ exit 0
 
 == project check: PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py
 World Substrate project check passed.
-Neutral runtime tests: Ran 718 tests in 357.962s · OK (skipped=2)
+Neutral runtime tests: Ran 718 tests in 158.069s · OK (skipped=2)
 Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
 Planning path: README.md -> roadmap/README.md -> active slice
 Pinned source records checked: 16
