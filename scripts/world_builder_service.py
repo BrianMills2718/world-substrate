@@ -1469,10 +1469,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             guidance = (
                                 "A deterministic dry run of your previous mechanics from the initial state "
                                 f"failed: {error}. In the starting state every action was refused because these "
-                                "checks were false: " + "; ".join(refusals) + ". Remove or correct checks that "
-                                "contradict the initial state (see initial_builtin_state and entity component "
-                                "values) so at least one actor can act, keeping effects consistent with the "
-                                "action descriptions."
+                                "checks were false: " + "; ".join(refusals) + ". Correct checks that "
+                                "contradict the initial state by mistake (see initial_builtin_state and entity "
+                                "component values) so at least one actor can act, keeping effects consistent with "
+                                "the action descriptions. Keep a check that stops what the description says cannot "
+                                "happen (a closed wall cannot be walked through); people may still try it, and the "
+                                "check is what refuses them. Make sure the ordinary things the description lets "
+                                "people do have actions someone can take from the start."
                             )
                         attempts.append(result_row)
                         self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
