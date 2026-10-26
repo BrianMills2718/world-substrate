@@ -363,7 +363,7 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
   Engine records as `unsupported_action` (nothing changes, no revision bump), the resident is told "nothing came of
   it", and the run lists it in `summary.unmatched_attempts`. A lost race resubmits the same move at the new revision;
   nobody is asked again. Each row keeps `attempt {text, reading}`; the envelope is the recorded command, so replay
-  calls no model. Letting an AI game master give unmatched attempts an effect is decision D2, deferred.
+  calls no model. Letting an AI game master give unmatched attempts an effect is decision D2: not yet (Brian, 2026-10-26).
 - **Member flags:** every person's `member` record carries `authorized` and `approved`, both False and never written
   by any rule (`spikes/any-scenario-2026-10/compile_spec.py:33-34`, `:626`); residents see them, and in c1r24 one read
   its own `authorized False` as the decision not being authorized (#231).

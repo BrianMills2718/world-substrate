@@ -1,10 +1,10 @@
 {
   "schema_version": "planning-method-conformance-receipt.v1",
   "record_type": "planning_method_conformance_receipt",
-  "receipt_id": "RECEIPT-open_attempt-55b35997be56",
+  "receipt_id": "RECEIPT-open_attempt-006f58223beb",
   "plan": {
     "plan_ref": "docs/plans/open_attempt.md",
-    "plan_sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+    "plan_sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
   },
   "path_decision": {
     "ref": "docs/plans/open_attempt/path-decision.json",
@@ -26,7 +26,7 @@
   },
   "activation": {
     "facts_ref": "docs/plans/open_attempt/activation-facts.json",
-    "facts_sha256": "4d6860a9501d602a6fd9caccc5043d011ada1095f39ef454e99b5f49e765c682",
+    "facts_sha256": "1e8b577e2f28b1b3384079381261fcf8413743a34cbac5dd56bfff8b6fef1708",
     "facts": {
       "shared_mechanism": true,
       "empirical_comparison_proposed": false,
@@ -126,10 +126,10 @@
   },
   "checklist": {
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:fe82fcbbc607134916122c29b0b9b29880b49f9e9cf9b43cdf707879e53255e7",
-    "definition_sha256": "49470d7f2e6477151b415478aeebcc98ed3cdf21a599c4ce6c51eeb896e6ffaa",
+    "revision": "sha256:e133226a3c6bcd1f78aeb30ee9881b913bed2de9ad85676c503023ca41ee55bc",
+    "definition_sha256": "1e46dfb203c217596ef10b2576ce3182ecaa2a8e7fbca370ef760fb734bbbe74",
     "bundle_ref": "docs/plans/open_attempt/checklist.json",
-    "bundle_sha256": "3be2671e5ba1f45fccaad7460c9342b60689351e37cb97510e9897a077d0b366",
+    "bundle_sha256": "42a125867dd1d11d37528c6852f6cd461f5a2897a6f06afcc86df482e88dc707",
     "coverage": "complete",
     "definition_matches_recompilation": true
   },
@@ -147,7 +147,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#actor-and-result",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -193,7 +193,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#requirements",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -220,7 +220,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#success-and-disproof",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -247,7 +247,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#success-and-disproof",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -274,7 +274,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#when-a-run-fails-or-surprises-us",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -301,7 +301,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#trace-visibility",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -328,7 +328,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#project-outcome",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         },
         {
           "ref": "roadmap/README.md#actor-recurring-job-and-investment-boundary",
@@ -336,12 +336,12 @@
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/cf6f5af09f76/CORE-PROJECT-OUTCOME",
+        "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-PROJECT-OUTCOME",
         "model": "claude-code/haiku",
         "verdict": "pass",
         "materiality": "material",
         "missing": null,
-        "rationale": "The plan carries the line \"Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary\" naming the file and heading that records the project's outcome. The referenced record explicitly states all four required parts: (1) actor—\"a World Builder visitor (or Brian as owner)\"; (2) recurring job and baseline—\"the visitor describes a situation...watches the generated people act...each person picks from moves the rules already allow\"; (3) inspectable result—\"the run page and its build record: what each person tried, what the rules did and why, every event with its cause\"; and (4) stage and investment boundary—\"prototype stage, one agent at a time; this repository and its own deploy only; visitor spend capped at $3/day; owner runs on Brian's owner allowance...no new service, engine or repository without Brian's yes.\" The plan's actor (\"a World Builder visitor and Brian as owner\") is the same as the outcome's actor, and the plan explicitly states \"The plan serves that actor directly.\"",
+        "rationale": "The plan carries a Project outcome line naming roadmap/README.md#actor-recurring-job-and-investment-boundary. The quoted record explicitly states all four required parts: the actor (World Builder visitor or owner), the recurring job and baseline (visitor describes a world and watches people act; today they pick from preset moves), the inspectable result (run page and build record showing attempts, rules' decisions, and causal reasons), and the stage and investment boundary (prototype, one agent, this repository only, $3/day visitor and owner-allowance limits). The plan's actor (World Builder visitor and Brian as owner) matches the outcome's actor.",
         "reused": false
       },
       "suggested_action": null
@@ -359,7 +359,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#outcome-step",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         },
         {
           "ref": "roadmap/README.md#canonical-outcome-probe",
@@ -371,12 +371,12 @@
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/cf6f5af09f76/CORE-OUTCOME-FIRST",
+        "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-OUTCOME-FIRST",
         "model": "claude-code/haiku",
         "verdict": "pass",
         "materiality": "material",
         "missing": null,
-        "rationale": "The plan includes an `## Outcome step` section with all four required lines explicitly present: the outcome probe naming `roadmap/README.md#canonical-outcome-probe` (confirmed to exist in the evidence), the observed artifact citing `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md` (confirmed as the c1r24 run), the step identifying step 3 of the probe (which matches the probe's actual step 3), and the class marked as `vertical` (appropriate for a plan that reaches an inspectable result through every probe step).",
+        "rationale": "The plan includes all four required lines of the `## Outcome step` section. The outcome probe path and heading exist in the evidence. The observed artifact (c1r24 TRACE_READ.md) is confirmed to exist and shows the whole probe working end to end once. The named step (step 3) is explicitly present in the cited probe's step list. The class `vertical` correctly describes a plan that reaches an inspectable result through every probe step, with the final result (run page and build record) available for the visitor to read in step 5 of the probe.",
         "reused": false
       },
       "suggested_action": null
@@ -394,7 +394,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": null,
@@ -413,7 +413,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#system-model",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -440,7 +440,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#capability-reuse",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -467,7 +467,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#authority-and-non-goals",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -494,7 +494,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#irreversible-actions-and-spend",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -521,16 +521,16 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#uncertainties",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/cf6f5af09f76/CORE-UNCERTAINTIES",
+        "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-UNCERTAINTIES",
         "model": "claude-code/haiku",
         "verdict": "pass",
-        "materiality": "non_material",
+        "materiality": "material",
         "missing": null,
-        "rationale": "The evidence provides a dated inventory (\"listed in full as of 2026-10-26\") of material uncertainties (Q23–Q40, including Q29) with explicit owners for each: \"agent\" for most, \"Brian\" for Q22/D2 and Q27, and issue numbers for Q30, Q31, Q32, Q37. Each entry describes the uncertainty's status and, where applicable, the evidence or path to resolve it (e.g., Q28 \"settled by reading and one free probe before S2\"; Q34 \"Settled by a test-time read check\"). Both required elements are substantively present.",
+        "rationale": "The evidence explicitly lists material uncertainties in full as of 2026-10-26, enumerates Q23–Q40 and Q22/D2 with owners assigned (agent or Brian), and for each provides either resolution evidence (for settled items) or settlement conditions (for open items describing what would resolve them). All required elements are substantively present.",
         "reused": false
       },
       "suggested_action": null
@@ -548,16 +548,16 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#activation-facts",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/cf6f5af09f76/CORE-ACTIVATION-FACTS",
+        "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-ACTIVATION-FACTS",
         "model": "claude-code/haiku",
         "verdict": "pass",
-        "materiality": "non_material",
+        "materiality": "material",
         "missing": null,
-        "rationale": "The plan correctly declares shared_mechanism (true; modifies shared Engine/generator), llm_central (true; interpreter call central to design), and irreversible_or_spend_action (true; spends up to $3 of owner allowance). It correctly declares false: empirical_comparison_proposed (verification tests, not A/B comparison), claims_external_standard (copies methods but claims no conformance), crosses_system_boundary (world-substrate only; external systems read-only), and aes_governed_target (durable_solo path; no AES). Every declared fact matches its triggering conditions.",
+        "rationale": "The plan explicitly declares three triggered activation facts (shared_mechanism, llm_central, irreversible_or_spend_action) as true in the activation-facts.json evidence. No triggered fact is declared false. The requirement is satisfied.",
         "reused": false
       },
       "suggested_action": null
@@ -575,7 +575,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#prior-art-and-ownership",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -602,7 +602,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#prior-art-and-ownership",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -629,7 +629,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#llm-call-boundary",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -656,7 +656,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#llm-call-boundary",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -683,7 +683,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#durable-documents",
-          "sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
+          "sha256": "006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936"
         }
       ],
       "semantic": {
@@ -715,11 +715,11 @@
   "conformance_report": {
     "schema_version": "1.0",
     "record_type": "planning_conformance_report",
-    "report_id": "REPORT-open_attempt-55b35997be56",
+    "report_id": "REPORT-open_attempt-006f58223beb",
     "snapshot_ref": "SNAPSHOT-open_attempt",
-    "snapshot_revision": "sha256:3be2671e5ba1f45fccaad7460c9342b60689351e37cb97510e9897a077d0b366",
+    "snapshot_revision": "sha256:42a125867dd1d11d37528c6852f6cd461f5a2897a6f06afcc86df482e88dc707",
     "packet_ref": "docs/plans/open_attempt.md",
-    "packet_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
+    "packet_revision": "sha256:006f58223bebee833b320385440776abe49676303f83b255d56213520b4fc936",
     "structural_status": "pass",
     "semantic_review_status": "complete",
     "diagnostics": [],
@@ -742,7 +742,7 @@
     "client": "claude-code",
     "session": "4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9"
   },
-  "started_at": "2026-10-26T06:30:38Z",
-  "completed_at": "2026-10-26T06:32:21Z",
-  "duration_ms": 106598
+  "started_at": "2026-10-26T14:50:45Z",
+  "completed_at": "2026-10-26T14:52:54Z",
+  "duration_ms": 134708
 }

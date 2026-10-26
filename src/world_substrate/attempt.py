@@ -8,7 +8,7 @@ its effect; a refusal comes only from a rule's checks.
 
 An attempt that fits no kind goes through the engine's existing unsupported path (`UnsupportedAction`): it is
 recorded with its words, nothing in the world changes, and the run lists it so the next build can add a rule. Letting
-an AI game master invent an effect instead is decision D2 in the plan, deferred.
+an AI game master invent an effect instead is decision D2 in the plan: not yet (Brian, 2026-10-26).
 
 The reading is kept with the move, and the envelope it produced is what the engine records as the command, so a
 replay never calls the model again.

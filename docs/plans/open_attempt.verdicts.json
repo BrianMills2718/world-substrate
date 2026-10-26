@@ -50,6 +50,17 @@
     "trace_id": "company-planning/method-conformance/open_attempt/b4093c12db7e/CORE-OUTCOME-FIRST",
     "verdict": "pass"
   },
+  "09ce577530fde94cac0384b6eca60a3fce0dfc0edf4be89e159e27fe1cafd5fa": {
+    "gaps": null,
+    "item_id": "OV-DURABLE-DOCS-DECLARED",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan names `system_model` with each updated element ID and `plans`, and states that both roles are declared in `.agentic/repo.yaml`. It also requires `durable_docs_check.py --plan docs/plans/open_attempt.md --range <adoption revision>..HEAD` to exit 0 at completion of each slice.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/OV-DURABLE-DOCS-DECLARED",
+    "verdict": "pass"
+  },
   "0cf050157936caceebe777a9bce93a23e1f683bfddfffdfb667e9802827d8f00": {
     "gaps": null,
     "item_id": "CORE-OUTCOME-FIRST",
@@ -60,6 +71,35 @@
     "rationale": "The plan includes a complete Outcome step section with all four required lines. The outcome probe `roadmap/README.md#canonical-outcome-probe` exists with the five-step probe and step 3 is correctly identified. The observed artifact `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md` exists and shows a full traced World Substrate run. The class `vertical` is appropriate for a plan that reaches an inspectable result through the probe steps, ending in a live traced run. All elements are explicitly present and substantively grounded in committed artifacts.",
     "trace_id": "company-planning/method-conformance/open_attempt/95c8467af25d/CORE-OUTCOME-FIRST",
     "verdict": "pass"
+  },
+  "104222b51e6bf2a61a5ffd731975c352c59df88f330adbbf1ccb399426576e8a": {
+    "gaps": null,
+    "item_id": "CORE-CAPABILITY-REUSE",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The evidence states `No catalogue entry fits` and explains that the listed entries do not interpret actions or run rules. It also says no new cross-project capability is added, so no first consumer is required for a new capability.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-CAPABILITY-REUSE",
+    "verdict": "pass"
+  },
+  "12dd25c628f045104978f12e0ebe29da13bcb7b50847af924ed8eee168732df2": {
+    "gaps": [
+      "A direct check that verifies that only installed rules determine a physical attempt\u2019s effect; A1\u2013A4 passing on full traces is named, but the evidence does not say what those checks inspect to establish this property.",
+      "A direct check that verifies knock-on effects finish within one moment or the whole moment is refused; A5\u2013A6 passing is named, but the evidence does not specify the property those checks test.",
+      "A direct check that verifies recorded skill, rather than wording, determines risky outcomes; A7 passing is named, but the evidence does not specify the property that check tests.",
+      "A direct check that verifies replay is unchanged; A8 passing is named, but the evidence does not define what is compared or how that comparison tests unchanged replay.",
+      "A direct check that verifies every run is fully readable; A9 passing is named, but the evidence does not specify how completeness/readability is checked.",
+      "Concrete disproof conditions for the claimed properties that are not covered by the listed examples: one-moment completion or whole-moment refusal, skill-versus-wording outcome determination, unchanged replay, and full run readability."
+    ],
+    "item_id": "CORE-SUCCESS-DISPROOF",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) A direct check that verifies that only installed rules determine a physical attempt\u2019s effect; A1\u2013A4 passing on full traces is named, but the evidence does not say what those checks inspect to establish this property. (2) A direct check that verifies knock-on effects finish within one moment or the whole moment is refused; A5\u2013A6 passing is named, but the evidence does not specify the property those checks test. (3) A direct check that verifies recorded skill, rather than wording, determines risky outcomes; A7 passing is named, but the evidence does not specify the property that check tests. (4) A direct check that verifies replay is unchanged; A8 passing is named, but the evidence does not define what is compared or how that comparison tests unchanged replay. (5) A direct check that verifies every run is fully readable; A9 passing is named, but the evidence does not specify how completeness/readability is checked. (6) Concrete disproof conditions for the claimed properties that are not covered by the listed examples: one-moment completion or whole-moment refusal, skill-versus-wording outcome determination, unchanged replay, and full run readability.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan names success as \u201cA1-A9 pass\u201d and says the criteria are judged from traces, but does not describe what A1\u2013A9 check to establish the five claimed properties. Its disproof examples cover some observable failures, but give no concrete condition disproving the knock-on, skill-versus-wording, replay, or readability claims.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-SUCCESS-DISPROOF",
+    "verdict": "unresolved"
   },
   "131d4338cb8f633ef0743682a0fab4b45fecbe2be303fda95c1c31986787b969": {
     "gaps": null,
@@ -117,6 +157,17 @@
     "model": "claude-code/haiku",
     "rationale": "The plan declares six activation facts across the requirement's scope: three triggered facts (shared_mechanism, llm_central, irreversible_or_spend_action) are all declared true; three non-triggered facts (empirical_comparison_proposed, claims_external_standard, aes_governed_target) are all declared false. Each declaration is grounded in the plan's text: the attempt interpreter and reaction waves are shared engine changes; the interpreter is one LLM call per attempt, central to the new flow; spend is budgeted under owner allowance; no alternatives are compared, conformance to external methods is explicitly disclaimed, and no AES governance is proposed.",
     "trace_id": "company-planning/method-conformance/open_attempt/ce9e06e64be2/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "1cde44df19dc0cd41305131180e07e1571922001f5d3cc123d3995ae07bcb727": {
+    "gaps": null,
+    "item_id": "OV-LLM-AUTHORITY-PROMOTION",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The evidence names the provider/model (OpenRouter, `openrouter/openai/gpt-6-luna`) and states spend authority as Brian\u2019s owner allowance, granted for this plan on 2026-10-25. It also gives an authentic-run promotion condition: interpretation becomes authoritative only as a recorded command after an authentic live run.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/OV-LLM-AUTHORITY-PROMOTION",
     "verdict": "pass"
   },
   "21495440bc7d07e1a0cdd853dac9a28f0b4fdd1b4ebeba046ced1218970389e3": {
@@ -205,6 +256,22 @@
     "rationale": "The plan carries an explicit `Project outcome:` line naming `roadmap/README.md#actor-recurring-job-and-investment-boundary`. The referenced record is present in the evidence and explicitly states all four required parts: the actor (World Builder visitor), the recurring job and baseline (visitor describes a world and watches people act under installed rules), the inspectable result (run page and build record), and the stage and investment boundary (prototype stage, one agent, one repository). The plan's actor (World Builder visitor and Brian as owner) directly matches the outcome record's actor.",
     "trace_id": "company-planning/method-conformance/open_attempt/b4093c12db7e/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
+  },
+  "2bb9c3b6790b061d022fde0753de3497873f42ac62144a3f0f6bbd8ee39707bc": {
+    "gaps": [
+      "For each run, an explicit description of how to open or inspect every step and every engine event, including before/after state, failed checks, reaction parent, and dice; the opening instructions only specify jq for the JSONL and a trace-store command for model-call ids.",
+      "The arguments and results for every tool or model call are recorded and inspectable. The evidence names prompt messages, arguments, and typed result for model calls, but does not specify tool calls or how to inspect any recorded call's arguments and results beyond model calls.",
+      "How to inspect the model's reasoning where exposed: it identifies the resident's `reasoning` field but does not explain how to open or view that field.",
+      "Who examines traces and when, including a sample of quiet or successful runs: the evidence says the implementing agent reads traces before reporting and samples ordinary attempts, but does not explicitly identify the sampled attempts as quiet or successful runs or state when those runs are selected."
+    ],
+    "item_id": "CORE-TRACE-VISIBILITY",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) For each run, an explicit description of how to open or inspect every step and every engine event, including before/after state, failed checks, reaction parent, and dice; the opening instructions only specify jq for the JSONL and a trace-store command for model-call ids. (2) The arguments and results for every tool or model call are recorded and inspectable. The evidence names prompt messages, arguments, and typed result for model calls, but does not specify tool calls or how to inspect any recorded call's arguments and results beyond model calls. (3) How to inspect the model's reasoning where exposed: it identifies the resident's `reasoning` field but does not explain how to open or view that field. (4) Who examines traces and when, including a sample of quiet or successful runs: the evidence says the implementing agent reads traces before reporting and samples ordinary attempts, but does not explicitly identify the sampled attempts as quiet or successful runs or state when those runs are selected.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan explicitly records run inputs, steps, model calls, exposed resident reasoning, events, and outputs for ordinary runs, and gives instructions for opening the JSONL and trace-store entries. However, the opening guidance and review procedure do not explicitly cover all the required trace contents and quiet or successful run sampling.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-TRACE-VISIBILITY",
+    "verdict": "unresolved"
   },
   "2d59d0e1c37c91b669c5f7e5b320934792e51595a57c79b810847f41e17ef5f0": {
     "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
@@ -309,6 +376,21 @@
     "trace_id": "company-planning/method-conformance/open_attempt/61ae2a18c836/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
+  "4d81c2e85d50ece83c51ba8d3b13a40f686d80ffb69f0ed9003e29e95e525c30": {
+    "gaps": [
+      "Names the full trace for pytest and `check_project.py` output: the evidence says A1, A6 and A8 are judged from the named pytest and `check_project.py` output saved beside each run, but it does not name which run or runs contain those outputs.",
+      "States what must be seen in the pytest and `check_project.py` traces beyond their final outcomes for A1, A6 and A8; it only says those criteria are judged from the outputs.",
+      "Names where the full traces for the pytest and `check_project.py` runs live; \u201csaved beside each run\u201d does not identify a specific location."
+    ],
+    "item_id": "CORE-TRACE-REVIEW",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) Names the full trace for pytest and `check_project.py` output: the evidence says A1, A6 and A8 are judged from the named pytest and `check_project.py` output saved beside each run, but it does not name which run or runs contain those outputs. (2) States what must be seen in the pytest and `check_project.py` traces beyond their final outcomes for A1, A6 and A8; it only says those criteria are judged from the outputs. (3) Names where the full traces for the pytest and `check_project.py` runs live; \u201csaved beside each run\u201d does not identify a specific location.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan names three run folders and says their `run-log.jsonl` traces are read for refused, unmatched, rolled, and sampled ordinary attempts. But A1, A6, and A8 are assigned to pytest and `check_project.py` outputs without specifying which runs, what those traces must show, or a specific location for those outputs.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-TRACE-REVIEW",
+    "verdict": "unresolved"
+  },
   "4dcdf79b086e0e5851c2505843bfe6eb95e6b22dcffef8fc797099c0ef69eb29": {
     "item_id": "CORE-UNCERTAINTIES",
     "materiality": "material",
@@ -372,6 +454,32 @@
     "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-UNCERTAINTIES",
     "verdict": "unresolved"
   },
+  "5998392c193ace399173c1dd8b0fc57123d4bfc23f60131d233a52e28154825e": {
+    "gaps": null,
+    "item_id": "CORE-UNCERTAINTIES",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan explicitly lists its material uncertainties and, for each open item, identifies evidence or a check that would resolve it, such as a free probe, test-time read check, or saved-fixture judgment. Resolved uncertainties give their resolution or basis.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-UNCERTAINTIES",
+    "verdict": "pass"
+  },
+  "59fb65ff9dbe3c7376e4163cf84c0bae8a99b2942007868084b1b4e0605aa5ad": {
+    "gaps": [
+      "The quoted plan lacks a valid `Observed: <path>` for the whole probe working end to end. Its cited c1r24 artifact is described as showing step 3 with residents picking from a move list, and steps 1, 2, 4, and 5 are not shown as working together end to end.",
+      "Because the probe is not yet observed end to end, `Class: vertical` does not meet the requirement to adopt only a `vertical` or evidence-backed `direct_blocker` plan before observation; the quoted plan gives no reproduced evidence that the probe cannot run without this plan.",
+      "The cited artifact does not establish that the `Step:` line names the step this plan changes in a probe that works end to end; it names step 3, while the plan also identifies Q26 as an open gap in step 4\u2019s presentation and describes a result requiring inspection and replay."
+    ],
+    "item_id": "CORE-OUTCOME-FIRST",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) The quoted plan lacks a valid `Observed: <path>` for the whole probe working end to end. Its cited c1r24 artifact is described as showing step 3 with residents picking from a move list, and steps 1, 2, 4, and 5 are not shown as working together end to end. (2) Because the probe is not yet observed end to end, `Class: vertical` does not meet the requirement to adopt only a `vertical` or evidence-backed `direct_blocker` plan before observation; the quoted plan gives no reproduced evidence that the probe cannot run without this plan. (3) The cited artifact does not establish that the `Step:` line names the step this plan changes in a probe that works end to end; it names step 3, while the plan also identifies Q26 as an open gap in step 4\u2019s presentation and describes a result requiring inspection and replay.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan cites `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md`, but says it shows only step 3 working and that residents picked from a move list; the canonical probe requires all five steps. The plan explicitly reports unresolved presentation work (Q26), yet labels itself `vertical` and does not claim `Observed: not yet observed`.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-OUTCOME-FIRST",
+    "verdict": "unresolved"
+  },
   "5d205b3faee901c3658c2cf0778d3515c223047077a62c053e8e1030f8e7ebd7": {
     "item_id": "CORE-TRACE-REVIEW",
     "materiality": "material",
@@ -401,6 +509,32 @@
     "trace_id": "company-planning/method-conformance/open_attempt/e2dea4f7057d/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
+  "613dc52047beba69f62c75fc156f98ef756788fd13e0da573ea7e2cd2a1f5587": {
+    "gaps": null,
+    "item_id": "OV-PRIOR-ART-PARALLEL-CHECK",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan specifies a concrete structural check: verify there is only one `def submit` in `src/world_substrate/engine.py` using `grep -n`, alongside the stated invariant that every attempt enters through `Engine.submit`. This detects a parallel command path for the same concern.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/OV-PRIOR-ART-PARALLEL-CHECK",
+    "verdict": "pass"
+  },
+  "617f97bc8e31da43ee1559d2cd92ba659c7425b545a17ef407c62890c5b7f740": {
+    "gaps": [
+      "There is no concrete named model freshness or drift-check mechanism beyond saying that `tests/test_system_model.py` must fail on a renamed field; the evidence does not specify what checks model freshness or detects other model-to-code drift.",
+      "The evidence does not state how model and view coverage will be reconciled in the same change: it says each slice updates ODD.md and names view rows to add, but does not explicitly require updating `VIEW_COVERAGE.md` in the same pull request or give a reason it needs no update.",
+      "The evidence does not state how verification evidence will be reconciled in the same change; the trace requirements and model-test update are listed, but no same-change reconciliation of the executed trace evidence is specified."
+    ],
+    "item_id": "CORE-SYSTEM-MODEL",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) There is no concrete named model freshness or drift-check mechanism beyond saying that `tests/test_system_model.py` must fail on a renamed field; the evidence does not specify what checks model freshness or detects other model-to-code drift. (2) The evidence does not state how model and view coverage will be reconciled in the same change: it says each slice updates ODD.md and names view rows to add, but does not explicitly require updating `VIEW_COVERAGE.md` in the same pull request or give a reason it needs no update. (3) The evidence does not state how verification evidence will be reconciled in the same change; the trace requirements and model-test update are listed, but no same-change reconciliation of the executed trace evidence is specified.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The excerpt links the model from the documentation entry point, identifies the repository scope, lists changed and relied-on elements, states per-element trace evidence, and names source-linked views and a material omission. However, its reconciliation commitment names ODD.md, the TOML model and a test, but omits an explicit same-change update of view coverage and verification evidence, and its drift-check description is limited to renamed fields.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-SYSTEM-MODEL",
+    "verdict": "unresolved"
+  },
   "62ca3038faeac0979c0602d23073174b9c247e9da8a83f1123df06cea70fc697": {
     "gaps": [
       "Status of each requirement (one of: passing, failing, planned and not yet run, or deferred with stated reason), explicitly shown in the requirements list\u2014e.g., a Status column in the table\u2014for each requirement R1 through R7"
@@ -422,6 +556,17 @@
     "rationale": "The requirement explicitly fails plans that \"claim reuse without naming the catalogue entry or id reused.\" The quoted evidence states \"Model calls reuse the shared `llm_client`\" but provides no reference to the catalogue structure (no id, key, or provided-id from the named files), leaving it unestablished whether this reuse is drawn from the catalogue or is an undocumented artifact. If `llm_client` is new, the requirement also mandates naming the first consumer, which is absent.",
     "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-CAPABILITY-REUSE",
     "verdict": "unresolved"
+  },
+  "6568a25e7bbbbab033eb13b73b08c2ca0dda4da42bc5903809077a5a59086798": {
+    "gaps": null,
+    "item_id": "CORE-UNCERTAINTIES",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly lists material uncertainties in full as of 2026-10-26, enumerates Q23\u2013Q40 and Q22/D2 with owners assigned (agent or Brian), and for each provides either resolution evidence (for settled items) or settlement conditions (for open items describing what would resolve them). All required elements are substantively present.",
+    "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-UNCERTAINTIES",
+    "verdict": "pass"
   },
   "67380e61bc74b1f7752122facf625315a258bc9f7d0edb12b6d8fd62009dda6c": {
     "gaps": null,
@@ -463,6 +608,17 @@
     "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/OV-PRIOR-ART-PARALLEL-CHECK",
     "verdict": "pass"
   },
+  "7332ffa90c575e03addbf06b42f9ee138b4c5977ca3a97f050daaf69fb53ce78": {
+    "gaps": null,
+    "item_id": "CORE-OUTCOME-FIRST",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan includes all four required lines of the `## Outcome step` section. The outcome probe path and heading exist in the evidence. The observed artifact (c1r24 TRACE_READ.md) is confirmed to exist and shows the whole probe working end to end once. The named step (step 3) is explicitly present in the cited probe's step list. The class `vertical` correctly describes a plan that reaches an inspectable result through every probe step, with the final result (run page and build record) available for the visitor to read in step 5 of the probe.",
+    "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
   "735b9479cf87d59750a3c24b37de37636ef42916fc05efb0e178bcc70c6ce6d0": {
     "item_id": "CORE-SYSTEM-MODEL",
     "materiality": "material",
@@ -471,6 +627,17 @@
     "rationale": "The evidence provides a linked model path (ODD.md, METAMODEL.md), names the elements being added/changed/relied-on, specifies observable trace requirements for each element, explains material omissions with reasons, and commits to reconciliation (model and VIEW_COVERAGE updates in the same PR with a drift test). However, the requirement explicitly asks the plan to \"name applicable source-linked views.\" The evidence defers this to a separate tracking document rather than enumerating which views are relevant. The requirement's statement that \"A bare model path without these discovery, view, freshness and reconciliation obligations fails\" indicates that deferring view identification to another document does not discharge the planning obligation to name them.",
     "trace_id": "company-planning/method-conformance/open_attempt/e4837d6c360d/CORE-SYSTEM-MODEL",
     "verdict": "unresolved"
+  },
+  "74975ee4746fc03a6b80ff23ff55fa83fd6bfa924b9ffa02456cdbbe97cd3245": {
+    "gaps": null,
+    "item_id": "CORE-AUTHORITY-NONGOALS",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The evidence names Brian\u2019s approval as authority, says one agent writes within the world-substrate and its own deployment scope, and specifies Cybernetic Influence v3 and Concordia as read-only. It explicitly lists the work\u2019s non-goals.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-AUTHORITY-NONGOALS",
+    "verdict": "pass"
   },
   "7612f2536b9095ea274e450ee247c8600949ecea76d76f7722898c84cc8cdacd": {
     "item_id": "CORE-PROJECT-OUTCOME",
@@ -517,6 +684,17 @@
     "model": "claude-code/haiku",
     "rationale": "The quoted evidence explicitly names Brian as the authority holder (\"Brian's 'yes' on 2026-10-25\") and enumerates six specific non-goals (organisations as agents, the code/fast-model/LLM decider spectrum, thinking as an effector, moving off Concordia 2.4.0, a clingo cross-check, any change to Cybernetic Influence v3). Both elements the requirement asks for are substantively present.",
     "trace_id": "company-planning/method-conformance/open_attempt/6b7cff0cb600/CORE-AUTHORITY-NONGOALS",
+    "verdict": "pass"
+  },
+  "7bf9c3421a272965f538a5d22a84c3ba4143244cb7ddccb33f6a2e08da750746": {
+    "gaps": null,
+    "item_id": "CORE-IRREVERSIBLE-SPEND",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The evidence says no irreversible action is planned and frames merges and the service deploy as reversible, then defines boundaries and requires Brian\u2019s authorization before any irreversible step. It also names rollback and the free-replay, per-run, aggregate, and daily spend limits as containment for proposed deployment and spend.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-IRREVERSIBLE-SPEND",
     "verdict": "pass"
   },
   "7c9d78c2071bfb36db1d00c2c111be62ca72ff5516545604eafa9ebf9e5a4de2": {
@@ -638,6 +816,17 @@
     "trace_id": "company-planning/method-conformance/open_attempt/95c8467af25d/CORE-UNCERTAINTIES",
     "verdict": "pass"
   },
+  "87dc7a0e760663166c683c0464303aad77e16f05ef05f6aa889963f36fbf4f22": {
+    "gaps": null,
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan explicitly records shared_mechanism, llm_central, and irreversible_or_spend_action as true, matching its shared engine/generator changes, central interpreter calls, and authorized allowance spend. It proposes no comparison experiment, claims conformance to no external standard, and gives no indication the target is AES-governed; those declared false facts are not contradicted by the quoted plan.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
   "89615969d7a0e4438d25f5824a33ccc44b5a0e0231965b614e13e3e3174b62d4": {
     "item_id": "CORE-SYSTEM-MODEL",
     "materiality": "material",
@@ -664,6 +853,17 @@
     "rationale": "The Outcome step section is complete with all four required lines present and properly formatted: Outcome probe cites roadmap/README.md#canonical-outcome-probe, Observed cites a traced artifact, Step names a step, and Class is \"vertical.\" The canonical outcome probe content is provided in the evidence. However, the requirement specifies the probe should be \"the steps a person takes to get the project's result end to end,\" yet the quoted evidence describes the probe as M1's characteristics plus product fixture roles, not as enumerated steps. This makes it impossible to verify the plan's named step is actually step of the probe rather than an inferred interpretation.",
     "trace_id": "company-planning/method-conformance/open_attempt/116693dc7843/CORE-OUTCOME-FIRST",
     "verdict": "unresolved"
+  },
+  "8daa101784e493bb17090838db4d63f8c2c0b5dcef6d085d67ab8f04b8bc9b38": {
+    "gaps": null,
+    "item_id": "CORE-TRACE-DEBUGGING",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The quoted procedure is explicitly separate from anticipated failure modes and requires retaining the failed run and trace IDs, reading the full listed evidence before selecting a fix, citing the divergence, and classifying its cause. It says unresolved diagnoses allow investigation but not repair, and requires a new traced verification run linked to the original while retaining that original; it also separates review completeness from the run verdict.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-TRACE-DEBUGGING",
+    "verdict": "pass"
   },
   "8f022c0e663a3789dad04337c542c22b5c1d65d207c04c3c08dcb6838529369c": {
     "item_id": "CORE-ACTIVATION-FACTS",
@@ -692,6 +892,17 @@
     "trace_id": "company-planning/method-conformance/open_attempt/b400c34f0cab/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
+  "97411067a891f8e218644245bb45f9eb895eca45b73fd454bce497bc79f8a722": {
+    "gaps": null,
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan explicitly declares three triggered activation facts (shared_mechanism, llm_central, irreversible_or_spend_action) as true in the activation-facts.json evidence. No triggered fact is declared false. The requirement is satisfied.",
+    "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
   "9a38e58b68ea0729c2bbd1c6cea66e3b2ac630dbd7731d50e016798f44dd2d97": {
     "gaps": null,
     "item_id": "CORE-ACTIVATION-FACTS",
@@ -702,6 +913,19 @@
     "rationale": "The plan correctly declares shared_mechanism (true; modifies shared Engine/generator), llm_central (true; interpreter call central to design), and irreversible_or_spend_action (true; spends up to $3 of owner allowance). It correctly declares false: empirical_comparison_proposed (verification tests, not A/B comparison), claims_external_standard (copies methods but claims no conformance), crosses_system_boundary (world-substrate only; external systems read-only), and aes_governed_target (durable_solo path; no AES). Every declared fact matches its triggering conditions.",
     "trace_id": "company-planning/method-conformance/open_attempt/cf6f5af09f76/CORE-ACTIVATION-FACTS",
     "verdict": "pass"
+  },
+  "9a677c972b72da70235b378a04cf350961fcd748251369ed24f27bed642bc6e1": {
+    "gaps": [
+      "The project outcome record does not state how the plan's actor, who watches a generated scenario's people act, is served through the outcome actor's recurring job of describing a situation, pressing Create simulation, and watching people act; the plan asserts they are the same actor but does not establish that mapping."
+    ],
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "The project outcome record does not state how the plan's actor, who watches a generated scenario's people act, is served through the outcome actor's recurring job of describing a situation, pressing Create simulation, and watching people act; the plan asserts they are the same actor but does not establish that mapping.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The record names a World Builder visitor as actor and describes the recurring job and baseline; the plan names a visitor who pastes a scenario and watches generated people act. But the plan\u2019s mapping relies on the record\u2019s phrase \u201cuser describing a world,\u201d which is absent from the quoted record, so the required actor alignment is only asserted, not evidenced.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-PROJECT-OUTCOME",
+    "verdict": "unresolved"
   },
   "9aae7478fbc03f5cb7f094f2709773bc8e43e792e021bbe22c4eae8c3998dd4b": {
     "item_id": "CORE-OUTCOME-FIRST",
@@ -773,6 +997,21 @@
     "model": "claude-code/haiku",
     "rationale": "The evidence provides the model link (docs/model/ODD.md), names each system-model element explicitly (attempt interpretation, unmatched_attempts, timing, roll), specifies what the examined run must show for each element, names applicable source-linked views with code locations, explains material omissions, names concrete drift checks (test_system_model.py, drift test), and states that reconciliation occurs in the same pull request. However, the requirement states: \"a shared model explicitly identifies this repository's scope.\" The evidence does not state whether the model is shared, nor does it identify this repository's scope within the model\u2014neither the shared/unshared status nor a scope statement appears in the quoted text.",
     "trace_id": "company-planning/method-conformance/open_attempt/72ec2edf2a9a/CORE-SYSTEM-MODEL",
+    "verdict": "unresolved"
+  },
+  "a8001d3dc71ad29ea8b4fcdaafb41ba8a6ee6ff42069a0f473b7f9852ae2c127": {
+    "gaps": [
+      "Disposition (reuse, extend, compose, supersede, or bounded exception) for existing ownership candidates found by the search.",
+      "Disposition for internal lineage candidates found by the search.",
+      "Disposition for relevant external prior-art candidates beyond the three named examples; the quoted evidence does not establish that the search found and dispositioned each candidate."
+    ],
+    "item_id": "OV-PRIOR-ART-DISPOSITION",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) Disposition (reuse, extend, compose, supersede, or bounded exception) for existing ownership candidates found by the search. (2) Disposition for internal lineage candidates found by the search. (3) Disposition for relevant external prior-art candidates beyond the three named examples; the quoted evidence does not establish that the search found and dispositioned each candidate.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The evidence assigns \u201cextends\u201d to three specific mechanisms and names the rules-layer owner, but does not show that existing ownership, internal lineage, and relevant external prior art were all searched or that each candidate found was dispositioned.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/OV-PRIOR-ART-DISPOSITION",
     "verdict": "unresolved"
   },
   "ab8a523729a609482d8a79fbf0a4f8d51282c5d917eb6e417837024a070f9c74": {
@@ -862,6 +1101,20 @@
     "trace_id": "company-planning/method-conformance/open_attempt/9659f61b1ee2/OV-LLM-CALL-BOUNDARY",
     "verdict": "pass"
   },
+  "c1360cf2cdce3a52b07ebf5e240f2204f424d8ae8262559ab1291ce030a23686": {
+    "gaps": [
+      "The structured result boundary for the existing rules writer\u2019s build-time model calls is not specified; the evidence says only that their prompt and schema change.",
+      "How the rules writer\u2019s build-time calls are traced is not specified. The tracing description covers resident and interpreter calls, but not rules-writer calls."
+    ],
+    "item_id": "OV-LLM-CALL-BOUNDARY",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) The structured result boundary for the existing rules writer\u2019s build-time model calls is not specified; the evidence says only that their prompt and schema change. (2) How the rules writer\u2019s build-time calls are traced is not specified. The tracing description covers resident and interpreter calls, but not rules-writer calls.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan explicitly describes the resident and attempt-interpreter calls, their typed outputs, and run-level tracing for both. It also includes existing rules-writer calls in the call graph, but gives no structured result boundary or tracing method for those calls.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/OV-LLM-CALL-BOUNDARY",
+    "verdict": "unresolved"
+  },
   "c2a4768c92bffedc0352ae8af275e4893d4caaff339d8fdb543ba0c273eed2e0": {
     "item_id": "CORE-CAPABILITY-REUSE",
     "materiality": "non_material",
@@ -900,6 +1153,17 @@
     "model": "claude-code/haiku",
     "rationale": "The plan carries a `Project outcome:` line naming `roadmap/README.md#actor-recurring-job-and-investment-boundary` with a complete record explicitly stating all four required elements: the actor (a World Builder visitor or Brian as owner), the recurring job and baseline (describe a world and watch the people act; today they pick from allowed moves), the inspectable result (run page and build record showing what was attempted, how rules decided, and why), and stage and investment boundary (prototype, one agent, this repository, capped spend, no new services). The plan's actor directly matches the outcome's actor.",
     "trace_id": "company-planning/method-conformance/open_attempt/ce9e06e64be2/CORE-PROJECT-OUTCOME",
+    "verdict": "pass"
+  },
+  "c88d9bb13e951c97cd6b37fcef4b4d63553d670ed8dec2b45ad8e7f3669de967": {
+    "gaps": null,
+    "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "codex/gpt-6-luna",
+    "rationale": "The plan names the actor as a World Builder visitor (and Brian as owner), specifies an inspectable run page/build record showing attempts, rule outcomes, and reasons, and gives a concrete airfield-office example with refusal, a same-moment glass chain, and a two-dice keep-lower flight roll.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-ACTOR-RESULT-EXAMPLE",
     "verdict": "pass"
   },
   "cc99735f2288901d73725d88a3ca6854a3405424ae5693b9b70a6c0b0793c172": {
@@ -1120,6 +1384,17 @@
     "trace_id": "company-planning/method-conformance/open_attempt/ce9e06e64be2/CORE-OUTCOME-FIRST",
     "verdict": "unresolved"
   },
+  "f8d6d196bcf2308b2ef5517de2c6c658913befd80aa6c66bdfddd1bed5e24762": {
+    "gaps": null,
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan carries a Project outcome line naming roadmap/README.md#actor-recurring-job-and-investment-boundary. The quoted record explicitly states all four required parts: the actor (World Builder visitor or owner), the recurring job and baseline (visitor describes a world and watches people act; today they pick from preset moves), the inspectable result (run page and build record showing attempts, rules' decisions, and causal reasons), and the stage and investment boundary (prototype, one agent, this repository only, $3/day visitor and owner-allowance limits). The plan's actor (World Builder visitor and Brian as owner) matches the outcome's actor.",
+    "trace_id": "company-planning/method-conformance/open_attempt/676a7e041c44/CORE-PROJECT-OUTCOME",
+    "verdict": "pass"
+  },
   "fa6c7ba4e714e1cedef0e0ccc0367813844a5983f737ec90a01e96a820dfe1d3": {
     "gaps": null,
     "item_id": "CORE-OUTCOME-FIRST",
@@ -1130,6 +1405,21 @@
     "rationale": "The plan includes all four required lines in the `## Outcome step` section, properly formatted: the outcome probe is cited and its definition is quoted in the evidence; the artifact is named and its existence is claimed; the step (step 3) is identified and verified against the probe; the class (vertical) is appropriate, producing an inspectable traced run result that satisfies the requirement that a vertical plan ends in a result people can inspect after the final probe step.",
     "trace_id": "company-planning/method-conformance/open_attempt/29b89d2a5c78/CORE-OUTCOME-FIRST",
     "verdict": "pass"
+  },
+  "fa76972247a8c3e859054f5cfa0837a05b293369b47ab71a279fbea4f6a5596f": {
+    "gaps": [
+      "The claim that residents can try anything their body can do is presented as a user-relevant property, but R1 does not explicitly list it as a requirement; R1 instead says residents can try anything their body can do in its label, while its failure condition and controls address interpreter mapping and ordinary attempts, leaving the bodily-capability boundary unrepresented.",
+      "The claimed property that a chain finishes is not separately stated as a requirement; R4 asks for knock-on effects to run to the end, but does not explicitly cover the plan\u2019s broader claim that a chain finishes.",
+      "The claimed property that skill sets the dice is not explicitly stated as a requirement; R5 addresses skill deciding risky outcomes and the dice pool, but does not say that skill sets the dice."
+    ],
+    "item_id": "CORE-REQUIREMENTS-TRACED",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) The claim that residents can try anything their body can do is presented as a user-relevant property, but R1 does not explicitly list it as a requirement; R1 instead says residents can try anything their body can do in its label, while its failure condition and controls address interpreter mapping and ordinary attempts, leaving the bodily-capability boundary unrepresented. (2) The claimed property that a chain finishes is not separately stated as a requirement; R4 asks for knock-on effects to run to the end, but does not explicitly cover the plan\u2019s broader claim that a chain finishes. (3) The claimed property that skill sets the dice is not explicitly stated as a requirement; R5 addresses skill deciding risky outcomes and the dice pool, but does not say that skill sets the dice.",
+    "model": "codex/gpt-6-luna",
+    "rationale": "The evidence provides a requirements table with checks and statuses, including planned checks that have not yet run, and says none are deferred. However, it also says the claimed properties are \u201can impossible attempt is refused with its cause, a chain finishes, skill sets the dice,\u201d and the listed requirements do not explicitly capture all of those claims.",
+    "trace_id": "company-planning/method-conformance/open_attempt/92bffb30baf9/CORE-REQUIREMENTS-TRACED",
+    "verdict": "unresolved"
   },
   "fca6bf779e3f792c260e293c9e1f6d56de75f66366a59750659c49d28612b775": {
     "item_id": "CORE-ACTIVATION-FACTS",

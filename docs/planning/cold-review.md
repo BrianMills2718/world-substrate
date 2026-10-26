@@ -1,4 +1,4 @@
-# Cold review, repo-wide package (rounds 4 to 6)
+# Cold review, repo-wide package (rounds 4 to 7)
 
 Reviewer: `planning-compliance-reviewer` subagent, a re-review given the round-3 report (R1–R7). Earlier rounds: 1 through 3 were revise; the round-3 findings were fixed in `fdaf2ed` and `c028b4b`.
 
@@ -46,5 +46,22 @@ Re-review of `git diff 389f3f8 cd4a1fd`, which records Brian's answer to Q27 (20
 - Note: Q27 keeps its old `default` and `blocks` text beside its resolved status. They are kept as the record of what was asked.
 - Note: the round-5 text above ("19 questions remain open", "Q27 is Brian's decision") was true at f645471 and is superseded by this round.
 
-Reviewed revision: cd4a1fdd52247736007866e4653841db401af04a
+Reviewed revision (round 6): cd4a1fdd52247736007866e4653841db401af04a, verdict pass.
+
+## Round 7 (commit b2216ee): pass
+
+Re-review of Brian's answer to D2/Q22 (2026-10-26, "whatever you think is best as long as we are company plannign complant", taken as the recommended "not yet"), the wiki routes and a test fix, given the round-6 report. The round-6 note (Q27 keeps its old `default` text as a record) still holds and is not a defect.
+
+- Validator: 8 of 8 parts ok; 17 open and 24 resolved questions, 62 concepts, 4 diagrams; 107 citations resolve; 29 of 29 types map onto `scientific-hypergraph@7b0638fe0aef`; freshness ok from `b2216ee`. The only failing substance check was "cold review read this revision", which this record supplies.
+- Reruns: `check_trace_reads.py` 11 runs, 0 problems, exit 0; `durable_docs_check.py --arc42` 0 findings, exit 0; `md_file_cap.py` 136 md files, cap exception, 0 orphans, exit 0. All match the manifest. The 718-test project check was taken from `checks.txt`, not rerun.
+- Q22's resolution is consistent everywhere it appears: `docs/plans/open_attempt.md:15`, `:160`, `:268`, `:304`, `:421`; `docs/model/ODD.md:366`; `src/world_substrate/attempt.py:8-11`; the open-questions graph and both review pages (17 open, 24 resolved). It agrees with the code, where an attempt no rule covers already comes to nothing (`scripts/run_authored_world.py:669`).
+- The test fix (`tests/test_world_builder_service.py:748-749`) only lifts `PEOPLE_REWRITE_BY_S` so the rules-retry test no longer depends on machine speed.
+
+Notes (none blocking):
+1. Q22's evidence is a quoted session message with no decision record. Accepted: the ledger, the plan and the ODD quote it.
+2. The open-attempt page said "Nothing is waiting on you" while Q16 and Q17 are still Brian's. Fixed: it now says "Nothing in this plan is waiting on you".
+3. `checks.txt` had dropped the project check's "Planning path" and "Pinned source records checked: 16" lines. Fixed: the full summary is back.
+4. The 17 remaining open questions were not re-audited this round; nothing in this change touches them, so the round 4 to 6 audits stand.
+
+Reviewed revision: b2216ee55011c2a38f669579ca01c34563c5cc78
 Verdict: pass
