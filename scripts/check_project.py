@@ -6,9 +6,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -375,6 +377,21 @@ def check_contract_status(root: Path) -> list[str]:
     return failures
 
 
+PASSED_TREES = Path.home() / ".cache" / "world-substrate" / "passed-trees"
+
+
+def _stamp_passed_tree() -> None:
+    """Record that this exact tree passed, so the deploy gate need not rerun it (only for a clean checkout)."""
+    dirty = subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True)
+    tree = subprocess.run(["git", "rev-parse", "HEAD^{tree}"], cwd=REPO, capture_output=True, text=True)
+    if dirty.returncode or tree.returncode or dirty.stdout.strip():
+        print("Passed-tree stamp: not written (uncommitted changes)")
+        return
+    PASSED_TREES.mkdir(parents=True, exist_ok=True)
+    (PASSED_TREES / tree.stdout.strip()).write_text(datetime.now(timezone.utc).isoformat() + "\n")
+    print(f"Passed-tree stamp: {tree.stdout.strip()[:12]}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -628,25 +645,22 @@ def main() -> int:
         detail = freshwater_check.stderr.strip() or freshwater_check.stdout.strip()
         failures.append(f"complete freshwater evidence check failed: {detail}")
 
+    # One parallel pytest run covers unittest classes and pytest-only files alike (unittest discover missed
+    # the latter, so the deploy used to run the whole suite a second time). --dist loadfile keeps each file on
+    # one worker, so a file's cached saved-world replay is built once (2026-10-26: the suite took ~22 min per
+    # change across check, deploy check and deploy pytest).
+    workers = str(min(8, os.cpu_count() or 1))
     first_fill_tests = subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            str(REPO / "tests"),
-            "-p",
-            "test_*.py",
-        ],
+        [sys.executable, "-m", "pytest", str(REPO / "tests"), "-p", "no:cacheprovider", "-q",
+         "-n", workers, "--dist", "loadfile"],
         check=False,
         capture_output=True,
         text=True,
         cwd=REPO,
     )
     if first_fill_tests.returncode != 0:
-        detail = first_fill_tests.stderr.strip() or first_fill_tests.stdout.strip()
-        failures.append(f"neutral runtime tests failed: {detail}")
+        tail = "\n".join((first_fill_tests.stdout + first_fill_tests.stderr).strip().splitlines()[-40:])
+        failures.append(f"neutral runtime tests failed (needs --with pytest --with pytest-xdist): {tail}")
 
     if failures:
         print("World Substrate project check failed:")
@@ -656,8 +670,9 @@ def main() -> int:
 
     print("World Substrate project check passed.")
     # State the test outcome, not just its absence of failure.
-    summary = [line for line in first_fill_tests.stderr.splitlines() if line.startswith(("Ran ", "OK", "FAILED"))]
-    print("Neutral runtime tests: " + " · ".join(summary))
+    summary = [line for line in first_fill_tests.stdout.splitlines() if " passed" in line or " failed" in line]
+    print("Neutral runtime tests: " + (summary[-1].strip("= ") if summary else "no pytest summary line"))
+    _stamp_passed_tree()
     print("Reading path: AGENTS.md -> docs/wiki/README.md -> task authority")
     print("Planning path: README.md -> roadmap/README.md -> active slice")
     print(f"Pinned source records checked: {len(manifest['sources'])}")
