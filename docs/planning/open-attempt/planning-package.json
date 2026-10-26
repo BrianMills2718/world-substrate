@@ -226,7 +226,7 @@
       "status": "present",
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "b2216ee55011c2a38f669579ca01c34563c5cc78"
+      "reviewed_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c"
     }
   },
   "note": "This is the plan's own package, named by docs/plans/open_attempt.md's 'Planning package:' line. The other package is docs/planning/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
