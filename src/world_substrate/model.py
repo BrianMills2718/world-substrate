@@ -631,6 +631,8 @@ class World:
 
 def differences(before: Any, after: Any, path: str = "") -> list[dict[str, Any]]:
     """Return deterministic leaf-level changes between two material projections."""
+    if before == after:  # equal subtrees have no leaf changes; skip the walk (most of a world is unchanged)
+        return []
     if isinstance(before, dict) and isinstance(after, dict):
         result: list[dict[str, Any]] = []
         for key in sorted(before.keys() | after.keys()):
