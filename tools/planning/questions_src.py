@@ -521,11 +521,13 @@ Q = [
   "blocks": "how S2's glass chain is built, and whether generated and reference worlds share physics",
   "resolves_with": "Reading the code and one free probe: compare the library processes' read and write paths (entities.<vessel>.condition.value, container, liquid) with what a generated bundle declares; if a generated glass can carry those components, offer the library processes to the build as installable rules and probe the glass chain on the saved airfield fixture; otherwise the rules writer writes declared processes and the library stays reference-only.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
+  "evidence": "No reuse. The library processes read built-in entity slots (condition, container, liquid, thermal) and the physical ledger, which build_engine never sets for a generated world, and neither can run immediately. Free probe on the S2 glass fixture: both report due False after the chain, the glass has only its bundle component, no physical ledger (evidence/open-attempt/q28/README.md, probe.out). The rules writer writes its own timing-immediately processes.",
   "sources": [
    "src/world_substrate/mechanisms/damage.py:116",
    "scripts/run_authored_world.py:58",
-   "tests/fixtures/airfield-s1-live.json"
+   "tests/fixtures/airfield-s1-live.json",
+   "evidence/open-attempt/q28/README.md"
   ],
   "touches": [
    "mechanisms",

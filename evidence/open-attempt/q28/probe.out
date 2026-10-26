@@ -1,0 +1,5 @@
+process.material.overheat-damage due on the broken generated glass: False | can run immediately: False
+process.material.vessel-failure-spill due on the broken generated glass: False | can run immediately: False
+generated glass has condition/container/liquid components: False False False
+generated glass components: ['glass']
+world physical_ledger: None
