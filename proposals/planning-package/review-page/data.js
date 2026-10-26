@@ -227,7 +227,7 @@ window.PAGE_DATA = {
     "status": "present",
     "path": "docs/planning/cold-review.md",
     "verdict": "pass",
-    "reviewed_revision": "d3050585e01102c47d0516579e6d645ac5b8eecc"
+    "reviewed_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c"
    }
   },
   "note": "This is the repository's package: covers the whole repository; its plan part points at the same adopted plan as the open-attempt package. The other package is docs/planning/open-attempt/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
@@ -1021,7 +1021,7 @@ window.PAGE_DATA = {
    "resolves_with": "Settled by argument plus one counterexample check: read whether any saved build's rules-writer reply stopped at the cap (finish_reason length in the llm_calls table); if none did, the cap has never cut an answer and only the 402 hold matters, which is a provider-account question, not a design one.",
    "owner": "agent",
    "status": "resolved",
-   "evidence": "Checked 2026-10-26 in the llm_calls table (~/projects/data/llm_observability.db, read-only): all 133 world-substrate-mechanic-authoring calls (2026-10-06 to 2026-10-25) and all 153 world-substrate-rule-writer calls that recorded a finish reason ended with stop, none with length (1 mechanic-authoring and 2 rule-writer calls recorded no finish reason), so the cap has never cut an answer off. Its only effect is to lower what OpenRouter holds per call (the 2026-10-26 402 was a hold for 65,536 tokens on a key with about $10). So it stays for now as a hold limit, not a size limit, and goes once the key carries enough that a full-allowance hold never fails; nothing in S2 depends on it.",
+   "evidence": "Checked 2026-10-26 in the llm_calls table (~/projects/data/llm_observability.db, read-only): all 133 world-substrate-mechanic-authoring calls (2026-10-06 to 2026-10-25) and all 153 world-substrate-rule-writer calls that recorded a finish reason ended with stop, none with length (1 mechanic-authoring and 2 rule-writer calls recorded no finish reason), so the cap has never cut an answer off. Its only effect is to lower what OpenRouter holds per call (the 2026-10-26 402 was a hold for 65,536 tokens on a key whose balance could not cover that hold). So it stays for now as a hold limit, not a size limit, and goes once the key carries enough that a full-allowance hold never fails; nothing in S2 depends on it.",
    "sources": [
     "scripts/generate_causal_model.py:30",
     "scripts/generate_causal_model.py:475"
