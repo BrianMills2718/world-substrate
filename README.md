@@ -197,8 +197,10 @@ PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic -
 ```
 
 A pass on a clean checkout stamps its tree in `~/.cache/world-substrate/passed-trees/`; `scripts/deploy_world_builder.sh`
-skips the gate for a tree that already passed (a squash merge keeps the pull request's tree). While developing, run
-only the test files a change touches (`python -m pytest tests/test_x.py -n 8`) and the full check once before merge.
+skips the gate for a tree that already passed (a squash merge keeps the pull request's tree), and otherwise runs it
+before deploying. Before merge, run only the test files a change touches (`python -m pytest tests/test_x.py -n 8`)
+and look at any page it changes; the full check runs nightly on main through `gates-nightly`
+(`~/code2/workspace/scripts/gates_nightly.py`), and a nightly failure goes to an agent to fix.
 
 Useful deterministic probes include:
 
