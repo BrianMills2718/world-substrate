@@ -745,7 +745,8 @@ class WorldBuilderServiceTests(unittest.TestCase):
         stuck = self._saved_people_world(json.loads((fixtures / "c1r18_waltzman_world.json").read_text()))
         repaired = self._saved_people_world(replay(fixtures / "c1r20_waltzman_build.json"))
         # a short test run is enough here: the part-way finding comes from the rules, not from the run
-        short = patch.multiple(service, DRY_RUN_TURNS_CONTINUING=4, DRY_RUN_TURNS_LATE=4)
+        # and the rewrite time limit is lifted: on a loaded machine the first test run alone passed 80 s and the retry was skipped
+        short = patch.multiple(service, DRY_RUN_TURNS_CONTINUING=4, DRY_RUN_TURNS_LATE=4, PEOPLE_REWRITE_BY_S=10_000)
         short.start()
         self.addCleanup(short.stop)
         with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
