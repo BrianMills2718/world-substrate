@@ -34,7 +34,7 @@ Each pattern is something a check or a person could observe. VIEW_COVERAGE.md re
 | # | Pattern | Where it is observable |
 | --- | --- | --- |
 | P1 | Every submitted attempt produces exactly one Engine event and one command; commands replay to identical statuses. | `World.events`, `World.commands`, `Engine.replay_commands` (`src/world_substrate/engine.py:879`) |
-| P2 | A refused attempt leaves `hash_before == hash_after` and the revision unchanged. | event `changes` empty; `hash_*` (`engine.py:505-545`) |
+| P2 | A refused attempt leaves `hash_before == hash_after` and the revision unchanged. | event `changes` empty; `hash_*` (`engine.py:529-580`) |
 | P3 | `revision` rises by exactly one per committed event; `tick` rises by one per round. | `engine.py:667`, `:842`, `advance` |
 | P4 | No `/run` or `/compare-native-coordination` executes without `approved: true`; every `/run` recompiles the causal model before any policy or model call. | HTTP 409 (`scripts/world_builder_service.py:998-1000`); compile at `:1006` |
 | P5 | Causal-model action kinds equal the bundle's action kinds, exactly. | `src/world_substrate/action_authoring.py:383-391` |
@@ -224,16 +224,16 @@ Each rule below is enforced by the cited code.
 
 **8.1 Envelope validation** (`src/world_substrate/engine.py:409-433`). An attempt must be an object with string keys, nonempty `actor`, `kind`, `controller`, and an integer `base_revision`; otherwise one `invalid_action` event and command are written with the claimed actor (`:464-503`). An unknown kind becomes `unsupported_action` (`:577`); a payload the rule cannot parse is `invalid_action`.
 
-**8.2 Transition** (`engine.py:558-723`), in order:
+**8.2 Transition** (`engine.py:582-747`), in order:
 1. revision check: `base_revision` must equal the world's revision (`:566`); false -> `stale_revision` (`:613`);
 2. rule checks run on a detached candidate; if checks mutated it -> `scope_violation` (`:595`; checks only read, RULE-CHECKS-ARE-READ-ONLY); any failed check -> `precondition_failed` (`:617`);
 3. the rule applies to the candidate; a write to engine-owned state -> `scope_violation` (`:647`);
 4. revision += 1 (`:667`); the diff must fall inside the rule's declared `write_paths` for the entities named by the attempt (`:669-674`) -> else `scope_violation` (`:678`; RULE-WRITE-SCOPE);
 5. commit: the candidate replaces the world (`:722`), one `accepted` event (`:695`) and one `action` command (`:716`).
 
-**8.3 Process tick** (`engine.py:762-877`). `advance(n)` writes one `advance` command per tick (`:773`), increments the tick, and applies each due process in declared order on a candidate; each commit writes an `accepted` event (`:856`). An out-of-scope process write raises `ScopeViolation`; `advance` restores the pre-tick world (`:801`) and re-raises, so **no event records the defective process**: the failure surfaces as a request error instead.
+**8.3 Process tick** (`engine.py:786-902`). `advance(n)` writes one `advance` command per tick (`:797`), increments the tick, and applies each due process in declared order on a candidate; each commit writes an `accepted` event (`:885`). An out-of-scope process write raises `ScopeViolation`; `advance` restores the pre-tick world (`:825`) and re-raises, so **no event records the defective process**: the failure surfaces as a request error instead.
 
-**8.4 Event record** (`engine.py:505-556`). Fields: `event_id, causal_bearer, semantic_binding, observation, tick, world_revision, rule_id, rule_version, cause, status, checks, declared_read_paths, declared_write_paths, changes, hash_before, hash_after`, plus `causal_parent_event_ids` when a rule declares hard ancestry and `information_context` when the observation carried information.
+**8.4 Event record** (`engine.py:529-580`). Fields: `event_id, causal_bearer, semantic_binding, observation, tick, world_revision, rule_id, rule_version, cause, status, checks, declared_read_paths, declared_write_paths, changes, hash_before, hash_after`, plus `causal_parent_event_ids` when a rule declares hard ancestry and `information_context` when the observation carried information.
 
 **8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 28 processes (`MAX_PROCESSES`, `:29`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer (RULE-DERIVED-AUTHORITY).
 
@@ -257,7 +257,7 @@ Each rule below is enforced by the cited code.
 
 **8.15 Living-scene frames** (`src/world_substrate/living_scene.py:38-49`, `:380-405`, `:532`). Feedback accepts every engine status (plus three legacy names) and exposes check labels and verdicts only, never operands; a frame shows effects only for events whose rule has a declared visual. Renderer placement: an actor's latest `actor.move_to` sets its point; actors with the same target share one point (`scripts/render_living_scene.py:129`, `scripts/render_composed_living_scene.py:106`; issue #106, G9).
 
-**8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:248`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:553`; RULE-INFORMATION-IS-NOT-CAUSE).
+**8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:235`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:577`; RULE-INFORMATION-IS-NOT-CAUSE).
 
 **8.17 Linked process participants** (`action_authoring.py:672-741`). Names other than `it`/`actor`; each `{link, selector}`; link one of `PROCESS_LINKS` or `ref:<component>.<field>` naming an `entity_ref` field. Bindings are the product of each link's candidates; an empty link drops the binding. Effects may target any participant by name.
 
@@ -326,7 +326,7 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
   score by 1.
 - The build streams up to 40 progress steps through `/jobs/<id>` (`:342-343`, `:722-736`).
 
-### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:335-760`)
+### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:347-815`)
 
 - **Resident:** one Concordia agent per person (`scripts/concordia_residents.py`), memory of up to 12 notes,
   round-tripped through the page. It answers `belief, action_id, expected_effect, work, reasoning` (`:29-40`). It is
