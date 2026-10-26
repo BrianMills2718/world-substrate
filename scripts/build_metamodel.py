@@ -139,7 +139,7 @@ TYPES = [
      "natural language outside the world"),
     ("attempt-reading", "Attempt reading", "acting", True,
      "The interpreter's typed reading of an attempt: an action kind and participants, with no outcome "
-     "field, or no match.",
+     "field, a wait, or no match.",
      "src/world_substrate/attempt.py:81", "specializes", "sci:RelationInstance (proposed)",
      "a proposed instance of an action-kind relation type, not yet applied"),
     ("unmatched", "Unmatched attempt", "acting", True,

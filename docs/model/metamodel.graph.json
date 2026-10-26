@@ -167,7 +167,7 @@
    "id": "attempt-reading",
    "label": "Attempt reading",
    "kind": "acting",
-   "explain": "The interpreter's typed reading of an attempt: an action kind and participants, with no outcome field, or no match."
+   "explain": "The interpreter's typed reading of an attempt: an action kind and participants, with no outcome field, a wait, or no match."
   },
   {
    "id": "unmatched",

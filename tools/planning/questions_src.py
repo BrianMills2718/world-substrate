@@ -667,7 +667,7 @@ Q = [
   "short": "How a misreading is caught",
   "question": "If the interpreter reads 'fly the helicopter' as a walk, the move is legal and nothing flags it; R1's failure mode is exactly that. How is a misreading caught, apart from its cost (Q29)?",
   "blocks": "R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings",
-  "resolves_with": "Argument plus a check, no paid run: each reading keeps quoted_span per field (attempt.py:81), so a reader can compare the words with the kind. The plan's checks are A2's negative fixture (fly never binds to move) and the TRACE_READ.md sample of ordinary attempts. Technical addition: list every reading whose kind is not the interpreter's own nearest_kind, and every wait reading of a non-wait attempt (Q39), in the run summary so the trace read covers them all, not a sample.",
+  "resolves_with": "Argument plus a check, no paid run: each reading keeps quoted_span per field (attempt.py:81), so a reader can compare the words with the kind. The plan's checks are A2's negative fixture (fly never binds to move) and the TRACE_READ.md sample of ordinary attempts. Technical addition: list every wait reading of a non-wait attempt (Q39) in the run summary so the trace read covers them all, not a sample. (Listing readings whose kind differs from nearest_kind would catch nothing: read_interpretation sets nearest_kind to the matched kind, attempt.py:122.)",
   "owner": "agent",
   "status": "open",
   "sources": [
@@ -720,14 +720,15 @@ Q = [
  {
   "id": "Q39",
   "short": "A read-as-wait attempt vanishes",
-  "question": "When the interpreter reads an attempt as 'wait' (src/world_substrate/attempt.py:99-100), envelope() returns nothing, the row records the person as waiting with the attempt text, and the attempt is not in summary.unmatched_attempts. A resident who said 'fly the helicopter' and was read as waiting is a silent no-op. Should it be listed?",
+  "question": "When the interpreter reads an attempt as 'wait' (src/world_substrate/attempt.py:94-95), envelope() returns nothing, the row records the person as waiting with the attempt text, and the attempt is not in summary.unmatched_attempts. A resident who said 'fly the helicopter' and was read as waiting is a silent no-op. Should it be listed?",
   "blocks": "A4 (every attempt that changed nothing is listed) and Q36",
   "resolves_with": "An argument settles it: an attempt with words that was read as wait changed nothing exactly as an unmatched one does, so it belongs in the same list. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F9): list such attempts in the run summary as read_as_wait with the interpreter's why; checked by a test with a recorded wait reading of a non-wait attempt.",
   "owner": "agent",
   "status": "resolved",
   "evidence": "Settled by argument: the row keeps the attempt and reading (scripts/run_authored_world.py:557) but the summary lists only unmatched readings (:800), so a wait reading of real words is visible only by reading every row. Answer: list it (F9).",
   "sources": [
-   "src/world_substrate/attempt.py:99",
+   "src/world_substrate/attempt.py:94",
+   "src/world_substrate/attempt.py:129",
    "scripts/run_authored_world.py:557",
    "scripts/run_authored_world.py:800"
   ],
