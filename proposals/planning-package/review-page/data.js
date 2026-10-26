@@ -225,7 +225,8 @@ window.PAGE_DATA = {
    "cold_review": {
     "status": "present",
     "path": "docs/planning/cold-review.md",
-    "verdict": "pass"
+    "verdict": "pass",
+    "reviewed_revision": "cd4a1fdd52247736007866e4653841db401af04a"
    }
   },
   "note": "This is the repository's package: covers the whole repository; its plan part points at the same adopted plan as the open-attempt package. The other package is docs/planning/open-attempt/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
