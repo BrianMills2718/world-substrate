@@ -13,6 +13,10 @@ authority_refs:
   - ../decisions/003-semantic-mechanical-boundary.md
   - ../decisions/004-product-and-adoption-strategy.md
   - ../decisions/005-native-waltzman-delivery.md
+  - ../decisions/006-governed-rules-layer-scope.md
+  - ../decisions/007-any-scenario-path.md
+  - ../decisions/008-build-worlds-in-an-agent-harness.md
+  - ../decisions/009-same-moment-knock-on-effects.md
 ---
 
 # World Substrate project wiki
@@ -43,6 +47,12 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | Durable system boundaries | [Architecture](../architecture.md) |
 | What would have made this faster (read before planning a goal) | [Lessons](lessons.md) |
 | The system itself as a checked model (entities, processes, records, view coverage gaps) | [System model](../model/ODD.md) · [View coverage](../model/VIEW_COVERAGE.md) |
+| What the substrate is made of (concepts, typed kinds, what is built vs theory) | [Domain model](../model/DOMAIN.md) · [Metamodel](../model/METAMODEL.md) |
+| What the project does not yet know, and the plan it calls for | [Open questions](../planning/open-questions.json) · [Repo planning package](../planning/planning-package.json) · [Open-attempt package](../planning/open-attempt/planning-package.json); review pages at `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt}/review-page/` |
+| Next build: free-form attempts, same-moment knock-on effects, skill rolls | [Open-attempt plan](../plans/open_attempt.md) |
+| Scope: governed-rules layer on commodity runtimes | [Decision 006](../decisions/006-governed-rules-layer-scope.md) |
+| Any-scenario path / build worlds in an agent harness | [Decision 007](../decisions/007-any-scenario-path.md) · [Decision 008](../decisions/008-build-worlds-in-an-agent-harness.md) |
+| Same-moment knock-on effects are rule semantics, not engine capability | [Decision 009](../decisions/009-same-moment-knock-on-effects.md) |
 | Product + procurement doctrine | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
 | Native Waltzman delivery / donor boundary / stopping rule | [Decision 005](../decisions/005-native-waltzman-delivery.md) |
 | Living-world overlay semantics | [Living-world projection](../research/living-world-projection-2026-09.md) |
