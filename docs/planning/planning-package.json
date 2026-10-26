@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "9f75e4c3cff135c5a1deb21334492b136f9655a8",
+  "subject_revision": "cd4a1fdd52247736007866e4653841db401af04a",
   "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
   "parts": {
     "checks": {
@@ -60,7 +60,7 @@
           "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo .",
           "exit_status": 0,
           "counts": {
-            "md_files": 134,
+            "md_files": 135,
             "cap": "exception",
             "orphans": 0
           }
