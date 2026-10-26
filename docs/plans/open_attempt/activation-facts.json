@@ -2,7 +2,7 @@
   "schema_version": "method-activation-facts.v1",
   "record_type": "method_activation_facts",
   "plan_ref": "docs/plans/open_attempt.md",
-  "plan_sha256": "95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+  "plan_sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
   "path_decision_ref": "docs/plans/open_attempt/path-decision.json",
   "path_decision_sha256": "9e0dfe449b327c72b53cf0f38d970b14600e5e5e1be4c322c063090890617a0b",
   "facts": {

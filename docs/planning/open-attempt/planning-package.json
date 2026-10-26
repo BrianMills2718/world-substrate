@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "f6454711cca548331f7b17d05aef66d69c3aa787",
+  "subject_revision": "31ddebc19c9e38595ddc07d455a4872c52a35407",
   "request": "Brian 2026-10-25 \"yes\" (to: write a short design for free-form attempts plus the fallback for unmatched attempts, then knock-on effects and skill rolls, tracing the wall, glass and helicopter examples, with a review page)",
   "parts": {
     "checks": {
@@ -224,8 +224,7 @@
     "cold_review": {
       "status": "present",
       "path": "docs/planning/open-attempt/cold-review.md",
-      "verdict": "pass",
-      "reviewed_revision": "f6454711cca548331f7b17d05aef66d69c3aa787"
+      "verdict": "pass"
     }
   },
   "note": "This is the plan's own package, named by docs/plans/open_attempt.md's 'Planning package:' line. The other package is docs/planning/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."

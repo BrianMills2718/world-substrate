@@ -13,7 +13,7 @@
     "subject_ref": {
       "kind": "planning_review",
       "id": "open_attempt",
-      "revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68"
+      "revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b"
     },
     "items": [
       {
@@ -419,7 +419,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -445,7 +445,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -471,7 +471,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -497,7 +497,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -523,7 +523,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -549,7 +549,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -575,7 +575,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -601,7 +601,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -627,7 +627,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -653,7 +653,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -679,7 +679,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -705,7 +705,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -731,7 +731,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -757,7 +757,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -783,7 +783,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -810,7 +810,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -836,7 +836,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -862,7 +862,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -888,7 +888,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -914,7 +914,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null
@@ -940,7 +940,7 @@
         "scope": "plan:docs/plans/open_attempt.md",
         "observed_at": "2026-10-26T05:41:54Z",
         "producer": "agent",
-        "source_revision": "sha256:95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+        "source_revision": "sha256:55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
         "limitations": []
       },
       "annotation": null

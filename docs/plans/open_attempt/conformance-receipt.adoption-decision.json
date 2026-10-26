@@ -1,15 +1,19 @@
 {
   "schema_version": "method-adoption-decision.v1",
   "record_type": "method_adoption_decision",
-  "decision": "adopted",
+  "decision": "refused",
   "plan_ref": "docs/plans/open_attempt.md",
-  "plan_sha256": "95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68",
+  "plan_sha256": "55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b",
   "receipt_ref": "docs/plans/open_attempt/conformance-receipt.json",
-  "receipt_sha256": "6feefaac540169ea251d114768a52e0f02f147d7f9e453c673f1dc6d4daaec5f",
-  "receipt_result": "pass",
-  "reason_codes": [],
-  "summary": [
-    "pass: 21 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
+  "receipt_sha256": "89087b8074342c73a20817121bdc9f74c14495e72aa1c8fff55833e95f7dd285",
+  "receipt_result": "fail",
+  "reason_codes": [
+    "stale_activation_facts",
+    "PLANNING-PACKAGE-INVALID"
   ],
-  "decided_at": "2026-10-26T05:43:39Z"
+  "summary": [
+    "stale_activation_facts: activation facts were declared for plan sha256 95e262898e3bc8a6c76b16aec9b5ec90294843a795c985ccf5aab5600a90ac68, but the plan is now 55b35997be564ffb49f44f6b22116dfd52de6c007113ec4d0f85f1bd4c02a74b; re-declare facts for this revision",
+    "PLANNING-PACKAGE-INVALID: validate_planning_package.py exited 1 on docs/planning/open-attempt/planning-package.json -> fix each failing part the validator names; build or fix the package with skills/planning-compliance/SKILL.md and re-run adoption\n    8 of 8 parts ok, 0 failing\n    5 of 5 substance checks ok, 0 failing, 0 pending\n    FAIL freshness: built from f6454711cca5, 0 commits of work since\n           - subject_revision f6454711cca548331f7b17d05aef66d69c3aa787 is not an ancestor of HEAD\n    Verdict: not compliant (out of date)"
+  ],
+  "decided_at": "2026-10-26T06:29:22Z"
 }
