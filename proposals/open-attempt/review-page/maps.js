@@ -216,13 +216,13 @@ window.MAPS = {
     "id": "communicate",
     "label": "Communicate rule",
     "kind": "Family",
-    "explain": "The reviewed move that delivers an information item to its recipient. Code: spikes/any-scenario-2026-10/compile_spec.py."
+    "explain": "The reviewed move that delivers an information item to its recipient. Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. Code: spikes/any-scenario-2026-10/compile_spec.py:56."
    },
    {
     "id": "moment",
     "label": "Scheduled moment",
     "kind": "Family",
-    "explain": "A countdown that happens every so many rounds (a weekly meeting, a deadline). Code: spikes/any-scenario-2026-10/compile_spec.py:48."
+    "explain": "A countdown that happens every so many rounds (a weekly meeting, a deadline). Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. Code: spikes/any-scenario-2026-10/compile_spec.py:48."
    },
    {
     "id": "work-cycle",
@@ -258,7 +258,7 @@ window.MAPS = {
     "id": "agenda",
     "label": "Agenda count",
     "kind": "Family",
-    "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Code: scripts/people_world.py:279."
+    "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Declared in the group-decision component and changed by the compiled put-matter-on-agenda and settle-agenda-matter rules. Code: spikes/any-scenario-2026-10/compile_spec.py:101."
    },
    {
     "id": "rollout",
@@ -282,7 +282,7 @@ window.MAPS = {
     "id": "gen-rules",
     "label": "Generated actions and rules",
     "kind": "PerWorld",
-    "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. Code: scripts/people_world.py:260."
+    "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. Code: scripts/people_world.py:251."
    },
    {
     "id": "waltzman-ref",
@@ -918,18 +918,6 @@ window.MAPS = {
     "explain": "Blocks: whether the group-decision family's agenda needs content or should be dropped."
    },
    {
-    "id": "Q4",
-    "label": "Q4: Notice only as good as the words",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: whether E2 (a fix carries its substance) holds for every world or only when residents happen to write specific words."
-   },
-   {
-    "id": "Q9",
-    "label": "Q9: Test run too short for some tasks",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: builds wrongly scored as failing and the rewrite spend they cause."
-   },
-   {
     "id": "Q12",
     "label": "Q12: When a people-world run ends",
     "kind": "BrianQuestion",
@@ -978,10 +966,40 @@ window.MAPS = {
     "explain": "Blocks: how S2's glass chain is built, and whether generated and reference worlds share physics."
    },
    {
+    "id": "Q30",
+    "label": "Q30: Build accepted with a task never possible",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor's world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it."
+   },
+   {
+    "id": "Q31",
+    "label": "Q31: Refusal reason reads as a fact",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether a person, and a reader of the run, can tell why a move was refused."
+   },
+   {
+    "id": "Q32",
+    "label": "Q32: Readout picks the wrong lens",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether a run's readout describes the world the visitor wrote."
+   },
+   {
+    "id": "Q33",
+    "label": "Q33: Seeded roll versus no randomness",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: S3's design, A7 and the full canonical run (A9)."
+   },
+   {
+    "id": "Q34",
+    "label": "Q34: Read scopes recorded, not enforced",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether causal links built from declared reads are complete: F1's blocked_by_event names the event that changed what a refused move's failed checks read, and Piece 2's reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause."
+   },
+   {
     "id": "agenda",
     "label": "Agenda count",
     "kind": "Concept",
-    "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content."
+    "explain": "group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Declared in the group-decision component and changed by the compiled put-matter-on-agenda and settle-agenda-matter rules."
    },
    {
     "id": "attempt",
@@ -996,10 +1014,22 @@ window.MAPS = {
     "explain": "Description to spec, actions, rules, assembly, scripted test run and score."
    },
    {
-    "id": "concern",
-    "label": "Concern",
+    "id": "causal-parent",
+    "label": "Hard causal parent",
     "kind": "Concept",
-    "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by."
+    "explain": "An earlier event a rule declares as mechanically supporting this one; kept apart from the information a person merely had in mind."
+   },
+   {
+    "id": "causal-trace",
+    "label": "Causal trace",
+    "kind": "Concept",
+    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run."
+   },
+   {
+    "id": "check",
+    "label": "Check",
+    "kind": "Concept",
+    "explain": "One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed."
    },
    {
     "id": "gen-rules",
@@ -1034,10 +1064,16 @@ window.MAPS = {
     "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28)."
    },
    {
-    "id": "notice",
-    "label": "Finished-task notice",
+    "id": "person",
+    "label": "Person and brief",
     "kind": "Concept",
-    "explain": "What the other people a finished task names are told, in the starter's own words about the work."
+    "explain": "A person the spec names, with goals and beliefs, and the brief only their own resident reads."
+   },
+   {
+    "id": "readout",
+    "label": "Readout",
+    "kind": "Concept",
+    "explain": "One AI summary of a run whose every cited event id is checked against the run."
    },
    {
     "id": "rules-retry",
@@ -1050,6 +1086,13 @@ window.MAPS = {
     "label": "Run loop",
     "kind": "Concept",
     "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run."
+   },
+   {
+    "id": "skill-roll",
+    "label": "Skill roll",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it."
    },
    {
     "id": "task",
@@ -1068,6 +1111,12 @@ window.MAPS = {
     "label": "Unmatched attempt",
     "kind": "Concept",
     "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer."
+   },
+   {
+    "id": "write-scope",
+    "label": "Declared write scope",
+    "kind": "Concept",
+    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced."
    }
   ],
   "edges": [
@@ -1099,30 +1148,6 @@ window.MAPS = {
     "id": "Q3-group-decision",
     "source": "Q3",
     "target": "group-decision",
-    "label": "bears on"
-   },
-   {
-    "id": "Q4-notice",
-    "source": "Q4",
-    "target": "notice",
-    "label": "bears on"
-   },
-   {
-    "id": "Q4-task",
-    "source": "Q4",
-    "target": "task",
-    "label": "bears on"
-   },
-   {
-    "id": "Q4-concern",
-    "source": "Q4",
-    "target": "concern",
-    "label": "bears on"
-   },
-   {
-    "id": "Q9-test-run",
-    "source": "Q9",
-    "target": "test-run",
     "label": "bears on"
    },
    {
@@ -1207,6 +1232,96 @@ window.MAPS = {
     "id": "Q28-gen-rules",
     "source": "Q28",
     "target": "gen-rules",
+    "label": "bears on"
+   },
+   {
+    "id": "Q30-test-run",
+    "source": "Q30",
+    "target": "test-run",
+    "label": "bears on"
+   },
+   {
+    "id": "Q30-build",
+    "source": "Q30",
+    "target": "build",
+    "label": "bears on"
+   },
+   {
+    "id": "Q30-task",
+    "source": "Q30",
+    "target": "task",
+    "label": "bears on"
+   },
+   {
+    "id": "Q30-rules-retry",
+    "source": "Q30",
+    "target": "rules-retry",
+    "label": "bears on"
+   },
+   {
+    "id": "Q31-check",
+    "source": "Q31",
+    "target": "check",
+    "label": "bears on"
+   },
+   {
+    "id": "Q31-gen-rules",
+    "source": "Q31",
+    "target": "gen-rules",
+    "label": "bears on"
+   },
+   {
+    "id": "Q32-readout",
+    "source": "Q32",
+    "target": "readout",
+    "label": "bears on"
+   },
+   {
+    "id": "Q33-skill-roll",
+    "source": "Q33",
+    "target": "skill-roll",
+    "label": "bears on"
+   },
+   {
+    "id": "Q33-gen-rules",
+    "source": "Q33",
+    "target": "gen-rules",
+    "label": "bears on"
+   },
+   {
+    "id": "Q33-person",
+    "source": "Q33",
+    "target": "person",
+    "label": "bears on"
+   },
+   {
+    "id": "Q33-run-loop",
+    "source": "Q33",
+    "target": "run-loop",
+    "label": "bears on"
+   },
+   {
+    "id": "Q33-causal-trace",
+    "source": "Q33",
+    "target": "causal-trace",
+    "label": "bears on"
+   },
+   {
+    "id": "Q34-write-scope",
+    "source": "Q34",
+    "target": "write-scope",
+    "label": "bears on"
+   },
+   {
+    "id": "Q34-causal-parent",
+    "source": "Q34",
+    "target": "causal-parent",
+    "label": "bears on"
+   },
+   {
+    "id": "Q34-mechanisms",
+    "source": "Q34",
+    "target": "mechanisms",
     "label": "bears on"
    }
   ],

@@ -41,8 +41,8 @@
   {
    "node": "way",
    "relation": "specializes",
-   "maps_to": "sci:RelationInstance (from, to)",
-   "why": "a way is a directed relation instance between two place elements; passable is a component on it"
+   "maps_to": "sci:ModelElement",
+   "why": "a way is an entity, so a model element like a place; its two place references compose relation instances (way, from place) and (way, to place), and passable is a component on it"
   },
   {
    "node": "action-kind",

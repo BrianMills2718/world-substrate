@@ -266,8 +266,8 @@ first place to its second only.
 nothing and every unmatched one is listed with the interpreter's nearest move); A2 and A3 were not exercised, because
 the build left the helicopter unreachable: everyone but the mechanic starts in the office, the brick wall is the only
 way to the hangar and is not passable, the builder's own test runs said the practice flight was never possible and the
-build was accepted anyway (#244). Two smaller defects were filed: a refusal reason reads as a fact ("you are the
-dispatcher") rather than a requirement (#245), and the readout chose the goods-flow lens for a training world (#246).
+build was accepted anyway (#244, Q30). Two smaller defects were filed: a refusal reason reads as a fact ("you are the
+dispatcher") rather than a requirement (#245, Q31), and the readout chose the goods-flow lens for a training world (#246, Q32).
 S1 is therefore built but not done. Next: A2 as a fixture run of "fly the helicopter to the coast" and A3 as an
 interpreted attempt at the wall, both on the saved world `tests/fixtures/airfield-s1-live.json` (free, no new build),
 then Q26 (the run page shows each attempt in its owner's words).
@@ -387,7 +387,10 @@ The material uncertainties, listed in full as of 2026-10-26: each below could ch
 - Q26 (agent, open): the run page does not show an attempt in its owner's words or that it matched nothing (G17); S1 is not done until it does.
 - Q27 (agent, resolved 2026-10-26): S2's same-moment fixpoint is a rule semantics inside the one existing commit, not the engine capability the roadmap forbids; the roadmap's eligible-work list now names this plan.
 - Q28 (agent, open): whether S2's glass chain reuses the hand-written spill and damage processes (`src/world_substrate/mechanisms/damage.py:116`) or the rules writer writes its own; settled by reading and one free probe before S2.
-- #244 (agent, open): a build is accepted although its own test runs say a task is never possible; blocks A2 and A3 on a newly built world, not on the saved fixture.
+- Q30 (#244, agent, open): a build is accepted although its own test runs say a task is never possible; blocks A2 and A3 on a newly built world, not on the saved fixture.
+- Q31 (#245) and Q32 (#246) (agent, open): a refusal reason reads as a fact rather than a requirement, and the readout picked the goods-flow lens for a training world; neither changes an acceptance check's verdict, both change what a reader of the S1 run sees.
+- Q33 (agent, open in part): S3's seeded roll is settled by argument for where `run_seed` lives (drawn once per run, recorded in the run record, dice recorded per roll event, so replay never rolls and saved worlds without rolls replay unchanged; the 'no randomness' row becomes 'no unrecorded randomness'); open is whether the rules writer gives a generated person a skill field from the description (Sam's piloting 0), checked by a free probe before S3. A7 and A9 depend on it.
+- Q34 (agent, open): read scopes are recorded, not enforced; compiled rules derive their reads from their own checks, so only hand-written rules could leave F1's `blocked_by_event` or a Piece 2 parent link incomplete. Settled by a test-time read check before F1 relies on reads of hand-written rules.
 - Q22 / D2 (Brian): AI game master for unmatched attempts; default "nothing comes of it" stays.
 - Interpreter cost per attempt (Q29, resolved 2026-10-26 from S1's live run): the 20 interpreter calls added 11.6% to
   the run's other calls (about 24% at the 30-round cap), under the 30% that would require batching, so S1 keeps one
@@ -406,6 +409,8 @@ pull request, and checked on a free replay of a saved world before any paid run.
 | F4 | Q10 | The readout quotes `said_on_retry` when present, as the scene replay does | free replay of a saved menu-path run |
 | F5 | Q15 | Adopt the `~/code2` repository format (indexes over the existing documents) | the repo-format check reports compliant |
 | F6 | Q25 | Ways are two-way unless the description declares them one-way | regenerate the airfield world and probe both directions |
+| F7 | Q4 | A remedy's work answer says yes or no to the concern's question plus what was set, and the finished-task notice quotes it | a test that a remedy without that answer is refused and the notice quotes it; the next owner-allowance people-world run's TRACE_READ.md reads its notices |
+| F8 | Q9 | Task worlds' scripted test run lasts 24 rounds, like ongoing worlds, instead of 12 | the saved build fixtures score the same or better, and the garden world (#217) finishes inside the test run |
 
 ## Activation facts
 

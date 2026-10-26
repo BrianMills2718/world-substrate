@@ -25,7 +25,7 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 | **Declared write scope** (`write-scope`) | The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. | `AGENTS.md:21` | `src/world_substrate/engine.py:88` |
 | **Causal trace** (`causal-trace`) | The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. | `README.md:73` | `src/world_substrate/engine.py:529` |
 | **World kind** (`world-kind`) | Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. | `docs/model/ODD.md:106` | `scripts/world_builder_service.py:113` |
-| **World Builder and its bundle** (`builder`) | The public page and service where a person describes a world, approves its rules and watches it run; a build's output is an authoring bundle. | `README.md:65` | `scripts/world_builder_service.py` |
+| **World Builder and its bundle** (`builder`) | The public page and service where a person describes a world, approves its rules and watches it run; a build's output is an authoring bundle. | `docs/model/ODD.md:70` | `scripts/world_builder_service.py` |
 | **Approval record** (`approval`) | A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:418` |
 | **World fingerprint** (`fingerprint`) | A short hash of the bundle and rules that ties builds, rounds and shares to one world. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:381` |
 | **Information item** (`information`) | A piece of information with a source and per-recipient deliveries; hidden until delivered. | `docs/model/ODD.md:260` | `src/world_substrate/information.py:57` |
@@ -59,14 +59,14 @@ Fixed code every people world gets from compile_spec.py; the group-decision fami
 | Concept | Definition | Defined in | Code |
 | --- | --- | --- | --- |
 | **People world** (`people-world`) | A world built from a description about people: people, information, moments and the fixed people rules. | `docs/decisions/008-build-worlds-in-an-agent-harness.md` | `scripts/people_world.py:364` |
-| **Communicate rule** (`communicate`) | The reviewed move that delivers an information item to its recipient. | `docs/model/ODD.md:277` | `spikes/any-scenario-2026-10/compile_spec.py` |
-| **Scheduled moment** (`moment`) | A countdown that happens every so many rounds (a weekly meeting, a deadline). | `docs/model/ODD.md:278` | `spikes/any-scenario-2026-10/compile_spec.py:48` |
+| **Communicate rule** (`communicate`) | The reviewed move that delivers an information item to its recipient. Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. | `docs/model/ODD.md:277` | `spikes/any-scenario-2026-10/compile_spec.py:56` |
+| **Scheduled moment** (`moment`) | A countdown that happens every so many rounds (a weekly meeting, a deadline). Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. | `docs/model/ODD.md:278` | `spikes/any-scenario-2026-10/compile_spec.py:48` |
 | **Work cycle** (`work-cycle`) | Each action at most once per person per cycle of at least 3 rounds. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:517` |
 | **Group decision** (`group-decision`) | A decision with support, deadline, deployment and review; changed only by fixed rules. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:86` |
 | **Concern** (`concern`) | An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:70` |
 | **Support** (`support`) | A member's stance on the decision: none, full or conditional on a concern. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:66` |
 | **Remedy** (`remedy`) | A fix of a concern that takes 2 rounds; it can be stopped part-way by the concern's holder objecting. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:332` |
-| **Agenda count** (`agenda`) | group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. | `docs/model/ODD.md (11.1)` | `scripts/people_world.py:279` |
+| **Agenda count** (`agenda`) | group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Declared in the group-decision component and changed by the compiled put-matter-on-agenda and settle-agenda-matter rules. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:101` |
 | **Rollout** (`rollout`) | The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:399` |
 | **Operating review** (`review`) | Every 6 rounds after deployment; may reopen each resolved concern once. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:442` |
 
@@ -77,7 +77,7 @@ Not code: an AI writes it for each described world during the build.
 | Concept | Definition | Defined in | Code |
 | --- | --- | --- | --- |
 | **Person and brief** (`person`) | A person the spec names, with goals and beliefs, and the brief only their own resident reads. | `docs/model/ODD.md:276` | `spikes/any-scenario-2026-10/scenario_spec.py:41` |
-| **Generated actions and rules** (`gen-rules`) | The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. | `docs/model/ODD.md (11.1)` | `scripts/people_world.py:260` |
+| **Generated actions and rules** (`gen-rules`) | The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. | `docs/model/ODD.md (11.1)` | `scripts/people_world.py:251` |
 | **Place and way** (`place-way`) | Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; written per world as entities from the bundle contract, and the move rule checks the way. | `docs/model/ODD.md:327` | `scripts/generate_world_bundle.py:96` |
 
 ## Reference worlds code only
@@ -87,7 +87,7 @@ Hand-written code for the reference worlds (Kitchen, Waltzman and others); no ge
 | Concept | Definition | Defined in | Code |
 | --- | --- | --- | --- |
 | **Waltzman reference components** (`waltzman-ref`) | Trust, risk, readiness and commitment components and analyses of the hand-written Waltzman world. | `docs/wiki/README.md` | `reference_worlds/waltzman/components.py:11` |
-| **Mechanisms library** (`mechanisms`) | Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28). | `README.md:152` | `src/world_substrate/mechanisms/__init__.py:3` |
+| **Mechanisms library** (`mechanisms`) | Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28). | `src/world_substrate/mechanisms/__init__.py:1` | `src/world_substrate/mechanisms/__init__.py:3` |
 | **Kitchen flagship** (`kitchen`) | The replicated scarce-knife watched world: hand-written rules of its own on the ordinary Engine. | `README.md:152` | `reference_worlds/kitchen/mechanics.py` |
 
 ## In documents only
@@ -98,8 +98,8 @@ Named in decisions or the roadmap, not on the live path.
 | --- | --- | --- | --- |
 | **Build in an agent harness** (`harness-build`) | Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it. | `docs/decisions/008-build-worlds-in-an-agent-harness.md:48` | `scripts/world_harness.py` |
 | **Executable-law fingerprint** (`law-fingerprint`) | Roadmap hardening item: fingerprint the exact executable law and compiler version. | `roadmap/README.md:252` | `—` |
-| **Knock-on that runs now** (`knock-on-now`) | Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). | `docs/plans/open_attempt.md:126` | `—` |
-| **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:230` | `—` |
+| **Knock-on that runs now** (`knock-on-now`) | Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). | `docs/plans/open_attempt.md:145` | `—` |
+| **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:163` | `—` |
 
 ## Where the sources disagree
 

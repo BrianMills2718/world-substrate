@@ -121,18 +121,18 @@
         "share": "scripts/world_builder_service.py:598",
         "budget": "scripts/world_builder_service.py:51",
         "people-world": "scripts/people_world.py:364",
-        "communicate": "spikes/any-scenario-2026-10/compile_spec.py",
+        "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
         "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
         "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
         "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
         "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
         "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
         "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
-        "agenda": "scripts/people_world.py:279",
+        "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
         "rollout": "spikes/any-scenario-2026-10/compile_spec.py:399",
         "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
         "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
-        "gen-rules": "scripts/people_world.py:260",
+        "gen-rules": "scripts/people_world.py:251",
         "waltzman-ref": "reference_worlds/waltzman/components.py:11",
         "affordance": "src/world_substrate/engine.py:352",
         "check": "src/world_substrate/rules.py:48",
@@ -204,7 +204,9 @@
         "contention",
         "readout",
         "share",
-        "mechanisms"
+        "mechanisms",
+        "test-run",
+        "scene-replay"
       ]
     },
     "review_page": {

@@ -57,7 +57,7 @@
    "id": "way",
    "label": "Way between places",
    "kind": "state",
-   "explain": "What lies between two places (a door, a brick wall): an entity naming both places with a passable field; moving names its way and needs it passable. A way works from its first place to its second only (open question Q25)."
+   "explain": "What lies between two places (a door, a brick wall): an entity naming both places with a passable field; moving names its way and needs it passable. Until fix F6 lands (Q25, settled by argument), a way works from its first place to its second only."
   },
   {
    "id": "action-kind",

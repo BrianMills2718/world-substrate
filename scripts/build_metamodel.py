@@ -55,10 +55,11 @@ TYPES = [
      "a place is a model element like any entity; location components point at it"),
     ("way", "Way between places", "state", True,
      "What lies between two places (a door, a brick wall): an entity naming both places with a passable "
-     "field; moving names its way and needs it passable. A way works from its first place to its second "
-     "only (open question Q25).",
-     "scripts/generate_causal_model.py:430", "specializes", "sci:RelationInstance (from, to)",
-     "a way is a directed relation instance between two place elements; passable is a component on it"),
+     "field; moving names its way and needs it passable. Until fix F6 lands (Q25, settled by argument), a "
+     "way works from its first place to its second only.",
+     "scripts/generate_causal_model.py:430", "specializes", "sci:ModelElement",
+     "a way is an entity, so a model element like a place; its two place references compose relation "
+     "instances (way, from place) and (way, to place), and passable is a component on it"),
     ("action-kind", "Action kind (effector)", "rules", True,
      "Something an actor can try, with named participant roles, checks and effects, compiled before use "
      "(a generated DeclaredActionMechanic) or hand-written (FillRule and the other mechanisms); either way "
@@ -109,11 +110,11 @@ TYPES = [
     ("knock-on-now", "Same-moment knock-on", "rules", False,
      "A process with timing immediately, run to a fixpoint inside the same moment as the move that "
      "triggered it (planned slice S2 of docs/plans/open_attempt.md).",
-     "docs/plans/open_attempt.md:135", "no_counterpart", "",
+     "docs/plans/open_attempt.md:145", "no_counterpart", "",
      "a timing rule over effectful processes; the kernel has none"),
     ("skill-roll", "Skill roll", "rules", False,
      "A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3).",
-     "docs/plans/open_attempt.md:240", "no_counterpart", "",
+     "docs/plans/open_attempt.md:163", "no_counterpart", "",
      "a stochastic effect; the kernel has none"),
     ("terminal", "Terminal condition", "rules", True,
      "A state-derived stop: when its checks hold over the selected entities, the task ends one way.",

@@ -1,6 +1,7 @@
 """Build the planning-package review page's data file from the package itself.
 
-Reads the manifest, the open-questions ledger, the domain graph, the open-questions map, the
+Reads the manifest, the open-questions ledger, the domain graph, the open-questions map, the rules metamodel and its
+kernel mapping, the
 context diagrams in docs/model/ODD.md, the disagreements in docs/model/DOMAIN.md and
 the next plan, and writes proposals/planning-package/review-page/data.js. The page (index.html next
 to it) only renders that data, so the page cannot say anything the package files do not.
@@ -32,6 +33,9 @@ def main() -> None:
     ledger = json.loads(_read(parts["open_questions"]["path"]))
     domain = json.loads(_read(parts["domain_model"]["path"]))
     qmap = json.loads(_read("docs/model/open-questions.graph.json"))
+    meta = parts["system_model"]["metamodel"]
+    metamodel = json.loads(_read(meta["path"]))
+    mapping = json.loads(_read(meta["maps_onto"]["mapping"]))
     architecture = _read("docs/model/ODD.md")
     diagrams = re.findall(r"```mermaid\n(.*?)```", architecture, flags=re.S)
     disagreements = [re.sub(r"\s+", " ", item).strip() for item in
@@ -43,6 +47,8 @@ def main() -> None:
         "questions": ledger["questions"],
         "domain": domain,
         "question_map": qmap,
+        "metamodel": metamodel,
+        "metamodel_mapping": {"kernel": mapping["kernel"], "mappings": mapping["mappings"]},
         "context_diagrams": diagrams,
         "disagreements": disagreements,
         "next_plan": _read(parts["plan"]["path"]),
@@ -51,7 +57,7 @@ def main() -> None:
     PAGE.mkdir(parents=True, exist_ok=True)
     (PAGE / "data.js").write_text("window.PAGE_DATA = " + json.dumps(data, ensure_ascii=False, indent=1)
                                   + ";\n", encoding="utf-8")
-    print(f"questions={len(ledger['questions'])} concepts={len(domain['nodes'])} "
+    print(f"questions={len(ledger['questions'])} concepts={len(domain['nodes'])} types={len(metamodel['nodes'])} "
           f"context_diagrams={len(diagrams)} disagreements={len(disagreements)} built_from={revision}")
 
 

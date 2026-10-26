@@ -7,13 +7,14 @@
    "short": "Rules retry never runs here",
    "question": "The build's rules retry is skipped once 80 s have passed, and in the canonical Waltzman build the test run starts at 85-111 s. Should the cut-off, or the order of the build steps, change so the retry can repair a world?",
    "blocks": "whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower",
-   "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target: measure where the build's time goes in the saved build traces (free) and either start the test run earlier or tie the cut-off to the time left before that target.",
+   "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target, settled by reading saved traces, not by a new run. Read first evidence/waltzman-tasks-slice2/c1r24/c1r-run24.log, whose step lines carry their times (rules writing from 41.9 s to 111.1 s, so that one call alone passes 80 s), then the /generate-world row in that folder's run-log.jsonl (2026-10-23T22:03:42Z, trace world-builder-live/people/3c7dab9eb26d4bbc99bbd5bbc9418522) for the call-by-call times; then either start the test run earlier or tie the cut-off to the time left before that target.",
    "owner": "agent",
    "status": "open",
    "sources": [
     "scripts/world_builder_service.py:263",
     "scripts/world_builder_service.py:1667",
     "docs/plans/waltzman-tasks-slice2.goal.md:100",
+    "evidence/waltzman-tasks-slice2/c1r24/c1r-run24.log",
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"
    ],
    "touches": [
@@ -68,7 +69,7 @@
    "blocks": "whether E2 (a fix carries its substance) holds for every world or only when residents happen to write specific words",
    "resolves_with": "An argument settles that the notice cannot be more specific than its source words (c1r24 round 10). The decision is technical: require the remedy's work answer to say yes or no to the concern's question plus what was set, then check it on one free replay.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
     "scripts/attempts.py:234",
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
@@ -78,7 +79,8 @@
     "notice",
     "task",
     "concern"
-   ]
+   ],
+   "evidence": "Settled by argument: a notice copies the starter's words, so it cannot be more specific than they are (c1r24 round 10), and only a required field can make every remedy say what was decided. Answer: yes, a remedy's work answer says yes or no to the concern's question plus what was set, and the notice quotes it. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F7). A free replay cannot show it, because it replays recorded words, so the check is a test plus the next owner-allowance people-world run's TRACE_READ.md."
   },
   {
    "id": "Q5",
@@ -160,14 +162,15 @@
    "blocks": "builds wrongly scored as failing and the rewrite spend they cause",
    "resolves_with": "One counterexample already exists (the garden world finishes at round 15). Lengthen the free test run for task worlds and check the saved fixtures still score the same.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
     "BrianMills2718/world-substrate#217",
     "scripts/world_builder_service.py:108"
    ],
    "touches": [
     "test-run"
-   ]
+   ],
+   "evidence": "Settled by one counterexample: the garden world's correct rules finish at round 15, past the 12-round test run (#217; DRY_RUN_TURNS, scripts/world_builder_service.py:108), so 12 rounds is too short for some task worlds. Answer: yes, task worlds test for 24 rounds like ongoing ones. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F8); the test run is scripted and makes no model calls, so the longer run costs time, not money."
   },
   {
    "id": "Q10",
@@ -473,7 +476,7 @@
    "sources": [
     "docs/model/VIEW_COVERAGE.md:191",
     "scripts/world_builder_home.html:627",
-    "docs/plans/open_attempt.md:53",
+    "docs/plans/open_attempt.md:60",
     "evidence/open-attempt/s1-airfield/TRACE_READ.md"
    ],
    "touches": [
@@ -535,6 +538,100 @@
    "touches": [
     "attempt-reading",
     "budget"
+   ]
+  },
+  {
+   "id": "Q30",
+   "short": "Build accepted with a task never possible",
+   "question": "A build is accepted although its own test runs say a described task is never possible: in the S1 airfield build every test run reported 'never possible: practice flight' and the third rules attempt was accepted anyway (#244). Should such a build be repaired or refused instead?",
+   "blocks": "A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor's world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it",
+   "resolves_with": "Reading the S1 airfield build record settles what happened (evidence/open-attempt/s1-airfield/TRACE_READ.md:32). The fix is technical: treat a described task reported never possible as a rules-retry trigger (within Q1's time cut-off) and, if it survives, say so on the page; check on the saved airfield build that it is flagged.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "BrianMills2718/world-substrate#244",
+    "evidence/open-attempt/s1-airfield/TRACE_READ.md:32",
+    "docs/plans/open_attempt.md:268"
+   ],
+   "touches": [
+    "test-run",
+    "build",
+    "task",
+    "rules-retry"
+   ]
+  },
+  {
+   "id": "Q31",
+   "short": "Refusal reason reads as a fact",
+   "question": "A refusal reason reads as a fact ('you are the dispatcher') rather than as the requirement that failed, because the page shows the check's label as written (#245). Should refusal text be phrased as the requirement?",
+   "blocks": "whether a person, and a reader of the run, can tell why a move was refused",
+   "resolves_with": "An argument settles the cause: the label is the rules writer's own sentence, shown as is. The choice is technical (ask the rules writer for requirement-style labels, or show 'needs: <label>' with actual against required); check on the saved airfield world's refused rows.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "BrianMills2718/world-substrate#245",
+    "docs/plans/open_attempt.md:269"
+   ],
+   "touches": [
+    "check",
+    "gen-rules"
+   ]
+  },
+  {
+   "id": "Q32",
+   "short": "Readout picks the wrong lens",
+   "question": "The readout chose the goods-flow lens for a training world (#246). How should the readout choose its lens?",
+   "blocks": "whether a run's readout describes the world the visitor wrote",
+   "resolves_with": "Read the S1 airfield run's readout call and prompt to see what the lens choice was given; the fix is technical (choose from the world's kind and description, with the reason recorded). Check with one owner-allowance readout call on the saved run, no new build.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "BrianMills2718/world-substrate#246",
+    "scripts/run_readout.py:125",
+    "docs/plans/open_attempt.md:270"
+   ],
+   "touches": [
+    "readout"
+   ]
+  },
+  {
+   "id": "Q33",
+   "short": "Seeded roll versus no randomness",
+   "question": "Piece 3 rolls dice from hash(run_seed, event_id), while today no rule uses randomness (docs/plans/open_attempt.md:112). Where does run_seed live, do saved worlds replay unchanged, and who gives a generated person like Sam piloting 0?",
+   "blocks": "S3's design, A7 and the full canonical run (A9)",
+   "resolves_with": "An argument settles the first two: the run loop draws run_seed once when a run starts and records it in the run record, and each roll event records its dice, so a replay reads the dice and never rolls; a world with no roll never draws, so every saved world replays unchanged (A8). The rule stays a function of state plus the recorded seed, so the invariant becomes 'no unrecorded randomness'. The third part is open: the rules writer must give people skill fields from the description ('has never flown' gives piloting 0) and the roll may read only that field. Settled in S3 by a free probe that regenerates the airfield spec and reads Sam's recorded skill.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/open_attempt.md:163",
+    "docs/plans/open_attempt.md:112",
+    "docs/plans/open_attempt.md:172"
+   ],
+   "touches": [
+    "skill-roll",
+    "gen-rules",
+    "person",
+    "run-loop",
+    "causal-trace"
+   ]
+  },
+  {
+   "id": "Q34",
+   "short": "Read scopes recorded, not enforced",
+   "question": "Declared read scopes are recorded but not enforced (AGENTS.md:21; docs/model/ODD.md:87): a hand-written rule can read a field outside its declared reads and nothing reports it. Should the Engine enforce or check read scopes?",
+   "blocks": "whether causal links built from declared reads are complete: F1's blocked_by_event names the event that changed what a refused move's failed checks read, and Piece 2's reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause",
+   "resolves_with": "Reading the compiler settles generated rules: their reads are derived from their own selector, checks and effects (_derived_reads, src/world_substrate/action_authoring.py:173), so they cannot read outside them. Open are hand-written mechanisms and reference worlds. Technical choice: a test-time state view that records each hand-written rule's actual reads and fails on an undeclared one; check with a test rule that reads an undeclared field.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "AGENTS.md:21",
+    "docs/model/ODD.md:87",
+    "src/world_substrate/action_authoring.py:173"
+   ],
+   "touches": [
+    "write-scope",
+    "causal-parent",
+    "mechanisms"
    ]
   }
  ]
