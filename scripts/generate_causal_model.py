@@ -421,6 +421,18 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
         "allowed_state_paths": paths,
         "authority_rules": [
             "Use only action participants as effect targets.",
+            # Airfield s2 (evidence/open-attempt/s2-airfield/): six rules answers wrote no knock-on process at all.
+            "Go through the represented things and moves for consequences that follow physically at once (a "
+            "spill wets what is under it, a loud change such as an engine starting is heard by people in the same "
+            "place) and write each one the represented state can hold as a process with timing immediately.",
+            # #254 (same evidence): fly added 0 flights and drink set the drinker's place to itself.
+            "Every effect must be able to change state: never add or subtract 0 and never set a field to its own "
+            "value. If a move has no represented field it would change, set a stage or add 1 to a count that the "
+            "description implies, or say in limits what is left out.",
+            # #259 pencil build (evidence/model-more/): the world had a price but a sale moved no money.
+            "When a move exchanges something for a price and both sides have a represented amount of money, the "
+            "same move subtracts the price from the payer and adds it to the payee, with a check that the payer "
+            "has at least the price.",
             "A process acts on each matching entity `it`. When one physical change moves or changes a linked entity "
             "too (a driver riding in a vehicle, a hospital whose bed a dying patient frees), declare that entity in "
             "the process's participants (link owner_of_it, owned_by_it, co_located, or ref:<component>.<field>) and "
@@ -460,6 +472,30 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "owner_ref, context, entity, component or participant.",
         ],
     }
+
+
+def no_op_effects(causal: dict[str, Any]) -> list[str]:
+    """Effects that can never change anything: add or subtract 0, or set a field to its own value.
+
+    A move whose only effects are these does nothing, and the runner hides moves that change nothing, so nobody is
+    ever offered it (#254, 2026-10-26 airfield: fly added 0 flights, drink set the drinker's place to itself).
+    Checked when rules are written, not in the compiler, so saved worlds keep loading.
+    """
+    found = []
+    for kind, rows in (("mechanic", causal.get("mechanics") or []), ("process", causal.get("processes") or [])):
+        for row in rows:
+            name = row.get("mechanic_id") or row.get("process_id") or "?"
+            for effect in row.get("effects") or []:
+                value = effect.get("value") if isinstance(effect.get("value"), dict) else {}
+                literal, own = value.get("literal"), value.get("participant")
+                zero = (effect.get("op") in {"add", "subtract"} and isinstance(literal, (int, float))
+                        and not isinstance(literal, bool) and literal == 0)
+                itself = (effect.get("op") == "set" and isinstance(own, dict)
+                          and own.get("name") == effect.get("participant") and own.get("path") == effect.get("path"))
+                if zero or itself:
+                    found.append(f"{kind} {name}: {effect.get('op')} {effect.get('path')} on {effect.get('participant')}"
+                                 + (" by 0" if zero else " to its own value"))
+    return found
 
 
 def generate_causal_model(
@@ -502,7 +538,9 @@ def generate_causal_model(
                 "The response must satisfy response_contract. Every effect must be justified by "
                 "represented state and the action description. Prefer conservative refusal checks "
                 "over assumptions. Do not add reads/writes fields; the local compiler derives authority. "
-                "Whenever you name a state path, copy it EXACTLY from allowed_state_paths."
+                "Whenever you name a state path, copy it EXACTLY from allowed_state_paths. "
+                "Where one change physically sets off another at once (a fall, a break, a spill, a noise heard "
+                "nearby), write that consequence as a process with timing immediately."
             ),
         },
         {
@@ -537,6 +575,13 @@ def generate_causal_model(
                 raise ValueError("model returned a non-object causal model")
             value = parsed
             compiled = CausalModel.from_dict(value, bundle=bundle)
+            no_ops = no_op_effects(value)
+            if no_ops:
+                raise ValueError(
+                    "these effects change nothing, so their moves would never be offered to anyone: "
+                    + "; ".join(no_ops) + ". Give each an effect that changes represented state as its description "
+                    "says (for example add 1 to a count or set a stage), or remove the effect"
+                )
             review = compiled.as_review()
             out = deepcopy(value)
             out["review"] = review

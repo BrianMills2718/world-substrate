@@ -804,7 +804,10 @@ def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
             + ("" if tasks is None else f"; can fail part-way: {', '.join(fail)}" if fail
                else "; no task a person starts can fail part-way" if tasks else "; no task takes several rounds")
             + (f"; followed as the world's own tasks: {', '.join(world)}" if world else "")
-            + ("; a move refuses up front on what its own task uses up" if row.get("attempt_findings") else ""))
+            + ("; a move refuses up front on what its own task uses up" if row.get("attempt_findings") else "")
+            + ("" if row.get("knock_on_processes") is None
+               else f"; knock-on effects: {', '.join(_words(k) for k in row['knock_on_processes'])}"
+               if row["knock_on_processes"] else "; nothing sets off a knock-on effect"))
 
 
 def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
@@ -867,6 +870,29 @@ def _conjuring_processes(causal: dict[str, Any]) -> list[str]:
                     found.append(f"{process.get('process_id', '?')} adds {target} (made by {kind})")
                     break
     return found
+
+
+def _retry_label(first_model: str) -> str:
+    """The progress line for a rules retry: it claims a stronger model only when the retry uses a different one
+    (#255: with WORLD_BUILDER_STRONG_MODEL unset the retry ran on the same model as the first try)."""
+    return "Rewriting the rules with a stronger model" if RULES_RETRY_MODEL != first_model else "Rewriting the rules"
+
+
+def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, bool, int, int]:
+    """Order rules attempts: by score, then ties go to a test run that did not go in circles, then to fewer moves
+    never offered, then to fewer people who stopped acting (#253: an airfield build kept the one test run that
+    circled and never offered `move`, because it had one stalled person fewer)."""
+    idle = set(row.get("idle_actors") or []) | set(row.get("stalled_actors") or [])
+    return (score, not row.get("circling"), -len(row.get("never_offered") or []), -len(idle))
+
+
+def _knock_on_processes(causal: dict[str, Any]) -> list[str]:
+    """Ids of the processes that run at once as a knock-on of another change (timing immediately, Decision 009).
+
+    The build record names them, or says there are none, so a world in which nothing can set off a chain is visible
+    instead of looking like slice 2 failed (2026-10-26 airfield: six rules answers, none wrote one).
+    """
+    return [p.get("process_id", "") for p in causal.get("processes") or [] if p.get("timing") == "immediately"]
 
 
 def _second_source_processes(causal: dict[str, Any]) -> list[str]:
@@ -1310,8 +1336,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         if try_index == 0:
                             self._progress("doing", "Writing the rules")
                         else:
-                            self._progress("doing", "Rewriting the rules with a stronger model",
-                                           "the last rules did not pass the test run")
+                            self._progress("doing", _retry_label(model), "the last rules did not pass the test run")
                         try:
                             try:
                                 generated, _ = generate_causal_model(
@@ -1441,6 +1466,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 result_row["conjuring_processes"] = conjuring_found
                                 result_row["moving_processes"] = moving_found
                                 result_row["second_source_processes"] = _second_source_processes(candidate)
+                                result_row["knock_on_processes"] = _knock_on_processes(candidate)
                                 finishes = None
                             else:
                                 finishes = candidate_compiled.terminal is not None and dry["summary"]["terminal_reached"]
@@ -1479,9 +1505,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             )
                         attempts.append(result_row)
                         self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
-                        # Ties go to the attempt with fewer actors who never acted, then fewer moves never possible.
-                        rank = (score, -len(set(result_row.get("idle_actors") or []) | set(result_row.get("stalled_actors") or [])),
-                                -len(result_row.get("never_offered") or []))
+                        rank = _attempt_rank(score, result_row)
                         if best is None or rank > best[0]:
                             best = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled)
                         if structure_best is None or rank > structure_best[0]:
@@ -1658,6 +1682,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         dry_row["attempt_findings"] = [g["finding"] for g in gates]
                         score -= 1
                         guidance += " " + " ".join(g["finding"] for g in gates)
+                    dry_row["knock_on_processes"] = _knock_on_processes(built["causal_model"])
                     attempts.append(dry_row)
                     sentence = _dry_run_sentence(dry_row, "ongoing")
                     if dry_row.get("circling"):
