@@ -61,6 +61,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 
 ## docs/plans
 
+- [Goal: residents say in their own words what they physically try (open-attempt /goal launcher)](../docs/plans/open-attempt.goal.md)
 - [Goal: Prove the Decision 007 describe-any-scenario path end to end in world-substrate: plain-language scenario -> checked model -> LLM residents on Concordia with the World Substrate Engine as sole consequence authority -> attempts resolved over time -> game master writes checked rules mid-run -> structured changes rendered as living-scene frames.](../docs/plans/any-scenario-poc.goal.md)
 - [Plan: describe-any-scenario proof of concept (Decision 007)](../docs/plans/any_scenario_poc.md)
 - [Goal: Best of all worlds — one box, rich people, exact rules, live](../docs/plans/best-of-all-worlds.goal.md)
@@ -137,3 +138,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 - [Replacement-first spike: Concordia (gdm-concordia 2.4.0)](../spikes/replacement-2026-10/concordia/README.md)
 - [Replacement spike: Mesa (constrained-handoff)](../spikes/replacement-2026-10/mesa/README.md)
 - [Replacement-first spike: PDDL toolchain (2026-10-05)](../spikes/replacement-2026-10/pddl/README.md)
+
+## evidence/open-attempt
+
+- [Q23: do generated moves check walls? (2026-10-25)](../evidence/open-attempt/q23/README.md)
