@@ -168,3 +168,68 @@ class WorldBuilderHomeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WorldNetworkTests(unittest.TestCase):
+    """The Network view's typed-graph/v1 converter, run in node against a real built world."""
+
+    def run_page_functions(self, call: str):
+        import json, shutil, subprocess
+        node = shutil.which("node")
+        if node is None:
+            self.skipTest("node is not installed")
+        page = HOME.read_text()
+        parts = []
+        for name in ("worldNetwork", "roundTouched", "applyRound"):
+            match = re.search(rf"^  function {name}\(.*?^  \}}$", page, re.S | re.M)
+            self.assertIsNotNone(match, f"the page needs one {name}")
+            parts.append(match.group(0))
+        fixture = (HOME.parents[1] / "tests/fixtures/airfield-s1-live.json").read_text()
+        script = "\n".join(parts) + f"\nconst world = {fixture};\nconsole.log(JSON.stringify({call}));"
+        result = subprocess.run([node, "-e", script], capture_output=True, text=True, check=True)
+        return json.loads(result.stdout)
+
+    def test_the_world_becomes_a_typed_graph(self):
+        graph = self.run_page_functions("worldNetwork(world.bundle, world.causal_model)")
+        self.assertEqual(graph["schema"], "typed-graph/v1")
+        kinds = {n["id"]: n["kind"] for n in graph["nodes"]}
+        self.assertEqual(kinds["e:sam"], "actor")
+        self.assertEqual(kinds["e:office"], "place")
+        self.assertEqual(kinds["e:helicopter"], "thing")
+        self.assertEqual(kinds["a:move"], "action")
+        self.assertEqual(kinds["p:recurring-training-requests"], "process")
+        links = {(e["source"], e["label"], e["target"]) for e in graph["edges"]}
+        self.assertIn(("e:sam", "is in", "e:office"), links)
+        self.assertIn(("e:brick-wall", "place b", "e:hangar"), links)
+        self.assertIn(("e:sam", "can", "a:move"), links)
+        self.assertIn(("a:move", "way", "e:brick-wall"), links)
+        self.assertIn(("p:recurring-training-requests", "changes", "e:training-requests"), links)
+        # Every link joins two drawn boxes, and no id repeats (the viewer refuses both).
+        ids = [n["id"] for n in graph["nodes"]] + [e["id"] for e in graph["edges"]]
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertTrue(all(e["source"] in kinds and e["target"] in kinds for e in graph["edges"]))
+        # Only blue, orange and grey (Brian is red-green colourblind).
+        self.assertEqual({k["color"] for k in graph["kinds"].values()}, {"#6fa8dc", "#7d8a90", "#a9b5ba", "#f0a35e"})
+
+    def test_a_round_moves_its_links_and_lights_what_it_touched(self):
+        turn = {"turn": 4, "world_changes": ["recurring-training-requests"],
+                "world_events": [{"rule_id": "recurring-training-requests", "changes": [
+                    {"path": "entities.training-requests.components.training_queue.waiting_sessions", "before": 1, "after": 2}]}],
+                "actors": {"sam": {"status": "accepted", "did": {"actor": "sam", "kind": "move", "to": "hangar", "way": "brick-wall"},
+                                   "changes": [{"path": "entities.sam.location.location_id", "before": "office", "after": "hangar"}]},
+                           "mechanic": {"status": "refused", "wanted": {"kind": "move"}}}}
+        out = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(turn)}; applyRound(world.bundle.entities, t);"
+            " return { lit: [...roundTouched(t)].sort(), graph: worldNetwork(world.bundle, world.causal_model),"
+            " queue: world.bundle.entities.find((e) => e.id === 'training-requests').components.training_queue.waiting_sessions }; })()")
+        links = {(e["source"], e["label"], e["target"]) for e in out["graph"]["edges"]}
+        self.assertIn(("e:sam", "is in", "e:hangar"), links)
+        self.assertNotIn(("e:sam", "is in", "e:office"), links)
+        self.assertEqual(out["queue"], 2)
+        self.assertEqual(out["lit"], ["a:move", "e:brick-wall", "e:hangar", "e:sam", "e:training-requests", "p:recurring-training-requests"])
+        self.assertNotIn("e:mechanic", out["lit"])
+
+
+def json_dumps(value) -> str:
+    import json
+    return json.dumps(value)
