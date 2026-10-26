@@ -47,6 +47,7 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | ScenarioModel (`model.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | CheckReport (`checks.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | Attempt (`attempts.jsonl`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | n/a |
+| Attempt reading (`AttemptReading`) | missing (G17) | n/a | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | RuleChange (mid-run rule or ruling) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | shown (G16 fixed) |
 
 Notes on the rows:
@@ -186,6 +187,12 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Reproduced: yes.** Waltzman run (10 attempts: 6 offered, 3 unlisted, 1 continue): in the browser the page text contained the belief "Country A currently supports activation" but not the unlisted intent ("Propose a time-boxed ..."), not the ruling reason ("No rule could be added ..."), not any expected effect or cited observation, and not the rules id `12d71aa7843fec08` (G7); the transcript data held exactly one `no_action` row, the `continue` attempt.
 
 - **Fixed 2026-10-22 (#209).** The panel adds "What each person tried this round": belief, what they saw, decision, the off-menu intent, what they did, what they expected, what they observed and the game master's ruling. A `continue` decision is its own status and is labelled "continue" in the picture, not "wait". Waltzman page, round 2: Country A "continue"; Country B's intent "Propose a time-boxed cross-country review ..." and ruling "No rule could be added ...". Tests: `test_g16_continue_is_not_shown_as_waiting`, `test_g16_each_attempt_is_shown_in_full_with_the_game_masters_ruling`.
+
+### G17. The run page does not show what a person tried in their own words or that an attempt matched nothing
+
+- **Model:** with open attempts each run row keeps `attempt {text, reading}` and the run summary lists `unmatched_attempts` (`scripts/run_authored_world.py`, ODD 11.3).
+- **View:** the run page's round text reads `row.belief` and `row.expects` (`scripts/world_builder_home.html:627-629`) and never `row.attempt` or `summary.unmatched_attempts`, so a visitor sees the move but not the words behind it, and an attempt that changed nothing shows only as waiting.
+- **Reproduced: no.** Read from the page source; no open-attempt run with residents has run since S1 (the first live run was scripted, `evidence/open-attempt/s1-airfield-scripted/`). The owner run log keeps both (`transcript`, `summary`).
 
 ## Not verified
 
