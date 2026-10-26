@@ -497,12 +497,14 @@ Q = [
   "blocks": "slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it",
   "resolves_with": "Brian's call: the rule's wording is his (Decision 006), and the earlier resolution was argued by this plan's own author, so it is not settled by agent argument. The argument for: a ramification fixpoint is a rule semantics inside the one existing transition (C+ and Event Calculus), with no new loop, clock or scheduler, bounded at 32 reactions. The argument against: it is new control flow in engine.py, and Concordia's game master or Mesa's step could host the chain instead, one reaction per step.",
   "owner": "brian",
-  "status": "open",
+  "status": "resolved",
+  "evidence": "Brian, in session 2026-10-26: \"i approve\", answering this question with its recommendation (allow S2 as rule semantics). Recorded as docs/decisions/009-same-moment-knock-on-effects.md; AGENTS.md, roadmap/README.md and the plan now say so.",
   "sources": [
    "roadmap/README.md:459",
    "AGENTS.md:39",
    "docs/decisions/006-governed-rules-layer-scope.md",
-   "docs/plans/open_attempt.md:164"
+   "docs/plans/open_attempt.md:164",
+   "docs/decisions/009-same-moment-knock-on-effects.md"
   ],
   "touches": [
    "knock-on-now",

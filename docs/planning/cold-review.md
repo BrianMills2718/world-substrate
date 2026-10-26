@@ -1,4 +1,4 @@
-# Cold review, repo-wide package (rounds 4 and 5)
+# Cold review, repo-wide package (rounds 4 to 6)
 
 Reviewer: `planning-compliance-reviewer` subagent, a re-review given the round-3 report (R1–R7). Earlier rounds: 1 through 3 were revise; the round-3 findings were fixed in `fdaf2ed` and `c028b4b`.
 
@@ -37,5 +37,14 @@ The rebuilt `open-questions.json`, `metamodel.graph.json`, `METAMODEL.md` and `d
 
 - Note: Q36 cites `attempt.py:122` for the matched-kind return, which is at `:123` (:122 is the unmatched return, which also sets nearest_kind to kind). This does not change the conclusion.
 
-Reviewed revision: f6454711cca548331f7b17d05aef66d69c3aa787
+Reviewed revision (round 5): f6454711cca548331f7b17d05aef66d69c3aa787, verdict pass.
+
+## Round 6 (commit cd4a1fd): pass
+
+Re-review of `git diff 389f3f8 cd4a1fd`, which records Brian's answer to Q27 (2026-10-26, "i approve"): Decision 009, Q27 resolved, the plan re-adopted, and the roadmap, AGENTS.md and catalog updated. The page data (`proposals/planning-package/review-page/data.js`) shows Q27 resolved with Decision 009 as its source, 18 open questions as in the ledger, and `built_from` cd4a1fd. No remaining text contradicts the decision. Decision 009 claims no more than the approved recommendation. The validator had 8 of 8 parts and 107 citations resolving. Check counts match checks.txt (718 tests, exit 0; md_files 135).
+
+- Note: Q27 keeps its old `default` and `blocks` text beside its resolved status. They are kept as the record of what was asked.
+- Note: the round-5 text above ("19 questions remain open", "Q27 is Brian's decision") was true at f645471 and is superseded by this round.
+
+Reviewed revision: cd4a1fdd52247736007866e4653841db401af04a
 Verdict: pass

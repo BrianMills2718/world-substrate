@@ -118,7 +118,7 @@ a{color:var(--have)}
 <div class="tablewrap"><table>
 <tr><th>Slice</th><th>State</th><th>What lands</th><th>Shown by</th></tr>
 <tr><td>1</td><td><b style="color:var(--have)">Built</b>, merged (pull requests 239, 242 and 247); <b style="color:var(--miss)">not done</b>: the live airfield run (2026-10-26) moved every resident each round, but the helicopter was unreachable (issue 244), so two acceptance checks wait on a scripted run on the saved airfield world, and the run page does not yet show each own-words attempt (Q26)</td><td>The rules writer makes places, ways between them and walls; then people say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
-<tr><td>2</td><td><b style="color:var(--miss)">Planned</b>, <b>waits on your answer to the second choice below (Q27)</b></td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
+<tr><td>2</td><td><b style="color:var(--miss)">Planned</b>; you allowed it on 2026-10-26 (Q27, Decision 009)</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
 <tr><td>3</td><td><b style="color:var(--miss)">Planned</b></td><td>Skill rolls, seeded and recorded, read only from recorded skill</td><td>The helicopter example, and the same words giving different dice at skill 0 and 3</td></tr>
 </table></div>
 
@@ -173,16 +173,16 @@ a{color:var(--have)}
 <!-- types:end -->
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch model/operational-ontology at subject revision f645471); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch plan/q27-approved at subject revision cd4a1fd); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 0, of 1 (tracked as Q15)</td><td><span class="tag miss">exit 1</span></td></tr>
 <tr><td>trace reads</td><td>runs 11, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project check (tests, system model, docs)</td><td>tests run 718, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>wiki and Markdown cap</td><td>md files 134, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 135, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 19 open, 22 resolved</h3>
+<h3 class="sub">Open questions: 18 open, 23 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -194,7 +194,6 @@ a{color:var(--have)}
 <tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
 <tr><td><b>Q22</b> Effects no rule covers</td><td>Brian</td><td>slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin</td></tr>
 <tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
-<tr><td><b>Q27</b> Is S2&#x27;s fixpoint engine capability</td><td>Brian</td><td>slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it</td></tr>
 <tr><td><b>Q28</b> Reuse the spill and damage rules</td><td>agent</td><td>how S2&#x27;s glass chain is built, and whether generated and reference worlds share physics</td></tr>
 <tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
 <tr><td><b>Q31</b> Refusal reason reads as a fact</td><td>agent</td><td>whether a person, and a reader of the run, can tell why a move was refused</td></tr>
@@ -214,13 +213,13 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 62 ideas, 91 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (19 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (18 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->
-<h2>Two choices for you</h2>
-<div class="decision"><b>Decision 1 (D2, Q22):</b> when someone tries something no rule covers, should an AI game master be allowed to invent a rough effect, marked "coarse" in the record? <b>Recommendation: not yet.</b> For now the person is told "nothing comes of it" and the attempt is listed so the next build's rules writer can add a real rule. That keeps every effect coming from a written rule. If you don't answer, it stays that way and slice 3 goes ahead.</div>
-<div class="decision"><b>Decision 2 (Q27):</b> slice 2 runs knock-on effects to the end inside one moment (the shelf tips, the glass falls and breaks, all in the same moment). Does that count as the new "engine capability" the project rules forbid? <b>Recommendation: allow it.</b> It runs inside the engine's existing all-or-nothing commit with no new clock, loop or scheduler, is capped at 32 reactions (the whole moment is refused past that), and only rules that ask to happen "immediately" use it. Running it on simulator rounds instead would make the glass fall in one round and break in the next. If you don't answer, slice 2 waits, slices 1 and 3 go ahead, and knock-on effects keep running once per round as today.</div>
+<h2>One choice for you</h2>
+<div class="decision"><b>Decision (D2, Q22):</b> when someone tries something no rule covers, should an AI game master be allowed to invent a rough effect, marked "coarse" in the record? <b>Recommendation: not yet.</b> For now the person is told "nothing comes of it" and the attempt is listed so the next build's rules writer can add a real rule. That keeps every effect coming from a written rule. If you don't answer, it stays that way and slices 2 and 3 go ahead.</div>
+<p class="lede"><b>Decided:</b> slice 2's knock-on effects inside one moment are rule semantics, not new engine capability (you approved on 2026-10-26; <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/decisions/009-same-moment-knock-on-effects.md">Decision 009</a>, Q27).</p>
 
 <footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/open_attempt.md">docs/plans/open_attempt.md</a> · Framework survey: <a href="../../flexible-simulator/review-page/">the loop page</a> and <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/research/flexible-simulator-prior-art-2026-10.md">survey document</a> · Methods copied: Inform 7 "try", C+ and Event Calculus knock-on effects, Blades in the Dark action rolls with GURPS defaults.</footer>
 </main>

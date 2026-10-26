@@ -41,3 +41,12 @@ All five round-4 findings were marked fixed, with evidence. The page has a "Two 
 
 Reviewed revision: f6454711cca548331f7b17d05aef66d69c3aa787
 Verdict: pass
+
+## Round 6 (commit cd4a1fd): pass
+
+Re-review of the change that records Brian's answer to Q27 (2026-10-26, "i approve"), `git diff 389f3f8 cd4a1fd`. No text still says S2 waits on Q27: `docs/plans/open_attempt.md:133`, `:269` and `:415`, `roadmap/README.md:457`, `AGENTS.md` and the page all state the ruling. Decision 009 states only the approved bounds (the existing commit, the 32-reaction cap, `timing: immediately` only). The plan kept its 470 lines, so every ledger citation still lands. The check counts match checks.txt (718 tests, exit 0; md_files 135), and the page shows 18 open and 23 resolved questions, as the ledger does.
+
+- Note: the resolved Q27 still carries its old `default` and present-tense `blocks` text. They are kept as the record of what was asked; its status and evidence say resolved.
+
+Reviewed revision: cd4a1fdd52247736007866e4653841db401af04a
+Verdict: pass
