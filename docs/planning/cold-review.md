@@ -1,4 +1,4 @@
-# Cold review, repo-wide package (round 4)
+# Cold review, repo-wide package (rounds 4 and 5)
 
 Reviewer: `planning-compliance-reviewer` subagent, a re-review given the round-3 report (R1–R7). Earlier rounds: 1 through 3 were revise; the round-3 findings were fixed in `fdaf2ed` and `c028b4b`.
 
@@ -25,5 +25,17 @@ Reviewer: `planning-compliance-reviewer` subagent, a re-review given the round-3
 
 Unsure: whether the R7 overlap is gone, and whether all 19 open questions are truly unanswered.
 
-Reviewed revision: c028b4b66639189e168ddb76b97cf93bae60d3e6
+Reviewed revision (round 4): c028b4b66639189e168ddb76b97cf93bae60d3e6, verdict pass.
+
+## Round 5 (commit f645471): pass
+
+Reviewed only the change since round 4, `git diff c028b4b f645471`, which fixed findings against the sibling open-attempt package that shares this ledger and model:
+- Q36 drops a check that would always be empty (`read_interpretation` sets nearest_kind to the matched kind);
+- Q39 now cites `attempt.py:94` and `:129`;
+- the metamodel's "Attempt reading" now includes the wait reading.
+The rebuilt `open-questions.json`, `metamodel.graph.json`, `METAMODEL.md` and `data.js` agree with their sources. The validator had 8 of 8 parts ok; freshness ok. checks.txt records 718 tests OK, exit 0.
+
+- Note: Q36 cites `attempt.py:122` for the matched-kind return, which is at `:123` (:122 is the unmatched return, which also sets nearest_kind to kind). This does not change the conclusion.
+
+Reviewed revision: f6454711cca548331f7b17d05aef66d69c3aa787
 Verdict: pass

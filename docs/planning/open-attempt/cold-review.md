@@ -34,3 +34,10 @@ Ten earlier findings were marked fixed; O11 was accepted as filed upstream. Vali
 3. Note: Q39 cited `attempt.py:99`. Fixed: it now cites `:94` and `:129`.
 4. Note: the metamodel's "Attempt reading" omitted the `wait` reading. Fixed in `scripts/build_metamodel.py`.
 5. Note: this file recorded only rounds 1–2. Fixed: rounds 3–5 are added here.
+
+## Round 5 (commit f645471): pass
+
+All five round-4 findings were marked fixed, with evidence. The page has a "Two choices for you" panel (D2 with default "slice 3 goes ahead"; Q27 with default "slice 2 waits, slices 1 and 3 go ahead"), and its slice table marks S2 as waiting on Q27, matching `docs/plans/open_attempt.md:134-135` and `:269`. Q36 drops the empty check; Q39 cites `attempt.py:94` and `:129`; `build_metamodel.py:142` and the page read "a wait, or no match"; this file covers rounds 3–5. The validator had 8 of 8 parts ok, with only `reviewed_revision` absent before this record. The trace-reads rerun gave 11 runs, 0 problems, exit 0; checks.txt records 718 tests OK (skipped=2), exit 0. No new blocking findings. The page was checked by its HTML and links; it was rendered separately by the package author.
+
+Reviewed revision: f6454711cca548331f7b17d05aef66d69c3aa787
+Verdict: pass
