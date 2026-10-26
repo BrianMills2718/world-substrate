@@ -1,0 +1,621 @@
+{
+  "trace_id": "model-more/bundle/afd3c9be87fa40888352fd1a13e45170",
+  "cost": 0.00200033,
+  "not_modeled": [],
+  "bundle": {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {
+      "id": "pencil-supply-chain",
+      "label": "Pencil Supply Chain",
+      "summary": "Specialists continually produce, transport, and sell pencils from raw materials to customers.",
+      "location": "pennsylvania",
+      "content_version": 1
+    },
+    "components": [
+      {
+        "name": "inventory",
+        "fields": [
+          {
+            "name": "logs",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "slats",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "graphite",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "clay",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "leads",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "paint",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "erasers",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "ferrules",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencils",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "boxes",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "business",
+        "fields": [
+          {
+            "name": "cash",
+            "type": "number",
+            "default": 0
+          },
+          {
+            "name": "pencil_price",
+            "type": "number",
+            "default": 1
+          }
+        ]
+      },
+      {
+        "name": "customer",
+        "fields": [
+          {
+            "name": "cash",
+            "type": "number",
+            "default": 10
+          },
+          {
+            "name": "pencils",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "worker",
+        "fields": [
+          {
+            "name": "role",
+            "type": "string",
+            "default": "worker"
+          }
+        ]
+      },
+      {
+        "name": "truck",
+        "fields": [
+          {
+            "name": "boxes",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "rounds_left",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "route",
+        "fields": [
+          {
+            "name": "place_a",
+            "type": "entity_ref",
+            "default": "oregon"
+          },
+          {
+            "name": "place_b",
+            "type": "entity_ref",
+            "default": "pennsylvania"
+          },
+          {
+            "name": "passable",
+            "type": "boolean",
+            "default": true
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "oregon",
+        "label": "Oregon",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "sri-lanka",
+        "label": "Sri Lanka",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "pennsylvania",
+        "label": "Pennsylvania",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "shops-countrywide",
+        "label": "Shops across the country",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "oregon-pennsylvania-route",
+        "label": "Route from Oregon to Pennsylvania",
+        "categories": [
+          "route"
+        ],
+        "components": {
+          "route": {
+            "place_a": "oregon",
+            "place_b": "pennsylvania",
+            "passable": true
+          }
+        }
+      },
+      {
+        "id": "sri-lanka-pennsylvania-route",
+        "label": "Route from Sri Lanka to Pennsylvania",
+        "categories": [
+          "route"
+        ],
+        "components": {
+          "route": {
+            "place_a": "sri-lanka",
+            "place_b": "pennsylvania",
+            "passable": true
+          }
+        }
+      },
+      {
+        "id": "pennsylvania-shops-route",
+        "label": "Route from Pennsylvania to shops",
+        "categories": [
+          "route"
+        ],
+        "components": {
+          "route": {
+            "place_a": "pennsylvania",
+            "place_b": "shops-countrywide",
+            "passable": true
+          }
+        }
+      },
+      {
+        "id": "shops-customer-route",
+        "label": "Route from shops to customers",
+        "categories": [
+          "route"
+        ],
+        "components": {
+          "route": {
+            "place_a": "shops-countrywide",
+            "place_b": "shops-countrywide",
+            "passable": true
+          }
+        }
+      },
+      {
+        "id": "oregon-loggers",
+        "label": "Oregon loggers",
+        "categories": [
+          "actor",
+          "logger"
+        ],
+        "location": "oregon",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "logger"
+          }
+        }
+      },
+      {
+        "id": "oregon-mill",
+        "label": "Oregon sawmill",
+        "categories": [
+          "actor",
+          "sawmill"
+        ],
+        "location": "oregon",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "sawmill operator"
+          }
+        }
+      },
+      {
+        "id": "sri-lanka-miners",
+        "label": "Sri Lankan graphite and clay miners",
+        "categories": [
+          "actor",
+          "miner"
+        ],
+        "location": "sri-lanka",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "miner"
+          }
+        }
+      },
+      {
+        "id": "lead-maker",
+        "label": "Lead maker",
+        "categories": [
+          "actor",
+          "lead-maker"
+        ],
+        "location": "sri-lanka",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "lead maker"
+          }
+        }
+      },
+      {
+        "id": "pencil-factory",
+        "label": "Pennsylvania pencil factory",
+        "categories": [
+          "actor",
+          "factory"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "worker": {
+            "role": "pencil maker"
+          }
+        }
+      },
+      {
+        "id": "truck-driver",
+        "label": "Truck driver",
+        "categories": [
+          "actor",
+          "truck-driver"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "truck": {
+            "boxes": 0,
+            "rounds_left": 0
+          },
+          "worker": {
+            "role": "truck driver"
+          }
+        }
+      },
+      {
+        "id": "pencil-shops",
+        "label": "Pencil shops",
+        "categories": [
+          "actor",
+          "shop"
+        ],
+        "location": "shops-countrywide",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "business": {
+            "cash": 0,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "shopkeeper"
+          }
+        }
+      },
+      {
+        "id": "pencil-customers",
+        "label": "Pencil customers",
+        "categories": [
+          "actor",
+          "customer"
+        ],
+        "location": "shops-countrywide",
+        "components": {
+          "customer": {
+            "cash": 10,
+            "pencils": 0
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "kind": "cut-cedar",
+        "description": "Cut cedar and add logs to the logger's stock.",
+        "fields": []
+      },
+      {
+        "kind": "saw-logs",
+        "description": "Saw logs into slats using logs from the named source.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "mine-materials",
+        "description": "Mine graphite and clay and add them to the miner's stock.",
+        "fields": []
+      },
+      {
+        "kind": "make-leads",
+        "description": "Use graphite and clay from the named source to make pencil leads.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "supply-slats",
+        "description": "Pass slats from the named source to the pencil factory.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "supply-leads",
+        "description": "Pass leads from the named source to the pencil factory.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "assemble-pencils",
+        "description": "Glue leads into slats and apply paint, erasers, and brass ferrules using the factory's stocks.",
+        "fields": []
+      },
+      {
+        "kind": "pack-pencils",
+        "description": "Pack pencils into boxes from the factory's pencil stock.",
+        "fields": [
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "load-boxes",
+        "description": "Load boxes from the named source onto the truck.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "deliver-boxes",
+        "description": "Carry boxes from the named source to the named shop and set a delivery journey.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "rounds",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "sell-pencils",
+        "description": "Sell pencils from the shop to the named customer at the shop's listed price.",
+        "fields": [
+          {
+            "name": "customer",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "move",
+        "description": "Move to the named place by way of the named route.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "way",
+            "type": "entity_ref"
+          }
+        ]
+      }
+    ],
+    "presentation": {
+      "assets": {
+        "logger": {
+          "kind": "emoji",
+          "value": "\ud83e\ude93"
+        },
+        "sawmill": {
+          "kind": "emoji",
+          "value": "\ud83e\udeb5"
+        },
+        "miner": {
+          "kind": "emoji",
+          "value": "\u26cf\ufe0f"
+        },
+        "lead_maker": {
+          "kind": "emoji",
+          "value": "\u270f\ufe0f"
+        },
+        "factory": {
+          "kind": "emoji",
+          "value": "\ud83c\udfed"
+        },
+        "truck_driver": {
+          "kind": "emoji",
+          "value": "\ud83d\ude9a"
+        },
+        "shop": {
+          "kind": "emoji",
+          "value": "\ud83c\udfea"
+        },
+        "customer": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1"
+        },
+        "place": {
+          "kind": "emoji",
+          "value": "\ud83d\udccd"
+        },
+        "route": {
+          "kind": "emoji",
+          "value": "\ud83d\udee3\ufe0f"
+        }
+      },
+      "category_assets": {
+        "logger": "logger",
+        "sawmill": "sawmill",
+        "miner": "miner",
+        "lead-maker": "lead_maker",
+        "factory": "factory",
+        "truck-driver": "truck_driver",
+        "shop": "shop",
+        "customer": "customer",
+        "place": "place",
+        "route": "route"
+      },
+      "station_roles": {
+        "logger": "source",
+        "sawmill": "workstation",
+        "miner": "source",
+        "lead-maker": "workstation",
+        "factory": "workstation",
+        "shop": "goal"
+      }
+    }
+  }
+}

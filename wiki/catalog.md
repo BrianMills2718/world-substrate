@@ -146,3 +146,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 - [Trace read: S1 live airfield run with AI residents](../evidence/open-attempt/s1-airfield/TRACE_READ.md)
 - [Q23: do generated moves check walls? (2026-10-25)](../evidence/open-attempt/q23/README.md)
 - [Q28: can generated worlds reuse the library damage processes? (2026-10-26)](../evidence/open-attempt/q28/README.md)
+
+## evidence/model-more
+
+- [Model more: money, prices, distances and delivery time (2026-10-26)](../evidence/model-more/README.md)

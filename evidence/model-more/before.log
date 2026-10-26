@@ -1,0 +1,5 @@
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm)
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+16:51:18 - LiteLLM:WARNING: logging_worker.py:161 - LoggingWorker: event loop changed; carried 1 pending and revived 0 dequeued logging task(s) onto the new loop
+model-more/bundle/27bbdf1aed5c414f9ed3a47601a5adb1 0.0018783 ['The amount of clay used to make leads.', 'The quantities of erasers, brass ferrules, and paint used in finishing pencils.', 'The distinct destinations and individual stock levels of shops across the country.']
+EXIT 0
