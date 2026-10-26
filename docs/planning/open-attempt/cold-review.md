@@ -50,3 +50,33 @@ Re-review of the change that records Brian's answer to Q27 (2026-10-26, "i appro
 
 Reviewed revision: cd4a1fdd52247736007866e4653841db401af04a
 Verdict: pass
+
+## Round 7 (commit b2216ee): pass
+
+Re-review of the change that records Brian's answer to D2/Q22 (2026-10-26, "whatever you think is best as long as we are company plannign complant", taken as the recommended "not yet"), plus the wiki routes and the test fix. Scope: `git log cd4a1fd..HEAD` and the uncommitted edits to the package files (`docs/planning/checks.txt`, both `planning-package.json` files, the page's `index.html` and `maps.js`, and `proposals/planning-package/review-page/data.js`).
+
+Round 6 findings: the only one was a note (Q27 keeps its old `default` text as a record). It is unchanged and still acceptable.
+
+**First pass of this round: revise, 1 blocking finding and 2 notes.**
+
+1. Blocking: `proposals/open-attempt/review-page/index.html:261`, the helicopter example, ended "Whether an AI game master may ever invent one is the one choice below". That was the old pending wording and contradicted the "Your decisions" section under it. **Fixed.** Line 261 now reads "No effect is made up. An AI game master is not used yet: Brian decided that on 2026-10-26 (D2, see Your decisions)." A search of `proposals/open-attempt` and `tools/planning` for "one choice below" finds nothing, so the page builder did not bring the old text back.
+2. Note: `docs/plans/open_attempt.md:304-306` still holds the pre-decision sentences "Recommendation: not now ... If not answered, v1 stays." Left as is on purpose: the heading says "decided", and editing the plan would change its sha and force re-adoption. Accepted.
+3. Note: the package files were uncommitted when read. They will be committed after this verdict, with `reviewed_revision` set to the subject b2216ee and a package-only commit on top, as in rounds 5–6. Accepted on that basis.
+
+**D2 consistency, by place.** Every place that spoke of D2 now agrees it is decided:
+- `docs/plans/open_attempt.md:15`, `:160`, `:271` (S4 `deliberately_deferred`), `:304` and `:421`.
+- `tools/planning/questions_src.py:394-401` (Q22 resolved, with Brian's quote as the evidence).
+- `src/world_substrate/attempt.py:11`.
+- The page's "Your decisions" section (`index.html:219-222`) shows D2 and Q27 as decided. Line 222 now says "Nothing in this plan is waiting on you: slices 2 and 3 go ahead."
+- The page's counts follow the ledger: 17 open and 24 resolved. The Q22 row is gone from the open table, and the map draws 17 questions (the Q22 node and its two edges are removed from `maps.js`).
+
+**Checks, reread after the fix.**
+- Validator: 8 of 8 parts ok, 0 failing, exit 0; 41 questions (17 open, 24 resolved), 62 concepts, 91 relations, 4 diagrams.
+- `scripts/check_trace_reads.py`: 11 runs, 0 problems, exit 0.
+- `md_file_cap.py`: md=136, cap exception, orphans 0, exit 0.
+- All three match the manifest. `checks.txt` carries the project check's full summary: 718 tests OK (skipped=2), exit 0. I did not rerun that 19-minute check.
+
+Unsure about: Brian's reply ("whatever you think is best as long as we are company plannign complant") is read as accepting the recommendation, not as a separate instruction. The package quotes him, so a reader can judge. I checked the page by its HTML, its diff and its links; I did not render it.
+
+Reviewed revision: b2216ee55011c2a38f669579ca01c34563c5cc78
+Verdict: pass

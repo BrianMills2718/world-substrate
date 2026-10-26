@@ -173,16 +173,16 @@ a{color:var(--have)}
 <!-- types:end -->
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch plan/q27-approved at subject revision cd4a1fd); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch docs/wiki-routes-planning at subject revision b2216ee); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 0, of 1 (tracked as Q15)</td><td><span class="tag miss">exit 1</span></td></tr>
 <tr><td>trace reads</td><td>runs 11, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project check (tests, system model, docs)</td><td>tests run 718, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>wiki and Markdown cap</td><td>md files 135, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 136, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 18 open, 23 resolved</h3>
+<h3 class="sub">Open questions: 17 open, 24 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -192,7 +192,6 @@ a{color:var(--have)}
 <tr><td><b>Q15</b> Repository format files not yet added</td><td>agent</td><td>whether the repo-format check passes</td></tr>
 <tr><td><b>Q16</b> Goals skip the package gate</td><td>Brian</td><td>whether the next goal can again run without a current system model and question list</td></tr>
 <tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
-<tr><td><b>Q22</b> Effects no rule covers</td><td>Brian</td><td>slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin</td></tr>
 <tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
 <tr><td><b>Q28</b> Reuse the spill and damage rules</td><td>agent</td><td>how S2&#x27;s glass chain is built, and whether generated and reference worlds share physics</td></tr>
 <tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
@@ -213,14 +212,14 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 62 ideas, 91 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (18 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (17 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->
 <h2>Your decisions</h2>
 <p class="lede"><b>Decided:</b> no AI game master yet for attempts no rule covers (D2, Q22; you said on 2026-10-26 "whatever you think is best"). The person is told "nothing comes of it" and the attempt is listed so the next build's rules writer can add a real rule, so every effect still comes from a written rule. Slice 4 is set aside until a new decision reopens it.</p>
 <p class="lede"><b>Decided:</b> slice 2's knock-on effects inside one moment are rule semantics, not new engine capability (you approved on 2026-10-26; <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/decisions/009-same-moment-knock-on-effects.md">Decision 009</a>, Q27).</p>
-<p class="lede">Nothing is waiting on you: slices 2 and 3 go ahead.</p>
+<p class="lede">Nothing in this plan is waiting on you: slices 2 and 3 go ahead.</p>
 
 <footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/open_attempt.md">docs/plans/open_attempt.md</a> · Framework survey: <a href="../../flexible-simulator/review-page/">the loop page</a> and <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/research/flexible-simulator-prior-art-2026-10.md">survey document</a> · Methods copied: Inform 7 "try", C+ and Event Calculus knock-on effects, Blades in the Dark action rolls with GURPS defaults.</footer>
 </main>
@@ -259,7 +258,7 @@ odd:{title:"Sam tries to talk to the helicopter",setup:"No rule in this world le
 ["have","record","Recorded as unsupported. Nothing changes.","status: unsupported · before = after"],
 ["have","notice","Sam sees: you ask the helicopter to start; nothing comes of it.","observation to sam"],
 ["have","build record","Listed under unmatched attempts, so the next build's rules writer can add a rule if one is wanted.","unmatched_attempts[]"]],
-out:"No effect is made up. Whether an AI game master may ever invent one is the one choice below."}};
+out:"No effect is made up. An AI game master is not used yet: Brian decided that on 2026-10-26 (D2, see Your decisions)."}};
 function show(k){const e=EX[k];
 document.querySelectorAll(".examples button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ex===k?"true":"false"));
 document.querySelectorAll(".stage").forEach(s=>s.classList.toggle("dim",!e.stages.includes(s.dataset.s)));
