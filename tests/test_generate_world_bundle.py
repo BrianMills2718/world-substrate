@@ -61,6 +61,8 @@ class GenerateWorldBundleTests(unittest.TestCase):
         from scripts.scaffold_world import BundleError, validate_bundle
         bundle = json.loads(json.dumps(ORCHARD))
         bundle["entities"][0]["location"] = "no-such-place"
+        validate_bundle(bundle)  # places as plain words (warehouse-rush) still load
+        bundle["entities"][1]["categories"] = list(bundle["entities"][1]["categories"]) + ["place"]
         with self.assertRaisesRegex(BundleError, "unknown place 'no-such-place'"):
             validate_bundle(bundle)
         bundle["entities"][0]["location"] = bundle["entities"][1]["id"]
