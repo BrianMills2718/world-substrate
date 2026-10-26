@@ -1,0 +1,7 @@
+c1r18_waltzman_world.json: menu moves read back identically 107, differ 0; unmatched -> unsupported_action, world unchanged True; scripted 6 rounds; replay ok True (116 commands) -> PASS
+firefighting-luna-r1.json: menu moves read back identically 9, differ 0; unmatched -> unsupported_action, world unchanged True; scripted 1 rounds; replay ok True (6 commands) -> PASS
+garden-luna-r3.json: menu moves read back identically 12, differ 0; unmatched -> unsupported_action, world unchanged True; scripted 6 rounds; replay ok True (15 commands) -> PASS
+pencil-c4-run17.json: menu moves read back identically 29, differ 0; unmatched -> unsupported_action, world unchanged True; scripted 6 rounds; replay ok True (52 commands) -> PASS
+airfield (q23 after-fix): menu moves read back identically 3, differ 0; unmatched -> unsupported_action, world unchanged True; scripted run: run produced no actions; review actor selectors, checks, and parameter choices; replaying the refusal probe; replay ok True (1 commands) -> PASS
+worlds 5, failing 0
+exit=0

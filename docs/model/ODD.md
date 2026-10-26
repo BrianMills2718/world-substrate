@@ -340,6 +340,17 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
 - **Each row** records `event_id` (`r<round>-e<n>`), `changes`, `said` (the words behind the first choice),
   `said_on_retry` (the retry's words, `:599-600`), `started_task`, `belief`, `expects`; each round records
   `world_events` and `underway`. The readout quotes `said` only (`scripts/run_readout.py:93`; open question Q10).
+- **Open attempts (live default since S1 of `docs/plans/open_attempt.md`, `run_world(open_attempts=True)`):** the
+  resident answers `attempt` (its own words) in place of `action_id`, from
+  `prompts/concordia_resident_open_attempt.yaml`, which shows the offered moves as "things you know you can do here".
+  One typed light-model call (`src/world_substrate/attempt.py`, task `world-builder-attempt-interpreter`) reads the
+  words against the installed rules' kinds and fields; its schema has no success or outcome field. A reading that
+  names an unknown entity, quotes words not in the attempt, or misses a field is unmatched. A matched move is submitted
+  as is and only its rule's checks can refuse it; an unmatched one is submitted as kind `unmatched-attempt`, which the
+  Engine records as `unsupported_action` (nothing changes, no revision bump), the resident is told "nothing came of
+  it", and the run lists it in `summary.unmatched_attempts`. A lost race resubmits the same move at the new revision;
+  nobody is asked again. Each row keeps `attempt {text, reading}`; the envelope is the recorded command, so replay
+  calls no model. Letting an AI game master give unmatched attempts an effect is decision D2, deferred.
 - **Member flags:** every person's `member` record carries `authorized` and `approved`, both False and never written
   by any rule (`spikes/any-scenario-2026-10/compile_spec.py:33-34`, `:626`); residents see them, and in c1r24 one read
   its own `authorized False` as the decision not being authorized (#231).

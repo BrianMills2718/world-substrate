@@ -12,7 +12,7 @@ entities:
   - id: ENT-WORLD
     what: canonical typed world state with a material hash and a revision counter (ODD 4)
   - id: ENT-ACTION-ENVELOPE
-    what: a policy's submitted intent, validated before any rule runs (ODD 4, 8.1)
+    what: a policy's submitted intent, validated before any rule runs; with open attempts, the typed reading of a resident's own words, or an unmatched-attempt envelope carrying them (ODD 4, 8.1, 11.3)
   - id: ENT-RULE-PROPOSAL
     what: a model-authored mechanics proposal awaiting compiler review (ODD 4, 8.6)
   - id: ENT-FROZEN-PROFILE
@@ -95,7 +95,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
+    reviewed_at: 17fd108a9a696656970f69bf6af8620b417297a7  # re-read 2026-10-25 for open attempts (S1): statement holds, tests pass
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -107,7 +107,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
-    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
+    reviewed_at: 17fd108a9a696656970f69bf6af8620b417297a7  # re-read 2026-10-25 for open attempts (S1): statement holds, tests pass
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -118,7 +118,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
-    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
+    reviewed_at: 17fd108a9a696656970f69bf6af8620b417297a7  # re-read 2026-10-25 for open attempts: the attempt reader uses the run's approved model, trace_id and max_budget, so it spends inside the same capped run budget; tests pass
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -129,7 +129,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
-    reviewed_at: 6a8e37e26afc1aaab177d544f808ae560650d8b5  # re-read 2026-10-24: statement holds, tests exist and pass
+    reviewed_at: 17fd108a9a696656970f69bf6af8620b417297a7  # re-read 2026-10-25 for open attempts (S1): statement holds, tests pass
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot

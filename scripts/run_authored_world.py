@@ -24,6 +24,7 @@ from scripts.scaffold_world import _render_model, load_bundle, validate_bundle
 from world_substrate.action_authoring import CausalModel, CompiledActionMechanic, CompiledProcessMechanic
 from world_substrate.engine import ENGINE_OWNED_PATHS, Engine
 from world_substrate.model import Entity, LocationState, OwnershipState, PortableState, World
+from world_substrate import attempt as open_attempt
 from world_substrate.policy import CHOICE_SCHEMA, WAIT, present, resolve_choice
 
 # Concordia residents (scripts/concordia_residents.py, imported lazily: Concordia is a live-play dependency).
@@ -171,6 +172,17 @@ def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
         c for c in event.get("changes") or []
         if c.get("path") not in ENGINE_OWNED_PATHS and not str(c.get("path", "")).endswith(".last_cause_event_id")
     ]
+
+
+def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list[dict[str, Any]], *, model: str,
+                  trace_id: str, max_budget: float) -> tuple[dict[str, Any], float]:
+    """One person's words read into a typed move (world_substrate.attempt). A wait costs no call."""
+    if not text or text.strip().lower() in {WAIT, "wait."}:
+        return {"kind": open_attempt.WAIT_KIND, "fields": {}, "quoted_spans": {}, "nearest_kind": open_attempt.NONE,
+                "why": "the person waited"}, 0.0
+    labels = {eid: entity.label for eid, entity in sorted(engine.world.entities.items())}
+    return open_attempt.interpret(text, actor=actor, signatures=signatures, entities=labels, model=model,
+                                  trace_id=trace_id, max_budget=max_budget)
 
 
 def _same_move(one: dict[str, Any] | None, other: dict[str, Any] | None) -> bool:
@@ -347,9 +359,12 @@ def run_world(
     briefs: dict[str, str] | None = None,
     resident_memory: dict[str, list[str]] | None = None,
     underway: list[dict[str, Any]] | None = None,
+    open_attempts: bool = False,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
+    if open_attempts and policy != "resident":
+        raise ValueError("open_attempts needs the resident policy")
     if type(max_turns) is not int or not 1 <= max_turns <= MAX_TURNS:
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     engine, causal_model, profile_id = build_engine(bundle, causal_value)
@@ -383,7 +398,12 @@ def run_world(
         from scripts.concordia_residents import Residents
 
         residents = Residents(actors, model=model_name, trace_id=trace_id, max_budget=max_budget,
-                              memory=resident_memory)
+                              memory=resident_memory, open_attempts=open_attempts)
+    # Open attempts (docs/plans/open_attempt.md): what each person says they try is read into one typed move against
+    # the installed rules' kinds; a reading that fits none goes in as an unmatched attempt and changes nothing.
+    signatures = open_attempt.signatures_for(bundle, causal_model.mechanics) if open_attempts else []
+    readings: dict[str, dict[str, Any]] = {}
+    unmatched: list[dict[str, Any]] = []
     beliefs: dict[str, dict[str, Any]] = {}
     # Every move the rules offered anyone at some point, and why each other move was refused, so a build's test run
     # can name a move that never once became possible (#166: the pencil wholesaler's only move never could).
@@ -455,16 +475,28 @@ def run_world(
                                brief=(briefs or {}).get(actor, ""))
                 residents.observe(actor, f"Round {turn + turn_offset}. What just happened: "
                                   + ("; ".join(recents[actor]) or "nothing new") + ".")
-                return residents.choose(actor, [row["action_id"] for row in page["available"]], context)
+                attempt = residents.choose(actor, [row["action_id"] for row in page["available"]], context)
+                if open_attempts:
+                    attempt["reading"], attempt["interpreter_cost"] = _read_attempt(
+                        engine, actor, attempt.get("attempt"), signatures, model=model_name, trace_id=trace_id,
+                        max_budget=max_budget)
+                return attempt
 
             with ThreadPoolExecutor(max_workers=len(actors)) as pool:
                 futures = {actor: pool.submit(contextvars.copy_context().run, _resident_turn, actor) for actor in actors}
                 for actor in actors:
                     attempt = futures[actor].result()
                     beliefs[actor] = attempt
+                    reasons[actor] = attempt.get("reasoning") or ""
+                    if open_attempts:
+                        cost += attempt.pop("interpreter_cost")
+                        readings[actor] = attempt.pop("reading")
+                        intents[actor] = open_attempt.envelope(
+                            readings[actor], actor=actor, attempt=str(attempt.get("attempt") or ""),
+                            base_revision=revision, controller=f"live:{policy}")
+                        continue
                     choice = resolve_choice(pages[actor], attempt.get("action_id") or WAIT, attempt.get("reasoning") or "")
                     intents[actor] = dict(choice.action) if choice.kind == "action" and choice.action is not None else None
-                    reasons[actor] = attempt.get("reasoning") or ""
         if policy == "llm":
             # Every actor chooses against the same world revision before anything
             # is submitted, so the choices are independent: ask in parallel. A
@@ -521,6 +553,8 @@ def run_world(
                     "lost_what_it_wanted": False,
                     "blocked_by_rules": blocked_by_rules.get(actor, []),
                 }
+                if actor in readings:
+                    rows[actor]["attempt"] = {"text": beliefs[actor].get("attempt"), "reading": readings[actor]}
                 continue
             outcome = engine.submit({**wanted, "controller": f"live:{policy}"})
             did = wanted
@@ -534,7 +568,10 @@ def run_world(
                 # each round a chain of one-at-a-time AI calls (2026-10-16 Waltzman deploy8: 183
                 # re-asks over 40 rounds, up to 9 in one round, about 17 s a round).
                 still = next((row["action"] for row in page.get("available") or [] if _same_move(row["action"], wanted)), None)
-                if still is not None:
+                if open_attempts:
+                    # What the person tried stays what they tried; the rules decide it at the new revision.
+                    again = {**wanted, "base_revision": engine.world.revision}
+                elif still is not None:
                     again = still
                 elif policy == "scripted":
                     again, said_retry = _scripted_choice(page, last_done.get(actor))
@@ -586,6 +623,7 @@ def run_world(
                     c["label"]
                     for c in outcome.get("event", {}).get("checks", [])
                     if not c.get("ok") and c.get("label") != "Base revision is current"
+                    and not (did or {}).get("kind") == open_attempt.UNMATCHED_KIND
                 ],
                 "lost_what_it_wanted": bool(retried and not _same_move(did, wanted)),
                 # Whether the accepted move actually changed the world.
@@ -598,6 +636,11 @@ def run_world(
             }
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
+            if actor in readings:
+                row["attempt"] = {"text": beliefs[actor].get("attempt"), "reading": readings[actor]}
+                if (did or {}).get("kind") == open_attempt.UNMATCHED_KIND:
+                    unmatched.append({"round": turn + turn_offset, "actor": actor, "attempt": did.get("attempt"),
+                                      "nearest_kind": did.get("nearest_kind"), "why": did.get("why")})
             rows[actor] = row
         round_no = turn + turn_offset
         starting: dict[str, list[dict[str, Any]]] = {}
@@ -622,7 +665,15 @@ def run_world(
                     # A started task says what was started, not whether it will work (#128): the ending reaches the
                     # person only through what they see in later rounds.
                     result = "you started it; it is now under way"
-                if row["belief"] is None:
+                if (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND:
+                    # Nothing in the world answers this kind of try yet (Q22 default: it changes nothing).
+                    residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You tried to "
+                                      f"{row['did']['attempt']}; nothing came of it.")
+                elif open_attempts and row["belief"] is not None:
+                    tried = "waited" if row.get("did") is None else f"tried to {row['attempt']['text']}"
+                    residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You {tried}, "
+                                      f"expecting: {row['expects']} Result: {result}.")
+                elif row["belief"] is None:
                     residents.observe(actor, f"Round {turn + turn_offset}: nothing was open to you, so you waited.")
                 else:
                     residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You did {did}, "
@@ -745,6 +796,8 @@ def run_world(
                 kind: _never_why(kind, refused_why.get(kind) or [], causal_value)
                 for kind in sorted({getattr(m, "action_kind", "") for m in causal_model.mechanics} - offered_kinds - {""})
             },
+            # Open attempts that fit no installed rule: each changed nothing, and names the next rule a build could add.
+            **({"unmatched_attempts": unmatched} if open_attempts else {}),
             "first_turn": turn_offset + 1,
             "last_turn": turn_offset + len(transcript),
         },

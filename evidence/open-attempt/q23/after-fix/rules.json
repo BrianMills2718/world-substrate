@@ -1,0 +1,384 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "move-through-passable-wall",
+      "version": "1",
+      "action_kind": "move",
+      "rationale": "Allow movement through the represented wall only when it is passable and connects the actor's current location to the requested destination. The wall is currently impassable, so this attempt is refused.",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": []
+      },
+      "participants": {
+        "to": {
+          "categories": [
+            "place"
+          ],
+          "components": []
+        },
+        "way": {
+          "categories": [
+            "barrier"
+          ],
+          "components": [
+            "barrier"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "the wall is passable",
+          "left": {
+            "participant": {
+              "name": "way",
+              "path": "components.barrier.passable"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "you are on the wall's office side",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "components.barrier.side_a"
+            }
+          }
+        },
+        {
+          "label": "the destination is on the wall's hangar side",
+          "left": {
+            "action_field": "to"
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "components.barrier.side_b"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "to"
+          }
+        }
+      ],
+      "limits": [
+        "Only movement from the wall's side_a to its side_b is represented; reverse-direction movement is not modeled.",
+        "The action changes only the actor's location; carrying other entities is not represented."
+      ],
+      "tests": [
+        "With Sam at Office and the Brick wall impassable, movement to Hangar through the wall is refused.",
+        "If the Brick wall is passable and Sam is at Office, movement to Hangar through the wall sets Sam's location to Hangar.",
+        "Movement to a destination other than the wall's side_b is refused."
+      ],
+      "semantic_bindings": [
+        "The way field names the barrier used for movement.",
+        "The to field names the destination place."
+      ]
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "trainee-first-flight",
+      "version": "1",
+      "action_kind": "fly",
+      "rationale": "A trainee's represented first-flight flag can be set by attempting a flight in the represented helicopter. The action does not specify a route or other flight consequences.",
+      "actor_selector": {
+        "categories": [
+          "trainee"
+        ],
+        "components": [
+          "trainee"
+        ]
+      },
+      "participants": {
+        "aircraft": {
+          "categories": [
+            "aircraft"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "you have not flown before",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.trainee.has_flown"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        },
+        {
+          "label": "the aircraft is the helicopter",
+          "left": {
+            "action_field": "aircraft"
+          },
+          "op": "eq",
+          "right": {
+            "entity_id": "aircraft"
+          }
+        },
+        {
+          "label": "the helicopter is in the hangar",
+          "left": {
+            "participant": {
+              "name": "aircraft",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "hangar"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "components.trainee.has_flown",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        }
+      ],
+      "limits": [
+        "Only the represented helicopter in the Hangar is accepted; aircraft operation and flight movement are not modeled.",
+        "Repeated flights are refused after the trainee's first flight."
+      ],
+      "tests": [
+        "Sam's attempt to fly the helicopter in the Hangar sets Sam's has_flown flag to true.",
+        "A flight attempt with an aircraft other than the helicopter is refused.",
+        "A flight attempt after Sam has already flown is refused."
+      ],
+      "semantic_bindings": [
+        "The aircraft field identifies the aircraft used for the attempt.",
+        "The trainee component records whether the trainee has flown."
+      ]
+    }
+  ],
+  "terminal": {
+    "mode": "all",
+    "selector": {
+      "categories": [
+        "trainee"
+      ],
+      "components": [
+        "trainee"
+      ]
+    },
+    "checks": [
+      {
+        "path": "components.trainee.has_flown",
+        "op": "eq",
+        "value": true
+      }
+    ]
+  },
+  "review": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "mechanic_id": "move-through-passable-wall",
+        "action_kind": "move",
+        "rationale": "Allow movement through the represented wall only when it is passable and connects the actor's current location to the requested destination. The wall is currently impassable, so this attempt is refused.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.location.location_id",
+          "entities.<to>.category_ids",
+          "entities.<way>.category_ids",
+          "entities.<way>.components.barrier",
+          "entities.<way>.components.barrier.passable",
+          "entities.<way>.components.barrier.side_a",
+          "entities.<way>.components.barrier.side_b"
+        ],
+        "writes": [
+          "entities.<actor>.last_cause_event_id",
+          "entities.<actor>.location.location_id"
+        ],
+        "checks": [
+          {
+            "label": "the wall is passable",
+            "left": {
+              "participant": {
+                "name": "way",
+                "path": "components.barrier.passable"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "you are on the wall's office side",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "way",
+                "path": "components.barrier.side_a"
+              }
+            }
+          },
+          {
+            "label": "the destination is on the wall's hangar side",
+            "left": {
+              "action_field": "to"
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "way",
+                "path": "components.barrier.side_b"
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "location.location_id",
+            "op": "set",
+            "value": {
+              "action_field": "to"
+            }
+          }
+        ],
+        "limits": [
+          "Only movement from the wall's side_a to its side_b is represented; reverse-direction movement is not modeled.",
+          "The action changes only the actor's location; carrying other entities is not represented."
+        ],
+        "tests": [
+          "With Sam at Office and the Brick wall impassable, movement to Hangar through the wall is refused.",
+          "If the Brick wall is passable and Sam is at Office, movement to Hangar through the wall sets Sam's location to Hangar.",
+          "Movement to a destination other than the wall's side_b is refused."
+        ]
+      },
+      {
+        "mechanic_id": "trainee-first-flight",
+        "action_kind": "fly",
+        "rationale": "A trainee's represented first-flight flag can be set by attempting a flight in the represented helicopter. The action does not specify a route or other flight consequences.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.trainee",
+          "entities.<actor>.components.trainee.has_flown",
+          "entities.<aircraft>.category_ids",
+          "entities.<aircraft>.location.location_id"
+        ],
+        "writes": [
+          "entities.<actor>.components.trainee.has_flown",
+          "entities.<actor>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "you have not flown before",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.trainee.has_flown"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "the aircraft is the helicopter",
+            "left": {
+              "action_field": "aircraft"
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "aircraft"
+            }
+          },
+          {
+            "label": "the helicopter is in the hangar",
+            "left": {
+              "participant": {
+                "name": "aircraft",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "hangar"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.trainee.has_flown",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "Only the represented helicopter in the Hangar is accepted; aircraft operation and flight movement are not modeled.",
+          "Repeated flights are refused after the trainee's first flight."
+        ],
+        "tests": [
+          "Sam's attempt to fly the helicopter in the Hangar sets Sam's has_flown flag to true.",
+          "A flight attempt with an aircraft other than the helicopter is refused.",
+          "A flight attempt after Sam has already flown is refused."
+        ]
+      }
+    ],
+    "processes": [],
+    "terminal": {
+      "mode": "all",
+      "selector": {
+        "categories": [
+          "trainee"
+        ],
+        "components": [
+          "trainee"
+        ]
+      },
+      "checks": [
+        {
+          "path": "components.trainee.has_flown",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    }
+  }
+}

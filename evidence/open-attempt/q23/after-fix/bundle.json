@@ -1,0 +1,182 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "airfield-office",
+    "label": "Airfield office",
+    "summary": "Sam is a trainee who can attempt a first flight in the helicopter.",
+    "location": "office",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "trainee",
+      "fields": [
+        {
+          "name": "has_flown",
+          "type": "boolean",
+          "default": false
+        }
+      ]
+    },
+    {
+      "name": "barrier",
+      "fields": [
+        {
+          "name": "side_a",
+          "type": "entity_ref",
+          "default": "office"
+        },
+        {
+          "name": "side_b",
+          "type": "entity_ref",
+          "default": "hangar"
+        },
+        {
+          "name": "passable",
+          "type": "boolean",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "office",
+      "label": "Office",
+      "categories": [
+        "place"
+      ],
+      "components": {}
+    },
+    {
+      "id": "hangar",
+      "label": "Hangar",
+      "categories": [
+        "place"
+      ],
+      "components": {}
+    },
+    {
+      "id": "brick-wall",
+      "label": "Brick wall",
+      "categories": [
+        "barrier"
+      ],
+      "components": {
+        "barrier": {
+          "side_a": "office",
+          "side_b": "hangar",
+          "passable": false
+        }
+      }
+    },
+    {
+      "id": "desk",
+      "label": "Desk",
+      "categories": [
+        "surface"
+      ],
+      "location": "office",
+      "components": {}
+    },
+    {
+      "id": "glass-of-water",
+      "label": "Glass of water",
+      "categories": [
+        "drink"
+      ],
+      "portable": true,
+      "owner_ref": "entity:desk",
+      "location": "office",
+      "components": {}
+    },
+    {
+      "id": "helicopter",
+      "label": "Helicopter",
+      "categories": [
+        "aircraft"
+      ],
+      "location": "hangar",
+      "components": {}
+    },
+    {
+      "id": "sam",
+      "label": "Sam",
+      "categories": [
+        "actor",
+        "trainee"
+      ],
+      "location": "office",
+      "components": {
+        "trainee": {
+          "has_flown": false
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "move",
+      "description": "Attempt to move to a place through a represented way.",
+      "fields": [
+        {
+          "name": "to",
+          "type": "entity_ref"
+        },
+        {
+          "name": "way",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "fly",
+      "description": "Attempt a flight in a represented aircraft.",
+      "fields": [
+        {
+          "name": "aircraft",
+          "type": "entity_ref"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {
+      "place": {
+        "kind": "emoji",
+        "value": "\ud83c\udfe2"
+      },
+      "barrier": {
+        "kind": "emoji",
+        "value": "\ud83e\uddf1"
+      },
+      "surface": {
+        "kind": "emoji",
+        "value": "\ud83e\ude91"
+      },
+      "drink": {
+        "kind": "emoji",
+        "value": "\ud83e\udd5b"
+      },
+      "aircraft": {
+        "kind": "emoji",
+        "value": "\ud83d\ude81"
+      },
+      "actor": {
+        "kind": "emoji",
+        "value": "\ud83e\uddd1"
+      }
+    },
+    "category_assets": {
+      "place": "place",
+      "barrier": "barrier",
+      "surface": "surface",
+      "drink": "drink",
+      "aircraft": "aircraft",
+      "actor": "actor"
+    },
+    "station_roles": {
+      "surface": "workstation"
+    }
+  }
+}

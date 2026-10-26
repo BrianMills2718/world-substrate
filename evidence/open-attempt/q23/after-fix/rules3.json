@@ -1,0 +1,377 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "move-through-passable-way",
+      "version": "1",
+      "action_kind": "move",
+      "rationale": "Moving through the represented barrier is only supported when it is passable and the actor is at its first endpoint. The available initial state does not establish a passable route.",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": []
+      },
+      "participants": {
+        "to": {
+          "categories": [
+            "place"
+          ],
+          "components": []
+        },
+        "way": {
+          "categories": [
+            "barrier"
+          ],
+          "components": [
+            "barrier"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "the way is passable",
+          "left": {
+            "participant": {
+              "name": "way",
+              "path": "components.barrier.passable"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": true
+          }
+        },
+        {
+          "label": "the actor is at the way\u2019s first side",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "components.barrier.side_a"
+            }
+          }
+        },
+        {
+          "label": "the destination is the way\u2019s second side",
+          "left": {
+            "action_field": "to"
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "components.barrier.side_b"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "to"
+          }
+        }
+      ],
+      "limits": [
+        "Only the side_a-to-side_b direction is modeled; reverse travel is not supported by these checks.",
+        "The barrier starts impassable, so this action is refused initially.",
+        "No location change is modeled for a vehicle or other linked entity."
+      ],
+      "tests": [
+        "With the Brick wall impassable, moving from the Office to the Hangar is refused.",
+        "If the Brick wall is passable, moving from the Office through it to the Hangar changes the mover\u2019s location to the Hangar.",
+        "A destination other than the way\u2019s second side is refused.",
+        "Starting at the way\u2019s second side does not permit reverse travel."
+      ],
+      "semantic_bindings": [
+        "to is the destination place",
+        "way is the represented barrier"
+      ]
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "trainee-first-flight",
+      "version": "1",
+      "action_kind": "fly",
+      "rationale": "A represented trainee and aircraft support marking the trainee as having flown after an attempted flight in that aircraft, but the represented starting locations differ. The action therefore requires the trainee and aircraft to be co-located and is refused initially.",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": [
+          "trainee"
+        ]
+      },
+      "participants": {
+        "aircraft": {
+          "categories": [
+            "aircraft"
+          ],
+          "components": []
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "the aircraft is where the trainee is",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "aircraft",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the trainee has not flown yet",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "components.trainee.has_flown"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": false
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "components.trainee.has_flown",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        }
+      ],
+      "limits": [
+        "No travel to the aircraft, aircraft operation, or aircraft location change is modeled.",
+        "The trainee and helicopter start in different places, so this action is refused initially.",
+        "The represented state does not support claims about flight duration, destination, or repeated flights."
+      ],
+      "tests": [
+        "With the trainee and helicopter in different places, flying is refused.",
+        "If the trainee and helicopter are in the same place and the trainee has not flown, the action sets the trainee\u2019s has_flown field to true.",
+        "A trainee whose has_flown field is already true is refused."
+      ],
+      "semantic_bindings": [
+        "aircraft is the represented aircraft",
+        "the actor is the represented trainee"
+      ]
+    }
+  ],
+  "terminal": {
+    "mode": "all",
+    "selector": {
+      "categories": [
+        "actor"
+      ],
+      "components": [
+        "trainee"
+      ]
+    },
+    "checks": [
+      {
+        "path": "components.trainee.has_flown",
+        "op": "eq",
+        "value": true
+      }
+    ]
+  },
+  "review": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "mechanic_id": "move-through-passable-way",
+        "action_kind": "move",
+        "rationale": "Moving through the represented barrier is only supported when it is passable and the actor is at its first endpoint. The available initial state does not establish a passable route.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.location.location_id",
+          "entities.<to>.category_ids",
+          "entities.<way>.category_ids",
+          "entities.<way>.components.barrier",
+          "entities.<way>.components.barrier.passable",
+          "entities.<way>.components.barrier.side_a",
+          "entities.<way>.components.barrier.side_b"
+        ],
+        "writes": [
+          "entities.<actor>.last_cause_event_id",
+          "entities.<actor>.location.location_id"
+        ],
+        "checks": [
+          {
+            "label": "the way is passable",
+            "left": {
+              "participant": {
+                "name": "way",
+                "path": "components.barrier.passable"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the actor is at the way\u2019s first side",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "way",
+                "path": "components.barrier.side_a"
+              }
+            }
+          },
+          {
+            "label": "the destination is the way\u2019s second side",
+            "left": {
+              "action_field": "to"
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "way",
+                "path": "components.barrier.side_b"
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "location.location_id",
+            "op": "set",
+            "value": {
+              "action_field": "to"
+            }
+          }
+        ],
+        "limits": [
+          "Only the side_a-to-side_b direction is modeled; reverse travel is not supported by these checks.",
+          "The barrier starts impassable, so this action is refused initially.",
+          "No location change is modeled for a vehicle or other linked entity."
+        ],
+        "tests": [
+          "With the Brick wall impassable, moving from the Office to the Hangar is refused.",
+          "If the Brick wall is passable, moving from the Office through it to the Hangar changes the mover\u2019s location to the Hangar.",
+          "A destination other than the way\u2019s second side is refused.",
+          "Starting at the way\u2019s second side does not permit reverse travel."
+        ]
+      },
+      {
+        "mechanic_id": "trainee-first-flight",
+        "action_kind": "fly",
+        "rationale": "A represented trainee and aircraft support marking the trainee as having flown after an attempted flight in that aircraft, but the represented starting locations differ. The action therefore requires the trainee and aircraft to be co-located and is refused initially.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.trainee",
+          "entities.<actor>.components.trainee.has_flown",
+          "entities.<actor>.location.location_id",
+          "entities.<aircraft>.category_ids",
+          "entities.<aircraft>.location.location_id"
+        ],
+        "writes": [
+          "entities.<actor>.components.trainee.has_flown",
+          "entities.<actor>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the aircraft is where the trainee is",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "aircraft",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the trainee has not flown yet",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.trainee.has_flown"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.trainee.has_flown",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "No travel to the aircraft, aircraft operation, or aircraft location change is modeled.",
+          "The trainee and helicopter start in different places, so this action is refused initially.",
+          "The represented state does not support claims about flight duration, destination, or repeated flights."
+        ],
+        "tests": [
+          "With the trainee and helicopter in different places, flying is refused.",
+          "If the trainee and helicopter are in the same place and the trainee has not flown, the action sets the trainee\u2019s has_flown field to true.",
+          "A trainee whose has_flown field is already true is refused."
+        ]
+      }
+    ],
+    "processes": [],
+    "terminal": {
+      "mode": "all",
+      "selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": [
+          "trainee"
+        ]
+      },
+      "checks": [
+        {
+          "path": "components.trainee.has_flown",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    }
+  }
+}

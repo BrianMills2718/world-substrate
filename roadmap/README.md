@@ -24,6 +24,19 @@ The product thesis remains:
 > **Generative worlds with executable laws.**
 > Generative-World Builder on top; rigorous causal world engine underneath.
 
+### Actor, recurring job and investment boundary
+
+- **Actor:** a World Builder visitor (or Brian as owner) at <https://brianmills.dev/world-builder/>.
+- **Recurring job and baseline:** the visitor describes a situation in plain words, presses Create
+  simulation, and watches the generated people act under the installed rules. Today (2026-10-25) each
+  person picks from the moves the rules already allow, so impossible attempts, same-moment knock-on
+  chains and skill-shaped failures never appear (`docs/plans/open_attempt.md`, "Current truth").
+- **Inspectable result:** the run page and its build record: what each person tried, what the rules
+  did and why, every event with its cause.
+- **Stage and investment boundary:** prototype stage, one agent at a time; this repository and its own
+  deploy only; visitor spend capped at $3/day; owner runs on Brian's owner allowance after a free replay;
+  no new service, engine or repository without Brian's yes.
+
 ### Causal product contract
 
 A World Substrate causal claim explains why a transition occurred **inside the represented world under the installed mechanics that governed that run**.
@@ -86,6 +99,14 @@ Current product fixtures have narrower roles:
 - **Repair Bay** — first nontrivial deployed authoring world.
 - **Warehouse Rush** — retained draft evidence of a real generated-law/representation omission and minimal repair; not active roadmap work.
 - **Waltzman Coordination Lab** — current integrated product deliverable and public demo.
+
+The steps a visitor takes to get the result end to end, which every plan's outcome step names one of:
+
+1. Describe a situation in plain words on https://brianmills.dev/world-builder/ and press Create simulation.
+2. The builder generates the world (places, things, people, the moves they may attempt) and its rules.
+3. The residents act in the generated world each round, and the installed rules decide each effect (accepted, refused with the failing check, or changed state that later rules react to).
+4. The page shows the rollout round by round, with each event's cause and the build record.
+5. The visitor reads why things happened, follows a cause back, and can replay the saved run for free.
 
 ## Current truth
 

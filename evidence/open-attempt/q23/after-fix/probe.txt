@@ -1,0 +1,11 @@
+## as generated
+move precondition_failed failed: ['the way is passable']
+fly precondition_failed failed: ['the aircraft is where the trainee is']
+sam at office
+## control
+CONTROL: wall made passable in an in-memory copy
+move accepted failed: []
+fly accepted failed: []
+move precondition_failed failed: ['the actor is at the way’s first side']
+fly precondition_failed failed: ['the trainee has not flown yet']
+sam at hangar

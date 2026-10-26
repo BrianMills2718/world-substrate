@@ -405,14 +405,16 @@
    "blocks": "acceptance check A3 of docs/plans/open_attempt.md",
    "resolves_with": "Prior art in the run: generate the canonical airfield world in slice S1 and read its move mechanic; if the check is absent, fix the rules writer prompt and schema.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
-    "scripts/generate_causal_model.py:119",
-    "docs/plans/open_attempt.md"
+    "evidence/open-attempt/q23/after-fix/probe.txt",
+    "scripts/generate_world_bundle.py:96",
+    "scripts/generate_causal_model.py:420"
    ],
    "touches": [
     "build"
-   ]
+   ],
+   "evidence": "No, then yes after a generic fix. The first generated airfield world put everyone at the one world location, had no move action, and its wall was read by no rule (evidence/open-attempt/q23/bundle.json, rules.json). Fixes: the bundle contract now offers each entity a starting place and asks for places, a move action with 'to' and 'way', and ways with a passable flag (scripts/generate_world_bundle.py); the validator refuses an unknown place (scripts/scaffold_world.py); the rules writer must check the actor is where the thing is, and is told checks have no 'or' (scripts/generate_causal_model.py). Regenerated world: walking through the brick wall fails 'the way is passable', flying from the office fails 'the aircraft is where the trainee is'; with the wall made passable in memory both succeed (evidence/open-attempt/q23/after-fix/probe.txt). Limit: a way works from its first place to its second only."
   }
  ]
 }

@@ -49,7 +49,8 @@ def _contract() -> dict[str, Any]:
         "field_types": sorted(FIELD_TYPES),
         "entities": (
             "[{id (lowercase-slug), label, categories: [nonempty strings], components: {component: {every declared field}},"
-            " optional portable: bool, optional owner_ref: 'actor:<id>'|'place:<id>'|'entity:<id>'|'unowned'}]"
+            " optional portable: bool, optional owner_ref: 'actor:<id>'|'place:<id>'|'entity:<id>'|'unowned',"
+            " optional location: <id of the place entity it starts in>}]"
             " (owner_ref: use 'actor:<id>' when the owner is a person or business that acts; 'entity:<id>' only for"
             " a thing held inside another thing)"
         ),
@@ -88,6 +89,15 @@ def _contract() -> dict[str, Any]:
             "Rules change fixed, named quantities and cannot choose which one from a text field, so when different "
             "goods move, declare one action per kind of goods (carry-logs, carry-boards), never one carry-goods "
             "action with a field naming the goods.",
+            # open_attempt Q23, 2026-10-25 (evidence/open-attempt/q23/): the airfield office and hangar were plain
+            # entities while everyone stood at the one world location, so 'Sam and the helicopter are in the same
+            # place' was always true, nobody could move, and the brick wall between them limited nothing.
+            "When the description names separate places (rooms, buildings, fields, towns), make each place an "
+            "entity with category 'place', set every other entity's location to the place it starts in, and give "
+            "the actors a move action with an entity_ref field 'to' naming the destination place and an "
+            "entity_ref field 'way' naming what they go through. Represent what lies between two places (a door, "
+            "a corridor, a wall, a river) as an entity whose component has entity_ref fields naming both places "
+            "and a boolean saying whether it can be passed (a brick wall: false; an open door: true).",
             "Labels and descriptions are plain English a visitor would use (\"Ava\", \"watering can\"), never internal jargon.",
             *SIZE_RULES,
         ],

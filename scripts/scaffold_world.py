@@ -98,7 +98,13 @@ def validate_bundle(value: object) -> dict[str, Any]:
             if set(fields) != set(declared): raise BundleError(f"entity {eid} component {cname} fields must be {sorted(declared)}")
             for fname, item in declared.items():
                 if not _type_ok(item["type"], fields[fname]): raise BundleError(f"entity {eid} value {cname}.{fname} does not match {item['type']}")
+    # A world that declares its places as entities (the bundle writer's contract since Q23) must start everything in
+    # one of them; saved worlds that name places as plain words (warehouse-rush's 'staging', 'dock-a') keep loading.
+    places = {e["id"] for e in entities if "place" in (e.get("categories") or [])}
     for entity in entities:
+        place = entity.get("location")
+        if places and place is not None and place not in entity_ids and place != world["location"]:
+            raise BundleError(f"entity {entity['id']} location names unknown place {place!r}")
         for cname, fields in (entity.get("components") or {}).items():
             declared = {f["name"]: f for f in component_map[cname]["fields"]}
             for fname, item in declared.items():
