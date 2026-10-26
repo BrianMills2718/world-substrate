@@ -58,7 +58,8 @@ rules:
     checks:
       - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
       - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
-      - tests/test_open_attempt.py::test_a_self_feeding_reaction_is_refused_whole
+      - tests/test_open_attempt.py::test_a_chain_past_the_reaction_limit_is_refused_whole
+      - tests/test_open_attempt.py::test_a_reaction_that_keeps_itself_due_fires_once_per_moment
       - tests/test_open_attempt.py::test_a_round_whose_reactions_do_not_settle_is_undone
     decisions:
       - docs/decisions/003-semantic-mechanical-boundary.md

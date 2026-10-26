@@ -352,7 +352,7 @@ class KnockOnEffectTests(unittest.TestCase):
                 timing="each_round", selector={"categories": ["glass", "by-window"], "components": ["glass"]}))
         return build_engine(bundle, rules)
 
-    def test_a_self_feeding_reaction_is_refused_whole(self):  # A6
+    def test_a_chain_past_the_reaction_limit_is_refused_whole(self):  # A6
         engine, _, _ = self._domino_engine()
         before = engine.world.material_dict()
         offered = [o for o in engine.discover("sam", kind="push")["available"]
@@ -365,6 +365,19 @@ class KnockOnEffectTests(unittest.TestCase):
         after.pop("revision"), before.pop("revision")
         self.assertEqual(after, before)
         self.assertEqual(len(engine.world.events), 1)
+        self.assertTrue(engine.replay()["ok"])
+
+    def test_a_reaction_that_keeps_itself_due_fires_once_per_moment(self):  # R4 once-per-pair
+        rules = json.loads(json.dumps(GLASS_RULES))
+        rules["processes"].append(_process("settles-on-floor", [
+            {"label": "it fell", "left": _it("components.glass.on_desk"), "op": "eq", "right": _lit(False)},
+        ], [{"participant": "it", "path": "components.glass.height", "op": "set", "value": _lit(0)}]))
+        engine, _, _ = build_engine(GLASS_BUNDLE, rules)
+        result = _push(engine)
+        self.assertEqual(result["status"], "accepted")
+        fired = [e for e in engine.world.events if e.get("rule_id") == "settles-on-floor"]
+        self.assertEqual(len(fired), 1)  # still due after it fires; the once-per-pair rule stops it
+        self.assertEqual(engine.world.entities["glass"].as_dict()["components"]["glass"]["height"], 0)
         self.assertTrue(engine.replay()["ok"])
 
     def test_a_round_whose_reactions_do_not_settle_is_undone(self):
