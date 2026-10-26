@@ -95,7 +95,7 @@ def package_section() -> str:
                    for d in pkg["diagrams"]["items"])
     return f'''<!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="{BLOB}docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="{BLOB}{e(pkg["checks"]["path"])}">checks.txt</a> ({e(run_line)}); orange marks a check that does not pass.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="{BLOB}docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="{BLOB}{e(pkg["checks"]["path"])}">checks.txt</a> ({e(run_line)}); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 {chr(10).join(check_rows)}
 </tbody></table></div>

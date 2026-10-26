@@ -73,6 +73,7 @@ a{color:var(--have)}
 <main>
 <h1>People try anything; the world decides</h1>
 <p class="lede">Design for three missing pieces of World Substrate. The first is built: since slice 1 (merged 2026-10-25) a person in a World Builder world says what they try in their own words instead of picking from a list, and only the world's rules decide what happens, so walking into a wall is refused with the wall named. Still to come: knock-on effects that run to the end on their own (slice 2), and a person's recorded skill deciding how a risky attempt turns out (slice 3). The first live airfield run with AI residents (2026-10-26) showed residents moving every round and the wall refused by name, but no resident reached the helicopter, so the skill and knock-on cases were not yet exercised live; slice 1 is built, not done. Pick an example to see what the run's record shows, or will show.</p>
+<p class="lede">This page is the plan's own package. The repository-wide package, with every open question and the system context, is on <a href="../../planning-package/review-page/">World Substrate: planning package</a>; both share one set of checks, questions and models (Q41).</p>
 <div class="legend">
 <span class="chip"><span class="sw have"></span>Blue, solid: in World Substrate now (S1 added attempts and interpreting)</span>
 <span class="chip"><span class="sw miss"></span>Orange, dashed: added by a later slice (S2 knock-ons, S3 rolls)</span>
@@ -172,7 +173,7 @@ a{color:var(--have)}
 <!-- types:end -->
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch model/operational-ontology at subject revision 9e49df2); orange marks a check that does not pass.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch model/operational-ontology at subject revision 9e49df2); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
@@ -181,24 +182,28 @@ a{color:var(--have)}
 <tr><td>project check (tests, system model, docs)</td><td>tests run 718, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>wiki and Markdown cap</td><td>md files 134, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 15 open, 19 resolved</h3>
+<h3 class="sub">Open questions: 19 open, 22 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
 <tr><td><b>Q3</b> Agenda item has no content</td><td>agent</td><td>whether the group-decision family&#x27;s agenda needs content or should be dropped</td></tr>
 <tr><td><b>Q12</b> When a people-world run ends</td><td>Brian</td><td>how long visitors watch a run, and its cost</td></tr>
-<tr><td><b>Q14</b> Agent-harness build not live</td><td>agent</td><td>whether build repairs come from a harness or from the rules retry (Q1)</td></tr>
+<tr><td><b>Q14</b> Harness build time not measured</td><td>agent</td><td>when the harness replaces the fixed build calls and the rules retry (Q1) on the live path</td></tr>
 <tr><td><b>Q15</b> Repository format files not yet added</td><td>agent</td><td>whether the repo-format check passes</td></tr>
 <tr><td><b>Q16</b> Goals skip the package gate</td><td>Brian</td><td>whether the next goal can again run without a current system model and question list</td></tr>
 <tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
 <tr><td><b>Q22</b> Effects no rule covers</td><td>Brian</td><td>slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin</td></tr>
 <tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
+<tr><td><b>Q27</b> Is S2&#x27;s fixpoint engine capability</td><td>Brian</td><td>slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it</td></tr>
 <tr><td><b>Q28</b> Reuse the spill and damage rules</td><td>agent</td><td>how S2&#x27;s glass chain is built, and whether generated and reference worlds share physics</td></tr>
 <tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
 <tr><td><b>Q31</b> Refusal reason reads as a fact</td><td>agent</td><td>whether a person, and a reader of the run, can tell why a move was refused</td></tr>
 <tr><td><b>Q32</b> Readout picks the wrong lens</td><td>agent</td><td>whether a run&#x27;s readout describes the world the visitor wrote</td></tr>
 <tr><td><b>Q33</b> Seeded roll versus no randomness</td><td>agent</td><td>S3&#x27;s design, A7 and the full canonical run (A9)</td></tr>
 <tr><td><b>Q34</b> Read scopes recorded, not enforced</td><td>agent</td><td>whether causal links built from declared reads are complete: F1&#x27;s blocked_by_event names the event that changed what a refused move&#x27;s failed checks read, and Piece 2&#x27;s reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause</td></tr>
+<tr><td><b>Q36</b> How a misreading is caught</td><td>agent</td><td>R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings</td></tr>
+<tr><td><b>Q37</b> Added doorway listed as left out</td><td>agent</td><td>A3 on any newly built airfield world, and whether a visitor can see what the builder added</td></tr>
+<tr><td><b>Q38</b> Does S1 close #128</td><td>agent</td><td>whether #128 stays open on the board</td></tr>
 </tbody></table></div>
 <h3 class="sub">Diagrams</h3>
 <ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
@@ -206,10 +211,10 @@ a{color:var(--have)}
 <!-- package:end -->
 <!-- maps:start -->
 <h2>The maps behind the plan</h2>
-<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 59 ideas, 82 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
+<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 62 ideas, 91 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (15 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (19 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->

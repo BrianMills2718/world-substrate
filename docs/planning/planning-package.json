@@ -129,7 +129,7 @@
         "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
         "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
         "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
-        "rollout": "spikes/any-scenario-2026-10/compile_spec.py:399",
+        "rollout": "spikes/any-scenario-2026-10/compile_spec.py:436",
         "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
         "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
         "gen-rules": "scripts/people_world.py:251",
@@ -143,9 +143,11 @@
         "place-way": "scripts/generate_world_bundle.py:96",
         "projection": "src/world_substrate/projection.py:44",
         "causal-parent": "src/world_substrate/rules.py:383",
-        "exchange": "src/world_substrate/exchange.py:20",
+        "exchange": "src/world_substrate/exchange.py:68",
         "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
-        "kitchen": "reference_worlds/kitchen/mechanics.py"
+        "kitchen": "reference_worlds/kitchen/mechanics.py",
+        "mechanic": "src/world_substrate/action_authoring.py:456",
+        "entity-component": "src/world_substrate/model.py:223"
       }
     },
     "diagrams": {
@@ -176,30 +178,42 @@
         "attempt",
         "attempt-reading",
         "unmatched-attempt",
-        "run-loop",
-        "contention",
-        "event",
-        "move",
+        "affordance",
         "check",
+        "move",
+        "mechanic",
+        "event",
+        "process",
         "resident",
-        "readout",
-        "share",
+        "policy",
+        "place-way",
+        "entity-component",
+        "observation",
+        "knock-on-now",
+        "skill-roll",
+        "run-seed",
+        "information",
+        "write-scope",
+        "profile",
+        "approval",
+        "fingerprint",
         "budget",
-        "scene-replay",
-        "run-log",
+        "run-loop",
+        "task",
         "engine",
         "compiler",
         "gen-rules",
         "build",
+        "run-log",
         "causal-trace",
         "sense",
-        "place-way",
-        "process",
-        "knock-on-now",
-        "skill-roll",
         "causal-parent",
+        "contention",
+        "readout",
+        "share",
+        "mechanisms",
         "test-run",
-        "mechanisms"
+        "scene-replay"
       ]
     },
     "review_page": {
@@ -212,5 +226,6 @@
       "path": "docs/planning/cold-review.md",
       "verdict": "pass"
     }
-  }
+  },
+  "note": "This is the repository's package: covers the whole repository; its plan part points at the same adopted plan as the open-attempt package. The other package is docs/planning/open-attempt/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
 }

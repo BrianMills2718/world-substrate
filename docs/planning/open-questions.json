@@ -50,10 +50,12 @@
    "short": "Agenda item has no content",
    "question": "People put the decision on the agenda and settle it again for 25 rounds (c1r24 r22-r46). Is that because group_decision.agenda_items is a bare count, so an item says nothing, or because put-matter-on-agenda and settle-agenda-matter are offered every work cycle at no cost?",
    "blocks": "whether the group-decision family's agenda needs content or should be dropped",
-   "resolves_with": "An argument makes the content cause likely (the partnership said at c1r24 round 40 it should not add an item 'when I lack information'), but the residents' behaviour cannot be shown on a free replay, which uses scripted moves with no AI. It needs one paid owner-allowance run, and only once Q12 or a goal makes the agenda matter: the result decides whether to give items content, cost them, or drop the count. A free replay can only check that items carry content.",
+   "resolves_with": "Argument settles the content cause for the record: group_decision.agenda_items is a bare integer (spikes/any-scenario-2026-10/compile_spec.py:101) that put-matter-on-agenda adds 1 to and settle-agenda-matter subtracts 1 from (:272-275), so an item cannot carry what it is about, and the partnership said at c1r24 round 40 it should not add one 'when I lack information'. What argument cannot settle is which of three fixes to make: give items content (a matter names its question), cost them (one per person per cycle), or drop the count. That choice turns on why residents repeat the pair, which a free replay cannot show (it replays recorded moves). So one paid owner-allowance run, and only once Q12 or a goal makes the agenda matter: if residents still repeat put-and-settle when items carry content, cost them; if they stop, content was the cause; if the count changes no outcome, drop it.",
    "owner": "agent",
    "status": "open",
    "sources": [
+    "spikes/any-scenario-2026-10/compile_spec.py:101",
+    "spikes/any-scenario-2026-10/compile_spec.py:272",
     "scripts/people_world.py:279",
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md"
    ],
@@ -143,17 +145,18 @@
    "short": "Rules check a resource but never claim it",
    "question": "Generated rules can check a shared resource without ever using it up, so the finish line passes while the constraint is lost (#218). Can the build catch that?",
    "blocks": "whether a finished build is faithful to what was described",
-   "resolves_with": "An argument settles that it is decidable: a field read by a check but never written by any rule is a static finding. Add it to the test-run findings and check the saved worlds.",
+   "resolves_with": "An argument settles that it is decidable from the compiled rules, but 'read by a check, written by no rule' alone is wrong: tests/fixtures/airfield-s1-live.json reads components.boundary.passable in the move rule's check (:388-392) and no rule writes it, which is correct, because the brick wall is a fixed fact of the world. So the finding is narrower: a field a check reads that is consumed by the described task (a resource the description says is used up or claimed, as in #218) but that no rule writes.",
    "owner": "agent",
    "status": "resolved",
    "sources": [
-    "BrianMills2718/world-substrate#218"
+    "BrianMills2718/world-substrate#218",
+    "tests/fixtures/airfield-s1-live.json:392"
    ],
    "touches": [
     "gen-rules",
     "test-run"
    ],
-   "evidence": "Settled by argument: a field read by a check but written by no rule is a static finding, decidable from the compiled rules alone. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F3): add it to the test-run findings and check the saved worlds."
+   "evidence": "Settled by argument, restated after a counterexample: a fixed input (the airfield wall's components.boundary.passable, read at tests/fixtures/airfield-s1-live.json:392, written by no rule) is legitimate, so the finding cannot be every read-but-never-written field. Answer: flag a field only when the build's own spec names it as used up, claimed or changed by a task (the resource in #218) and no rule writes it; a field the spec gives as a fixed fact (a wall, a distance) is not flagged. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F3). Check: the saved #218 build is flagged and the airfield fixture's wall is not."
   },
   {
    "id": "Q9",
@@ -241,7 +244,7 @@
    "sources": [
     "roadmap/README.md:211",
     "roadmap/README.md:252",
-    "docs/plans/open_attempt.md:8"
+    "docs/plans/open_attempt.md:456"
    ],
    "touches": [
     "contention",
@@ -252,10 +255,10 @@
   },
   {
    "id": "Q14",
-   "short": "Agent-harness build not live",
-   "question": "Decision 008 says worlds are built in an agent harness that drafts, checks and edits, but the live service does not call scripts/world_harness.py. Is the harness to be wired into the live build?",
-   "blocks": "whether build repairs come from a harness or from the rules retry (Q1)",
-   "resolves_with": "Reading the code and the decision settles the current state (not imported by the service; the decision says it has not been shown on the live server). What it would take is a build-time measurement against the 150 s target, from saved build traces first.",
+   "short": "Harness build time not measured",
+   "question": "Decision 008 already decided that worlds are built in an agent harness that drafts, checks and edits (docs/decisions/008-build-worlds-in-an-agent-harness.md), and the live service does not yet call scripts/world_harness.py. What is open is only whether a harness build fits the 150 s first-round target. How long does a harness build take against that target?",
+   "blocks": "when the harness replaces the fixed build calls and the rules retry (Q1) on the live path",
+   "resolves_with": "A measurement, from saved traces first: time the harness's draft-check-edit loop on the saved c1r24 and airfield build inputs (free, the build traces hold the prompts) and compare with the 85-111 s fixed builds; a paid harness build only if the saved inputs cannot be replayed.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -391,16 +394,19 @@
   {
    "id": "Q22",
    "short": "Effects no rule covers",
-   "question": "When a resident tries something no installed rule covers, may an AI game master invent a rough effect, marked coarse in the record?",
+   "question": "When a resident tries something no installed rule covers, may an AI game master invent a rough effect, marked coarse in the record? Prior art in this repository: the offline any-scenario spike already lets its game master write a rule for each unlisted attempt mid-run (docs/model/ODD.md:194, 8.19 at :266, question 9 at :27): a rule that passes the layer-1 checks is installed into the running Engine, and one that fails becomes a one-off gm-ruling recorded as unsupported_action. Decision 007 accepted that for the spike (it amends Decision 006's pre-run approval: mid-run rules are reviewed after the run), but no person approves before or after (G14), and the spike stays offline (Q17). S4 would differ in three ways: it runs on the live World Builder, where Decision 006's approval before a run still holds; its output would be one coarse effect for one attempt, not a general rule; and it would be marked coarse in the record.",
    "blocks": "slice S4 of docs/plans/open_attempt.md, and how alive a world feels when its rules are thin",
    "resolves_with": "A product call on whether every effect must come from a written rule; no test settles it.",
    "owner": "brian",
    "status": "open",
-   "recommendation": "Not yet: the person is told nothing comes of it, and the attempt is listed for the next build's rules writer.",
+   "recommendation": "Not yet: the person is told nothing comes of it, and the attempt is listed for the next build's rules writer. If allowed later, reuse the spike's mid-run path (check gate, then install or a recorded ruling) rather than a new one, with an approval step (G14).",
    "default": "Unmatched attempts change nothing and are listed in the build record.",
    "sources": [
-    "docs/plans/open_attempt.md",
-    "src/world_substrate/rules.py:288"
+    "docs/plans/open_attempt.md:297",
+    "src/world_substrate/rules.py:288",
+    "docs/model/ODD.md:194",
+    "docs/model/ODD.md:266",
+    "docs/decisions/007-any-scenario-path.md:46"
    ],
    "touches": [
     "build",
@@ -476,7 +482,7 @@
    "sources": [
     "docs/model/VIEW_COVERAGE.md:191",
     "scripts/world_builder_home.html:627",
-    "docs/plans/open_attempt.md:60",
+    "docs/plans/open_attempt.md:65",
     "evidence/open-attempt/s1-airfield/TRACE_READ.md"
    ],
    "touches": [
@@ -488,32 +494,35 @@
   {
    "id": "Q27",
    "short": "Is S2's fixpoint engine capability",
-   "question": "S2 runs immediate processes to a fixpoint inside one commit (docs/plans/open_attempt.md, Piece 2). The roadmap and AGENTS.md forbid adding engine capability of World Substrate's own (roadmap/README.md:459), and the roadmap's eligible-work list does not name this work. Is S2 allowed?",
-   "blocks": "slice S2",
-   "resolves_with": "An argument and Brian's adoption: the forbidden capability is a second engine, scheduler, renderer or cognition loop; a ramification fixpoint is a rule semantics inside the one existing commit (C+ and Event Calculus), with no new loop, clock or scheduler. Brian adopted the plan with that argument on 2026-10-25; record S2 in the roadmap's eligible-work list.",
-   "owner": "agent",
-   "status": "resolved",
-   "evidence": "Resolved: Brian's 2026-10-25 'yes' adopted docs/plans/open_attempt.md, whose Current truth section argues the three pieces are rules-layer pieces (none adds an engine, scheduler, renderer or cognition). roadmap/README.md's Exact next action now lists the adopted plan's slices as eligible work (item 4).",
+   "question": "S2 runs immediate processes again and again inside one commit until nothing more is due (docs/plans/open_attempt.md:157, Piece 2), which changes src/world_substrate/engine.py. AGENTS.md and Decision 006 say not to add engine, scheduler, renderer or cognition capability of World Substrate's own and to host loops on Concordia or Mesa (AGENTS.md:39; roadmap/README.md:459). Does a same-moment fixpoint in engine.py count as that forbidden engine capability?",
+   "blocks": "slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it",
+   "resolves_with": "Brian's call: the rule's wording is his (Decision 006), and the earlier resolution was argued by this plan's own author, so it is not settled by agent argument. The argument for: a ramification fixpoint is a rule semantics inside the one existing transition (C+ and Event Calculus), with no new loop, clock or scheduler, bounded at 32 reactions. The argument against: it is new control flow in engine.py, and Concordia's game master or Mesa's step could host the chain instead, one reaction per step.",
+   "owner": "brian",
+   "status": "open",
    "sources": [
     "roadmap/README.md:459",
-    "docs/plans/open_attempt.md:109"
+    "AGENTS.md:39",
+    "docs/decisions/006-governed-rules-layer-scope.md",
+    "docs/plans/open_attempt.md:157"
    ],
    "touches": [
     "knock-on-now",
     "engine"
-   ]
+   ],
+   "recommendation": "Allow S2 as rule semantics: the fixpoint runs inside Engine.apply's existing atomic commit, adds no clock, loop or scheduler, is capped at 32 reactions with the whole moment refused on overflow, and only processes that declare timing 'immediately' use it. Hosting the chain on Concordia or Mesa steps instead would split one moment across steps, so the glass would fall in one round and break in the next, which is the behaviour Brian asked to fix.",
+   "default": "S2 waits; S1 and S3 go ahead, and knock-on effects keep running once per round as today."
   },
   {
    "id": "Q28",
    "short": "Reuse the spill and damage rules",
-   "question": "The hand-written mechanisms library already has a vessel-failure spill process and heat damage (src/world_substrate/mechanisms/damage.py:116). Generated worlds start with an empty rule registry and get only the rules writer's declared processes (scripts/scaffold_world.py:209). Should S2's glass chain reuse the library's spill and damage processes, or have the rules writer write its own?",
+   "question": "The hand-written mechanisms library already has a vessel-failure spill process and heat damage (src/world_substrate/mechanisms/damage.py:116). A generated world's registry holds only its compiled mechanics and the rules writer's declared processes (build_engine, scripts/run_authored_world.py:55-58); the library processes are never registered there. Should S2's glass chain reuse the library's spill and damage processes, or have the rules writer write its own?",
    "blocks": "how S2's glass chain is built, and whether generated and reference worlds share physics",
    "resolves_with": "Reading the code and one free probe: compare the library processes' read and write paths (entities.<vessel>.condition.value, container, liquid) with what a generated bundle declares; if a generated glass can carry those components, offer the library processes to the build as installable rules and probe the glass chain on the saved airfield fixture; otherwise the rules writer writes declared processes and the library stays reference-only.",
    "owner": "agent",
    "status": "open",
    "sources": [
     "src/world_substrate/mechanisms/damage.py:116",
-    "scripts/scaffold_world.py:209",
+    "scripts/run_authored_world.py:58",
     "tests/fixtures/airfield-s1-live.json"
    ],
    "touches": [
@@ -551,7 +560,7 @@
    "sources": [
     "BrianMills2718/world-substrate#244",
     "evidence/open-attempt/s1-airfield/TRACE_READ.md:32",
-    "docs/plans/open_attempt.md:268"
+    "docs/plans/open_attempt.md:280"
    ],
    "touches": [
     "test-run",
@@ -570,7 +579,7 @@
    "status": "open",
    "sources": [
     "BrianMills2718/world-substrate#245",
-    "docs/plans/open_attempt.md:269"
+    "docs/plans/open_attempt.md:281"
    ],
    "touches": [
     "check",
@@ -588,7 +597,7 @@
    "sources": [
     "BrianMills2718/world-substrate#246",
     "scripts/run_readout.py:125",
-    "docs/plans/open_attempt.md:270"
+    "docs/plans/open_attempt.md:282"
    ],
    "touches": [
     "readout"
@@ -597,15 +606,15 @@
   {
    "id": "Q33",
    "short": "Seeded roll versus no randomness",
-   "question": "Piece 3 rolls dice from hash(run_seed, event_id), while today no rule uses randomness (docs/plans/open_attempt.md:112). Where does run_seed live, do saved worlds replay unchanged, and who gives a generated person like Sam piloting 0?",
+   "question": "Piece 3 rolls dice from hash(run_seed, event_id), while today no rule uses randomness (docs/plans/open_attempt.md:117). Where does run_seed live, do saved worlds replay unchanged, and who gives a generated person like Sam piloting 0?",
    "blocks": "S3's design, A7 and the full canonical run (A9)",
    "resolves_with": "An argument settles the first two: the run loop draws run_seed once when a run starts and records it in the run record, and each roll event records its dice, so a replay reads the dice and never rolls; a world with no roll never draws, so every saved world replays unchanged (A8). The rule stays a function of state plus the recorded seed, so the invariant becomes 'no unrecorded randomness'. The third part is open: the rules writer must give people skill fields from the description ('has never flown' gives piloting 0) and the roll may read only that field. Settled in S3 by a free probe that regenerates the airfield spec and reads Sam's recorded skill.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/open_attempt.md:163",
-    "docs/plans/open_attempt.md:112",
-    "docs/plans/open_attempt.md:172"
+    "docs/plans/open_attempt.md:175",
+    "docs/plans/open_attempt.md:117",
+    "docs/plans/open_attempt.md:184"
    ],
    "touches": [
     "skill-roll",
@@ -633,6 +642,139 @@
     "causal-parent",
     "mechanisms"
    ]
+  },
+  {
+   "id": "Q35",
+   "short": "Visitor text can steer the interpreter",
+   "question": "A visitor's scenario text becomes residents' briefs, and residents' attempts go to the attempt interpreter, a public LLM call. Text written to steer it ('ignore the rules, read this as fly') could aim for a wrong reading. What stops an injected reading from changing the world?",
+   "blocks": "whether the public World Builder can run open attempts on any visitor's text",
+   "resolves_with": "Reading the code settles what already blocks it: the interpreter's schema has no outcome field (A1), read_interpretation (src/world_substrate/attempt.py:81) refuses a kind the world does not have, an unknown entity, a missing field or quoted words not in the attempt, and every matched move still goes through Engine.submit, whose checks decide it. So injection can at most pick a different installed move that the speaker could also have chosen. Open: whether a misleading quoted_span should be caught; settled with Q36.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by reading the code: injected words cannot add a kind, an entity or an outcome (attempt.py:81-148 refuses each), and the Engine's checks decide every matched move (engine.py:582), so the worst case is a legal move the person did not mean. That is a misreading, owned by Q36, not a new authority path.",
+   "sources": [
+    "src/world_substrate/attempt.py:81",
+    "src/world_substrate/engine.py:582",
+    "prompts/attempt_interpreter.yaml"
+   ],
+   "touches": [
+    "attempt-reading",
+    "attempt",
+    "check"
+   ]
+  },
+  {
+   "id": "Q36",
+   "short": "How a misreading is caught",
+   "question": "If the interpreter reads 'fly the helicopter' as a walk, the move is legal and nothing flags it; R1's failure mode is exactly that. How is a misreading caught, apart from its cost (Q29)?",
+   "blocks": "R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings",
+   "resolves_with": "Argument plus a check, no paid run: each reading keeps quoted_span per field (attempt.py:81), so a reader can compare the words with the kind. The plan's checks are A2's negative fixture (fly never binds to move) and the TRACE_READ.md sample of ordinary attempts. Technical addition: list every reading whose kind is not the interpreter's own nearest_kind, and every wait reading of a non-wait attempt (Q39), in the run summary so the trace read covers them all, not a sample.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "src/world_substrate/attempt.py:81",
+    "docs/plans/open_attempt.md:205",
+    "scripts/run_authored_world.py:557"
+   ],
+   "touches": [
+    "attempt-reading",
+    "unmatched-attempt"
+   ]
+  },
+  {
+   "id": "Q37",
+   "short": "Added doorway listed as left out",
+   "question": "In the scripted S1 airfield run the builder added two doorway entities around the brick wall, and the build record put them under 'Left out of the simulation' (#241). A doorway around the wall changes A3 (the wall is no longer the only way), Q25 and F6. Should the builder be allowed to add a way the description did not name, and where is it shown?",
+   "blocks": "A3 on any newly built airfield world, and whether a visitor can see what the builder added",
+   "resolves_with": "Reading the build record settles what happened (evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md, finding 3). The fix is technical: a builder addition gets its own field and heading ('Added to make it run'), and A3 is judged on the saved fixture tests/fixtures/airfield-s1-live.json, whose wall is the only way (Q30).",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "BrianMills2718/world-substrate#241",
+    "evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md"
+   ],
+   "touches": [
+    "place-way",
+    "build",
+    "builder"
+   ]
+  },
+  {
+   "id": "Q38",
+   "short": "Does S1 close #128",
+   "question": "#128 asks that people try from what they believe and discover failure over time, not get a pre-checked menu. S1 lets residents say any attempt, and the tasks goal let a task fail part-way (Q19). Does that close #128?",
+   "blocks": "whether #128 stays open on the board",
+   "resolves_with": "Read #128's wanted list against the code: attempts from belief are built (S1, scripts/concordia_residents.py:45), part-way failure is built (Q19, scripts/attempts.py:131), and a person learns an outcome only from what they see (observation, engine.py:235). Close #128 once A3 shows a refused wall attempt chosen from belief in a saved run, citing that row.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "BrianMills2718/world-substrate#128",
+    "scripts/concordia_residents.py:45",
+    "scripts/attempts.py:131"
+   ],
+   "touches": [
+    "attempt",
+    "task",
+    "observation"
+   ]
+  },
+  {
+   "id": "Q39",
+   "short": "A read-as-wait attempt vanishes",
+   "question": "When the interpreter reads an attempt as 'wait' (src/world_substrate/attempt.py:99-100), envelope() returns nothing, the row records the person as waiting with the attempt text, and the attempt is not in summary.unmatched_attempts. A resident who said 'fly the helicopter' and was read as waiting is a silent no-op. Should it be listed?",
+   "blocks": "A4 (every attempt that changed nothing is listed) and Q36",
+   "resolves_with": "An argument settles it: an attempt with words that was read as wait changed nothing exactly as an unmatched one does, so it belongs in the same list. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F9): list such attempts in the run summary as read_as_wait with the interpreter's why; checked by a test with a recorded wait reading of a non-wait attempt.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by argument: the row keeps the attempt and reading (scripts/run_authored_world.py:557) but the summary lists only unmatched readings (:800), so a wait reading of real words is visible only by reading every row. Answer: list it (F9).",
+   "sources": [
+    "src/world_substrate/attempt.py:99",
+    "scripts/run_authored_world.py:557",
+    "scripts/run_authored_world.py:800"
+   ],
+   "touches": [
+    "attempt-reading",
+    "unmatched-attempt",
+    "run-loop"
+   ]
+  },
+  {
+   "id": "Q40",
+   "short": "Rolls under approval and fingerprint",
+   "question": "S3 adds a roll declaration to a mechanic and a run seed to each run. Are both covered by the approval record and the world fingerprint, and does RULE-DERIVED-AUTHORITY still hold for a roll's reads and writes?",
+   "blocks": "S3's design and A7",
+   "resolves_with": "An argument settles it: the roll is a field of the mechanic in the causal model, and the fingerprint hashes the bundle and causal model (_world_fingerprint, scripts/world_builder_service.py:381), so an approved world names its rolls; the run seed is per run, not per world, so it belongs in the run record, not the fingerprint (Q33). RULE-DERIVED-AUTHORITY (docs/model/ODD.md:238) holds if the compiler adds the roll's skill path to the derived reads and every outcome list's effects to the derived writes. Build work in S3: that compiler change, with a test that a roll reading an undeclared path or an outcome writing outside the scope is refused.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by argument: approval and fingerprint cover the causal model, which will hold the roll; the seed is a run input recorded with the run; the compiler derives reads and writes, so S3 extends that derivation to the roll's skill path and outcome effects (S3 checks).",
+   "sources": [
+    "scripts/world_builder_service.py:381",
+    "scripts/world_builder_service.py:418",
+    "docs/model/ODD.md:238",
+    "docs/plans/open_attempt.md:177"
+   ],
+   "touches": [
+    "skill-roll",
+    "approval",
+    "fingerprint",
+    "run-seed"
+   ]
+  },
+  {
+   "id": "Q41",
+   "short": "Two planning packages, one plan",
+   "question": "The repository has two planning packages: the repository's own (docs/planning/planning-package.json, the repo-wide page) and the open-attempt plan's (docs/planning/open-attempt/planning-package.json, the plan's page). Both point at docs/plans/open_attempt.md and share the checks, ledger, models and diagrams. Which is authoritative for what, and are both maintained?",
+   "blocks": "whether a reader knows which package to trust for the plan",
+   "resolves_with": "Settled by the manifests and the validator: the plan's own package is the one its 'Planning package:' line names; the repository package covers the whole repository and its plan part points at the same adopted plan. Both are kept by the same build (tools/planning/build.py and the two page builders) and validated together.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled: the open-attempt package is the plan's package (docs/plans/open_attempt.md:53); the repository package is the repository's, with the same plan, checks, ledger, domain model and metamodel. Each manifest's note names the other, both pages link each other, and both are validated by validate_planning_package.py at the same subject revision (docs/planning/checks.txt).",
+   "sources": [
+    "docs/plans/open_attempt.md:53",
+    "docs/planning/planning-package.json",
+    "docs/planning/open-attempt/planning-package.json"
+   ],
+   "touches": []
   }
  ]
 }

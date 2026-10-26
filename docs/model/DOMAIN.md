@@ -42,15 +42,17 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 | **Scene replay** (`scene-replay`) | The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. | `docs/model/ODD.md (11.5)` | `scripts/render_scene_replay.py:398` |
 | **Share link and replay** (`share`) | A saved run rebuilt from the run log that a visitor replays with no AI calls. | `docs/model/ODD.md (11.5)` | `scripts/world_builder_service.py:598` |
 | **Daily allowance** (`budget`) | Visitor $3/day, owner $5/day; spend fails closed. | `docs/model/ODD.md:252` | `scripts/world_builder_service.py:51` |
-| **Affordance (offered move)** (`affordance`) | A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. | `docs/plans/open_attempt.md:92` | `src/world_substrate/engine.py:352` |
-| **Check** (`check`) | One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed. | `docs/model/ODD.md:236` | `src/world_substrate/rules.py:48` |
+| **Affordance (offered move)** (`affordance`) | A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. | `docs/plans/open_attempt.md:111` | `src/world_substrate/engine.py:352` |
+| **Check** (`check`) | One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed. | `docs/model/ODD.md:229` | `src/world_substrate/rules.py:48` |
 | **Attempt (in own words)** (`attempt`) | What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. | `docs/model/ODD.md:348` | `src/world_substrate/attempt.py:149` |
-| **Attempt reading** (`attempt-reading`) | The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said. | `docs/model/ODD.md:348` | `src/world_substrate/attempt.py:81` |
+| **Attempt reading** (`attempt-reading`) | The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. | `docs/model/ODD.md:348` | `src/world_substrate/attempt.py:81` |
 | **Unmatched attempt** (`unmatched-attempt`) | An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer. | `docs/model/ODD.md:351` | `src/world_substrate/attempt.py:25` |
 | **Observation** (`observation`) | What one actor sees this round: the fields its senses and position allow, never the whole world. | `docs/model/ODD.md:207` | `src/world_substrate/engine.py:235` |
 | **Living projection** (`projection`) | The read-only living client, JSON and server-sent events rebuilt from canonical snapshots and events; it never changes the world. | `AGENTS.md:35` | `src/world_substrate/projection.py:44` |
 | **Hard causal parent** (`causal-parent`) | An earlier event a rule declares as mechanically supporting this one; kept apart from the information a person merely had in mind. | `README.md:83` | `src/world_substrate/rules.py:383` |
-| **Derived exchange** (`exchange`) | A composite reading (two give events make one exchange) derived from committed events, never a second effect. | `AGENTS.md:22` | `src/world_substrate/exchange.py:20` |
+| **Derived exchange** (`exchange`) | A composite reading (two give events make one exchange) derived from committed events, never a second effect. | `docs/contracts/transition-envelope-v0.md:42` | `src/world_substrate/exchange.py:68` |
+| **Installed mechanic** (`mechanic`) | One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. | `AGENTS.md:3` | `src/world_substrate/action_authoring.py:456` |
+| **Entity and component** (`entity-component`) | An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. | `docs/model/ODD.md:100` | `src/world_substrate/model.py:223` |
 
 ## Fixed people-world part
 
@@ -58,7 +60,7 @@ Fixed code every people world gets from compile_spec.py; the group-decision fami
 
 | Concept | Definition | Defined in | Code |
 | --- | --- | --- | --- |
-| **People world** (`people-world`) | A world built from a description about people: people, information, moments and the fixed people rules. | `docs/decisions/008-build-worlds-in-an-agent-harness.md` | `scripts/people_world.py:364` |
+| **People world** (`people-world`) | A world built from a description about people: people, information, moments and the fixed people rules. | `docs/model/ODD.md:285` | `scripts/people_world.py:364` |
 | **Communicate rule** (`communicate`) | The reviewed move that delivers an information item to its recipient. Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. | `docs/model/ODD.md:277` | `spikes/any-scenario-2026-10/compile_spec.py:56` |
 | **Scheduled moment** (`moment`) | A countdown that happens every so many rounds (a weekly meeting, a deadline). Spike code: it lives in spikes/any-scenario-2026-10/, which the live build loads through scripts/people_world.py:73. | `docs/model/ODD.md:278` | `spikes/any-scenario-2026-10/compile_spec.py:48` |
 | **Work cycle** (`work-cycle`) | Each action at most once per person per cycle of at least 3 rounds. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:517` |
@@ -67,7 +69,7 @@ Fixed code every people world gets from compile_spec.py; the group-decision fami
 | **Support** (`support`) | A member's stance on the decision: none, full or conditional on a concern. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:66` |
 | **Remedy** (`remedy`) | A fix of a concern that takes 2 rounds; it can be stopped part-way by the concern's holder objecting. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:332` |
 | **Agenda count** (`agenda`) | group_decision.agenda_items: a bare number of matters put before the decision; an item has no content. Declared in the group-decision component and changed by the compiled put-matter-on-agenda and settle-agenda-matter rules. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:101` |
-| **Rollout** (`rollout`) | The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:399` |
+| **Rollout** (`rollout`) | The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Its processes (authorization-withdrawn, deployment-completes, deployment-suspended, deployment-resumes, deployment-progresses) are defined in _decision_rules. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:436` |
 | **Operating review** (`review`) | Every 6 rounds after deployment; may reopen each resolved concern once. | `docs/model/ODD.md (11.1)` | `spikes/any-scenario-2026-10/compile_spec.py:442` |
 
 ## Written per world by an AI
@@ -87,7 +89,7 @@ Hand-written code for the reference worlds (Kitchen, Waltzman and others); no ge
 | Concept | Definition | Defined in | Code |
 | --- | --- | --- | --- |
 | **Waltzman reference components** (`waltzman-ref`) | Trust, risk, readiness and commitment components and analyses of the hand-written Waltzman world. | `docs/wiki/README.md` | `reference_worlds/waltzman/components.py:11` |
-| **Mechanisms library** (`mechanisms`) | Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28). | `src/world_substrate/mechanisms/__init__.py:1` | `src/world_substrate/mechanisms/__init__.py:3` |
+| **Mechanisms library** (`mechanisms`) | Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28). | `src/world_substrate/mechanisms/__init__.py:1` | `src/world_substrate/mechanisms/__init__.py:3` |
 | **Kitchen flagship** (`kitchen`) | The replicated scarce-knife watched world: hand-written rules of its own on the ordinary Engine. | `README.md:152` | `reference_worlds/kitchen/mechanics.py` |
 
 ## In documents only
@@ -98,8 +100,9 @@ Named in decisions or the roadmap, not on the live path.
 | --- | --- | --- | --- |
 | **Build in an agent harness** (`harness-build`) | Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it. | `docs/decisions/008-build-worlds-in-an-agent-harness.md:48` | `scripts/world_harness.py` |
 | **Executable-law fingerprint** (`law-fingerprint`) | Roadmap hardening item: fingerprint the exact executable law and compiler version. | `roadmap/README.md:252` | `—` |
-| **Knock-on that runs now** (`knock-on-now`) | Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). | `docs/plans/open_attempt.md:145` | `—` |
-| **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:163` | `—` |
+| **Knock-on that runs now** (`knock-on-now`) | Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). | `docs/plans/open_attempt.md:157` | `—` |
+| **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:175` | `—` |
+| **Run seed** (`run-seed`) | Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). | `docs/plans/open_attempt.md:185` | `—` |
 
 ## Where the sources disagree
 

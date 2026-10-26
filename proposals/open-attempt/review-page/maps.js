@@ -264,7 +264,7 @@ window.MAPS = {
     "id": "rollout",
     "label": "Rollout",
     "kind": "Family",
-    "explain": "The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Code: spikes/any-scenario-2026-10/compile_spec.py:399."
+    "explain": "The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Its processes (authorization-withdrawn, deployment-completes, deployment-suspended, deployment-resumes, deployment-progresses) are defined in _decision_rules. Code: spikes/any-scenario-2026-10/compile_spec.py:436."
    },
    {
     "id": "review",
@@ -324,7 +324,7 @@ window.MAPS = {
     "id": "attempt-reading",
     "label": "Attempt reading",
     "kind": "Substrate",
-    "explain": "The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said. Code: src/world_substrate/attempt.py:81."
+    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:81."
    },
    {
     "id": "unmatched-attempt",
@@ -372,19 +372,37 @@ window.MAPS = {
     "id": "exchange",
     "label": "Derived exchange",
     "kind": "Substrate",
-    "explain": "A composite reading (two give events make one exchange) derived from committed events, never a second effect. Code: src/world_substrate/exchange.py:20."
+    "explain": "A composite reading (two give events make one exchange) derived from committed events, never a second effect. Code: src/world_substrate/exchange.py:68."
    },
    {
     "id": "mechanisms",
     "label": "Mechanisms library",
     "kind": "Reference",
-    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
+    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
    },
    {
     "id": "kitchen",
     "label": "Kitchen flagship",
     "kind": "Reference",
     "explain": "The replicated scarce-knife watched world: hand-written rules of its own on the ordinary Engine. Code: reference_worlds/kitchen/mechanics.py."
+   },
+   {
+    "id": "mechanic",
+    "label": "Installed mechanic",
+    "kind": "Substrate",
+    "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. Code: src/world_substrate/action_authoring.py:456."
+   },
+   {
+    "id": "entity-component",
+    "label": "Entity and component",
+    "kind": "Substrate",
+    "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. Code: src/world_substrate/model.py:223."
+   },
+   {
+    "id": "run-seed",
+    "label": "Run seed",
+    "kind": "Theory",
+    "explain": "Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). Code: none yet."
    }
   ],
   "edges": [
@@ -879,6 +897,60 @@ window.MAPS = {
     "source": "mechanisms",
     "target": "process",
     "label": "provides"
+   },
+   {
+    "id": "e82",
+    "source": "compiler",
+    "target": "mechanic",
+    "label": "compiles"
+   },
+   {
+    "id": "e83",
+    "source": "mechanic",
+    "target": "move",
+    "label": "decides each"
+   },
+   {
+    "id": "e84",
+    "source": "mechanic",
+    "target": "check",
+    "label": "holds"
+   },
+   {
+    "id": "e85",
+    "source": "profile",
+    "target": "mechanic",
+    "label": "freezes each"
+   },
+   {
+    "id": "e86",
+    "source": "world",
+    "target": "entity-component",
+    "label": "holds"
+   },
+   {
+    "id": "e87",
+    "source": "check",
+    "target": "entity-component",
+    "label": "reads"
+   },
+   {
+    "id": "e88",
+    "source": "place-way",
+    "target": "entity-component",
+    "label": "is an"
+   },
+   {
+    "id": "e89",
+    "source": "skill-roll",
+    "target": "run-seed",
+    "label": "draws dice from"
+   },
+   {
+    "id": "e90",
+    "source": "run-seed",
+    "target": "causal-trace",
+    "label": "recorded in"
    }
   ],
   "layout": {
@@ -925,9 +997,9 @@ window.MAPS = {
    },
    {
     "id": "Q14",
-    "label": "Q14: Agent-harness build not live",
+    "label": "Q14: Harness build time not measured",
     "kind": "AgentQuestion",
-    "explain": "Blocks: whether build repairs come from a harness or from the rules retry (Q1)."
+    "explain": "Blocks: when the harness replaces the fixed build calls and the rules retry (Q1) on the live path."
    },
    {
     "id": "Q15",
@@ -958,6 +1030,12 @@ window.MAPS = {
     "label": "Q26: Run page hides own-words attempts",
     "kind": "AgentQuestion",
     "explain": "Blocks: the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done."
+   },
+   {
+    "id": "Q27",
+    "label": "Q27: Is S2's fixpoint engine capability",
+    "kind": "BrianQuestion",
+    "explain": "Blocks: slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it."
    },
    {
     "id": "Q28",
@@ -996,6 +1074,24 @@ window.MAPS = {
     "explain": "Blocks: whether causal links built from declared reads are complete: F1's blocked_by_event names the event that changed what a refused move's failed checks read, and Piece 2's reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause."
    },
    {
+    "id": "Q36",
+    "label": "Q36: How a misreading is caught",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings."
+   },
+   {
+    "id": "Q37",
+    "label": "Q37: Added doorway listed as left out",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: A3 on any newly built airfield world, and whether a visitor can see what the builder added."
+   },
+   {
+    "id": "Q38",
+    "label": "Q38: Does S1 close #128",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether #128 stays open on the board."
+   },
+   {
     "id": "agenda",
     "label": "Agenda count",
     "kind": "Concept",
@@ -1008,10 +1104,22 @@ window.MAPS = {
     "explain": "What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens."
    },
    {
+    "id": "attempt-reading",
+    "label": "Attempt reading",
+    "kind": "Concept",
+    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said."
+   },
+   {
     "id": "build",
     "label": "Build",
     "kind": "Concept",
     "explain": "Description to spec, actions, rules, assembly, scripted test run and score."
+   },
+   {
+    "id": "builder",
+    "label": "World Builder and its bundle",
+    "kind": "Concept",
+    "explain": "The public page and service where a person describes a world, approves its rules and watches it run; a build's output is an authoring bundle."
    },
    {
     "id": "causal-parent",
@@ -1030,6 +1138,12 @@ window.MAPS = {
     "label": "Check",
     "kind": "Concept",
     "explain": "One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed."
+   },
+   {
+    "id": "engine",
+    "label": "Engine",
+    "kind": "Concept",
+    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick."
    },
    {
     "id": "gen-rules",
@@ -1061,13 +1175,25 @@ window.MAPS = {
     "id": "mechanisms",
     "label": "Mechanisms library",
     "kind": "Concept",
-    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28)."
+    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28)."
+   },
+   {
+    "id": "observation",
+    "label": "Observation",
+    "kind": "Concept",
+    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world."
    },
    {
     "id": "person",
     "label": "Person and brief",
     "kind": "Concept",
     "explain": "A person the spec names, with goals and beliefs, and the brief only their own resident reads."
+   },
+   {
+    "id": "place-way",
+    "label": "Place and way",
+    "kind": "Concept",
+    "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; written per world as entities from the bundle contract, and the move rule checks the way."
    },
    {
     "id": "readout",
@@ -1217,6 +1343,18 @@ window.MAPS = {
     "label": "bears on"
    },
    {
+    "id": "Q27-knock-on-now",
+    "source": "Q27",
+    "target": "knock-on-now",
+    "label": "bears on"
+   },
+   {
+    "id": "Q27-engine",
+    "source": "Q27",
+    "target": "engine",
+    "label": "bears on"
+   },
+   {
     "id": "Q28-mechanisms",
     "source": "Q28",
     "target": "mechanisms",
@@ -1322,6 +1460,54 @@ window.MAPS = {
     "id": "Q34-mechanisms",
     "source": "Q34",
     "target": "mechanisms",
+    "label": "bears on"
+   },
+   {
+    "id": "Q36-attempt-reading",
+    "source": "Q36",
+    "target": "attempt-reading",
+    "label": "bears on"
+   },
+   {
+    "id": "Q36-unmatched-attempt",
+    "source": "Q36",
+    "target": "unmatched-attempt",
+    "label": "bears on"
+   },
+   {
+    "id": "Q37-place-way",
+    "source": "Q37",
+    "target": "place-way",
+    "label": "bears on"
+   },
+   {
+    "id": "Q37-build",
+    "source": "Q37",
+    "target": "build",
+    "label": "bears on"
+   },
+   {
+    "id": "Q37-builder",
+    "source": "Q37",
+    "target": "builder",
+    "label": "bears on"
+   },
+   {
+    "id": "Q38-attempt",
+    "source": "Q38",
+    "target": "attempt",
+    "label": "bears on"
+   },
+   {
+    "id": "Q38-task",
+    "source": "Q38",
+    "target": "task",
+    "label": "bears on"
+   },
+   {
+    "id": "Q38-observation",
+    "source": "Q38",
+    "target": "observation",
     "label": "bears on"
    }
   ],

@@ -261,7 +261,7 @@
    "id": "rollout",
    "label": "Rollout",
    "kind": "Family",
-   "explain": "The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Code: spikes/any-scenario-2026-10/compile_spec.py:399."
+   "explain": "The deployment the world starts when the decision is authorized: 6 rounds, suspended if support falls. Its processes (authorization-withdrawn, deployment-completes, deployment-suspended, deployment-resumes, deployment-progresses) are defined in _decision_rules. Code: spikes/any-scenario-2026-10/compile_spec.py:436."
   },
   {
    "id": "review",
@@ -321,7 +321,7 @@
    "id": "attempt-reading",
    "label": "Attempt reading",
    "kind": "Substrate",
-   "explain": "The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said. Code: src/world_substrate/attempt.py:81."
+   "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:81."
   },
   {
    "id": "unmatched-attempt",
@@ -369,19 +369,37 @@
    "id": "exchange",
    "label": "Derived exchange",
    "kind": "Substrate",
-   "explain": "A composite reading (two give events make one exchange) derived from committed events, never a second effect. Code: src/world_substrate/exchange.py:20."
+   "explain": "A composite reading (two give events make one exchange) derived from committed events, never a second effect. Code: src/world_substrate/exchange.py:68."
   },
   {
    "id": "mechanisms",
    "label": "Mechanisms library",
    "kind": "Reference",
-   "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
+   "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
   },
   {
    "id": "kitchen",
    "label": "Kitchen flagship",
    "kind": "Reference",
    "explain": "The replicated scarce-knife watched world: hand-written rules of its own on the ordinary Engine. Code: reference_worlds/kitchen/mechanics.py."
+  },
+  {
+   "id": "mechanic",
+   "label": "Installed mechanic",
+   "kind": "Substrate",
+   "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. Code: src/world_substrate/action_authoring.py:456."
+  },
+  {
+   "id": "entity-component",
+   "label": "Entity and component",
+   "kind": "Substrate",
+   "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. Code: src/world_substrate/model.py:223."
+  },
+  {
+   "id": "run-seed",
+   "label": "Run seed",
+   "kind": "Theory",
+   "explain": "Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). Code: none yet."
   }
  ],
  "edges": [
@@ -876,6 +894,60 @@
    "source": "mechanisms",
    "target": "process",
    "label": "provides"
+  },
+  {
+   "id": "e82",
+   "source": "compiler",
+   "target": "mechanic",
+   "label": "compiles"
+  },
+  {
+   "id": "e83",
+   "source": "mechanic",
+   "target": "move",
+   "label": "decides each"
+  },
+  {
+   "id": "e84",
+   "source": "mechanic",
+   "target": "check",
+   "label": "holds"
+  },
+  {
+   "id": "e85",
+   "source": "profile",
+   "target": "mechanic",
+   "label": "freezes each"
+  },
+  {
+   "id": "e86",
+   "source": "world",
+   "target": "entity-component",
+   "label": "holds"
+  },
+  {
+   "id": "e87",
+   "source": "check",
+   "target": "entity-component",
+   "label": "reads"
+  },
+  {
+   "id": "e88",
+   "source": "place-way",
+   "target": "entity-component",
+   "label": "is an"
+  },
+  {
+   "id": "e89",
+   "source": "skill-roll",
+   "target": "run-seed",
+   "label": "draws dice from"
+  },
+  {
+   "id": "e90",
+   "source": "run-seed",
+   "target": "causal-trace",
+   "label": "recorded in"
   }
  ],
  "layout": {

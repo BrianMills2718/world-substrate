@@ -86,7 +86,7 @@
   {
    "node": "effect",
    "relation": "no_counterpart",
-   "why": "the kernel has no evaluable effects; this is what the reference calls effectful relations"
+   "why": "the kernel stores relations, not changes to state, so it has no evaluable effects"
   },
   {
    "node": "write-scope",

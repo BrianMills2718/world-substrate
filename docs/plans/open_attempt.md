@@ -52,6 +52,11 @@ conflict_surfaces:
 
 Planning package: docs/planning/open-attempt/planning-package.json
 
+This is the plan's own package. The repository's package (`docs/planning/planning-package.json`, repo-wide page
+`proposals/planning-package/review-page/`) covers the whole repository and its plan part points at this same plan;
+both share the checks, open-questions ledger, models and diagrams, are rebuilt by `tools/planning/` and are validated
+at the same subject revision (open question Q41).
+
 Review page: [proposals/open-attempt/review-page/](../../proposals/open-attempt/review-page/index.html), live at
 <https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/>.
 
@@ -116,9 +121,12 @@ depend on each other.
 | S1 (Q23): generated worlds have places, ways with a passable flag, and a move that checks the way | `scripts/generate_world_bundle.py:96`, `scripts/generate_causal_model.py:430`; `evidence/open-attempt/q23/README.md` |
 | After S1 (#242, `87b4aa2`): the World Builder page sends open-attempt residents whenever AI chooses the moves | `scripts/world_builder_home.html` on main; `evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md` on main |
 
-Decision 006 limits World Substrate to the governed-rules layer. All three pieces below are rules-layer
-pieces: one turns words into a typed move, one runs rules to a fixpoint inside one commit, one adds a
-recorded roll to a rule. None adds an engine, scheduler, renderer or cognition of our own.
+Decision 006 limits World Substrate to the governed-rules layer. Pieces 1 and 3 are rules-layer pieces:
+one turns words into a typed move, one adds a recorded roll to a rule. Piece 2 runs rules to a fixpoint
+inside one commit, which changes `engine.py`; whether that counts as the engine capability AGENTS.md and
+Decision 006 forbid is Brian's call (open question Q27). The plan's recommendation is that it does not (no
+new loop, clock or scheduler, bounded at 32 reactions inside the existing commit); until he answers, S2 waits
+and S1 and S3 go ahead.
 
 ## The three pieces
 
@@ -129,9 +137,13 @@ recorded roll to a rule. None adds an engine, scheduler, renderer or cognition o
    voice or hands ("walk east through the wall into the hangar"). The affordance page is still shown,
    as "things you know you can do here", but it no longer limits the answer.
 2. **Interpret.** One typed light-model call (`llm_client`, the World Builder's current model, low
-   effort) reads the attempt and the world's action kinds with their roles, and returns either
-   `{kind, roles: {role: entity_id}, quoted_span per role}` or `{unmatched: true, nearest_kind,
-   why}`. Its schema has **no success field**: it says what is being tried, never whether it works.
+   effort) reads the attempt and the world's action kinds with their fields, and returns `{kind, fields,
+   nearest_kind, why}`, where `fields` is a list of rows `{field, value, quoted_span}` (the words in the attempt
+   behind each value) and `kind` may also be `wait`. `read_interpretation` (`src/world_substrate/attempt.py:81-148`)
+   checks the rows against the world and turns a reading that does not fit (unknown kind or entity, missing field,
+   quoted words not in the attempt) into `{unmatched: true, nearest_kind, why}`. Its schema has **no success field**:
+   it says what is being tried, never whether it works. A `wait` reading of an attempt with real words is listed
+   like an unmatched one (F9, Q39).
    The result is recorded as the command, so replay never calls the model again.
 3. **Check.** The matched move goes through `Engine.submit` unchanged. The wall case is an ordinary
    refusal: the generated `move` rule's "the way between is open" check fails (S1's canonical world must show the rules writer gave `move` that check; if it did not, that gap is fixed in the rules writer, never by hand-editing the world), and the event names the wall.
@@ -247,8 +259,8 @@ comes from its trace against A1-A9, and an incomplete review leaves the claim un
 | Slice | What lands | State | Checks |
 | --- | --- | --- | --- |
 | S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | built, not done: merged `fe8c492` (#239); page fix `87b4aa2` (#242); live run `evidence/open-attempt/s1-airfield/` (#247): A4 and A9 pass, A2 and A3 not exercised; the run page does not yet show own-words attempts (Q26) | A1, A8 at merge; free replay `evidence/open-attempt/s1-replay/replay.txt` exit 0; A4, A9 on the owner-allowance run; still owed: A2 and A3 on the saved world `tests/fixtures/airfield-s1-live.json`, and Q26 |
-| S2 | `timing: immediately` processes run to a fixpoint inside one moment | fully_specifiable_now | A5, A6, A8 |
-| S3 | `roll` on action mechanics, seeded and recorded; rules writer prompt can declare it | fully_specifiable_now | A7, A8, then the full canonical run for A9 |
+| S2 | `timing: immediately` processes run to a fixpoint inside one moment | human_decision_required (Q27); specified and ready once Brian answers | A5, A6, A8 |
+| S3 | `roll` on action mechanics, seeded and recorded; rules writer prompt can declare it; the compiler adds the roll's skill path to derived reads and every outcome's effects to derived writes (Q40) | fully_specifiable_now | A7, A8, a test that a roll outside its derived scope is refused, then the full canonical run for A9 |
 | S4 | AI game master for unmatched attempts | human_decision_required (D2) | none until decided |
 
 **Kinds the canonical airfield world must contain** (generated, never hand-written): `move` between
@@ -284,7 +296,13 @@ resident walk into the wall. The rules writer (`scripts/generate_causal_model.py
   Cost: one extra small call per attempt, measured in S1's first run against the visitor $3/day cap.
 - **D2 (Brian's call, deferred):** for attempts no rule covers, should an AI game master be allowed
   to invent a rough effect, marked "coarse" in the record? Recommendation: not now. v1 says "nothing
-  comes of it" and lists the attempt for the rules writer. If not answered, v1 stays.
+  comes of it" and lists the attempt for the rules writer. If not answered, v1 stays. Prior art in this
+  repository: the offline any-scenario spike already lets its game master write a rule mid-run for each unlisted
+  attempt, installed if it passes the layer-1 checks, else recorded as a one-off ruling (`docs/model/ODD.md:194`,
+  8.19 at `:266`); Decision 007 accepted that for the spike with review after the run, but no person approves (G14)
+  and the spike stays offline (Q17). S4 would differ: it is on the live World Builder, where approval before a run
+  still holds (Decision 006); it makes one coarse effect for one attempt, not a general rule; and the record marks it
+  coarse. If allowed, it reuses the spike's check gate rather than a new path.
 - **D3 (made, technical):** reactions are a `timing` field on the existing process declaration, not a
   new rule type, so they reuse its selector, checks, effects, linked participants and write scopes.
 
@@ -365,7 +383,7 @@ work, reasoning}`; `attempt` replaces `action_id`; it has no success field eithe
 `run-log.jsonl` with its trace id and is never re-read by rules or replay; a failed or malformed reply records
 the actor as waiting, as today.
 
-One new call: the attempt interpreter, through `llm_client`, typed output (`kind`, `roles`, `quoted_span` or `unmatched`, `nearest_kind`, `why`), no success field. Its output is recorded as the command and never re-read by rules or replay; it has no authority to change state, and promotion of its output to authority is refused by construction (only `Engine.submit` writes). Failure: a malformed or failed call records the attempt as unmatched with the error, never a guessed move.
+One new call: the attempt interpreter, through `llm_client`, typed output (`kind`, which may be `wait`; `fields` rows of `field`, `value` and `quoted_span`; `nearest_kind`; `why`), checked into a reading or `unmatched` by `read_interpretation`, no success field. Its output is recorded as the command and never re-read by rules or replay; it has no authority to change state, and promotion of its output to authority is refused by construction (only `Engine.submit` writes). Failure: a malformed or failed call records the attempt as unmatched with the error, never a guessed move.
 
 ## Irreversible actions and spend
 
@@ -385,13 +403,18 @@ The material uncertainties, listed in full as of 2026-10-26: each below could ch
 - Q23 (agent, resolved 2026-10-25): the rules writer now gives `move` a way-open check (`evidence/open-attempt/q23/README.md`).
 - Q25 (agent, resolved by argument 2026-10-26): ways are two-way unless the description declares them one-way; the build is F6 below. Until it lands, each run's `TRACE_READ.md` names any resident stuck behind a way it already used, so it is not read as a refusal by the world.
 - Q26 (agent, open): the run page does not show an attempt in its owner's words or that it matched nothing (G17); S1 is not done until it does.
-- Q27 (agent, resolved 2026-10-26): S2's same-moment fixpoint is a rule semantics inside the one existing commit, not the engine capability the roadmap forbids; the roadmap's eligible-work list now names this plan.
+- Q27 (Brian, open, re-opened 2026-10-26): does S2's same-moment fixpoint in `engine.py` count as the engine capability AGENTS.md and Decision 006 forbid? The earlier resolution was argued by this plan's author, so it goes to Brian. Recommendation: allow it as rule semantics inside the existing commit. Default: S2 waits; S1 and S3 go ahead.
 - Q28 (agent, open): whether S2's glass chain reuses the hand-written spill and damage processes (`src/world_substrate/mechanisms/damage.py:116`) or the rules writer writes its own; settled by reading and one free probe before S2.
 - Q30 (#244, agent, open): a build is accepted although its own test runs say a task is never possible; blocks A2 and A3 on a newly built world, not on the saved fixture.
 - Q31 (#245) and Q32 (#246) (agent, open): a refusal reason reads as a fact rather than a requirement, and the readout picked the goods-flow lens for a training world; neither changes an acceptance check's verdict, both change what a reader of the S1 run sees.
 - Q33 (agent, open in part): S3's seeded roll is settled by argument for where `run_seed` lives (drawn once per run, recorded in the run record, dice recorded per roll event, so replay never rolls and saved worlds without rolls replay unchanged; the 'no randomness' row becomes 'no unrecorded randomness'); open is whether the rules writer gives a generated person a skill field from the description (Sam's piloting 0), checked by a free probe before S3. A7 and A9 depend on it.
 - Q34 (agent, open): read scopes are recorded, not enforced; compiled rules derive their reads from their own checks, so only hand-written rules could leave F1's `blocked_by_event` or a Piece 2 parent link incomplete. Settled by a test-time read check before F1 relies on reads of hand-written rules.
 - Q22 / D2 (Brian): AI game master for unmatched attempts; default "nothing comes of it" stays.
+- Q36 (agent, open): how an interpreter misreading (a legal but wrong move) is caught; quoted spans, A2's negative fixture and a listed set of readings off their nearest kind, settled before A2 is judged. Injected visitor text cannot add a kind, entity or outcome (Q35, resolved).
+- Q37 (#241, agent, open): the builder added doorways around the wall and listed them as left out; A3 is judged on the saved fixture, whose wall is the only way.
+- Q38 (agent, open): #128 closes once A3 shows a refused wall attempt chosen from belief.
+- Q39 (agent, resolved by argument): a wait reading of an attempt with words is a silent no-op today; F9 lists it.
+- Q40 (agent, resolved by argument): S3's rolls sit in the causal model, so approval and the fingerprint cover them; the run seed is a run input; the compiler derives the roll's reads and writes (S3 row).
 - Interpreter cost per attempt (Q29, resolved 2026-10-26 from S1's live run): the 20 interpreter calls added 11.6% to
   the run's other calls (about 24% at the 30-round cap), under the 30% that would require batching, so S1 keeps one
   call per attempt.
@@ -405,12 +428,13 @@ pull request, and checked on a free replay of a saved world before any paid run.
 | --- | --- | --- | --- |
 | F1 | Q2 | The refused row names the earlier event this round that changed what its failed checks read (`blocked_by_event`) | free replay of the saved airfield and c1r24 worlds: every refused row after a lost race names an accepted event id of that round |
 | F2 | Q6 | `/run` refuses a second request for the same session, round and base revision | a test that sends the same round twice: one run, one charge |
-| F3 | Q8 | A field read by a check but written by no rule is a test-run finding | the saved worlds' builds list it where #218 found it |
+| F3 | Q8 | A field a check reads that the build's spec names as used up, claimed or changed by a task, and that no rule writes, is a test-run finding; a fixed fact (the airfield wall's `components.boundary.passable`, read at `tests/fixtures/airfield-s1-live.json:392`, written by no rule) is not | the saved #218 build lists its resource; the airfield fixture's wall is not listed |
 | F4 | Q10 | The readout quotes `said_on_retry` when present, as the scene replay does | free replay of a saved menu-path run |
 | F5 | Q15 | Adopt the `~/code2` repository format (indexes over the existing documents) | the repo-format check reports compliant |
 | F6 | Q25 | Ways are two-way unless the description declares them one-way | regenerate the airfield world and probe both directions |
 | F7 | Q4 | A remedy's work answer says yes or no to the concern's question plus what was set, and the finished-task notice quotes it | a test that a remedy without that answer is refused and the notice quotes it; the next owner-allowance people-world run's TRACE_READ.md reads its notices |
 | F8 | Q9 | Task worlds' scripted test run lasts 24 rounds, like ongoing worlds, instead of 12 | the saved build fixtures score the same or better, and the garden world (#217) finishes inside the test run |
+| F9 | Q39 | An attempt with words that the interpreter read as `wait` is listed in the run summary as `read_as_wait` with the interpreter's why, beside `unmatched_attempts` | a test with a recorded wait reading of "fly the helicopter": the summary lists it; a literal "wait" is not listed |
 
 ## Activation facts
 
