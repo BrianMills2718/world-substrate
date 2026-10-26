@@ -49,6 +49,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## docs/decisions
 
 - [Decision 008: Build worlds inside an agent harness, not with bare LLM calls](../docs/decisions/008-build-worlds-in-an-agent-harness.md)
+- [Decision 009: Same-moment knock-on effects are rule semantics, not new engine capability](../docs/decisions/009-same-moment-knock-on-effects.md)
 
 ## docs/experiments
 

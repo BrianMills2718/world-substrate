@@ -1032,12 +1032,6 @@ window.MAPS = {
     "explain": "Blocks: the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done."
    },
    {
-    "id": "Q27",
-    "label": "Q27: Is S2's fixpoint engine capability",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: slice S2 (A5, A6) and the knock-on part of the canonical run; S1 and S3 do not wait for it."
-   },
-   {
     "id": "Q28",
     "label": "Q28: Reuse the spill and damage rules",
     "kind": "AgentQuestion",
@@ -1138,12 +1132,6 @@ window.MAPS = {
     "label": "Check",
     "kind": "Concept",
     "explain": "One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed."
-   },
-   {
-    "id": "engine",
-    "label": "Engine",
-    "kind": "Concept",
-    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick."
    },
    {
     "id": "gen-rules",
@@ -1340,18 +1328,6 @@ window.MAPS = {
     "id": "Q26-run-loop",
     "source": "Q26",
     "target": "run-loop",
-    "label": "bears on"
-   },
-   {
-    "id": "Q27-knock-on-now",
-    "source": "Q27",
-    "target": "knock-on-now",
-    "label": "bears on"
-   },
-   {
-    "id": "Q27-engine",
-    "source": "Q27",
-    "target": "engine",
     "label": "bears on"
    },
    {

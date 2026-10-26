@@ -130,10 +130,10 @@ depend on each other.
 
 Decision 006 limits World Substrate to the governed-rules layer. Pieces 1 and 3 are rules-layer pieces:
 one turns words into a typed move, one adds a recorded roll to a rule. Piece 2 runs rules to a fixpoint
-inside one commit, which changes `engine.py`; whether that counts as the engine capability AGENTS.md and
-Decision 006 forbid is Brian's call (open question Q27). The plan's recommendation is that it does not (no
-new loop, clock or scheduler, bounded at 32 reactions inside the existing commit); until he answers, S2 waits
-and S1 and S3 go ahead.
+inside one commit, which changes `engine.py`. Brian ruled on 2026-10-26 (open question Q27, [Decision
+009](../decisions/009-same-moment-knock-on-effects.md)) that this is rule semantics, not the engine capability
+AGENTS.md and Decision 006 forbid: it adds no new loop, clock or scheduler and is bounded at 32 reactions
+inside the existing commit.
 
 ## The three pieces
 
@@ -266,7 +266,7 @@ comes from its trace against A1-A9, and an incomplete review leaves the claim un
 | Slice | What lands | State | Checks |
 | --- | --- | --- | --- |
 | S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | built, not done: merged `fe8c492` (#239); page fix `87b4aa2` (#242); live run `evidence/open-attempt/s1-airfield/` (#247): A4 and A9 pass, A2 and A3 not exercised; the run page does not yet show own-words attempts (Q26) | A1, A8 at merge; free replay `evidence/open-attempt/s1-replay/replay.txt` exit 0; A4, A9 on the owner-allowance run; still owed: A2 and A3 on the saved world `tests/fixtures/airfield-s1-live.json`, and Q26 |
-| S2 | `timing: immediately` processes run to a fixpoint inside one moment | human_decision_required (Q27); specified and ready once Brian answers | A5, A6, A8 |
+| S2 | `timing: immediately` processes run to a fixpoint inside one moment | fully_specifiable_now (Q27 answered by Brian 2026-10-26, Decision 009) | A5, A6, A8 |
 | S3 | `roll` on action mechanics, seeded and recorded; rules writer prompt can declare it; the compiler adds the roll's skill path to derived reads and every outcome's effects to derived writes (Q40) | fully_specifiable_now | A7, A8, a test that a roll outside its derived scope is refused, then the full canonical run for A9 |
 | S4 | AI game master for unmatched attempts | human_decision_required (D2) | none until decided |
 
@@ -412,7 +412,7 @@ The material uncertainties, listed in full as of 2026-10-26: each below could ch
 - Q23 (agent, resolved 2026-10-25): the rules writer now gives `move` a way-open check (`evidence/open-attempt/q23/README.md`).
 - Q25 (agent, resolved by argument 2026-10-26): ways are two-way unless the description declares them one-way; the build is F6 below. Until it lands, each run's `TRACE_READ.md` names any resident stuck behind a way it already used, so it is not read as a refusal by the world.
 - Q26 (agent, open): the run page does not show an attempt in its owner's words or that it matched nothing (G17); S1 is not done until it does.
-- Q27 (Brian, open, re-opened 2026-10-26): does S2's same-moment fixpoint in `engine.py` count as the engine capability AGENTS.md and Decision 006 forbid? The earlier resolution was argued by this plan's author, so it goes to Brian. Recommendation: allow it as rule semantics inside the existing commit. Default: S2 waits; S1 and S3 go ahead.
+- Q27 (resolved by Brian 2026-10-26, "i approve"; Decision 009): S2's same-moment fixpoint in `engine.py` is rule semantics, not the engine capability AGENTS.md and Decision 006 forbid, within its bounds (inside the existing commit, 32-reaction cap, `timing: immediately` only).
 - Q28 (agent, open): whether S2's glass chain reuses the hand-written spill and damage processes (`src/world_substrate/mechanisms/damage.py:116`) or the rules writer writes its own; settled by reading and one free probe before S2.
 - Q30 (#244, agent, open): a build is accepted although its own test runs say a task is never possible; blocks A2 and A3 on a newly built world, not on the saved fixture.
 - Q31 (#245) and Q32 (#246) (agent, open): a refusal reason reads as a fact rather than a requirement, and the readout picked the goods-flow lens for a training world; neither changes an acceptance check's verdict, both change what a reader of the S1 run sees.
