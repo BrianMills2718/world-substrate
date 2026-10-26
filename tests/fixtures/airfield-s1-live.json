@@ -1,0 +1,912 @@
+{
+ "source": "Live World Builder build world-builder-live/world/3fb55edadef84f4d9516b25d7cde231e (owner, deployed 87b4aa2, 2026-10-26, S1 live airfield run, evidence/open-attempt/s1-airfield), as generated",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "airfield-office",
+   "label": "Airfield Office and Hangar",
+   "summary": "An airfield team handles recurring flight-training requests in an office beside a hangar.",
+   "location": "airfield-office",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "person",
+    "fields": [
+     {
+      "name": "role",
+      "type": "string",
+      "default": "trainee"
+     },
+     {
+      "name": "energy",
+      "type": "integer",
+      "default": 10
+     }
+    ]
+   },
+   {
+    "name": "trainee",
+    "fields": [
+     {
+      "name": "flights",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   },
+   {
+    "name": "boundary",
+    "fields": [
+     {
+      "name": "place_a",
+      "type": "entity_ref",
+      "default": "office"
+     },
+     {
+      "name": "place_b",
+      "type": "entity_ref",
+      "default": "hangar"
+     },
+     {
+      "name": "passable",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "water",
+    "fields": [
+     {
+      "name": "amount",
+      "type": "integer",
+      "default": 1
+     }
+    ]
+   },
+   {
+    "name": "helicopter",
+    "fields": [
+     {
+      "name": "condition",
+      "type": "string",
+      "default": "ready"
+     }
+    ]
+   },
+   {
+    "name": "training_queue",
+    "fields": [
+     {
+      "name": "waiting_sessions",
+      "type": "integer",
+      "default": 1
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "office",
+    "label": "Airfield office",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "hangar",
+    "label": "Hangar",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "brick-wall",
+    "label": "Brick wall",
+    "categories": [
+     "boundary"
+    ],
+    "location": "office",
+    "components": {
+     "boundary": {
+      "place_a": "office",
+      "place_b": "hangar",
+      "passable": false
+     }
+    }
+   },
+   {
+    "id": "sam",
+    "label": "Sam",
+    "categories": [
+     "actor",
+     "trainee"
+    ],
+    "location": "office",
+    "components": {
+     "person": {
+      "role": "trainee",
+      "energy": 10
+     },
+     "trainee": {
+      "flights": 0
+     }
+    }
+   },
+   {
+    "id": "instructor",
+    "label": "Flight instructor",
+    "categories": [
+     "actor",
+     "instructor"
+    ],
+    "location": "office",
+    "components": {
+     "person": {
+      "role": "instructor",
+      "energy": 10
+     }
+    }
+   },
+   {
+    "id": "mechanic",
+    "label": "Airfield mechanic",
+    "categories": [
+     "actor",
+     "mechanic"
+    ],
+    "location": "hangar",
+    "components": {
+     "person": {
+      "role": "mechanic",
+      "energy": 10
+     }
+    }
+   },
+   {
+    "id": "dispatcher",
+    "label": "Airfield dispatcher",
+    "categories": [
+     "actor",
+     "dispatcher"
+    ],
+    "location": "office",
+    "components": {
+     "person": {
+      "role": "dispatcher",
+      "energy": 10
+     }
+    }
+   },
+   {
+    "id": "desk",
+    "label": "Office desk",
+    "categories": [
+     "surface"
+    ],
+    "location": "office",
+    "components": {}
+   },
+   {
+    "id": "glass-of-water",
+    "label": "Glass of water",
+    "categories": [
+     "water"
+    ],
+    "portable": true,
+    "owner_ref": "place:office",
+    "location": "office",
+    "components": {
+     "water": {
+      "amount": 1
+     }
+    }
+   },
+   {
+    "id": "helicopter",
+    "label": "Helicopter",
+    "categories": [
+     "helicopter"
+    ],
+    "location": "hangar",
+    "components": {
+     "helicopter": {
+      "condition": "ready"
+     }
+    }
+   },
+   {
+    "id": "training-requests",
+    "label": "Training requests",
+    "categories": [
+     "queue"
+    ],
+    "location": "office",
+    "components": {
+     "training_queue": {
+      "waiting_sessions": 1
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "move",
+    "description": "Move from one airfield place to another by way of a represented boundary.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "way",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "request-training",
+    "description": "Add a flight-training request to the airfield's waiting requests.",
+    "fields": [
+     {
+      "name": "queue",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "prepare-helicopter",
+    "description": "Inspect and prepare the helicopter for a training session.",
+    "fields": [
+     {
+      "name": "helicopter",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "practice-flight",
+    "description": "Take part in a flight-training session using the helicopter.",
+    "fields": [
+     {
+      "name": "trainee",
+      "type": "entity_ref"
+     },
+     {
+      "name": "instructor",
+      "type": "entity_ref"
+     },
+     {
+      "name": "helicopter",
+      "type": "entity_ref"
+     },
+     {
+      "name": "queue",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "drink-water",
+    "description": "Drink water from the represented glass.",
+    "fields": [
+     {
+      "name": "water",
+      "type": "entity_ref"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "person": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1"
+    },
+    "place": {
+     "kind": "emoji",
+     "value": "\ud83c\udfe2"
+    },
+    "boundary": {
+     "kind": "emoji",
+     "value": "\ud83e\uddf1"
+    },
+    "water": {
+     "kind": "emoji",
+     "value": "\ud83e\udd5b"
+    },
+    "helicopter": {
+     "kind": "emoji",
+     "value": "\ud83d\ude81"
+    },
+    "queue": {
+     "kind": "emoji",
+     "value": "\ud83d\udccb"
+    },
+    "surface": {
+     "kind": "emoji",
+     "value": "\ud83e\ude91"
+    }
+   },
+   "category_assets": {
+    "actor": "person",
+    "trainee": "person",
+    "instructor": "person",
+    "mechanic": "person",
+    "dispatcher": "person",
+    "place": "place",
+    "boundary": "boundary",
+    "water": "water",
+    "helicopter": "helicopter",
+    "queue": "queue",
+    "surface": "surface"
+   },
+   "station_roles": {
+    "place": "workstation",
+    "queue": "source",
+    "helicopter": "goal"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "move-through-boundary",
+    "version": "1",
+    "action_kind": "move",
+    "rationale": "Movement changes the acting person's location only through a passable represented boundary, in its represented direction.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": []
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "place"
+      ],
+      "components": []
+     },
+     "way": {
+      "categories": [
+       "boundary"
+      ],
+      "components": [
+       "boundary"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the boundary is passable",
+      "left": {
+       "participant": {
+        "name": "way",
+        "path": "components.boundary.passable"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "you are at the boundary's first place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "way",
+        "path": "components.boundary.place_a"
+       }
+      }
+     },
+     {
+      "label": "the destination is the boundary's second place",
+      "left": {
+       "action_field": "to"
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "way",
+        "path": "components.boundary.place_b"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "location.location_id",
+      "op": "set",
+      "value": {
+       "action_field": "to"
+      }
+     }
+    ],
+    "limits": [
+     "Only the represented first-to-second direction is enabled; reverse travel is not inferred.",
+     "No linked entity is moved by this action.",
+     "The brick wall is initially impassable, so it cannot be used to cross between the office and hangar."
+    ],
+    "tests": [
+     "Moving through a passable boundary from its first place to its second changes the actor's location to the destination.",
+     "The impassable brick wall refuses movement.",
+     "A destination other than the boundary's second place is refused."
+    ],
+    "semantic_bindings": [
+     "to is the destination place entity reference.",
+     "way is the represented boundary."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "request-flight-training",
+    "version": "1",
+    "action_kind": "request-training",
+    "rationale": "A dispatcher at the office can add a request to the represented training queue; the action description implies increasing its waiting count.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "queue": {
+      "categories": [
+       "queue"
+      ],
+      "components": [
+       "training_queue"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "you are the dispatcher",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "dispatcher"
+      }
+     },
+     {
+      "label": "you are at the training requests",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "queue",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "queue",
+      "path": "components.training_queue.waiting_sessions",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The action does not create or move a separate request entity; only the represented waiting count changes.",
+     "A dispatcher away from the queue is refused."
+    ],
+    "tests": [
+     "A dispatcher co-located with the queue increases waiting sessions by one.",
+     "A non-dispatcher or an actor in another location is refused."
+    ],
+    "semantic_bindings": [
+     "queue is the training requests queue."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "prepare-training-helicopter",
+    "version": "1",
+    "action_kind": "prepare-helicopter",
+    "rationale": "The mechanic can prepare the represented helicopter in the hangar; the represented condition provides the only state for its readiness.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "helicopter": {
+      "categories": [
+       "helicopter"
+      ],
+      "components": [
+       "helicopter"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "you are the mechanic",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "mechanic"
+      }
+     },
+     {
+      "label": "you are with the helicopter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "helicopter",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "helicopter",
+      "path": "components.helicopter.condition",
+      "op": "set",
+      "value": {
+       "literal": "ready"
+      }
+     }
+    ],
+    "limits": [
+     "Preparation only sets the represented condition to ready; no inspection details, repairs, or other effects are represented.",
+     "The mechanic must be in the helicopter's location."
+    ],
+    "tests": [
+     "A mechanic with the helicopter sets its condition to ready.",
+     "A non-mechanic or a mechanic in another location is refused."
+    ],
+    "semantic_bindings": [
+     "helicopter is the helicopter being prepared."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "practice-training-flight",
+    "version": "1",
+    "action_kind": "practice-flight",
+    "rationale": "A trainee and instructor can practice when together with a ready helicopter and a waiting training request; the represented trainee flight count and queue count record the session.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "person",
+      "trainee"
+     ]
+    },
+    "participants": {
+     "trainee": {
+      "categories": [
+       "trainee"
+      ],
+      "components": [
+       "person",
+       "trainee"
+      ]
+     },
+     "instructor": {
+      "categories": [
+       "instructor"
+      ],
+      "components": [
+       "person"
+      ]
+     },
+     "helicopter": {
+      "categories": [
+       "helicopter"
+      ],
+      "components": [
+       "helicopter"
+      ]
+     },
+     "queue": {
+      "categories": [
+       "queue"
+      ],
+      "components": [
+       "training_queue"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "you are the trainee taking part",
+      "left": {
+       "entity_id": "actor"
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "trainee"
+      }
+     },
+     {
+      "label": "you are a trainee",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "trainee"
+      }
+     },
+     {
+      "label": "the instructor is an instructor",
+      "left": {
+       "participant": {
+        "name": "instructor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "instructor"
+      }
+     },
+     {
+      "label": "the helicopter is ready",
+      "left": {
+       "participant": {
+        "name": "helicopter",
+        "path": "components.helicopter.condition"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "ready"
+      }
+     },
+     {
+      "label": "a training request is waiting",
+      "left": {
+       "participant": {
+        "name": "queue",
+        "path": "components.training_queue.waiting_sessions"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "you are with the instructor",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "instructor",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "you are with the helicopter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "helicopter",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "you are with the training requests",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "queue",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "trainee",
+      "path": "components.trainee.flights",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "queue",
+      "path": "components.training_queue.waiting_sessions",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "All participants must be co-located; this refuses the initial office-versus-hangar arrangement.",
+     "The represented boundary is initially impassable, so this action does not assume anyone can cross it.",
+     "No energy, flight duration, or helicopter wear is changed because the action description and represented state do not establish those effects."
+    ],
+    "tests": [
+     "A co-located trainee, instructor, ready helicopter, and nonempty queue allow one session, incrementing flights and decrementing waiting sessions.",
+     "A mismatched actor and trainee, a non-instructor, an unready helicopter, an empty queue, or any location mismatch is refused."
+    ],
+    "semantic_bindings": [
+     "trainee is both the acting trainee and the trainee whose flight count changes.",
+     "instructor is the person instructing the session.",
+     "helicopter is the aircraft used for the session.",
+     "queue is the training requests queue."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "drink-represented-water",
+    "version": "1",
+    "action_kind": "drink-water",
+    "rationale": "Drinking consumes the represented water in the glass; no hydration or energy field is represented.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": []
+    },
+    "participants": {
+     "water": {
+      "categories": [
+       "water"
+      ],
+      "components": [
+       "water"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "you are with the glass of water",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "water",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the glass contains water",
+      "left": {
+       "participant": {
+        "name": "water",
+        "path": "components.water.amount"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "water",
+      "path": "components.water.amount",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The action consumes one represented unit; it does not alter energy or replenish the glass.",
+     "The actor must be in the glass's location."
+    ],
+    "tests": [
+     "An actor at a glass with positive amount reduces its amount by one.",
+     "An empty glass or a glass in another location is refused."
+    ],
+    "semantic_bindings": [
+     "water is the represented glass of water."
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "recurring-training-requests",
+    "rationale": "The airfield summary describes recurring flight-training requests; new demand arriving maintains an ongoing queue without creating or moving goods.",
+    "selector": {
+     "categories": [
+      "queue"
+     ],
+     "components": [
+      "training_queue"
+     ]
+    },
+    "checks": [],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.training_queue.waiting_sessions",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   }
+  ],
+  "terminal": null
+ }
+}
