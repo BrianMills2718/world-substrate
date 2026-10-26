@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "9e49df29582144e83f4887af9fd4d21c76067331",
+  "subject_revision": "c028b4b66639189e168ddb76b97cf93bae60d3e6",
   "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
   "parts": {
     "checks": {
