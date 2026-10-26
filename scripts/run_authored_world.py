@@ -263,12 +263,16 @@ def _without_no_ops(engine: Engine, page: dict[str, Any], *, bookkeeping: dict[s
     scratch copy of the world; only moves that change something stay on offer.
     """
     useful = []
+    scratch = None
     for row in page.get("available") or []:
-        scratch = Engine(deepcopy(engine.world, {id(engine.world.commands): [], id(engine.world.events): []}), engine.registry)
+        # A refused move leaves the world unchanged, so one scratch copy serves until a move is accepted.
+        scratch = scratch or engine.scratch()
         outcome = scratch.submit({**row["action"], "controller": "preview"})
         own = (bookkeeping or {}).get(row["action"].get("kind", ""), set())
-        if outcome.get("status") == "accepted" and any(_field(c.get("path", "")) not in own for c in _state_changes(outcome["event"])):
-            useful.append(row)
+        if outcome.get("status") == "accepted":
+            scratch = None
+            if any(_field(c.get("path", "")) not in own for c in _state_changes(outcome["event"])):
+                useful.append(row)
     return {**page, "available": useful}
 
 
