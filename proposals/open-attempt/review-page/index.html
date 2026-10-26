@@ -72,11 +72,11 @@ a{color:var(--have)}
 <body>
 <main>
 <h1>People try anything; the world decides</h1>
-<p class="lede">Design for three missing pieces of World Substrate. The first is built: since slice 1 (merged 2026-10-25) a person in a World Builder world says what they try in their own words instead of picking from a list, and only the world's rules decide what happens, so walking into a wall is refused with the wall named. Still to come: knock-on effects that run to the end on their own (slice 2), and a person's recorded skill deciding how a risky attempt turns out (slice 3). The first live airfield run with AI residents (2026-10-26) showed residents moving every round and the wall refused by name, but no resident reached the helicopter, so the skill and knock-on cases were not yet exercised live; slice 1 is built, not done. Pick an example to see what the run's record shows, or will show.</p>
+<p class="lede">Design for three missing pieces of World Substrate. The first is built: since slice 1 (merged 2026-10-25) a person in a World Builder world says what they try in their own words instead of picking from a list, and only the world's rules decide what happens, so walking into a wall is refused with the wall named. Slice 2 is built too: knock-on effects run to the end on their own in the same moment (a glass falls, breaks, spills, and the neighbour hears it), shown so far in tests and not yet in a live generated world. Still to come: a person's recorded skill deciding how a risky attempt turns out (slice 3). The first live airfield run with AI residents (2026-10-26) showed residents moving every round and the wall refused by name, but no resident reached the helicopter, so the skill and knock-on cases were not yet exercised live; slice 1 is built, not done. Pick an example to see what the run's record shows, or will show.</p>
 <p class="lede">This page is the plan's own package. The repository-wide package, with every open question and the system context, is on <a href="../../planning-package/review-page/">World Substrate: planning package</a>; both share one set of checks, questions and models (Q41).</p>
 <div class="legend">
 <span class="chip"><span class="sw have"></span>Blue, solid: in World Substrate now (S1 added attempts and interpreting)</span>
-<span class="chip"><span class="sw miss"></span>Orange, dashed: added by a later slice (S2 knock-ons, S3 rolls)</span>
+<span class="chip"><span class="sw miss"></span>Orange, dashed: added by a later slice (S3 rolls)</span>
 <span class="chip"><span class="sw grey"></span>Grey: what the person meant (kept, never read by rules)</span>
 </div>
 <div class="examples" role="group" aria-label="Examples">
@@ -105,7 +105,7 @@ a{color:var(--have)}
 <div class="stage have" data-s="apply"><span class="t">6. Carry out</span><span class="tag">have</span>
 <div class="d">The rule's effects change the world, all at once or not at all.</div></div>
 <div class="arrow">↓</div>
-<div class="stage miss" data-s="react"><span class="t">7. Knock-on effects to the end</span><span class="tag">new, piece 2</span>
+<div class="stage have" data-s="react"><span class="t">7. Knock-on effects to the end</span><span class="tag">built in S2</span>
 <div class="d">Rules marked "immediately" fire on the new state, again and again, until nothing more happens, all in the same moment. Each cites what caused it.</div></div>
 <div class="arrow">↓</div>
 <div class="stage have" data-s="notice"><span class="t">8. Who notices</span><span class="tag">have</span>
@@ -118,7 +118,7 @@ a{color:var(--have)}
 <div class="tablewrap"><table>
 <tr><th>Slice</th><th>State</th><th>What lands</th><th>Shown by</th></tr>
 <tr><td>1</td><td><b style="color:var(--have)">Built</b>, merged (pull requests 239, 242 and 247); <b style="color:var(--miss)">not done</b>: the live airfield run (2026-10-26) moved every resident each round, but the helicopter was unreachable (issue 244), so two acceptance checks wait on a scripted run on the saved airfield world, and the run page does not yet show each own-words attempt (Q26)</td><td>The rules writer makes places, ways between them and walls; then people say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
-<tr><td>2</td><td><b style="color:var(--miss)">Planned</b>; you allowed it on 2026-10-26 (Q27, Decision 009)</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
+<tr><td>2</td><td><b style="color:var(--have)">Built</b>; you allowed it on 2026-10-26 (Q27, Decision 009); <b style="color:var(--miss)">not done</b>: the glass chain passes in tests, and a live generated airfield world still has to show it</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
 <tr><td>3</td><td><b style="color:var(--miss)">Planned</b></td><td>Skill rolls, seeded and recorded, read only from recorded skill</td><td>The helicopter example, and the same words giving different dice at skill 0 and 3</td></tr>
 </table></div>
 
@@ -161,8 +161,8 @@ a{color:var(--have)}
 <tr><td><b>Check (precondition)</b> <span class="tag have">built</span></td><td>A test a move or process must pass against current state (the way is passable, the trainee can fly); a failed check refuses the move with the check named.</td><td>no_counterpart</td></tr>
 <tr><td><b>Effect</b> <span class="tag have">built</span></td><td>A change to one component path that runs when every check holds, inside the declared write scope.</td><td>no_counterpart</td></tr>
 <tr><td><b>Declared write scope</b> <span class="tag have">built</span></td><td>The paths a rule may change; the Engine refuses any change outside them.</td><td>no_counterpart</td></tr>
-<tr><td><b>Process (knock-on rule)</b> <span class="tag have">built</span></td><td>A rule the world runs by itself each round for every matching entity whose checks hold; this is how effects propagate (plants dry out, lessons arrive).</td><td>no_counterpart</td></tr>
-<tr><td><b>Same-moment knock-on</b> <span class="tag miss">planned</span></td><td>A process with timing immediately, run to a fixpoint inside the same moment as the move that triggered it (planned slice S2 of docs/plans/open_attempt.md). Planned, not built.</td><td>no_counterpart</td></tr>
+<tr><td><b>Process (knock-on rule)</b> <span class="tag have">built</span></td><td>A rule the world runs by itself for every matching entity whose checks hold, each round by default or at once when its timing is immediately; this is how effects propagate (plants dry out, a glass breaks).</td><td>no_counterpart</td></tr>
+<tr><td><b>Same-moment knock-on</b> <span class="tag have">built</span></td><td>A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, and more than 32 reactions refuses the whole moment (slice S2 of docs/plans/open_attempt.md, ODD 8.20).</td><td>no_counterpart</td></tr>
 <tr><td><b>Skill roll</b> <span class="tag miss">planned</span></td><td>A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3). Planned, not built.</td><td>no_counterpart</td></tr>
 <tr><td><b>Terminal condition</b> <span class="tag have">built</span></td><td>A state-derived stop: when its checks hold over the selected entities, the task ends one way.</td><td>no_counterpart</td></tr>
 <tr><td><b>Frozen mechanic profile</b> <span class="tag have">built</span></td><td>The validated rules of one world frozen under an id before any run.</td><td>no_counterpart</td></tr>
@@ -173,16 +173,16 @@ a{color:var(--have)}
 <!-- types:end -->
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch docs/wiki-routes-planning at subject revision b2216ee); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-26 on branch feat/s2-immediate-processes at subject revision d305058); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 0, of 1 (tracked as Q15)</td><td><span class="tag miss">exit 1</span></td></tr>
 <tr><td>trace reads</td><td>runs 11, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>project check (tests, system model, docs)</td><td>tests run 718, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project check (tests, system model, docs)</td><td>tests run 727, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>wiki and Markdown cap</td><td>md files 136, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 17 open, 24 resolved</h3>
+<h3 class="sub">Open questions: 16 open, 26 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -193,7 +193,6 @@ a{color:var(--have)}
 <tr><td><b>Q16</b> Goals skip the package gate</td><td>Brian</td><td>whether the next goal can again run without a current system model and question list</td></tr>
 <tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
 <tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
-<tr><td><b>Q28</b> Reuse the spill and damage rules</td><td>agent</td><td>how S2&#x27;s glass chain is built, and whether generated and reference worlds share physics</td></tr>
 <tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
 <tr><td><b>Q31</b> Refusal reason reads as a fact</td><td>agent</td><td>whether a person, and a reader of the run, can tell why a move was refused</td></tr>
 <tr><td><b>Q32</b> Readout picks the wrong lens</td><td>agent</td><td>whether a run&#x27;s readout describes the world the visitor wrote</td></tr>
@@ -212,7 +211,7 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 62 ideas, 91 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (17 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (16 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->
@@ -236,12 +235,12 @@ glass:{title:"Ana knocks the glass off the desk",setup:"A glass of water sits on
 ["have","attempt","\"I sweep my arm across the desk.\"","attempt"],
 ["have","interpret","Push, the glass off the desk.","{kind: push, roles: {pusher: ana, thing: glass_1}}"],
 ["have","carry out","The glass is no longer on the desk.","event e1"],
-["miss","reaction","Falls: nothing holds it up, so it lands on the floor.","event e2 · parent e1"],
-["miss","reaction","Breaks: it is fragile and it fell.","event e3 · parent e2"],
-["miss","reaction","Spills: a broken glass holding water empties it on the floor.","event e4 · parent e3"],
-["miss","reaction","Crash sound: a breaking glass makes a noise.","event e5 · parent e3"],
+["have","reaction","Falls: nothing holds it up, so it lands on the floor.","event e2 · parent e1"],
+["have","reaction","Breaks: it is fragile and it fell.","event e3 · parent e2"],
+["have","reaction","Spills: a broken glass holding water empties it on the floor.","event e4 · parent e3"],
+["have","reaction","Crash sound: a breaking glass makes a noise.","event e5 · parent e3"],
 ["have","notice","Lee, in the hangar, hears a crash from the office.","observation to lee, from e5"]],
-out:"Five events in one moment, each naming what caused it. Today the fall would wait for the next round and fire once."},
+out:"Five events in one moment, each naming what caused it, and one command: the round does not advance. This is the chain the S2 tests run (tests/test_open_attempt.py, KnockOnEffectTests); a live generated world showing it is still owed. Before S2 the fall waited for the next round and fired once."},
 heli:{title:"Sam tries to fly the helicopter",setup:"Sam has never flown: piloting skill 0. Sam is in the cockpit.",stages:["decide","attempt","interpret","check","roll","apply","react","notice"],ev:[
 ["grey","meant","Sam expects to lift off smoothly and fly to the coast.","expected_effect (never read by rules)"],
 ["have","attempt","\"I start the engine, pull up on the collective and fly to the coast.\"","attempt"],
