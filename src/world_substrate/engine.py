@@ -15,6 +15,7 @@ from .rules import (
     DeclaresProcessCausalParents,
     DescribesEffects,
     ProcessRule,
+    ReactsImmediately,
     ReceivesProcessEventId,
     ReportsProgress,
     RuleRegistry,
@@ -743,8 +744,30 @@ class Engine:
             }
         )
         candidate.events.append(event)
+        prior = self.world
         self.world = candidate
-        return {"status": "accepted", "event": event}
+        try:
+            reactions = self._settle(event, command_id)
+        except Exception:
+            self.world = prior
+            raise
+        if reactions is None:
+            # Knock-on effects would not settle: the whole moment is refused, so
+            # neither the attempt nor any reaction commits (no partial mutation).
+            self.world = prior
+            return self._reject(
+                action,
+                command_id,
+                event_id,
+                "reaction_limit",
+                checks + [_reaction_limit_check()],
+                before,
+                observation,
+            )
+        result: dict[str, Any] = {"status": "accepted", "event": event}
+        if reactions:
+            result["reactions"] = reactions
+        return result
 
     def _reject(
         self,
@@ -800,6 +823,9 @@ class Engine:
                     }
                 )
                 for process in self.registry.processes():
+                    if _is_immediate(process):
+                        # Runs only as a knock-on effect, inside _settle.
+                        continue
                     # Build the process candidate before checking its trigger.
                     # A due() hook that writes can only corrupt this detached
                     # view, and a due process reuses the same candidate for its
@@ -821,10 +847,98 @@ class Engine:
                         )
                         if event is not None:
                             produced.append(event)
+                            reactions = self._settle(event, command_id)
+                            if reactions is None:
+                                return self._refuse_round(saved, command_id, process)
+                            produced.extend(reactions)
             except Exception:
                 self.world = saved
                 raise
         return {"status": "accepted", "events": produced}
+
+    def _refuse_round(
+        self, saved: World, command_id: str, process: ProcessRule
+    ) -> dict[str, Any]:
+        """Undo a round whose knock-on effects would not settle, and record why."""
+        self.world = saved
+        state = self.world.material_dict()
+        event = self._event(
+            event_id=_identifier("e", len(self.world.events) + 1),
+            rule_id=process.rule_id,
+            rule_version=process.version,
+            cause=command_id,
+            status="reaction_limit",
+            checks=[_reaction_limit_check()],
+            before=state,
+            after=state,
+            read_paths=process.read_paths,
+            write_paths=process.write_paths,
+            bearer={"kind": "process", "id": process.rule_id, "controller": None},
+        )
+        self.world.commands.append(
+            {"command_id": command_id, "op": "advance", "steps": 1, "status": "reaction_limit"}
+        )
+        self.world.events.append(event)
+        return {"status": "reaction_limit", "events": [event]}
+
+    def _settle(
+        self, trigger: dict[str, Any], command_id: str
+    ) -> list[dict[str, Any]] | None:
+        """Run knock-on effects of a committed event until nothing more is due.
+
+        Waves: every immediate process is asked, on the state the last wave left,
+        which entities are due; those are then applied in the registry's fixed
+        order. Each (process, entity) pair fires at most once per moment, so a
+        reaction cannot feed itself. Each reaction cites as its hard causal parent
+        the event of this moment that last changed its entity, else the trigger.
+        Returns None when more than REACTION_LIMIT reactions would happen; the
+        caller then refuses the whole moment.
+        """
+        processes = [p for p in self.registry.processes() if _is_immediate(p)]
+        reactions: list[dict[str, Any]] = []
+        # This moment's events in commit order; a reaction's parent is the latest
+        # of them that changed an entity in its binding.
+        moment = [trigger["event_id"]]
+        fired: set[tuple[str, str]] = set()
+        while processes:
+            wave: list[tuple[ProcessRule, list[dict[str, str]]]] = []
+            for process in processes:
+                view = _rule_world(self.world)
+                before = view.material_dict()
+                bindings = self._readonly_call(
+                    view,
+                    before,
+                    process.rule_id,
+                    "due",
+                    lambda process=process, view=view: process.due_bindings(view),
+                )
+                bindings = [b for b in bindings if (process.rule_id, b["it"]) not in fired]
+                if bindings:
+                    wave.append((process, bindings))
+            if not wave:
+                break
+            last_cause = {
+                entity_id: entity.last_cause_event_id
+                for entity_id, entity in self.world.entities.items()
+            }
+            for process, bindings in wave:
+                ids = sorted({b["it"] for b in bindings})
+                fired.update((process.rule_id, i) for i in ids)
+                parents = sorted(
+                    {_moment_parent(moment, [last_cause.get(e) for e in b.values()]) for b in bindings}
+                )
+                candidate = _rule_world(self.world)
+                before = candidate.material_dict()
+                event = self._apply_process(
+                    process, command_id, candidate, before, entity_ids=ids, parents=parents
+                )
+                if event is None:
+                    continue
+                reactions.append(event)
+                moment.append(event["event_id"])
+                if len(reactions) > REACTION_LIMIT:
+                    return None
+        return reactions
 
     def _apply_process(
         self,
@@ -832,9 +946,12 @@ class Engine:
         command_id: str,
         candidate: World,
         before: dict[str, Any],
+        *,
+        entity_ids: list[str] | None = None,
+        parents: list[str] | None = None,
     ) -> dict[str, Any] | None:
         event_id = _identifier("e", len(self.world.events) + 1)
-        causal_parents = (
+        causal_parents = parents if parents is not None else (
             list(
                 self._readonly_call(
                     candidate,
@@ -851,7 +968,9 @@ class Engine:
             causal_parents = _validate_causal_parent_ids(
                 causal_parents, self.world.events, process.rule_id
             )
-        if isinstance(process, ReceivesProcessEventId):
+        if entity_ids is not None:
+            process.apply_to(candidate, event_id, entity_ids)
+        elif isinstance(process, ReceivesProcessEventId):
             process.apply_with_event_id(candidate, event_id)
         else:
             process.apply(candidate)
@@ -955,6 +1074,29 @@ class Engine:
             "actual": actual,
             "event_match": event_match,
         }
+
+
+# Decision 009: at most this many knock-on reactions per moment; more refuses the moment.
+REACTION_LIMIT = 32
+
+
+def _is_immediate(process: ProcessRule) -> bool:
+    return isinstance(process, ReactsImmediately) and process.timing == "immediately"
+
+
+def _moment_parent(moment: list[str], causes: list[str | None]) -> str:
+    """The latest event of this moment among ``causes``, else the moment's trigger."""
+    in_moment = [moment.index(c) for c in causes if c in moment]
+    return moment[max(in_moment)] if in_moment else moment[0]
+
+
+def _reaction_limit_check() -> Check:
+    return Check(
+        f"Knock-on effects settle within {REACTION_LIMIT} reactions",
+        False,
+        f"more than {REACTION_LIMIT}",
+        REACTION_LIMIT,
+    )
 
 
 def _material_hash(value: dict[str, Any]) -> str:
