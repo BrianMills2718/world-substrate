@@ -181,7 +181,7 @@ There is no global clock in the service: everything is request-driven. Inside a 
 | install_freeze | start of every run | MechanicProfile | frozen id into the trace |
 | run | POST `/run` | World, Entity, Run, Snapshot | contested-run trace; run rows `no_action`, `nothing_left` |
 | act | each submitted attempt | World, Entity | one event (`accepted` or a refusal status) + one command |
-| advance | once per round after all actors | World, Entity | one `advance` command; one `accepted` event per due process |
+| advance | once per round after all actors | World, Entity | one `advance` command; one `accepted` event per due each_round process, plus its knock-on reactions (8.20); `reaction_limit` when a round is undone |
 | project | native runs, reference builds | LiveProjection | live-projection bundle |
 | render | after each run; offline | SceneProfile, Frames | HTML only |
 | compare | POST `/compare-native-coordination` | Comparison | comparison-change record |
@@ -229,7 +229,8 @@ Each rule below is enforced by the cited code.
 2. rule checks run on a detached candidate; if checks mutated it -> `scope_violation` (`:595`; checks only read, RULE-CHECKS-ARE-READ-ONLY); any failed check -> `precondition_failed` (`:617`);
 3. the rule applies to the candidate; a write to engine-owned state -> `scope_violation` (`:647`);
 4. revision += 1 (`:667`); the diff must fall inside the rule's declared `write_paths` for the entities named by the attempt (`:669-674`) -> else `scope_violation` (`:678`; RULE-WRITE-SCOPE);
-5. commit: the candidate replaces the world (`:722`), one `accepted` event (`:695`) and one `action` command (`:716`).
+5. commit: the candidate replaces the world (`:722`), one `accepted` event (`:695`) and one `action` command (`:716`);
+6. knock-on effects settle (8.20); if they would pass the reaction limit, the world is put back and the attempt is recorded as `reaction_limit` (`:762`) instead.
 
 **8.3 Process tick** (`engine.py:786-902`). `advance(n)` writes one `advance` command per tick (`:797`), increments the tick, and applies each due process in declared order on a candidate; each commit writes an `accepted` event (`:885`). An out-of-scope process write raises `ScopeViolation`; `advance` restores the pre-tick world (`:825`) and re-raises, so **no event records the defective process**: the failure surfaces as a request error instead.
 
@@ -264,6 +265,8 @@ Each rule below is enforced by the cited code.
 **8.18 Pipeline modeling** (`spikes/any-scenario-2026-10/model_scenario.py`). The ODD is condensed by `odd_brief` and appended to the scenario text, cut so the whole stays under the bundle generator's 2,000-character limit (`:434`); the brief is not saved. Mechanics use `ATTEMPT_GUIDANCE` (checks say only whether an actor may begin; processes play out feasibility) and the stronger rule model. `build_engine` compiles and installs; a reject stops the step. Repairs: keep a candidate when its count of stable blocking findings (all except `extreme_conditions` and `behavior_anomaly`, which are LLM-judged) falls, or when it fixes the targeted finding with at most two new ones; return the best model seen (`:329-392`). Sensing and stock mappings are LLM outputs validated client-side against the bundle's fields (`:137`, `:174-176`).
 
 **8.19 Mid-run rules** (`spikes/any-scenario-2026-10/midrun.py:59-110`). A proposed rule passes when the whole model's blocking findings do not exceed the run's starting count and no blocking finding names the new rule or is a conservation finding. A pass installs new actions and processes into the running Engine's registry and submits the attempt; a fail submits a `gm-ruling` action that the Engine records as `unsupported_action`. Either way the record goes to `summary.json` `rules_written_mid_run`. No person approves before or after (G14).
+
+**8.20 Knock-on effects** (`engine.py:884` `_settle`, `:859` `_refuse_round`; `action_authoring.py:271` `DeclaredProcess.timing`; plan `docs/plans/open_attempt.md` piece 2, slice S2). A process declares `timing`: `each_round` (default, run by `advance`) or `immediately` (`PROCESS_TIMINGS`). After an accepted attempt or a round process event commits, the engine runs waves: each immediate process names its due bindings on the state the last wave left (`due_bindings`), then those apply in registry order to exactly those entities `it` (`apply_to`), each as its own event carrying `reaction_wave` and `causal_parent_event_ids` (the event of this moment that last changed an entity in its binding, else the trigger). Each (process, `it`) pair fires at most once per moment, and the loop stops when nothing new is due. More than `REACTION_LIMIT` (32) reactions refuses the whole moment: an attempt is put back and recorded as `reaction_limit` with the failed check "Knock-on effects settle within 32 reactions"; a round is undone and its `advance` command and one event carry `reaction_limit`. The rules writer is told to use `immediately` for consequences that follow at once (fall, break, spill, sound) and `each_round` for what takes time (`scripts/generate_causal_model.py`). The run transcript lists each round's reactions under `reactions` (`event_id, rule_id, wave, caused_by, caused_by_rule, changes`; `world_changes` keeps only each_round process events), and the round replay shows them in the "By itself" strip after the rule that set them off. Tests: `tests/test_open_attempt.py` `KnockOnEffectTests` (glass chain, loop refused, round undone, views).
 
 ## 9. Issue #106 and this model
 

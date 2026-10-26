@@ -900,7 +900,9 @@ class Engine:
         # of them that changed an entity in its binding.
         moment = [trigger["event_id"]]
         fired: set[tuple[str, str]] = set()
+        wave_no = 0
         while processes:
+            wave_no += 1
             wave: list[tuple[ProcessRule, list[dict[str, str]]]] = []
             for process in processes:
                 view = _rule_world(self.world)
@@ -934,6 +936,8 @@ class Engine:
                 )
                 if event is None:
                     continue
+                # Marks the event as a knock-on effect and which wave of its moment it ran in.
+                event["reaction_wave"] = wave_no
                 reactions.append(event)
                 moment.append(event["event_id"])
                 if len(reactions) > REACTION_LIMIT:

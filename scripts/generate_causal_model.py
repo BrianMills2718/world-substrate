@@ -268,6 +268,14 @@ def _process_schema() -> dict[str, Any]:
             "process_id": {"type": "string", "minLength": 1},
             "rationale": {"type": "string", "minLength": 1},
             "selector": _selector_schema(),
+            "timing": {
+                "description": (
+                    "each_round (default): runs once per round. immediately: a knock-on effect that runs in the same "
+                    "moment as the change that makes its checks hold (a pushed glass falls, then breaks, then spills), "
+                    "repeating until nothing more is due."
+                ),
+                "enum": ["each_round", "immediately"],
+            },
             "participants": {
                 "description": (
                     "Optional linked entities this process also changes in the same transition, each resolved from "
@@ -333,8 +341,9 @@ def causal_model_schema(bundle: dict[str, Any]) -> dict[str, Any]:
             },
             "processes": {
                 "description": (
-                    "Things the world does by itself once per round, with no actor: every entity "
-                    "matching the selector whose checks hold (participant 'it') gets the effects."
+                    "Things the world does by itself, with no actor: every entity matching the selector whose "
+                    "checks hold (participant 'it') gets the effects, once per round, or at once as a knock-on "
+                    "effect when timing is immediately."
                 ),
                 "type": "array",
                 "maxItems": 6,
@@ -416,6 +425,12 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "too (a driver riding in a vehicle, a hospital whose bed a dying patient frees), declare that entity in "
             "the process's participants (link owner_of_it, owned_by_it, co_located, or ref:<component>.<field>) and "
             "target it by that name in the same process; never split one physical change across two processes.",
+            # open_attempt S2 (docs/plans/open_attempt.md piece 2): consequences of a change that physically follow
+            # at once are knock-on processes, so a person sees the whole chain in the round they acted.
+            "When a consequence follows physically at once from another change (something unsupported falls, a "
+            "fragile thing that fell breaks, a broken container spills, a breaking thing makes a sound), make it a "
+            "process with timing immediately whose checks name the state that change leaves; each step of a chain "
+            "is its own process. Keep timing each_round for what takes time (drying, growing, travelling, fuel).",
             "Checks on location/ownership/portable paths must agree with initial_builtin_state "
             "(null means unset), so that at least one action is possible from the starting state.",
             "Never check ownership.owner_ref or portable.portable on an entity whose initial_builtin_state "

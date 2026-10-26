@@ -56,6 +56,15 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         self.assertTrue(any("actor's location.location_id" in rule for rule in rules))
         self.assertTrue(any("there is no 'or'" in rule for rule in rules))
 
+    def test_rules_writer_can_declare_knock_on_processes(self):
+        # open_attempt S2: a process may run immediately; the context says when to choose it.
+        from scripts.generate_causal_model import _context
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        process = causal_model_schema(bundle)["properties"]["processes"]["items"]
+        self.assertEqual(process["properties"]["timing"]["enum"], ["each_round", "immediately"])
+        self.assertNotIn("timing", process["required"])
+        self.assertTrue(any("timing immediately" in rule for rule in _context(bundle)["authority_rules"]))
+
     def test_generation_caps_provider_output_tokens(self):
         bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
         causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())

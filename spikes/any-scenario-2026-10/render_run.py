@@ -99,10 +99,16 @@ def state_rounds(run_dir: Path, bundle: dict[str, Any], rounds: int) -> list[dic
     rulings = {r["event_id"]: r.get("ruling") for r in summary.get("rules_written_mid_run") or []}
     attempts = _attempts(run_dir)
     by_tick: dict[int, list[dict[str, Any]]] = {}
+    round_of: dict[str, int] = {}
+    rule_of = {ev["event_id"]: ev.get("rule_id") for ev in events}
     for ev in events:  # the clock runs first in each advance, so process events carry the next tick number
         t = int(ev.get("tick") or 0)
-        if (ev.get("causal_bearer") or {}).get("kind") == "process":
+        parents = ev.get("causal_parent_event_ids") or []
+        if "reaction_wave" in ev and parents and parents[0] in round_of:
+            t = round_of[parents[0]]  # a knock-on effect belongs to the moment that set it off (open_attempt S2)
+        elif (ev.get("causal_bearer") or {}).get("kind") == "process":
             t -= 1
+        round_of[ev["event_id"]] = t
         by_tick.setdefault(t, []).append(ev)
     out = []
     for t in range(rounds):
@@ -116,8 +122,11 @@ def state_rounds(run_dir: Path, bundle: dict[str, Any], rounds: int) -> list[dic
                 if len(parts) >= 5 and parts[0] == "entities" and parts[2] == "components":
                     state[parts[1]][parts[4]] = c["after"]
                     changes.append(f"{labels.get(parts[1], parts[1])}.{parts[4]}: {c['before']} → {c['after']}")
-            rows.append({"event_id": ev["event_id"], "rule": ev.get("rule_id"), "status": ev.get("status"),
-                         "changes": changes, "failed_checks": _failed_checks(ev)})
+            row = {"event_id": ev["event_id"], "rule": ev.get("rule_id"), "status": ev.get("status"),
+                   "changes": changes, "failed_checks": _failed_checks(ev)}
+            if "reaction_wave" in ev:
+                row["after"] = [{"event_id": p, "rule": rule_of.get(p)} for p in ev.get("causal_parent_event_ids") or []]
+            rows.append(row)
         tried = []
         for a in (x for x in attempts if x["tick"] == t):  # each attempt in full, with any ruling (G16)
             perf = a.get("performed") or {}
@@ -170,7 +179,7 @@ document.getElementById('ws-at').innerHTML=(r.attempts||[]).length?r.attempts.ma
 (a.performed?'<br>Did: '+esc(a.performed):'')+'<br>Expected: '+esc(a.expected_effect)+(a.observed_effect?'<br>Observed: '+esc(a.observed_effect):'')+
 (a.ruling?'<br>Game master ruled: '+esc(a.ruling):'')+'</div>').join(''):'<i>nobody tried anything</i>';
 document.getElementById('ws-ev').innerHTML=r.events.length?r.events.map(e=>
-'<div><code>'+e.event_id+'</code> '+e.rule+' <b>'+e.status+'</b>'+(e.changes.length?': '+e.changes.join('; '):'')+
+'<div><code>'+e.event_id+'</code> '+e.rule+' <b>'+e.status+'</b>'+((e.after||[]).length?' (knock-on effect of '+e.after.map(p=>'<code>'+esc(p.event_id)+'</code> '+esc(p.rule)).join(', ')+')':'')+(e.changes.length?': '+e.changes.join('; '):'')+
 ((e.failed_checks||[]).length?' — failed check: '+e.failed_checks.map(c=>esc(c.label)+(c.required==null?' (was '+esc(c.actual)+')':' (needed '+esc(c.required)+', was '+esc(c.actual)+')')).join('; '):'')+'</div>').join(''):'<i>none</i>';
 document.getElementById('ws-st').innerHTML='<table>'+Object.entries(r.state).map(([k,v])=>'<tr><td><b>'+k+'</b></td><td>'+
 Object.entries(v).map(([f,x])=>f+'='+(typeof x==='number'?Math.round(x*100)/100:x)).join(', ')+'</td></tr>').join('')+'</table>';};

@@ -30,6 +30,8 @@ What is extracted, and from where:
 - Substrate-provided component kinds: ``register_component("<kind>", ...)``
   calls in src/world_substrate/ (information items and deliveries), and the
   linked-participant link kinds in ``PROCESS_LINKS`` (action_authoring.py).
+- Knock-on effects: the process timings in ``PROCESS_TIMINGS`` (action_authoring.py)
+  and ``REACTION_LIMIT`` (engine.py).
 
 Line numbers in the model are documentation; the test enforces file and
 function, so a drifted line is a documentation fix, not a failure.
@@ -284,6 +286,22 @@ def process_links() -> list[str]:
     raise AssertionError("PROCESS_LINKS not found")
 
 
+def process_timings() -> list[str]:
+    for node in ast.walk(_parse(ACTION_AUTHORING)):
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "PROCESS_TIMINGS" for t in node.targets):
+            assert isinstance(node.value, ast.Tuple)
+            return [v for v in (_str(e) for e in node.value.elts) if v]
+    raise AssertionError("PROCESS_TIMINGS not found")
+
+
+def reaction_limit() -> int:
+    for node in ast.walk(_parse(ENGINE)):
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "REACTION_LIMIT" for t in node.targets):
+            assert isinstance(node.value, ast.Constant) and type(node.value.value) is int
+            return node.value.value
+    raise AssertionError("REACTION_LIMIT not found")
+
+
 def load_model() -> dict[str, Any]:
     with MODEL_PATH.open("rb") as handle:
         return tomllib.load(handle)
@@ -352,6 +370,12 @@ class SystemModelMatchesCode(unittest.TestCase):
 
     def test_process_links(self) -> None:
         self.assertEqual(self.model["linked_participants"]["links"], process_links(), "PROCESS_LINKS differs from the model")
+
+    def test_knock_on_effects(self) -> None:
+        # open_attempt S2: the process `timing` field and the per-moment reaction limit.
+        knock_on = self.model["knock_on_effects"]
+        self.assertEqual(knock_on["timings"], process_timings(), "PROCESS_TIMINGS differs from the model")
+        self.assertEqual(knock_on["reaction_limit"], reaction_limit(), "REACTION_LIMIT differs from the model")
 
     def test_world_kinds_name_declared_paths(self) -> None:
         paths = {p["name"] for p in self.model["producing_paths"]}

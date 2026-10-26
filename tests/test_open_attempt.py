@@ -289,6 +289,38 @@ class KnockOnEffectTests(unittest.TestCase):
         self.assertEqual(len(engine.world.events), 5)
         self.assertTrue(engine.replay()["ok"])
 
+    def test_run_record_and_round_picture_show_each_reaction_with_its_cause(self):
+        from scripts.run_authored_world import render_run
+        trace, _, compiled = run_world(GLASS_BUNDLE, GLASS_RULES, policy="scripted", max_turns=1)
+        reactions = trace["transcript"][0]["reactions"]
+        self.assertEqual([(r["rule_id"], r["caused_by_rule"]) for r in reactions],
+                         [("falls", ["push-thing"]), ("breaks", ["falls"]), ("spills", ["breaks"]),
+                          ("crash-sound", ["breaks"])])
+        self.assertEqual(trace["transcript"][0]["world_changes"], [])
+        kept = {e["event_id"] for e in trace["engine_events"]}
+        self.assertLessEqual({p for r in reactions for p in r["caused_by"]}, kept)
+        html = render_run(GLASS_BUNDLE, trace, compiled)
+        frames = json.loads(html.split("const FRAMES=", 1)[1].split(";const PROFILE=", 1)[0])
+        self.assertEqual(frames[0]["reactions"][1], {"rule": "breaks", "after": ["falls"]})
+        self.assertIn("(after ", html)
+
+    def test_state_panel_lists_each_reaction_in_its_moment_with_its_cause(self):
+        import tempfile
+        sys.path.insert(0, str(REPO / "spikes/any-scenario-2026-10"))
+        from render_run import state_rounds
+        engine, _, _ = build_engine(GLASS_BUNDLE, GLASS_RULES)
+        _push(engine)
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp)
+            (run_dir / "events.jsonl").write_text("".join(json.dumps(e) + "\n" for e in engine.world.events))
+            (run_dir / "attempts.jsonl").write_text("")
+            (run_dir / "summary.json").write_text("{}")
+            rows = state_rounds(run_dir, GLASS_BUNDLE, 1)[0]["events"]
+        self.assertEqual([r["rule"] for r in rows], ["push-thing", "falls", "breaks", "spills", "crash-sound"])
+        self.assertNotIn("after", rows[0])
+        self.assertEqual([p["rule"] for p in rows[2]["after"]], ["falls"])
+        self.assertEqual([p["rule"] for p in rows[4]["after"]], ["breaks"])
+
     def test_reactions_do_not_run_each_round(self):
         engine, _, _ = build_engine(GLASS_BUNDLE, GLASS_RULES)
         engine.world.entities["glass"].components["glass"].on_desk = False

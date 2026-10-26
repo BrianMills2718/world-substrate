@@ -48,11 +48,14 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | CheckReport (`checks.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | Attempt (`attempts.jsonl`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | n/a |
 | Attempt reading (`AttemptReading`) | missing (G17) | n/a | n/a | n/a | n/a | n/a | shown | n/a | n/a |
+| event `reaction_limit` | partial | partial | partial | partial | partial | partial | partial | shown | shown |
+| knock-on reaction (`Reaction`) | shown | shown | missing | shown | missing | missing | shown | missing | shown |
 | RuleChange (mid-run rule or ruling) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | shown (G16 fixed) |
 
 Notes on the rows:
 
 - **Refusal events, all views.** The living-scene renderers accept every engine status (`src/world_substrate/living_scene.py:38`) but show feedback only when the scene profile declares a visual for that rule (`living_scene.py:415`), and only check labels and verdicts, never operands (on purpose: operands can be actor-scoped evidence, `living_scene.py:394`). Authored-world views see refusals only through the transcript's `refused_because` check labels (`scripts/run_authored_world.py:375`), never the event itself (G1). Hence "partial".
+- **Knock-on reactions (open_attempt S2).** `round_replay` draws each one in the round's "By itself" strip after the rule that set it off (`scripts/render_scene_replay.py`, only when a run has one, so older replays are byte-identical); `home` and `build` show it through that embedded replay; `owner_run_log` keeps the transcript's `reactions` rows with `caused_by`. The state panel lists each reaction in the moment that set it off, as "knock-on effect of <event> <rule>" (`spikes/any-scenario-2026-10/render_run.py` `state_rounds`). The scenario replay's frames come from `to_trace`, which does not carry `reactions` yet, and the living-scene and replay-studio views were not changed: `missing`. A `reaction_limit` refusal reaches views like other refusals (status and failed check). Tests: `tests/test_open_attempt.py` `KnockOnEffectTests`.
 - **RunLogEntry is hidden from visitors on purpose**: it holds other visitors' worlds and salted client fingerprints; only the owner reads it (`world_builder_service.py:499`).
 - **The seven World Builder views never read pipeline output** (no file under `scripts/`, `src/`, `deploy/` names `any-scenario`), so the pipeline-only rows are `n/a` there. The pipeline's own spend cap is `spikes/any-scenario-2026-10/spend.py`, not the BudgetLedger.
 - **`stale_revision` cannot occur on the pipeline path**: each resident submits the offered action right after its own `Engine.discover`, and the game master submits at `engine.world.revision` (`midrun.py:91`, `:99`).

@@ -255,6 +255,12 @@ source = "src/world_substrate/attempt.py:81"
 state = ["kind | wait | unmatched", "fields {name: value}", "quoted_spans {name: words}", "nearest_kind", "why"]
 
 [[entities]]
+name = "Reaction"
+what = "A knock-on effect: the event of an immediate process inside the moment that made it due (open_attempt S2), with its hard causal parent and wave."
+source = "src/world_substrate/engine.py:884"
+state = ["event fields as any process event", "reaction_wave", "causal_parent_event_ids", "transcript row: reactions[] {event_id, rule_id, wave, caused_by, caused_by_rule, changes}"]
+
+[[entities]]
 name = "ScenarioRun"
 what = "One run of a generated model with residents (a run-<stamp>/ folder inside the model folder): every Engine event, every attempt, per-tick process changes, the final observed world, a summary, and the bundle/causal model after mid-run rules."
 source = "spikes/any-scenario-2026-10/run_scenario.py:148"
@@ -340,16 +346,16 @@ what = "Engine.submit/apply: validate envelope -> look up rule -> revision check
 source = "src/world_substrate/engine.py:409"
 routes = []
 changes = ["World", "Entity"]
-writes = ["accepted", "invalid_action", "unsupported_action", "stale_revision", "precondition_failed", "scope_violation", "action", "invalid_action_command"]
+writes = ["accepted", "invalid_action", "unsupported_action", "stale_revision", "precondition_failed", "scope_violation", "reaction_limit", "action", "invalid_action_command"]
 schedule = "once per submitted attempt"
 
 [[processes]]
 name = "advance"
-what = "Engine.advance: tick+1, then every due process (in declared order) applies on a detached candidate; an out-of-scope process write raises and restores the pre-tick world (no event is written)."
+what = "Engine.advance: tick+1, then every due each_round process (in declared order) applies on a detached candidate, and its knock-on effects settle (see [knock_on_effects]); an out-of-scope process write raises and restores the pre-tick world (no event is written); a round whose knock-on effects pass the reaction limit is undone and recorded as reaction_limit."
 source = "src/world_substrate/engine.py:829"
 routes = []
 changes = ["World", "Entity"]
-writes = ["accepted", "advance"]
+writes = ["accepted", "reaction_limit", "advance"]
 schedule = "once per round, after all actors"
 
 [[processes]]
@@ -537,6 +543,15 @@ written_by = ["act"]
 writers = [{ file = "src/world_substrate/engine.py", function = "apply", line = 617 }]
 
 [[engine_events]]
+name = "reaction_limit"
+meaning = "The knock-on effects of an attempt or a round event would pass the reaction limit (32 per moment): the whole moment is refused and nothing commits. Its failed check reads 'Knock-on effects settle within 32 reactions'."
+written_by = ["act", "advance"]
+writers = [
+  { file = "src/world_substrate/engine.py", function = "apply", line = 762 },
+  { file = "src/world_substrate/engine.py", function = "_refuse_round", line = 870 },
+]
+
+[[engine_events]]
 name = "scope_violation"
 meaning = "The rule is defective: its checks mutated state, it wrote engine-owned state, or it wrote outside its declared write paths. Candidate discarded."
 written_by = ["act"]
@@ -568,9 +583,12 @@ writers = [{ file = "src/world_substrate/engine.py", function = "_reject_invalid
 
 [[engine_commands]]
 name = "advance"
-meaning = "One tick of process time."
+meaning = "One tick of process time (status reaction_limit when the round was undone because its knock-on effects did not settle)."
 written_by = ["advance"]
-writers = [{ file = "src/world_substrate/engine.py", function = "advance", line = 773 }]
+writers = [
+  { file = "src/world_substrate/engine.py", function = "advance", line = 809 },
+  { file = "src/world_substrate/engine.py", function = "_refuse_round", line = 859 },
+]
 
 # ------------------------------------- run-row statuses (not Engine events) --
 # A transcript row's status is normally an engine event status. The run loop
@@ -1066,6 +1084,21 @@ writers = [{ file = "src/world_substrate/information.py", function = "<module>",
 source = "src/world_substrate/action_authoring.py:264 (DeclaredProcess.participants), :672 (_process_participants), :733 (_link_bindings)"
 links = ["owner_of_it", "owned_by_it", "co_located"]
 
+# Knock-on effects (docs/plans/open_attempt.md piece 2, Decision 009): a process with
+# timing "immediately" runs inside the moment whose event made it due, in waves, until
+# nothing more is due. Each reaction event carries reaction_wave and cites as hard causal
+# parent the event of its moment that last changed an entity in its binding (else the trigger).
+[knock_on_effects]
+source = "src/world_substrate/action_authoring.py:271 (DeclaredProcess.timing), :372 (due_bindings), :376 (apply_to); src/world_substrate/engine.py:884 (Engine._settle), :859 (_refuse_round)"
+timings = ["each_round", "immediately"]
+reaction_limit = 32
+rules = [
+  "each (process, entity it) pair fires at most once per moment",
+  "a wave asks every immediate process for its due bindings on the state the last wave left, then applies them in registry order",
+  "more than reaction_limit reactions refuses the whole moment: an attempt is recorded as reaction_limit, a round is undone",
+  "reaction events carry reaction_wave; the run transcript lists them under reactions with caused_by and caused_by_rule",
+]
+
 # Which path can produce each kind of thing a world can represent. Values: yes | no
 # | fixed template (only the template's own fixed shape). Evidence per cell: ODD.md 4.1.
 [[producing_paths]]
@@ -1275,6 +1308,14 @@ views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", livin
 [[coverage]]
 element = "Attempt"
 views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "n/a", scenario_replay = "partial", scenario_state_panel = "n/a" }
+
+[[coverage]]
+element = "reaction_limit"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "shown", scenario_state_panel = "shown" }
+
+[[coverage]]
+element = "Reaction"
+views = { home = "shown", build = "shown", play = "missing", round_replay = "shown", living_scene = "missing", composed_living_scene = "missing", owner_run_log = "shown", scenario_replay = "missing", scenario_state_panel = "shown" }
 
 [[coverage]]
 element = "AttemptReading"

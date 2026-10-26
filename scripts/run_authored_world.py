@@ -174,6 +174,21 @@ def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+def _round_reactions(events: list[dict[str, Any]], turn: int) -> dict[str, Any]:
+    """This round's knock-on effects (open_attempt S2), each naming the event and rule that set it off.
+
+    Returns {} when there were none, so transcripts of worlds without immediate processes are unchanged."""
+    rules = {e["event_id"]: e["rule_id"] for e in events}
+    reactions = [
+        {"event_id": _run_event_id(turn, e["event_id"]), "rule_id": e["rule_id"], "wave": e["reaction_wave"],
+         "caused_by": [_run_event_id(turn, p) for p in e.get("causal_parent_event_ids") or []],
+         "caused_by_rule": [rules.get(p, p) for p in e.get("causal_parent_event_ids") or []],
+         "changes": _state_changes(e)}
+        for e in events if "reaction_wave" in e
+    ]
+    return {"reactions": reactions} if reactions else {}
+
+
 def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list[dict[str, Any]], *, model: str,
                   trace_id: str, max_budget: float) -> tuple[dict[str, Any], float]:
     """One person's words read into a typed move (world_substrate.attempt). A wait costs no call."""
@@ -711,8 +726,11 @@ def run_world(
         transcript.append(
             {
                 "turn": turn + turn_offset,
-                # Changes the world made by itself this round (installed processes).
-                "world_changes": [event["rule_id"] for event in advanced.get("events", [])],
+                # Changes the world made by itself this round (installed processes); knock-on effects are listed
+                # apart, under "reactions", each with the event that set it off.
+                "world_changes": [event["rule_id"] for event in advanced.get("events", [])
+                                  if "reaction_wave" not in event],
+                **_round_reactions(engine.world.events[events_seen:], turn + turn_offset),
                 "world_events": [
                     {"event_id": _run_event_id(turn + turn_offset, event.get("event_id")), "rule_id": event["rule_id"],
                      "changes": _state_changes(event)}
