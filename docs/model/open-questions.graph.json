@@ -94,7 +94,13 @@
    "id": "Q24",
    "label": "Q24: Petri nets or TypeDB as carrier",
    "kind": "AgentQuestion",
-   "explain": "Blocks: whether the metamodel keeps its own action-kind and attempt-reading types or adopts an outside carrier for them."
+   "explain": "Blocks: whether the metamodel keeps its own types for checks, noticing and named refusal or adopts an outside carrier (Petri transition semantics are already reused)."
+  },
+  {
+   "id": "Q25",
+   "label": "Q25: Ways work one way only",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: reading S1's canonical airfield run (A2, A3) and how realistic generated worlds are."
   },
   {
    "id": "agenda",
@@ -211,6 +217,12 @@
    "label": "Attempt reading",
    "kind": "Concept",
    "explain": "The interpreter's typed reading of an attempt: one move kind, the entity for each role and the quoted words behind it; refused if it names unknown things or words not said."
+  },
+  {
+   "id": "place-way",
+   "label": "Place and way",
+   "kind": "Concept",
+   "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable."
   }
  ],
  "edges": [
@@ -392,6 +404,24 @@
    "id": "Q24-attempt-reading",
    "source": "Q24",
    "target": "attempt-reading",
+   "label": "bears on"
+  },
+  {
+   "id": "Q25-place-way",
+   "source": "Q25",
+   "target": "place-way",
+   "label": "bears on"
+  },
+  {
+   "id": "Q25-build",
+   "source": "Q25",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q25-run-loop",
+   "source": "Q25",
+   "target": "run-loop",
    "label": "bears on"
   }
  ],

@@ -60,8 +60,9 @@ flight rolls two dice keep-lower.
 
 Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary (generative living worlds on top, rigorous causal engine underneath; the World Builder is the visitor-facing surface). This plan serves that actor directly: the roadmap's "user describing a world" is the
 World Builder visitor of the Actor section. **Recurring job and baseline:** a visitor describes a world and
-watches its people act; today each person can only pick from moves the rules already allow, so impossible
-attempts (the wall), knock-on chains and untrained failures never appear. **Inspectable result this plan
+watches its people act; before S1 each person could only pick from moves the rules already allowed, so
+impossible attempts (the wall) never appeared. S1 (merged at `fe8c492`, #239) lets residents say attempts in
+their own words; knock-on chains (S2) and untrained failures (S3) still never appear. **Inspectable result this plan
 delivers:** the run page and build record of the airfield world showing the wall refusal, the glass chain
 and the rolled crash. **Stage and investment boundary:** prototype stage; three slices, each one pull
 request and at most $3.00 of owner allowance; no new service, engine or repository.
@@ -77,9 +78,10 @@ Each slice changes that step end to end (generator, resident, engine, page) and 
 
 ## Why, in one example
 
-Today a World Builder resident is handed a list of moves the rules already allow and picks one
-(`scripts/concordia_residents.py:81` sets the reply's `action_id` to that list plus `wait`). So
-nobody ever walks into a wall: the wall simply never appears as a choice. Brian, 2026-10-24: a
+Before S1 a World Builder resident was handed a list of moves the rules already allowed and picked one
+(the menu reply's `action_id` is that list plus `wait`, still so for the menu schema at
+`scripts/concordia_residents.py:96`). So nobody ever walked into a wall: the wall never appeared as a
+choice. S1 replaced that with an own-words `attempt` (built; see the slice table). Brian, 2026-10-24: a
 person should be able to "attempt to walk through a wall but these should not be successful", and
 someone who "dont know how" to fly a helicopter "should probably crash it". The survey
 ([flexible-simulator-prior-art-2026-10.md](../research/flexible-simulator-prior-art-2026-10.md),
@@ -87,7 +89,7 @@ Brian's "yes" on 2026-10-25 to this design) found three pieces missing from Worl
 named the established method to copy for each. This plan designs those three, in the order they
 depend on each other.
 
-## Current truth (read from code, 2026-10-25, main 63caf4c)
+## Current truth (read from code before S1, 2026-10-25, main 63caf4c; S1 rows added after it merged at fe8c492)
 
 | Have | Where |
 | --- | --- |
@@ -98,6 +100,11 @@ depend on each other.
 | Things the world does by itself run once per round, each citing its causes | `Engine.advance`, `engine.py:786`; `DeclaredProcess`, `action_authoring.py:245` |
 | Who hears or sees what is limited by the world | `world_substrate.information` |
 | No randomness anywhere in rules | no `random`/`seed` in `engine.py` or `action_authoring.py` |
+| S1: a resident answers `attempt` in its own words instead of an offered `action_id` | `OPEN_SCHEMA`, `scripts/concordia_residents.py:45` |
+| S1: one typed call reads the attempt into one action kind and its fields, with no outcome field | `interpret`, `src/world_substrate/attempt.py:149`; `read_interpretation`, `:81` |
+| S1: an unmatched attempt changes nothing and is listed in the build record | `UNMATCHED_KIND`, `attempt.py:25`; `unmatched_attempts`, `scripts/run_authored_world.py:800` |
+| S1 (Q23): generated worlds have places, ways with a passable flag, and a move that checks the way | `scripts/generate_world_bundle.py:96`, `scripts/generate_causal_model.py:430`; `evidence/open-attempt/q23/README.md` |
+| After S1 (#242, `87b4aa2`): the World Builder page sends open-attempt residents whenever AI chooses the moves | `scripts/world_builder_home.html` on main; `evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md` on main |
 
 Decision 006 limits World Substrate to the governed-rules layer. All three pieces below are rules-layer
 pieces: one turns words into a typed move, one runs rules to a fixpoint inside one commit, one adds a
@@ -164,7 +171,7 @@ Helicopter: Sam (piloting 0) is in the cockpit (gate passes), rolls two dice, ke
 
 ## Requirements
 
-What Brian asked, plus what the plan's own claims imply; each row names its check in the acceptance table below. Status per check: A1-A4 planned in S1; A5-A6 planned in S2; A7 planned in S3; A8 planned in every slice
+What Brian asked, plus what the plan's own claims imply; each row names its check in the acceptance table below. Status per check: S1 is built (merged `fe8c492`, #239): A1 (`tests/test_open_attempt.py`) and A8 (`scripts/check_project.py`) were checked in its pull request, and A2-A4 and A9 wait for the owner-allowance airfield run with residents (the first one, `evidence/open-attempt/s1-airfield-scripted/` on main, never reached the residents; #242 repaired that); A5-A6 planned in S2; A7 planned in S3; A8 planned in every slice
 (run on each merge commit); A9 planned in S1 (open-attempt part) and completed in S3 (full chain). None is
 deferred. The claimed property is the requirement itself (an impossible attempt is refused with its cause,
 a chain finishes, skill sets the dice), never a count of passing tests.
@@ -186,7 +193,7 @@ a chain finishes, skill sets the dice), never a count of passing tests.
 | --- | --- | --- |
 | A1 | Interpreter schema has no success or outcome field | `pytest tests/test_open_attempt.py::test_schema_has_no_outcome` output |
 | A2 | "Fly the helicopter to the coast" never binds to `move` | fixture run on the generated airfield world; the command records `kind: pilot`, `quoted_span` "fly the helicopter" |
-| A3 | Walking through the wall is refused, wall named | the canonical run's event for Sam's wall attempt: `status: refused`, failed check names the wall entity. Depends on Q23 (below) |
+| A3 | Walking through the wall is refused, wall named | the canonical run's event for Sam's wall attempt: `status: refused`, failed check names the wall entity. Q23 (generated worlds have walls) resolved: `evidence/open-attempt/q23/README.md` |
 | A4 | An unmatched attempt changes nothing and is listed | the canonical run's build record `unmatched_attempts` list, and the event's before/after equal |
 | A5 | The glass chain completes in one moment | canonical run: one moment with push, fall, break, spill and sound events; fall cites push, break cites fall, spill and sound cite break. Judged separately: the neighbour's observation for that moment includes the sound |
 | A6 | A self-feeding reaction is refused whole | `tests/test_open_attempt.py` loop fixture: status refused, world unchanged, cap reason recorded |
@@ -228,18 +235,20 @@ comes from its trace against A1-A9, and an incomplete review leaves the claim un
 
 | Slice | What lands | State | Checks |
 | --- | --- | --- | --- |
-| S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | conditional (on Q23's first step) | A1-A4, A8, A9 (on a free replay first, then one owner-allowance run) |
+| S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | built: merged `fe8c492` (#239); page fix `87b4aa2` (#242); live airfield run with residents still owed | A1, A8 at merge; free replay `evidence/open-attempt/s1-replay/replay.txt` exit 0; A2-A4, A9 on the owner-allowance run |
 | S2 | `timing: immediately` processes run to a fixpoint inside one moment | fully_specifiable_now | A5, A6, A8 |
 | S3 | `roll` on action mechanics, seeded and recorded; rules writer prompt can declare it | fully_specifiable_now | A7, A8, then the full canonical run for A9 |
 | S4 | AI game master for unmatched attempts | human_decision_required (D2) | none until decided |
 
 **Kinds the canonical airfield world must contain** (generated, never hand-written): `move` between
 places with a check that the way between is open (the wall), `push` an object, `pilot` a craft to a
-place, and `speak`. Today's generated worlds are economy-style (`make-leads`, `shape-slats`) and
-nothing in `scripts/generate_causal_model.py` asks for places, ways between them or blocking. That is
-open question **Q23**, and it is the first step of S1: generate the airfield world, read its
-mechanics, and if `move` lacks a passability check, change the rules writer's prompt and schema so
-it writes one (never hand-edit the world). A3 cannot pass until Q23 is closed.
+place, and `speak`. Before S1, generated worlds were economy-style (`make-leads`, `shape-slats`) and
+nothing in the rules writer asked for places, ways between them or blocking. That was open question
+**Q23**, S1's first step, resolved 2026-10-25 by a generic fix to the bundle contract and rules writer
+(`scripts/generate_world_bundle.py:96`, `scripts/generate_causal_model.py:430`): the regenerated airfield
+world refuses the walk through the wall with "the way is passable" failed
+(`evidence/open-attempt/q23/after-fix/probe.txt`). Known limit, open question **Q25**: a way works from its
+first place to its second only.
 
 Each slice is its own pull request and leaves a working World Builder. S1 alone already lets a
 resident walk into the wall. The rules writer (`scripts/generate_causal_model.py`, its process and mechanic schemas) learns `timing` in S2 and
@@ -350,7 +359,10 @@ stays $3/day.
 
 ## Uncertainties
 
-- Q23 (agent): does the rules writer give `move` a way-open check? Settled by generating the airfield world and reading it; S1's first step.
+The material uncertainties, listed in full as of 2026-10-25: each below could change a slice's scope or an acceptance check's verdict, and none changes whether this plan is adopted. Q24 (whether Petri nets or TypeDB could carry the metamodel's types) is not material to this plan: it changes only how the types are recorded, not what the slices build.
+
+- Q23 (agent, resolved 2026-10-25): the rules writer now gives `move` a way-open check (`evidence/open-attempt/q23/README.md`).
+- Q25 (agent): ways are one-way, so a resident cannot walk back; blocks reading the canonical run (A2, A3). Resolved by a generic rules-writer fix (ways two-way unless the description declares them one-way) and evidence: the airfield world regenerated and probed in both directions through an open way, saved beside `evidence/open-attempt/q23/`, before the owner-allowance airfield run. Until then, each run's `TRACE_READ.md` names any resident stuck behind a way it already used, so it is not read as a refusal by the world.
 - Q22 / D2 (Brian): AI game master for unmatched attempts; default "nothing comes of it" stays.
 - Interpreter cost per attempt (owner: agent): resolved by S1's first owner run's ledger; if interpreter
   calls add more than 30% to the run's cost, S1 batches one interpreter call per round before merging.

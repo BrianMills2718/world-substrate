@@ -19,12 +19,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+KERNEL_CLONE = Path.home() / "code2" / "scientific-hypergraph"
 KERNEL = {"repository": "BrianMills2718/scientific-hypergraph",
-          "revision": "7b0638f1c30c83ffa5ec3bac4cbf2bbc0fca54e8",
+          "revision": "7b0638fe0aef41c772bb181996516f98be479597",
           "path": "wiki/reference/metamodel/hypergraph-kernel-v2.json"}
 
 # id, label, layer, built, definition, code (path:line), kernel relation, kernel term, why
@@ -43,14 +45,20 @@ TYPES = [
      "every entity is a model element; World Substrate adds components"),
     ("component", "Component (state field)", "state", True,
      "A typed field on an entity (location, water level, passable, role); the only thing effects change. "
-     "A disposition (a wall cannot be walked through) is a component value plus the checks that read it.",
-     "src/world_substrate/model.py:87", "composes", "sci:RelationInstance (holder, value)",
+     "A disposition (a wall cannot be walked through) is a component value plus the checks that read it. "
+     "Held in Entity.components; each component type is registered by register_component (model.py:188).",
+     "src/world_substrate/model.py:241", "composes", "sci:RelationInstance (holder, value)",
      "a component value is a binary relation instance between an entity and a value"),
-    ("place", "Place and way", "state", True,
-     "Places are entities of category place; a way joins two places and has a passable field; "
-     "moving needs a passable way.",
-     "scripts/generate_world_bundle.py:96", "specializes", "sci:RelationInstance (from, to)",
-     "a way is a relation instance between two place elements; passable is a component on it"),
+    ("place", "Place", "state", True,
+     "An entity of category place; every other entity's location names the place it is in.",
+     "scripts/generate_world_bundle.py:96", "specializes", "sci:ModelElement",
+     "a place is a model element like any entity; location components point at it"),
+    ("way", "Way between places", "state", True,
+     "What lies between two places (a door, a brick wall): an entity naming both places with a passable "
+     "field; moving names its way and needs it passable. A way works from its first place to its second "
+     "only (open question Q25).",
+     "scripts/generate_causal_model.py:430", "specializes", "sci:RelationInstance (from, to)",
+     "a way is a directed relation instance between two place elements; passable is a component on it"),
     ("action-kind", "Action kind (effector)", "rules", True,
      "Something an actor can try, with named participant roles, checks and effects, compiled before use.",
      "src/world_substrate/action_authoring.py:61", "specializes", "sci:RelationType",
@@ -66,7 +74,7 @@ TYPES = [
     ("check", "Check (precondition)", "rules", True,
      "A test a move or process must pass against current state (the way is passable, the trainee "
      "can fly); a failed check refuses the move with the check named.",
-     "src/world_substrate/rules.py:48", "no_counterpart", "",
+     "src/world_substrate/action_authoring.py:69", "no_counterpart", "",
      "the kernel stores relations, not evaluable conditions"),
     ("effect", "Effect", "rules", True,
      "A change to one component path that runs when every check holds, inside the declared write scope.",
@@ -84,11 +92,11 @@ TYPES = [
     ("knock-on-now", "Same-moment knock-on", "rules", False,
      "A process with timing immediately, run to a fixpoint inside the same moment as the move that "
      "triggered it (planned slice S2 of docs/plans/open_attempt.md).",
-     "docs/plans/open_attempt.md:128", "no_counterpart", "",
+     "docs/plans/open_attempt.md:135", "no_counterpart", "",
      "a timing rule over effectful processes; the kernel has none"),
     ("skill-roll", "Skill roll", "rules", False,
      "A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3).",
-     "docs/plans/open_attempt.md:230", "no_counterpart", "",
+     "docs/plans/open_attempt.md:240", "no_counterpart", "",
      "a stochastic effect; the kernel has none"),
     ("terminal", "Terminal condition", "rules", True,
      "A state-derived stop: when its checks hold over the selected entities, the task ends one way.",
@@ -122,7 +130,7 @@ TYPES = [
      "a recorded refusal with no relation type to instantiate"),
     ("typed-action", "Typed action (command)", "acting", True,
      "The envelope submitted to the Engine: actor, action kind, bound participants, base revision.",
-     "src/world_substrate/action_authoring.py:49", "specializes", "sci:RelationInstance with sci:RoleBinding",
+     "src/world_substrate/rules.py:307", "specializes", "sci:RelationInstance with sci:RoleBinding",
      "a typed action is a relation instance whose role bindings are its participants"),
     ("event", "Event", "acting", True,
      "The record of one attempt or process step: status, every check and its result, the changes, "
@@ -143,7 +151,7 @@ TYPES = [
 # source, label, target
 LINKS = [
     ("world", "holds", "entity"), ("entity", "is a", "category"), ("entity", "has", "component"),
-    ("place", "is an", "entity"), ("action-kind", "declares", "role"), ("sense", "names", "role"),
+    ("place", "is an", "entity"), ("way", "is an", "entity"), ("way", "joins", "place"), ("action-kind", "declares", "role"), ("sense", "names", "role"),
     ("role", "filled by", "category"), ("action-kind", "requires", "check"), ("action-kind", "produces", "effect"),
     ("process", "requires", "check"), ("process", "produces", "effect"), ("effect", "changes", "component"),
     ("effect", "bounded by", "write-scope"), ("check", "reads", "component"), ("knock-on-now", "is a timing of", "process"),
@@ -233,7 +241,8 @@ cannot express them. Checked:
 | Event Calculus and action languages (C+) | Source of the planned same-moment knock-on (ramification), [flexible-simulator-prior-art-2026-10.md](../research/flexible-simulator-prior-art-2026-10.md). A reasoning formalism, not a runtime. |
 | SBML, CellML, bond graphs, Modelica, Decapodes | Not checked further: they hold continuous rate laws and equations; these rules are discrete checks and effects on component values. |
 | FMI, SED-ML, OpenMath | Not checked further: a black-box model interface, an experiment description and an expression language; none declares typed participants with effects. |
-| AlgebraicPetri, TypeDB | Not checked: Petri transitions and TypeDB relations with role players are the nearest outside shapes for action kinds and attempt readings. Open question Q24. |
+| Petri nets (transition semantics) | Partly checked: [linked_process_participants.md](../plans/linked_process_participants.md) (prior-art table, line 136) already reuses Petri-net transition semantics for linked process participants (one firing, several places, atomic). A process is close to a transition that fires when enabled, and output arcs are close to a write scope; whether guards that read arbitrary component checks, per-actor noticing and refusal with a named cause fit a typed Petri net (AlgebraicPetri) is open question Q24. |
+| TypeDB | Not checked: relations with role players are the nearest outside shape for action kinds and attempt readings. Open question Q24. |
 """
 
 
@@ -244,8 +253,21 @@ def outputs() -> dict[Path, str]:
             model / "METAMODEL.md": glossary()}
 
 
+def kernel_pin_status() -> tuple[str, bool]:
+    """Whether the pinned kernel revision exists in a local scientific-hypergraph clone, or 'not checked'."""
+    if not (KERNEL_CLONE / ".git").exists():
+        return f"kernel pin {KERNEL['revision'][:12]} not checked ({KERNEL_CLONE} absent)", True
+    found = subprocess.run(["git", "-C", str(KERNEL_CLONE), "cat-file", "-e", f"{KERNEL['revision']}^{{commit}}"],
+                           capture_output=True).returncode == 0
+    return (f"kernel pin {KERNEL['revision'][:12]} {'exists' if found else 'NOT FOUND'} in {KERNEL_CLONE}", found)
+
+
 def citation_problems() -> list[str]:
     problems = []
+    pin_note, pin_ok = kernel_pin_status()
+    print(f"metamodel: {pin_note}")
+    if not pin_ok:
+        problems.append(f"kernel revision {KERNEL['revision']} is not a commit in {KERNEL_CLONE}")
     for i, *_rest in TYPES:
         code = _rest[4]
         path, _, line = code.partition(":")

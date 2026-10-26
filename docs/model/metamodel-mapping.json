@@ -4,7 +4,7 @@
  "metamodel": "docs/model/metamodel.graph.json",
  "kernel": {
   "repository": "BrianMills2718/scientific-hypergraph",
-  "revision": "7b0638f1c30c83ffa5ec3bac4cbf2bbc0fca54e8",
+  "revision": "7b0638fe0aef41c772bb181996516f98be479597",
   "path": "wiki/reference/metamodel/hypergraph-kernel-v2.json"
  },
  "mappings": [
@@ -35,8 +35,14 @@
   {
    "node": "place",
    "relation": "specializes",
+   "maps_to": "sci:ModelElement",
+   "why": "a place is a model element like any entity; location components point at it"
+  },
+  {
+   "node": "way",
+   "relation": "specializes",
    "maps_to": "sci:RelationInstance (from, to)",
-   "why": "a way is a relation instance between two place elements; passable is a component on it"
+   "why": "a way is a directed relation instance between two place elements; passable is a component on it"
   },
   {
    "node": "action-kind",

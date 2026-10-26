@@ -419,19 +419,41 @@
   {
    "id": "Q24",
    "short": "Petri nets or TypeDB as carrier",
-   "question": "Could AlgebraicPetri (Petri transitions) or TypeDB (relations with role players) express World Substrate's action kinds and attempt readings well enough to adopt instead of the table in scripts/build_metamodel.py?",
+   "question": "Petri nets already lend World Substrate their transition semantics (docs/plans/linked_process_participants.md:136): a process is close to a transition that fires when enabled with no actor, and output arcs are close to a declared write scope. Could a typed Petri net (AlgebraicPetri) or TypeDB (relations with role players) carry the rest well enough to adopt instead of the table in scripts/build_metamodel.py: guards that read arbitrary component checks over bound participants, partial observation (who notices a firing), and refusal of an attempted move with the failed check named?",
    "blocks": "whether the metamodel keeps its own action-kind and attempt-reading types or adopts an outside carrier for them",
-   "resolves_with": "Prior art: read AlgebraicPetri's typed Petri net and TypeDB's relation/role schema and map each onto action kind, role, check, effect and process; one type neither can hold (a process that runs by itself, a write scope) settles it as compose, not replace.",
+   "resolves_with": "Prior art: read AlgebraicPetri's typed Petri net and TypeDB's relation/role schema and map each onto action kind, role, check, effect, process, observation and refused event. If either holds checks as guards, per-actor noticing and named refusal, adopt it as the carrier for those types; if one of the three has no counterpart, keep the own types and compose (Petri semantics for firing, own types for checks, noticing and refusal).",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/model/METAMODEL.md:68",
-    "scripts/build_metamodel.py:30"
+    "docs/plans/linked_process_participants.md:136",
+    "docs/model/METAMODEL.md:69",
+    "scripts/build_metamodel.py:32"
    ],
    "touches": [
     "move",
     "process",
     "attempt-reading"
+   ]
+  },
+  {
+   "id": "Q25",
+   "short": "Ways work one way only",
+   "question": "A generated way works from its first place to its second only (checks have no 'or', so the rules writer is told to require the actor at the way's first place and the destination at its second). A resident who walks from the office to the hangar cannot walk back. Should ways be two-way unless the description declares them one-way?",
+   "blocks": "reading S1's canonical airfield run for A2 and A3 of docs/plans/open_attempt.md (a resident stuck on the far side looks like a refusal by the world), and how realistic generated worlds are",
+   "resolves_with": "Argument and a generic fix, no test needed to decide: real doors and corridors work both ways, so make a way two-way unless declared one-way (the rules writer writes one move rule per direction, or the move check accepts either end), then confirm by regenerating the airfield world and probing both directions.",
+   "owner": "agent",
+   "status": "open",
+   "recommendation": "Make ways two-way unless the description declares them one-way.",
+   "default": "Ways stay one-way and each run's TRACE_READ.md notes a resident stuck behind a way it already used.",
+   "sources": [
+    "evidence/open-attempt/q23/README.md:21",
+    "scripts/generate_causal_model.py:430",
+    "scripts/generate_world_bundle.py:96"
+   ],
+   "touches": [
+    "place-way",
+    "build",
+    "run-loop"
    ]
   }
  ]
