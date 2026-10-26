@@ -117,14 +117,13 @@
    "id": "process",
    "label": "Process (knock-on rule)",
    "kind": "rules",
-   "explain": "A rule the world runs by itself each round for every matching entity whose checks hold; this is how effects propagate (plants dry out, lessons arrive)."
+   "explain": "A rule the world runs by itself for every matching entity whose checks hold, each round by default or at once when its timing is immediately; this is how effects propagate (plants dry out, a glass breaks)."
   },
   {
    "id": "knock-on-now",
    "label": "Same-moment knock-on",
    "kind": "rules",
-   "dashed": true,
-   "explain": "A process with timing immediately, run to a fixpoint inside the same moment as the move that triggered it (planned slice S2 of docs/plans/open_attempt.md). Planned, not built."
+   "explain": "A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, and more than 32 reactions refuses the whole moment (slice S2 of docs/plans/open_attempt.md, ODD 8.20)."
   },
   {
    "id": "skill-roll",

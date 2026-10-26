@@ -57,7 +57,7 @@
    "id": "process",
    "label": "Process",
    "kind": "Substrate",
-   "explain": "A rule the world runs by itself each tick when its checks hold. Code: src/world_substrate/engine.py:829."
+   "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:829."
   },
   {
    "id": "compiler",
@@ -344,8 +344,8 @@
   {
    "id": "knock-on-now",
    "label": "Knock-on that runs now",
-   "kind": "Theory",
-   "explain": "Plan S2: a process marked 'immediately' runs again and again inside one moment until nothing more changes (a glass falls, breaks, someone hears it). Code: none yet."
+   "kind": "Substrate",
+   "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:884."
   },
   {
    "id": "skill-roll",

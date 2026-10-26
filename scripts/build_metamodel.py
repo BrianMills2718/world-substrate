@@ -103,14 +103,15 @@ TYPES = [
      "src/world_substrate/engine.py:120", "no_counterpart", "",
      "authority derived from the declaration; the kernel has no authority model"),
     ("process", "Process (knock-on rule)", "rules", True,
-     "A rule the world runs by itself each round for every matching entity whose checks hold; "
-     "this is how effects propagate (plants dry out, lessons arrive).",
+     "A rule the world runs by itself for every matching entity whose checks hold, each round by "
+     "default or at once when its timing is immediately; this is how effects propagate (plants dry out, a glass breaks).",
      "src/world_substrate/action_authoring.py:245", "no_counterpart", "",
      "an actorless effectful rule; the kernel has none"),
-    ("knock-on-now", "Same-moment knock-on", "rules", False,
-     "A process with timing immediately, run to a fixpoint inside the same moment as the move that "
-     "triggered it (planned slice S2 of docs/plans/open_attempt.md).",
-     "docs/plans/open_attempt.md:164", "no_counterpart", "",
+    ("knock-on-now", "Same-moment knock-on", "rules", True,
+     "A process with timing immediately, run in waves inside the same moment as the move or round step "
+     "that triggered it until nothing more is due; each process and thing pair fires once per moment, and "
+     "more than 32 reactions refuses the whole moment (slice S2 of docs/plans/open_attempt.md, ODD 8.20).",
+     "src/world_substrate/engine.py:884", "no_counterpart", "",
      "a timing rule over effectful processes; the kernel has none"),
     ("skill-roll", "Skill roll", "rules", False,
      "A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3).",
