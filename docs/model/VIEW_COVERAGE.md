@@ -65,7 +65,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G1. Authored-world runs keep no engine event records
 
-- **Model:** every attempt writes one Engine event (`src/world_substrate/engine.py:505`): bearer, binding, observation, checks, declared read/write paths, `changes`, `hash_before`/`hash_after`. Root `AGENTS.md` tells investigators to read "the retained causal trace".
+- **Model:** every attempt writes one Engine event (`src/world_substrate/engine.py:529`): bearer, binding, observation, checks, declared read/write paths, `changes`, `hash_before`/`hash_after`. Root `AGENTS.md` tells investigators to read "the retained causal trace".
 - **Code:** the authored-world run trace (`scripts/run_authored_world.py:405-446`) keeps `summary`, `transcript` and `final_snapshot`; `World.snapshot()` drops commands and events (`src/world_substrate/model.py:416`). The run log keeps the same (`scripts/world_builder_service.py:360-367`). The native-coordination path does keep them (`scripts/run_native_coordination.py:604`, `:1107`), so the two run paths differ.
 - **Effect:** no view, and no retained file, can say which state paths an action changed or show the world hash chain for a Builder run; the engine's `stale_revision` event behind a `nothing_left` row is lost.
 - **Reproduced: yes.** `run_authored_world.py` on `examples/world_authoring/repair-bay-v0.json` produced a trace with keys `actors, cost_usd, final_snapshot, mechanic_profile_id, model, schema_version, summary, transcript, world`, with no events. A local service run of the same world wrote run-log `/run` results with keys `final_snapshot, mover, summary, transcript`.
@@ -82,7 +82,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G3. /build approval screen hides installed processes
 
-- **Model:** processes are installed law: they run every round with their own checks and writes (`src/world_substrate/engine.py:762`); `CausalReview` lists them (`src/world_substrate/action_authoring.py:418`). Ongoing worlds always get 1-4 of them (`scripts/generate_causal_model.py:237`).
+- **Model:** processes are installed law: they run every round with their own checks and writes (`src/world_substrate/engine.py:829`); `CausalReview` lists them (`src/world_substrate/action_authoring.py:418`). Ongoing worlds always get 1-4 of them (`scripts/generate_causal_model.py:237`).
 - **View:** the mechanics section renders `causalReview.mechanics` and the terminal only (`scripts/world_builder_app.js:270-274`); `review.processes` is never read. The Approve button sits under that list (`:275`).
 - **Reproduced: yes.** Playwright on `evidence/renders/world-builder-v0.html` with a generated-mechanics response for the embedded Orchard world plus one process `regrow` ("Picked fruit grows back."): after generating, the Approve button appeared, the page text contained the mechanic but neither `regrow` nor "grows back". The home page does show processes (`world_builder_home.html:412`).
 
@@ -122,7 +122,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G8. Round replay carries no trace of process-made changes
 
-- **Model:** due processes commit `accepted` events each round via `Engine.advance` (`engine.py:762`); the transcript lists them as `world_changes`.
+- **Model:** due processes commit `accepted` events each round via `Engine.advance` (`engine.py:829`); the transcript lists them as `world_changes`.
 - **View:** the round replay builds frames from accepted actor actions (`scripts/render_scene_replay.py:237`) and never reads `world_changes` (0 matches). The home feed does print them ("By itself: ...", `world_builder_home.html:542`).
 - **Reproduced: partly.** A 4-round scripted run of the Orchard world with the `regrow` process committed one process event in round 1; the rendered replay HTML contains no mention of `regrow`. Whether the picture still shows the resulting state change (for example a fruit's stage) was not checked.
 

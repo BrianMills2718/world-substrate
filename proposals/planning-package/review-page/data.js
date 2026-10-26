@@ -524,13 +524,13 @@ window.PAGE_DATA = {
     "id": "engine",
     "label": "Engine",
     "kind": "Substrate",
-    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:558."
+    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:198."
    },
    {
     "id": "event",
     "label": "Event",
     "kind": "Substrate",
-    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:505."
+    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:529."
    },
    {
     "id": "move",
@@ -542,7 +542,7 @@ window.PAGE_DATA = {
     "id": "process",
     "label": "Process",
     "kind": "Substrate",
-    "explain": "A rule the world runs by itself each tick when its checks hold. Code: src/world_substrate/engine.py:762."
+    "explain": "A rule the world runs by itself each tick when its checks hold. Code: src/world_substrate/engine.py:829."
    },
    {
     "id": "compiler",
@@ -614,7 +614,7 @@ window.PAGE_DATA = {
     "id": "run-loop",
     "label": "Run loop",
     "kind": "Substrate",
-    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:335."
+    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:347."
    },
    {
     "id": "contention",
