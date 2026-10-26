@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "d3050585e01102c47d0516579e6d645ac5b8eecc",
+  "subject_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c",
   "request": "Brian 2026-10-25 \"yes\" (to: write a short design for free-form attempts plus the fallback for unmatched attempts, then knock-on effects and skill rolls, tracing the wall, glass and helicopter examples, with a review page)",
   "parts": {
     "checks": {
@@ -50,7 +50,7 @@
           "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
           "exit_status": 0,
           "counts": {
-            "tests_run": 727,
+            "tests_run": 728,
             "failed": 0,
             "skipped": 2
           }
