@@ -1,10 +1,10 @@
 {
   "schema_version": "planning-method-conformance-receipt.v1",
   "record_type": "planning_method_conformance_receipt",
-  "receipt_id": "RECEIPT-open_attempt-96f8c545f962",
+  "receipt_id": "RECEIPT-open_attempt-57695cca1daa",
   "plan": {
     "plan_ref": "docs/plans/open_attempt.md",
-    "plan_sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+    "plan_sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
   },
   "path_decision": {
     "ref": "docs/plans/open_attempt/path-decision.json",
@@ -26,7 +26,7 @@
   },
   "activation": {
     "facts_ref": "docs/plans/open_attempt/activation-facts.json",
-    "facts_sha256": "2cffa986f8515039aa7ca6bdecd901c3eda3d2d52666c71dd93f0699d4d6a31b",
+    "facts_sha256": "5fcea74bdb9da2f2d100b9482718e82e6c18c4d380d480610ed521da24f4796e",
     "facts": {
       "shared_mechanism": true,
       "empirical_comparison_proposed": false,
@@ -126,10 +126,10 @@
   },
   "checklist": {
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:b65e3e523a9dbaa4a81c5f73f2b08f1669f89c01643a395241671a39b8e7d84f",
-    "definition_sha256": "633ead3b4ad1e4da72ab1cbb281b71c38081af7734d9fa6841440a19092b668b",
+    "revision": "sha256:61b84a70312754e1afdebfe937e44b8b260e718412efce9731aa5332215a6d89",
+    "definition_sha256": "698861f2bc565281e0ef69eb054c2428cbd594176aaf10c76c1f1b61fe4c3705",
     "bundle_ref": "docs/plans/open_attempt/checklist.json",
-    "bundle_sha256": "61f1dd55a6825139ce99c6c4296c717aada312738046d3bb32b7a5bd5b2040f9",
+    "bundle_sha256": "381db11795732275d57c96a2585bdd8c14d557e33a23b829c395077231b0cea4",
     "coverage": "complete",
     "definition_matches_recompilation": true
   },
@@ -147,7 +147,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#actor-and-result",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -193,7 +193,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#requirements",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -203,7 +203,7 @@
         "materiality": "non_material",
         "missing": null,
         "rationale": "The evidence explicitly lists seven requirements (R1–R7), each naming its check in the Control column and its status (passing, planned, or mixed with stated reasons) in the Status column. No requirements are deferred. All sources cited (Brian decisions, Decision 003, AGENTS.md, core rules) are integrated into the requirement definitions themselves. No standards or contracts are presented as followed without appearing in the requirements list.",
-        "reused": false
+        "reused": true
       },
       "suggested_action": null
     },
@@ -220,7 +220,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#success-and-disproof",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -247,7 +247,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#success-and-disproof",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -274,7 +274,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#when-a-run-fails-or-surprises-us",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -301,7 +301,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#trace-visibility",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -328,7 +328,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#project-outcome",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         },
         {
           "ref": "roadmap/README.md#actor-recurring-job-and-investment-boundary",
@@ -336,12 +336,12 @@
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/b4093c12db7e/CORE-PROJECT-OUTCOME",
+        "trace_id": "company-planning/method-conformance/open_attempt/95c8467af25d/CORE-PROJECT-OUTCOME",
         "model": "claude-code/haiku",
         "verdict": "pass",
-        "materiality": "material",
+        "materiality": "non_material",
         "missing": null,
-        "rationale": "The plan carries an explicit `Project outcome:` line naming `roadmap/README.md#actor-recurring-job-and-investment-boundary`. The referenced record is present in the evidence and explicitly states all four required parts: the actor (World Builder visitor), the recurring job and baseline (visitor describes a world and watches people act under installed rules), the inspectable result (run page and build record), and the stage and investment boundary (prototype stage, one agent, one repository). The plan's actor (World Builder visitor and Brian as owner) directly matches the outcome record's actor.",
+        "rationale": "The plan carries a Project outcome line naming roadmap/README.md#actor-recurring-job-and-investment-boundary. The quoted record explicitly states all four required parts: the actor (World Builder visitor/Brian as owner), the recurring job and baseline (describing a world and watching residents act, with the baseline that residents pick only from predefined moves), the inspectable result (run page and build record showing what was tried and why), and the stage and investment boundary (prototype, one agent, this repository only, $3/day visitor, owner allowance with free replay first, no new service/engine/repo). The plan's actor is identical to the outcome's actor and explicitly confirms it serves that actor directly.",
         "reused": false
       },
       "suggested_action": null
@@ -359,7 +359,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#outcome-step",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         },
         {
           "ref": "roadmap/README.md#canonical-outcome-probe",
@@ -371,12 +371,12 @@
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/b4093c12db7e/CORE-OUTCOME-FIRST",
+        "trace_id": "company-planning/method-conformance/open_attempt/95c8467af25d/CORE-OUTCOME-FIRST",
         "model": "claude-code/haiku",
         "verdict": "pass",
         "materiality": "material",
         "missing": null,
-        "rationale": "The plan's `## Outcome step` section contains all four required lines with substantive values. (1) `Outcome probe: roadmap/README.md#canonical-outcome-probe` names a probe quoted in the evidence with five explicit steps, the third matching the plan's stated target. (2) `Observed: evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md` names a committed artifact; the plan references this path and parenthetically confirms existence. (3) `Step: step 3 of the probe, \"the residents act in the generated world each round, and the installed rules decide each effect\"` matches verbatim the probe's step 3 and is the step the plan modifies. (4) `Class: vertical` is one of the three allowed classes and fits: the plan statement \"each slice changes that step end to end (generator, resident, engine, page) and ends in a live traced run\" describes reaching an inspectable result through all parts of a probe step. All dependencies check: probe exists (quoted), artifact exists (referenced), named step is a step of the probe, class matches the plan's design.",
+        "rationale": "The plan includes a complete Outcome step section with all four required lines. The outcome probe `roadmap/README.md#canonical-outcome-probe` exists with the five-step probe and step 3 is correctly identified. The observed artifact `evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md` exists and shows a full traced World Substrate run. The class `vertical` is appropriate for a plan that reaches an inspectable result through the probe steps, ending in a live traced run. All elements are explicitly present and substantively grounded in committed artifacts.",
         "reused": false
       },
       "suggested_action": null
@@ -394,7 +394,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": null,
@@ -413,7 +413,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#system-model",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -440,7 +440,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#capability-reuse",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -467,7 +467,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#authority-and-non-goals",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -494,7 +494,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#irreversible-actions-and-spend",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -521,17 +521,17 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#uncertainties",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/9659f61b1ee2/CORE-UNCERTAINTIES",
+        "trace_id": "company-planning/method-conformance/open_attempt/95c8467af25d/CORE-UNCERTAINTIES",
         "model": "claude-code/haiku",
         "verdict": "pass",
-        "materiality": "non_material",
+        "materiality": "material",
         "missing": null,
-        "rationale": "The plan lists its material uncertainties as of 2026-10-26 in a dedicated section, and each one has an owner assigned: agent or Brian. The requirement's \"or\" condition is fully satisfied.",
-        "reused": true
+        "rationale": "The evidence lists material uncertainties in full with owners assigned to every item (agent, Brian, or issue numbers) and resolution evidence/methods provided for open items. The requirement's OR condition is satisfied throughout: each uncertainty has at least an owner, satisfying the stated criterion.",
+        "reused": false
       },
       "suggested_action": null
     },
@@ -548,16 +548,16 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#activation-facts",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/open_attempt/b4093c12db7e/CORE-ACTIVATION-FACTS",
+        "trace_id": "company-planning/method-conformance/open_attempt/95c8467af25d/CORE-ACTIVATION-FACTS",
         "model": "claude-code/haiku",
         "verdict": "pass",
-        "materiality": "material",
+        "materiality": "non_material",
         "missing": null,
-        "rationale": "The plan declares all triggered facts as true: shared_mechanism (engine changes), llm_central (attempt interpreter), and irreversible_or_spend_action (owner allowance). All facts declared false (empirical comparison, external standard claims, AES target) are correctly not triggered by the plan. No activation fact that the plan triggers is declared false.",
+        "rationale": "All six activation facts are correctly declared. The three triggered facts (shared_mechanism, llm_central, irreversible_or_spend_action) are all declared true. The three non-triggered facts (empirical_comparison_proposed, claims_external_standard, aes_governed_target) are all declared false. The plan introduces new shared mechanisms (attempt interpreter, timing processes, skill rolls), depends centrally on LLM calls (attempt interpreter), and proposes spend (owner allowance); each triggered fact is properly declared.",
         "reused": false
       },
       "suggested_action": null
@@ -575,7 +575,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#prior-art-and-ownership",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -602,7 +602,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#prior-art-and-ownership",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -629,7 +629,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#llm-call-boundary",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -656,7 +656,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#llm-call-boundary",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -683,7 +683,7 @@
       "evidence": [
         {
           "ref": "docs/plans/open_attempt.md#durable-documents",
-          "sha256": "96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b"
+          "sha256": "57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010"
         }
       ],
       "semantic": {
@@ -715,11 +715,11 @@
   "conformance_report": {
     "schema_version": "1.0",
     "record_type": "planning_conformance_report",
-    "report_id": "REPORT-open_attempt-96f8c545f962",
+    "report_id": "REPORT-open_attempt-57695cca1daa",
     "snapshot_ref": "SNAPSHOT-open_attempt",
-    "snapshot_revision": "sha256:61f1dd55a6825139ce99c6c4296c717aada312738046d3bb32b7a5bd5b2040f9",
+    "snapshot_revision": "sha256:381db11795732275d57c96a2585bdd8c14d557e33a23b829c395077231b0cea4",
     "packet_ref": "docs/plans/open_attempt.md",
-    "packet_revision": "sha256:96f8c545f96208b7957149e651ad8fd8c3b432c11130acf747ad64a785ada83b",
+    "packet_revision": "sha256:57695cca1daa84db83044923f44c63efa0ec7b5b7935fa0a731010e27a0d1010",
     "structural_status": "pass",
     "semantic_review_status": "complete",
     "diagnostics": [],
@@ -742,7 +742,7 @@
     "client": "claude-code",
     "session": "4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9"
   },
-  "started_at": "2026-10-26T04:29:27Z",
-  "completed_at": "2026-10-26T04:31:15Z",
-  "duration_ms": 111586
+  "started_at": "2026-10-26T05:07:20Z",
+  "completed_at": "2026-10-26T05:08:56Z",
+  "duration_ms": 99945
 }
