@@ -17,9 +17,9 @@
    "explain": "Not code: an AI writes it for each described world during the build."
   },
   "Reference": {
-   "label": "Waltzman reference code only",
+   "label": "Reference worlds code only",
    "color": "#7a8491",
-   "explain": "Hand-written code for the Waltzman reference world; no generated world uses it."
+   "explain": "Hand-written code for the reference worlds (Kitchen, Waltzman and others); no generated world uses it today."
   },
   "Theory": {
    "label": "In documents only",
@@ -69,7 +69,7 @@
    "id": "policy",
    "label": "Policy",
    "kind": "Substrate",
-   "explain": "What chooses a person's move (scripted, an AI model or a resident): it can only pick an offered move; installed mechanics, not its words, decide what happens. Code: src/world_substrate/policy.py:50."
+   "explain": "What chooses a person's move: scripted or an AI model picks an offered move; a resident on the live path says an attempt in its own words. Installed mechanics, not its words, decide what happens. Code: src/world_substrate/policy.py:50."
   },
   {
    "id": "sense",
@@ -93,7 +93,7 @@
    "id": "causal-trace",
    "label": "Causal trace",
    "kind": "Substrate",
-   "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: scripts/world_builder_service.py:1825."
+   "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:529."
   },
   {
    "id": "world-kind",
@@ -135,13 +135,13 @@
    "id": "contention",
    "label": "Lost race",
    "kind": "Substrate",
-   "explain": "When an earlier pick changed the state, a later pick is resubmitted if still offered, else the person is asked once to choose again, shown the round's earlier moves (who, which rule) but not which one blocked it; if it then picks nothing it gets nothing_left. Code: scripts/run_authored_world.py:581."
+   "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:563."
   },
   {
    "id": "resident",
    "label": "Resident",
    "kind": "Substrate",
-   "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, answers belief, move, expected effect and work. Code: scripts/concordia_residents.py:29."
+   "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, and answers belief, attempt (in its own words), expected effect and work; the older menu reply picks an offered move. Code: scripts/concordia_residents.py:44."
   },
   {
    "id": "task",
@@ -177,7 +177,7 @@
    "id": "run-log",
    "label": "Run log",
    "kind": "Substrate",
-   "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:478."
+   "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:524."
   },
   {
    "id": "readout",
@@ -207,7 +207,7 @@
    "id": "people-world",
    "label": "People world",
    "kind": "Family",
-   "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:225."
+   "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:364."
   },
   {
    "id": "communicate",
@@ -273,7 +273,7 @@
    "id": "person",
    "label": "Person and brief",
    "kind": "PerWorld",
-   "explain": "A person the spec names, with goals and beliefs, and the brief only their own resident reads. Code: scripts/people_world.py:355."
+   "explain": "A person the spec names, with goals and beliefs, and the brief only their own resident reads. Code: spikes/any-scenario-2026-10/scenario_spec.py:41."
   },
   {
    "id": "gen-rules",
@@ -338,8 +338,8 @@
   {
    "id": "place-way",
    "label": "Place and way",
-   "kind": "Substrate",
-   "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; moving names its way and a closed way refuses it. Code: scripts/generate_world_bundle.py:96."
+   "kind": "PerWorld",
+   "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; written per world as entities from the bundle contract, and the move rule checks the way. Code: scripts/generate_world_bundle.py:96."
   },
   {
    "id": "knock-on-now",
@@ -352,6 +352,36 @@
    "label": "Skill roll",
    "kind": "Theory",
    "explain": "Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. Code: none yet."
+  },
+  {
+   "id": "projection",
+   "label": "Living projection",
+   "kind": "Substrate",
+   "explain": "The read-only living client, JSON and server-sent events rebuilt from canonical snapshots and events; it never changes the world. Code: src/world_substrate/projection.py:44."
+  },
+  {
+   "id": "causal-parent",
+   "label": "Hard causal parent",
+   "kind": "Substrate",
+   "explain": "An earlier event a rule declares as mechanically supporting this one; kept apart from the information a person merely had in mind. Code: src/world_substrate/rules.py:383."
+  },
+  {
+   "id": "exchange",
+   "label": "Derived exchange",
+   "kind": "Substrate",
+   "explain": "A composite reading (two give events make one exchange) derived from committed events, never a second effect. Code: src/world_substrate/exchange.py:20."
+  },
+  {
+   "id": "mechanisms",
+   "label": "Mechanisms library",
+   "kind": "Reference",
+   "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds start with an empty registry (Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
+  },
+  {
+   "id": "kitchen",
+   "label": "Kitchen flagship",
+   "kind": "Reference",
+   "explain": "The replicated scarce-knife watched world: hand-written rules of its own on the ordinary Engine. Code: reference_worlds/kitchen/mechanics.py."
   }
  ],
  "edges": [
@@ -798,6 +828,54 @@
    "source": "move",
    "target": "skill-roll",
    "label": "may need"
+  },
+  {
+   "id": "e74",
+   "source": "projection",
+   "target": "event",
+   "label": "replays"
+  },
+  {
+   "id": "e75",
+   "source": "projection",
+   "target": "world",
+   "label": "reads"
+  },
+  {
+   "id": "e76",
+   "source": "event",
+   "target": "causal-parent",
+   "label": "cites"
+  },
+  {
+   "id": "e77",
+   "source": "process",
+   "target": "causal-parent",
+   "label": "may declare"
+  },
+  {
+   "id": "e78",
+   "source": "knock-on-now",
+   "target": "causal-parent",
+   "label": "cites"
+  },
+  {
+   "id": "e79",
+   "source": "exchange",
+   "target": "event",
+   "label": "derived from"
+  },
+  {
+   "id": "e80",
+   "source": "kitchen",
+   "target": "engine",
+   "label": "runs on"
+  },
+  {
+   "id": "e81",
+   "source": "mechanisms",
+   "target": "process",
+   "label": "provides"
   }
  ],
  "layout": {

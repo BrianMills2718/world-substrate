@@ -24,23 +24,24 @@ Q = [
  {
   "id": "Q2",
   "short": "A refusal is not linked to its cause",
-  "question": "When several people want the one shared thing in a round, each loser is told 'your choice was no longer allowed after earlier moves this round; choose again' and is shown the round's earlier moves (who, which rule), so it can see who moved. It is not told which of its moves was refused or which earlier move blocked it, and the record does not link the refusal to that move. Should the retry prompt and the row name the refused move and the blocking event?",
+  "question": "When an earlier move this round changes the state before a person's move, does the record say which event blocked it? On the live open-attempt path the same attempt is resubmitted at the new revision and only its rule's checks decide it (scripts/run_authored_world.py:571-573); menu paths ask once more (:581). On every path the refused row lists the failed check labels (refused_because, :622-627) but not the event that changed the state.",
   "blocks": "whether a reader of a run (or the readout) can say why a person's move was refused, in any world",
   "resolves_with": "An argument settles it: the run loop already knows which submitted event changed the revision before the loser's pick, so naming it costs nothing and belongs in the run loop, not any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each refused row names its blocking event id. Starting point: c1r24 call 18016 shows the round's moves but not the link.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
-   "scripts/run_authored_world.py:544",
-   "scripts/run_authored_world.py:547",
-   "scripts/run_authored_world.py:572",
-   "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
+   "scripts/run_authored_world.py:563",
+   "scripts/run_authored_world.py:571",
+   "scripts/run_authored_world.py:581",
+   "scripts/run_authored_world.py:622",
    "evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:125"
   ],
   "touches": [
    "contention",
    "run-loop",
    "resident"
-  ]
+  ],
+  "evidence": "Settled by argument: the run loop holds the round's accepted events in order, so the last accepted event whose changes touch a path the refused move's failed checks read is the blocking event; naming it is run-loop bookkeeping that applies to every world. Answer: yes, add blocked_by_event to the refused row. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F1), checked on a free replay of the saved airfield and c1r24 worlds."
  },
  {
   "id": "Q3",
@@ -104,7 +105,7 @@ Q = [
   "blocks": "wasted spend and shares that keep only one of two runs",
   "resolves_with": "An argument settles it: a /run keyed by session, round and base revision is safe to refuse twice whatever sent the duplicate. Build it with a test that sends the same round twice.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
    "BrianMills2718/world-substrate#225",
    "evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:116"
@@ -112,7 +113,8 @@ Q = [
   "touches": [
    "run-loop",
    "share"
-  ]
+  ],
+  "evidence": "Settled by argument: a /run keyed by session, round and base revision is safe to refuse twice whatever sent the duplicate. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F2), with a test that sends the same round twice."
  },
  {
   "id": "Q7",
@@ -140,14 +142,15 @@ Q = [
   "blocks": "whether a finished build is faithful to what was described",
   "resolves_with": "An argument settles that it is decidable: a field read by a check but never written by any rule is a static finding. Add it to the test-run findings and check the saved worlds.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
    "BrianMills2718/world-substrate#218"
   ],
   "touches": [
    "gen-rules",
    "test-run"
-  ]
+  ],
+  "evidence": "Settled by argument: a field read by a check but written by no rule is a static finding, decidable from the compiled rules alone. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F3): add it to the test-run findings and check the saved worlds."
  },
  {
   "id": "Q9",
@@ -168,21 +171,22 @@ Q = [
  {
   "id": "Q10",
   "short": "Retry keeps the first words",
-  "question": "After a lost race the retry's own words are stored as said_on_retry, but the 'What happened' readout quotes only said, the words behind the first choice, next to the move the retry made. Should the readout quote the retry's words?",
+  "question": "A menu retry's own words are stored as said_on_retry (scripts/run_authored_world.py:637-638), but the 'What happened' readout quotes only said (:621), the words behind the first choice. Should the readout quote the retry's words?",
   "blocks": "whether the readout's quoted words match the move that ran",
   "resolves_with": "Reading the code settles it: the row keeps both (run_authored_world.py:584, :599-600) and the scene replay already prefers said_on_retry (render_scene_replay.py:398), but run_readout.py:93 reads said only. Make the readout prefer said_on_retry the same way and check it on a free replay.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
-   "scripts/run_authored_world.py:584",
-   "scripts/run_authored_world.py:599",
+   "scripts/run_authored_world.py:621",
+   "scripts/run_authored_world.py:637",
    "scripts/run_readout.py:93",
    "scripts/render_scene_replay.py:398"
   ],
   "touches": [
    "contention",
    "readout"
-  ]
+  ],
+  "evidence": "Settled by reading the code: on the live open-attempt path nobody is asked again, so said_on_retry is never written there (said_retry stays None, :562 and :571-573); on the scripted and llm menu paths it is, and the scene replay already prefers it (render_scene_replay.py:398) while run_readout.py:93 reads said only. Answer: yes, prefer said_on_retry in the readout as the replay does. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F4), checked on a free replay of a saved menu-path run."
  },
  {
   "id": "Q11",
@@ -214,7 +218,8 @@ Q = [
   "default": "Runs keep ending at the round cap the visitor picked.",
   "sources": [
    "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
-   "scripts/run_authored_world.py:732"
+   "scripts/run_authored_world.py:418",
+   "scripts/run_authored_world.py:39"
   ],
   "touches": [
    "run-loop",
@@ -228,18 +233,18 @@ Q = [
   "blocks": "the next goal",
   "resolves_with": "A priority call; the argument for the run-loop fixes is that they affect every world on every run today.",
   "owner": "brian",
-  "status": "open",
-  "recommendation": "Do the run-loop fixes first (Q6 no double run, Q10 readout words, Q2 refusal linked to its cause), then the executable-law fingerprint.",
-  "default": "The next goal is the run-loop fixes (docs/plans/run-loop-contention.goal.md).",
+  "status": "resolved",
   "sources": [
-   "roadmap/README.md:359",
-   "roadmap/README.md:427"
+   "roadmap/README.md:211",
+   "roadmap/README.md:252",
+   "docs/plans/open_attempt.md:8"
   ],
   "touches": [
    "contention",
    "run-loop",
    "law-fingerprint"
-  ]
+  ],
+  "evidence": "Brian chose on 2026-10-25: his 'yes' adopted docs/plans/open_attempt.md and started S1, so the open-attempt slices come next, before the run-loop fixes and the hardening queue. The run-loop fixes are settled by argument and agent-owned (Q2, Q6, Q8, Q10), built alongside the slices (docs/plans/open_attempt.md, 'Fixes settled by argument'); the roadmap hardening queue (roadmap/README.md:252-256) follows the plan."
  },
  {
   "id": "Q14",
@@ -266,11 +271,12 @@ Q = [
   "blocks": "whether the repo-format check passes",
   "resolves_with": "Prior art settles the shape (phenomenal-meaning adopted it); the work is mechanical: add the files, mostly as indexes over the existing architecture, ODD and trace documents.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
    "docs/planning/checks.txt"
   ],
-  "touches": []
+  "touches": [],
+  "evidence": "Settled by prior art: phenomenal-meaning adopted the ~/code2 repository format, so the shape is known and the work is mechanical (indexes over the existing architecture, ODD and trace documents). Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F5); done when the repo-format check reports compliant."
  },
  {
   "id": "Q16",
@@ -422,7 +428,7 @@ Q = [
   "blocks": "whether the metamodel keeps its own action-kind and attempt-reading types or adopts an outside carrier for them",
   "resolves_with": "Prior art: read AlgebraicPetri's typed Petri net and TypeDB's relation/role schema and map each onto action kind, role, check, effect, process, observation and refused event. If either holds checks as guards, per-actor noticing and named refusal, adopt it as the carrier for those types; if one of the three has no counterpart, keep the own types and compose (Petri semantics for firing, own types for checks, noticing and refusal).",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
    "docs/plans/linked_process_participants.md:136",
    "docs/model/METAMODEL.md:69",
@@ -432,7 +438,8 @@ Q = [
    "move",
    "process",
    "attempt-reading"
-  ]
+  ],
+  "evidence": "Settled by argument: plain and typed Petri nets (AlgebraicPetri) fire a transition when its input places hold tokens, with no guard over component data; coloured Petri nets add data guards, but no Petri net models which observer notices a firing or a refusal that names its failed check; TypeDB holds typed relations with role players but runs no state-changing effects. None carries all three of guards over bound participants, per-observer noticing and named refusal, so the answer is compose: Petri semantics for firing (already lent, linked_process_participants.md:136) and the metamodel's own types for checks, noticing and refusal, which is what docs/model/METAMODEL.md records. Not material to the plan (docs/plans/open_attempt.md, Uncertainties)."
  },
  {
   "id": "Q25",
@@ -441,9 +448,7 @@ Q = [
   "blocks": "reading S1's canonical airfield run for A2 and A3 of docs/plans/open_attempt.md (a resident stuck on the far side looks like a refusal by the world), and how realistic generated worlds are",
   "resolves_with": "Argument and a generic fix, no test needed to decide: real doors and corridors work both ways, so make a way two-way unless declared one-way (the rules writer writes one move rule per direction, or the move check accepts either end), then confirm by regenerating the airfield world and probing both directions.",
   "owner": "agent",
-  "status": "open",
-  "recommendation": "Make ways two-way unless the description declares them one-way.",
-  "default": "Ways stay one-way and each run's TRACE_READ.md notes a resident stuck behind a way it already used.",
+  "status": "resolved",
   "sources": [
    "evidence/open-attempt/q23/README.md:21",
    "scripts/generate_causal_model.py:430",
@@ -453,6 +458,82 @@ Q = [
    "place-way",
    "build",
    "run-loop"
+  ],
+  "evidence": "Settled by argument: real doors and corridors work both ways, so a way is two-way unless the description declares it one-way. Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F6): the rules writer writes one move rule per direction; checked by regenerating the airfield world and probing both directions. Until it lands each TRACE_READ.md names a resident stuck behind a way it already used."
+ },
+ {
+  "id": "Q26",
+  "short": "Run page hides own-words attempts",
+  "question": "The run page's round text reads row.belief and row.expects (scripts/world_builder_home.html:627-629) and never row.attempt or summary.unmatched_attempts, so a visitor sees the move but not the words behind it, and an attempt that changed nothing shows only as waiting (view gap G17). The plan's inspectable result is that the run page shows each person's own-words attempt. How should the page show them?",
+  "blocks": "the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done",
+  "resolves_with": "Build and look: show each row's attempt text and reading in the round text and list summary.unmatched_attempts, then open the saved S1 airfield share (evidence/open-attempt/s1-airfield/) in a browser and confirm Sam's refused and unmatched attempts read in his own words.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/model/VIEW_COVERAGE.md:191",
+   "scripts/world_builder_home.html:627",
+   "docs/plans/open_attempt.md:53",
+   "evidence/open-attempt/s1-airfield/TRACE_READ.md"
+  ],
+  "touches": [
+   "attempt",
+   "unmatched-attempt",
+   "run-loop"
+  ]
+ },
+ {
+  "id": "Q27",
+  "short": "Is S2's fixpoint engine capability",
+  "question": "S2 runs immediate processes to a fixpoint inside one commit (docs/plans/open_attempt.md, Piece 2). The roadmap and AGENTS.md forbid adding engine capability of World Substrate's own (roadmap/README.md:459), and the roadmap's eligible-work list does not name this work. Is S2 allowed?",
+  "blocks": "slice S2",
+  "resolves_with": "An argument and Brian's adoption: the forbidden capability is a second engine, scheduler, renderer or cognition loop; a ramification fixpoint is a rule semantics inside the one existing commit (C+ and Event Calculus), with no new loop, clock or scheduler. Brian adopted the plan with that argument on 2026-10-25; record S2 in the roadmap's eligible-work list.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Resolved: Brian's 2026-10-25 'yes' adopted docs/plans/open_attempt.md, whose Current truth section argues the three pieces are rules-layer pieces (none adds an engine, scheduler, renderer or cognition). roadmap/README.md's Exact next action now lists the adopted plan's slices as eligible work (item 4).",
+  "sources": [
+   "roadmap/README.md:459",
+   "docs/plans/open_attempt.md:109"
+  ],
+  "touches": [
+   "knock-on-now",
+   "engine"
+  ]
+ },
+ {
+  "id": "Q28",
+  "short": "Reuse the spill and damage rules",
+  "question": "The hand-written mechanisms library already has a vessel-failure spill process and heat damage (src/world_substrate/mechanisms/damage.py:116). Generated worlds start with an empty rule registry and get only the rules writer's declared processes (scripts/scaffold_world.py:209). Should S2's glass chain reuse the library's spill and damage processes, or have the rules writer write its own?",
+  "blocks": "how S2's glass chain is built, and whether generated and reference worlds share physics",
+  "resolves_with": "Reading the code and one free probe: compare the library processes' read and write paths (entities.<vessel>.condition.value, container, liquid) with what a generated bundle declares; if a generated glass can carry those components, offer the library processes to the build as installable rules and probe the glass chain on the saved airfield fixture; otherwise the rules writer writes declared processes and the library stays reference-only.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "src/world_substrate/mechanisms/damage.py:116",
+   "scripts/scaffold_world.py:209",
+   "tests/fixtures/airfield-s1-live.json"
+  ],
+  "touches": [
+   "mechanisms",
+   "knock-on-now",
+   "gen-rules"
+  ]
+ },
+ {
+  "id": "Q29",
+  "short": "Interpreter call cost",
+  "question": "S1 adds one attempt-interpreter call per attempt. The plan batches one call per round if interpreter calls add more than 30% to a run's cost. Do they?",
+  "blocks": "whether S1 must batch interpreter calls",
+  "resolves_with": "S1's first owner run's model-call ledger.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "No. In the S1 live airfield run (9 rounds, 65 calls) the 20 interpreter calls cost $0.00332 of $0.03191, adding 11.6% to the run's other calls ($0.02859); the 36 resident calls cost $0.00782. At the 30-round cap, with the build cost fixed, they would add about 24%. Below the plan's 30%, so no batching.",
+  "sources": [
+   "evidence/open-attempt/s1-airfield/llm-calls.jsonl",
+   "evidence/open-attempt/s1-airfield/TRACE_READ.md:4"
+  ],
+  "touches": [
+   "attempt-reading",
+   "budget"
   ]
  }
 ]

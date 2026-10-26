@@ -60,9 +60,26 @@ TYPES = [
      "scripts/generate_causal_model.py:430", "specializes", "sci:RelationInstance (from, to)",
      "a way is a directed relation instance between two place elements; passable is a component on it"),
     ("action-kind", "Action kind (effector)", "rules", True,
-     "Something an actor can try, with named participant roles, checks and effects, compiled before use.",
+     "Something an actor can try, with named participant roles, checks and effects, compiled before use "
+     "(a generated DeclaredActionMechanic) or hand-written (FillRule and the other mechanisms); either way "
+     "the Engine runs it through the action-rule interface.",
      "src/world_substrate/action_authoring.py:61", "specializes", "sci:RelationType",
      "an action kind is an n-ary relation type whose roles are its participants; the kernel has no effects"),
+    ("rule-interface", "Action and process rule interface", "rules", True,
+     "What the Engine actually runs: an action rule discovers, checks and applies one action kind; a process "
+     "rule says when it is due and applies; both declare read and write paths. Generated mechanics and the "
+     "hand-written mechanisms library (FillRule, VesselFailureSpillProcess) both implement it.",
+     "src/world_substrate/rules.py:317", "no_counterpart", "",
+     "an executable interface; the kernel holds no code"),
+    ("registry", "Rule registry", "rules", True,
+     "The sole lookup surface for the action and process rules installed in one world, in a fixed order.",
+     "src/world_substrate/rules.py:428", "no_counterpart", "",
+     "a runtime table of executable rules, outside the kernel"),
+    ("causal-parent", "Hard causal parent", "acting", True,
+     "An earlier event a rule declares as mechanically supporting this one (opt-in, DeclaresCausalParents); "
+     "kept apart from information a person merely had in mind. S2's reactions cite their trigger this way.",
+     "src/world_substrate/rules.py:383", "specializes", "sci:RelationInstance (event, parent event)",
+     "a directed relation instance between two applied events"),
     ("role", "Participant role", "rules", True,
      "A named slot of an action kind (actor, to, way, aircraft) and the categories that may fill it.",
      "src/world_substrate/action_authoring.py:67", "same", "sci:RoleType",
@@ -154,7 +171,8 @@ LINKS = [
     ("place", "is an", "entity"), ("way", "is an", "entity"), ("way", "joins", "place"), ("action-kind", "declares", "role"), ("sense", "names", "role"),
     ("role", "filled by", "category"), ("action-kind", "requires", "check"), ("action-kind", "produces", "effect"),
     ("process", "requires", "check"), ("process", "produces", "effect"), ("effect", "changes", "component"),
-    ("effect", "bounded by", "write-scope"), ("check", "reads", "component"), ("knock-on-now", "is a timing of", "process"),
+    ("effect", "bounded by", "write-scope"), ("rule-interface", "runs", "action-kind"), ("rule-interface", "runs", "process"),
+    ("registry", "installs", "rule-interface"), ("event", "cites", "causal-parent"), ("knock-on-now", "cites", "causal-parent"), ("check", "reads", "component"), ("knock-on-now", "is a timing of", "process"),
     ("skill-roll", "varies", "effect"), ("terminal", "requires", "check"), ("profile", "freezes", "action-kind"),
     ("profile", "freezes", "process"), ("affordance", "offers", "action-kind"), ("decider", "chooses from", "affordance"),
     ("decider", "says", "attempt"), ("attempt", "read as", "attempt-reading"), ("attempt", "or", "unmatched"),
@@ -237,12 +255,13 @@ cannot express them. Checked:
 | --- | --- |
 | scientific-hypergraph kernel v2 | The carrier: every structural type maps onto it in the table above. It has no evaluable part, so checks, effects and processes stay here. |
 | onto-canon6 | Governs packs of claims (author, derive, review, promote); it does not run effects on a world state. Not a carrier for rules that change state. |
-| PDDL | Closest prior art: an action kind is a PDDL action schema (typed parameters = roles, checks = preconditions, effects). Composed with, not replaced, in `spikes/replacement-2026-10/` (Decision 006); PDDL has no processes that run by themselves, no write scopes and no partial observation. |
+| PDDL and PDDL+ | Closest prior art: an action kind is a PDDL action schema (typed parameters = roles, checks = preconditions, effects), and PDDL+ adds processes that run by themselves and events that fire when their condition holds, which is what a process and the planned same-moment knock-on are (the survey cites PDDL+ processes and events, [flexible-simulator-prior-art-2026-10.md](../research/flexible-simulator-prior-art-2026-10.md) lines 32 and 36). Composed with, not replaced, in `spikes/replacement-2026-10/` (Decision 006): PDDL+ has no declared write scopes, no per-actor observation and no recorded refusal naming its failed precondition, and it is a planning language with no runtime commit. |
+| Linguistic Core `relation-schema.v1` | Already used: `src/world_substrate/semantic_relation.py:5-20` projects each sense binding read-only onto Linguistic Core's relation schema (roles sense, participant profile, causal class, causal bearer, mechanic). It is the outward meaning view of the `sense` type above, which maps onto the kernel's role declarations; neither carries effects, and the projection marks the mechanic role "consumer-owned consequence authority". |
 | Event Calculus and action languages (C+) | Source of the planned same-moment knock-on (ramification), [flexible-simulator-prior-art-2026-10.md](../research/flexible-simulator-prior-art-2026-10.md). A reasoning formalism, not a runtime. |
 | SBML, CellML, bond graphs, Modelica, Decapodes | Not checked further: they hold continuous rate laws and equations; these rules are discrete checks and effects on component values. |
 | FMI, SED-ML, OpenMath | Not checked further: a black-box model interface, an experiment description and an expression language; none declares typed participants with effects. |
-| Petri nets (transition semantics) | Partly checked: [linked_process_participants.md](../plans/linked_process_participants.md) (prior-art table, line 136) already reuses Petri-net transition semantics for linked process participants (one firing, several places, atomic). A process is close to a transition that fires when enabled, and output arcs are close to a write scope; whether guards that read arbitrary component checks, per-actor noticing and refusal with a named cause fit a typed Petri net (AlgebraicPetri) is open question Q24. |
-| TypeDB | Not checked: relations with role players are the nearest outside shape for action kinds and attempt readings. Open question Q24. |
+| Petri nets (transition semantics) | Partly checked: [linked_process_participants.md](../plans/linked_process_participants.md) (prior-art table, line 136) already reuses Petri-net transition semantics for linked process participants (one firing, several places, atomic). A process is close to a transition that fires when enabled, and output arcs are close to a write scope; a typed Petri net (AlgebraicPetri) has no guards over component data, coloured Petri nets have guards, and no Petri net models per-actor noticing or a refusal that names its failed check, so the answer is compose (open question Q24, resolved by argument). |
+| TypeDB | Relations with role players are the nearest outside shape for action kinds and attempt readings, but TypeDB runs no state-changing effects, so it could hold the structural types only, which the kernel already does (Q24, resolved: compose). |
 """
 
 

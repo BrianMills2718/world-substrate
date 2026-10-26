@@ -63,7 +63,25 @@
    "id": "action-kind",
    "label": "Action kind (effector)",
    "kind": "rules",
-   "explain": "Something an actor can try, with named participant roles, checks and effects, compiled before use."
+   "explain": "Something an actor can try, with named participant roles, checks and effects, compiled before use (a generated DeclaredActionMechanic) or hand-written (FillRule and the other mechanisms); either way the Engine runs it through the action-rule interface."
+  },
+  {
+   "id": "rule-interface",
+   "label": "Action and process rule interface",
+   "kind": "rules",
+   "explain": "What the Engine actually runs: an action rule discovers, checks and applies one action kind; a process rule says when it is due and applies; both declare read and write paths. Generated mechanics and the hand-written mechanisms library (FillRule, VesselFailureSpillProcess) both implement it."
+  },
+  {
+   "id": "registry",
+   "label": "Rule registry",
+   "kind": "rules",
+   "explain": "The sole lookup surface for the action and process rules installed in one world, in a fixed order."
+  },
+  {
+   "id": "causal-parent",
+   "label": "Hard causal parent",
+   "kind": "acting",
+   "explain": "An earlier event a rule declares as mechanically supporting this one (opt-in, DeclaresCausalParents); kept apart from information a person merely had in mind. S2's reactions cite their trigger this way."
   },
   {
    "id": "role",
@@ -275,114 +293,144 @@
   },
   {
    "id": "m16",
+   "source": "rule-interface",
+   "target": "action-kind",
+   "label": "runs"
+  },
+  {
+   "id": "m17",
+   "source": "rule-interface",
+   "target": "process",
+   "label": "runs"
+  },
+  {
+   "id": "m18",
+   "source": "registry",
+   "target": "rule-interface",
+   "label": "installs"
+  },
+  {
+   "id": "m19",
+   "source": "event",
+   "target": "causal-parent",
+   "label": "cites"
+  },
+  {
+   "id": "m20",
+   "source": "knock-on-now",
+   "target": "causal-parent",
+   "label": "cites"
+  },
+  {
+   "id": "m21",
    "source": "check",
    "target": "component",
    "label": "reads"
   },
   {
-   "id": "m17",
+   "id": "m22",
    "source": "knock-on-now",
    "target": "process",
    "label": "is a timing of"
   },
   {
-   "id": "m18",
+   "id": "m23",
    "source": "skill-roll",
    "target": "effect",
    "label": "varies"
   },
   {
-   "id": "m19",
+   "id": "m24",
    "source": "terminal",
    "target": "check",
    "label": "requires"
   },
   {
-   "id": "m20",
+   "id": "m25",
    "source": "profile",
    "target": "action-kind",
    "label": "freezes"
   },
   {
-   "id": "m21",
+   "id": "m26",
    "source": "profile",
    "target": "process",
    "label": "freezes"
   },
   {
-   "id": "m22",
+   "id": "m27",
    "source": "affordance",
    "target": "action-kind",
    "label": "offers"
   },
   {
-   "id": "m23",
+   "id": "m28",
    "source": "decider",
    "target": "affordance",
    "label": "chooses from"
   },
   {
-   "id": "m24",
+   "id": "m29",
    "source": "decider",
    "target": "attempt",
    "label": "says"
   },
   {
-   "id": "m25",
+   "id": "m30",
    "source": "attempt",
    "target": "attempt-reading",
    "label": "read as"
   },
   {
-   "id": "m26",
+   "id": "m31",
    "source": "attempt",
    "target": "unmatched",
    "label": "or"
   },
   {
-   "id": "m27",
+   "id": "m32",
    "source": "attempt-reading",
    "target": "typed-action",
    "label": "becomes"
   },
   {
-   "id": "m28",
+   "id": "m33",
    "source": "decider",
    "target": "typed-action",
    "label": "submits"
   },
   {
-   "id": "m29",
+   "id": "m34",
    "source": "typed-action",
    "target": "event",
    "label": "recorded as"
   },
   {
-   "id": "m30",
+   "id": "m35",
    "source": "process",
    "target": "event",
    "label": "recorded as"
   },
   {
-   "id": "m31",
+   "id": "m36",
    "source": "event",
    "target": "component",
    "label": "changes"
   },
   {
-   "id": "m32",
+   "id": "m37",
    "source": "observation",
    "target": "entity",
    "label": "shows"
   },
   {
-   "id": "m33",
+   "id": "m38",
    "source": "observation",
    "target": "information",
    "label": "filtered by"
   },
   {
-   "id": "m34",
+   "id": "m39",
    "source": "observation",
    "target": "decider",
    "label": "feeds"

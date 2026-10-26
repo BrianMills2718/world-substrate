@@ -192,7 +192,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 - **Model:** with open attempts each run row keeps `attempt {text, reading}` and the run summary lists `unmatched_attempts` (`scripts/run_authored_world.py`, ODD 11.3).
 - **View:** the run page's round text reads `row.belief` and `row.expects` (`scripts/world_builder_home.html:627-629`) and never `row.attempt` or `summary.unmatched_attempts`, so a visitor sees the move but not the words behind it, and an attempt that changed nothing shows only as waiting.
-- **Reproduced: no.** Read from the page source; no open-attempt run with residents has run since S1 (the first live run was scripted, `evidence/open-attempt/s1-airfield-scripted/`). The owner run log keeps both (`transcript`, `summary`).
+- **Reproduced: from the page source and the S1 live run's rows.** The live run with residents (`evidence/open-attempt/s1-airfield/`, 2026-10-26) keeps `attempt {text, reading}` on every row and 15 refused or unmatched attempts, and the round text above reads neither the attempt words nor the unmatched list (`grep -n "row.attempt\|unmatched_attempts" scripts/world_builder_home.html` finds no hit). The owner run log keeps both (`transcript`, `summary`). Open question Q26; S1 is not done until it closes.
 
 ## Not verified
 

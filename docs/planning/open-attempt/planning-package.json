@@ -54,6 +54,16 @@
             "failed": 0,
             "skipped": 2
           }
+        },
+        {
+          "name": "wiki and Markdown cap",
+          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo .",
+          "exit_status": 0,
+          "counts": {
+            "md_files": 134,
+            "cap": "exception",
+            "orphans": 0
+          }
         }
       ]
     },
@@ -91,26 +101,26 @@
         "sense": "src/world_substrate/semantic.py:15",
         "profile": "src/world_substrate/profile.py:266",
         "write-scope": "src/world_substrate/engine.py:88",
-        "causal-trace": "scripts/world_builder_service.py:1825",
+        "causal-trace": "src/world_substrate/engine.py:529",
         "world-kind": "scripts/world_builder_service.py:113",
         "builder": "scripts/world_builder_service.py",
         "approval": "scripts/world_builder_service.py:418",
         "fingerprint": "scripts/world_builder_service.py:381",
         "information": "src/world_substrate/information.py:57",
         "run-loop": "scripts/run_authored_world.py:347",
-        "contention": "scripts/run_authored_world.py:581",
-        "resident": "scripts/concordia_residents.py:29",
+        "contention": "scripts/run_authored_world.py:563",
+        "resident": "scripts/concordia_residents.py:44",
         "task": "scripts/attempts.py:17",
         "notice": "scripts/attempts.py:234",
         "build": "scripts/world_builder_service.py:1541",
         "rules-retry": "scripts/world_builder_service.py:263",
         "test-run": "scripts/world_builder_service.py:1610",
-        "run-log": "scripts/world_builder_service.py:478",
+        "run-log": "scripts/world_builder_service.py:524",
         "readout": "scripts/run_readout.py:125",
         "scene-replay": "scripts/render_scene_replay.py:398",
         "share": "scripts/world_builder_service.py:598",
         "budget": "scripts/world_builder_service.py:51",
-        "people-world": "scripts/people_world.py:225",
+        "people-world": "scripts/people_world.py:364",
         "communicate": "spikes/any-scenario-2026-10/compile_spec.py",
         "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
         "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
@@ -121,7 +131,7 @@
         "agenda": "scripts/people_world.py:279",
         "rollout": "spikes/any-scenario-2026-10/compile_spec.py:399",
         "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
-        "person": "scripts/people_world.py:355",
+        "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
         "gen-rules": "scripts/people_world.py:260",
         "waltzman-ref": "reference_worlds/waltzman/components.py:11",
         "affordance": "src/world_substrate/engine.py:352",
@@ -130,7 +140,12 @@
         "attempt-reading": "src/world_substrate/attempt.py:81",
         "unmatched-attempt": "src/world_substrate/attempt.py:25",
         "observation": "src/world_substrate/engine.py:235",
-        "place-way": "scripts/generate_world_bundle.py:96"
+        "place-way": "scripts/generate_world_bundle.py:96",
+        "projection": "src/world_substrate/projection.py:44",
+        "causal-parent": "src/world_substrate/rules.py:383",
+        "exchange": "src/world_substrate/exchange.py:20",
+        "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
+        "kitchen": "reference_worlds/kitchen/mechanics.py"
       }
     },
     "diagrams": {
@@ -177,7 +192,19 @@
         "profile",
         "budget",
         "run-loop",
-        "task"
+        "task",
+        "engine",
+        "compiler",
+        "gen-rules",
+        "build",
+        "run-log",
+        "causal-trace",
+        "sense",
+        "causal-parent",
+        "contention",
+        "readout",
+        "share",
+        "mechanisms"
       ]
     },
     "review_page": {

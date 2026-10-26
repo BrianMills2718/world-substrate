@@ -51,6 +51,22 @@
    "why": "an action kind is an n-ary relation type whose roles are its participants; the kernel has no effects"
   },
   {
+   "node": "rule-interface",
+   "relation": "no_counterpart",
+   "why": "an executable interface; the kernel holds no code"
+  },
+  {
+   "node": "registry",
+   "relation": "no_counterpart",
+   "why": "a runtime table of executable rules, outside the kernel"
+  },
+  {
+   "node": "causal-parent",
+   "relation": "specializes",
+   "maps_to": "sci:RelationInstance (event, parent event)",
+   "why": "a directed relation instance between two applied events"
+  },
+  {
    "node": "role",
    "relation": "same",
    "maps_to": "sci:RoleType",
