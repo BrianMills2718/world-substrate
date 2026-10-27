@@ -468,6 +468,12 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "When entities start in different places (initial_builtin_state location values differ), an action that "
             "uses, takes, operates or talks to a thing or person must check that the actor's location.location_id "
             "equals that participant's location.location_id.",
+            # 2026-10-27 pencil czt5uoGw5t3L (evidence/pencil7-trace-audit/): the rule above gave buy-leads and
+            # buy-slats a same-place check between a factory and suppliers on other continents; nothing moved anyone,
+            # so the factory never got leads or slats and no pencil was made.
+            "Except: an order or purchase between parties in different places is sent from afar. Give it no "
+            "same-place check unless one of your moves or processes can bring them together; when the goods "
+            "travel, start a delivery that counts down rounds instead.",
             # Q23 rules2: move required the destination to equal both sides of the wall at once, so it could never pass.
             "Every check must hold at the same time; there is no 'or'. Never require one value to equal two different "
             "fields. For a way between two places, require the actor's location to equal the way's first place "

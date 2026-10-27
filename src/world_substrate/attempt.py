@@ -107,9 +107,10 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
             continue
         name, raw, span = str(row["field"]), str(row.get("value", "")), str(row.get("quoted_span", ""))
         ok, typed = _coerce(declared[name], raw)
-        if not ok and declared[name] == "integer" and (not span or span not in attempt):
+        if declared[name] == "integer" and (not span or span not in attempt):
             # An amount the person never said is one: 2026-10-27 pencil c_SrKPfa3rpE, the lead-maker's "I try to make
-            # leads from my clay and graphite" was refused in 3 rounds as quantity='' or 'unspecified'.
+            # leads from my clay and graphite" was refused in 3 rounds as quantity='' or 'unspecified'; pencil
+            # czt5uoGw5t3L refused the reader's own "1" with an empty quote 5 times when only failed numbers defaulted.
             fields[name], spans[name] = 1, ""
             continue
         if not ok:
