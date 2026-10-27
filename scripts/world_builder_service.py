@@ -835,6 +835,33 @@ def _idle_guidance(dry: dict[str, Any], idle: list[str], turns: int) -> str:
     )
 
 
+def _unsourced_inputs(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]:
+    """Fields some move uses up that nothing ever makes or renews and that everyone starts with none of.
+
+    2026-10-26 pencil build (share NZD33sh3iX29): assembling a pencil needed clay, paint, erasers and ferrules,
+    no actor or process produced any of them and every stock started at 0, so no pencil and no sale could ever
+    happen. Read from the effect structure: moving a field from one holder to another is not a source.
+    """
+    used: set[str] = set()
+    made: set[str] = set()
+    for mechanic in causal.get("mechanics") or []:
+        effects = mechanic.get("effects") or []
+        taken = {e.get("path") for e in effects if e.get("op") == "subtract"}
+        used |= taken
+        made |= {e.get("path") for e in effects if e.get("op") in ("add", "set") and e.get("path") not in taken}
+    for process in causal.get("processes") or []:
+        made |= {e.get("path") for e in process.get("effects") or [] if e.get("op") in ("add", "set")}
+
+    def held(path: str) -> bool:
+        parts = path.split(".")
+        if len(parts) != 3 or parts[0] != "components":
+            return True
+        values = [((entity.get("components") or {}).get(parts[1]) or {}).get(parts[2]) for entity in bundle.get("entities") or []]
+        return any(isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 for v in values)
+
+    return sorted({path.rsplit(".", 1)[-1] for path in used - made if path and not held(path)})
+
+
 def _conjuring_processes(causal: dict[str, Any]) -> list[str]:
     """'process adds field (made by action)' for each process that creates a good some action makes from others.
 
@@ -1430,6 +1457,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 # Best: alive with every actor still taking part, every move possible at some point and the
                                 # work moving; then alive; then not.
                                 conjuring_found = _conjuring_processes(candidate)
+                                unsourced = _unsourced_inputs(bundle, candidate)
                                 moving_found = _moving_processes(candidate)
                                 # A move flips a thing's state but nothing ever follows from it at once (2026-10-26
                                 # cafe build dI4j2qUYPBBZ: tip-stack set upright false and no knock-on was written).
@@ -1472,6 +1500,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                         "to flow through the chain: " + "; ".join(conjuring_found) + ". Remove those effects; "
                                         "processes may only renew raw materials at their source and bring new demand."
                                     )
+                                if unsourced:
+                                    guidance += (
+                                        " Nothing in the world ever makes or brings in these, and everyone starts with "
+                                        "none, so every step that uses them is impossible: " + ", ".join(unsourced) + ". "
+                                        "Give each one a source: an actor whose action makes or supplies it, or a "
+                                        "process that renews it at the place it comes from."
+                                    )
+                                result_row["unsourced_inputs"] = unsourced
                                 result_row["stalled_actors"] = summary.get("stalled_actors") or []
                                 result_row["never_offered"] = sorted(never)
                                 result_row["circling"] = circling

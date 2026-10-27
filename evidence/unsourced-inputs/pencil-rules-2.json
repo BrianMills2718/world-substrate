@@ -1,0 +1,2024 @@
+{
+  "trace_id": "model-more/rules/1eb6b97d4c074e6a98d57c68ea2881d2",
+  "cost": 0.0051835,
+  "causal_model": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "cut-cedar",
+        "version": "1",
+        "action_kind": "cut-cedar",
+        "rationale": "Cutting cedar produces logs in the loggers' represented stock; no forest reserve is represented.",
+        "actor_selector": {
+          "categories": [
+            "logger"
+          ],
+          "components": [
+            "stock",
+            "production"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the loggers have work waiting",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.production.waiting_work"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.logs",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.production.waiting_work",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "No forest reserve or renewal can be represented, so this does not model sustainable timber availability."
+        ],
+        "tests": [
+          "Loggers with waiting work gain one log and use one unit of waiting work.",
+          "Loggers with no waiting work cannot cut logs."
+        ],
+        "semantic_bindings": [
+          "one cut produces one represented log"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "deliver-logs",
+        "version": "1",
+        "action_kind": "deliver-logs",
+        "rationale": "Delivery transfers one log from the logger stock to the selected sawmill stock; no route or travel time is represented.",
+        "actor_selector": {
+          "categories": [
+            "logger"
+          ],
+          "components": [
+            "stock"
+          ]
+        },
+        "participants": {
+          "to": {
+            "categories": [
+              "mill"
+            ],
+            "components": [
+              "stock"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the loggers have a log to deliver",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.logs"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the destination is the sawmill",
+            "left": {
+              "entity_id": "to"
+            },
+            "op": "eq",
+            "right": {
+              "literal": "sawmill"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.logs",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "to",
+            "path": "components.stock.logs",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The action transfers one log immediately because no travel or shipment state is available for this delivery."
+        ],
+        "tests": [
+          "With one or more logs and the sawmill selected, one log transfers.",
+          "A different destination or an empty logger stock is refused."
+        ],
+        "semantic_bindings": [
+          "logs move from the logger to the sawmill"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "saw-slats",
+        "version": "1",
+        "action_kind": "saw-slats",
+        "rationale": "Sawing consumes one log and produces one slat in the sawmill stock.",
+        "actor_selector": {
+          "categories": [
+            "mill"
+          ],
+          "components": [
+            "stock",
+            "production"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the sawmill has a log",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.logs"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the sawmill has work waiting",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.production.waiting_work"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.logs",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.stock.slats",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.production.waiting_work",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One log yields one represented slat; scrap and production rates are not represented."
+        ],
+        "tests": [
+          "With a log and waiting work, the mill exchanges one log for one slat.",
+          "Without either required input, sawing is refused."
+        ],
+        "semantic_bindings": [
+          "log to pencil slat conversion"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "mine-graphite",
+        "version": "1",
+        "action_kind": "mine-graphite",
+        "rationale": "Mining adds one unit of graphite ore to the miners' represented stock; no mine reserve is represented.",
+        "actor_selector": {
+          "categories": [
+            "miner"
+          ],
+          "components": [
+            "stock",
+            "production"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the miners have work waiting",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.production.waiting_work"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.graphite_ore",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.production.waiting_work",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "No mine reserve or depletion state is represented, so ore availability and renewal are not modeled."
+        ],
+        "tests": [
+          "Miners with waiting work gain one unit of graphite ore.",
+          "Miners with no waiting work cannot mine."
+        ],
+        "semantic_bindings": [
+          "mining produces graphite ore"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "make-leads",
+        "version": "1",
+        "action_kind": "make-leads",
+        "rationale": "Lead making consumes one unit of ore and produces one unit of leads in the lead makers' stock.",
+        "actor_selector": {
+          "categories": [
+            "processor"
+          ],
+          "components": [
+            "stock",
+            "production"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the lead makers have graphite ore",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.graphite_ore"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the lead makers have work waiting",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.production.waiting_work"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.graphite_ore",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.stock.leads",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.production.waiting_work",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "Clay availability and conversion yield are not separately represented; one ore is used as the represented input for one lead unit."
+        ],
+        "tests": [
+          "With ore and waiting work, one ore becomes one lead unit.",
+          "Without ore or waiting work, lead making is refused."
+        ],
+        "semantic_bindings": [
+          "graphite ore is consumed to make pencil leads"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "supply-materials",
+        "version": "1",
+        "action_kind": "supply-materials",
+        "rationale": "The supplier transfers one represented supply unit to the selected factory; the action description names the materials but the stock field counts them together.",
+        "actor_selector": {
+          "categories": [
+            "supplier"
+          ],
+          "components": [
+            "stock"
+          ]
+        },
+        "participants": {
+          "to": {
+            "categories": [
+              "factory"
+            ],
+            "components": [
+              "stock"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the supplier has supplies available",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.supplies"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the destination is the pencil factory",
+            "left": {
+              "entity_id": "to"
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil-factory"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.supplies",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "to",
+            "path": "components.stock.supplies",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "Paint, erasers, ferrules, and boxes are lumped into one stock count; this does not model their distinct quantities or transport time."
+        ],
+        "tests": [
+          "With supplies available and the factory selected, one supply unit transfers.",
+          "A different destination or no available supplies is refused."
+        ],
+        "semantic_bindings": [
+          "supplier provides the factory's listed materials"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "deliver-slats",
+        "version": "1",
+        "action_kind": "deliver-slats",
+        "rationale": "Delivery transfers one slat from the sawmill to the selected factory; no transport duration is represented for this move.",
+        "actor_selector": {
+          "categories": [
+            "mill"
+          ],
+          "components": [
+            "stock"
+          ]
+        },
+        "participants": {
+          "to": {
+            "categories": [
+              "factory"
+            ],
+            "components": [
+              "stock"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the sawmill has a slat to deliver",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.slats"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the destination is the pencil factory",
+            "left": {
+              "entity_id": "to"
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil-factory"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.slats",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "to",
+            "path": "components.stock.slats",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "No road, vehicle, or delivery time is represented for this transfer."
+        ],
+        "tests": [
+          "One slat transfers when the sawmill has stock and the factory is selected.",
+          "A different destination or insufficient stock is refused."
+        ],
+        "semantic_bindings": [
+          "slats move from sawmill stock to factory stock"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "deliver-leads",
+        "version": "1",
+        "action_kind": "deliver-leads",
+        "rationale": "Delivery transfers one lead unit from the lead works to the selected factory; no route or travel time is represented.",
+        "actor_selector": {
+          "categories": [
+            "processor"
+          ],
+          "components": [
+            "stock"
+          ]
+        },
+        "participants": {
+          "to": {
+            "categories": [
+              "factory"
+            ],
+            "components": [
+              "stock"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the lead makers have a lead to deliver",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.leads"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the destination is the pencil factory",
+            "left": {
+              "entity_id": "to"
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil-factory"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.leads",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "to",
+            "path": "components.stock.leads",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "No route or travel time is represented for this transfer."
+        ],
+        "tests": [
+          "One lead unit transfers when the lead works has stock and the factory is selected.",
+          "A different destination or insufficient stock is refused."
+        ],
+        "semantic_bindings": [
+          "leads move from lead works to factory stock"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "make-and-pack-pencils",
+        "version": "1",
+        "action_kind": "make-and-pack-pencils",
+        "rationale": "The factory consumes slats, leads, supplies, and waiting work to produce one pencil and one box unit. The represented stocks do not specify per-pencil quantities, so one of each input unit is required.",
+        "actor_selector": {
+          "categories": [
+            "factory"
+          ],
+          "components": [
+            "stock",
+            "production"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the factory has a slat",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.slats"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has a lead unit",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.leads"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has supplies",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.stock.supplies"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the factory has work waiting",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.production.waiting_work"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.stock.slats",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.stock.leads",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.stock.supplies",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.stock.pencils",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.stock.boxes",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.production.waiting_work",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "Supplies combine paint, erasers, ferrules, and boxes; exact bill of materials, waste, and packing quantities are not represented."
+        ],
+        "tests": [
+          "With all required stocks and waiting work, production adds one pencil and one box while consuming one unit of each input.",
+          "Missing any required stock or waiting work prevents production."
+        ],
+        "semantic_bindings": [
+          "factory operation assembles and packs pencils from delivered inputs"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "deliver-boxes",
+        "version": "1",
+        "action_kind": "deliver-boxes",
+        "rationale": "The carrier loads boxed pencils from the named source, starts a represented shipment, and completes it only after its round counter reaches zero.",
+        "actor_selector": {
+          "categories": [
+            "carrier"
+          ],
+          "components": [
+            "shipment"
+          ]
+        },
+        "participants": {
+          "source": {
+            "categories": [
+              "factory"
+            ],
+            "components": [
+              "stock"
+            ]
+          },
+          "to": {
+            "categories": [
+              "shop"
+            ],
+            "components": [
+              "stock"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the source is the pencil factory",
+            "left": {
+              "entity_id": "source"
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pencil-factory"
+            }
+          },
+          {
+            "label": "the destination is the shop",
+            "left": {
+              "entity_id": "to"
+            },
+            "op": "eq",
+            "right": {
+              "literal": "shopkeepers"
+            }
+          },
+          {
+            "label": "the factory has a box to ship",
+            "left": {
+              "participant": {
+                "name": "source",
+                "path": "components.stock.boxes"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the truck driver is not already carrying a shipment",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.shipment.boxes_in_transit"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 0
+            }
+          },
+          {
+            "label": "the truck driver is at the factory",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pennsylvania-factory"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "source",
+            "path": "components.stock.boxes",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.shipment.boxes_in_transit",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.shipment.rounds_left",
+            "op": "set",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "One box is loaded per action. The counter represents a one-round trip; no geography, freight charges, or return journey is represented."
+        ],
+        "tests": [
+          "With a factory box available and no shipment underway, loading starts a shipment with one round left.",
+          "No shipment starts from an incorrect source, to a non-shop destination, or without a box."
+        ],
+        "semantic_bindings": [
+          "boxed pencils are carried from factory to shops"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "sell-pencils",
+        "version": "1",
+        "action_kind": "sell-pencils",
+        "rationale": "A shop sells one pencil at its represented offer price; the customer pays and the shop receives that price.",
+        "actor_selector": {
+          "categories": [
+            "shop"
+          ],
+          "components": [
+            "offer",
+            "stock",
+            "business"
+          ]
+        },
+        "participants": {
+          "shop": {
+            "categories": [
+              "shop"
+            ],
+            "components": [
+              "offer",
+              "stock",
+              "business"
+            ]
+          },
+          "customer": {
+            "categories": [
+              "customer"
+            ],
+            "components": [
+              "business"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the named shop is the acting shopkeeper",
+            "left": {
+              "entity_id": "actor"
+            },
+            "op": "eq",
+            "right": {
+              "action_field": "shop"
+            }
+          },
+          {
+            "label": "the customer is at the shop",
+            "left": {
+              "participant": {
+                "name": "customer",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "shops"
+            }
+          },
+          {
+            "label": "the shop has a pencil to sell",
+            "left": {
+              "participant": {
+                "name": "shop",
+                "path": "components.stock.pencils"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 1
+            }
+          },
+          {
+            "label": "the customer can afford the pencil",
+            "left": {
+              "participant": {
+                "name": "customer",
+                "path": "components.business.cash"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "participant": {
+                "name": "shop",
+                "path": "components.offer.price"
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "shop",
+            "path": "components.stock.pencils",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "customer",
+            "path": "components.business.cash",
+            "op": "subtract",
+            "value": {
+              "participant": {
+                "name": "shop",
+                "path": "components.offer.price"
+              }
+            }
+          },
+          {
+            "participant": "shop",
+            "path": "components.business.cash",
+            "op": "add",
+            "value": {
+              "participant": {
+                "name": "shop",
+                "path": "components.offer.price"
+              }
+            }
+          }
+        ],
+        "limits": [
+          "The shop stock has no process that converts delivered boxes into pencils, and the represented sale requires pencil stock; stocking and unpacking are not described actions.",
+          "One pencil is sold per action; repeated actions are required for multiple pencils."
+        ],
+        "tests": [
+          "With at least one pencil and sufficient customer cash, one pencil is sold and the offer price moves from customer to shop.",
+          "An empty shop, unaffordable price, or customer not at the shop prevents the sale."
+        ],
+        "semantic_bindings": [
+          "one pencil sale exchanges one pencil for the shop's offer price"
+        ]
+      }
+    ],
+    "processes": [
+      {
+        "process_id": "renew-waiting-work",
+        "rationale": "Represented production work can recur for the ongoing world, without generating goods or replacing any material-processing action.",
+        "selector": {
+          "categories": [
+            "worker"
+          ],
+          "components": [
+            "production"
+          ]
+        },
+        "checks": [
+          {
+            "label": "the worker has no waiting work",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.production.waiting_work"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "it",
+            "path": "components.production.waiting_work",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ]
+      }
+    ],
+    "terminal": null,
+    "review": {
+      "schema_version": "world-substrate-causal-model/v0",
+      "mechanics": [
+        {
+          "mechanic_id": "cut-cedar",
+          "action_kind": "cut-cedar",
+          "rationale": "Cutting cedar produces logs in the loggers' represented stock; no forest reserve is represented.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.production",
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.logs"
+          ],
+          "writes": [
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock.logs",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the loggers have work waiting",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.production.waiting_work"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.logs",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.production.waiting_work",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "No forest reserve or renewal can be represented, so this does not model sustainable timber availability."
+          ],
+          "tests": [
+            "Loggers with waiting work gain one log and use one unit of waiting work.",
+            "Loggers with no waiting work cannot cut logs."
+          ]
+        },
+        {
+          "mechanic_id": "deliver-logs",
+          "action_kind": "deliver-logs",
+          "rationale": "Delivery transfers one log from the logger stock to the selected sawmill stock; no route or travel time is represented.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.logs",
+            "entities.<to>.category_ids",
+            "entities.<to>.components.stock",
+            "entities.<to>.components.stock.logs"
+          ],
+          "writes": [
+            "entities.<actor>.components.stock.logs",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<to>.components.stock.logs",
+            "entities.<to>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the loggers have a log to deliver",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.logs"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the destination is the sawmill",
+              "left": {
+                "entity_id": "to"
+              },
+              "op": "eq",
+              "right": {
+                "literal": "sawmill"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.logs",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "to",
+              "path": "components.stock.logs",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The action transfers one log immediately because no travel or shipment state is available for this delivery."
+          ],
+          "tests": [
+            "With one or more logs and the sawmill selected, one log transfers.",
+            "A different destination or an empty logger stock is refused."
+          ]
+        },
+        {
+          "mechanic_id": "saw-slats",
+          "action_kind": "saw-slats",
+          "rationale": "Sawing consumes one log and produces one slat in the sawmill stock.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.production",
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.logs",
+            "entities.<actor>.components.stock.slats"
+          ],
+          "writes": [
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock.logs",
+            "entities.<actor>.components.stock.slats",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the sawmill has a log",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.logs"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the sawmill has work waiting",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.production.waiting_work"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.logs",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.stock.slats",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.production.waiting_work",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One log yields one represented slat; scrap and production rates are not represented."
+          ],
+          "tests": [
+            "With a log and waiting work, the mill exchanges one log for one slat.",
+            "Without either required input, sawing is refused."
+          ]
+        },
+        {
+          "mechanic_id": "mine-graphite",
+          "action_kind": "mine-graphite",
+          "rationale": "Mining adds one unit of graphite ore to the miners' represented stock; no mine reserve is represented.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.production",
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.graphite_ore"
+          ],
+          "writes": [
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock.graphite_ore",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the miners have work waiting",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.production.waiting_work"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.graphite_ore",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.production.waiting_work",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "No mine reserve or depletion state is represented, so ore availability and renewal are not modeled."
+          ],
+          "tests": [
+            "Miners with waiting work gain one unit of graphite ore.",
+            "Miners with no waiting work cannot mine."
+          ]
+        },
+        {
+          "mechanic_id": "make-leads",
+          "action_kind": "make-leads",
+          "rationale": "Lead making consumes one unit of ore and produces one unit of leads in the lead makers' stock.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.production",
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.graphite_ore",
+            "entities.<actor>.components.stock.leads"
+          ],
+          "writes": [
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock.graphite_ore",
+            "entities.<actor>.components.stock.leads",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the lead makers have graphite ore",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.graphite_ore"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the lead makers have work waiting",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.production.waiting_work"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.graphite_ore",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.stock.leads",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.production.waiting_work",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "Clay availability and conversion yield are not separately represented; one ore is used as the represented input for one lead unit."
+          ],
+          "tests": [
+            "With ore and waiting work, one ore becomes one lead unit.",
+            "Without ore or waiting work, lead making is refused."
+          ]
+        },
+        {
+          "mechanic_id": "supply-materials",
+          "action_kind": "supply-materials",
+          "rationale": "The supplier transfers one represented supply unit to the selected factory; the action description names the materials but the stock field counts them together.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.supplies",
+            "entities.<to>.category_ids",
+            "entities.<to>.components.stock",
+            "entities.<to>.components.stock.supplies"
+          ],
+          "writes": [
+            "entities.<actor>.components.stock.supplies",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<to>.components.stock.supplies",
+            "entities.<to>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the supplier has supplies available",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.supplies"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the destination is the pencil factory",
+              "left": {
+                "entity_id": "to"
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil-factory"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.supplies",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "to",
+              "path": "components.stock.supplies",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "Paint, erasers, ferrules, and boxes are lumped into one stock count; this does not model their distinct quantities or transport time."
+          ],
+          "tests": [
+            "With supplies available and the factory selected, one supply unit transfers.",
+            "A different destination or no available supplies is refused."
+          ]
+        },
+        {
+          "mechanic_id": "deliver-slats",
+          "action_kind": "deliver-slats",
+          "rationale": "Delivery transfers one slat from the sawmill to the selected factory; no transport duration is represented for this move.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.slats",
+            "entities.<to>.category_ids",
+            "entities.<to>.components.stock",
+            "entities.<to>.components.stock.slats"
+          ],
+          "writes": [
+            "entities.<actor>.components.stock.slats",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<to>.components.stock.slats",
+            "entities.<to>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the sawmill has a slat to deliver",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.slats"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the destination is the pencil factory",
+              "left": {
+                "entity_id": "to"
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil-factory"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.slats",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "to",
+              "path": "components.stock.slats",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "No road, vehicle, or delivery time is represented for this transfer."
+          ],
+          "tests": [
+            "One slat transfers when the sawmill has stock and the factory is selected.",
+            "A different destination or insufficient stock is refused."
+          ]
+        },
+        {
+          "mechanic_id": "deliver-leads",
+          "action_kind": "deliver-leads",
+          "rationale": "Delivery transfers one lead unit from the lead works to the selected factory; no route or travel time is represented.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.leads",
+            "entities.<to>.category_ids",
+            "entities.<to>.components.stock",
+            "entities.<to>.components.stock.leads"
+          ],
+          "writes": [
+            "entities.<actor>.components.stock.leads",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<to>.components.stock.leads",
+            "entities.<to>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the lead makers have a lead to deliver",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.leads"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the destination is the pencil factory",
+              "left": {
+                "entity_id": "to"
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil-factory"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.leads",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "to",
+              "path": "components.stock.leads",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "No route or travel time is represented for this transfer."
+          ],
+          "tests": [
+            "One lead unit transfers when the lead works has stock and the factory is selected.",
+            "A different destination or insufficient stock is refused."
+          ]
+        },
+        {
+          "mechanic_id": "make-and-pack-pencils",
+          "action_kind": "make-and-pack-pencils",
+          "rationale": "The factory consumes slats, leads, supplies, and waiting work to produce one pencil and one box unit. The represented stocks do not specify per-pencil quantities, so one of each input unit is required.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.production",
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock",
+            "entities.<actor>.components.stock.boxes",
+            "entities.<actor>.components.stock.leads",
+            "entities.<actor>.components.stock.pencils",
+            "entities.<actor>.components.stock.slats",
+            "entities.<actor>.components.stock.supplies"
+          ],
+          "writes": [
+            "entities.<actor>.components.production.waiting_work",
+            "entities.<actor>.components.stock.boxes",
+            "entities.<actor>.components.stock.leads",
+            "entities.<actor>.components.stock.pencils",
+            "entities.<actor>.components.stock.slats",
+            "entities.<actor>.components.stock.supplies",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the factory has a slat",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.slats"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has a lead unit",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.leads"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has supplies",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.stock.supplies"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the factory has work waiting",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.production.waiting_work"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.stock.slats",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.stock.leads",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.stock.supplies",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.stock.pencils",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.stock.boxes",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.production.waiting_work",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "Supplies combine paint, erasers, ferrules, and boxes; exact bill of materials, waste, and packing quantities are not represented."
+          ],
+          "tests": [
+            "With all required stocks and waiting work, production adds one pencil and one box while consuming one unit of each input.",
+            "Missing any required stock or waiting work prevents production."
+          ]
+        },
+        {
+          "mechanic_id": "deliver-boxes",
+          "action_kind": "deliver-boxes",
+          "rationale": "The carrier loads boxed pencils from the named source, starts a represented shipment, and completes it only after its round counter reaches zero.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.shipment",
+            "entities.<actor>.components.shipment.boxes_in_transit",
+            "entities.<actor>.location.location_id",
+            "entities.<source>.category_ids",
+            "entities.<source>.components.stock",
+            "entities.<source>.components.stock.boxes",
+            "entities.<to>.category_ids",
+            "entities.<to>.components.stock"
+          ],
+          "writes": [
+            "entities.<actor>.components.shipment.boxes_in_transit",
+            "entities.<actor>.components.shipment.rounds_left",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<source>.components.stock.boxes",
+            "entities.<source>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the source is the pencil factory",
+              "left": {
+                "entity_id": "source"
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pencil-factory"
+              }
+            },
+            {
+              "label": "the destination is the shop",
+              "left": {
+                "entity_id": "to"
+              },
+              "op": "eq",
+              "right": {
+                "literal": "shopkeepers"
+              }
+            },
+            {
+              "label": "the factory has a box to ship",
+              "left": {
+                "participant": {
+                  "name": "source",
+                  "path": "components.stock.boxes"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the truck driver is not already carrying a shipment",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.shipment.boxes_in_transit"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": 0
+              }
+            },
+            {
+              "label": "the truck driver is at the factory",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "pennsylvania-factory"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "source",
+              "path": "components.stock.boxes",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.shipment.boxes_in_transit",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.shipment.rounds_left",
+              "op": "set",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "One box is loaded per action. The counter represents a one-round trip; no geography, freight charges, or return journey is represented."
+          ],
+          "tests": [
+            "With a factory box available and no shipment underway, loading starts a shipment with one round left.",
+            "No shipment starts from an incorrect source, to a non-shop destination, or without a box."
+          ]
+        },
+        {
+          "mechanic_id": "sell-pencils",
+          "action_kind": "sell-pencils",
+          "rationale": "A shop sells one pencil at its represented offer price; the customer pays and the shop receives that price.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.business",
+            "entities.<actor>.components.offer",
+            "entities.<actor>.components.stock",
+            "entities.<customer>.category_ids",
+            "entities.<customer>.components.business",
+            "entities.<customer>.components.business.cash",
+            "entities.<customer>.location.location_id",
+            "entities.<shop>.category_ids",
+            "entities.<shop>.components.business",
+            "entities.<shop>.components.business.cash",
+            "entities.<shop>.components.offer",
+            "entities.<shop>.components.offer.price",
+            "entities.<shop>.components.stock",
+            "entities.<shop>.components.stock.pencils"
+          ],
+          "writes": [
+            "entities.<customer>.components.business.cash",
+            "entities.<customer>.last_cause_event_id",
+            "entities.<shop>.components.business.cash",
+            "entities.<shop>.components.stock.pencils",
+            "entities.<shop>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the named shop is the acting shopkeeper",
+              "left": {
+                "entity_id": "actor"
+              },
+              "op": "eq",
+              "right": {
+                "action_field": "shop"
+              }
+            },
+            {
+              "label": "the customer is at the shop",
+              "left": {
+                "participant": {
+                  "name": "customer",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "shops"
+              }
+            },
+            {
+              "label": "the shop has a pencil to sell",
+              "left": {
+                "participant": {
+                  "name": "shop",
+                  "path": "components.stock.pencils"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 1
+              }
+            },
+            {
+              "label": "the customer can afford the pencil",
+              "left": {
+                "participant": {
+                  "name": "customer",
+                  "path": "components.business.cash"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "participant": {
+                  "name": "shop",
+                  "path": "components.offer.price"
+                }
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "shop",
+              "path": "components.stock.pencils",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "customer",
+              "path": "components.business.cash",
+              "op": "subtract",
+              "value": {
+                "participant": {
+                  "name": "shop",
+                  "path": "components.offer.price"
+                }
+              }
+            },
+            {
+              "participant": "shop",
+              "path": "components.business.cash",
+              "op": "add",
+              "value": {
+                "participant": {
+                  "name": "shop",
+                  "path": "components.offer.price"
+                }
+              }
+            }
+          ],
+          "limits": [
+            "The shop stock has no process that converts delivered boxes into pencils, and the represented sale requires pencil stock; stocking and unpacking are not described actions.",
+            "One pencil is sold per action; repeated actions are required for multiple pencils."
+          ],
+          "tests": [
+            "With at least one pencil and sufficient customer cash, one pencil is sold and the offer price moves from customer to shop.",
+            "An empty shop, unaffordable price, or customer not at the shop prevents the sale."
+          ]
+        }
+      ],
+      "processes": [
+        {
+          "process_id": "renew-waiting-work",
+          "rationale": "Represented production work can recur for the ongoing world, without generating goods or replacing any material-processing action.",
+          "selector": {
+            "categories": [
+              "worker"
+            ],
+            "components": [
+              "production"
+            ]
+          },
+          "checks": [
+            {
+              "label": "the worker has no waiting work",
+              "left": {
+                "participant": {
+                  "name": "it",
+                  "path": "components.production.waiting_work"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "it",
+              "path": "components.production.waiting_work",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "writes": [
+            "entities.<it>.components.production.waiting_work",
+            "entities.<it>.last_cause_event_id"
+          ]
+        }
+      ],
+      "terminal": null
+    }
+  }
+}

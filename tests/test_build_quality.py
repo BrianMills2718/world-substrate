@@ -141,3 +141,41 @@ class RetryWordingTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UnsourcedInputTests(unittest.TestCase):
+    """2026-10-26 pencil build NZD33sh3iX29: inputs nobody makes and nobody holds are named to the next attempt."""
+
+    def test_names_inputs_that_nothing_makes_or_holds(self):
+        bundle = {"entities": [{"components": {"stock": {"logs": 0, "clay": 0, "slats": 0, "cash": 5}}}]}
+        causal = {
+            "mechanics": [
+                {"action_kind": "make", "effects": [
+                    {"path": "components.stock.clay", "op": "subtract"},
+                    {"path": "components.stock.slats", "op": "subtract"},
+                    {"path": "components.stock.cash", "op": "subtract"}]},
+                {"action_kind": "deliver-clay", "effects": [
+                    {"path": "components.stock.clay", "op": "subtract"},
+                    {"path": "components.stock.clay", "op": "add"}]},
+                {"action_kind": "saw", "effects": [
+                    {"path": "components.stock.logs", "op": "subtract"},
+                    {"path": "components.stock.slats", "op": "add"}]},
+            ],
+            "processes": [{"effects": [{"path": "components.stock.logs", "op": "add"}]}],
+        }
+        # clay is only moved between holders; slats are made; logs renew; cash is held.
+        self.assertEqual(service._unsourced_inputs(bundle, causal), ["clay"])
+
+    def test_saved_worlds_have_no_unsourced_inputs(self):
+        for name in ("cafe1-live", "garden-luna-r3", "pencil-c4-run17", "c1r18_waltzman_world"):
+            world = json.loads((Path(__file__).parent / "fixtures" / f"{name}.json").read_text())
+            self.assertEqual(service._unsourced_inputs(world["bundle"], world["causal_model"]), [], name)
+
+    def test_priced_move_hands_over_one_unit(self):
+        rules = " ".join(gcm._context(BUNDLE)["authority_rules"])
+        self.assertIn("hands over exactly one unit", rules)
+
+    def test_pencil_live_world_names_its_missing_inputs(self):
+        world = json.loads((Path(__file__).parent / "fixtures" / "pencil2-live.json").read_text())
+        self.assertEqual(service._unsourced_inputs(world["bundle"], world["causal_model"]),
+                         ["clay", "erasers", "ferrules", "paint"])

@@ -1,0 +1,20 @@
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm)
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+21:05:14 - LiteLLM:WARNING: logging_worker.py:161 - LoggingWorker: event loop changed; carried 1 pending and revived 0 dequeued logging task(s) onto the new loop
+Traceback (most recent call last):
+  File "/home/brian/code2/world-substrate-wt-src/scripts/generate_causal_model.py", line 592, in generate_causal_model
+    compiled = CausalModel.from_dict(value, bundle=bundle)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-src/src/world_substrate/action_authoring.py", line 417, in from_dict
+    raise ActionDeclarationError("causal model mechanics must be a nonempty list")
+world_substrate.action_authoring.ActionDeclarationError: causal model mechanics must be a nonempty list
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/brian/code2/world-substrate-wt-src/evidence/unsourced-inputs/run_rules.py", line 9, in <module>
+    causal, result = generate_causal_model(bundle, trace_id=trace, world_kind="ongoing")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-src/scripts/generate_causal_model.py", line 623, in generate_causal_model
+    raise ValueError(f"causal proposal remained invalid after one repair: {last_error}") from last_error
+ValueError: causal proposal remained invalid after one repair: causal model mechanics must be a nonempty list

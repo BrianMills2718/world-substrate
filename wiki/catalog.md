@@ -163,3 +163,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## evidence/knock-on-targets
 
 - [Knock-on targets (2026-10-27)](../evidence/knock-on-targets/README.md)
+
+## evidence/unsourced-inputs
+
+- [Unsourced inputs and one-unit sales (2026-10-27)](../evidence/unsourced-inputs/README.md)
