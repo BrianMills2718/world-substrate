@@ -1,0 +1,1865 @@
+{
+  "trace_id": "model-more/rules/86f3d17056894fc08d2a75403c8ed0ab",
+  "cost": 0.0048838,
+  "causal_model": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "stack-chairs",
+        "version": "1",
+        "action_kind": "stack-chairs",
+        "rationale": "Stacking chairs increases the represented chair-stack count; the action does not move the stack onto the table because no represented state path records that placement.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "worker"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "chairs": {
+            "categories": [
+              "stack"
+            ],
+            "components": [
+              "stack"
+            ]
+          },
+          "table": {
+            "categories": [
+              "table"
+            ],
+            "components": [
+              "surface"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The staff member is the waiter",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "waiter"
+            }
+          },
+          {
+            "label": "The staff member, chairs, and table are in the same place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "chairs",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The table is in the staff member's place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "table",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The chair stack is upright",
+            "left": {
+              "participant": {
+                "name": "chairs",
+                "path": "components.stack.upright"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "chairs",
+            "path": "components.stack.count",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The represented state cannot record that the chairs are physically resting on the table; this action changes only the chair-stack count.",
+          "No individual-chair selection or table weight limit is represented."
+        ],
+        "tests": [
+          "A waiter at the cafe can increase an upright chair stack's count by one.",
+          "A non-waiter, a stack elsewhere, a table elsewhere, or a non-upright stack is refused."
+        ],
+        "semantic_bindings": [
+          "chairs means the stack of chairs being increased.",
+          "The table is checked for shared location; placement on it is not representable."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "prepare-order",
+        "version": "1",
+        "action_kind": "prepare-order",
+        "rationale": "Preparing an order is work by a barista and consumes a small amount of represented worker energy. Order fulfillment and adding a dirty cup cannot be applied because the action has no cafe participant.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "worker"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The staff member is the barista",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "barista"
+            }
+          },
+          {
+            "label": "The barista has energy to prepare the order",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.energy"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.worker.energy",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The action does not identify a cafe entity to decrement its waiting orders or increment dirty cups, so neither stock change is modeled.",
+          "No coffee inventory or completed-order state is represented."
+        ],
+        "tests": [
+          "A barista with positive energy spends one energy preparing an order.",
+          "A non-barista or a barista with no energy is refused."
+        ],
+        "semantic_bindings": [
+          "Preparing the order is the barista's work step."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "place-cups-on-tray",
+        "version": "1",
+        "action_kind": "place-cups-on-tray",
+        "rationale": "The represented cup placement is its drink.on reference; placing it on the tray changes that reference to the selected tray.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "worker"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "cup": {
+            "categories": [
+              "cup"
+            ],
+            "components": [
+              "drink"
+            ]
+          },
+          "tray": {
+            "categories": [
+              "tray"
+            ],
+            "components": [
+              "loose_item"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The staff member is the waiter",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "waiter"
+            }
+          },
+          {
+            "label": "The waiter, cup, and tray are in the same place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "cup",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The tray is in the waiter's place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "tray",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The cup is full",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.drink.full"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "The cup is not already spilled",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.drink.spilled"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "cup",
+            "path": "components.drink.on",
+            "op": "set",
+            "value": {
+              "action_field": "tray"
+            }
+          }
+        ],
+        "limits": [
+          "The represented state does not model tray capacity, cup stability, or a hand holding the cup."
+        ],
+        "tests": [
+          "A waiter can set a full, unspilled cup's resting place to the selected tray.",
+          "A cup that is not full, is spilled, or is in another place is refused."
+        ],
+        "semantic_bindings": [
+          "The cup's drink.on field represents what it rests on."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "mop-floor",
+        "version": "1",
+        "action_kind": "mop-floor",
+        "rationale": "Mopping a wet cafe floor dries the represented floor surface; the wet mop remains unchanged because its represented field does not say it becomes dry through mopping.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "worker"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "floor": {
+            "categories": [
+              "surface"
+            ],
+            "components": [
+              "surface"
+            ]
+          },
+          "mop": {
+            "categories": [
+              "cleaning_tool"
+            ],
+            "components": [
+              "cleaning_tool"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The staff member is the cleaner",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cleaner"
+            }
+          },
+          {
+            "label": "The cleaner, floor, and mop are in the same place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "floor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The mop is in the cleaner's place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "mop",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The cafe floor is wet",
+            "left": {
+              "participant": {
+                "name": "floor",
+                "path": "components.surface.wet"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "The mop is wet",
+            "left": {
+              "participant": {
+                "name": "mop",
+                "path": "components.cleaning_tool.wet"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "floor",
+            "path": "components.surface.wet",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "The action does not represent where the collected water goes or whether the mop needs wringing out."
+        ],
+        "tests": [
+          "The cleaner can mop a wet floor using a wet mop, making the floor dry.",
+          "A dry floor, dry mop, or participant in another place is refused."
+        ],
+        "semantic_bindings": [
+          "The floor's surface.wet field records whether the patch is wet."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "order-coffee",
+        "version": "1",
+        "action_kind": "order-coffee",
+        "rationale": "A customer placing an order is represented as spending a small amount of energy; no cafe participant is available to change waiting_orders.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "customer"
+          ],
+          "components": [
+            "customer"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The customer has energy to place an order",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.customer.energy"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.customer.energy",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The action cannot add a waiting order because it has no cafe participant.",
+          "No payment, delivery, or ordered-coffee record is represented."
+        ],
+        "tests": [
+          "A customer with positive energy spends one energy placing an order.",
+          "A customer with no energy is refused."
+        ],
+        "semantic_bindings": [
+          "The customer component identifies the ordering customer."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "sip-coffee",
+        "version": "1",
+        "action_kind": "sip-coffee",
+        "rationale": "Sipping consumes some of the coffee, represented by making it no longer full; the customer actor is selected by its customer component.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "customer"
+          ],
+          "components": [
+            "customer"
+          ]
+        },
+        "participants": {
+          "coffee": {
+            "categories": [
+              "drink"
+            ],
+            "components": [
+              "drink"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The customer and coffee are in the same place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "coffee",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The customer owns the coffee",
+            "left": {
+              "participant": {
+                "name": "coffee",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "owner_ref": "actor"
+            }
+          },
+          {
+            "label": "The coffee is full and unspilled",
+            "left": {
+              "participant": {
+                "name": "coffee",
+                "path": "components.drink.full"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "The coffee has not spilled",
+            "left": {
+              "participant": {
+                "name": "coffee",
+                "path": "components.drink.spilled"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "coffee",
+            "path": "components.drink.full",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "The action does not model partial drink amounts, thirst, or changes to hunger or energy."
+        ],
+        "tests": [
+          "The customer can sip their own full, unspilled coffee in the same place.",
+          "Coffee that is empty, spilled, owned by someone else, or elsewhere is refused."
+        ],
+        "semantic_bindings": [
+          "The coffee's drink.full field represents whether coffee remains to sip."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "knock-over",
+        "version": "1",
+        "action_kind": "knock-over",
+        "rationale": "Knocking over a loose item changes its represented upright state; a full drink knocked over spills immediately, and its spill wets the entity named by its drink.on reference.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "worker"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "thing": {
+            "categories": [
+              "loose_object"
+            ],
+            "components": [
+              "loose_item"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The staff member and loose item are in the same place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "thing",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The loose item is upright",
+            "left": {
+              "participant": {
+                "name": "thing",
+                "path": "components.loose_item.upright"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "The loose item is not broken",
+            "left": {
+              "participant": {
+                "name": "thing",
+                "path": "components.loose_item.broken"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "thing",
+            "path": "components.loose_item.upright",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "This action only applies to loose items represented with loose_item; it does not knock over the separate stack component.",
+          "Whether an item is fragile is not represented, so a fall does not cause breakage here."
+        ],
+        "tests": [
+          "An upright, unbroken loose item in the staff member's place becomes not upright.",
+          "An already toppled item, broken item, or item elsewhere is refused."
+        ],
+        "semantic_bindings": [
+          "The loose item's upright field records the direct knock-over result."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "spill-drink",
+        "version": "1",
+        "action_kind": "spill-drink",
+        "rationale": "Spilling directly changes the drink's full and spilled fields. The immediate process wets the surface named by the drink's on reference.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "worker"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "drink": {
+            "categories": [
+              "drink"
+            ],
+            "components": [
+              "drink"
+            ]
+          },
+          "surface": {
+            "categories": [
+              "surface"
+            ],
+            "components": [
+              "surface"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The staff member and drink are in the same place",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "drink",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The surface and drink are in the same place",
+            "left": {
+              "participant": {
+                "name": "surface",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "drink",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "The drink rests on the selected surface",
+            "left": {
+              "participant": {
+                "name": "drink",
+                "path": "components.drink.on"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "surface"
+            }
+          },
+          {
+            "label": "The drink is full and has not spilled",
+            "left": {
+              "participant": {
+                "name": "drink",
+                "path": "components.drink.full"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "The drink has not already spilled",
+            "left": {
+              "participant": {
+                "name": "drink",
+                "path": "components.drink.spilled"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "drink",
+            "path": "components.drink.full",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "participant": "drink",
+            "path": "components.drink.spilled",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "The selected surface must be the entity already named by the drink's on field; spilling onto a different surface is refused.",
+          "No liquid volume or cleanup progress is represented."
+        ],
+        "tests": [
+          "Spilling a full drink onto its named surface makes it empty and spilled; the immediate process wets that surface.",
+          "A drink already empty or spilled, or a surface other than the drink's resting place, is refused."
+        ],
+        "semantic_bindings": [
+          "The drink's on field identifies the surface beneath it.",
+          "The drink's full and spilled fields record the direct spill."
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "turn-lights-off",
+        "version": "1",
+        "action_kind": "turn-lights-off",
+        "rationale": "Turning off cafe lights is a work action and consumes a small amount of represented worker energy. The action has no light participant, so it cannot directly change the lights' state.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "worker"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {},
+        "parameters": {},
+        "checks": [
+          {
+            "label": "The staff member is the cleaner",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cleaner"
+            }
+          },
+          {
+            "label": "The staff member has energy to switch off the lights",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.energy"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.worker.energy",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The action does not include the cafe or cafe-lights entity as a participant, so components.cafe.lights_on and components.surface.lit cannot be changed.",
+          "No switch or access control is represented."
+        ],
+        "tests": [
+          "A cleaner with positive energy spends one energy attempting the described lights-off task.",
+          "A non-cleaner or a cleaner with no energy is refused."
+        ],
+        "semantic_bindings": [
+          "The cleaner's worker energy represents effort spent on the task."
+        ]
+      }
+    ],
+    "processes": [
+      {
+        "process_id": "new-cafe-demand",
+        "rationale": "Demand continues to arrive in this ongoing cafe, represented by an increase in its waiting order count each round.",
+        "selector": {
+          "categories": [
+            "place"
+          ],
+          "components": [
+            "cafe"
+          ]
+        },
+        "checks": [],
+        "effects": [
+          {
+            "participant": "it",
+            "path": "components.cafe.waiting_orders",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "timing": "each_round"
+      },
+      {
+        "process_id": "spill-wets-resting-surface",
+        "rationale": "A spilled drink wets the surface named by its on field immediately.",
+        "selector": {
+          "categories": [
+            "drink"
+          ],
+          "components": [
+            "drink"
+          ]
+        },
+        "participants": {
+          "surface": {
+            "link": "ref:drink.on",
+            "selector": {
+              "categories": [
+                "surface"
+              ],
+              "components": [
+                "surface"
+              ]
+            }
+          }
+        },
+        "checks": [
+          {
+            "label": "The drink is spilled",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.drink.spilled"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "surface",
+            "path": "components.surface.wet",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "timing": "immediately"
+      }
+    ],
+    "terminal": null,
+    "review": {
+      "schema_version": "world-substrate-causal-model/v0",
+      "mechanics": [
+        {
+          "mechanic_id": "stack-chairs",
+          "action_kind": "stack-chairs",
+          "rationale": "Stacking chairs increases the represented chair-stack count; the action does not move the stack onto the table because no represented state path records that placement.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<chairs>.category_ids",
+            "entities.<chairs>.components.stack",
+            "entities.<chairs>.components.stack.count",
+            "entities.<chairs>.components.stack.upright",
+            "entities.<chairs>.location.location_id",
+            "entities.<table>.category_ids",
+            "entities.<table>.components.surface",
+            "entities.<table>.location.location_id"
+          ],
+          "writes": [
+            "entities.<chairs>.components.stack.count",
+            "entities.<chairs>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The staff member is the waiter",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "waiter"
+              }
+            },
+            {
+              "label": "The staff member, chairs, and table are in the same place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "chairs",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The table is in the staff member's place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "table",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The chair stack is upright",
+              "left": {
+                "participant": {
+                  "name": "chairs",
+                  "path": "components.stack.upright"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "chairs",
+              "path": "components.stack.count",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The represented state cannot record that the chairs are physically resting on the table; this action changes only the chair-stack count.",
+            "No individual-chair selection or table weight limit is represented."
+          ],
+          "tests": [
+            "A waiter at the cafe can increase an upright chair stack's count by one.",
+            "A non-waiter, a stack elsewhere, a table elsewhere, or a non-upright stack is refused."
+          ]
+        },
+        {
+          "mechanic_id": "prepare-order",
+          "action_kind": "prepare-order",
+          "rationale": "Preparing an order is work by a barista and consumes a small amount of represented worker energy. Order fulfillment and adding a dirty cup cannot be applied because the action has no cafe participant.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.energy",
+            "entities.<actor>.components.worker.role"
+          ],
+          "writes": [
+            "entities.<actor>.components.worker.energy",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The staff member is the barista",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "barista"
+              }
+            },
+            {
+              "label": "The barista has energy to prepare the order",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.energy"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.worker.energy",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The action does not identify a cafe entity to decrement its waiting orders or increment dirty cups, so neither stock change is modeled.",
+            "No coffee inventory or completed-order state is represented."
+          ],
+          "tests": [
+            "A barista with positive energy spends one energy preparing an order.",
+            "A non-barista or a barista with no energy is refused."
+          ]
+        },
+        {
+          "mechanic_id": "place-cups-on-tray",
+          "action_kind": "place-cups-on-tray",
+          "rationale": "The represented cup placement is its drink.on reference; placing it on the tray changes that reference to the selected tray.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<cup>.category_ids",
+            "entities.<cup>.components.drink",
+            "entities.<cup>.components.drink.full",
+            "entities.<cup>.components.drink.spilled",
+            "entities.<cup>.location.location_id",
+            "entities.<tray>.category_ids",
+            "entities.<tray>.components.loose_item",
+            "entities.<tray>.location.location_id"
+          ],
+          "writes": [
+            "entities.<cup>.components.drink.on",
+            "entities.<cup>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The staff member is the waiter",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "waiter"
+              }
+            },
+            {
+              "label": "The waiter, cup, and tray are in the same place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "cup",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The tray is in the waiter's place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "tray",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The cup is full",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.drink.full"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "The cup is not already spilled",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.drink.spilled"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "cup",
+              "path": "components.drink.on",
+              "op": "set",
+              "value": {
+                "action_field": "tray"
+              }
+            }
+          ],
+          "limits": [
+            "The represented state does not model tray capacity, cup stability, or a hand holding the cup."
+          ],
+          "tests": [
+            "A waiter can set a full, unspilled cup's resting place to the selected tray.",
+            "A cup that is not full, is spilled, or is in another place is refused."
+          ]
+        },
+        {
+          "mechanic_id": "mop-floor",
+          "action_kind": "mop-floor",
+          "rationale": "Mopping a wet cafe floor dries the represented floor surface; the wet mop remains unchanged because its represented field does not say it becomes dry through mopping.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<floor>.category_ids",
+            "entities.<floor>.components.surface",
+            "entities.<floor>.components.surface.wet",
+            "entities.<floor>.location.location_id",
+            "entities.<mop>.category_ids",
+            "entities.<mop>.components.cleaning_tool",
+            "entities.<mop>.components.cleaning_tool.wet",
+            "entities.<mop>.location.location_id"
+          ],
+          "writes": [
+            "entities.<floor>.components.surface.wet",
+            "entities.<floor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The staff member is the cleaner",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cleaner"
+              }
+            },
+            {
+              "label": "The cleaner, floor, and mop are in the same place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "floor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The mop is in the cleaner's place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "mop",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The cafe floor is wet",
+              "left": {
+                "participant": {
+                  "name": "floor",
+                  "path": "components.surface.wet"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "The mop is wet",
+              "left": {
+                "participant": {
+                  "name": "mop",
+                  "path": "components.cleaning_tool.wet"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "floor",
+              "path": "components.surface.wet",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "The action does not represent where the collected water goes or whether the mop needs wringing out."
+          ],
+          "tests": [
+            "The cleaner can mop a wet floor using a wet mop, making the floor dry.",
+            "A dry floor, dry mop, or participant in another place is refused."
+          ]
+        },
+        {
+          "mechanic_id": "order-coffee",
+          "action_kind": "order-coffee",
+          "rationale": "A customer placing an order is represented as spending a small amount of energy; no cafe participant is available to change waiting_orders.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.customer",
+            "entities.<actor>.components.customer.energy"
+          ],
+          "writes": [
+            "entities.<actor>.components.customer.energy",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The customer has energy to place an order",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.customer.energy"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.customer.energy",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The action cannot add a waiting order because it has no cafe participant.",
+            "No payment, delivery, or ordered-coffee record is represented."
+          ],
+          "tests": [
+            "A customer with positive energy spends one energy placing an order.",
+            "A customer with no energy is refused."
+          ]
+        },
+        {
+          "mechanic_id": "sip-coffee",
+          "action_kind": "sip-coffee",
+          "rationale": "Sipping consumes some of the coffee, represented by making it no longer full; the customer actor is selected by its customer component.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.customer",
+            "entities.<actor>.location.location_id",
+            "entities.<coffee>.category_ids",
+            "entities.<coffee>.components.drink",
+            "entities.<coffee>.components.drink.full",
+            "entities.<coffee>.components.drink.spilled",
+            "entities.<coffee>.location.location_id",
+            "entities.<coffee>.ownership.owner_ref"
+          ],
+          "writes": [
+            "entities.<coffee>.components.drink.full",
+            "entities.<coffee>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The customer and coffee are in the same place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "coffee",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The customer owns the coffee",
+              "left": {
+                "participant": {
+                  "name": "coffee",
+                  "path": "ownership.owner_ref"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "owner_ref": "actor"
+              }
+            },
+            {
+              "label": "The coffee is full and unspilled",
+              "left": {
+                "participant": {
+                  "name": "coffee",
+                  "path": "components.drink.full"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "The coffee has not spilled",
+              "left": {
+                "participant": {
+                  "name": "coffee",
+                  "path": "components.drink.spilled"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "coffee",
+              "path": "components.drink.full",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "The action does not model partial drink amounts, thirst, or changes to hunger or energy."
+          ],
+          "tests": [
+            "The customer can sip their own full, unspilled coffee in the same place.",
+            "Coffee that is empty, spilled, owned by someone else, or elsewhere is refused."
+          ]
+        },
+        {
+          "mechanic_id": "knock-over",
+          "action_kind": "knock-over",
+          "rationale": "Knocking over a loose item changes its represented upright state; a full drink knocked over spills immediately, and its spill wets the entity named by its drink.on reference.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.location.location_id",
+            "entities.<thing>.category_ids",
+            "entities.<thing>.components.loose_item",
+            "entities.<thing>.components.loose_item.broken",
+            "entities.<thing>.components.loose_item.upright",
+            "entities.<thing>.location.location_id"
+          ],
+          "writes": [
+            "entities.<thing>.components.loose_item.upright",
+            "entities.<thing>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The staff member and loose item are in the same place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "thing",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The loose item is upright",
+              "left": {
+                "participant": {
+                  "name": "thing",
+                  "path": "components.loose_item.upright"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "The loose item is not broken",
+              "left": {
+                "participant": {
+                  "name": "thing",
+                  "path": "components.loose_item.broken"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "thing",
+              "path": "components.loose_item.upright",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "This action only applies to loose items represented with loose_item; it does not knock over the separate stack component.",
+            "Whether an item is fragile is not represented, so a fall does not cause breakage here."
+          ],
+          "tests": [
+            "An upright, unbroken loose item in the staff member's place becomes not upright.",
+            "An already toppled item, broken item, or item elsewhere is refused."
+          ]
+        },
+        {
+          "mechanic_id": "spill-drink",
+          "action_kind": "spill-drink",
+          "rationale": "Spilling directly changes the drink's full and spilled fields. The immediate process wets the surface named by the drink's on reference.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.location.location_id",
+            "entities.<drink>.category_ids",
+            "entities.<drink>.components.drink",
+            "entities.<drink>.components.drink.full",
+            "entities.<drink>.components.drink.on",
+            "entities.<drink>.components.drink.spilled",
+            "entities.<drink>.location.location_id",
+            "entities.<surface>.category_ids",
+            "entities.<surface>.components.surface",
+            "entities.<surface>.location.location_id"
+          ],
+          "writes": [
+            "entities.<drink>.components.drink.full",
+            "entities.<drink>.components.drink.spilled",
+            "entities.<drink>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The staff member and drink are in the same place",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "drink",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The surface and drink are in the same place",
+              "left": {
+                "participant": {
+                  "name": "surface",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "drink",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "The drink rests on the selected surface",
+              "left": {
+                "participant": {
+                  "name": "drink",
+                  "path": "components.drink.on"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "entity_id": "surface"
+              }
+            },
+            {
+              "label": "The drink is full and has not spilled",
+              "left": {
+                "participant": {
+                  "name": "drink",
+                  "path": "components.drink.full"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "The drink has not already spilled",
+              "left": {
+                "participant": {
+                  "name": "drink",
+                  "path": "components.drink.spilled"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "drink",
+              "path": "components.drink.full",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            },
+            {
+              "participant": "drink",
+              "path": "components.drink.spilled",
+              "op": "set",
+              "value": {
+                "literal": true
+              }
+            }
+          ],
+          "limits": [
+            "The selected surface must be the entity already named by the drink's on field; spilling onto a different surface is refused.",
+            "No liquid volume or cleanup progress is represented."
+          ],
+          "tests": [
+            "Spilling a full drink onto its named surface makes it empty and spilled; the immediate process wets that surface.",
+            "A drink already empty or spilled, or a surface other than the drink's resting place, is refused."
+          ]
+        },
+        {
+          "mechanic_id": "turn-lights-off",
+          "action_kind": "turn-lights-off",
+          "rationale": "Turning off cafe lights is a work action and consumes a small amount of represented worker energy. The action has no light participant, so it cannot directly change the lights' state.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.energy",
+            "entities.<actor>.components.worker.role"
+          ],
+          "writes": [
+            "entities.<actor>.components.worker.energy",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "The staff member is the cleaner",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cleaner"
+              }
+            },
+            {
+              "label": "The staff member has energy to switch off the lights",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.energy"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.worker.energy",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The action does not include the cafe or cafe-lights entity as a participant, so components.cafe.lights_on and components.surface.lit cannot be changed.",
+            "No switch or access control is represented."
+          ],
+          "tests": [
+            "A cleaner with positive energy spends one energy attempting the described lights-off task.",
+            "A non-cleaner or a cleaner with no energy is refused."
+          ]
+        }
+      ],
+      "processes": [
+        {
+          "process_id": "new-cafe-demand",
+          "rationale": "Demand continues to arrive in this ongoing cafe, represented by an increase in its waiting order count each round.",
+          "selector": {
+            "categories": [
+              "place"
+            ],
+            "components": [
+              "cafe"
+            ]
+          },
+          "checks": [],
+          "effects": [
+            {
+              "participant": "it",
+              "path": "components.cafe.waiting_orders",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "writes": [
+            "entities.<it>.components.cafe.waiting_orders",
+            "entities.<it>.last_cause_event_id"
+          ]
+        },
+        {
+          "process_id": "spill-wets-resting-surface",
+          "rationale": "A spilled drink wets the surface named by its on field immediately.",
+          "selector": {
+            "categories": [
+              "drink"
+            ],
+            "components": [
+              "drink"
+            ]
+          },
+          "checks": [
+            {
+              "label": "The drink is spilled",
+              "left": {
+                "participant": {
+                  "name": "it",
+                  "path": "components.drink.spilled"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "surface",
+              "path": "components.surface.wet",
+              "op": "set",
+              "value": {
+                "literal": true
+              }
+            }
+          ],
+          "writes": [
+            "entities.<surface>.components.surface.wet",
+            "entities.<surface>.last_cause_event_id"
+          ],
+          "participants": {
+            "surface": {
+              "link": "ref:drink.on",
+              "selector": {
+                "categories": [
+                  "surface"
+                ],
+                "components": [
+                  "surface"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "terminal": null
+    }
+  }
+}

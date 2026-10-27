@@ -1,0 +1,1472 @@
+{
+  "trace_id": "model-more/rules/55429f8de69d46729b24976957ed1d3e",
+  "cost": 0.0037906,
+  "causal_model": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "prepare-drink",
+        "version": "1",
+        "action_kind": "prepare-drink",
+        "rationale": "Preparing a waiting drink uses a clean cup and reduces the represented waiting-drink and clean-cup counts. The cups are already represented as full, so this action does not change their fill state.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "barista"
+          ],
+          "components": [
+            "worker",
+            "service"
+          ]
+        },
+        "participants": {
+          "cup": {
+            "categories": [
+              "cup"
+            ],
+            "components": [
+              "prop"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the barista is working as a barista",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "barista"
+            }
+          },
+          {
+            "label": "a drink is waiting",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.service.waiting_drinks"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          },
+          {
+            "label": "a clean cup is available",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.service.clean_cups"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          },
+          {
+            "label": "the cup is in the cafe",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the cup is already full",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.prop.full"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the cup is not broken",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.prop.broken"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "actor",
+            "path": "components.service.waiting_drinks",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.service.clean_cups",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The represented cup states are already full, so this action tracks service counts rather than changing the cup's fill state.",
+          "The action does not represent ingredients, drink types, or preparation quality."
+        ],
+        "tests": [
+          "With a waiting drink, a clean-cup count above zero, and an intact full cup in the cafe, the barista can prepare and both counts decrease by one.",
+          "The action is refused if no drink is waiting, no clean cup is available, or the cup is broken."
+        ],
+        "semantic_bindings": [
+          "waiting drinks and clean cups are represented on the barista's service component",
+          "the cup's fill and damage states are represented on its prop component"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "serve-drink",
+        "version": "1",
+        "action_kind": "serve-drink",
+        "rationale": "Serving a prepared full cup empties it and increases the customer's represented coffee count.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "waiter"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "cup": {
+            "categories": [
+              "cup"
+            ],
+            "components": [
+              "prop"
+            ]
+          },
+          "customer": {
+            "categories": [
+              "actor",
+              "customer"
+            ],
+            "components": [
+              "customer"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker is working as a waiter",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "waiter"
+            }
+          },
+          {
+            "label": "the cup is in the cafe",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the customer is in the cafe",
+            "left": {
+              "participant": {
+                "name": "customer",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the cup is full",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.prop.full"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the cup is not broken",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.prop.broken"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "the customer has a coffee count",
+            "left": {
+              "participant": {
+                "name": "customer",
+                "path": "components.customer.coffee_count"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "cup",
+            "path": "components.prop.full",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "participant": "customer",
+            "path": "components.customer.coffee_count",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The model has no tray-capacity or prepared-order link, so service is checked only against a full, intact cup and a nearby customer.",
+          "Serving does not consume the waiting-drink count; preparation already does that."
+        ],
+        "tests": [
+          "A waiter can serve a full intact cup to a customer in the cafe; the cup becomes empty and the customer's coffee count increases by one.",
+          "An empty or broken cup cannot be served."
+        ],
+        "semantic_bindings": [
+          "a full cup represents a prepared drink",
+          "the customer's coffee count records coffee received"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "stack-chair",
+        "version": "1",
+        "action_kind": "stack-chair",
+        "rationale": "Placing the chair on the table changes its represented support reference to the table and leaves it no longer upright.",
+        "actor_selector": {
+          "categories": [
+            "actor"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "chair": {
+            "categories": [
+              "chair"
+            ],
+            "components": [
+              "prop"
+            ]
+          },
+          "table": {
+            "categories": [
+              "table"
+            ],
+            "components": []
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker is in the cafe",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the chair is in the cafe",
+            "left": {
+              "participant": {
+                "name": "chair",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the table is in the cafe",
+            "left": {
+              "participant": {
+                "name": "table",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the chair is upright",
+            "left": {
+              "participant": {
+                "name": "chair",
+                "path": "components.prop.upright"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the chair is not broken",
+            "left": {
+              "participant": {
+                "name": "chair",
+                "path": "components.prop.broken"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "the chair is not already on the table",
+            "left": {
+              "participant": {
+                "name": "chair",
+                "path": "components.prop.on"
+              }
+            },
+            "op": "ne",
+            "right": {
+              "action_field": "table"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "chair",
+            "path": "components.prop.on",
+            "op": "set",
+            "value": {
+              "action_field": "table"
+            }
+          },
+          {
+            "participant": "chair",
+            "path": "components.prop.upright",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "The description does not specify which worker role performs closing work, so this action is available to workers without a narrower role check.",
+          "The model cannot represent chair height or a count of chairs stacked."
+        ],
+        "tests": [
+          "An upright intact chair not already on the table can be placed on the table and becomes non-upright.",
+          "A broken chair or a chair already on the table is refused."
+        ],
+        "semantic_bindings": [
+          "the chair's support is represented by its prop on reference",
+          "upright state distinguishes a chair placed as part of stacking"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "mop-floor",
+        "version": "1",
+        "action_kind": "mop-floor",
+        "rationale": "Mopping a represented wet patch clears its wet state. The cleaner must be at the patch's location.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "cleaner"
+          ],
+          "components": [
+            "worker"
+          ]
+        },
+        "participants": {
+          "patch": {
+            "categories": [
+              "wet_patch"
+            ],
+            "components": [
+              "prop"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the worker is working as a cleaner",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.worker.role"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cleaner"
+            }
+          },
+          {
+            "label": "the wet patch is in the cafe",
+            "left": {
+              "participant": {
+                "name": "patch",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the patch is wet",
+            "left": {
+              "participant": {
+                "name": "patch",
+                "path": "components.prop.wet"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "patch",
+            "path": "components.prop.wet",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "The mop's availability and cleanliness are not represented, so they are not checked or changed.",
+          "No drying time or spread of water is represented."
+        ],
+        "tests": [
+          "A cleaner in the patch's location can mop a wet patch, making it not wet.",
+          "A patch that is not wet cannot be mopped by this mechanic."
+        ],
+        "semantic_bindings": [
+          "wetness of the floor patch is represented by its prop wet state"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "sip-coffee",
+        "version": "1",
+        "action_kind": "sip-coffee",
+        "rationale": "A customer sipping from a full, intact cup empties it and increments the represented coffee count.",
+        "actor_selector": {
+          "categories": [
+            "actor",
+            "customer"
+          ],
+          "components": [
+            "customer"
+          ]
+        },
+        "participants": {
+          "cup": {
+            "categories": [
+              "cup"
+            ],
+            "components": [
+              "prop"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the cup is in the customer's location",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "actor",
+                "path": "location.location_id"
+              }
+            }
+          },
+          {
+            "label": "the cup is full",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.prop.full"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the cup is not broken",
+            "left": {
+              "participant": {
+                "name": "cup",
+                "path": "components.prop.broken"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "the customer has a coffee count",
+            "left": {
+              "participant": {
+                "name": "actor",
+                "path": "components.customer.coffee_count"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "cup",
+            "path": "components.prop.full",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "participant": "actor",
+            "path": "components.customer.coffee_count",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The action does not verify cup ownership or proximity to a laptop; the description only requires the cup to be nearby.",
+          "The model does not represent partial sips or coffee volume."
+        ],
+        "tests": [
+          "A customer can sip from a full intact cup in the same location; the cup becomes empty and the coffee count increases.",
+          "An empty or broken cup cannot be sipped from."
+        ],
+        "semantic_bindings": [
+          "cup fullness represents whether coffee remains to sip",
+          "customer coffee count records coffee consumed"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "knock-over",
+        "version": "1",
+        "action_kind": "knock-over",
+        "rationale": "Bumping a loose cafe object can tip an upright, intact object over; no spill or break is assumed without represented evidence that it contains liquid or is fragile.",
+        "actor_selector": {
+          "categories": [
+            "actor"
+          ],
+          "components": []
+        },
+        "participants": {
+          "thing": {
+            "categories": [
+              "loose_object"
+            ],
+            "components": [
+              "prop"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the object is in the cafe",
+            "left": {
+              "participant": {
+                "name": "thing",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the object is upright",
+            "left": {
+              "participant": {
+                "name": "thing",
+                "path": "components.prop.upright"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the object is not broken",
+            "left": {
+              "participant": {
+                "name": "thing",
+                "path": "components.prop.broken"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "thing",
+            "path": "components.prop.upright",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "The actor's location is not checked because the actor selector has no location-bearing requirement; the action applies only to objects in the cafe.",
+          "A spill, break, or sound is not inferred from a bump alone; the represented state does not establish that any particular object will cause one."
+        ],
+        "tests": [
+          "An upright intact loose object in the cafe can be knocked over and becomes non-upright.",
+          "A non-upright or broken object is refused."
+        ],
+        "semantic_bindings": [
+          "the object must be a represented loose object",
+          "upright state represents whether it has been knocked over"
+        ]
+      }
+    ],
+    "processes": [
+      {
+        "process_id": "new-waiting-drinks",
+        "rationale": "The ongoing cafe world description says new service needs keep the work going; a new waiting drink arrives each round for the represented barista service.",
+        "selector": {
+          "categories": [
+            "barista"
+          ],
+          "components": [
+            "service"
+          ]
+        },
+        "checks": [],
+        "effects": [
+          {
+            "participant": "it",
+            "path": "components.service.waiting_drinks",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ]
+      }
+    ],
+    "terminal": null,
+    "review": {
+      "schema_version": "world-substrate-causal-model/v0",
+      "mechanics": [
+        {
+          "mechanic_id": "prepare-drink",
+          "action_kind": "prepare-drink",
+          "rationale": "Preparing a waiting drink uses a clean cup and reduces the represented waiting-drink and clean-cup counts. The cups are already represented as full, so this action does not change their fill state.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.service",
+            "entities.<actor>.components.service.clean_cups",
+            "entities.<actor>.components.service.waiting_drinks",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<cup>.category_ids",
+            "entities.<cup>.components.prop",
+            "entities.<cup>.components.prop.broken",
+            "entities.<cup>.components.prop.full",
+            "entities.<cup>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.service.clean_cups",
+            "entities.<actor>.components.service.waiting_drinks",
+            "entities.<actor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the barista is working as a barista",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "barista"
+              }
+            },
+            {
+              "label": "a drink is waiting",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.service.waiting_drinks"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            },
+            {
+              "label": "a clean cup is available",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.service.clean_cups"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            },
+            {
+              "label": "the cup is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the cup is already full",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.prop.full"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "the cup is not broken",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.prop.broken"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "actor",
+              "path": "components.service.waiting_drinks",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.service.clean_cups",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The represented cup states are already full, so this action tracks service counts rather than changing the cup's fill state.",
+            "The action does not represent ingredients, drink types, or preparation quality."
+          ],
+          "tests": [
+            "With a waiting drink, a clean-cup count above zero, and an intact full cup in the cafe, the barista can prepare and both counts decrease by one.",
+            "The action is refused if no drink is waiting, no clean cup is available, or the cup is broken."
+          ]
+        },
+        {
+          "mechanic_id": "serve-drink",
+          "action_kind": "serve-drink",
+          "rationale": "Serving a prepared full cup empties it and increases the customer's represented coffee count.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<cup>.category_ids",
+            "entities.<cup>.components.prop",
+            "entities.<cup>.components.prop.broken",
+            "entities.<cup>.components.prop.full",
+            "entities.<cup>.location.location_id",
+            "entities.<customer>.category_ids",
+            "entities.<customer>.components.customer",
+            "entities.<customer>.components.customer.coffee_count",
+            "entities.<customer>.location.location_id"
+          ],
+          "writes": [
+            "entities.<cup>.components.prop.full",
+            "entities.<cup>.last_cause_event_id",
+            "entities.<customer>.components.customer.coffee_count",
+            "entities.<customer>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is working as a waiter",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "waiter"
+              }
+            },
+            {
+              "label": "the cup is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the customer is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "customer",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the cup is full",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.prop.full"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "the cup is not broken",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.prop.broken"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            },
+            {
+              "label": "the customer has a coffee count",
+              "left": {
+                "participant": {
+                  "name": "customer",
+                  "path": "components.customer.coffee_count"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "cup",
+              "path": "components.prop.full",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            },
+            {
+              "participant": "customer",
+              "path": "components.customer.coffee_count",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The model has no tray-capacity or prepared-order link, so service is checked only against a full, intact cup and a nearby customer.",
+            "Serving does not consume the waiting-drink count; preparation already does that."
+          ],
+          "tests": [
+            "A waiter can serve a full intact cup to a customer in the cafe; the cup becomes empty and the customer's coffee count increases by one.",
+            "An empty or broken cup cannot be served."
+          ]
+        },
+        {
+          "mechanic_id": "stack-chair",
+          "action_kind": "stack-chair",
+          "rationale": "Placing the chair on the table changes its represented support reference to the table and leaves it no longer upright.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.location.location_id",
+            "entities.<chair>.category_ids",
+            "entities.<chair>.components.prop",
+            "entities.<chair>.components.prop.broken",
+            "entities.<chair>.components.prop.on",
+            "entities.<chair>.components.prop.upright",
+            "entities.<chair>.location.location_id",
+            "entities.<table>.category_ids",
+            "entities.<table>.location.location_id"
+          ],
+          "writes": [
+            "entities.<chair>.components.prop.on",
+            "entities.<chair>.components.prop.upright",
+            "entities.<chair>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the chair is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "chair",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the table is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "table",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the chair is upright",
+              "left": {
+                "participant": {
+                  "name": "chair",
+                  "path": "components.prop.upright"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "the chair is not broken",
+              "left": {
+                "participant": {
+                  "name": "chair",
+                  "path": "components.prop.broken"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            },
+            {
+              "label": "the chair is not already on the table",
+              "left": {
+                "participant": {
+                  "name": "chair",
+                  "path": "components.prop.on"
+                }
+              },
+              "op": "ne",
+              "right": {
+                "action_field": "table"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "chair",
+              "path": "components.prop.on",
+              "op": "set",
+              "value": {
+                "action_field": "table"
+              }
+            },
+            {
+              "participant": "chair",
+              "path": "components.prop.upright",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "The description does not specify which worker role performs closing work, so this action is available to workers without a narrower role check.",
+            "The model cannot represent chair height or a count of chairs stacked."
+          ],
+          "tests": [
+            "An upright intact chair not already on the table can be placed on the table and becomes non-upright.",
+            "A broken chair or a chair already on the table is refused."
+          ]
+        },
+        {
+          "mechanic_id": "mop-floor",
+          "action_kind": "mop-floor",
+          "rationale": "Mopping a represented wet patch clears its wet state. The cleaner must be at the patch's location.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.worker",
+            "entities.<actor>.components.worker.role",
+            "entities.<actor>.location.location_id",
+            "entities.<patch>.category_ids",
+            "entities.<patch>.components.prop",
+            "entities.<patch>.components.prop.wet",
+            "entities.<patch>.location.location_id"
+          ],
+          "writes": [
+            "entities.<patch>.components.prop.wet",
+            "entities.<patch>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the worker is working as a cleaner",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.worker.role"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cleaner"
+              }
+            },
+            {
+              "label": "the wet patch is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "patch",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the patch is wet",
+              "left": {
+                "participant": {
+                  "name": "patch",
+                  "path": "components.prop.wet"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "patch",
+              "path": "components.prop.wet",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "The mop's availability and cleanliness are not represented, so they are not checked or changed.",
+            "No drying time or spread of water is represented."
+          ],
+          "tests": [
+            "A cleaner in the patch's location can mop a wet patch, making it not wet.",
+            "A patch that is not wet cannot be mopped by this mechanic."
+          ]
+        },
+        {
+          "mechanic_id": "sip-coffee",
+          "action_kind": "sip-coffee",
+          "rationale": "A customer sipping from a full, intact cup empties it and increments the represented coffee count.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<actor>.components.customer",
+            "entities.<actor>.components.customer.coffee_count",
+            "entities.<actor>.location.location_id",
+            "entities.<cup>.category_ids",
+            "entities.<cup>.components.prop",
+            "entities.<cup>.components.prop.broken",
+            "entities.<cup>.components.prop.full",
+            "entities.<cup>.location.location_id"
+          ],
+          "writes": [
+            "entities.<actor>.components.customer.coffee_count",
+            "entities.<actor>.last_cause_event_id",
+            "entities.<cup>.components.prop.full",
+            "entities.<cup>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the cup is in the customer's location",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "participant": {
+                  "name": "actor",
+                  "path": "location.location_id"
+                }
+              }
+            },
+            {
+              "label": "the cup is full",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.prop.full"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "the cup is not broken",
+              "left": {
+                "participant": {
+                  "name": "cup",
+                  "path": "components.prop.broken"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            },
+            {
+              "label": "the customer has a coffee count",
+              "left": {
+                "participant": {
+                  "name": "actor",
+                  "path": "components.customer.coffee_count"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "cup",
+              "path": "components.prop.full",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            },
+            {
+              "participant": "actor",
+              "path": "components.customer.coffee_count",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The action does not verify cup ownership or proximity to a laptop; the description only requires the cup to be nearby.",
+            "The model does not represent partial sips or coffee volume."
+          ],
+          "tests": [
+            "A customer can sip from a full intact cup in the same location; the cup becomes empty and the coffee count increases.",
+            "An empty or broken cup cannot be sipped from."
+          ]
+        },
+        {
+          "mechanic_id": "knock-over",
+          "action_kind": "knock-over",
+          "rationale": "Bumping a loose cafe object can tip an upright, intact object over; no spill or break is assumed without represented evidence that it contains liquid or is fragile.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<thing>.category_ids",
+            "entities.<thing>.components.prop",
+            "entities.<thing>.components.prop.broken",
+            "entities.<thing>.components.prop.upright",
+            "entities.<thing>.location.location_id"
+          ],
+          "writes": [
+            "entities.<thing>.components.prop.upright",
+            "entities.<thing>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the object is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "thing",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the object is upright",
+              "left": {
+                "participant": {
+                  "name": "thing",
+                  "path": "components.prop.upright"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "the object is not broken",
+              "left": {
+                "participant": {
+                  "name": "thing",
+                  "path": "components.prop.broken"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": false
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "thing",
+              "path": "components.prop.upright",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "The actor's location is not checked because the actor selector has no location-bearing requirement; the action applies only to objects in the cafe.",
+            "A spill, break, or sound is not inferred from a bump alone; the represented state does not establish that any particular object will cause one."
+          ],
+          "tests": [
+            "An upright intact loose object in the cafe can be knocked over and becomes non-upright.",
+            "A non-upright or broken object is refused."
+          ]
+        }
+      ],
+      "processes": [
+        {
+          "process_id": "new-waiting-drinks",
+          "rationale": "The ongoing cafe world description says new service needs keep the work going; a new waiting drink arrives each round for the represented barista service.",
+          "selector": {
+            "categories": [
+              "barista"
+            ],
+            "components": [
+              "service"
+            ]
+          },
+          "checks": [],
+          "effects": [
+            {
+              "participant": "it",
+              "path": "components.service.waiting_drinks",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "writes": [
+            "entities.<it>.components.service.waiting_drinks",
+            "entities.<it>.last_cause_event_id"
+          ]
+        }
+      ],
+      "terminal": null
+    }
+  }
+}

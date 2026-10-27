@@ -113,6 +113,21 @@ class KnockOnRecordTests(unittest.TestCase):
         rules = " ".join(gcm._context(BUNDLE)["authority_rules"])
         self.assertIn("timing immediately", rules)
         self.assertIn("never add or subtract 0", rules)
+        self.assertIn("using them is not an assumption", rules)
+
+    def test_state_flips_read_from_effects(self):
+        causal = {"mechanics": [
+            {"action_kind": "tip-stack", "effects": [{"op": "set", "value": {"literal": False}}]},
+            {"action_kind": "stack-chairs", "effects": [{"op": "set", "value": {"action_field": "tables"}}]},
+            {"action_kind": "prepare", "effects": [{"op": "add", "value": {"literal": 1}}]},
+        ]}
+        self.assertEqual(service._state_flips(causal), ["tip-stack"])
+
+    def test_knock_on_breaks_a_tie_but_does_not_outrank_score(self):
+        row = {"circling": False, "never_offered": [], "idle_actors": []}
+        with_k, without = {**row, "knock_on_processes": ["spill-wets"]}, {**row, "knock_on_processes": []}
+        self.assertGreater(service._attempt_rank(3, with_k), service._attempt_rank(3, without))
+        self.assertGreater(service._attempt_rank(3, without), service._attempt_rank(2, with_k))
 
 
 class RetryWordingTests(unittest.TestCase):

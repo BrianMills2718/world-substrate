@@ -878,12 +878,25 @@ def _retry_label(first_model: str) -> str:
     return "Rewriting the rules with a stronger model" if RULES_RETRY_MODEL != first_model else "Rewriting the rules"
 
 
-def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, bool, int, int]:
+def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, bool, int, int, bool]:
     """Order rules attempts: by score, then ties go to a test run that did not go in circles, then to fewer moves
     never offered, then to fewer people who stopped acting (#253: an airfield build kept the one test run that
-    circled and never offered `move`, because it had one stalled person fewer)."""
+    circled and never offered `move`, because it had one stalled person fewer), and last to one whose rules have a
+    knock-on process."""
     idle = set(row.get("idle_actors") or []) | set(row.get("stalled_actors") or [])
-    return (score, not row.get("circling"), -len(row.get("never_offered") or []), -len(idle))
+    return (score, not row.get("circling"), -len(row.get("never_offered") or []), -len(idle),
+            bool(row.get("knock_on_processes")))
+
+
+def _state_flips(causal: dict[str, Any]) -> list[str]:
+    """Action kinds that set a thing's yes/no field to a fixed value (tip over, break, switch off): the changes a
+    knock-on process could follow. Read from the effect structure, not from names."""
+    return sorted({
+        m.get("action_kind", "")
+        for m in causal.get("mechanics") or []
+        for e in m.get("effects") or []
+        if e.get("op") == "set" and isinstance((e.get("value") or {}).get("literal"), bool)
+    })
 
 
 def _knock_on_processes(causal: dict[str, Any]) -> list[str]:
@@ -1418,6 +1431,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 # work moving; then alive; then not.
                                 conjuring_found = _conjuring_processes(candidate)
                                 moving_found = _moving_processes(candidate)
+                                # A move flips a thing's state but nothing ever follows from it at once (2026-10-26
+                                # cafe build dI4j2qUYPBBZ: tip-stack set upright false and no knock-on was written).
+                                # Advice on a retry and a tie-break only: watering a plant flips a field too, and
+                                # nothing need follow from it, so this never fails an attempt by itself.
+                                unfollowed = [] if _knock_on_processes(candidate) else _state_flips(candidate)
                                 score = (3 if not idle and not circling and not never and not conjuring_found
                                          and not moving_found else 2) if alive else 1
                                 guidance = "" if alive else (
@@ -1463,6 +1481,15 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                         "people meant to move them have nothing to do: " + "; ".join(moving_found) + ". "
                                         "Remove those effects and let an actor's action do the moving."
                                     )
+                                if unfollowed:
+                                    guidance += (
+                                        " These moves flip a thing's state, but no process has timing immediately, so "
+                                        "nothing ever follows from them: " + ", ".join(unfollowed) + ". Write what follows "
+                                        "at once wherever the represented state can hold it (a full container that tips "
+                                        "spills; a spill wets what it rests on; a fragile thing that falls breaks), each as "
+                                        "a process with timing immediately. If nothing physically follows, leave it."
+                                    )
+                                result_row["unfollowed_moves"] = unfollowed
                                 result_row["conjuring_processes"] = conjuring_found
                                 result_row["moving_processes"] = moving_found
                                 result_row["second_source_processes"] = _second_source_processes(candidate)

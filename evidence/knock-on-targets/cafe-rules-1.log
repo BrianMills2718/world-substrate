@@ -1,0 +1,3 @@
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm)
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+model-more/rules/55429f8de69d46729b24976957ed1d3e 0.0037906
