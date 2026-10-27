@@ -79,7 +79,7 @@ def _coerce(field_type: str, raw: str) -> tuple[bool, Any]:
 
 
 def read_interpretation(value: object, attempt: str, signatures: list[dict[str, Any]],
-                        entity_ids: set[str]) -> dict[str, Any]:
+                        entity_ids: set[str], actor: str | None = None) -> dict[str, Any]:
     """Check the model's reading against the world's kinds and entities.
 
     Returns {"kind", "fields", "quoted_spans", "nearest_kind", "why"} for a matched move, {"kind": "wait", ...} for a
@@ -111,7 +111,9 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
             problems.append(f"{name}={raw!r} is not a {declared[name]}")
         elif declared[name] == "entity_ref" and typed not in entity_ids:
             problems.append(f"{name}={raw!r} names no entity in this world")
-        elif not span or span not in attempt:
+        elif (not span or span not in attempt) and not (declared[name] == "entity_ref" and typed == actor):
+            # The speaker names themself as "I": 2026-10-27 pencil iMrL2U84cLCS, the shop's own "I try to sell one
+            # pencil" was refused in 9 of 15 rounds because the reader quoted the shop's id instead of "I".
             problems.append(f"{name}'s quoted words {span!r} are not in the attempt")
         else:
             fields[name], spans[name] = typed, span
@@ -157,7 +159,7 @@ def interpret(attempt: str, *, actor: str, signatures: list[dict[str, Any]], ent
         model, messages, interpreter_schema(signatures), schema_name="world_substrate_attempt_reading",
         task=TASK, trace_id=trace_id, max_budget=max_budget, max_tokens=400, reasoning_effort="low",
     )
-    return read_interpretation(value, attempt, signatures, set(entities)), float(getattr(result, "cost", 0.0) or 0.0)
+    return read_interpretation(value, attempt, signatures, set(entities), actor), float(getattr(result, "cost", 0.0) or 0.0)
 
 
 __all__ = ["NONE", "TASK", "UNMATCHED_KIND", "WAIT_KIND", "envelope", "interpret", "interpreter_schema",

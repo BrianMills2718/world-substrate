@@ -905,13 +905,16 @@ def _retry_label(first_model: str) -> str:
     return "Rewriting the rules with a stronger model" if RULES_RETRY_MODEL != first_model else "Rewriting the rules"
 
 
-def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, bool, int, int, bool]:
+def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, bool, int, int, int, bool]:
     """Order rules attempts: by score, then ties go to a test run that did not go in circles, then to fewer moves
     never offered, then to fewer people who stopped acting (#253: an airfield build kept the one test run that
     circled and never offered `move`, because it had one stalled person fewer), and last to one whose rules have a
     knock-on process."""
     idle = set(row.get("idle_actors") or []) | set(row.get("stalled_actors") or [])
-    return (score, not row.get("circling"), -len(row.get("never_offered") or []), -len(idle),
+    # A move no world entity can ever take part in loses first (2026-10-27 pencil iMrL2U84cLCS kept the attempt
+    # whose shipping could never happen over one where every move ran).
+    return (score, not row.get("circling"), -len(row.get("missing_components") or []),
+            -len(row.get("never_offered") or []), -len(idle),
             bool(row.get("knock_on_processes")))
 
 
@@ -933,6 +936,23 @@ def _knock_on_processes(causal: dict[str, Any]) -> list[str]:
     instead of looking like slice 2 failed (2026-10-26 airfield: six rules answers, none wrote one).
     """
     return [p.get("process_id", "") for p in causal.get("processes") or [] if p.get("timing") == "immediately"]
+
+
+def _missing_components(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]:
+    """'kind needs component' for each move whose actor or participant must have a component no entity has.
+
+    2026-10-27 pencil build (share iMrL2U84cLCS): ship-pencil-boxes required the shop to have a `shipment`
+    component that no entity had, so no box could ever ship; the attempt still won the tie-break.
+    """
+    held = {name for entity in bundle.get("entities") or [] for name in (entity.get("components") or {})}
+    found: set[str] = set()
+    for mechanic in causal.get("mechanics") or []:
+        selectors = [mechanic.get("actor_selector") or {}, *(mechanic.get("participants") or {}).values()]
+        for selector in selectors:
+            for name in (selector or {}).get("components") or []:
+                if name not in held:
+                    found.add(f"{mechanic.get('action_kind', '?')} needs {name}")
+    return sorted(found)
 
 
 def _vanishing_moves(causal: dict[str, Any]) -> list[str]:
@@ -1494,6 +1514,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 # nothing need follow from it, so this never fails an attempt by itself.
                                 unfollowed = [] if _knock_on_processes(candidate) else _state_flips(candidate)
                                 vanishing = _vanishing_moves(candidate)
+                                missing_parts = _missing_components(bundle, candidate)
                                 unanswered = _unanswered_demand(candidate)
                                 score = (3 if not idle and not circling and not never and not conjuring_found
                                          and not moving_found and not vanishing and not unanswered else 2) if alive else 1
@@ -1570,6 +1591,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                         "one off; if that move cannot reach the thing that holds them, it needs a participant "
                                         "naming it."
                                     )
+                                if missing_parts:
+                                    guidance += (
+                                        " These moves require something no entity in the world has, so they can never "
+                                        "happen: " + "; ".join(missing_parts) + ". Use components the entities have, or "
+                                        "give the entities that component."
+                                    )
+                                result_row["missing_components"] = missing_parts
                                 result_row["vanishing_moves"] = vanishing
                                 result_row["unanswered_demand"] = unanswered
                                 result_row["unfollowed_moves"] = unfollowed

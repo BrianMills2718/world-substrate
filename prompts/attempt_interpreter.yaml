@@ -23,6 +23,9 @@ messages:
         of the entity their words name (from the entity list); otherwise the
         value they state. Copy into quoted_span the exact words of the attempt
         that name it.
+      - When a field names the person themself, its value is their own id
+        (the Person line) and quoted_span is the word they use for
+        themself, such as "I" or "my".
       - If they only wait, watch or do nothing, the kind is "wait".
       - If no kind describes what they do, the kind is "none"; give the
         nearest kind and say why none fits.

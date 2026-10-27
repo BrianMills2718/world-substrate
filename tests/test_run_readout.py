@@ -84,3 +84,18 @@ class ReadoutTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RefusedStepTest(unittest.TestCase):
+    """2026-10-27 pencil iMrL2U84cLCS: the truck's refused delivery was not given to the readout, so it said nothing
+    was ever held up."""
+
+    def test_a_refused_step_is_evidence_with_what_stopped_it(self):
+        rounds = [{"turn": 3, "actors": {"truck-driver": {
+            "status": "precondition_failed", "event_id": "r3-e00014", "did": {"kind": "ship-pencil-boxes"},
+            "refused_because": ["The shop is not already awaiting this shipment"], "changes": [],
+            "said": "a packed box is available"}}}]
+        events = run_readout.evidence_events(rounds)
+        self.assertEqual([e["event_id"] for e in events], ["r3-e00014"])
+        self.assertIn("refused because The shop is not already awaiting this shipment", events[0]["changed"])
+        self.assertEqual(events[0]["paths"], [])

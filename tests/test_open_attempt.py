@@ -395,3 +395,28 @@ class KnockOnEffectTests(unittest.TestCase):
         rules["processes"][0]["timing"] = "later"
         with self.assertRaisesRegex(Exception, "timing must be one of"):
             build_engine(GLASS_BUNDLE, rules)
+
+
+class SpeakerSelfReferenceTests(unittest.TestCase):
+    """2026-10-27 pencil iMrL2U84cLCS: "I try to sell one pencil" was refused in 9 of 15 rounds because the reader
+    quoted the shop's id for the shop field instead of "I"."""
+
+    SIGNATURES = [{"kind": "sell", "description": "sell one pencil",
+                   "fields": [{"name": "shop", "type": "entity_ref"}, {"name": "customer", "type": "entity_ref"}]}]
+    TEXT = "I try to sell one pencil to the Pencil customer."
+
+    def _reading(self, shop_span):
+        return {"kind": "sell", "why": "", "nearest_kind": "sell", "fields": [
+            {"field": "shop", "value": "pencil-shop", "quoted_span": shop_span},
+            {"field": "customer", "value": "customer", "quoted_span": "Pencil customer"}]}
+
+    def test_the_speakers_own_id_needs_no_quoted_words(self):
+        got = open_attempt.read_interpretation(self._reading("pencil-shop"), self.TEXT, self.SIGNATURES,
+                                               {"pencil-shop", "customer"}, actor="pencil-shop")
+        self.assertEqual(got.get("kind"), "sell")
+        self.assertEqual(got["fields"], {"shop": "pencil-shop", "customer": "customer"})
+
+    def test_someone_else_still_needs_their_words_in_the_attempt(self):
+        got = open_attempt.read_interpretation(self._reading("pencil-shop"), self.TEXT, self.SIGNATURES,
+                                               {"pencil-shop", "customer"}, actor="customer")
+        self.assertTrue(got.get("unmatched"))

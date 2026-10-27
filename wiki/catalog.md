@@ -171,3 +171,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## evidence/vanishing-goods
 
 - [Vanishing goods and unanswered demand (2026-10-26)](../evidence/vanishing-goods/README.md)
+
+## evidence/pencil4-trace-audit
+
+- [Trace read: pencil build iMrL2U84cLCS (2026-10-27)](../evidence/pencil4-trace-audit/TRACE_READ.md)
