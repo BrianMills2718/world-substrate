@@ -1,0 +1,16 @@
+[1.9s] no #ai-moves toggle on the page (AI always chooses)
+[1.9s] pressing Create simulation
+[2.1s] step: Sending your description… 0 s
+[7.7s] step: Reading your description… 5.3 s
+[62.4s] step: ! Left out of the simulation The exact real-world time at closing 58.5 s
+[62.4s] step: Writing the rules… 58.5 s
+[94.4s] step: Test-running the rules with simple moves… 91 s
+[95.6s] step: Rewriting the rules… · the last rules did not pass the test run 92.4 s
+[141.5s] step: Redesigning what each one can do… · the test run showed steps that could never happen 139.1 s
+[163.3s] step: Writing the rules… 161.4 s
+[193.7s] step: Test-running the rules with simple moves… 190.8 s
+[197.1s] run stage visible
+[261.3s] readout 200
+[264.1s] share {"ok":true,"share_id":"eFmPomcnsyQq","rounds":8}
+[264.9s] saved cafe2-run.json
+cafe rc=0

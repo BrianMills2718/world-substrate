@@ -167,3 +167,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## evidence/unsourced-inputs
 
 - [Unsourced inputs and one-unit sales (2026-10-27)](../evidence/unsourced-inputs/README.md)
+
+## evidence/vanishing-goods
+
+- [Vanishing goods and unanswered demand (2026-10-26)](../evidence/vanishing-goods/README.md)

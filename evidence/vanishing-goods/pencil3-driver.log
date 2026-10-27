@@ -1,0 +1,18 @@
+[1.9s] no #ai-moves toggle on the page (AI always chooses)
+[1.9s] pressing Create simulation
+[2.1s] step: Sending your description… 0 s
+[7.7s] step: Reading your description… 5.4 s
+[51.3s] step: Writing the rules… 48.6 s
+[97.8s] step: Test-running the rules with simple moves… 94.9 s
+[97.2s] step: Rewriting the rules… · the last rules did not pass the test run 96 s
+[139.5s] step: Test-running the rules with simple moves… 136.9 s
+[142.6s] step: Redesigning what each one can do… · the test run showed steps that could never happen 139.4 s
+[169.6s] step: Writing the rules… 166.5 s
+[219.9s] step: Test-running the rules with simple moves… 216.4 s
+[222.5s] step: Rewriting the rules… · the last rules did not pass the test run 219.7 s
+[277.7s] step: Test-running the rules with simple moves… 274.7 s
+[281.1s] run stage visible
+[391.4s] readout 200
+[394.7s] share {"ok":true,"share_id":"4VmgkXIVWn4p","rounds":12}
+[395.7s] saved pencil3-run.json
+pencil rc=0
