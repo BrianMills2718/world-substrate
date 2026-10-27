@@ -443,6 +443,13 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "fragile thing that fell breaks, a broken container spills, a breaking thing makes a sound), make it a "
             "process with timing immediately whose checks name the state that change leaves; each step of a chain "
             "is its own process. Keep timing each_round for what takes time (drying, growing, travelling, fuel).",
+            # 2026-10-26 cafe samples (evidence/knock-on-targets/): the world had upright, full, spilled, broken
+            # and 'on' fields, yet knock-over only set upright false, citing caution ("not inferred from a bump").
+            "Fields such as upright, full, spilled, broken and wet, with an entity_ref 'on' naming what a thing "
+            "rests on, already state the physics; using them is not an assumption. When a world has them, write "
+            "the ordinary consequences as processes with timing immediately: a full container that is no longer "
+            "upright spills (full false, spilled true); a spill wets what its 'on' names (participant linked by "
+            "ref:<component>.on); a fragile thing that falls breaks. Keep the move itself to its direct change.",
             # 2026-10-26 (evidence/model-more/): a pencil world's truck had a rounds_left field, but deliver-boxes
             # handed the boxes over at once and no process counted it down, so the journey took no time.
             "When an entity has an integer field counting rounds left (a delivery on the road, a journey, a job "

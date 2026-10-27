@@ -63,6 +63,11 @@ SIZE_RULES = [
     "dropping, pushing, pouring or breaking, each with an entity_ref field naming the thing it acts on. Represent where things rest and what state "
     "they are in as fields (an entity_ref 'on' or 'under', booleans such as upright, wet, broken, lit), so a "
     "rule can make one change set off another at once (a tipped cup wets what is under it).",
+    # 2026-10-26 live cafe build (share dI4j2qUYPBBZ): tip-stack set the plates' upright to false, but the
+    # plates had no broken field and nothing under them, so no knock-on could follow and none was written.
+    "For each such move, represent what it would set off, not only the move itself: give fragile things a "
+    "broken boolean, containers a full or spilled boolean, and set each loose object's 'on' to the thing it "
+    "starts on (a table, a laptop, the floor), so that a fall or spill has something to break or wet.",
     "Follow world_kind_rule: a task world must be able to finish (represented state from which 'done' can be read); ongoing and open worlds must have state that keeps changing.",
 ]
 

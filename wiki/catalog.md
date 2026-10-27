@@ -159,3 +159,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## evidence/physical-moves
 
 - [Physical moves, hand-offs and cash (2026-10-27)](../evidence/physical-moves/README.md)
+
+## evidence/knock-on-targets
+
+- [Knock-on targets (2026-10-27)](../evidence/knock-on-targets/README.md)

@@ -1,0 +1,579 @@
+{
+  "trace_id": "model-more/bundle/3c79fd02334745188b5376c262b25003",
+  "cost": 0.00197255,
+  "not_modeled": [],
+  "bundle": {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {
+      "id": "cafe-at-closing",
+      "label": "Cafe at Closing Time",
+      "summary": "A cafe crew tends to closing tasks while customers and new service needs keep the work going.",
+      "location": "cafe",
+      "content_version": 1
+    },
+    "components": [
+      {
+        "name": "worker",
+        "fields": [
+          {
+            "name": "role",
+            "type": "string",
+            "default": "barista"
+          },
+          {
+            "name": "energy",
+            "type": "integer",
+            "default": 8
+          }
+        ]
+      },
+      {
+        "name": "customer",
+        "fields": [
+          {
+            "name": "energy",
+            "type": "integer",
+            "default": 6
+          },
+          {
+            "name": "coffee_count",
+            "type": "integer",
+            "default": 1
+          }
+        ]
+      },
+      {
+        "name": "service",
+        "fields": [
+          {
+            "name": "waiting_drinks",
+            "type": "integer",
+            "default": 2
+          },
+          {
+            "name": "clean_cups",
+            "type": "integer",
+            "default": 4
+          }
+        ]
+      },
+      {
+        "name": "prop",
+        "fields": [
+          {
+            "name": "on",
+            "type": "entity_ref",
+            "default": "cafe"
+          },
+          {
+            "name": "upright",
+            "type": "boolean",
+            "default": true
+          },
+          {
+            "name": "wet",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "broken",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "full",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "spilled",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "lit",
+            "type": "boolean",
+            "default": false
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "cafe",
+        "label": "Cafe",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "barista",
+        "label": "Barista",
+        "categories": [
+          "actor",
+          "barista"
+        ],
+        "location": "cafe",
+        "components": {
+          "worker": {
+            "role": "barista",
+            "energy": 8
+          },
+          "service": {
+            "waiting_drinks": 2,
+            "clean_cups": 4
+          }
+        }
+      },
+      {
+        "id": "waiter",
+        "label": "Waiter",
+        "categories": [
+          "actor",
+          "waiter"
+        ],
+        "location": "cafe",
+        "components": {
+          "worker": {
+            "role": "waiter",
+            "energy": 8
+          }
+        }
+      },
+      {
+        "id": "cleaner",
+        "label": "Cleaner",
+        "categories": [
+          "actor",
+          "cleaner"
+        ],
+        "location": "cafe",
+        "components": {
+          "worker": {
+            "role": "cleaner",
+            "energy": 8
+          }
+        }
+      },
+      {
+        "id": "customer",
+        "label": "Customer",
+        "categories": [
+          "actor",
+          "customer"
+        ],
+        "location": "cafe",
+        "components": {
+          "customer": {
+            "energy": 6,
+            "coffee_count": 1
+          }
+        }
+      },
+      {
+        "id": "floor",
+        "label": "Cafe floor",
+        "categories": [
+          "surface"
+        ],
+        "components": {}
+      },
+      {
+        "id": "table",
+        "label": "Cafe table",
+        "categories": [
+          "surface",
+          "table"
+        ],
+        "location": "cafe",
+        "components": {}
+      },
+      {
+        "id": "chair-one",
+        "label": "Chair",
+        "categories": [
+          "chair",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "place:cafe",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "table",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "chair-two",
+        "label": "Chair",
+        "categories": [
+          "chair",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "place:cafe",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "table",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "tray",
+        "label": "Serving tray",
+        "categories": [
+          "tray",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "actor:waiter",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "table",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "cup-one",
+        "label": "Cup",
+        "categories": [
+          "cup",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "entity:tray",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "tray",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": true,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "cup-two",
+        "label": "Cup",
+        "categories": [
+          "cup",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "entity:tray",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "tray",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": true,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "plate-stack",
+        "label": "Tall stack of plates",
+        "categories": [
+          "plates",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "place:cafe",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "table",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "laptop",
+        "label": "Laptop",
+        "categories": [
+          "laptop",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "actor:customer",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "table",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "coffee-cup",
+        "label": "Customer's coffee cup",
+        "categories": [
+          "cup",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "actor:customer",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "table",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": true,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "wet-patch-one",
+        "label": "Wet patch on the floor",
+        "categories": [
+          "wet_patch",
+          "loose_object"
+        ],
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "floor",
+            "upright": true,
+            "wet": true,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "wet-patch-two",
+        "label": "Another wet patch on the floor",
+        "categories": [
+          "wet_patch",
+          "loose_object"
+        ],
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "floor",
+            "upright": true,
+            "wet": true,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      },
+      {
+        "id": "ceiling-light",
+        "label": "Cafe ceiling light",
+        "categories": [
+          "light"
+        ],
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "cafe",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": true
+          }
+        }
+      },
+      {
+        "id": "mop",
+        "label": "Mop",
+        "categories": [
+          "cleaning_tool",
+          "loose_object"
+        ],
+        "portable": true,
+        "owner_ref": "actor:cleaner",
+        "location": "cafe",
+        "components": {
+          "prop": {
+            "on": "floor",
+            "upright": true,
+            "wet": false,
+            "broken": false,
+            "full": false,
+            "spilled": false,
+            "lit": false
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "kind": "prepare-drink",
+        "description": "Prepare one waiting drink using a clean cup.",
+        "fields": [
+          {
+            "name": "cup",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "serve-drink",
+        "description": "Carry a prepared drink on the tray to a customer.",
+        "fields": [
+          {
+            "name": "cup",
+            "type": "entity_ref"
+          },
+          {
+            "name": "customer",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "stack-chair",
+        "description": "Place a chair on a table as part of closing work.",
+        "fields": [
+          {
+            "name": "chair",
+            "type": "entity_ref"
+          },
+          {
+            "name": "table",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "mop-floor",
+        "description": "Mop a wet patch on the cafe floor.",
+        "fields": [
+          {
+            "name": "patch",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "sip-coffee",
+        "description": "Sip coffee from a cup near the laptop.",
+        "fields": [
+          {
+            "name": "cup",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "knock-over",
+        "description": "Bump a loose object in the cafe.",
+        "fields": [
+          {
+            "name": "thing",
+            "type": "entity_ref"
+          }
+        ]
+      }
+    ],
+    "presentation": {
+      "assets": {
+        "worker": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1\u200d\ud83c\udf73"
+        },
+        "customer": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1"
+        },
+        "surface": {
+          "kind": "emoji",
+          "value": "\ud83e\ude91"
+        },
+        "cup": {
+          "kind": "emoji",
+          "value": "\u2615"
+        },
+        "plates": {
+          "kind": "emoji",
+          "value": "\ud83c\udf7d\ufe0f"
+        },
+        "laptop": {
+          "kind": "emoji",
+          "value": "\ud83d\udcbb"
+        },
+        "wet_patch": {
+          "kind": "emoji",
+          "value": "\ud83d\udca7"
+        },
+        "light": {
+          "kind": "emoji",
+          "value": "\ud83d\udca1"
+        },
+        "cleaning_tool": {
+          "kind": "emoji",
+          "value": "\ud83e\uddf9"
+        }
+      },
+      "category_assets": {
+        "barista": "worker",
+        "waiter": "worker",
+        "cleaner": "worker",
+        "customer": "customer",
+        "chair": "surface",
+        "tray": "surface",
+        "cup": "cup",
+        "plates": "plates",
+        "laptop": "laptop",
+        "wet_patch": "wet_patch",
+        "light": "light",
+        "cleaning_tool": "cleaning_tool"
+      },
+      "station_roles": {
+        "table": "workstation",
+        "floor": "surface"
+      }
+    }
+  }
+}

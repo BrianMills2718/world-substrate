@@ -1,0 +1,1823 @@
+{
+ "source": "live owner build, share dI4j2qUYPBBZ, build b1f561f, 2026-10-26",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "closing-cafe",
+   "label": "Cafe at Closing Time",
+   "summary": "Cafe staff tidy the room and serve recurring orders while a customer lingers.",
+   "location": "cafe",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "person",
+    "fields": [
+     {
+      "name": "role",
+      "type": "string",
+      "default": "staff"
+     },
+     {
+      "name": "energy",
+      "type": "integer",
+      "default": 10
+     },
+     {
+      "name": "holding",
+      "type": "entity_ref_or_null",
+      "default": null
+     }
+    ]
+   },
+   {
+    "name": "cafe_state",
+    "fields": [
+     {
+      "name": "waiting_tasks",
+      "type": "integer",
+      "default": 1
+     },
+     {
+      "name": "prepared_tasks",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "served_tasks",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "lights_on",
+      "type": "boolean",
+      "default": true
+     }
+    ]
+   },
+   {
+    "name": "stock",
+    "fields": [
+     {
+      "name": "quantity",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   },
+   {
+    "name": "surface",
+    "fields": [
+     {
+      "name": "wet",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "on",
+      "type": "entity_ref_or_null",
+      "default": null
+     }
+    ]
+   },
+   {
+    "name": "portable_item",
+    "fields": [
+     {
+      "name": "on",
+      "type": "entity_ref_or_null",
+      "default": null
+     },
+     {
+      "name": "upright",
+      "type": "boolean",
+      "default": true
+     },
+     {
+      "name": "wet",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "equipment",
+    "fields": [
+     {
+      "name": "lit",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "cafe",
+    "label": "Cafe",
+    "categories": [
+     "place"
+    ],
+    "components": {
+     "cafe_state": {
+      "waiting_tasks": 1,
+      "prepared_tasks": 0,
+      "served_tasks": 0,
+      "lights_on": true
+     }
+    }
+   },
+   {
+    "id": "barista",
+    "label": "Barista",
+    "categories": [
+     "actor",
+     "barista"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "barista",
+      "energy": 10,
+      "holding": null
+     }
+    }
+   },
+   {
+    "id": "waiter",
+    "label": "Waiter",
+    "categories": [
+     "actor",
+     "waiter"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "waiter",
+      "energy": 10,
+      "holding": null
+     }
+    }
+   },
+   {
+    "id": "cleaner",
+    "label": "Cleaner",
+    "categories": [
+     "actor",
+     "cleaner"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "cleaner",
+      "energy": 10,
+      "holding": null
+     }
+    }
+   },
+   {
+    "id": "customer",
+    "label": "Customer",
+    "categories": [
+     "actor",
+     "customer"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "customer",
+      "energy": 8,
+      "holding": null
+     }
+    }
+   },
+   {
+    "id": "chairs",
+    "label": "Cafe chairs",
+    "categories": [
+     "furniture",
+     "stock"
+    ],
+    "location": "cafe",
+    "components": {
+     "stock": {
+      "quantity": 6
+     }
+    }
+   },
+   {
+    "id": "tables",
+    "label": "Cafe tables",
+    "categories": [
+     "furniture",
+     "surface"
+    ],
+    "location": "cafe",
+    "components": {
+     "surface": {
+      "wet": false,
+      "on": null
+     }
+    }
+   },
+   {
+    "id": "chair-stack",
+    "label": "Stack of chairs",
+    "categories": [
+     "furniture",
+     "stack"
+    ],
+    "location": "cafe",
+    "components": {
+     "portable_item": {
+      "on": "tables",
+      "upright": true,
+      "wet": false
+     }
+    }
+   },
+   {
+    "id": "tray",
+    "label": "Serving tray",
+    "categories": [
+     "equipment",
+     "tray"
+    ],
+    "location": "cafe",
+    "components": {
+     "portable_item": {
+      "on": null,
+      "upright": true,
+      "wet": false
+     }
+    }
+   },
+   {
+    "id": "cups",
+    "label": "Cups",
+    "categories": [
+     "stock",
+     "cups"
+    ],
+    "location": "cafe",
+    "components": {
+     "stock": {
+      "quantity": 4
+     }
+    }
+   },
+   {
+    "id": "plate-stack",
+    "label": "Tall stack of plates",
+    "categories": [
+     "stack",
+     "plates"
+    ],
+    "location": "cafe",
+    "components": {
+     "portable_item": {
+      "on": null,
+      "upright": true,
+      "wet": false
+     }
+    }
+   },
+   {
+    "id": "coffee",
+    "label": "Customer's coffee",
+    "categories": [
+     "drink",
+     "portable"
+    ],
+    "portable": true,
+    "owner_ref": "actor:customer",
+    "location": "cafe",
+    "components": {
+     "portable_item": {
+      "on": "tables",
+      "upright": true,
+      "wet": false
+     }
+    }
+   },
+   {
+    "id": "laptop",
+    "label": "Customer's laptop",
+    "categories": [
+     "device",
+     "portable"
+    ],
+    "portable": true,
+    "owner_ref": "actor:customer",
+    "location": "cafe",
+    "components": {
+     "equipment": {
+      "lit": true
+     }
+    }
+   },
+   {
+    "id": "mop",
+    "label": "Mop",
+    "categories": [
+     "cleaning_tool"
+    ],
+    "portable": true,
+    "owner_ref": "place:cafe",
+    "location": "cafe",
+    "components": {
+     "portable_item": {
+      "on": null,
+      "upright": true,
+      "wet": true
+     }
+    }
+   },
+   {
+    "id": "floor",
+    "label": "Cafe floor",
+    "categories": [
+     "surface",
+     "floor"
+    ],
+    "location": "cafe",
+    "components": {
+     "surface": {
+      "wet": true,
+      "on": null
+     }
+    }
+   },
+   {
+    "id": "lights",
+    "label": "Cafe lights",
+    "categories": [
+     "equipment",
+     "lights"
+    ],
+    "location": "cafe",
+    "components": {
+     "equipment": {
+      "lit": true
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "receive-task",
+    "description": "Add a new cafe service task to the waiting queue.",
+    "fields": [
+     {
+      "name": "cafe",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "prepare-task",
+    "description": "Prepare one waiting task and use one cup, adding a prepared task to the queue.",
+    "fields": [
+     {
+      "name": "cafe",
+      "type": "entity_ref"
+     },
+     {
+      "name": "cups",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "deliver-task",
+    "description": "Carry one prepared task to the customer and mark it served.",
+    "fields": [
+     {
+      "name": "cafe",
+      "type": "entity_ref"
+     },
+     {
+      "name": "customer",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "finish-task",
+    "description": "Take one served task out of the queue as the customer finishes it.",
+    "fields": [
+     {
+      "name": "cafe",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "stack-chairs",
+    "description": "Stack chairs on the cafe tables.",
+    "fields": [
+     {
+      "name": "chairs",
+      "type": "entity_ref"
+     },
+     {
+      "name": "tables",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "carry-tray",
+    "description": "Carry the tray past the tall stack of plates.",
+    "fields": [
+     {
+      "name": "tray",
+      "type": "entity_ref"
+     },
+     {
+      "name": "plates",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "mop-floor",
+    "description": "Mop the cafe floor.",
+    "fields": [
+     {
+      "name": "mop",
+      "type": "entity_ref"
+     },
+     {
+      "name": "floor",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "put-down",
+    "description": "Put down an item being held on a cafe surface.",
+    "fields": [
+     {
+      "name": "item",
+      "type": "entity_ref"
+     },
+     {
+      "name": "surface",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "pick-up",
+    "description": "Pick up an item from a cafe surface.",
+    "fields": [
+     {
+      "name": "item",
+      "type": "entity_ref"
+     },
+     {
+      "name": "surface",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "tip-stack",
+    "description": "Tip the stack of plates.",
+    "fields": [
+     {
+      "name": "plates",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "right-stack",
+    "description": "Set the stack of plates upright again.",
+    "fields": [
+     {
+      "name": "plates",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "linger",
+    "description": "Linger with the coffee near the laptop.",
+    "fields": [
+     {
+      "name": "coffee",
+      "type": "entity_ref"
+     },
+     {
+      "name": "laptop",
+      "type": "entity_ref"
+     },
+     {
+      "name": "table",
+      "type": "entity_ref"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "barista": {
+     "kind": "emoji",
+     "value": "\u2615"
+    },
+    "waiter": {
+     "kind": "emoji",
+     "value": "\ud83c\udf7d\ufe0f"
+    },
+    "cleaner": {
+     "kind": "emoji",
+     "value": "\ud83e\uddf9"
+    },
+    "customer": {
+     "kind": "emoji",
+     "value": "\ud83d\udcbb"
+    },
+    "furniture": {
+     "kind": "emoji",
+     "value": "\ud83e\ude91"
+    },
+    "drink": {
+     "kind": "emoji",
+     "value": "\u2615"
+    },
+    "stack": {
+     "kind": "emoji",
+     "value": "\ud83c\udf7d\ufe0f"
+    },
+    "floor": {
+     "kind": "emoji",
+     "value": "\ud83e\uddfd"
+    },
+    "place": {
+     "kind": "emoji",
+     "value": "\ud83c\udfe0"
+    }
+   },
+   "category_assets": {
+    "barista": "barista",
+    "waiter": "waiter",
+    "cleaner": "cleaner",
+    "customer": "customer",
+    "furniture": "furniture",
+    "drink": "drink",
+    "stack": "stack",
+    "floor": "floor",
+    "place": "place"
+   },
+   "station_roles": {
+    "cafe": "workstation",
+    "floor": "surface"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "receive-task",
+    "version": "1",
+    "action_kind": "receive-task",
+    "rationale": "Receiving a service request adds one waiting task to the cafe queue.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "barista"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "cafe": {
+      "categories": [
+       "place"
+      ],
+      "components": [
+       "cafe_state"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the barista is at the cafe",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "cafe",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "cafe",
+      "path": "components.cafe_state.waiting_tasks",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Only a barista can receive a task; this action does not assign a particular customer to the request."
+    ],
+    "tests": [
+     "A barista at the cafe adds one waiting task.",
+     "An actor elsewhere cannot receive a task for this cafe."
+    ],
+    "semantic_bindings": [
+     "cafe service request",
+     "waiting queue"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "prepare-task",
+    "version": "1",
+    "action_kind": "prepare-task",
+    "rationale": "Preparation consumes one waiting task and one cup and adds one prepared task.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "barista"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "cafe": {
+      "categories": [
+       "place"
+      ],
+      "components": [
+       "cafe_state"
+      ]
+     },
+     "cups": {
+      "categories": [
+       "cups",
+       "stock"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the barista is at the cafe",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "cafe",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "a task is waiting",
+      "left": {
+       "participant": {
+        "name": "cafe",
+        "path": "components.cafe_state.waiting_tasks"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "a cup is available",
+      "left": {
+       "participant": {
+        "name": "cups",
+        "path": "components.stock.quantity"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "cafe",
+      "path": "components.cafe_state.waiting_tasks",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "cafe",
+      "path": "components.cafe_state.prepared_tasks",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "cups",
+      "path": "components.stock.quantity",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Preparation requires both a waiting task and an available cup."
+    ],
+    "tests": [
+     "With a waiting task and a cup, preparation changes the queue and consumes one cup.",
+     "Preparation is refused if either the waiting queue or cup stock is empty."
+    ],
+    "semantic_bindings": [
+     "prepare service task",
+     "consume cup"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "deliver-task",
+    "version": "1",
+    "action_kind": "deliver-task",
+    "rationale": "Delivering a prepared task transfers it from the prepared queue to the served queue.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "waiter"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "cafe": {
+      "categories": [
+       "place"
+      ],
+      "components": [
+       "cafe_state"
+      ]
+     },
+     "customer": {
+      "categories": [
+       "actor",
+       "customer"
+      ],
+      "components": [
+       "person"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the waiter is at the cafe",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "cafe",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the customer is at the cafe",
+      "left": {
+       "participant": {
+        "name": "customer",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "cafe",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "a task is prepared",
+      "left": {
+       "participant": {
+        "name": "cafe",
+        "path": "components.cafe_state.prepared_tasks"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "cafe",
+      "path": "components.cafe_state.prepared_tasks",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "cafe",
+      "path": "components.cafe_state.served_tasks",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The represented queues do not identify which customer owns a prepared task."
+    ],
+    "tests": [
+     "A waiter at the cafe can serve one prepared task to a customer there.",
+     "Delivery is refused when no task is prepared or the customer is elsewhere."
+    ],
+    "semantic_bindings": [
+     "deliver prepared order",
+     "served queue"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "finish-task",
+    "version": "1",
+    "action_kind": "finish-task",
+    "rationale": "Finishing a served task removes one task from the served queue.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "customer"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "cafe": {
+      "categories": [
+       "place"
+      ],
+      "components": [
+       "cafe_state"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the customer is at the cafe",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "cafe",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "a task has been served",
+      "left": {
+       "participant": {
+        "name": "cafe",
+        "path": "components.cafe_state.served_tasks"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "cafe",
+      "path": "components.cafe_state.served_tasks",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The served queue does not associate an individual task with a particular customer."
+    ],
+    "tests": [
+     "A customer at the cafe removes one served task.",
+     "Finishing is refused when the served queue is empty."
+    ],
+    "semantic_bindings": [
+     "customer finishes served task"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "stack-chairs",
+    "version": "1",
+    "action_kind": "stack-chairs",
+    "rationale": "Stacking the chairs places the chair stack on the cafe tables.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "cleaner"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "chairs": {
+      "categories": [
+       "stack"
+      ],
+      "components": [
+       "portable_item"
+      ]
+     },
+     "tables": {
+      "categories": [
+       "furniture"
+      ],
+      "components": [
+       "surface"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the cleaner is at the tables",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "tables",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the chair stack is not already on the tables",
+      "left": {
+       "participant": {
+        "name": "chairs",
+        "path": "components.portable_item.on"
+       }
+      },
+      "op": "ne",
+      "right": {
+       "action_field": "tables"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "chairs",
+      "path": "components.portable_item.on",
+      "op": "set",
+      "value": {
+       "action_field": "tables"
+      }
+     }
+    ],
+    "limits": [
+     "The represented chair stock does not specify how many chairs are in the stack."
+    ],
+    "tests": [
+     "A cleaner at the tables can place the chair stack there if it is not already there.",
+     "The action is refused when the chair stack is already on the tables."
+    ],
+    "semantic_bindings": [
+     "stack chairs",
+     "place chair stack on tables"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "carry-tray",
+    "version": "1",
+    "action_kind": "carry-tray",
+    "rationale": "Carrying the tray past the tall plate stack can leave the plate stack tipped; no carried contents or breakage state is represented.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "waiter"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "tray": {
+      "categories": [
+       "tray"
+      ],
+      "components": [
+       "portable_item"
+      ]
+     },
+     "plates": {
+      "categories": [
+       "plates",
+       "stack"
+      ],
+      "components": [
+       "portable_item"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the waiter is at the tray",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "tray",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the plate stack is at the cafe",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "plates",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the tray is not already being held",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.holding"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": null
+      }
+     },
+     {
+      "label": "the tray is not on a surface",
+      "left": {
+       "participant": {
+        "name": "tray",
+        "path": "components.portable_item.on"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": null
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.holding",
+      "op": "set",
+      "value": {
+       "action_field": "tray"
+      }
+     }
+    ],
+    "limits": [
+     "This action represents taking the tray in hand, not a change of location; no sound, spill, or plate-stack movement is represented by the description alone."
+    ],
+    "tests": [
+     "A waiter at the tray can pick it up while it is not on a surface and their hands are free.",
+     "The action is refused if the waiter is already holding something."
+    ],
+    "semantic_bindings": [
+     "carry serving tray",
+     "tray in hand"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "mop-floor",
+    "version": "1",
+    "action_kind": "mop-floor",
+    "rationale": "Mopping a wet floor with the wet mop makes the floor dry.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "cleaner"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "mop": {
+      "categories": [
+       "cleaning_tool"
+      ],
+      "components": [
+       "portable_item"
+      ]
+     },
+     "floor": {
+      "categories": [
+       "floor"
+      ],
+      "components": [
+       "surface"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the cleaner is at the floor",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "floor",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the floor is wet",
+      "left": {
+       "participant": {
+        "name": "floor",
+        "path": "components.surface.wet"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the mop is wet",
+      "left": {
+       "participant": {
+        "name": "mop",
+        "path": "components.portable_item.wet"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "floor",
+      "path": "components.surface.wet",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "limits": [
+     "The represented mop state does not track dirt or water absorbed during mopping; this action only dries the floor."
+    ],
+    "tests": [
+     "A cleaner at the wet floor can mop it dry with the wet mop.",
+     "Mopping is refused if the floor is already dry or the mop is not wet."
+    ],
+    "semantic_bindings": [
+     "mop cafe floor",
+     "dry wet floor"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "put-down",
+    "version": "1",
+    "action_kind": "put-down",
+    "rationale": "Putting down a held item clears the person's holding field and records the item on the selected surface.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "item": {
+      "categories": [],
+      "components": [
+       "portable_item"
+      ]
+     },
+     "surface": {
+      "categories": [
+       "surface"
+      ],
+      "components": [
+       "surface"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the person is holding this item",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.holding"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "action_field": "item"
+      }
+     },
+     {
+      "label": "the person is at the surface",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "surface",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the surface is clear",
+      "left": {
+       "participant": {
+        "name": "surface",
+        "path": "components.surface.on"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": null
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.holding",
+      "op": "set",
+      "value": {
+       "literal": null
+      }
+     },
+     {
+      "participant": "surface",
+      "path": "components.surface.on",
+      "op": "set",
+      "value": {
+       "action_field": "item"
+      }
+     },
+     {
+      "participant": "item",
+      "path": "components.portable_item.on",
+      "op": "set",
+      "value": {
+       "action_field": "surface"
+      }
+     }
+    ],
+    "limits": [
+     "This applies only to items represented by portable_item and surfaces represented by surface; it does not model stacking multiple items on one surface."
+    ],
+    "tests": [
+     "A person holding a portable item can put it on a clear surface at their location.",
+     "Putting an item down is refused if the person is not holding that item or the surface is occupied."
+    ],
+    "semantic_bindings": [
+     "put held item down",
+     "item rests on surface"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "pick-up",
+    "version": "1",
+    "action_kind": "pick-up",
+    "rationale": "Picking up an item from a surface clears the surface and records the item in the person's holding field.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "item": {
+      "categories": [],
+      "components": [
+       "portable_item"
+      ]
+     },
+     "surface": {
+      "categories": [
+       "surface"
+      ],
+      "components": [
+       "surface"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the person is at the surface",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "surface",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the surface records this item",
+      "left": {
+       "participant": {
+        "name": "surface",
+        "path": "components.surface.on"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "action_field": "item"
+      }
+     },
+     {
+      "label": "the item is on this surface",
+      "left": {
+       "participant": {
+        "name": "item",
+        "path": "components.portable_item.on"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "action_field": "surface"
+      }
+     },
+     {
+      "label": "the person's hands are free",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.holding"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": null
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "surface",
+      "path": "components.surface.on",
+      "op": "set",
+      "value": {
+       "literal": null
+      }
+     },
+     {
+      "participant": "item",
+      "path": "components.portable_item.on",
+      "op": "set",
+      "value": {
+       "literal": null
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.person.holding",
+      "op": "set",
+      "value": {
+       "action_field": "item"
+      }
+     }
+    ],
+    "limits": [
+     "This applies only to portable_item entities on represented surfaces; bulk stock is not picked up by this action."
+    ],
+    "tests": [
+     "A person with free hands can pick up the item recorded on the surface at their location.",
+     "Pickup is refused if the surface does not record that item or the person is already holding something."
+    ],
+    "semantic_bindings": [
+     "pick item up",
+     "clear surface",
+     "hold item"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "tip-stack",
+    "version": "1",
+    "action_kind": "tip-stack",
+    "rationale": "Tipping changes an upright stack to a non-upright state.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "plates": {
+      "categories": [
+       "plates",
+       "stack"
+      ],
+      "components": [
+       "portable_item"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the person is at the plate stack",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "plates",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the plate stack is upright",
+      "left": {
+       "participant": {
+        "name": "plates",
+        "path": "components.portable_item.upright"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "plates",
+      "path": "components.portable_item.upright",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "limits": [
+     "No breakage or spill is represented for the plate stack, so tipping does not imply either consequence here."
+    ],
+    "tests": [
+     "A person at the upright plate stack can tip it.",
+     "Tipping is refused if the stack is already tipped."
+    ],
+    "semantic_bindings": [
+     "tip plate stack",
+     "stack upright state"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "right-stack",
+    "version": "1",
+    "action_kind": "right-stack",
+    "rationale": "Setting the tipped plate stack upright changes its upright state to true.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "plates": {
+      "categories": [
+       "plates",
+       "stack"
+      ],
+      "components": [
+       "portable_item"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the person is at the plate stack",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "plates",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the plate stack is tipped",
+      "left": {
+       "participant": {
+        "name": "plates",
+        "path": "components.portable_item.upright"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "plates",
+      "path": "components.portable_item.upright",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The represented state does not track individual plates or damage."
+    ],
+    "tests": [
+     "A person at a tipped plate stack can set it upright.",
+     "Righting is refused if the stack is already upright."
+    ],
+    "semantic_bindings": [
+     "right plate stack",
+     "stack upright state"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "linger",
+    "version": "1",
+    "action_kind": "linger",
+    "rationale": "Linger is represented by switching off the customer's lit laptop while the customer and coffee remain at the table; no duration field is available.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "customer"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "coffee": {
+      "categories": [
+       "drink",
+       "portable"
+      ],
+      "components": [
+       "portable_item"
+      ]
+     },
+     "laptop": {
+      "categories": [
+       "device",
+       "portable"
+      ],
+      "components": [
+       "equipment"
+      ]
+     },
+     "table": {
+      "categories": [
+       "furniture"
+      ],
+      "components": [
+       "surface"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the customer owns this coffee",
+      "left": {
+       "owner_ref": "actor"
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "coffee",
+        "path": "ownership.owner_ref"
+       }
+      }
+     },
+     {
+      "label": "the customer owns this laptop",
+      "left": {
+       "owner_ref": "actor"
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "laptop",
+        "path": "ownership.owner_ref"
+       }
+      }
+     },
+     {
+      "label": "the customer is at the table",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "table",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the coffee is on the table",
+      "left": {
+       "participant": {
+        "name": "coffee",
+        "path": "components.portable_item.on"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "action_field": "table"
+      }
+     },
+     {
+      "label": "the laptop is lit",
+      "left": {
+       "participant": {
+        "name": "laptop",
+        "path": "components.equipment.lit"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "laptop",
+      "path": "components.equipment.lit",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "limits": [
+     "The represented state has no lingering duration or customer activity field; switching off the laptop is the only distinct supported change associated with leaving it unused."
+    ],
+    "tests": [
+     "The customer can linger at the table with their coffee and lit laptop, switching the laptop off.",
+     "The action is refused if the customer does not own either item, the coffee is not at the table, or the laptop is already off."
+    ],
+    "semantic_bindings": [
+     "customer lingers with coffee",
+     "laptop no longer lit"
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "new-cafe-demand",
+    "rationale": "The ongoing cafe receives recurring demand, adding one waiting task each round.",
+    "selector": {
+     "categories": [
+      "place"
+     ],
+     "components": [
+      "cafe_state"
+     ]
+    },
+    "checks": [],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.cafe_state.waiting_tasks",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "timing": "each_round"
+   }
+  ],
+  "terminal": null
+ }
+}

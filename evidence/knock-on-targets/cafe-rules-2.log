@@ -1,0 +1,34 @@
+LLM_CLIENT_TIMEOUT_POLICY=ban (first observed in call_llm)
+TIMEOUT_DISABLED[call_llm]: timeout=60s ignored (set LLM_CLIENT_TIMEOUT_POLICY=allow to re-enable).
+20:51:10 - LiteLLM:WARNING: logging_worker.py:161 - LoggingWorker: event loop changed; carried 1 pending and revived 0 dequeued logging task(s) onto the new loop
+Traceback (most recent call last):
+  File "/home/brian/code2/world-substrate-wt-knock/scripts/generate_causal_model.py", line 583, in generate_causal_model
+    compiled = CausalModel.from_dict(value, bundle=bundle)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-knock/src/world_substrate/action_authoring.py", line 418, in from_dict
+    mechanics = tuple(
+                ^^^^^^
+  File "/home/brian/code2/world-substrate-wt-knock/src/world_substrate/action_authoring.py", line 419, in <genexpr>
+    DeclaredActionMechanic.from_dict(row, bundle=bundle) for row in raw
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-knock/src/world_substrate/action_authoring.py", line 167, in from_dict
+    checks = _checks(value["checks"], bundle, signature, selectors)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-knock/src/world_substrate/action_authoring.py", line 982, in _checks
+    left = _expr(row["left"], bundle, signature, selectors, f"checks[{index}].left")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-knock/src/world_substrate/action_authoring.py", line 893, in _expr
+    _require_selector_path(selectors[raw["name"]], path, label)
+  File "/home/brian/code2/world-substrate-wt-knock/src/world_substrate/action_authoring.py", line 839, in _require_selector_path
+    raise ActionDeclarationError(
+world_substrate.action_authoring.ActionDeclarationError: checks[1].left reads/writes components.cafe.waiting_orders, but its participant selector does not require component 'cafe'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/brian/code2/world-substrate-wt-knock/evidence/knock-on-targets/run_rules.py", line 9, in <module>
+    causal, result = generate_causal_model(bundle, trace_id=trace, world_kind="ongoing")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/world-substrate-wt-knock/scripts/generate_causal_model.py", line 614, in generate_causal_model
+    raise ValueError(f"causal proposal remained invalid after one repair: {last_error}") from last_error
+ValueError: causal proposal remained invalid after one repair: checks[1].left reads/writes components.cafe.waiting_orders, but its participant selector does not require component 'cafe'
