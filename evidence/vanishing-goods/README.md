@@ -33,3 +33,11 @@ what, status, world events), not just the counts.
   pencil2), neither check names anything; on these two live worlds each one names exactly the failure above.
 - The world writer is told that a step that makes something needs a field for it, and a move that answers a
   waiting need needs a field naming where that need is counted.
+
+## After the fix: pencil, share `iMrL2U84cLCS` (14 rounds, live at `f2f9b01`)
+
+- `pack-pencils` now adds to `packed_boxes`, and no check names a vanishing move or unanswered demand.
+- Money changes hands: `sell-pencils` was accepted 6 times. Each sale took one pencil from the shop, gave it to the
+  customer, and moved $2 from the customer's cash to the shop's (the first sale: 1000 to 998, and 1000 to 1002).
+- Still open: these sales came from the 12 pencils the shop started with. The factory made 10 pencils and packed 4
+  boxes, but `ship-pencil-boxes` was tried once and refused, so no factory pencil reached the shop.
