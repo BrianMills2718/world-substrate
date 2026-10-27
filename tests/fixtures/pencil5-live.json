@@ -1,0 +1,2356 @@
+{
+ "source": "2026-10-27 live build at 278f500, share c_SrKPfa3rpE (evidence/pencil5-trace-audit/)",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "pencil-supply-chain",
+   "label": "Pencil Supply Chain",
+   "summary": "Specialists continually make, transport, and sell pencils.",
+   "location": "united-states",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "stock",
+    "fields": [
+     {
+      "name": "logs",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "slats",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "graphite",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "clay",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "leads",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "paint",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "erasers",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "ferrules",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "pencils",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "boxes",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "packed_pencils",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "price",
+      "type": "number",
+      "default": 1
+     }
+    ]
+   },
+   {
+    "name": "business",
+    "fields": [
+     {
+      "name": "cash",
+      "type": "number",
+      "default": 1000
+     }
+    ]
+   },
+   {
+    "name": "shipment",
+    "fields": [
+     {
+      "name": "rounds_left",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "united-states",
+    "label": "United States",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "oregon",
+    "label": "Oregon",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "sri-lanka",
+    "label": "Sri Lanka",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "pennsylvania",
+    "label": "Pennsylvania",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "shops",
+    "label": "Shops across the country",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "logger",
+    "label": "Oregon logger",
+    "categories": [
+     "actor",
+     "logger"
+    ],
+    "location": "oregon",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "cedar-mill",
+    "label": "Cedar sawmill",
+    "categories": [
+     "actor",
+     "mill"
+    ],
+    "location": "oregon",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "graphite-miner",
+    "label": "Sri Lankan graphite miner",
+    "categories": [
+     "actor",
+     "miner"
+    ],
+    "location": "sri-lanka",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "clay-supplier",
+    "label": "Clay supplier",
+    "categories": [
+     "actor",
+     "supplier"
+    ],
+    "location": "sri-lanka",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 100,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "lead-maker",
+    "label": "Graphite and clay lead maker",
+    "categories": [
+     "actor",
+     "processor"
+    ],
+    "location": "sri-lanka",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "paint-supplier",
+    "label": "Paint supplier",
+    "categories": [
+     "actor",
+     "supplier"
+    ],
+    "location": "pennsylvania",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 100,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "eraser-supplier",
+    "label": "Eraser supplier",
+    "categories": [
+     "actor",
+     "supplier"
+    ],
+    "location": "pennsylvania",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 100,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "brass-supplier",
+    "label": "Brass ferrule supplier",
+    "categories": [
+     "actor",
+     "supplier"
+    ],
+    "location": "pennsylvania",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 100,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "pencil-factory",
+    "label": "Pennsylvania pencil factory",
+    "categories": [
+     "actor",
+     "factory"
+    ],
+    "location": "pennsylvania",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 100,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "truck-driver",
+    "label": "Truck driver",
+    "categories": [
+     "actor",
+     "carrier"
+    ],
+    "location": "united-states",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     },
+     "shipment": {
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "shop",
+    "label": "Pencil shop",
+    "categories": [
+     "actor",
+     "shop"
+    ],
+    "location": "shops",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "customer",
+    "label": "Customer",
+    "categories": [
+     "actor",
+     "customer"
+    ],
+    "location": "shops",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0,
+      "price": 1
+     },
+     "business": {
+      "cash": 1000
+     }
+    }
+   },
+   {
+    "id": "pencil-box",
+    "label": "Pencil box",
+    "categories": [
+     "packaging"
+    ],
+    "portable": true,
+    "owner_ref": "actor:pencil-factory",
+    "location": "pennsylvania",
+    "components": {
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 100,
+      "packed_pencils": 0,
+      "price": 1
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "cut-cedar",
+    "description": "Cut cedar logs for the mill.",
+    "fields": [
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "saw-logs",
+    "description": "Saw logs into slats and pass them to the named recipient.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "mine-graphite",
+    "description": "Mine graphite and pass it to the named recipient.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "supply-clay",
+    "description": "Pass clay to the named recipient.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "make-leads",
+    "description": "Mix graphite and clay into leads for the named recipient.",
+    "fields": [
+     {
+      "name": "graphite_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "clay_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "supply-paint",
+    "description": "Supply paint to the named recipient.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "supply-erasers",
+    "description": "Supply erasers to the named recipient.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "supply-ferrules",
+    "description": "Supply brass ferrules to the named recipient.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "assemble-pencils",
+    "description": "Glue leads into slats, paint the pencils, and add erasers and ferrules.",
+    "fields": [
+     {
+      "name": "slat_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "lead_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "paint_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "eraser_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "ferrule_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "pack-pencils",
+    "description": "Pack pencils into boxes.",
+    "fields": [
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "carry-boxes",
+    "description": "Carry packed pencils from their source to a shop.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "sell-pencils",
+    "description": "Sell pencils from the named shop to the named customer.",
+    "fields": [
+     {
+      "name": "shop",
+      "type": "entity_ref"
+     },
+     {
+      "name": "customer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "logger": {
+     "kind": "emoji",
+     "value": "\ud83e\ude93"
+    },
+    "mill": {
+     "kind": "emoji",
+     "value": "\ud83e\udeb5"
+    },
+    "miner": {
+     "kind": "emoji",
+     "value": "\u26cf\ufe0f"
+    },
+    "processor": {
+     "kind": "emoji",
+     "value": "\u270f\ufe0f"
+    },
+    "supplier": {
+     "kind": "emoji",
+     "value": "\ud83d\udce6"
+    },
+    "factory": {
+     "kind": "emoji",
+     "value": "\ud83c\udfed"
+    },
+    "carrier": {
+     "kind": "emoji",
+     "value": "\ud83d\ude9a"
+    },
+    "shop": {
+     "kind": "emoji",
+     "value": "\ud83c\udfea"
+    },
+    "customer": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1"
+    }
+   },
+   "category_assets": {
+    "logger": "logger",
+    "mill": "mill",
+    "miner": "miner",
+    "processor": "processor",
+    "supplier": "supplier",
+    "factory": "factory",
+    "carrier": "carrier",
+    "shop": "shop",
+    "customer": "customer"
+   },
+   "station_roles": {
+    "logger": "source",
+    "mill": "workstation",
+    "miner": "source",
+    "processor": "workstation",
+    "factory": "workstation",
+    "shop": "goal"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "cut-cedar",
+    "version": "1",
+    "action_kind": "cut-cedar",
+    "rationale": "Cutting cedar produces logs for the logger; no represented reserve supports a depletion effect.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "logger"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.logs",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "No tree reserve, tool, or logging cost is represented."
+    ],
+    "tests": [
+     "A positive quantity adds that many logs to the logger.",
+     "Zero or negative quantity is refused."
+    ],
+    "semantic_bindings": [
+     "quantity is the number of cedar logs cut"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "saw-logs",
+    "version": "1",
+    "action_kind": "saw-logs",
+    "rationale": "The mill consumes source logs and transfers the resulting slats to the named recipient.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "mill"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the source has enough logs",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.stock.logs"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the mill and log source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "source",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the mill and recipient are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.stock.logs",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.stock.slats",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "One log yields one slat; no conversion ratio or processing loss is represented.",
+     "Cross-location delivery is not represented."
+    ],
+    "tests": [
+     "Sufficient source logs are subtracted and equal slats are added to the recipient.",
+     "Insufficient stock or different locations are refused."
+    ],
+    "semantic_bindings": [
+     "source supplies logs",
+     "to receives slats"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "mine-graphite",
+    "version": "1",
+    "action_kind": "mine-graphite",
+    "rationale": "Mining produces graphite and passes it to the named recipient; no reserve is represented to deplete.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "miner"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the miner and recipient are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "to",
+      "path": "components.stock.graphite",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "No mine reserve is represented, so no depletion is modeled."
+    ],
+    "tests": [
+     "A positive quantity adds graphite to the recipient.",
+     "A recipient in another location is refused."
+    ],
+    "semantic_bindings": [
+     "quantity is mined graphite",
+     "to receives graphite"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "supply-clay",
+    "version": "1",
+    "action_kind": "supply-clay",
+    "rationale": "The supplier transfers represented clay stock to a co-located recipient.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "supplier"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the supplier has enough clay",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.clay"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the supplier and recipient are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.clay",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.stock.clay",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "No remote shipment or payment is described."
+    ],
+    "tests": [
+     "Sufficient clay transfers from supplier to recipient.",
+     "Insufficient clay or different locations are refused."
+    ],
+    "semantic_bindings": [
+     "the supplier is the actor",
+     "to receives clay"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "make-leads",
+    "version": "1",
+    "action_kind": "make-leads",
+    "rationale": "The lead maker consumes graphite and clay from the named sources and delivers leads to the recipient.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "processor"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "graphite_source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "clay_source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the graphite source has enough graphite",
+      "left": {
+       "participant": {
+        "name": "graphite_source",
+        "path": "components.stock.graphite"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the clay source has enough clay",
+      "left": {
+       "participant": {
+        "name": "clay_source",
+        "path": "components.stock.clay"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the maker and graphite source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "graphite_source",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the maker and clay source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "clay_source",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the maker and recipient are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "graphite_source",
+      "path": "components.stock.graphite",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "clay_source",
+      "path": "components.stock.clay",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.stock.leads",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "One unit of each ingredient is consumed per lead; no alternate recipe is represented."
+    ],
+    "tests": [
+     "Sufficient co-located ingredients are consumed and leads are delivered.",
+     "Insufficient ingredients or a location mismatch is refused."
+    ],
+    "semantic_bindings": [
+     "graphite_source provides graphite",
+     "clay_source provides clay",
+     "to receives leads"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "supply-paint",
+    "version": "1",
+    "action_kind": "supply-paint",
+    "rationale": "The supplier transfers represented paint stock to a co-located recipient.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "supplier"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the supplier has enough paint",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.paint"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the supplier and recipient are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.paint",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.stock.paint",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "No remote shipment or payment is described."
+    ],
+    "tests": [
+     "Sufficient paint transfers to the recipient.",
+     "Insufficient paint or different locations are refused."
+    ],
+    "semantic_bindings": [
+     "to receives paint"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "supply-erasers",
+    "version": "1",
+    "action_kind": "supply-erasers",
+    "rationale": "The supplier transfers represented eraser stock to a co-located recipient.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "supplier"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the supplier has enough erasers",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.erasers"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the supplier and recipient are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.erasers",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.stock.erasers",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "No remote shipment or payment is described."
+    ],
+    "tests": [
+     "Sufficient erasers transfer to the recipient.",
+     "Insufficient erasers or different locations are refused."
+    ],
+    "semantic_bindings": [
+     "to receives erasers"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "supply-ferrules",
+    "version": "1",
+    "action_kind": "supply-ferrules",
+    "rationale": "The supplier transfers represented ferrule stock to a co-located recipient.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "supplier"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the supplier has enough ferrules",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.ferrules"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the supplier and recipient are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.ferrules",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.stock.ferrules",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "No remote shipment or payment is described."
+    ],
+    "tests": [
+     "Sufficient ferrules transfer to the recipient.",
+     "Insufficient ferrules or different locations are refused."
+    ],
+    "semantic_bindings": [
+     "to receives ferrules"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "assemble-pencils",
+    "version": "1",
+    "action_kind": "assemble-pencils",
+    "rationale": "Assembly consumes one unit of each named component for each pencil and adds finished pencils to the factory.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "factory"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {
+     "slat_source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "lead_source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "paint_source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "eraser_source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "ferrule_source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the slat source has enough slats",
+      "left": {
+       "participant": {
+        "name": "slat_source",
+        "path": "components.stock.slats"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the lead source has enough leads",
+      "left": {
+       "participant": {
+        "name": "lead_source",
+        "path": "components.stock.leads"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the paint source has enough paint",
+      "left": {
+       "participant": {
+        "name": "paint_source",
+        "path": "components.stock.paint"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the eraser source has enough erasers",
+      "left": {
+       "participant": {
+        "name": "eraser_source",
+        "path": "components.stock.erasers"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the ferrule source has enough ferrules",
+      "left": {
+       "participant": {
+        "name": "ferrule_source",
+        "path": "components.stock.ferrules"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the factory and slat source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "slat_source",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the factory and lead source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "lead_source",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the factory and paint source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "paint_source",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the factory and eraser source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "eraser_source",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the factory and ferrule source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "ferrule_source",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "slat_source",
+      "path": "components.stock.slats",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "lead_source",
+      "path": "components.stock.leads",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "paint_source",
+      "path": "components.stock.paint",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "eraser_source",
+      "path": "components.stock.erasers",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "ferrule_source",
+      "path": "components.stock.ferrules",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.pencils",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "One unit of each named input is consumed per pencil; no waste or production ratio is represented.",
+     "Inputs must be locally present; no incoming shipment is modeled here."
+    ],
+    "tests": [
+     "Enough co-located inputs are consumed and pencils are added.",
+     "Any insufficient input or location mismatch is refused."
+    ],
+    "semantic_bindings": [
+     "the five named sources provide assembly materials",
+     "the factory receives pencils"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "pack-pencils",
+    "version": "1",
+    "action_kind": "pack-pencils",
+    "rationale": "Packing consumes pencils and boxes and records the packed quantity in the factory inventory.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "factory"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the factory has enough pencils",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the factory has enough boxes",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.boxes"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.pencils",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.boxes",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.packed_pencils",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "One box packs one pencil; no box capacity is represented."
+    ],
+    "tests": [
+     "Sufficient pencils and boxes become packed pencils.",
+     "Insufficient pencils or boxes are refused."
+    ],
+    "semantic_bindings": [
+     "quantity is pencils packed"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "carry-boxes",
+    "version": "1",
+    "action_kind": "carry-boxes",
+    "rationale": "The carrier starts a represented shipment and removes packed pencils from their source; arrival transfer cannot be represented with the available state.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "carrier"
+     ],
+     "components": [
+      "shipment",
+      "stock"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "to": {
+      "categories": [
+       "actor"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the source has enough packed pencils",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.stock.packed_pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the driver is available",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.shipment.rounds_left"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the driver and source are together",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "source",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.stock.packed_pencils",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.shipment.rounds_left",
+      "op": "set",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Destination inventory, carried quantity, arrival, and travel are not represented; this action does not deliver stock to the shop."
+    ],
+    "tests": [
+     "With packed pencils and an idle driver at the source, a shipment starts.",
+     "An empty source or busy driver is refused."
+    ],
+    "semantic_bindings": [
+     "source provides packed pencils",
+     "to names the intended shop"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "sell-pencils",
+    "version": "1",
+    "action_kind": "sell-pencils",
+    "rationale": "A sale transfers exactly one pencil and charges the represented price once.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "shop"
+     ],
+     "components": [
+      "stock",
+      "business"
+     ]
+    },
+    "participants": {
+     "shop": {
+      "categories": [
+       "actor",
+       "shop"
+      ],
+      "components": [
+       "stock",
+       "business"
+      ]
+     },
+     "customer": {
+      "categories": [
+       "actor",
+       "customer"
+      ],
+      "components": [
+       "stock",
+       "business"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      100
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the shop has a pencil",
+      "left": {
+       "participant": {
+        "name": "shop",
+        "path": "components.stock.pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the customer can pay the price",
+      "left": {
+       "participant": {
+        "name": "customer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "shop",
+        "path": "components.stock.price"
+       }
+      }
+     },
+     {
+      "label": "the shop and customer are together",
+      "left": {
+       "participant": {
+        "name": "shop",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "customer",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the acting shop is the named shop",
+      "left": {
+       "entity_id": "actor"
+      },
+      "op": "eq",
+      "right": {
+       "action_field": "shop"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "shop",
+      "path": "components.stock.pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.stock.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "participant": {
+        "name": "shop",
+        "path": "components.stock.price"
+       }
+      }
+     },
+     {
+      "participant": "shop",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "participant": {
+        "name": "shop",
+        "path": "components.stock.price"
+       }
+      }
+     }
+    ],
+    "limits": [
+     "Each move sells exactly one pencil regardless of quantity; repeat for further sales.",
+     "No customer demand or order state is represented."
+    ],
+    "tests": [
+     "A valid sale transfers one pencil and the exact price from customer to shop.",
+     "Insufficient stock, insufficient cash, or different locations are refused."
+    ],
+    "semantic_bindings": [
+     "shop is the selling shop",
+     "customer pays and receives the pencil"
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "supplier-restock",
+    "rationale": "Supplier inventories renew each round so finite starting stocks do not end supply activity.",
+    "selector": {
+     "categories": [
+      "actor",
+      "supplier"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the supplier clay stock is nonnegative",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.stock.clay"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.stock.clay",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "shipment-countdown",
+    "rationale": "An active shipment takes time, so its represented round count decreases once per round; arrival transfer is not represented.",
+    "selector": {
+     "categories": [
+      "actor",
+      "carrier"
+     ],
+     "components": [
+      "shipment"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the shipment is in progress",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.shipment.rounds_left"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.shipment.rounds_left",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   }
+  ],
+  "terminal": null
+ }
+}

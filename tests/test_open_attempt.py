@@ -420,3 +420,28 @@ class SpeakerSelfReferenceTests(unittest.TestCase):
         got = open_attempt.read_interpretation(self._reading("pencil-shop"), self.TEXT, self.SIGNATURES,
                                                {"pencil-shop", "customer"}, actor="customer")
         self.assertTrue(got.get("unmatched"))
+
+
+class UnstatedAmountTests(unittest.TestCase):
+    """2026-10-27 pencil c_SrKPfa3rpE: "I try to make leads from my clay and graphite" was refused in 3 rounds because
+    the reader gave quantity='' or 'unspecified', or left quantity out."""
+
+    SIGNATURES = [{"kind": "make-leads", "description": "make pencil leads",
+                   "fields": [{"name": "to", "type": "entity_ref"}, {"name": "quantity", "type": "integer"}]}]
+    TEXT = "I try to make leads from my clay and graphite."
+
+    def _read(self, rows):
+        reading = {"kind": "make-leads", "why": "", "nearest_kind": "make-leads", "fields": rows}
+        return open_attempt.read_interpretation(reading, self.TEXT, self.SIGNATURES, {"lead-maker"}, actor="lead-maker")
+
+    def test_an_amount_never_said_is_one(self):
+        me = {"field": "to", "value": "lead-maker", "quoted_span": "my"}
+        for amount in ({"field": "quantity", "value": "", "quoted_span": ""},
+                       {"field": "quantity", "value": "unspecified", "quoted_span": ""}, None):
+            got = self._read([me] + ([amount] if amount else []))
+            self.assertEqual(got.get("fields"), {"to": "lead-maker", "quantity": 1}, amount)
+
+    def test_an_amount_said_in_words_the_reader_cannot_count_is_still_refused(self):
+        got = self._read([{"field": "to", "value": "lead-maker", "quoted_span": "my"},
+                          {"field": "quantity", "value": "some", "quoted_span": "my clay"}])
+        self.assertTrue(got.get("unmatched"))

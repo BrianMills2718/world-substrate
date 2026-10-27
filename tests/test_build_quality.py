@@ -226,6 +226,7 @@ class VanishingAndUnansweredTests(unittest.TestCase):
         text = " ".join(gwb.SIZE_RULES) if isinstance(gwb.SIZE_RULES, (list, tuple)) else str(gwb.SIZE_RULES)
         self.assertIn("packed_pencils", text)
         self.assertIn("so the move can lower it", text)
+        self.assertIn("declare a buy move the receiver starts", text)
 
     def test_live_cafe_knock_over_breaks_a_fragile_thing_at_once(self):
         # A free local replay of the live cafe world: knocking a fragile thing over sets off fallen-fragile-breaks
