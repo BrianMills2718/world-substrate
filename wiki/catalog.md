@@ -151,3 +151,11 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## evidence/model-more
 
 - [Model more: money, prices, distances and delivery time (2026-10-26)](../evidence/model-more/README.md)
+
+## evidence/build-quality
+
+- [Build quality: no-op effects, circling tie-break, knock-on record (2026-10-26)](../evidence/build-quality/README.md)
+
+## evidence/physical-moves
+
+- [Physical moves, hand-offs and cash (2026-10-27)](../evidence/physical-moves/README.md)

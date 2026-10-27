@@ -1,0 +1,677 @@
+{
+  "trace_id": "model-more/bundle/fe82fa31b3754612ada1bd500c980521",
+  "cost": 0.002354425,
+  "not_modeled": [],
+  "bundle": {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {
+      "id": "pencil-supply-chain",
+      "label": "Pencil supply chain",
+      "summary": "Specialists turn cedar, graphite, clay, and small materials into boxed pencils for shops and customers.",
+      "location": "oregon",
+      "content_version": 1
+    },
+    "components": [
+      {
+        "name": "inventory",
+        "fields": [
+          {
+            "name": "logs",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "slats",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "graphite",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "clay",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "leads",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "paint",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "erasers",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "ferrules",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencils",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "boxes",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "cash",
+            "type": "number",
+            "default": 0
+          },
+          {
+            "name": "pencil_price",
+            "type": "number",
+            "default": 1
+          }
+        ]
+      },
+      {
+        "name": "worker",
+        "fields": [
+          {
+            "name": "role",
+            "type": "string",
+            "default": "worker"
+          },
+          {
+            "name": "work_queue",
+            "type": "integer",
+            "default": 1
+          }
+        ]
+      },
+      {
+        "name": "shipment",
+        "fields": [
+          {
+            "name": "boxes",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "rounds_left",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "source",
+            "type": "entity_ref",
+            "default": "pencil-factory"
+          },
+          {
+            "name": "destination",
+            "type": "entity_ref",
+            "default": "country-shop"
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "oregon",
+        "label": "Oregon forest",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "sawmill",
+        "label": "Oregon sawmill",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "sri-lanka",
+        "label": "Sri Lankan graphite mine",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "lead-works",
+        "label": "Lead works",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "pennsylvania",
+        "label": "Pennsylvania pencil factory",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "country-shop",
+        "label": "Countrywide shop",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "loggers",
+        "label": "Oregon loggers",
+        "categories": [
+          "logger",
+          "actor",
+          "workstation"
+        ],
+        "location": "oregon",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 100,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "cut cedar",
+            "work_queue": 3
+          }
+        }
+      },
+      {
+        "id": "mill",
+        "label": "Sawmill",
+        "categories": [
+          "mill",
+          "actor",
+          "workstation"
+        ],
+        "location": "sawmill",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 100,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "saw cedar into slats",
+            "work_queue": 2
+          }
+        }
+      },
+      {
+        "id": "graphite-miners",
+        "label": "Graphite miners",
+        "categories": [
+          "miner",
+          "actor",
+          "workstation"
+        ],
+        "location": "sri-lanka",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 100,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "mine graphite",
+            "work_queue": 3
+          }
+        }
+      },
+      {
+        "id": "lead-makers",
+        "label": "Lead makers",
+        "categories": [
+          "lead-maker",
+          "actor",
+          "workstation"
+        ],
+        "location": "lead-works",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 100,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "mix graphite and clay into leads",
+            "work_queue": 2
+          }
+        }
+      },
+      {
+        "id": "pencil-factory",
+        "label": "Pennsylvania pencil factory",
+        "categories": [
+          "factory",
+          "actor",
+          "workstation"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 100,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "assemble and pack pencils",
+            "work_queue": 2
+          }
+        }
+      },
+      {
+        "id": "truckers",
+        "label": "Truck delivery service",
+        "categories": [
+          "carrier",
+          "actor",
+          "workstation"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 100,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "deliver boxes by truck",
+            "work_queue": 1
+          },
+          "shipment": {
+            "boxes": 0,
+            "rounds_left": 0,
+            "source": "pencil-factory",
+            "destination": "country-shop"
+          }
+        }
+      },
+      {
+        "id": "shopkeepers",
+        "label": "Shopkeepers",
+        "categories": [
+          "shop",
+          "actor",
+          "goal"
+        ],
+        "location": "country-shop",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 500,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "sell pencils",
+            "work_queue": 4
+          }
+        }
+      },
+      {
+        "id": "customers",
+        "label": "Pencil customers",
+        "categories": [
+          "customer",
+          "actor"
+        ],
+        "location": "country-shop",
+        "components": {
+          "inventory": {
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "cash": 500,
+            "pencil_price": 1
+          },
+          "worker": {
+            "role": "buy pencils",
+            "work_queue": 4
+          }
+        }
+      },
+      {
+        "id": "cedar-stock",
+        "label": "Cedar trees",
+        "categories": [
+          "resource",
+          "source"
+        ],
+        "location": "oregon",
+        "components": {}
+      },
+      {
+        "id": "paint-stock",
+        "label": "Paint supply",
+        "categories": [
+          "material",
+          "source"
+        ],
+        "location": "pennsylvania",
+        "components": {}
+      },
+      {
+        "id": "eraser-stock",
+        "label": "Eraser supply",
+        "categories": [
+          "material",
+          "source"
+        ],
+        "location": "pennsylvania",
+        "components": {}
+      },
+      {
+        "id": "ferrule-stock",
+        "label": "Brass ferrule supply",
+        "categories": [
+          "material",
+          "source"
+        ],
+        "location": "pennsylvania",
+        "components": {}
+      },
+      {
+        "id": "box-stock",
+        "label": "Pencil box supply",
+        "categories": [
+          "packaging",
+          "source"
+        ],
+        "location": "pennsylvania",
+        "components": {}
+      },
+      {
+        "id": "clay-stock",
+        "label": "Clay supply",
+        "categories": [
+          "material",
+          "source"
+        ],
+        "location": "lead-works",
+        "components": {}
+      }
+    ],
+    "actions": [
+      {
+        "kind": "cut-cedar",
+        "description": "Cut cedar into logs.",
+        "fields": []
+      },
+      {
+        "kind": "deliver-logs-to-mill",
+        "description": "Transfer logs to the sawmill.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "saw-logs",
+        "description": "Saw logs into wooden slats.",
+        "fields": []
+      },
+      {
+        "kind": "deliver-slats-to-factory",
+        "description": "Transfer slats to the pencil factory.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "mine-graphite",
+        "description": "Mine graphite.",
+        "fields": []
+      },
+      {
+        "kind": "deliver-graphite-to-lead-works",
+        "description": "Transfer graphite to the lead works.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "supply-clay",
+        "description": "Add clay to the lead works inventory.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "make-leads",
+        "description": "Mix graphite and clay into pencil leads.",
+        "fields": []
+      },
+      {
+        "kind": "deliver-leads-to-factory",
+        "description": "Transfer leads to the pencil factory.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "supply-factory-materials",
+        "description": "Transfer paint, erasers, brass ferrules, and boxes from their supplies to the factory.",
+        "fields": [
+          {
+            "name": "paint_source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "eraser_source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "ferrule_source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "box_source",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "assemble-pencils",
+        "description": "Glue leads into slats, paint the pencils, and add erasers and brass ferrules.",
+        "fields": []
+      },
+      {
+        "kind": "pack-pencils",
+        "description": "Pack pencils into boxes.",
+        "fields": []
+      },
+      {
+        "kind": "start-box-delivery",
+        "description": "Load factory boxes for delivery to a shop.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "boxes",
+            "type": "integer"
+          },
+          {
+            "name": "rounds",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "deliver-boxes",
+        "description": "Deliver the carried boxes to the named shop.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "sell-pencils",
+        "description": "Sell pencils from a shop to a customer for the shop's listed pencil price.",
+        "fields": [
+          {
+            "name": "shop",
+            "type": "entity_ref"
+          },
+          {
+            "name": "customer",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      }
+    ],
+    "presentation": {
+      "assets": {
+        "worker": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1\u200d\ud83c\udfed"
+        },
+        "place": {
+          "kind": "emoji",
+          "value": "\ud83d\udccd"
+        },
+        "logs": {
+          "kind": "emoji",
+          "value": "\ud83e\udeb5"
+        },
+        "pencils": {
+          "kind": "emoji",
+          "value": "\u270f\ufe0f"
+        },
+        "packaging": {
+          "kind": "emoji",
+          "value": "\ud83d\udce6"
+        },
+        "customer": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1"
+        }
+      },
+      "category_assets": {
+        "logger": "worker",
+        "mill": "worker",
+        "miner": "worker",
+        "lead-maker": "worker",
+        "factory": "worker",
+        "carrier": "worker",
+        "shop": "worker",
+        "customer": "customer",
+        "place": "place",
+        "resource": "logs",
+        "packaging": "packaging"
+      },
+      "station_roles": {
+        "source": "source",
+        "workstation": "workstation",
+        "goal": "goal"
+      }
+    }
+  }
+}

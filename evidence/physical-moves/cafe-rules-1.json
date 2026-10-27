@@ -1,0 +1,1332 @@
+{
+  "trace_id": "model-more/rules/ca3c155b5c62482bb4d62a37c6331606",
+  "cost": 0.004833175,
+  "causal_model": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "stack-chairs",
+        "version": "1",
+        "action_kind": "stack-chairs",
+        "rationale": "Stacking uses loose chairs, but the available action participants cannot represent chairs added to the separate stacked-chair entity. Track only the implied reduction in loose chairs; the stacked result is not represented.",
+        "actor_selector": {
+          "categories": [
+            "actor"
+          ],
+          "components": []
+        },
+        "participants": {
+          "chairs": {
+            "categories": [
+              "chairs"
+            ],
+            "components": [
+              "stock"
+            ]
+          },
+          "tables": {
+            "categories": [
+              "surface"
+            ],
+            "components": [
+              "surface"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the chairs are in the cafe",
+            "left": {
+              "participant": {
+                "name": "chairs",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the tables are in the cafe",
+            "left": {
+              "participant": {
+                "name": "tables",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "there are loose chairs to stack",
+            "left": {
+              "participant": {
+                "name": "chairs",
+                "path": "components.stock.quantity"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "chairs",
+            "path": "components.stock.quantity",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "This tracks one chair removed from loose stock, not the number stacked on the tables; the separate stacked-chair entity is not an action participant.",
+          "No table surface condition is changed because stacking chairs does not imply that the tables become wet or dry."
+        ],
+        "tests": [
+          "From the initial state, a cafe actor can stack one chair and loose-chair quantity falls from 6 to 5.",
+          "Refuse when loose-chair quantity is zero.",
+          "Do not claim that the separate stacked-chair count changes."
+        ],
+        "semantic_bindings": [
+          "chairs: loose-chair stock",
+          "tables: cafe tables"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "carry-cups",
+        "version": "1",
+        "action_kind": "carry-cups",
+        "rationale": "The action describes carrying cups on a tray past plates, but the represented fields cannot record the tray's movement or what it carries. It does not imply consuming cups or changing the plate stack, so refuse rather than invent an effect.",
+        "actor_selector": {
+          "categories": [
+            "actor"
+          ],
+          "components": []
+        },
+        "participants": {
+          "tray": {
+            "categories": [
+              "tray"
+            ],
+            "components": [
+              "equipment"
+            ]
+          },
+          "cups": {
+            "categories": [
+              "cups"
+            ],
+            "components": [
+              "stock"
+            ]
+          },
+          "plates": {
+            "categories": [
+              "plates"
+            ],
+            "components": [
+              "stack"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the tray is in the cafe",
+            "left": {
+              "participant": {
+                "name": "tray",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the cups are in the cafe",
+            "left": {
+              "participant": {
+                "name": "cups",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the plate stack is in the cafe",
+            "left": {
+              "participant": {
+                "name": "plates",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the tray belongs to the waiter",
+            "left": {
+              "participant": {
+                "name": "tray",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "owner_ref": "actor"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "tray",
+            "path": "components.equipment.ready",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "This mechanic must be refused rather than executed: no represented field records cups loaded onto the tray or a carrying move, and changing tray readiness would invent a meaning for that field."
+        ],
+        "tests": [
+          "Refuse the action without changing any state because the model cannot represent the described carrying.",
+          "Do not subtract cup stock: carrying does not imply consuming cups.",
+          "Do not change the plate stack merely because the cups pass it."
+        ],
+        "semantic_bindings": [
+          "tray: serving tray",
+          "cups: cups on the tray",
+          "plates: tall stack of plates"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "mop-floor",
+        "version": "1",
+        "action_kind": "mop-floor",
+        "rationale": "Mopping the initially wet cafe floor can be represented as making that surface no longer wet. The mop is the cleaner's owned tool, and all participants start in the cafe.",
+        "actor_selector": {
+          "categories": [
+            "cleaner"
+          ],
+          "components": []
+        },
+        "participants": {
+          "floor": {
+            "categories": [
+              "floor"
+            ],
+            "components": [
+              "surface"
+            ]
+          },
+          "mop": {
+            "categories": [
+              "cleaning-tool"
+            ],
+            "components": [
+              "equipment"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the floor is in the cafe",
+            "left": {
+              "participant": {
+                "name": "floor",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the mop is in the cafe",
+            "left": {
+              "participant": {
+                "name": "mop",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the cleaner owns the mop",
+            "left": {
+              "participant": {
+                "name": "mop",
+                "path": "ownership.owner_ref"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "owner_ref": "actor"
+            }
+          },
+          {
+            "label": "the floor is wet",
+            "left": {
+              "participant": {
+                "name": "floor",
+                "path": "components.surface.wet"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          },
+          {
+            "label": "the mop is ready",
+            "left": {
+              "participant": {
+                "name": "mop",
+                "path": "components.equipment.ready"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "floor",
+            "path": "components.surface.wet",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "This models only a wet floor becoming dry; it does not model dirt, mop condition, or time spent.",
+          "Refuse when the floor is already dry or the mop is not ready. No mop-readiness change is inferred."
+        ],
+        "tests": [
+          "From the initial state, the cleaner can mop and the floor's wet field becomes false.",
+          "Refuse when the floor is not wet.",
+          "Refuse if the mop is not owned by the acting cleaner."
+        ],
+        "semantic_bindings": [
+          "floor: cafe floor",
+          "mop: cleaner's mop"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "place-order",
+        "version": "1",
+        "action_kind": "place-order",
+        "rationale": "Adding a coffee order is represented by increasing the waiting-order count by one. The initial cafe actor and order counter are co-located.",
+        "actor_selector": {
+          "categories": [
+            "customer"
+          ],
+          "components": []
+        },
+        "participants": {
+          "orders": {
+            "categories": [
+              "orders"
+            ],
+            "components": [
+              "order"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the waiting orders are in the cafe",
+            "left": {
+              "participant": {
+                "name": "orders",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "there is a waiting-order count to add to",
+            "left": {
+              "participant": {
+                "name": "orders",
+                "path": "components.order.waiting"
+              }
+            },
+            "op": "gte",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "orders",
+            "path": "components.order.waiting",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "The count represents waiting orders only; payment and order details are not represented.",
+          "No price or cash transfer is implied by adding an order."
+        ],
+        "tests": [
+          "From the initial state, a customer can place an order and the waiting count rises from 1 to 2.",
+          "Refuse if the orders counter is not in the cafe."
+        ],
+        "semantic_bindings": [
+          "orders: waiting coffee orders"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "prepare-coffee",
+        "version": "1",
+        "action_kind": "prepare-coffee",
+        "rationale": "The represented order counter can record that one waiting order was prepared by reducing the waiting count. The machine has no drink component in the initial state, and the action participants cannot represent a newly made coffee, so do not invent or write a coffee output.",
+        "actor_selector": {
+          "categories": [
+            "barista"
+          ],
+          "components": []
+        },
+        "participants": {
+          "orders": {
+            "categories": [
+              "orders"
+            ],
+            "components": [
+              "order"
+            ]
+          },
+          "machine": {
+            "categories": [
+              "workstation"
+            ],
+            "components": [
+              "equipment"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the waiting orders are in the cafe",
+            "left": {
+              "participant": {
+                "name": "orders",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the coffee machine is in the cafe",
+            "left": {
+              "participant": {
+                "name": "machine",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "there is a waiting order",
+            "left": {
+              "participant": {
+                "name": "orders",
+                "path": "components.order.waiting"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          },
+          {
+            "label": "the coffee machine is ready",
+            "left": {
+              "participant": {
+                "name": "machine",
+                "path": "components.equipment.ready"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "orders",
+            "path": "components.order.waiting",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "This records one order leaving the waiting count but cannot represent the prepared coffee; serving it cannot be inferred from this effect.",
+          "Ingredients, time spent, and machine wear are not represented or inferred."
+        ],
+        "tests": [
+          "With at least one waiting order and a ready machine in the cafe, preparation reduces the waiting-order count by one.",
+          "Refuse when no order is waiting.",
+          "Refuse when the machine is not ready."
+        ],
+        "semantic_bindings": [
+          "orders: waiting coffee orders",
+          "machine: coffee machine"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "serve-coffee",
+        "version": "1",
+        "action_kind": "serve-coffee",
+        "rationale": "The described action requires a prepared coffee to be carried to a customer. The customer and coffee can be checked, but the represented fields cannot record serving, delivery, or consumption; refuse rather than altering ownership or cup count without a supported meaning.",
+        "actor_selector": {
+          "categories": [
+            "actor"
+          ],
+          "components": []
+        },
+        "participants": {
+          "coffee": {
+            "categories": [
+              "coffee"
+            ],
+            "components": [
+              "drink"
+            ]
+          },
+          "customer": {
+            "categories": [
+              "customer"
+            ],
+            "components": [
+              "person"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the coffee is in the cafe",
+            "left": {
+              "participant": {
+                "name": "coffee",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the customer is in the cafe",
+            "left": {
+              "participant": {
+                "name": "customer",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the coffee has a cup",
+            "left": {
+              "participant": {
+                "name": "coffee",
+                "path": "components.drink.cups"
+              }
+            },
+            "op": "gt",
+            "right": {
+              "literal": 0
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "coffee",
+            "path": "components.drink.cups",
+            "op": "subtract",
+            "value": {
+              "literal": 1
+            }
+          }
+        ],
+        "limits": [
+          "Refuse: subtracting a cup would imply consumption, which carrying coffee to a customer does not state.",
+          "No represented field captures delivery or service, so no effect is authorized."
+        ],
+        "tests": [
+          "Refuse without changing state because delivery is not representable.",
+          "Do not treat carrying as consumption or change coffee ownership.",
+          "Refuse when no prepared cup is represented."
+        ],
+        "semantic_bindings": [
+          "coffee: prepared coffee",
+          "customer: customer"
+        ]
+      },
+      {
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "knock-stack",
+        "version": "1",
+        "action_kind": "knock-stack",
+        "rationale": "Knocking over an upright loose-object stack directly changes its represented upright state. The stack's count is retained because no breakage or loss is stated.",
+        "actor_selector": {
+          "categories": [
+            "actor"
+          ],
+          "components": []
+        },
+        "participants": {
+          "stack": {
+            "categories": [
+              "stack"
+            ],
+            "components": [
+              "stack"
+            ]
+          }
+        },
+        "parameters": {},
+        "checks": [
+          {
+            "label": "the stack is in the cafe",
+            "left": {
+              "participant": {
+                "name": "stack",
+                "path": "location.location_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "cafe"
+            }
+          },
+          {
+            "label": "the stack is upright",
+            "left": {
+              "participant": {
+                "name": "stack",
+                "path": "components.stack.upright"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "stack",
+            "path": "components.stack.upright",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          }
+        ],
+        "limits": [
+          "The description does not say the objects break, spill, or make a sound, so no such consequence is modeled.",
+          "Refuse if the stack is already down; no repeated knock effect is represented."
+        ],
+        "tests": [
+          "An upright stack in the cafe can be knocked over and its upright field becomes false.",
+          "Refuse when the stack is already not upright."
+        ],
+        "semantic_bindings": [
+          "stack: stack of loose objects"
+        ]
+      }
+    ],
+    "processes": [
+      {
+        "process_id": "new-orders-arrive",
+        "rationale": "The cafe summary says new coffee orders can keep arriving. Represent recurring demand by adding a waiting order each round.",
+        "selector": {
+          "categories": [
+            "orders"
+          ],
+          "components": [
+            "order"
+          ]
+        },
+        "checks": [],
+        "effects": [
+          {
+            "participant": "it",
+            "path": "components.order.waiting",
+            "op": "add",
+            "value": {
+              "literal": 1
+            }
+          }
+        ]
+      }
+    ],
+    "terminal": null,
+    "review": {
+      "schema_version": "world-substrate-causal-model/v0",
+      "mechanics": [
+        {
+          "mechanic_id": "stack-chairs",
+          "action_kind": "stack-chairs",
+          "rationale": "Stacking uses loose chairs, but the available action participants cannot represent chairs added to the separate stacked-chair entity. Track only the implied reduction in loose chairs; the stacked result is not represented.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<chairs>.category_ids",
+            "entities.<chairs>.components.stock",
+            "entities.<chairs>.components.stock.quantity",
+            "entities.<chairs>.location.location_id",
+            "entities.<tables>.category_ids",
+            "entities.<tables>.components.surface",
+            "entities.<tables>.location.location_id"
+          ],
+          "writes": [
+            "entities.<chairs>.components.stock.quantity",
+            "entities.<chairs>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the chairs are in the cafe",
+              "left": {
+                "participant": {
+                  "name": "chairs",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the tables are in the cafe",
+              "left": {
+                "participant": {
+                  "name": "tables",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "there are loose chairs to stack",
+              "left": {
+                "participant": {
+                  "name": "chairs",
+                  "path": "components.stock.quantity"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "chairs",
+              "path": "components.stock.quantity",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "This tracks one chair removed from loose stock, not the number stacked on the tables; the separate stacked-chair entity is not an action participant.",
+            "No table surface condition is changed because stacking chairs does not imply that the tables become wet or dry."
+          ],
+          "tests": [
+            "From the initial state, a cafe actor can stack one chair and loose-chair quantity falls from 6 to 5.",
+            "Refuse when loose-chair quantity is zero.",
+            "Do not claim that the separate stacked-chair count changes."
+          ]
+        },
+        {
+          "mechanic_id": "carry-cups",
+          "action_kind": "carry-cups",
+          "rationale": "The action describes carrying cups on a tray past plates, but the represented fields cannot record the tray's movement or what it carries. It does not imply consuming cups or changing the plate stack, so refuse rather than invent an effect.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<cups>.category_ids",
+            "entities.<cups>.components.stock",
+            "entities.<cups>.location.location_id",
+            "entities.<plates>.category_ids",
+            "entities.<plates>.components.stack",
+            "entities.<plates>.location.location_id",
+            "entities.<tray>.category_ids",
+            "entities.<tray>.components.equipment",
+            "entities.<tray>.location.location_id",
+            "entities.<tray>.ownership.owner_ref"
+          ],
+          "writes": [
+            "entities.<tray>.components.equipment.ready",
+            "entities.<tray>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the tray is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "tray",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the cups are in the cafe",
+              "left": {
+                "participant": {
+                  "name": "cups",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the plate stack is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "plates",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the tray belongs to the waiter",
+              "left": {
+                "participant": {
+                  "name": "tray",
+                  "path": "ownership.owner_ref"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "owner_ref": "actor"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "tray",
+              "path": "components.equipment.ready",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "This mechanic must be refused rather than executed: no represented field records cups loaded onto the tray or a carrying move, and changing tray readiness would invent a meaning for that field."
+          ],
+          "tests": [
+            "Refuse the action without changing any state because the model cannot represent the described carrying.",
+            "Do not subtract cup stock: carrying does not imply consuming cups.",
+            "Do not change the plate stack merely because the cups pass it."
+          ]
+        },
+        {
+          "mechanic_id": "mop-floor",
+          "action_kind": "mop-floor",
+          "rationale": "Mopping the initially wet cafe floor can be represented as making that surface no longer wet. The mop is the cleaner's owned tool, and all participants start in the cafe.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<floor>.category_ids",
+            "entities.<floor>.components.surface",
+            "entities.<floor>.components.surface.wet",
+            "entities.<floor>.location.location_id",
+            "entities.<mop>.category_ids",
+            "entities.<mop>.components.equipment",
+            "entities.<mop>.components.equipment.ready",
+            "entities.<mop>.location.location_id",
+            "entities.<mop>.ownership.owner_ref"
+          ],
+          "writes": [
+            "entities.<floor>.components.surface.wet",
+            "entities.<floor>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the floor is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "floor",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the mop is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "mop",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the cleaner owns the mop",
+              "left": {
+                "participant": {
+                  "name": "mop",
+                  "path": "ownership.owner_ref"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "owner_ref": "actor"
+              }
+            },
+            {
+              "label": "the floor is wet",
+              "left": {
+                "participant": {
+                  "name": "floor",
+                  "path": "components.surface.wet"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            },
+            {
+              "label": "the mop is ready",
+              "left": {
+                "participant": {
+                  "name": "mop",
+                  "path": "components.equipment.ready"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "floor",
+              "path": "components.surface.wet",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "This models only a wet floor becoming dry; it does not model dirt, mop condition, or time spent.",
+            "Refuse when the floor is already dry or the mop is not ready. No mop-readiness change is inferred."
+          ],
+          "tests": [
+            "From the initial state, the cleaner can mop and the floor's wet field becomes false.",
+            "Refuse when the floor is not wet.",
+            "Refuse if the mop is not owned by the acting cleaner."
+          ]
+        },
+        {
+          "mechanic_id": "place-order",
+          "action_kind": "place-order",
+          "rationale": "Adding a coffee order is represented by increasing the waiting-order count by one. The initial cafe actor and order counter are co-located.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<orders>.category_ids",
+            "entities.<orders>.components.order",
+            "entities.<orders>.components.order.waiting",
+            "entities.<orders>.location.location_id"
+          ],
+          "writes": [
+            "entities.<orders>.components.order.waiting",
+            "entities.<orders>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the waiting orders are in the cafe",
+              "left": {
+                "participant": {
+                  "name": "orders",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "there is a waiting-order count to add to",
+              "left": {
+                "participant": {
+                  "name": "orders",
+                  "path": "components.order.waiting"
+                }
+              },
+              "op": "gte",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "orders",
+              "path": "components.order.waiting",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "The count represents waiting orders only; payment and order details are not represented.",
+            "No price or cash transfer is implied by adding an order."
+          ],
+          "tests": [
+            "From the initial state, a customer can place an order and the waiting count rises from 1 to 2.",
+            "Refuse if the orders counter is not in the cafe."
+          ]
+        },
+        {
+          "mechanic_id": "prepare-coffee",
+          "action_kind": "prepare-coffee",
+          "rationale": "The represented order counter can record that one waiting order was prepared by reducing the waiting count. The machine has no drink component in the initial state, and the action participants cannot represent a newly made coffee, so do not invent or write a coffee output.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<machine>.category_ids",
+            "entities.<machine>.components.equipment",
+            "entities.<machine>.components.equipment.ready",
+            "entities.<machine>.location.location_id",
+            "entities.<orders>.category_ids",
+            "entities.<orders>.components.order",
+            "entities.<orders>.components.order.waiting",
+            "entities.<orders>.location.location_id"
+          ],
+          "writes": [
+            "entities.<orders>.components.order.waiting",
+            "entities.<orders>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the waiting orders are in the cafe",
+              "left": {
+                "participant": {
+                  "name": "orders",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the coffee machine is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "machine",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "there is a waiting order",
+              "left": {
+                "participant": {
+                  "name": "orders",
+                  "path": "components.order.waiting"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            },
+            {
+              "label": "the coffee machine is ready",
+              "left": {
+                "participant": {
+                  "name": "machine",
+                  "path": "components.equipment.ready"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "orders",
+              "path": "components.order.waiting",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "This records one order leaving the waiting count but cannot represent the prepared coffee; serving it cannot be inferred from this effect.",
+            "Ingredients, time spent, and machine wear are not represented or inferred."
+          ],
+          "tests": [
+            "With at least one waiting order and a ready machine in the cafe, preparation reduces the waiting-order count by one.",
+            "Refuse when no order is waiting.",
+            "Refuse when the machine is not ready."
+          ]
+        },
+        {
+          "mechanic_id": "serve-coffee",
+          "action_kind": "serve-coffee",
+          "rationale": "The described action requires a prepared coffee to be carried to a customer. The customer and coffee can be checked, but the represented fields cannot record serving, delivery, or consumption; refuse rather than altering ownership or cup count without a supported meaning.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<coffee>.category_ids",
+            "entities.<coffee>.components.drink",
+            "entities.<coffee>.components.drink.cups",
+            "entities.<coffee>.location.location_id",
+            "entities.<customer>.category_ids",
+            "entities.<customer>.components.person",
+            "entities.<customer>.location.location_id"
+          ],
+          "writes": [
+            "entities.<coffee>.components.drink.cups",
+            "entities.<coffee>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the coffee is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "coffee",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the customer is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "customer",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the coffee has a cup",
+              "left": {
+                "participant": {
+                  "name": "coffee",
+                  "path": "components.drink.cups"
+                }
+              },
+              "op": "gt",
+              "right": {
+                "literal": 0
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "coffee",
+              "path": "components.drink.cups",
+              "op": "subtract",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "limits": [
+            "Refuse: subtracting a cup would imply consumption, which carrying coffee to a customer does not state.",
+            "No represented field captures delivery or service, so no effect is authorized."
+          ],
+          "tests": [
+            "Refuse without changing state because delivery is not representable.",
+            "Do not treat carrying as consumption or change coffee ownership.",
+            "Refuse when no prepared cup is represented."
+          ]
+        },
+        {
+          "mechanic_id": "knock-stack",
+          "action_kind": "knock-stack",
+          "rationale": "Knocking over an upright loose-object stack directly changes its represented upright state. The stack's count is retained because no breakage or loss is stated.",
+          "reads": [
+            "entities.<actor>.category_ids",
+            "entities.<stack>.category_ids",
+            "entities.<stack>.components.stack",
+            "entities.<stack>.components.stack.upright",
+            "entities.<stack>.location.location_id"
+          ],
+          "writes": [
+            "entities.<stack>.components.stack.upright",
+            "entities.<stack>.last_cause_event_id"
+          ],
+          "checks": [
+            {
+              "label": "the stack is in the cafe",
+              "left": {
+                "participant": {
+                  "name": "stack",
+                  "path": "location.location_id"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": "cafe"
+              }
+            },
+            {
+              "label": "the stack is upright",
+              "left": {
+                "participant": {
+                  "name": "stack",
+                  "path": "components.stack.upright"
+                }
+              },
+              "op": "eq",
+              "right": {
+                "literal": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "participant": "stack",
+              "path": "components.stack.upright",
+              "op": "set",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "limits": [
+            "The description does not say the objects break, spill, or make a sound, so no such consequence is modeled.",
+            "Refuse if the stack is already down; no repeated knock effect is represented."
+          ],
+          "tests": [
+            "An upright stack in the cafe can be knocked over and its upright field becomes false.",
+            "Refuse when the stack is already not upright."
+          ]
+        }
+      ],
+      "processes": [
+        {
+          "process_id": "new-orders-arrive",
+          "rationale": "The cafe summary says new coffee orders can keep arriving. Represent recurring demand by adding a waiting order each round.",
+          "selector": {
+            "categories": [
+              "orders"
+            ],
+            "components": [
+              "order"
+            ]
+          },
+          "checks": [],
+          "effects": [
+            {
+              "participant": "it",
+              "path": "components.order.waiting",
+              "op": "add",
+              "value": {
+                "literal": 1
+              }
+            }
+          ],
+          "writes": [
+            "entities.<it>.components.order.waiting",
+            "entities.<it>.last_cause_event_id"
+          ]
+        }
+      ],
+      "terminal": null
+    }
+  }
+}

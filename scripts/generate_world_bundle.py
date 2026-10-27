@@ -39,15 +39,30 @@ SIZE_RULES = [
     "Represent the state the actions change (e.g. stage, count, location) as component fields with typed defaults.",
     # Brian, 2026-10-26, on an I, Pencil world that left out revenue, prices, distances, delivery times and
     # packaging: "why are we leaving these out". Each is ordinary represented state.
-    "Represent money and value the description mentions: a number field for each actor's or business's cash, "
+    "Represent money and value the description mentions or implies (any selling, buying, paying, wages or "
+    "prices): a number field for each actor's or business's cash, "
     "and a price field on what is sold; a sale or purchase action moves the goods one way and the money the "
     "other. Represent feelings or relationships (mood, trust, hunger) as number fields when they change what "
     "people do.",
+    # 2026-10-27 pencil1 live build (share Y-OQRAo16ekn): every specialist had a make step but none could pass
+    # its output on, so the mill asked the logger for logs and the lead works asked the miner for graphite for
+    # six rounds, matched no action, and the chain never got past cutting and mining; only the shop and the
+    # customer held cash.
+    "Wherever one actor's output is another actor's input, declare an action that moves it from the one to "
+    "the other (deliver, sell to, buy from), with entity_ref fields naming both, so goods can travel the whole "
+    "chain; give every actor that buys a starting cash amount large enough for several purchases.",
     "Represent anything that takes several rounds (a delivery on the road, a shipment, a journey, a "
     "deadline) as an integer field counting the rounds left, set by the action that starts it, so a rule "
     "process can count it down each round and finish it at zero; a longer distance is a larger starting count.",
     "Represent packaging, containers and small materials the description names as their own entities or "
     "counted stock rather than dropping them.",
+    # 2026-10-26 (evidence/build-quality/README.md, #260 airfield build): three rule attempts wrote no same-moment
+    # knock-on process because no action could knock, drop or spill anything, so nothing could set one off.
+    "Besides their job steps, give the actors at least one ordinary physical move that can upset the things "
+    "around them, whenever the world has loose objects (stacks, cups, trays, lamps, crates): knocking over, "
+    "dropping, pushing, pouring or breaking, each with an entity_ref field naming the thing it acts on. Represent where things rest and what state "
+    "they are in as fields (an entity_ref 'on' or 'under', booleans such as upright, wet, broken, lit), so a "
+    "rule can make one change set off another at once (a tipped cup wets what is under it).",
     "Follow world_kind_rule: a task world must be able to finish (represented state from which 'done' can be read); ongoing and open worlds must have state that keeps changing.",
 ]
 

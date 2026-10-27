@@ -1,0 +1,584 @@
+{
+  "trace_id": "model-more/bundle/2c33f98b6f6e42429219126954dff3ff",
+  "cost": 0.001952695,
+  "not_modeled": [
+    "Real clock time"
+  ],
+  "bundle": {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {
+      "id": "pencil-supply-chain",
+      "label": "Pencil Supply Chain",
+      "summary": "Specialists continually turn cedar, graphite, clay, and small materials into pencils that shops sell to customers.",
+      "location": "oregon",
+      "content_version": 1
+    },
+    "components": [
+      {
+        "name": "inventory",
+        "fields": [
+          {
+            "name": "cedar_logs",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "cedar_slats",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "graphite",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "clay",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencil_leads",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "brass_ferrules",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "erasers",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "paint",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencils",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "boxes",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "boxed_pencils",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "cash",
+            "type": "number",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "producer",
+        "fields": [
+          {
+            "name": "output_counter",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "factory",
+        "fields": [
+          {
+            "name": "output_counter",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencil_price",
+            "type": "number",
+            "default": 1
+          }
+        ]
+      },
+      {
+        "name": "shop",
+        "fields": [
+          {
+            "name": "pencil_price",
+            "type": "number",
+            "default": 2
+          }
+        ]
+      },
+      {
+        "name": "customer",
+        "fields": [
+          {
+            "name": "pencils_bought",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "carrier",
+        "fields": [
+          {
+            "name": "cedar_logs",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "cedar_slats",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencil_leads",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "boxed_pencils",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "rounds_left",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "place",
+        "fields": [
+          {
+            "name": "rounds_waiting",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "oregon",
+        "label": "Oregon",
+        "categories": [
+          "place"
+        ],
+        "components": {
+          "place": {
+            "rounds_waiting": 0
+          }
+        }
+      },
+      {
+        "id": "sri-lanka",
+        "label": "Sri Lanka",
+        "categories": [
+          "place"
+        ],
+        "components": {
+          "place": {
+            "rounds_waiting": 0
+          }
+        }
+      },
+      {
+        "id": "pennsylvania",
+        "label": "Pennsylvania",
+        "categories": [
+          "place"
+        ],
+        "components": {
+          "place": {
+            "rounds_waiting": 0
+          }
+        }
+      },
+      {
+        "id": "shops-location",
+        "label": "Shops across the country",
+        "categories": [
+          "place"
+        ],
+        "components": {
+          "place": {
+            "rounds_waiting": 0
+          }
+        }
+      },
+      {
+        "id": "loggers",
+        "label": "Oregon loggers",
+        "categories": [
+          "logger",
+          "actor"
+        ],
+        "location": "oregon",
+        "components": {
+          "inventory": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "pencil_leads": 0,
+            "brass_ferrules": 0,
+            "erasers": 0,
+            "paint": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "boxed_pencils": 0,
+            "cash": 100
+          },
+          "producer": {
+            "output_counter": 0
+          }
+        }
+      },
+      {
+        "id": "sawmill",
+        "label": "Oregon sawmill",
+        "categories": [
+          "sawmill",
+          "actor"
+        ],
+        "location": "oregon",
+        "components": {
+          "inventory": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "pencil_leads": 0,
+            "brass_ferrules": 0,
+            "erasers": 0,
+            "paint": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "boxed_pencils": 0,
+            "cash": 100
+          }
+        }
+      },
+      {
+        "id": "miners",
+        "label": "Sri Lanka graphite miners",
+        "categories": [
+          "miner",
+          "actor"
+        ],
+        "location": "sri-lanka",
+        "components": {
+          "inventory": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "pencil_leads": 0,
+            "brass_ferrules": 0,
+            "erasers": 0,
+            "paint": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "boxed_pencils": 0,
+            "cash": 100
+          },
+          "producer": {
+            "output_counter": 0
+          }
+        }
+      },
+      {
+        "id": "lead-maker",
+        "label": "Sri Lanka lead maker",
+        "categories": [
+          "lead_maker",
+          "actor"
+        ],
+        "location": "sri-lanka",
+        "components": {
+          "inventory": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "pencil_leads": 0,
+            "brass_ferrules": 0,
+            "erasers": 0,
+            "paint": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "boxed_pencils": 0,
+            "cash": 100
+          }
+        }
+      },
+      {
+        "id": "pencil-factory",
+        "label": "Pennsylvania pencil factory",
+        "categories": [
+          "factory",
+          "actor"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "inventory": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "pencil_leads": 0,
+            "brass_ferrules": 0,
+            "erasers": 0,
+            "paint": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "boxed_pencils": 0,
+            "cash": 100
+          },
+          "factory": {
+            "output_counter": 0,
+            "pencil_price": 1
+          }
+        }
+      },
+      {
+        "id": "truckers",
+        "label": "Pencil delivery truckers",
+        "categories": [
+          "carrier",
+          "actor"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "carrier": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "pencil_leads": 0,
+            "boxed_pencils": 0,
+            "rounds_left": 0
+          }
+        }
+      },
+      {
+        "id": "shops",
+        "label": "Pencil shops",
+        "categories": [
+          "shop",
+          "actor"
+        ],
+        "location": "shops-location",
+        "components": {
+          "inventory": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "pencil_leads": 0,
+            "brass_ferrules": 0,
+            "erasers": 0,
+            "paint": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "boxed_pencils": 0,
+            "cash": 100
+          },
+          "shop": {
+            "pencil_price": 2
+          }
+        }
+      },
+      {
+        "id": "customers",
+        "label": "Pencil customers",
+        "categories": [
+          "customer",
+          "actor"
+        ],
+        "location": "shops-location",
+        "components": {
+          "inventory": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "pencil_leads": 0,
+            "brass_ferrules": 0,
+            "erasers": 0,
+            "paint": 0,
+            "pencils": 0,
+            "boxes": 0,
+            "boxed_pencils": 0,
+            "cash": 100
+          },
+          "customer": {
+            "pencils_bought": 0
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "kind": "cut-cedar",
+        "description": "Cut cedar logs in Oregon.",
+        "fields": []
+      },
+      {
+        "kind": "saw-slats",
+        "description": "Saw cedar logs into pencil slats.",
+        "fields": []
+      },
+      {
+        "kind": "mine-graphite",
+        "description": "Mine graphite in Sri Lanka.",
+        "fields": []
+      },
+      {
+        "kind": "make-leads",
+        "description": "Mix graphite with clay and form pencil leads.",
+        "fields": []
+      },
+      {
+        "kind": "assemble-pencils",
+        "description": "Glue leads into slats, paint the pencils, and fit erasers and brass ferrules.",
+        "fields": []
+      },
+      {
+        "kind": "pack-boxes",
+        "description": "Pack finished pencils into boxes.",
+        "fields": []
+      },
+      {
+        "kind": "carry-logs",
+        "description": "Carry cedar logs from the loggers to the sawmill.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "carry-slats",
+        "description": "Carry cedar slats to the Pennsylvania factory.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "carry-leads",
+        "description": "Carry pencil leads to the Pennsylvania factory.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "carry-boxes",
+        "description": "Carry boxed pencils from the factory to shops.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          }
+        ]
+      },
+      {
+        "kind": "sell-pencils",
+        "description": "Sell pencils from a shop to a customer for the shop's listed pencil price.",
+        "fields": [
+          {
+            "name": "shop",
+            "type": "entity_ref"
+          },
+          {
+            "name": "customer",
+            "type": "entity_ref"
+          }
+        ]
+      }
+    ],
+    "presentation": {
+      "assets": {
+        "logger": {
+          "kind": "emoji",
+          "value": "\ud83e\ude93"
+        },
+        "sawmill": {
+          "kind": "emoji",
+          "value": "\ud83e\ude9a"
+        },
+        "miner": {
+          "kind": "emoji",
+          "value": "\u26cf\ufe0f"
+        },
+        "lead_maker": {
+          "kind": "emoji",
+          "value": "\u270f\ufe0f"
+        },
+        "factory": {
+          "kind": "emoji",
+          "value": "\ud83c\udfed"
+        },
+        "carrier": {
+          "kind": "emoji",
+          "value": "\ud83d\ude9a"
+        },
+        "shop": {
+          "kind": "emoji",
+          "value": "\ud83c\udfea"
+        },
+        "customer": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1"
+        }
+      },
+      "category_assets": {
+        "logger": "logger",
+        "sawmill": "sawmill",
+        "miner": "miner",
+        "lead_maker": "lead_maker",
+        "factory": "factory",
+        "carrier": "carrier",
+        "shop": "shop",
+        "customer": "customer"
+      },
+      "station_roles": {
+        "loggers": "source",
+        "sawmill": "workstation",
+        "miners": "source",
+        "lead-maker": "workstation",
+        "pencil-factory": "workstation",
+        "shops": "goal"
+      }
+    }
+  }
+}
