@@ -58,6 +58,15 @@ SIZE_RULES = [
     "Wherever one actor's output is another actor's input, declare an action that moves it from the one to "
     "the other (deliver, sell to, buy from), with entity_ref fields naming both, so goods can travel the whole "
     "chain; give every actor that buys a starting cash amount large enough for several purchases.",
+    # 2026-10-27 pencil5 live build (share c_SrKPfa3rpE): every hand-over was a give move (supply-clay, saw-logs
+    # ... to), so the lead-maker and the factory tried to "buy 100 graphite" in 28 rounds and matched nothing, and
+    # every move required the two sides to be together although each business sat in its own place.
+    "When the actors hold cash, goods change hands by purchase: for each good one actor needs from another, "
+    "declare a buy move the receiver starts (buy graphite from the miner) with entity_ref fields for the buyer "
+    "and seller and a quantity, which moves the goods to the buyer and the seller's price times the quantity "
+    "to the seller, and refuses when the buyer cannot pay or the seller has too few. A hand-over between "
+    "actors in different places must not require them to be together: it is an order sent from afar, and "
+    "the goods arrive by a delivery that counts down rounds.",
     "Represent anything that takes several rounds (a delivery on the road, a shipment, a journey, a "
     "deadline) as an integer field counting the rounds left, set by the action that starts it, so a rule "
     "process can count it down each round and finish it at zero; a longer distance is a larger starting count.",
