@@ -60,11 +60,13 @@ SIZE_RULES = [
     "chain; give every actor that buys a starting cash amount large enough for several purchases.",
     # 2026-10-27 pencil5 live build (share c_SrKPfa3rpE): every hand-over was a give move (supply-clay, saw-logs
     # ... to), so the lead-maker and the factory tried to "buy 100 graphite" in 28 rounds and matched nothing, and
-    # every move required the two sides to be together although each business sat in its own place.
+    # every move required the two sides to be together although each business sat in its own place. pencil
+    # czt5uoGw5t3L asked for price times quantity, which rules cannot write: 8 clay cost the price of one.
     "When the actors hold cash, goods change hands by purchase: for each good one actor needs from another, "
     "declare a buy move the receiver starts (buy graphite from the miner) with entity_ref fields for the buyer "
-    "and seller and a quantity, which moves the goods to the buyer and the seller's price times the quantity "
-    "to the seller, and refuses when the buyer cannot pay or the seller has too few. A hand-over between "
+    "and seller and a quantity, which moves the goods to the buyer and the seller's price for the order to the "
+    "seller (rules cannot multiply, so a price is per order), and refuses when the buyer cannot pay or the "
+    "seller has too few. A hand-over between "
     "actors in different places must not require them to be together: it is an order sent from afar, and "
     "the goods arrive by a delivery that counts down rounds.",
     "Represent anything that takes several rounds (a delivery on the road, a shipment, a journey, a "

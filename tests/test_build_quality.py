@@ -293,3 +293,31 @@ class DeadEndStockTests(unittest.TestCase):
                      "garden-luna-r3", "pencil-c4-run17", "pencil3-live"):
             world = self._world(name)
             self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]), [], name)
+
+
+class NeverTogetherTests(unittest.TestCase):
+    """2026-10-27 pencil czt5uoGw5t3L: buying leads and slats required the factory to be with suppliers on other
+    continents, and nothing moved anyone, so the factory waited from round 6 to round 17."""
+
+    @staticmethod
+    def _world(name):
+        return json.loads((Path(__file__).parent / "fixtures" / f"{name}.json").read_text())
+
+    def test_live_pencil_names_the_buys_across_places(self):
+        world = self._world("pencil7-live")
+        self.assertEqual(service._never_together(world["bundle"], world["causal_model"]), [
+            "buy-leads needs actor and seller in one place: pencil-factory is in pennsylvania, lead-maker in sri-lanka",
+            "buy-slats needs actor and seller in one place: pencil-factory is in pennsylvania, sawmill in oregon"])
+
+    def test_a_truck_parked_where_no_source_is(self):
+        world = self._world("pencil5-live")
+        self.assertEqual(service._never_together(world["bundle"], world["causal_model"]),
+                         ["carry-boxes needs actor and source in one place: truck-driver is in united-states, logger in oregon"])
+
+    def test_worlds_whose_parties_meet_are_not_named(self):
+        # a place counts as where it is (cafe), things with no place match each other (firefighting), and a buy whose
+        # seller is in the same place passes (pencil7's buy-logs)
+        for name in ("airfield-s1-live", "c1r18_waltzman_world", "cafe1-live", "cafe2-live", "firefighting-luna-r1",
+                     "garden-luna-r3", "pencil-c4-run17", "pencil2-live", "pencil3-live", "pencil4-live"):
+            world = self._world(name)
+            self.assertEqual(service._never_together(world["bundle"], world["causal_model"]), [], name)

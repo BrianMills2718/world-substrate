@@ -55,6 +55,8 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         rules = _context(bundle)["authority_rules"]
         self.assertTrue(any("actor's location.location_id" in rule for rule in rules))
         self.assertTrue(any("there is no 'or'" in rule for rule in rules))
+        # pencil czt5uoGw5t3L: a purchase across continents is an order from afar, not a meeting
+        self.assertTrue(any("sent from afar" in rule and "no same-place check" in rule for rule in rules))
 
     def test_rules_writer_can_declare_knock_on_processes(self):
         # open_attempt S2: a process may run immediately; the context says when to choose it.

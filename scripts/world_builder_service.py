@@ -996,6 +996,49 @@ def _dead_end_stock(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]
     return sorted(found)
 
 
+def _never_together(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]:
+    """'kind needs a and b in one place: a in x, b in y' for each move that requires two roles to share a place no
+    pair of their entities ever shares, in a world where no move or process changes where anything is.
+
+    2026-10-27 pencil build (share czt5uoGw5t3L): buy-leads and buy-slats required the factory in Pennsylvania to be
+    with the lead-maker in Sri Lanka and the sawmill in Oregon, and nothing moved anyone, so the factory waited from
+    round 6 to round 17 and no pencil was made. The dry run listed both as never offered without saying why.
+    """
+    mechanics = causal.get("mechanics") or []
+    moved = [e for m in [*mechanics, *(causal.get("processes") or [])] for e in m.get("effects") or []
+             if e.get("path") == "location.location_id"]
+    if moved:
+        return []
+    entities = bundle.get("entities") or []
+
+    def fits(selector: Any, entity: dict[str, Any]) -> bool:
+        selector = selector or {}
+        return (set(selector.get("categories") or []) <= set(entity.get("categories") or [])
+                and set(selector.get("components") or []) <= set(entity.get("components") or {}))
+
+    def where(entity: dict[str, Any]) -> Any:
+        # The engine puts a place with no location at itself (cafe1: the barista "is at the cafe").
+        return entity.get("location") or (entity.get("id") if "place" in (entity.get("categories") or []) else None)
+
+    found: set[str] = set()
+    for mechanic in mechanics:
+        roles = {"actor": mechanic.get("actor_selector"), **(mechanic.get("participants") or {})}
+        for check in mechanic.get("checks") or []:
+            sides = [(check.get(side) or {}).get("participant") or {} for side in ("left", "right")]
+            if check.get("op") != "eq" or any(side.get("path") != "location.location_id" for side in sides):
+                continue
+            first, second = (side.get("name") for side in sides)
+            if first not in roles or second not in roles or first == second:
+                continue
+            pairs = [(a, b) for a in entities if fits(roles[first], a) for b in entities
+                     if fits(roles[second], b) and b is not a]
+            if pairs and not any(where(a) == where(b) for a, b in pairs):
+                a, b = pairs[0]
+                found.add(f"{mechanic.get('action_kind', '?')} needs {first} and {second} in one place: "
+                          f"{a.get('id', '?')} is in {where(a)}, {b.get('id', '?')} in {where(b)}")
+    return sorted(found)
+
+
 def _vanishing_moves(causal: dict[str, Any]) -> list[str]:
     """Action kinds that use up two or more different things and make or change nothing: what they use disappears.
 
@@ -1557,9 +1600,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 vanishing = _vanishing_moves(candidate)
                                 missing_parts = _missing_components(bundle, candidate)
                                 dead_ends = _dead_end_stock(bundle, candidate)
+                                apart = _never_together(bundle, candidate)
                                 unanswered = _unanswered_demand(candidate)
                                 score = (3 if not idle and not circling and not never and not conjuring_found
-                                         and not moving_found and not vanishing and not unanswered and not dead_ends else 2) if alive else 1
+                                         and not moving_found and not vanishing and not unanswered and not dead_ends and not apart else 2) if alive else 1
                                 guidance = "" if alive else (
                                     f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                     f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -1645,7 +1689,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                         "pile up, so the step that needs them never gets them: " + "; ".join(dead_ends)
                                         + ". Give someone a move that carries each one to the place that uses it."
                                     )
+                                if apart:
+                                    guidance += (
+                                        " These moves require two parties to be in one place, but they are always "
+                                        "apart and nothing moves anyone, so the moves can never happen: "
+                                        + "; ".join(apart) + ". A trade between places is an order sent from afar: drop "
+                                        "the same-place check, and let the goods arrive by a delivery that counts down "
+                                        "rounds."
+                                    )
                                 result_row["dead_end_stock"] = dead_ends
+                                result_row["never_together"] = apart
                                 result_row["missing_components"] = missing_parts
                                 result_row["vanishing_moves"] = vanishing
                                 result_row["unanswered_demand"] = unanswered
@@ -1690,6 +1743,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 "check is what refuses them. Make sure the ordinary things the description lets "
                                 "people do have actions someone can take from the start."
                             )
+                        # Why an attempt was kept must be readable from the build record: pencil czt5uoGw5t3L kept
+                        # attempt 4 over attempt 3, whose test run assembled pencils, and nothing recorded either score.
+                        result_row["score"] = score
+                        result_row["processes"] = len(candidate_compiled.processes)
                         attempts.append(result_row)
                         self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
                         rank = _attempt_rank(score, result_row)

@@ -437,7 +437,9 @@ class UnstatedAmountTests(unittest.TestCase):
     def test_an_amount_never_said_is_one(self):
         me = {"field": "to", "value": "lead-maker", "quoted_span": "my"}
         for amount in ({"field": "quantity", "value": "", "quoted_span": ""},
-                       {"field": "quantity", "value": "unspecified", "quoted_span": ""}, None):
+                       {"field": "quantity", "value": "unspecified", "quoted_span": ""},
+                       # the reader prompt's own instruction for no amount: pencil czt5uoGw5t3L refused this 5 times
+                       {"field": "quantity", "value": "1", "quoted_span": ""}, None):
             got = self._read([me] + ([amount] if amount else []))
             self.assertEqual(got.get("fields"), {"to": "lead-maker", "quantity": 1}, amount)
 
