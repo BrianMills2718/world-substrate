@@ -432,7 +432,9 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             # #259 pencil build (evidence/model-more/): the world had a price but a sale moved no money.
             "When a move exchanges something for a price and both sides have a represented amount of money, the "
             "same move subtracts the price from the payer and adds it to the payee, with a check that the payer "
-            "has at least the price.",
+            "has at least the price. Effects cannot multiply, so a priced move hands over exactly one unit (add "
+            "and subtract the literal 1, ignoring any quantity field) and charges the price once; selling more takes "
+            "more moves. (2026-10-26 pencil build NZD33sh3iX29: a sale of several pencils charged for one.)",
             "A process acts on each matching entity `it`. When one physical change moves or changes a linked entity "
             "too (a driver riding in a vehicle, a hospital whose bed a dying patient frees), declare that entity in "
             "the process's participants (link owner_of_it, owned_by_it, co_located, or ref:<component>.<field>) and "

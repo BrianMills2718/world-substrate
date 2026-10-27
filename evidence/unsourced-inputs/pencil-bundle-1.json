@@ -1,0 +1,569 @@
+{
+  "trace_id": "model-more/bundle/b9da714e15e74ce2b56694d2e1df22fc",
+  "cost": 0.0020095,
+  "not_modeled": [
+    "The factory inputs of paint, erasers, brass ferrules, and boxes have no represented suppliers or starting stock."
+  ],
+  "bundle": {
+    "schema_version": "world-substrate-authoring-bundle/v0",
+    "world": {
+      "id": "pencil-supply-chain",
+      "label": "Pencil supply chain",
+      "summary": "Specialists continually gather materials, make pencils, and supply shops and customers.",
+      "location": "oregon",
+      "content_version": 1
+    },
+    "components": [
+      {
+        "name": "worker",
+        "fields": [
+          {
+            "name": "cash",
+            "type": "number",
+            "default": 1000
+          }
+        ]
+      },
+      {
+        "name": "stock",
+        "fields": [
+          {
+            "name": "cedar_logs",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "cedar_slats",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "graphite",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "clay",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "leads",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "paint",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "erasers",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "ferrules",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "pencils",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "boxes",
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "name": "price",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "number",
+            "default": 1
+          }
+        ]
+      },
+      {
+        "name": "order",
+        "fields": [
+          {
+            "name": "waiting_boxes",
+            "type": "integer",
+            "default": 10
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "oregon",
+        "label": "Oregon",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "sri-lanka",
+        "label": "Sri Lanka",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "pennsylvania",
+        "label": "Pennsylvania",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "shops",
+        "label": "Shops across the country",
+        "categories": [
+          "place"
+        ],
+        "components": {}
+      },
+      {
+        "id": "logger",
+        "label": "Oregon logger",
+        "categories": [
+          "actor",
+          "logger"
+        ],
+        "location": "oregon",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      },
+      {
+        "id": "mill",
+        "label": "Cedar mill",
+        "categories": [
+          "actor",
+          "mill"
+        ],
+        "location": "oregon",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      },
+      {
+        "id": "graphite-mine",
+        "label": "Sri Lankan graphite mine",
+        "categories": [
+          "actor",
+          "mine"
+        ],
+        "location": "sri-lanka",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      },
+      {
+        "id": "clay-works",
+        "label": "Clay works",
+        "categories": [
+          "actor",
+          "supplier"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      },
+      {
+        "id": "lead-maker",
+        "label": "Pencil lead maker",
+        "categories": [
+          "actor",
+          "processor"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      },
+      {
+        "id": "pencil-factory",
+        "label": "Pennsylvania pencil factory",
+        "categories": [
+          "actor",
+          "factory"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      },
+      {
+        "id": "trucker",
+        "label": "Pencil delivery trucker",
+        "categories": [
+          "actor",
+          "carrier"
+        ],
+        "location": "pennsylvania",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          }
+        }
+      },
+      {
+        "id": "shop",
+        "label": "Pencil shop",
+        "categories": [
+          "actor",
+          "shop"
+        ],
+        "location": "shops",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "price": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "id": "customers",
+        "label": "Pencil customers",
+        "categories": [
+          "actor",
+          "customers"
+        ],
+        "location": "shops",
+        "components": {
+          "worker": {
+            "cash": 1000
+          },
+          "stock": {
+            "cedar_logs": 0,
+            "cedar_slats": 0,
+            "graphite": 0,
+            "clay": 0,
+            "leads": 0,
+            "paint": 0,
+            "erasers": 0,
+            "ferrules": 0,
+            "pencils": 0,
+            "boxes": 0
+          },
+          "order": {
+            "waiting_boxes": 10
+          }
+        }
+      },
+      {
+        "id": "box-of-pencils",
+        "label": "Box of pencils",
+        "categories": [
+          "packaging"
+        ],
+        "portable": true,
+        "owner_ref": "place:pennsylvania",
+        "location": "pennsylvania",
+        "components": {
+          "price": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "kind": "cut-cedar",
+        "description": "Cut cedar logs for the mill.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "saw-cedar",
+        "description": "Saw cedar logs into slats.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "mine-graphite",
+        "description": "Mine graphite for pencil leads.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "supply-clay",
+        "description": "Supply clay to the pencil lead maker.",
+        "fields": [
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "mix-leads",
+        "description": "Mix graphite and clay into pencil leads.",
+        "fields": [
+          {
+            "name": "graphite_source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "clay_source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "make-and-pack-pencils",
+        "description": "Glue leads into cedar slats, paint and fit the pencils with erasers and brass ferrules, then pack them into boxes.",
+        "fields": [
+          {
+            "name": "slat_source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "lead_source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "deliver-boxes",
+        "description": "Carry boxes of pencils from the factory to a shop.",
+        "fields": [
+          {
+            "name": "source",
+            "type": "entity_ref"
+          },
+          {
+            "name": "to",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          },
+          {
+            "name": "rounds_left",
+            "type": "integer"
+          }
+        ]
+      },
+      {
+        "kind": "sell-pencils",
+        "description": "Sell pencils from a shop to customers.",
+        "fields": [
+          {
+            "name": "shop",
+            "type": "entity_ref"
+          },
+          {
+            "name": "customer",
+            "type": "entity_ref"
+          },
+          {
+            "name": "quantity",
+            "type": "integer"
+          }
+        ]
+      }
+    ],
+    "presentation": {
+      "assets": {
+        "actor": {
+          "kind": "emoji",
+          "value": "\ud83e\uddd1"
+        },
+        "place": {
+          "kind": "emoji",
+          "value": "\ud83d\udccd"
+        },
+        "wood": {
+          "kind": "emoji",
+          "value": "\ud83e\udeb5"
+        },
+        "graphite": {
+          "kind": "emoji",
+          "value": "\u26ab"
+        },
+        "pencil": {
+          "kind": "emoji",
+          "value": "\u270f\ufe0f"
+        },
+        "box": {
+          "kind": "emoji",
+          "value": "\ud83d\udce6"
+        }
+      },
+      "category_assets": {
+        "actor": "actor",
+        "place": "place",
+        "logger": "wood",
+        "mine": "graphite",
+        "packaging": "box",
+        "shop": "pencil"
+      },
+      "station_roles": {
+        "logger": "source",
+        "mine": "source",
+        "factory": "workstation",
+        "shop": "goal"
+      }
+    }
+  }
+}

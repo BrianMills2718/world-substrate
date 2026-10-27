@@ -48,6 +48,10 @@ SIZE_RULES = [
     # its output on, so the mill asked the logger for logs and the lead works asked the miner for graphite for
     # six rounds, matched no action, and the chain never got past cutting and mining; only the shop and the
     # customer held cash.
+    # 2026-10-26 pencil build (share NZD33sh3iX29): clay, paint, erasers and ferrules had no maker and started at 0.
+    "Every material a step uses must come from somewhere in the world: an actor who makes, mines or supplies it "
+    "(a clay pit, a paint supplier) or a starting stock large enough for many rounds; never leave an input that "
+    "nobody makes and nobody holds.",
     "Wherever one actor's output is another actor's input, declare an action that moves it from the one to "
     "the other (deliver, sell to, buy from), with entity_ref fields naming both, so goods can travel the whole "
     "chain; give every actor that buys a starting cash amount large enough for several purchases.",
