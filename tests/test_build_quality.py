@@ -179,3 +179,69 @@ class UnsourcedInputTests(unittest.TestCase):
         world = json.loads((Path(__file__).parent / "fixtures" / "pencil2-live.json").read_text())
         self.assertEqual(service._unsourced_inputs(world["bundle"], world["causal_model"]),
                          ["clay", "erasers", "ferrules", "paint"])
+
+
+class VanishingAndUnansweredTests(unittest.TestCase):
+    """2026-10-26 live builds at 809984e: pencil 4VmgkXIVWn4p packed pencils into nothing; cafe eFmPomcnsyQq let
+    orders pile up because serving never lowered them."""
+
+    @staticmethod
+    def _world(name):
+        return json.loads((Path(__file__).parent / "fixtures" / f"{name}.json").read_text())
+
+    def test_vanishing_needs_two_things_used_and_nothing_made(self):
+        causal = {"mechanics": [
+            {"action_kind": "pack", "effects": [{"path": "a.x", "op": "subtract"}, {"path": "a.y", "op": "subtract"}]},
+            {"action_kind": "drink", "effects": [{"path": "a.coffee", "op": "subtract"}]},
+            {"action_kind": "make", "effects": [{"path": "a.x", "op": "subtract"}, {"path": "a.y", "op": "subtract"},
+                                                {"path": "a.z", "op": "add"}]},
+        ]}
+        self.assertEqual(service._vanishing_moves(causal), ["pack"])
+
+    def test_unanswered_demand_only_counts_each_round_growth_nothing_lowers(self):
+        causal = {
+            "mechanics": [{"action_kind": "serve", "effects": [{"path": "components.p.served", "op": "subtract"}]}],
+            "processes": [
+                {"timing": "each_round", "effects": [{"path": "components.p.orders", "op": "add"},
+                                                      {"path": "components.p.served", "op": "add"}]},
+                {"timing": "immediately", "effects": [{"path": "components.p.mess", "op": "add"}]},
+            ],
+        }
+        self.assertEqual(service._unanswered_demand(causal), ["orders"])
+
+    def test_live_worlds_name_what_broke_them(self):
+        self.assertEqual(service._vanishing_moves(self._world("pencil3-live")["causal_model"]), ["pack-pencils"])
+        self.assertEqual(service._unanswered_demand(self._world("cafe2-live")["causal_model"]), ["orders_waiting"])
+
+    def test_saved_worlds_are_not_named(self):
+        for name in ("airfield-s1-live", "c1r18_waltzman_world", "cafe1-live", "firefighting-luna-r1",
+                     "garden-luna-r3", "pencil-c4-run17", "pencil2-live"):
+            world = self._world(name)
+            causal = world.get("causal_model") or world.get("causal") or {}
+            self.assertEqual(service._vanishing_moves(causal), [], name)
+            self.assertEqual(service._unanswered_demand(causal), [], name)
+
+    def test_world_writer_asks_for_made_and_counted_fields(self):
+        import scripts.generate_world_bundle as gwb
+        text = " ".join(gwb.SIZE_RULES) if isinstance(gwb.SIZE_RULES, (list, tuple)) else str(gwb.SIZE_RULES)
+        self.assertIn("packed_pencils", text)
+        self.assertIn("so the move can lower it", text)
+
+    def test_live_cafe_knock_over_breaks_a_fragile_thing_at_once(self):
+        # A free local replay of the live cafe world: knocking a fragile thing over sets off fallen-fragile-breaks
+        # in the same moment (Decision 009). No person in the live run chose to knock anything over.
+        from scripts.run_authored_world import build_engine
+        world = self._world("cafe2-live")
+        engine, _, _ = build_engine(world["bundle"], world["causal_model"])
+        actors = [e["id"] for e in world["bundle"]["entities"] if "actor" in (e.get("categories") or [])]
+        fragile = {e["id"] for e in world["bundle"]["entities"] if "fragile" in (e.get("categories") or [])}
+        for actor in actors:
+            offered = [o for o in engine.discover(actor, kind="knock-over")["available"]
+                       if o["action"].get("object") in fragile]
+            if offered:
+                result = engine.submit(dict(offered[0]["action"], controller="test"))
+                break
+        else:
+            self.fail("no actor was offered knock-over on a fragile thing")
+        self.assertEqual(result["status"], "accepted")
+        self.assertIn("fallen-fragile-breaks", [e["rule_id"] for e in result["reactions"]])

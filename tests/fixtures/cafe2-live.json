@@ -1,0 +1,1338 @@
+{
+ "source": "2026-10-26 live owner build at 809984e, share eFmPomcnsyQq",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "cafe-closing-time",
+   "label": "Cafe at Closing Time",
+   "summary": "Cafe staff keep clearing the busy cafe while customers and new work remain part of the scene.",
+   "location": "cafe",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "place_state",
+    "fields": [
+     {
+      "name": "lights_on",
+      "type": "boolean",
+      "default": true
+     },
+     {
+      "name": "chairs_waiting",
+      "type": "integer",
+      "default": 6
+     },
+     {
+      "name": "cups_waiting",
+      "type": "integer",
+      "default": 4
+     },
+     {
+      "name": "orders_waiting",
+      "type": "integer",
+      "default": 2
+     },
+     {
+      "name": "coffee_stock",
+      "type": "integer",
+      "default": 12
+     }
+    ]
+   },
+   {
+    "name": "person",
+    "fields": [
+     {
+      "name": "role",
+      "type": "string",
+      "default": "customer"
+     },
+     {
+      "name": "energy",
+      "type": "integer",
+      "default": 8
+     },
+     {
+      "name": "coffee",
+      "type": "integer",
+      "default": 1
+     }
+    ]
+   },
+   {
+    "name": "loose_object",
+    "fields": [
+     {
+      "name": "on",
+      "type": "entity_ref",
+      "default": "floor"
+     },
+     {
+      "name": "upright",
+      "type": "boolean",
+      "default": true
+     },
+     {
+      "name": "wet",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "broken",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "spilled",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "tray",
+    "fields": [
+     {
+      "name": "cups",
+      "type": "integer",
+      "default": 4
+     },
+     {
+      "name": "full",
+      "type": "boolean",
+      "default": true
+     }
+    ]
+   },
+   {
+    "name": "floor_state",
+    "fields": [
+     {
+      "name": "wet",
+      "type": "boolean",
+      "default": true
+     }
+    ]
+   },
+   {
+    "name": "mop_state",
+    "fields": [
+     {
+      "name": "wet",
+      "type": "boolean",
+      "default": true
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "cafe",
+    "label": "Cafe",
+    "categories": [
+     "place",
+     "workplace"
+    ],
+    "components": {
+     "place_state": {
+      "lights_on": true,
+      "chairs_waiting": 6,
+      "cups_waiting": 4,
+      "orders_waiting": 2,
+      "coffee_stock": 12
+     }
+    }
+   },
+   {
+    "id": "barista",
+    "label": "Barista",
+    "categories": [
+     "actor",
+     "barista"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "barista",
+      "energy": 7,
+      "coffee": 0
+     }
+    }
+   },
+   {
+    "id": "waiter",
+    "label": "Waiter",
+    "categories": [
+     "actor",
+     "waiter"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "waiter",
+      "energy": 7,
+      "coffee": 0
+     }
+    }
+   },
+   {
+    "id": "cleaner",
+    "label": "Cleaner",
+    "categories": [
+     "actor",
+     "cleaner"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "cleaner",
+      "energy": 7,
+      "coffee": 0
+     }
+    }
+   },
+   {
+    "id": "customer",
+    "label": "Customer",
+    "categories": [
+     "actor",
+     "customer"
+    ],
+    "location": "cafe",
+    "components": {
+     "person": {
+      "role": "customer",
+      "energy": 6,
+      "coffee": 1
+     }
+    }
+   },
+   {
+    "id": "table",
+    "label": "Cafe table",
+    "categories": [
+     "furniture",
+     "surface"
+    ],
+    "location": "cafe",
+    "components": {}
+   },
+   {
+    "id": "floor",
+    "label": "Cafe floor",
+    "categories": [
+     "surface",
+     "floor"
+    ],
+    "location": "cafe",
+    "components": {
+     "floor_state": {
+      "wet": true
+     }
+    }
+   },
+   {
+    "id": "chair-stack",
+    "label": "Stack of chairs",
+    "categories": [
+     "furniture",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "place:cafe",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "table",
+      "upright": true,
+      "wet": false,
+      "broken": false,
+      "spilled": false
+     }
+    }
+   },
+   {
+    "id": "plate-stack",
+    "label": "Tall stack of plates",
+    "categories": [
+     "dishware",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "place:cafe",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "table",
+      "upright": true,
+      "wet": false,
+      "broken": false,
+      "spilled": false
+     }
+    }
+   },
+   {
+    "id": "tray",
+    "label": "Tray of cups",
+    "categories": [
+     "dishware",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "actor:waiter",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "waiter",
+      "upright": true,
+      "wet": false,
+      "broken": false,
+      "spilled": false
+     },
+     "tray": {
+      "cups": 4,
+      "full": true
+     }
+    }
+   },
+   {
+    "id": "cup",
+    "label": "Coffee cup",
+    "categories": [
+     "dishware",
+     "container",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "actor:customer",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "table",
+      "upright": true,
+      "wet": false,
+      "broken": false,
+      "spilled": false
+     }
+    }
+   },
+   {
+    "id": "laptop",
+    "label": "Laptop",
+    "categories": [
+     "device",
+     "fragile",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "actor:customer",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "table",
+      "upright": true,
+      "wet": false,
+      "broken": false,
+      "spilled": false
+     }
+    }
+   },
+   {
+    "id": "mop",
+    "label": "Mop",
+    "categories": [
+     "cleaning_tool",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "actor:cleaner",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "floor",
+      "upright": true,
+      "wet": true,
+      "broken": false,
+      "spilled": false
+     },
+     "mop_state": {
+      "wet": true
+     }
+    }
+   },
+   {
+    "id": "coffee-pot",
+    "label": "Coffee pot",
+    "categories": [
+     "supply",
+     "container",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "place:cafe",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "table",
+      "upright": true,
+      "wet": false,
+      "broken": false,
+      "spilled": false
+     }
+    }
+   },
+   {
+    "id": "napkin-holder",
+    "label": "Napkin holder",
+    "categories": [
+     "supply",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "place:cafe",
+    "location": "cafe",
+    "components": {
+     "loose_object": {
+      "on": "table",
+      "upright": true,
+      "wet": false,
+      "broken": false,
+      "spilled": false
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "stack-chair",
+    "description": "Barista stacks one waiting chair on the cafe table.",
+    "fields": []
+   },
+   {
+    "kind": "brew-coffee",
+    "description": "Barista makes coffee from the cafe's available coffee stock for a customer.",
+    "fields": [
+     {
+      "name": "customer",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "serve-order",
+    "description": "Waiter serves one waiting coffee order to a customer using the tray.",
+    "fields": [
+     {
+      "name": "customer",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "carry-tray",
+    "description": "Waiter carries the tray of cups to a cafe surface.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "set-tray-upright",
+    "description": "Waiter sets the tray of cups upright on a cafe surface.",
+    "fields": [
+     {
+      "name": "to",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "mop-floor",
+    "description": "Cleaner mops a wet area of the cafe floor.",
+    "fields": []
+   },
+   {
+    "kind": "drink-coffee",
+    "description": "Customer drinks coffee from their cup.",
+    "fields": []
+   },
+   {
+    "kind": "knock-over",
+    "description": "An actor knocks over a loose object in the cafe.",
+    "fields": [
+     {
+      "name": "object",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "drop-object",
+    "description": "An actor drops a portable, upright object onto the cafe floor.",
+    "fields": [
+     {
+      "name": "object",
+      "type": "entity_ref"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "barista": {
+     "kind": "emoji",
+     "value": "\u2615"
+    },
+    "waiter": {
+     "kind": "emoji",
+     "value": "\ud83c\udf7d\ufe0f"
+    },
+    "cleaner": {
+     "kind": "emoji",
+     "value": "\ud83e\uddf9"
+    },
+    "customer": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1"
+    },
+    "dishware": {
+     "kind": "emoji",
+     "value": "\ud83e\udd63"
+    },
+    "furniture": {
+     "kind": "emoji",
+     "value": "\ud83e\ude91"
+    },
+    "surface": {
+     "kind": "emoji",
+     "value": "\ud83d\udfeb"
+    },
+    "device": {
+     "kind": "emoji",
+     "value": "\ud83d\udcbb"
+    },
+    "cleaning_tool": {
+     "kind": "emoji",
+     "value": "\ud83e\uddf9"
+    },
+    "supply": {
+     "kind": "emoji",
+     "value": "\ud83e\uddfb"
+    }
+   },
+   "category_assets": {
+    "barista": "barista",
+    "waiter": "waiter",
+    "cleaner": "cleaner",
+    "customer": "customer",
+    "dishware": "dishware",
+    "furniture": "furniture",
+    "surface": "surface",
+    "device": "device",
+    "cleaning_tool": "cleaning_tool",
+    "supply": "supply"
+   },
+   "station_roles": {
+    "table": "workstation",
+    "floor": "surface"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "stack-chair",
+    "version": "1",
+    "action_kind": "stack-chair",
+    "rationale": "Stacking the chair is physical effort, represented by the barista's energy; the chair count belongs to the cafe, which is not an action participant.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "barista"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the barista is a barista",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "barista"
+      }
+     },
+     {
+      "label": "the barista has energy",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.energy"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.energy",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The action cannot change the cafe's waiting-chair count because the cafe is not an action participant.",
+     "The chair's placement cannot be changed through the available participants."
+    ],
+    "tests": [
+     "A barista with positive energy can stack a chair and loses one energy.",
+     "An actor whose role is not barista is refused."
+    ],
+    "semantic_bindings": [
+     "Stacking requires effort."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "brew-coffee",
+    "version": "1",
+    "action_kind": "brew-coffee",
+    "rationale": "Making coffee for the named customer can add one coffee to that customer's represented coffee count; available cafe stock cannot be checked or reduced because the cafe is not an action participant.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "barista"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "customer": {
+      "categories": [
+       "actor",
+       "customer"
+      ],
+      "components": [
+       "person"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the barista is a barista",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "barista"
+      }
+     },
+     {
+      "label": "the customer is a customer",
+      "left": {
+       "participant": {
+        "name": "customer",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "customer"
+      }
+     },
+     {
+      "label": "the barista and customer are in the same place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "customer",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "customer",
+      "path": "components.person.coffee",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The cafe's coffee stock and waiting orders cannot be checked or changed because the cafe is not an action participant.",
+     "Coffee quantity is represented only as the customer's coffee count; the action cannot represent a cup being placed on the tray."
+    ],
+    "tests": [
+     "A barista can add one coffee to a customer in the same place.",
+     "A non-customer or a customer in another place is refused."
+    ],
+    "semantic_bindings": [
+     "Coffee made for the customer is represented as one additional customer coffee."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "serve-order",
+    "version": "1",
+    "action_kind": "serve-order",
+    "rationale": "Serving the named customer is represented conservatively as adding one coffee to that customer's count; the waiting-order count and tray are unavailable as participants.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "waiter"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "customer": {
+      "categories": [
+       "actor",
+       "customer"
+      ],
+      "components": [
+       "person"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the waiter is a waiter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "waiter"
+      }
+     },
+     {
+      "label": "the customer is a customer",
+      "left": {
+       "participant": {
+        "name": "customer",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "customer"
+      }
+     },
+     {
+      "label": "the waiter and customer are in the same place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "customer",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "customer",
+      "path": "components.person.coffee",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The action cannot verify a waiting order or tray contents, or decrement cafe orders, because those entities are not participants.",
+     "This mechanic does not establish cup ownership or delivery location."
+    ],
+    "tests": [
+     "A waiter can serve one coffee to a customer in the same place.",
+     "A non-waiter or a customer in another place is refused."
+    ],
+    "semantic_bindings": [
+     "Serving one coffee is represented by one additional coffee for the named customer."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "carry-tray",
+    "version": "1",
+    "action_kind": "carry-tray",
+    "rationale": "Carrying the tray to a surface is effort; the destination is checked to be in the same place, but no represented participant field can record the tray's new placement.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "waiter"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "surface"
+      ],
+      "components": []
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the waiter is a waiter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "waiter"
+      }
+     },
+     {
+      "label": "the waiter and surface are in the same place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the waiter has energy",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.energy"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.energy",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The tray is not an action participant, so its location or placement cannot be changed.",
+     "No destination-specific surface state is represented."
+    ],
+    "tests": [
+     "A waiter with energy can carry the tray to a surface in the same place and loses one energy.",
+     "A non-waiter or a surface in another place is refused."
+    ],
+    "semantic_bindings": [
+     "Carrying the tray requires effort."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "set-tray-upright",
+    "version": "1",
+    "action_kind": "set-tray-upright",
+    "rationale": "The action names the tray's upright state, but the tray is not an action participant; changing the actor or destination instead would not represent setting the tray upright.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "waiter"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {
+     "to": {
+      "categories": [
+       "surface"
+      ],
+      "components": []
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the waiter is a waiter",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "waiter"
+      }
+     },
+     {
+      "label": "the waiter and surface are in the same place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "to",
+        "path": "location.location_id"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.energy",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The tray is not a participant, so its upright state cannot be changed; this mechanic refuses to claim that the tray was set upright.",
+     "The required energy effect is not warranted by the description, so this action should be refused by the governing implementation rather than applying the placeholder effect."
+    ],
+    "tests": [
+     "The action must be refused because no permitted participant can represent the tray's upright state."
+    ],
+    "semantic_bindings": [
+     "The described direct change is the tray's upright state, unavailable to this action's participants."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "mop-floor",
+    "version": "1",
+    "action_kind": "mop-floor",
+    "rationale": "Mopping changes the wet floor and mop, but neither is an action participant; changing the cleaner's energy would not represent the stated action.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "cleaner"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the cleaner is a cleaner",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "cleaner"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.energy",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The floor and mop are not participants, so their wet states cannot be changed; this action must be refused rather than applying an unrelated energy change."
+    ],
+    "tests": [
+     "The action must be refused because its described floor and mop state changes are not available as effects."
+    ],
+    "semantic_bindings": [
+     "Mopping directly changes the floor and mop wetness, neither of which is writable here."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "drink-coffee",
+    "version": "1",
+    "action_kind": "drink-coffee",
+    "rationale": "Drinking consumes one coffee from the acting customer's represented coffee count.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "customer"
+     ],
+     "components": [
+      "person"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the customer is a customer",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.role"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "customer"
+      }
+     },
+     {
+      "label": "the customer has coffee",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.person.coffee"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.person.coffee",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The action cannot change energy or represent the cup's contents because no cup participant is available."
+    ],
+    "tests": [
+     "A customer with coffee drinks one and has one fewer coffee.",
+     "A customer with no coffee is refused."
+    ],
+    "semantic_bindings": [
+     "Drinking consumes one represented coffee."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "knock-over",
+    "version": "1",
+    "action_kind": "knock-over",
+    "rationale": "Knocking over a loose object directly makes it not upright; the represented immediate consequences are handled by processes.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": []
+    },
+    "participants": {
+     "object": {
+      "categories": [
+       "loose_object"
+      ],
+      "components": [
+       "loose_object"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the object is in the actor's place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "object",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the object is upright",
+      "left": {
+       "participant": {
+        "name": "object",
+        "path": "components.loose_object.upright"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "object",
+      "path": "components.loose_object.upright",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "limits": [
+     "Objects already not upright are refused; repeated knocking over is not represented."
+    ],
+    "tests": [
+     "A nearby upright loose object becomes not upright.",
+     "An object in another place or already not upright is refused."
+    ],
+    "semantic_bindings": [
+     "Knocking over changes upright to false."
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "drop-object",
+    "version": "1",
+    "action_kind": "drop-object",
+    "rationale": "Dropping the portable upright object sets it on the cafe floor and makes it not upright; falling-object consequences follow immediately through processes.",
+    "actor_selector": {
+     "categories": [
+      "actor"
+     ],
+     "components": []
+    },
+    "participants": {
+     "object": {
+      "categories": [
+       "loose_object"
+      ],
+      "components": [
+       "loose_object"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the object is in the actor's place",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "object",
+        "path": "location.location_id"
+       }
+      }
+     },
+     {
+      "label": "the object is portable",
+      "left": {
+       "participant": {
+        "name": "object",
+        "path": "portable.portable"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "the object is upright",
+      "left": {
+       "participant": {
+        "name": "object",
+        "path": "components.loose_object.upright"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "object",
+      "path": "components.loose_object.on",
+      "op": "set",
+      "value": {
+       "literal": "floor"
+      }
+     },
+     {
+      "participant": "object",
+      "path": "components.loose_object.upright",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ],
+    "limits": [
+     "Only objects in the actor's place that are represented as portable and upright can be dropped.",
+     "The action does not change ownership."
+    ],
+    "tests": [
+     "A portable upright object in the actor's place is placed on the floor and becomes not upright.",
+     "A nonportable, already fallen, or elsewhere object is refused."
+    ],
+    "semantic_bindings": [
+     "Dropping sets the object's support to the cafe floor and its upright state to false."
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "fallen-fragile-breaks",
+    "rationale": "A fragile loose object that falls breaks immediately, as represented by its category and loose-object state.",
+    "timing": "immediately",
+    "selector": {
+     "categories": [
+      "fragile",
+      "loose_object"
+     ],
+     "components": [
+      "loose_object"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the fragile object has fallen",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.loose_object.upright"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "the fragile object is not broken",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.loose_object.broken"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.loose_object.broken",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "coffee-orders-arrive",
+    "rationale": "New customer demand arrives each round, keeping the represented cafe order stream ongoing.",
+    "timing": "each_round",
+    "selector": {
+     "categories": [
+      "place",
+      "workplace"
+     ],
+     "components": [
+      "place_state"
+     ]
+    },
+    "checks": [],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.place_state.orders_waiting",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   }
+  ],
+  "terminal": null
+ }
+}

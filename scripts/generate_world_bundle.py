@@ -52,6 +52,9 @@ SIZE_RULES = [
     "Every material a step uses must come from somewhere in the world: an actor who makes, mines or supplies it "
     "(a clay pit, a paint supplier) or a starting stock large enough for many rounds; never leave an input that "
     "nobody makes and nobody holds.",
+    "Every step that turns things into something else needs a field for what it makes (packing pencils needs a "
+    "packed_pencils count, and the next move carries packed pencils), and every move that answers a waiting need "
+    "(serving an order, treating a patient) needs a field naming where that need is counted, so the move can lower it.",
     "Wherever one actor's output is another actor's input, declare an action that moves it from the one to "
     "the other (deliver, sell to, buy from), with entity_ref fields naming both, so goods can travel the whole "
     "chain; give every actor that buys a starting cash amount large enough for several purchases.",

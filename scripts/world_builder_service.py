@@ -935,6 +935,35 @@ def _knock_on_processes(causal: dict[str, Any]) -> list[str]:
     return [p.get("process_id", "") for p in causal.get("processes") or [] if p.get("timing") == "immediately"]
 
 
+def _vanishing_moves(causal: dict[str, Any]) -> list[str]:
+    """Action kinds that use up two or more different things and make or change nothing: what they use disappears.
+
+    2026-10-26 pencil build (share 4VmgkXIVWn4p): pack-pencils took one pencil and one box and added nothing, though
+    its rationale said it recorded a packed pencil, so every pencil the maker packed was gone and none ever reached
+    the shop. Using up one thing alone (drinking a coffee) is ordinary consumption and is not named.
+    """
+    found: list[str] = []
+    for mechanic in causal.get("mechanics") or []:
+        effects = mechanic.get("effects") or []
+        taken = {e.get("path") for e in effects if e.get("op") == "subtract"}
+        if len(taken) >= 2 and not any(e.get("op") in ("add", "set") for e in effects):
+            found.append(mechanic.get("action_kind", "?"))
+    return sorted(found)
+
+
+def _unanswered_demand(causal: dict[str, Any]) -> list[str]:
+    """Fields a process adds to every round that no move ever lowers, so they only grow.
+
+    2026-10-26 cafe build (share eFmPomcnsyQq): orders_waiting rose by one each round and serve-order never took
+    one off, because its action named only the customer ("the waiting-order count ... unavailable as participants").
+    """
+    grows = {e.get("path") for p in causal.get("processes") or [] if p.get("timing") == "each_round"
+             for e in p.get("effects") or [] if e.get("op") == "add"}
+    lowered = {e.get("path") for m in causal.get("mechanics") or [] for e in m.get("effects") or []
+               if e.get("op") in ("subtract", "set")}
+    return sorted(path.rsplit(".", 1)[-1] for path in grows - lowered if path)
+
+
 def _second_source_processes(causal: dict[str, Any]) -> list[str]:
     """'process adds field (already added from nothing by action)': a raw good with two sources.
 
@@ -1464,8 +1493,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 # Advice on a retry and a tie-break only: watering a plant flips a field too, and
                                 # nothing need follow from it, so this never fails an attempt by itself.
                                 unfollowed = [] if _knock_on_processes(candidate) else _state_flips(candidate)
+                                vanishing = _vanishing_moves(candidate)
+                                unanswered = _unanswered_demand(candidate)
                                 score = (3 if not idle and not circling and not never and not conjuring_found
-                                         and not moving_found else 2) if alive else 1
+                                         and not moving_found and not vanishing and not unanswered else 2) if alive else 1
                                 guidance = "" if alive else (
                                     f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                     f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -1525,6 +1556,22 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                         "spills; a spill wets what it rests on; a fragile thing that falls breaks), each as "
                                         "a process with timing immediately. If nothing physically follows, leave it."
                                     )
+                                if vanishing:
+                                    guidance += (
+                                        " These moves use up several things and make nothing, so what they use simply "
+                                        "disappears: " + ", ".join(vanishing) + ". If the move turns them into something "
+                                        "(a packed box, a meal, a finished part), add one to the field that holds what it "
+                                        "makes, and let the next step's checks use that field."
+                                    )
+                                if unanswered:
+                                    guidance += (
+                                        " These grow every round and no move ever lowers them: " + ", ".join(unanswered)
+                                        + ". Let the move that answers them (serving an order, treating a patient) take "
+                                        "one off; if that move cannot reach the thing that holds them, it needs a participant "
+                                        "naming it."
+                                    )
+                                result_row["vanishing_moves"] = vanishing
+                                result_row["unanswered_demand"] = unanswered
                                 result_row["unfollowed_moves"] = unfollowed
                                 result_row["conjuring_processes"] = conjuring_found
                                 result_row["moving_processes"] = moving_found
