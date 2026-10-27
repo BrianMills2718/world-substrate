@@ -266,3 +266,29 @@ class MissingComponentTests(unittest.TestCase):
         truck_never_ships = {"never_offered": ["ship"], "idle_actors": ["truck"],
                              "missing_components": ["ship needs shipment"]}
         self.assertGreater(service._attempt_rank(2, everyone_acts), service._attempt_rank(2, truck_never_ships))
+
+
+class DeadEndStockTests(unittest.TestCase):
+    """2026-10-27 pencil iMrL2U84cLCS: the supplier's goods piled up and nothing carried them to the factory."""
+
+    @staticmethod
+    def _world(name):
+        return json.loads((Path(__file__).parent / "fixtures" / f"{name}.json").read_text())
+
+    def test_live_pencil_names_what_piles_up_at_the_supplier(self):
+        world = self._world("pencil4-live")
+        self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]), [
+            f"{good} piles up at materials-supplier (supply-materials)"
+            for good in ("boxes", "clay", "erasers", "ferrules", "paint")])
+
+    def test_pencils_nobody_carries_from_the_factory(self):
+        world = self._world("pencil2-live")
+        self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]),
+                         ["pencils piles up at pencil-factory (assemble-pencils)"])
+
+    def test_tallies_hand_overs_and_bought_goods_are_not_named(self):
+        # flights flown, times a concern was raised, pencils a customer bought
+        for name in ("airfield-s1-live", "c1r18_waltzman_world", "cafe1-live", "cafe2-live", "firefighting-luna-r1",
+                     "garden-luna-r3", "pencil-c4-run17", "pencil3-live"):
+            world = self._world(name)
+            self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]), [], name)

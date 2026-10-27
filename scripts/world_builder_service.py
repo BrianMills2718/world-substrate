@@ -955,6 +955,47 @@ def _missing_components(bundle: dict[str, Any], causal: dict[str, Any]) -> list[
     return sorted(found)
 
 
+def _dead_end_stock(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]:
+    """'good piles up at entity (move)' where a move makes or supplies a good that some step uses up, at an entity no
+    move or process ever takes it from.
+
+    2026-10-27 pencil build (share iMrL2U84cLCS): the materials supplier added clay, paint, erasers, ferrules and
+    boxes to its own stock every few rounds and nothing carried them on, so the factory ran down its starting stock.
+    Read from selectors against the world's entities, because every business keeps goods in the same component.
+    Hand-overs (a move that takes and gives the same good) and tallies nothing ever uses up are not named.
+    """
+    entities = bundle.get("entities") or []
+    mechanics = causal.get("mechanics") or []
+
+    def fits(selector: Any, entity: dict[str, Any]) -> bool:
+        selector = selector or {}
+        return (set(selector.get("categories") or []) <= set(entity.get("categories") or [])
+                and set(selector.get("components") or []) <= set(entity.get("components") or {}))
+
+    def role(mechanic: dict[str, Any], name: Any) -> Any:
+        return mechanic.get("actor_selector") if name == "actor" else (mechanic.get("participants") or {}).get(name)
+
+    takers = [(e.get("path"), role(m, e.get("participant")))
+              for m in mechanics for e in m.get("effects") or [] if e.get("op") == "subtract"]
+    takers += [(e.get("path"), p.get("selector")) for p in causal.get("processes") or []
+               for e in p.get("effects") or [] if e.get("op") == "subtract" and e.get("participant") == "it"]
+    used = {str(path).rsplit(".", 1)[-1] for path, _ in takers}
+    found: set[str] = set()
+    for mechanic in mechanics:
+        effects = mechanic.get("effects") or []
+        handed = {str(e.get("path")).rsplit(".", 1)[-1] for e in effects if e.get("op") == "subtract"}
+        for effect in effects:
+            path = str(effect.get("path") or "")
+            good = path.rsplit(".", 1)[-1]
+            if effect.get("op") != "add" or not path.startswith("components.") or good in handed or good not in used:
+                continue
+            for entity in entities:
+                if fits(role(mechanic, effect.get("participant")), entity) and not any(
+                        taken == path and fits(selector, entity) for taken, selector in takers):
+                    found.add(f"{good} piles up at {entity.get('id', '?')} ({mechanic.get('action_kind', '?')})")
+    return sorted(found)
+
+
 def _vanishing_moves(causal: dict[str, Any]) -> list[str]:
     """Action kinds that use up two or more different things and make or change nothing: what they use disappears.
 
@@ -1515,9 +1556,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 unfollowed = [] if _knock_on_processes(candidate) else _state_flips(candidate)
                                 vanishing = _vanishing_moves(candidate)
                                 missing_parts = _missing_components(bundle, candidate)
+                                dead_ends = _dead_end_stock(bundle, candidate)
                                 unanswered = _unanswered_demand(candidate)
                                 score = (3 if not idle and not circling and not never and not conjuring_found
-                                         and not moving_found and not vanishing and not unanswered else 2) if alive else 1
+                                         and not moving_found and not vanishing and not unanswered and not dead_ends else 2) if alive else 1
                                 guidance = "" if alive else (
                                     f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                     f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -1597,6 +1639,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                         "happen: " + "; ".join(missing_parts) + ". Use components the entities have, or "
                                         "give the entities that component."
                                     )
+                                if dead_ends:
+                                    guidance += (
+                                        " These goods are made or supplied but no move ever takes them from where they "
+                                        "pile up, so the step that needs them never gets them: " + "; ".join(dead_ends)
+                                        + ". Give someone a move that carries each one to the place that uses it."
+                                    )
+                                result_row["dead_end_stock"] = dead_ends
                                 result_row["missing_components"] = missing_parts
                                 result_row["vanishing_moves"] = vanishing
                                 result_row["unanswered_demand"] = unanswered
