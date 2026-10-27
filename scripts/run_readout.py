@@ -80,11 +80,21 @@ def _change_text(changes: list[dict[str, Any]], limit: int = 400) -> str:
 
 
 def evidence_events(rounds: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Every recorded event of a run that changed the world, in order: people's moves and the world's own changes."""
+    """Every recorded event of a run that changed the world, in order: people's moves and the world's own changes,
+    plus each refused step with what stopped it."""
     out: list[dict[str, Any]] = []
     for row in rounds:
         turn = row.get("turn")
         for actor, move in sorted((row.get("actors") or {}).items()):
+            if move.get("status") == "precondition_failed" and move.get("event_id"):
+                # A refused step is the evidence that work was held up (2026-10-27 pencil iMrL2U84cLCS: the
+                # truck's refused delivery was never shown, so the readout said nothing was ever held up).
+                out.append({"event_id": move["event_id"], "round": turn, "by": actor,
+                            "move": (move.get("did") or move.get("wanted") or {}).get("kind"),
+                            "changed": "nothing: refused because " + _short(
+                                "; ".join(map(str, move.get("refused_because") or [])) or "a check failed", 300),
+                            "said": str(move.get("said") or "")[:MAX_TEXT], "paths": []})
+                continue
             if move.get("status") != "accepted" or not move.get("event_id") or not move.get("changes"):
                 continue
             out.append({"event_id": move["event_id"], "round": turn, "by": actor,

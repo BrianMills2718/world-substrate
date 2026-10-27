@@ -245,3 +245,24 @@ class VanishingAndUnansweredTests(unittest.TestCase):
             self.fail("no actor was offered knock-over on a fragile thing")
         self.assertEqual(result["status"], "accepted")
         self.assertIn("fallen-fragile-breaks", [e["rule_id"] for e in result["reactions"]])
+
+
+class MissingComponentTests(unittest.TestCase):
+    """2026-10-27 pencil build iMrL2U84cLCS: shipping needed a `shipment` component no entity had."""
+
+    def test_live_pencil_names_the_part_nobody_has(self):
+        world = json.loads((Path(__file__).parent / "fixtures" / "pencil4-live.json").read_text())
+        self.assertEqual(service._missing_components(world["bundle"], world["causal_model"]),
+                         ["ship-pencil-boxes needs shipment"])
+
+    def test_saved_worlds_are_not_named(self):
+        for name in ("airfield-s1-live", "c1r18_waltzman_world", "cafe1-live", "cafe2-live", "firefighting-luna-r1",
+                     "garden-luna-r3", "pencil-c4-run17", "pencil2-live", "pencil3-live"):
+            world = json.loads((Path(__file__).parent / "fixtures" / f"{name}.json").read_text())
+            self.assertEqual(service._missing_components(world["bundle"], world["causal_model"]), [], name)
+
+    def test_a_move_nobody_can_take_part_in_loses_the_tie(self):
+        everyone_acts = {"never_offered": ["a", "b"], "idle_actors": []}
+        truck_never_ships = {"never_offered": ["ship"], "idle_actors": ["truck"],
+                             "missing_components": ["ship needs shipment"]}
+        self.assertGreater(service._attempt_rank(2, everyone_acts), service._attempt_rank(2, truck_never_ships))
