@@ -1,0 +1,16 @@
+[3.6s] no #ai-moves toggle on the page (AI always chooses)
+[3.6s] pressing Create simulation
+[3.9s] step: Sending your description… 0 s
+[11.3s] step: Reading your description… 5.1 s
+[38.4s] step: Writing the rules… 32.9 s
+[76.2s] step: Rewriting the rules… · the last rules did not pass the test run 72.4 s
+[114.4s] step: Test-running the rules with simple moves… 109.3 s
+[115.4s] step: Redesigning what each one can do… · the test run showed steps that could never happen 110.2 s
+[140.4s] step: Writing the rules… 135.2 s
+[219.8s] step: ✓ Test run: 166 moves in 24 rounds; still busy at the end; never possible: deliver graphite, deliver slats; nothing sets off a knock-on effect 215.2 s
+[220.8s] step: Rewriting the rules… · the last rules did not pass the test run 215.2 s
+[260.0s] step: Test-running the rules with simple moves… 256.4 s
+[262.7s] run stage visible
+[381.7s] readout 200
+[384.4s] share {"ok":true,"share_id":"iMrL2U84cLCS","rounds":14}
+[385.1s] saved pencil4-run.json
