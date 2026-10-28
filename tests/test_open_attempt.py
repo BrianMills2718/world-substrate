@@ -140,6 +140,46 @@ class OpenAttemptTests(unittest.TestCase):
             self.assertTrue(engine.replay()["ok"])
         self.assertAlmostEqual(trace["cost_usd"], 4 * 0.001 + 3 * 0.0005)
 
+    def _run_with_unreadable(self, error_name):
+        """The second attempt's reading fails with llm_client's `error_name`; the rest read as in the test above."""
+        fake = types.ModuleType("llm_client")
+        fake.LLMError = type("LLMError", (Exception,), {})
+        fake.LLMBudgetExceededError = type("LLMBudgetExceededError", (fake.LLMError,), {})
+        fake.render_prompt = lambda path, **kwargs: [{"role": "user", "content": json.dumps(
+            {"prompt": Path(path).name, **{k: v for k, v in kwargs.items() if k == "attempt"}}, default=str)}]
+        said = iter(ATTEMPTS)
+
+        def call_llm_json_schema(model, messages, schema, **kwargs):
+            sent = json.loads(messages[0]["content"])
+            if kwargs["task"] == "world-builder-concordia-resident":
+                return ({"belief": "I am in the office.", "attempt": next(said), "expected_effect": "something",
+                         "work": "none", "reasoning": "my goal"}, types.SimpleNamespace(cost=0.001))
+            if sent["attempt"] == ATTEMPTS[1]:
+                raise getattr(fake, error_name)("Empty content from LLM (native JSON schema structured)")
+            return READINGS[sent["attempt"]], types.SimpleNamespace(cost=0.0005)
+
+        fake.call_llm_json_schema = call_llm_json_schema
+        import scripts.concordia_residents  # noqa: F401
+        with patch.dict(sys.modules, {"llm_client": fake}):
+            return run_world(self.bundle, self.rules, policy="resident", model_name="fixture-model", max_turns=3,
+                             trace_id="fixture-trace", open_attempts=True)
+
+    def test_an_attempt_the_reader_cannot_read_is_listed_and_the_round_goes_on(self):
+        # Pencil nEEW93EirxNe (evidence/declared-laws/s2-pencil-3/TRACE_READ.md): one unread attempt failed 4 rounds.
+        trace, engine, _ = self._run_with_unreadable("LLMError")
+        rows = [t["actors"]["sam"] for t in trace["transcript"]]
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(rows[1]["did"]["kind"], open_attempt.UNMATCHED_KIND)
+        self.assertTrue(rows[1]["attempt"]["reading"]["unread"])
+        self.assertIn("could not be read: Empty content", rows[1]["attempt"]["reading"]["why"])
+        self.assertEqual(rows[2]["did"]["kind"], open_attempt.UNMATCHED_KIND)  # round 3 still ran
+        self.assertEqual(engine.world.entities["sam"].location.location_id, "office")
+
+    def test_running_out_of_allowance_still_stops_the_run(self):
+        with self.assertRaises(Exception) as caught:
+            self._run_with_unreadable("LLMBudgetExceededError")
+        self.assertEqual(type(caught.exception).__name__, "LLMBudgetExceededError")
+
     def test_open_attempts_are_only_for_residents(self):
         with self.assertRaisesRegex(ValueError, "open_attempts needs the resident policy"):
             run_world(self.bundle, self.rules, policy="scripted", open_attempts=True)

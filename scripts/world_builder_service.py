@@ -801,6 +801,17 @@ def _law_breach_guidance(breaches: list[dict[str, str]], turns: int) -> str:
     )
 
 
+def _with_structure_breaches(guidance: str, found: list[tuple[dict[str, str], int]]) -> str:
+    """The redesign's feedback: the best try's guidance with every other test run's law breaches put first."""
+    unsaid: dict[str, tuple[dict[str, str], int]] = {}
+    for breach, turns in found:
+        if breach["found"] not in guidance:
+            unsaid.setdefault(breach["found"], (breach, turns))
+    for breach, turns in reversed(list(unsaid.values())):
+        guidance = _law_breaches_first(guidance, [breach], turns)
+    return guidance
+
+
 def _law_breaches_first(guidance: str, breaches: list[dict[str, str]], turns: int) -> str:
     """Put a test run's law breaches ahead of its other findings: the rules writer keeps 4000 characters of guidance
     and the world designer 3000, and pencil COc7JzUGIXXn lost its breach behind the rest."""
@@ -1603,6 +1614,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     previous_rules: dict[str, Any] | None = None
                     # (rank, guidance about it, its rules): the try a later retry revises.
                     structure_best: tuple[tuple[int, int, int], str, dict[str, Any]] | None = None
+                    # Every law breach this structure's test runs found, with its run's length: the laws are the
+                    # designer's, so a redesign hears all of them, not only the best try's (pencil nEEW93EirxNe ranked
+                    # the breach-free try first and its breaches never reached the designer).
+                    structure_breaches: list[tuple[dict[str, str], int]] = []
                     spare = None  # try 1, written alongside try 0
 
                     def write_rules(attempt_now: int, guidance_now: str, previous_now: dict[str, Any] | None):
@@ -1869,6 +1884,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 # (declared-laws plan S2; #281: pencil laws listed only the moves that make a good).
                                 score = min(score, 2 if world_kind != "task" else 1)
                                 guidance = _law_breaches_first(guidance, breaches, dry_turns)
+                                structure_breaches += [(breach, dry_turns) for breach in breaches]
                         except ValueError as error:
                             result_row = {"ok": False, "error": str(error)[:300]}
                             score = 0
@@ -1905,7 +1921,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         keep_until_settled(trace_id, spare)
                         spare = None
                     if structure_best is not None:
-                        structure_feedback = structure_best[1]
+                        structure_feedback = _with_structure_breaches(structure_best[1], structure_breaches)
                     if best is not None and best[0][0] >= (2 if world_kind == "task" else 3):
                         break
                     if out_of_budget or not structure_feedback:
