@@ -156,6 +156,19 @@ class BuildFindingTests(unittest.TestCase):  # L3's free half: a test-run breach
         self.assertIn(CEDAR_ONLY_CUT["says"], advice)
         self.assertIn("may_change_by", advice)
 
+    def test_the_breach_survives_the_guidance_caps_and_ranks_a_tied_attempt_lower(self):
+        # Pencil COc7JzUGIXXn: the breach was appended after 4000 characters of other findings and cut off, and the
+        # retry revised a tied attempt that broke no law (evidence/declared-laws/s2-pencil-2/TRACE_READ.md).
+        from scripts import world_builder_service as service
+
+        rows = [{"rule_id": "cedar-regrowth", "law_id": "cedar-total", "law": "Cedar is cut into logs.",
+                 "found": "process:cedar-regrowth changed the world's total cedar by 1; only cut-cedar may change it"}]
+        guidance = service._law_breaches_first(" These moves were never possible: " + "x" * 5000, rows, 24)
+        self.assertIn("cedar-regrowth broke cedar-total", guidance[:3000])
+        clean, broken = {"never_offered": ["a"]}, {"never_offered": [], "law_breaches": rows}
+        self.assertGreater(service._attempt_rank(2, clean), service._attempt_rank(2, broken))
+        self.assertGreater(service._attempt_rank(3, broken), service._attempt_rank(2, clean))
+
 
 class FunctionTests(unittest.TestCase):
     def test_amounts_spread_over_two_fields_are_summed(self):
