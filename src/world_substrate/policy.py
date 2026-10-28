@@ -200,13 +200,17 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any], hide: Any = Non
     if actor.actor is not None:
         self_bits.append(f"health {actor.actor.health}")
         self_bits.append(f"hydration {actor.actor.hydration}")
+    # Each field keeps its component's name, as other entities' fields do below. Unlabelled, the shop in pencil12
+    # (share oRfOptv0O3f3) read its price list "packed_pencils 20" as stock, never bought any, and sold nothing.
     for name in sorted(actor.components):
         component = actor.components[name]
-        self_bits.extend(
+        rendered = ", ".join(
             f"{field} {value}"
             for field, value in sorted(vars(component).items())
             if isinstance(value, (int, str)) and not (hide and hide(actor_id, name, field, value))
         )
+        if rendered:
+            self_bits.append(f"{name}: {rendered}")
     visible = []
     for entity_id, record in sorted(observation["entities"].items()):
         if entity_id == actor_id:
@@ -242,7 +246,7 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any], hide: Any = Non
     return {
         "tick": engine.world.tick,
         "actor_id": actor_id,
-        "actor_state": ", ".join(self_bits) or "nothing notable",
+        "actor_state": "; ".join(self_bits) or "nothing notable",
         "visible": "\n".join(visible),
         # Progress and consequences are the two things the M5 policy could not
         # see: it pulled the pot off the fire early for seven turns, and it

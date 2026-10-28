@@ -508,6 +508,18 @@ class ResidentViewTests(unittest.TestCase):
         self.assertIn("pencils 0", new["actor_state"])  # assembly writes it, so it stays
         self.assertIn("packed_pencils 10", new["actor_state"])
 
+    def test_own_fields_are_shown_under_their_component(self):
+        # pencil12 oRfOptv0O3f3: the shop read its price "packed_pencils 20" as stock it held
+        from scripts.run_authored_world import _view, _without_no_ops, live_fields
+        world = json.loads((Path(__file__).parent / "fixtures" / "pencil12-live.json").read_text())
+        engine, model, _ = build_engine(world["bundle"], world["causal_model"])
+        page = _without_no_ops(engine, engine.discover("shop"), bookkeeping=bookkeeping_fields(model))
+        state = _view(engine, "shop", page, live_fields(model))["actor_state"]
+        parts = dict(part.split(": ", 1) for part in state.split("; "))
+        self.assertEqual(parts["business"], "cash 1000")
+        self.assertIn("packed_pencils 20", parts["prices"])
+        self.assertNotIn("packed_pencils", parts["stocks"])
+
     def test_offered_move_shows_what_it_draws_on_out_of_sight(self):
         _, new = self._engine()
         assemble = [a["description"] for a in new["actions"] if a["description"].startswith("assemble-pencils")]
