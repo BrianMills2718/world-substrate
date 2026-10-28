@@ -22,6 +22,10 @@ from typing import Any
 
 PROMPT = Path(__file__).resolve().parents[2] / "prompts/attempt_interpreter.yaml"
 TASK = "world-builder-attempt-interpreter"
+# Room for the model to reason before it answers; the call's max_budget bounds the cost. At 400, pencil nEEW93EirxNe's
+# "I try to load packed pencils from the Pennsylvania pencil factory onto my truck" came back empty 3 of 3 tries in
+# 4 rounds (calls 22108, 22123, 22166, 22194) and failed each round; at 4000 it read in 603 tokens, 516 of them reasoning.
+MAX_OUTPUT_TOKENS = 4000
 UNMATCHED_KIND = "unmatched-attempt"  # never a generated kind: generated kinds are the bundle's action slugs
 NONE = "none"
 WAIT_KIND = "wait"
@@ -165,7 +169,7 @@ def interpret(attempt: str, *, actor: str, signatures: list[dict[str, Any]], ent
                              kinds=json.dumps(signatures, indent=1), entities=json.dumps(entities, indent=1))
     value, result = call_llm_json_schema(
         model, messages, interpreter_schema(signatures), schema_name="world_substrate_attempt_reading",
-        task=TASK, trace_id=trace_id, max_budget=max_budget, max_tokens=400, reasoning_effort="low",
+        task=TASK, trace_id=trace_id, max_budget=max_budget, max_tokens=MAX_OUTPUT_TOKENS, reasoning_effort="low",
     )
     return read_interpretation(value, attempt, signatures, set(entities), actor), float(getattr(result, "cost", 0.0) or 0.0)
 

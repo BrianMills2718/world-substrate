@@ -155,6 +155,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 - [Trace read: S1 live pencil build with declared laws](../evidence/declared-laws/s1-pencil/TRACE_READ.md)
 - [Trace read: S2 live pencil build with enforced laws](../evidence/declared-laws/s2-pencil/TRACE_READ.md)
 - [Trace read: second S2 live pencil build, redesign keeps its laws](../evidence/declared-laws/s2-pencil-2/TRACE_READ.md)
+- [Trace read: third S2 live pencil build, breaches lost and an unread attempt](../evidence/declared-laws/s2-pencil-3/TRACE_READ.md)
 - [Q23: do generated moves check walls? (2026-10-25)](../evidence/open-attempt/q23/README.md)
 - [Q28: can generated worlds reuse the library damage processes? (2026-10-26)](../evidence/open-attempt/q28/README.md)
 

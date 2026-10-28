@@ -251,9 +251,21 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
     if not text or text.strip().lower() in {WAIT, "wait."}:
         return {"kind": open_attempt.WAIT_KIND, "fields": {}, "quoted_spans": {}, "nearest_kind": open_attempt.NONE,
                 "why": "the person waited"}, 0.0
+    import llm_client
+
+    # getattr: test doubles of llm_client carry only the calls they fake.
+    over_budget, llm_error = (getattr(llm_client, name, ()) for name in ("LLMBudgetExceededError", "LLMError"))
     labels = {eid: entity.label for eid, entity in sorted(engine.world.entities.items())}
-    return open_attempt.interpret(text, actor=actor, signatures=signatures, entities=labels, model=model,
-                                  trace_id=trace_id, max_budget=max_budget)
+    try:
+        return open_attempt.interpret(text, actor=actor, signatures=signatures, entities=labels, model=model,
+                                      trace_id=trace_id, max_budget=max_budget)
+    except over_budget:
+        raise
+    except llm_error as exc:
+        # One person's words the reader could not read change nothing and are listed, like a try that fits no rule;
+        # pencil nEEW93EirxNe lost 4 whole rounds to one unread attempt (500 "internal world-builder error").
+        return {"unmatched": True, "unread": True, "nearest_kind": open_attempt.NONE,
+                "why": f"the attempt could not be read: {exc}"[:300]}, 0.0
 
 
 def _same_move(one: dict[str, Any] | None, other: dict[str, Any] | None) -> bool:

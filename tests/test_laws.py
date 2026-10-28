@@ -170,6 +170,26 @@ class BuildFindingTests(unittest.TestCase):  # L3's free half: a test-run breach
         self.assertGreater(service._attempt_rank(3, broken), service._attempt_rank(2, clean))
 
 
+    def test_a_redesign_hears_every_try_s_breach_not_only_the_best_try_s(self):
+        # Pencil nEEW93EirxNe: tries 2 and 3 broke logs-total, but the tie rank kept tries 1 and 4, whose guidance
+        # had no breach, and that guidance alone went to the designer (evidence/declared-laws/s2-pencil-3/TRACE_READ.md).
+        from scripts import world_builder_service as service
+
+        def breach(rule):
+            return {"rule_id": rule, "law_id": "logs-total", "law": "Logs are cut and sawn.",
+                    "found": f"process:{rule} changed the world's total cedar-logs by 1; only cut-cedar, saw-slats may change it"}
+
+        best_guidance = " These actors stopped being able to do anything: " + "x" * 5000
+        feedback = service._with_structure_breaches(
+            best_guidance, [(breach("renew-at-mill"), 24), (breach("renew-raw-stocks"), 24), (breach("renew-at-mill"), 24)])
+        self.assertIn("renew-at-mill broke logs-total", feedback[:3000])
+        self.assertIn("renew-raw-stocks broke logs-total", feedback[:3000])
+        self.assertEqual(feedback.count("renew-at-mill broke"), 1)
+        said = service._law_breaches_first(best_guidance, [breach("renew-at-mill")], 24)
+        self.assertEqual(service._with_structure_breaches(said, [(breach("renew-at-mill"), 24)]), said)
+        self.assertEqual(service._with_structure_breaches(best_guidance, []), best_guidance)
+
+
 class FunctionTests(unittest.TestCase):
     def test_amounts_spread_over_two_fields_are_summed(self):
         state = lambda a, b: {"entities": {"x": {"components": {"business": {"cash": a}}},
