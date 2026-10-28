@@ -1,11 +1,34 @@
 {
   "schema_version": "1.0",
   "record_type": "acceptance_criteria",
+  "outcome": "A visitor builds a world on the World Builder whose moves the AI still writes freely, whose own bookkeeping laws the AI declares and the engine enforces by name, and whose rules an independent review reads against the description, so the root problems in the substrate, the world-generating process and the world-validating process are fixed rather than one symptom at a time.",
+  "asked_by": [
+    {
+      "who": "Brian",
+      "date": "2026-10-28",
+      "words": "ok my guess is that you hjave been fixing symptoms not root problems.the rpobelm i assuem si wiht our susbtrate and world generating process and world valdiating rpocess?",
+      "source": "Claude Code session 4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9 (~/.claude/projects/-home-brian-code/4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9.jsonl)"
+    },
+    {
+      "who": "Brian",
+      "date": "2026-10-28",
+      "words": "this \"- Root fix: add a few built-in move types where the engine keeps the books: transfer / exchange / transform\" seems to me liek it destorys the whol e potin of what we are doing. but maybe im missing something. what do you mean the substrate doesnt know what moeny is? the llm generating it surely does.",
+      "source": "Claude Code session 4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9 (~/.claude/projects/-home-brian-code/4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9.jsonl)"
+    },
+    {
+      "who": "Brian",
+      "date": "2026-10-28",
+      "words": "yes lets make it companhy plannign complaint",
+      "source": "Claude Code session 4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9 (~/.claude/projects/-home-brian-code/4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9.jsonl); reply to the three-part proposal: the AI declares its world's laws, the engine enforces them and names the law, an independent AI review replaces the heuristic checks"
+    }
+  ],
   "entries": [
     {
       "id": "A1",
       "criterion": "When I build a world, the build record shows that world's own bookkeeping laws in plain words.",
-      "grounded_in": ["Brian 2026-10-28: the AI that designs the world declares its laws (design part 1, approved \"yes lets make it companhy plannign complaint\")"],
+      "grounded_in": [
+        "Brian 2026-10-28: the AI that designs the world declares its laws (design part 1, approved \"yes lets make it companhy plannign complaint\")"
+      ],
       "demonstration": [
         "Open the World Builder.",
         "Paste the pencil description and press Create simulation.",
@@ -13,14 +36,19 @@
       ],
       "expected": "A short list of sentences in the pencil world's own words, such as \"Pencils are made only by assembling them and used up only by a customer\" and \"A sale moves pencils to the buyer and cash to the seller\", each naming things and moves that appear elsewhere on the page.",
       "failure_example": "Broken: the Laws list is missing, or a law names something the pencil world does not have (gold, a bank), or the same laws appear word for word for a kitchen description. Working: every law names this world's goods, money and moves.",
-      "representation": {"view": "composite-linked-view: a laws table in the build record, each row opening the moves it names", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "representation": {
+        "view": "composite-linked-view: a laws table in the build record, each row opening the moves it names",
+        "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+      },
       "entrypoint": "planned",
       "status": "not built"
     },
     {
       "id": "A2",
-      "criterion": "A move that breaks a declared law is refused, and the page says which law it broke.",
-      "grounded_in": ["Brian 2026-10-28: the engine enforces declared laws generically and names the law it refuses on (design part 2)"],
+      "criterion": "The engine itself keeps each world's declared laws: a move, or a knock-on effect it sets off, that breaks one is refused, and the page says which law it broke.",
+      "grounded_in": [
+        "Brian 2026-10-28: the engine enforces declared laws generically and names the law it refuses on (design part 2)"
+      ],
       "demonstration": [
         "Open the World Builder's replay of the saved pencil13 world with its laws (link given in the S2 report).",
         "Go to round 8 and find the shop's buy-boxed-pencils move.",
@@ -28,37 +56,239 @@
       ],
       "expected": "The move is marked refused (orange, with the word \"refused\") and shows the law's sentence, \"A purchase moves goods one way and payment the other\"; the shop's boxes and the factory's cash are unchanged in that round.",
       "failure_example": "Broken: the move shows as done, boxes move to the shop and no cash moves to the factory (exactly what pencil13 does today), or it is refused with no law named. Working: refused, law quoted, nothing changed.",
-      "representation": {"view": "composite-linked-view: the run's round list with the refusal row opening its law", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "representation": {
+        "view": "composite-linked-view: the run's round list with the refusal row opening its law",
+        "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+      },
       "entrypoint": "planned",
       "status": "not built"
     },
     {
       "id": "A3",
       "criterion": "An independent review points out where the rules do not match my description, in my description's words.",
-      "grounded_in": ["Brian 2026-10-28: an independent AI review of the rules replaces the heuristic checks (design part 3)"],
+      "grounded_in": [
+        "Brian 2026-10-28: an independent AI review of the rules replaces the heuristic checks (design part 3)"
+      ],
       "demonstration": [
         "Open the build record of the saved pencil13 world reviewed in S3 (link given in the S3 report).",
         "Read the Review findings list."
       ],
       "expected": "Each finding names one rule and quotes the words of the description it was checked against; one finding says buy-boxed-pencils takes the boxes but pays the factory nothing.",
       "failure_example": "Broken: the list is empty, says only \"looks good\", or gives findings without quoting the description. Working: buy-boxed-pencils is named with the quoted description words about the shop buying from the factory.",
-      "representation": {"view": "composite-linked-view: a findings table, each row opening its rule and the quoted words", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "representation": {
+        "view": "composite-linked-view: a findings table, each row opening its rule and the quoted words",
+        "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+      },
       "entrypoint": "planned",
       "status": "not built"
     },
     {
       "id": "A4",
       "criterion": "The pencil world I build runs with every sale paying for what it takes.",
-      "grounded_in": ["Brian 2026-10-27 \"do that\": a live pencil build to confirm money changes hands on a sale"],
+      "grounded_in": [
+        "Brian 2026-10-27 \"do that\": a live pencil build to confirm money changes hands on a sale"
+      ],
       "demonstration": [
         "Open the World Builder, paste the pencil description and press Create simulation.",
         "Let the run play, then open any sale in the round list or the network view."
       ],
       "expected": "Each sale moves pencils to the buyer and cash to the seller in the same step, including the shop buying boxes from the factory; the build record lists the laws and the review findings.",
       "failure_example": "Broken: a purchase where goods move and cash does not (pencil13's buy-boxed-pencils), or the build fails before the run (pencil14, 422). Working: both sides move on every sale.",
-      "representation": {"view": "composite-linked-view: the run's round list and network view", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "representation": {
+        "view": "composite-linked-view: the run's round list and network view",
+        "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+      },
       "entrypoint": "https://brianmills.dev/world-builder/",
       "status": "not built"
+    },
+    {
+      "id": "A5",
+      "criterion": "Moves are still written freely in each world's own terms; there is no fixed menu of move types.",
+      "grounded_in": [
+        "Brian 2026-10-28: fixed move types (transfer / exchange / transform) \"destorys the whol e potin of what we are doing\""
+      ],
+      "demonstration": [
+        "Open the World Builder and build the pencil world; open its list of moves.",
+        "Build a kitchen description the same way and open its list of moves."
+      ],
+      "expected": "Each world's moves carry its own names and effects (cut cedar, assemble pencils, sell a box; chop, plate, serve), and neither list shows built-in kinds such as transfer, exchange or transform.",
+      "failure_example": "Broken: every move is labelled with one of a few fixed kinds, or a move the description asks for (a cook tasting a sauce) cannot be written because no kind fits. Working: moves differ per world and the laws sit beside them.",
+      "representation": {
+        "view": "composite-linked-view: the moves list in the build record, each move opening its effects and the laws that touch it",
+        "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+      },
+      "entrypoint": "planned",
+      "status": "not built"
+    },
+    {
+      "id": "A6",
+      "criterion": "Descriptions the World Builder has never seen, of very different shapes and lengths, each build a world that keeps its own laws, with no code written for any of them.",
+      "grounded_in": [
+        "Brian 2026-10-28: the root problems are in the substrate and the world generating and validating process, not one pencil world",
+        "Plan S5: four varied descriptions built live in parallel"
+      ],
+      "demonstration": [
+        "Open the World Builder and build each of four different descriptions in turn: the pencil supply chain, the airfield, a kitchen, and the long Waltzman scenario (people and organizations, not goods).",
+        "For each, open the build record's Laws and Review findings, then the run.",
+        "Open any refused step, and any sale or hand-over in the run."
+      ],
+      "expected": "Each of the four worlds has laws naming its own things and moves (the Waltzman world may declare few or none, and says so); every refused step names the law it broke, including knock-on effects; every hand-over that a law pairs moves both sides; the review's findings quote that description's own words; all four builds finish.",
+      "failure_example": "Broken: the laws are the pencil world's laws reworded, a step commits that breaks a listed law (goods appear with no listed move making them), or the build only works for pencils. Working: each description gets its own laws and the run keeps them.",
+      "representation": {
+        "view": "composite-linked-view: build record (laws, findings) linked to the run's round list",
+        "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+      },
+      "entrypoint": "planned",
+      "status": "not built"
+    },
+    {
+      "id": "A7",
+      "criterion": "Mistakes in a world's rules are caught at the root, by the engine's laws and the independent review, not by a growing list of hand-written checks, one per mistake.",
+      "grounded_in": [
+        "Brian 2026-10-28: \"you hjave been fixing symptoms not root problems\""
+      ],
+      "demonstration": [
+        "Open a finished build record on the World Builder and read the panel that says what checked the rules.",
+        "Open the S4 table on this plan's review page: each retired hand-written check, the incident it was added for, and what catches that incident now."
+      ],
+      "expected": "The build record lists three kinds of checking only: the world's declared laws, the review's findings, and reports of what the test run saw. Each retired check in the S4 table points at a saved world where a law refusal or a review finding now catches its incident, and no new hand-written check was added for a new mistake.",
+      "failure_example": "Broken: the build record still lists checks such as 'goods from nothing' or 'starved holders' guessing at meaning, or a new mistake found in S5 was fixed by adding another such check. Working: the new mistake is traced to a missing law or a review finding and fixed there.",
+      "representation": {
+        "view": "table: retired check, incident, saved world, what catches it now",
+        "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+      },
+      "entrypoint": "planned",
+      "status": "not built"
     }
-  ]
+  ],
+  "coverage": {
+    "model": "claude-code/sonnet",
+    "judged_at": "2026-10-28T03:22:14-0400",
+    "asked_by_sha256": "98b5c5d344a2a0ddc7a74f21d13d2d8e29e33cb3b9e35dbfe19b8b65864fc20b",
+    "criteria_sha256": "bd0694053a3d06710623d2206fb5aacceb5cbf46c9e18c15801943b6a43a2b32",
+    "trace_id": "planning-compliance/goal-coverage/20261028T031721-2149ca1a",
+    "cost_usd": 0.0,
+    "requirements": [
+      {
+        "id": "R1",
+        "requirement": "fix root problems",
+        "quote": "fixing symptoms not root problems",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R2",
+        "requirement": "substrate fixed",
+        "quote": "rpobelm i assuem si wiht our susbtrate",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R3",
+        "requirement": "world generating process fixed",
+        "quote": "world generating process",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R4",
+        "requirement": "world validating process fixed",
+        "quote": "world valdiating rpocess",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R5",
+        "requirement": "AI writes moves freely",
+        "quote": "it destorys the whol e potin of what we are doing",
+        "asked_by_index": 2,
+        "kind": "constraint"
+      },
+      {
+        "id": "R6",
+        "requirement": "company planning compliant",
+        "quote": "make it companhy plannign complaint",
+        "asked_by_index": 3,
+        "kind": "process"
+      }
+    ],
+    "mappings": [
+      {
+        "requirement_id": "R1",
+        "covered_by": [
+          "A7"
+        ],
+        "coverage_reason": "A7 requires the S4 table to show every retired hand-written check replaced by a law refusal or review finding, and that no new hand-written check was added for a new mistake; it fails whenever problems are addressed by adding more checks rather than a root enforcement mechanism.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'root problems… are fixed rather than one symptom at a time,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R2",
+        "covered_by": [
+          "A2",
+          "A4",
+          "A6"
+        ],
+        "coverage_reason": "A2 tests engine law enforcement at runtime, A4 tests that a full run executes with correct bookkeeping, and A6 tests all of this across four diverse worlds; each criterion fails if the substrate does not correctly store state and enforce declared laws.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'root problems in the substrate… are fixed,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R3",
+        "covered_by": [
+          "A1",
+          "A6"
+        ],
+        "coverage_reason": "A6 requires four descriptions the Builder has never seen each to produce a working world 'with no code written for any of them,' which fails if the generating process still depended on world-specific patches; A1 checks that the generating process produced laws for the pencil world specifically.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'world-generating process… are fixed,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R4",
+        "covered_by": [
+          "A2",
+          "A3"
+        ],
+        "coverage_reason": "A2 tests that the engine refuses moves that break a law and names the law broken (runtime validation), and A3 tests that an independent review catches rules that do not match the description (build-time validation); together they cover both layers of the validating process.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'world-validating process… are fixed,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R5",
+        "covered_by": [
+          "A5",
+          "A6"
+        ],
+        "coverage_reason": "A5 explicitly requires each world's moves to carry its own names and effects and that neither list shows built-in kinds such as transfer, exchange, or transform; A5 fails the moment a fixed menu appears; A6 confirms this holds across four different worlds.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'whose moves the AI still writes freely,' keeping this constraint."
+      },
+      {
+        "requirement_id": "R6",
+        "covered_by": [],
+        "coverage_reason": "No criterion asks whether the planning package follows the company planning format; demonstrating the working system cannot show planning-document compliance.",
+        "extent": "none",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "Process requirements are not evaluated against the outcome line; the OUTCOME says nothing about company planning compliance."
+      }
+    ],
+    "trace": "coverage-trace.json"
+  }
 }

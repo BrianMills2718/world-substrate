@@ -1,0 +1,144 @@
+{
+  "record_type": "goal_coverage_trace",
+  "trace_id": "planning-compliance/goal-coverage/20261028T031721-2149ca1a",
+  "task": "planning_compliance.goal_coverage",
+  "model": "claude-code/sonnet",
+  "requested_model": "claude-code/sonnet",
+  "judged_at": "2026-10-28T03:22:14-0400",
+  "cost_usd": 0.0,
+  "prompt_template": "plugins/company-planning/skills/planning-compliance/scripts/coverage_prompt.yaml",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos);\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nWhen two quotes state the same requirement, list it once and quote the clearer one.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+    },
+    {
+      "role": "user",
+      "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-10-28: <<<ok my guess is that you hjave been fixing symptoms not root problems.the rpobelm i assuem si wiht our susbtrate and world generating process and world valdiating rpocess?>>>\n\n2. Brian, 2026-10-28: <<<this \"- Root fix: add a few built-in move types where the engine keeps the books: transfer / exchange / transform\" seems to me liek it destorys the whol e potin of what we are doing. but maybe im missing something. what do you mean the substrate doesnt know what moeny is? the llm generating it surely does.>>>\n\n3. Brian, 2026-10-28: <<<yes lets make it companhy plannign complaint>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<A visitor builds a world on the World Builder whose moves the AI still writes freely, whose own bookkeeping laws the AI declares and the engine enforces by name, and whose rules an independent review reads against the description, so the root problems in the substrate, the world-generating process and the world-validating process are fixed rather than one symptom at a time.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: When I build a world, the build record shows that world's own bookkeeping laws in plain words.\n  demonstration: (1) Open the World Builder. (2) Paste the pencil description and press Create simulation. (3) When the build finishes, open the build record and read the Laws list. \n  expected: A short list of sentences in the pencil world's own words, such as \"Pencils are made only by assembling them and used up only by a customer\" and \"A sale moves pencils to the buyer and cash to the seller\", each naming things and moves that appear elsewhere on the page.\n\n[A2] \n  criterion: The engine itself keeps each world's declared laws: a move, or a knock-on effect it sets off, that breaks one is refused, and the page says which law it broke.\n  demonstration: (1) Open the World Builder's replay of the saved pencil13 world with its laws (link given in the S2 report). (2) Go to round 8 and find the shop's buy-boxed-pencils move. (3) Read what the page says about it. \n  expected: The move is marked refused (orange, with the word \"refused\") and shows the law's sentence, \"A purchase moves goods one way and payment the other\"; the shop's boxes and the factory's cash are unchanged in that round.\n\n[A3] \n  criterion: An independent review points out where the rules do not match my description, in my description's words.\n  demonstration: (1) Open the build record of the saved pencil13 world reviewed in S3 (link given in the S3 report). (2) Read the Review findings list. \n  expected: Each finding names one rule and quotes the words of the description it was checked against; one finding says buy-boxed-pencils takes the boxes but pays the factory nothing.\n\n[A4] \n  criterion: The pencil world I build runs with every sale paying for what it takes.\n  demonstration: (1) Open the World Builder, paste the pencil description and press Create simulation. (2) Let the run play, then open any sale in the round list or the network view. \n  expected: Each sale moves pencils to the buyer and cash to the seller in the same step, including the shop buying boxes from the factory; the build record lists the laws and the review findings.\n\n[A5] \n  criterion: Moves are still written freely in each world's own terms; there is no fixed menu of move types.\n  demonstration: (1) Open the World Builder and build the pencil world; open its list of moves. (2) Build a kitchen description the same way and open its list of moves. \n  expected: Each world's moves carry its own names and effects (cut cedar, assemble pencils, sell a box; chop, plate, serve), and neither list shows built-in kinds such as transfer, exchange or transform.\n\n[A6] \n  criterion: Descriptions the World Builder has never seen, of very different shapes and lengths, each build a world that keeps its own laws, with no code written for any of them.\n  demonstration: (1) Open the World Builder and build each of four different descriptions in turn: the pencil supply chain, the airfield, a kitchen, and the long Waltzman scenario (people and organizations, not goods). (2) For each, open the build record's Laws and Review findings, then the run. (3) Open any refused step, and any sale or hand-over in the run. \n  expected: Each of the four worlds has laws naming its own things and moves (the Waltzman world may declare few or none, and says so); every refused step names the law it broke, including knock-on effects; every hand-over that a law pairs moves both sides; the review's findings quote that description's own words; all four builds finish.\n\n[A7] \n  criterion: Mistakes in a world's rules are caught at the root, by the engine's laws and the independent review, not by a growing list of hand-written checks, one per mistake.\n  demonstration: (1) Open a finished build record on the World Builder and read the panel that says what checked the rules. (2) Open the S4 table on this plan's review page: each retired hand-written check, the incident it was added for, and what catches that incident now. \n  expected: The build record lists three kinds of checking only: the world's declared laws, the review's findings, and reports of what the test run saw. Each retired check in the S4 table points at a saved world where a law refusal or a review finding now catches its incident, and no new hand-written check was added for a new mistake.\n\n\nDEFERRALS:\n\nnone recorded"
+    }
+  ],
+  "answer": {
+    "requirements": [
+      {
+        "id": "R1",
+        "requirement": "fix root problems",
+        "quote": "fixing symptoms not root problems",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R2",
+        "requirement": "substrate fixed",
+        "quote": "rpobelm i assuem si wiht our susbtrate",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R3",
+        "requirement": "world generating process fixed",
+        "quote": "world generating process",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R4",
+        "requirement": "world validating process fixed",
+        "quote": "world valdiating rpocess",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R5",
+        "requirement": "AI writes moves freely",
+        "quote": "it destorys the whol e potin of what we are doing",
+        "asked_by_index": 2,
+        "kind": "constraint"
+      },
+      {
+        "id": "R6",
+        "requirement": "company planning compliant",
+        "quote": "make it companhy plannign complaint",
+        "asked_by_index": 3,
+        "kind": "process"
+      }
+    ],
+    "mappings": [
+      {
+        "requirement_id": "R1",
+        "covered_by": [
+          "A7"
+        ],
+        "coverage_reason": "A7 requires the S4 table to show every retired hand-written check replaced by a law refusal or review finding, and that no new hand-written check was added for a new mistake; it fails whenever problems are addressed by adding more checks rather than a root enforcement mechanism.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'root problems… are fixed rather than one symptom at a time,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R2",
+        "covered_by": [
+          "A2",
+          "A4",
+          "A6"
+        ],
+        "coverage_reason": "A2 tests engine law enforcement at runtime, A4 tests that a full run executes with correct bookkeeping, and A6 tests all of this across four diverse worlds; each criterion fails if the substrate does not correctly store state and enforce declared laws.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'root problems in the substrate… are fixed,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R3",
+        "covered_by": [
+          "A1",
+          "A6"
+        ],
+        "coverage_reason": "A6 requires four descriptions the Builder has never seen each to produce a working world 'with no code written for any of them,' which fails if the generating process still depended on world-specific patches; A1 checks that the generating process produced laws for the pencil world specifically.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'world-generating process… are fixed,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R4",
+        "covered_by": [
+          "A2",
+          "A3"
+        ],
+        "coverage_reason": "A2 tests that the engine refuses moves that break a law and names the law broken (runtime validation), and A3 tests that an independent review catches rules that do not match the description (build-time validation); together they cover both layers of the validating process.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'world-validating process… are fixed,' keeping this requirement."
+      },
+      {
+        "requirement_id": "R5",
+        "covered_by": [
+          "A5",
+          "A6"
+        ],
+        "coverage_reason": "A5 explicitly requires each world's moves to carry its own names and effects and that neither list shows built-in kinds such as transfer, exchange, or transform; A5 fails the moment a fixed menu appears; A6 confirms this holds across four different worlds.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "OUTCOME says 'whose moves the AI still writes freely,' keeping this constraint."
+      },
+      {
+        "requirement_id": "R6",
+        "covered_by": [],
+        "coverage_reason": "No criterion asks whether the planning package follows the company planning format; demonstrating the working system cannot show planning-document compliance.",
+        "extent": "none",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "Process requirements are not evaluated against the outcome line; the OUTCOME says nothing about company planning compliance."
+      }
+    ]
+  },
+  "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id"
+}

@@ -206,6 +206,9 @@ and a broken case that looks different:
 | A2 | A move that breaks a law is refused and the page names the law | pencil13's buy-boxed-pencils shows as done with no payment |
 | A3 | The review names where rules miss the description, quoting it | empty, "looks good", or findings with no quoted words |
 | A4 | The pencil world runs with every sale paying | goods move and cash does not; or the build fails (pencil14) |
+| A5 | Moves stay free, in each world's own terms, with no fixed move kinds | every move labelled transfer, exchange or transform |
+| A6 | Four very different descriptions (pencil, airfield, kitchen, the long Waltzman scenario) each build a world that keeps its own laws | pencil laws reworded, a committed step that breaks a law, or only pencils work |
+| A7 | Mistakes are caught by laws and the review, not a growing list of hand-written checks | a new mistake fixed by adding another guess check |
 
 ## Success and disproof
 
