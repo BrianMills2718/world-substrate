@@ -107,7 +107,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: 9338f5236846cafd5e917c3f835b6c8a808e21e5  # re-read 2026-10-28 (#293 F: the dry run records a move only a law refuses in its preview as a law_breach; the frozen profile and review path are unchanged). Earlier: re-read 2026-10-28 (restamped to the #289 squash merge, same content; an unread attempt is recorded as the same unmatched command as a try that fits no rule; the frozen profile is unchanged). Earlier: re-read 2026-10-28 (declared-laws S2; restamped to the squash merge, same content): S2 sets the declared laws on the registry before profile.freeze(); laws are not mechanics and the review path is unchanged
+    reviewed_at: 40cbf8c0e28f251705220c84b12b1bb60fe7597d  # re-read 2026-10-28 (restamped to the #296 squash merge, same content; #293 F: the dry run records a move only a law refuses in its preview as a law_breach; the frozen profile and review path are unchanged). Earlier: re-read 2026-10-28 (restamped to the #289 squash merge, same content; an unread attempt is recorded as the same unmatched command as a try that fits no rule; the frozen profile is unchanged). Earlier: re-read 2026-10-28 (declared-laws S2; restamped to the squash merge, same content): S2 sets the declared laws on the registry before profile.freeze(); laws are not mechanics and the review path is unchanged
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
