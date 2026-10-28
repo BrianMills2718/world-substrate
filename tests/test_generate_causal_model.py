@@ -83,6 +83,21 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         self.assertEqual(call.call_args.kwargs["max_tokens"], MAX_MECHANICS_OUTPUT_TOKENS)
         self.assertNotIn("model_justification", call.call_args.kwargs)
 
+    def test_rules_writer_is_told_every_move_and_that_an_empty_list_is_rejected(self):
+        # pencil12 oRfOptv0O3f3: 4 of 8 first replies were {"mechanics": []}
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
+        call = MagicMock(return_value=SimpleNamespace(content=json.dumps(causal), cost=0.0, model="fake-model"))
+        fake_module = ModuleType("llm_client")
+        fake_module.call_llm = call
+        fake_module.safe_json_loads = json.loads
+        with patch.dict(sys.modules, {"llm_client": fake_module}):
+            generate_causal_model(bundle, model="fake-model", trace_id="test-moves-named")
+        system = call.call_args.args[1][0]["content"]
+        for action in bundle["actions"]:
+            self.assertIn(action["kind"], system)
+        self.assertIn("an empty mechanics list is always rejected", system)
+
 
 if __name__ == "__main__":
     unittest.main()

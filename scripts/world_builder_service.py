@@ -964,7 +964,10 @@ def _dead_end_stock(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]
     2026-10-27 pencil build (share iMrL2U84cLCS): the materials supplier added clay, paint, erasers, ferrules and
     boxes to its own stock every few rounds and nothing carried them on, so the factory ran down its starting stock.
     Read from selectors against the world's entities, because every business keeps goods in the same component.
-    Hand-overs (a move that takes and gives the same good) and tallies nothing ever uses up are not named.
+    Hand-overs (a move that takes and gives the same good) and tallies nothing ever uses up are not named, and nor
+    are goods a buyer paid for at the end of the chain: pencil12 (share oRfOptv0O3f3) had three rule sets refused
+    for "pencils piles up at customer" when the shop handed over packed pencils, the customer received pencils and
+    paid cash, and the customer gave nothing to anyone in any other move.
     """
     entities = bundle.get("entities") or []
     mechanics = causal.get("mechanics") or []
@@ -982,6 +985,19 @@ def _dead_end_stock(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]
     takers += [(e.get("path"), p.get("selector")) for p in causal.get("processes") or []
                for e in p.get("effects") or [] if e.get("op") == "subtract" and e.get("participant") == "it"]
     used = {str(path).rsplit(".", 1)[-1] for path, _ in takers}
+
+    def gives_elsewhere(entity: dict[str, Any], skip: dict[str, Any]) -> bool:
+        return any(e.get("op") == "subtract" and fits(role(m, e.get("participant")), entity)
+                   for m in mechanics if m is not skip for e in m.get("effects") or []) or any(
+            e.get("op") == "subtract" and e.get("participant") == "it" and fits(p.get("selector"), entity)
+            for p in causal.get("processes") or [] for e in p.get("effects") or [])
+
+    def paid(effects: list[dict[str, Any]], buyer: Any) -> bool:
+        # The receiver gives something in the same move and another participant receives it: a trade.
+        return any(e.get("op") == "subtract" and e.get("participant") == buyer and any(
+            o.get("op") == "add" and o.get("participant") != buyer and o.get("path") == e.get("path")
+            for o in effects) for e in effects)
+
     found: set[str] = set()
     for mechanic in mechanics:
         effects = mechanic.get("effects") or []
@@ -991,9 +1007,11 @@ def _dead_end_stock(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]
             good = path.rsplit(".", 1)[-1]
             if effect.get("op") != "add" or not path.startswith("components.") or good in handed or good not in used:
                 continue
+            bought = paid(effects, effect.get("participant"))
             for entity in entities:
                 if fits(role(mechanic, effect.get("participant")), entity) and not any(
-                        taken == path and fits(selector, entity) for taken, selector in takers):
+                        taken == path and fits(selector, entity) for taken, selector in takers) and not (
+                        bought and not gives_elsewhere(entity, mechanic)):
                     found.add(f"{good} piles up at {entity.get('id', '?')} ({mechanic.get('action_kind', '?')})")
     return sorted(found)
 

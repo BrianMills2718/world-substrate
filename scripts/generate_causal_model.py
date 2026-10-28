@@ -633,12 +633,17 @@ def generate_causal_model(
             "Return a revised copy of previous_proposal: change what the guidance names, keep every "
             "other mechanic, process and terminal that is not named."
         )
+    moves = [str(row.get("kind")) for row in bundle["actions"] if isinstance(row, dict)]
     messages = [
         {
             "role": "system",
             "content": (
                 "You are proposing causal mechanics for a governed world model. "
                 "Return exactly one JSON object and no prose or markdown. You are not writing code. "
+                # pencil12 (share oRfOptv0O3f3): 4 of 8 first replies were {"mechanics": []}, each costing a
+                # 7 s call and a repair before any rules were written.
+                f"mechanics must hold one mechanic for each of these moves: {', '.join(moves)}; "
+                "an empty mechanics list is always rejected. "
                 "The response must satisfy response_contract. Every effect must be justified by "
                 "represented state and the action description. Prefer conservative refusal checks "
                 "over assumptions. Do not add reads/writes fields; the local compiler derives authority. "
