@@ -38,6 +38,7 @@ from scripts.native_coordination_comparison import with_approval_threshold
 from scripts.people_world import about_people, keep_until_settled, prepare_people_world, unfinished_hedges, write_people_rules
 from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
+from scripts.review_rules import MISSING as MISSING_RULE, review_rules
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
 
@@ -812,6 +813,26 @@ def _with_structure_breaches(guidance: str, found: list[tuple[dict[str, str], in
     return guidance
 
 
+def _finding_sentence(finding: dict[str, str]) -> str:
+    where = "nothing in the rules" if finding["rule_id"] == MISSING_RULE else _words(finding["rule_id"])
+    return f"{where}: {finding['problem']}"
+
+
+def _review_findings_first(guidance: str, findings: list[dict[str, str]]) -> str:
+    """Put the independent review's findings ahead of the test run's other notes (they are the rules writer's to fix)."""
+    said = " ".join(
+        f"{_finding_sentence(f)}" + (f" (the description says: \"{f['description_words']}\")" if f["description_words"] else "")
+        for f in findings)
+    return ("A separate check read your rules against the description and the laws and found: " + said
+            + " Fix each of these. " + guidance.strip()).strip()
+
+
+def _with_structure_findings(guidance: str, found: list[dict[str, str]]) -> str:
+    """The redesign's feedback also carries every review finding that the best try's guidance does not already say."""
+    unsaid = [f for f in {f["problem"]: f for f in found}.values() if f["problem"] not in guidance]
+    return _review_findings_first(guidance, unsaid) if unsaid else guidance
+
+
 def _law_breaches_first(guidance: str, breaches: list[dict[str, str]], turns: int) -> str:
     """Put a test run's law breaches ahead of its other findings: the rules writer keeps 4000 characters of guidance
     and the world designer 3000, and pencil COc7JzUGIXXn lost its breach behind the rest."""
@@ -938,7 +959,7 @@ def _retry_label(first_model: str) -> str:
     return "Rewriting the rules with a stronger model" if RULES_RETRY_MODEL != first_model else "Rewriting the rules"
 
 
-def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, int, bool, int, int, int, bool]:
+def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, int, int, bool, int, int, int, bool]:
     """Order rules attempts: by score, then ties go to a test run that broke fewer of the world's laws, then to one
     that did not go in circles, then to fewer moves never offered, then to fewer people who stopped acting (#253: an airfield build kept the one test run that
     circled and never offered `move`, because it had one stalled person fewer), and last to one whose rules have a
@@ -947,7 +968,10 @@ def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, int, bool, int,
     # Fewer broken laws first: pencil COc7JzUGIXXn ranked an attempt that broke a law level with one that did not.
     # A move no world entity can ever take part in loses next (2026-10-27 pencil iMrL2U84cLCS kept the attempt
     # whose shipping could never happen over one where every move ran).
-    return (score, -len(row.get("law_breaches") or []), not row.get("circling"),
+    # Then fewer independent-review findings (S3): among tries the build would keep, the one that fixed what the
+    # review named wins.
+    return (score, -len(row.get("law_breaches") or []), -len(row.get("review_findings") or []),
+            not row.get("circling"),
             -len(row.get("missing_components") or []),
             -len(row.get("never_offered") or []), -len(idle),
             bool(row.get("knock_on_processes")))
@@ -1618,6 +1642,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     # designer's, so a redesign hears all of them, not only the best try's (pencil nEEW93EirxNe ranked
                     # the breach-free try first and its breaches never reached the designer).
                     structure_breaches: list[tuple[dict[str, str], int]] = []
+                    # Every review finding this structure's tries drew, for the redesign (S3).
+                    structure_findings: list[dict[str, str]] = []
                     spare = None  # try 1, written alongside try 0
 
                     def write_rules(attempt_now: int, guidance_now: str, previous_now: dict[str, Any] | None):
@@ -1904,6 +1930,27 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # attempt 4 over attempt 3, whose test run assembled pencils, and nothing recorded either score.
                         result_row["score"] = score
                         result_row["processes"] = len(candidate_compiled.processes)
+                        top = 2 if world_kind == "task" else 3
+                        if result_row.get("ok") and (score >= top or last_try):
+                            # The independent review (declared-laws plan S3) reads a try only when the build would
+                            # otherwise keep it: a try the test run already faults is revised on that first.
+                            self._progress("doing", "A second AI is checking the rules against your description")
+                            try:
+                                found, _ = review_rules(description, bundle, candidate, trace_id=trace_id,
+                                                        max_budget=budget)
+                                result_row["review_findings"] = found
+                                if found:
+                                    guidance = _review_findings_first(guidance, found)
+                                    structure_findings += found
+                                self._progress("done", f"The check found {len(found)} place{'s' if len(found) != 1 else ''} "
+                                               "where the rules miss the description" if found
+                                               else "The check found nothing the rules miss",
+                                               "", [_finding_sentence(f) for f in found])
+                            except Exception as error:
+                                # A failed review is recorded and the build goes on without it, visibly.
+                                result_row["review_error"] = f"{type(error).__name__}: {error}"[:300]
+                                self._progress("note", "The second check of the rules failed", result_row["review_error"][:160])
+                                out_of_budget = out_of_budget or type(error).__name__ == "LLMBudgetExceededError"
                         if tidied:
                             result_row["tidied"] = tidied
                         attempts.append(result_row)
@@ -1914,14 +1961,15 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         if structure_best is None or rank > structure_best[0]:
                             structure_best = (rank, guidance, candidate)
                         out_of_budget = out_of_budget or _trace_cost(trace_id) >= budget - 0.01
-                        if score >= (2 if world_kind == "task" else 3) or last_try or out_of_budget:
+                        if (score >= top and not result_row.get("review_findings")) or last_try or out_of_budget:
                             break
                     if spare is not None:
                         # Not needed (try 0 was good enough or the budget ran out); charge it when it finishes.
                         keep_until_settled(trace_id, spare)
                         spare = None
                     if structure_best is not None:
-                        structure_feedback = _with_structure_breaches(structure_best[1], structure_breaches)
+                        structure_feedback = _with_structure_breaches(
+                            _with_structure_findings(structure_best[1], structure_findings), structure_breaches)
                     if best is not None and best[0][0] >= (2 if world_kind == "task" else 3):
                         break
                     if out_of_budget or not structure_feedback:

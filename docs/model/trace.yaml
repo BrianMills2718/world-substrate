@@ -20,7 +20,7 @@ entities:
   - id: ENT-EVENT
     what: a committed or refused transition record with stable id and causal parents (ODD 4, 8.4)
   - id: ENT-RUN-RECORD
-    what: the durable log of one build or run kept by the World Builder service (ODD 8.11)
+    what: the durable log of one build or run kept by the World Builder service, with each kept-candidate try's independent rules review (`review_findings` or `review_error`) (ODD 8.11, 8.22)
   - id: ENT-INFORMATION-ITEM
     what: represented information with visibility per observer, kept out of causal parentage (ODD 8.14)
 

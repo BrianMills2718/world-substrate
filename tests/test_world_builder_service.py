@@ -598,6 +598,49 @@ class WorldBuilderServiceTests(unittest.TestCase):
                                        "continue_from": "not a snapshot"})
         self.assertEqual(status, 422)
 
+    def test_review_findings_reach_the_next_rules_try_and_the_build_record(self):
+        # Declared-laws plan S3: the independent review's findings go to the rules writer's revision, and the build
+        # record lists them (pencil13's buy-boxed-pencils paid nothing and no check said so).
+        seen = []
+        finding = {"rule_id": "pick", "description_words": "picks a ripe apple",
+                   "problem": "Picking takes the apple but leaves the tree's count unchanged."}
+
+        def write(bundle, **kwargs):
+            seen.append(kwargs.get("guidance"))
+            return CAUSAL, FakeResult()
+
+        reviews = iter([[finding], []])
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult())), patch.object(
+            service, "generate_causal_model", side_effect=write), patch.object(
+            service, "review_rules", side_effect=lambda *a, **k: (next(reviews), 0.0)) as review:
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(review.call_count, 2)
+        sent = review.call_args_list[0]
+        self.assertEqual(sent.args[0], "One worker picks a ripe apple.")
+        self.assertEqual(len(seen), 2)
+        self.assertIn("Picking takes the apple but leaves the tree's count unchanged.", seen[1])
+        self.assertTrue(seen[1].startswith("A separate check read your rules"))
+        rows = payload["dry_run_attempts"]
+        self.assertEqual(rows[0]["review_findings"], [finding])
+        self.assertEqual(rows[1]["review_findings"], [])
+        self.assertEqual(payload["dry_run"]["review_findings"], [])
+
+    def test_a_failed_review_is_recorded_and_the_build_goes_on(self):
+        def broken(*args, **kwargs):
+            raise RuntimeError("provider returned 502")
+
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult())), patch.object(
+            service, "generate_causal_model", return_value=(CAUSAL, FakeResult())) as mechanics, patch.object(
+            service, "review_rules", side_effect=broken):
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 1)
+        self.assertEqual(payload["dry_run"]["review_error"], "RuntimeError: provider returned 502")
+        self.assertNotIn("review_findings", payload["dry_run"])
+
     def get(self, path: str):
         try:
             with urllib.request.urlopen(self.base + path, timeout=5) as response:
