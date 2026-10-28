@@ -64,6 +64,8 @@ outcome line was "Round 10 · 76 allowed · 4 refused · 10 by itself". Run once
    the same round, then retried), 3 `unsupported_action`, 2 `precondition_failed`, no `law_breach` (the
    kept world declared no laws to break).
 
+The kept world is saved as `tests/fixtures/pencil-s2-kept.json` for free replays.
+
 ## Trace ids opened
 
 - `world-builder-live/kind/8055a175bda54c188673fd59dc5ffc34`: call 21652, world kind: not mainly about
