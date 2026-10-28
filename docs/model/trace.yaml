@@ -107,7 +107,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: c3eb8f05b778bfc42ee42d2b356177bd813b8e5b  # re-read 2026-10-28 (an unread attempt is recorded as the same unmatched command as a try that fits no rule; the frozen profile is unchanged). Earlier: re-read 2026-10-28 (declared-laws S2; restamped to the squash merge, same content): S2 sets the declared laws on the registry before profile.freeze(); laws are not mechanics and the review path is unchanged
+    reviewed_at: 94cf5a593348b69b7ce7b580e3a8171ac36a4eff  # re-read 2026-10-28 (restamped to the #289 squash merge, same content; an unread attempt is recorded as the same unmatched command as a try that fits no rule; the frozen profile is unchanged). Earlier: re-read 2026-10-28 (declared-laws S2; restamped to the squash merge, same content): S2 sets the declared laws on the registry before profile.freeze(); laws are not mechanics and the review path is unchanged
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -119,7 +119,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
-    reviewed_at: c3eb8f05b778bfc42ee42d2b356177bd813b8e5b  # re-read 2026-10-28 (a redesign hears every test run's law breaches; approval before run unchanged). Earlier: re-read 2026-10-28 (restamped to the #287 squash merge, same content; breaches first in build guidance: only the order of guidance text and the tie rank of test runs change; approval, budget and run rows unchanged). Earlier: S2 adds only _law_breach_guidance text to the build loop; approval before run unchanged
+    reviewed_at: 94cf5a593348b69b7ce7b580e3a8171ac36a4eff  # re-read 2026-10-28 (restamped to the #289 squash merge, same content; a redesign hears every test run's law breaches; approval before run unchanged). Earlier: re-read 2026-10-28 (restamped to the #287 squash merge, same content; breaches first in build guidance: only the order of guidance text and the tie rank of test runs change; approval, budget and run rows unchanged). Earlier: S2 adds only _law_breach_guidance text to the build loop; approval before run unchanged
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -130,7 +130,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
-    reviewed_at: c3eb8f05b778bfc42ee42d2b356177bd813b8e5b  # re-read 2026-10-28 (running out of allowance still stops the run: test_running_out_of_allowance_still_stops_the_run; the interpreter's max_budget still bounds each call). Earlier: re-read 2026-10-28 (restamped to the #287 squash merge, same content; breaches first in build guidance: only the order of guidance text and the tie rank of test runs change; approval, budget and run rows unchanged). Earlier: S2 adds no model call; a law breach only changes guidance text sent on existing calls
+    reviewed_at: 94cf5a593348b69b7ce7b580e3a8171ac36a4eff  # re-read 2026-10-28 (restamped to the #289 squash merge, same content; running out of allowance still stops the run: test_running_out_of_allowance_still_stops_the_run; the interpreter's max_budget still bounds each call). Earlier: re-read 2026-10-28 (restamped to the #287 squash merge, same content; breaches first in build guidance: only the order of guidance text and the tie rank of test runs change; approval, budget and run rows unchanged). Earlier: S2 adds no model call; a law breach only changes guidance text sent on existing calls
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -141,7 +141,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
-    reviewed_at: c3eb8f05b778bfc42ee42d2b356177bd813b8e5b  # re-read 2026-10-28 (run rows gain an unread flag on a reading the interpreter could not give). Earlier: re-read 2026-10-28 (restamped to the #287 squash merge, same content; breaches first in build guidance: only the order of guidance text and the tie rank of test runs change; approval, budget and run rows unchanged). Earlier: S2: test-run rows gain law_breaches when there are any; run rows unchanged
+    reviewed_at: 94cf5a593348b69b7ce7b580e3a8171ac36a4eff  # re-read 2026-10-28 (restamped to the #289 squash merge, same content; run rows gain an unread flag on a reading the interpreter could not give). Earlier: re-read 2026-10-28 (restamped to the #287 squash merge, same content; breaches first in build guidance: only the order of guidance text and the tie rank of test runs change; approval, budget and run rows unchanged). Earlier: S2: test-run rows gain law_breaches when there are any; run rows unchanged
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
