@@ -37,7 +37,7 @@ breaches ranks higher). The page reached round 10. Run once, reported as it came
    answered 500 "internal world-builder error" (run rows at 13:58:26, 13:59:03, 14:00:07, 14:01:00; the page
    paused and the driver pressed Play). The call had `max_tokens: 400`; read-backs that worked used at most
    200. Replaying call 22108's exact request: at 400 it came back empty 3 of 3 times, at 4000 it read
-   as `dispatch-boxes` in 603 tokens, 516 of them reasoning (`~/code/.scratch/declared-laws/s2p3/repro.py`, a
+   as `dispatch-boxes` in 603 tokens, 516 of them reasoning (`repro.py` in this folder, a
    local paid call, about $0.001). Fix: `src/world_substrate/attempt.py` gives the interpreter 4000 tokens
    (`MAX_OUTPUT_TOKENS`; the call's `max_budget` still bounds cost), and `scripts/run_authored_world.py`
    `_read_attempt` turns a reading error into a listed unread try (`unread: true`, "the attempt could not
