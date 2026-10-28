@@ -1,5 +1,5 @@
 name: world_substrate_rules_reviewer
-version: "1.0"
+version: "1.1"
 description: >
   An independent reader of a generated world's rules: given only the person's
   description, the world's declared laws and the compiled rules, it names each
@@ -16,6 +16,14 @@ messages:
       checks that must hold, and the effects on the world's numbers) or a
       process the world runs by itself. The world's laws say which moves may
       change each resource's total.
+
+      How the laws work: a law constrains only the resource it names. A good
+      that no law names is not refused; any rule may make, use up or move it.
+      A law counts the world's total of its resource, so moving that resource
+      from one holder to another (loading, delivering, selling) keeps the total
+      and never breaks the law; only a step that makes or uses up a named
+      resource must be listed in its law. Do not report a good for being
+      absent from the laws, or a transfer for being absent from a law.
 
       Name every place where the rules would make the world behave unlike the
       description. Look in particular for:

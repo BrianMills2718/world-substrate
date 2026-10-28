@@ -63,3 +63,23 @@ class ReviewTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReviewUseTests(unittest.TestCase):
+    def test_an_unreviewed_try_never_outranks_a_reviewed_one_at_the_same_score(self):
+        # Pencil XlX1z5lyl8QT: try 1 (score 2, not reviewed) was kept over try 2 (score 2, reviewed, 6 findings).
+        from scripts import world_builder_service as service
+
+        unreviewed = {"ok": True}
+        reviewed = {"ok": True, "review_findings": [{"rule_id": "missing"}] * 6}
+        clean = {"ok": True, "review_findings": []}
+        self.assertGreater(service._attempt_rank(2, reviewed), service._attempt_rank(2, unreviewed))
+        self.assertGreater(service._attempt_rank(2, clean), service._attempt_rank(2, reviewed))
+        self.assertGreater(service._attempt_rank(3, unreviewed), service._attempt_rank(2, clean))
+
+    def test_the_prompt_says_laws_bind_only_the_goods_they_name_and_transfers_keep_totals(self):
+        # Pencil XlX1z5lyl8QT: five of six findings on try 2 said goods no law names, or transfers no law lists,
+        # would be refused; the engine refuses neither (src/world_substrate/laws.py).
+        system = reviewer.PROMPT.read_text()
+        self.assertIn("a law constrains only the resource it names", system)
+        self.assertIn("keeps the total", system)
