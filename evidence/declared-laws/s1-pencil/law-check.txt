@@ -1,0 +1,11 @@
+accepted-move cash checks: {'cash balanced': 26}
+law, move that changed the total without being listed, count, first event
+boxed-pencils-conservation sell-pencil 1 r9-e00011
+graphite-conservation make-leads 4 r3-e00005
+graphite-conservation process:renew-graphite 11 r1-e00008
+leads-conservation make-pencils 2 r6-e00009
+logs-conservation process:renew-cedar-logs 11 r1-e00007
+logs-conservation saw-slats 7 r3-e00001
+pencils-conservation pack-pencils 1 r7-e00009
+slats-conservation make-pencils 2 r6-e00009
+total 39

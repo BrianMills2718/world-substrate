@@ -115,7 +115,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
-    reviewed_at: fd8342abe5013f7b8e2bae231772640c60c19530  # re-read 2026-10-28 (S1 declared laws): the change adds law ids to the build summary and a 'Laws this world keeps' progress note; approval before run unchanged
+    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): the change adds law ids to the build summary and a 'Laws this world keeps' progress note; approval before run unchanged
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -126,7 +126,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
-    reviewed_at: fd8342abe5013f7b8e2bae231772640c60c19530  # re-read 2026-10-28 (S1 declared laws): no LLM call or budget path changed, only the build summary and a progress note; budget gate unchanged
+    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): no LLM call or budget path changed, only the build summary and a progress note; budget gate unchanged
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -137,7 +137,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
-    reviewed_at: fd8342abe5013f7b8e2bae231772640c60c19530  # re-read 2026-10-28 (S1 declared laws): run rows still written per request with trace ids; the build record gains a laws field only
+    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): run rows still written per request with trace ids; the build record gains a laws field only
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
