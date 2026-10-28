@@ -62,9 +62,9 @@ rules:
       - tests/test_open_attempt.py::test_a_chain_past_the_reaction_limit_is_refused_whole
       - tests/test_open_attempt.py::test_a_reaction_that_keeps_itself_due_fires_once_per_moment
       - tests/test_open_attempt.py::test_a_round_whose_reactions_do_not_settle_is_undone
-      - tests/test_laws.py::MoveTests::test_a_sale_that_takes_no_money_is_refused_and_names_the_law
-      - tests/test_laws.py::MoveTests::test_a_knock_on_effect_that_breaks_a_law_refuses_the_whole_move
-      - tests/test_laws.py::ProcessTests::test_a_tick_process_that_breaks_a_law_undoes_the_round
+      - tests/test_laws.py::test_a_sale_that_takes_no_money_is_refused_and_names_the_law
+      - tests/test_laws.py::test_a_knock_on_effect_that_breaks_a_law_refuses_the_whole_move
+      - tests/test_laws.py::test_a_tick_process_that_breaks_a_law_undoes_the_round
     decisions:
       - docs/decisions/003-semantic-mechanical-boundary.md
       - docs/decisions/009-same-moment-knock-on-effects.md
@@ -73,7 +73,7 @@ rules:
       A rule or process may write only the components it declared; reaching undeclared state refuses the
       action or stops the tick with nothing changed, and the refusal replays identically.
     owner: src/world_substrate/engine.py
-    reviewed_at: 927258c65ac4d0dd1658d262eb68804fa394bbc5  # re-read 2026-10-28 (declared-laws S2): the law check runs after the scope checks, which are unchanged; a process scope breach still raises (tests/test_laws.py::ProcessTests::test_a_scope_breach_by_a_process_still_raises)
+    reviewed_at: 927258c65ac4d0dd1658d262eb68804fa394bbc5  # re-read 2026-10-28 (declared-laws S2): the law check runs after the scope checks, which are unchanged; a process scope breach still raises (tests/test_laws.py::test_a_scope_breach_by_a_process_still_raises)
     checks:
       - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
       - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
