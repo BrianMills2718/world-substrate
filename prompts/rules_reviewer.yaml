@@ -1,5 +1,5 @@
 name: world_substrate_rules_reviewer
-version: "1.1"
+version: "1.2"
 description: >
   An independent reader of a generated world's rules: given only the person's
   description, the world's declared laws and the compiled rules, it names each
@@ -37,6 +37,9 @@ messages:
       - a law that names too few moves, so an ordinary step the description
         describes would be refused (sawing logs uses logs up);
       - a check that makes a move impossible from the way the world starts.
+      - a starting number (a price, a stock, a balance) that makes a move
+        the description needs do nothing or be refused from the start (a
+        price of 0, so a purchase pays nothing and its law refuses it).
 
       For each finding give the rule's id (or "missing" when no rule exists for
       what the description says), the description's own words it fails, and
@@ -53,3 +56,6 @@ messages:
 
       Rules:
       {{ rules }}
+
+      Starting values (each thing in the world and its numbers at the start):
+      {{ start }}
