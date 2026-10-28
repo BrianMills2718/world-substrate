@@ -18,8 +18,7 @@ Before editing a scoped subtree, read its local `AGENTS.md`:
 - Policies and natural-language descriptions never mutate canonical state directly.
 - Linguistic Core supplies senses/roles; installed mechanics supply effects.
 - Mechanics propose; one enclosing transition validates and commits or refuses.
-- Declared write scopes are enforced; declared read scopes are recorded, not yet enforced.
-- A world's declared laws (its resources' totals and paired trades) are enforced: the engine refuses a move, knock-on effect or round that breaks one and names the law (`src/world_substrate/laws.py`).
+- Declared write scopes and a world's declared laws are enforced (the engine refuses a step that breaks a law and names it, `src/world_substrate/laws.py`); declared read scopes are recorded, not yet enforced.
 - Composite/analytic descriptions do not duplicate primitive effects.
 - Unsupported or defective behavior fails visibly without partial mutation.
 - Resident cognition and post-run analysis remain separate from canonical world truth.
