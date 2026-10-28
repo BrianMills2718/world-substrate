@@ -161,7 +161,30 @@ def _annotations(row: dict[str, Any]) -> str:
     return "  [" + "; ".join(parts) + "]" if parts else ""
 
 
-def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, Any]:
+def _unseen(engine: Engine, observation: dict[str, Any], row: dict[str, Any]) -> str:
+    """What an offered action would draw on or change out of sight, as it stands now.
+
+    Ordering from afar changes someone else's stock in another place, which the
+    observation (same place only) never shows. In pencil8 (2026-10-28) the
+    factory was offered assembly drawing on the mill's slats and the lead works'
+    leads, could not see either, and waited 11 rounds "with no visible leads or
+    slats" while the mill held up to 55.
+    """
+    seen = observation.get("entities") or {}
+    parts: list[str] = []
+    for effect in row.get("effects") or []:
+        path = str(effect).split(" ", 1)[0].split(".")
+        if len(path) != 4 or path[1] != "components" or path[0] in seen:
+            continue
+        entity = engine.world.entities.get(path[0])
+        component = entity.components.get(path[2]) if entity is not None else None
+        value = getattr(component, path[3], None) if component is not None else None
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            parts.append(f"{path[0]} {path[2]}.{path[3]} is {value}")
+    return "  [now, out of sight: " + "; ".join(parts) + "]" if parts else ""
+
+
+def present(engine: Engine, actor_id: str, page: dict[str, Any], hide: Any = None) -> dict[str, Any]:
     """A compact, lossy view of the observation for a policy to read.
 
     Presentation only. Shrinking what a policy sees cannot grant it authority;
@@ -182,7 +205,7 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, An
         self_bits.extend(
             f"{field} {value}"
             for field, value in sorted(vars(component).items())
-            if isinstance(value, (int, str))
+            if isinstance(value, (int, str)) and not (hide and hide(actor_id, name, field, value))
         )
     visible = []
     for entity_id, record in sorted(observation["entities"].items()):
@@ -211,7 +234,7 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, An
             rendered = ", ".join(
                 f"{key} {value}"
                 for key, value in sorted(fields.items())
-                if value is not None and value != ""
+                if value is not None and value != "" and not (hide and hide(entity_id, name, key, value))
             )
             if rendered:
                 bits.append(f"{name}: {rendered}")
@@ -234,7 +257,8 @@ def present(engine: Engine, actor_id: str, page: dict[str, Any]) -> dict[str, An
                 "number": index,
                 "action_id": row["action_id"],
                 "description": describe_action(row["action"])
-                + _annotations(row),
+                + _annotations(row)
+                + _unseen(engine, observation, row),
             }
             for index, row in enumerate(page["available"], start=1)
         ],

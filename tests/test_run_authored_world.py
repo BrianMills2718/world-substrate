@@ -485,3 +485,31 @@ class ResidentViewTests(unittest.TestCase):
         self.assertIn("work", entities["ana"]["components"])
         self.assertEqual(set(entities["ben"]["components"]), {"member"})
         self.assertIn("work", page["observation"]["entities"]["ben"]["components"])  # the engine's page is untouched
+
+
+class ResidentViewTests(unittest.TestCase):
+    """pencil8 (evidence/pencil8-trace-audit/): what the factory was shown after round 4."""
+
+    def _engine(self):
+        from scripts.run_authored_world import _view, _without_no_ops, live_fields
+        world = json.loads((Path(__file__).parent / "fixtures" / "pencil8-live.json").read_text())
+        for entity in world["bundle"]["entities"]:
+            if entity["id"] in world["after_round_4"]:
+                entity["components"] = world["after_round_4"][entity["id"]]
+        engine, model, _ = build_engine(world["bundle"], world["causal_model"])
+        page = _without_no_ops(engine, engine.discover("factory"), bookkeeping=bookkeeping_fields(model))
+        return _view(engine, "factory", page), _view(engine, "factory", page, live_fields(model))
+
+    def test_zeros_no_rule_touches_are_hidden(self):
+        old, new = self._engine()
+        for stray in ("leads 0", "slats 0", "rounds_left 0"):
+            self.assertIn(stray, old["actor_state"])
+            self.assertNotIn(stray, new["actor_state"])
+        self.assertIn("pencils 0", new["actor_state"])  # assembly writes it, so it stays
+        self.assertIn("packed_pencils 10", new["actor_state"])
+
+    def test_offered_move_shows_what_it_draws_on_out_of_sight(self):
+        _, new = self._engine()
+        assemble = [a["description"] for a in new["actions"] if a["description"].startswith("assemble-pencils")]
+        self.assertTrue(assemble)
+        self.assertIn("[now, out of sight: mill stock.slats is 15; lead-maker stock.leads is 11]", assemble[0])

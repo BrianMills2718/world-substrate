@@ -1,0 +1,1673 @@
+{
+ "source": "2026-10-28 live build at 65c07db, share v_0YxZGXVjx3 (evidence/pencil8-trace-audit/)",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "pencil-supply-chain",
+   "label": "Pencil Supply Chain",
+   "summary": "A continuing supply chain turns cedar, graphite, and other materials into boxed pencils sold in shops across the country.",
+   "location": "supply-chain",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "business",
+    "fields": [
+     {
+      "name": "cash",
+      "type": "number",
+      "default": 10000
+     },
+     {
+      "name": "price",
+      "type": "number",
+      "default": 1
+     }
+    ]
+   },
+   {
+    "name": "stock",
+    "fields": [
+     {
+      "name": "logs",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "slats",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "graphite",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "clay",
+      "type": "integer",
+      "default": 1000
+     },
+     {
+      "name": "leads",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "paint",
+      "type": "integer",
+      "default": 1000
+     },
+     {
+      "name": "erasers",
+      "type": "integer",
+      "default": 1000
+     },
+     {
+      "name": "ferrules",
+      "type": "integer",
+      "default": 1000
+     },
+     {
+      "name": "brass",
+      "type": "integer",
+      "default": 1000
+     },
+     {
+      "name": "boxes",
+      "type": "integer",
+      "default": 1000
+     },
+     {
+      "name": "pencils",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "packed_pencils",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   },
+   {
+    "name": "work",
+    "fields": [
+     {
+      "name": "waiting_work",
+      "type": "integer",
+      "default": 10
+     },
+     {
+      "name": "rounds_left",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "supply-chain",
+    "label": "Pencil supply chain",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "oregon",
+    "label": "Oregon logging area",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "oregon-mill",
+    "label": "Oregon lumber mill",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "sri-lanka",
+    "label": "Sri Lanka graphite mine",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "lead-works",
+    "label": "Lead works",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "pennsylvania",
+    "label": "Pennsylvania pencil factory",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "road",
+    "label": "Road network",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "country-shops",
+    "label": "Shops across the country",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "customers",
+    "label": "Pencil customers",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "logger",
+    "label": "Oregon logging crew",
+    "categories": [
+     "logger"
+    ],
+    "location": "oregon",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 1
+     },
+     "stock": {
+      "logs": 1000,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "brass": 0,
+      "boxes": 0,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "mill",
+    "label": "Oregon sawmill",
+    "categories": [
+     "mill"
+    ],
+    "location": "oregon-mill",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 1
+     },
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "brass": 0,
+      "boxes": 0,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "miner",
+    "label": "Sri Lanka graphite miners",
+    "categories": [
+     "miner"
+    ],
+    "location": "sri-lanka",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 1
+     },
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 1000,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "brass": 0,
+      "boxes": 0,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "lead-maker",
+    "label": "Lead makers",
+    "categories": [
+     "lead-maker"
+    ],
+    "location": "lead-works",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 1
+     },
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 1000,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "brass": 0,
+      "boxes": 0,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "factory",
+    "label": "Pennsylvania pencil factory",
+    "categories": [
+     "factory"
+    ],
+    "location": "pennsylvania",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 1
+     },
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 1000,
+      "erasers": 1000,
+      "ferrules": 1000,
+      "brass": 1000,
+      "boxes": 1000,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "carrier",
+    "label": "Truck delivery company",
+    "categories": [
+     "carrier"
+    ],
+    "location": "road",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 1
+     },
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "brass": 0,
+      "boxes": 0,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "shop",
+    "label": "Pencil shop",
+    "categories": [
+     "shop"
+    ],
+    "location": "country-shops",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 2
+     },
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "brass": 0,
+      "boxes": 0,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "customer",
+    "label": "Pencil customers",
+    "categories": [
+     "customer"
+    ],
+    "location": "customers",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "price": 1
+     },
+     "stock": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "brass": 0,
+      "boxes": 0,
+      "pencils": 0,
+      "packed_pencils": 0
+     },
+     "work": {
+      "waiting_work": 10,
+      "rounds_left": 0
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "cut-cedar",
+    "description": "Cut cedar and add logs to the logging crew's stock.",
+    "fields": [
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "saw-slats",
+    "description": "Use logs from the logging crew to make slats at the mill.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "mine-graphite",
+    "description": "Mine graphite and add it to the miners' stock.",
+    "fields": [
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "make-leads",
+    "description": "Use graphite from the miners and clay held at the lead works to make leads.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "assemble-pencils",
+    "description": "Use slats from the mill, leads from the lead works, and factory stocks of paint, erasers, and ferrules to make pencils.",
+    "fields": [
+     {
+      "name": "slat_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "lead_source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "pack-pencils",
+    "description": "Pack pencils into boxes held at the factory.",
+    "fields": [
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "deliver-boxes",
+    "description": "Carry packed pencils from the factory to a shop.",
+    "fields": [
+     {
+      "name": "source",
+      "type": "entity_ref"
+     },
+     {
+      "name": "to",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "sell-pencils",
+    "description": "Sell pencils from a shop to a customer for the shop's listed price.",
+    "fields": [
+     {
+      "name": "shop",
+      "type": "entity_ref"
+     },
+     {
+      "name": "customer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "logger": {
+     "kind": "emoji",
+     "value": "\ud83e\ude93"
+    },
+    "mill": {
+     "kind": "emoji",
+     "value": "\ud83e\udeb5"
+    },
+    "miner": {
+     "kind": "emoji",
+     "value": "\u26cf\ufe0f"
+    },
+    "lead_maker": {
+     "kind": "emoji",
+     "value": "\u270f\ufe0f"
+    },
+    "factory": {
+     "kind": "emoji",
+     "value": "\ud83c\udfed"
+    },
+    "carrier": {
+     "kind": "emoji",
+     "value": "\ud83d\ude9a"
+    },
+    "shop": {
+     "kind": "emoji",
+     "value": "\ud83c\udfec"
+    },
+    "customer": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1"
+    }
+   },
+   "category_assets": {
+    "logger": "logger",
+    "mill": "mill",
+    "miner": "miner",
+    "lead-maker": "lead_maker",
+    "factory": "factory",
+    "carrier": "carrier",
+    "shop": "shop",
+    "customer": "customer"
+   },
+   "station_roles": {
+    "oregon": "source",
+    "oregon-mill": "workstation",
+    "sri-lanka": "source",
+    "lead-works": "workstation",
+    "pennsylvania": "workstation",
+    "country-shops": "goal"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "cut-cedar",
+    "version": "1",
+    "action_kind": "cut-cedar",
+    "rationale": "Cutting cedar adds logs to the logging crew's stock; the represented stock is the only available measure of logs.",
+    "actor_selector": {
+     "categories": [
+      "logger"
+     ],
+     "components": [
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      5,
+      10
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.logs",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "The world has no represented cedar reserve, so the action cannot check or deplete one."
+    ],
+    "tests": [
+     "A positive quantity adds that many logs to the logging crew's stock. A zero or negative quantity is refused."
+    ],
+    "semantic_bindings": [
+     "quantity: logs cut and added to the logging crew's stock"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "saw-slats",
+    "version": "1",
+    "action_kind": "saw-slats",
+    "rationale": "The mill uses logs held by the logging crew to make slats. The represented locations do not put the crew and mill together, so this trade is treated as an order from afar rather than requiring co-location.",
+    "actor_selector": {
+     "categories": [
+      "mill"
+     ],
+     "components": [
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "logger"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      5,
+      10
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the logging crew has enough logs",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.stock.logs"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.stock.logs",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.slats",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "This is an immediate abstract order and does not represent a journey or its duration."
+    ],
+    "tests": [
+     "With enough logs, the action subtracts the quantity from the logging crew and adds the same quantity of slats to the mill. Insufficient logs refuse the action."
+    ],
+    "semantic_bindings": [
+     "source: logging crew supplying logs",
+     "quantity: logs consumed and slats produced"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "mine-graphite",
+    "version": "1",
+    "action_kind": "mine-graphite",
+    "rationale": "Mining adds graphite to the miners' stock; no separate mine reserve is represented.",
+    "actor_selector": {
+     "categories": [
+      "miner"
+     ],
+     "components": [
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      5,
+      10
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.graphite",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "The world has no represented graphite reserve, so the action cannot check or deplete one."
+    ],
+    "tests": [
+     "A positive quantity adds that much graphite to the miners' stock. A zero or negative quantity is refused."
+    ],
+    "semantic_bindings": [
+     "quantity: graphite mined and added to the miners' stock"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "make-leads",
+    "version": "1",
+    "action_kind": "make-leads",
+    "rationale": "Lead makers use graphite from the miners and clay held at the lead works to make leads. The locations are separate, so graphite is treated as an order from afar; clay is consumed at the lead works.",
+    "actor_selector": {
+     "categories": [
+      "lead-maker"
+     ],
+     "components": [
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "miner"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      5,
+      10
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the miners have enough graphite",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.stock.graphite"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the lead works has enough clay",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.clay"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.stock.graphite",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.clay",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.leads",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "The separated parties' order is represented as immediate; no transport state links the miners and lead works."
+    ],
+    "tests": [
+     "With sufficient graphite and clay, the action consumes both inputs and adds the same quantity of leads. Either insufficient input refuses the action."
+    ],
+    "semantic_bindings": [
+     "source: miners supplying graphite",
+     "quantity: graphite and clay consumed and leads made"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "assemble-pencils",
+    "version": "1",
+    "action_kind": "assemble-pencils",
+    "rationale": "The factory consumes slats, leads, paint, erasers, and ferrules to assemble pencils. The mill and lead works are remote, so their stocks are treated as supplies ordered from afar.",
+    "actor_selector": {
+     "categories": [
+      "factory"
+     ],
+     "components": [
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {
+     "slat_source": {
+      "categories": [
+       "mill"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "lead_source": {
+      "categories": [
+       "lead-maker"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      5,
+      10
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the mill has enough slats",
+      "left": {
+       "participant": {
+        "name": "slat_source",
+        "path": "components.stock.slats"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the lead works has enough leads",
+      "left": {
+       "participant": {
+        "name": "lead_source",
+        "path": "components.stock.leads"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the factory has enough paint",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.paint"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the factory has enough erasers",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.erasers"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the factory has enough ferrules",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.ferrules"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "slat_source",
+      "path": "components.stock.slats",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "lead_source",
+      "path": "components.stock.leads",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.paint",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.erasers",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.ferrules",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.pencils",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "Remote component orders are modeled as immediate transfers; the world has no represented stock in transit."
+    ],
+    "tests": [
+     "With all five inputs sufficient, the action consumes the inputs and adds the requested pencils. An insufficient input refuses the action."
+    ],
+    "semantic_bindings": [
+     "slat_source: mill supplying slats",
+     "lead_source: lead makers supplying leads",
+     "quantity: each input consumed and pencils assembled"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "pack-pencils",
+    "version": "1",
+    "action_kind": "pack-pencils",
+    "rationale": "Packing at the factory consumes pencils and boxes and adds packed pencils.",
+    "actor_selector": {
+     "categories": [
+      "factory"
+     ],
+     "components": [
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      5,
+      10
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the factory has enough pencils",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "the factory has enough boxes",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stock.boxes"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stock.pencils",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.boxes",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stock.packed_pencils",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "One packed-pencil stock unit represents one pencil packed; box capacity or packing time is not separately represented."
+    ],
+    "tests": [
+     "With enough pencils and boxes, the action consumes both and adds the requested packed pencils. Insufficient inputs refuse it."
+    ],
+    "semantic_bindings": [
+     "quantity: pencils and boxes consumed and packed pencils produced"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "deliver-boxes",
+    "version": "1",
+    "action_kind": "deliver-boxes",
+    "rationale": "The carrier carries packed pencils from the factory source to the shop destination. The carrier's represented location is the road, so no same-place check is imposed; stock transfer is represented directly because no in-transit goods or destination reference can be retained in the available state.",
+    "actor_selector": {
+     "categories": [
+      "carrier"
+     ],
+     "components": [
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {
+     "source": {
+      "categories": [
+       "factory"
+      ],
+      "components": [
+       "stock"
+      ]
+     },
+     "to": {
+      "categories": [
+       "shop"
+      ],
+      "components": [
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1,
+      2,
+      3,
+      5,
+      10
+     ]
+    },
+    "checks": [
+     {
+      "label": "the quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the factory has enough packed pencils",
+      "left": {
+       "participant": {
+        "name": "source",
+        "path": "components.stock.packed_pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "source",
+      "path": "components.stock.packed_pencils",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "to",
+      "path": "components.stock.packed_pencils",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     }
+    ],
+    "limits": [
+     "Delivery is modeled as an immediate stock transfer. The represented state cannot store a destination, goods in transit, or a delivery countdown on the carrier."
+    ],
+    "tests": [
+     "With enough packed pencils at the factory, the action transfers the requested quantity to the shop. Insufficient stock refuses it."
+    ],
+    "semantic_bindings": [
+     "source: factory stock being carried",
+     "to: shop receiving packed pencils",
+     "quantity: packed pencils transferred"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "sell-pencils",
+    "version": "1",
+    "action_kind": "sell-pencils",
+    "rationale": "A sale is one pencil per action under the represented money rule. The listed shop price is charged once, and the shop transfers one packed pencil to the customer. The parties' different locations make this an afar purchase.",
+    "actor_selector": {
+     "categories": [
+      "shop"
+     ],
+     "components": [
+      "business",
+      "stock",
+      "work"
+     ]
+    },
+    "participants": {
+     "shop": {
+      "categories": [
+       "shop"
+      ],
+      "components": [
+       "business",
+       "stock"
+      ]
+     },
+     "customer": {
+      "categories": [
+       "customer"
+      ],
+      "components": [
+       "business",
+       "stock"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "the shop listed a positive price",
+      "left": {
+       "participant": {
+        "name": "shop",
+        "path": "components.business.price"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "the customer can pay the listed price",
+      "left": {
+       "participant": {
+        "name": "customer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "participant": {
+        "name": "shop",
+        "path": "components.business.price"
+       }
+      }
+     },
+     {
+      "label": "the shop has a packed pencil to sell",
+      "left": {
+       "participant": {
+        "name": "shop",
+        "path": "components.stock.packed_pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "shop",
+      "path": "components.stock.packed_pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.stock.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "participant": {
+        "name": "shop",
+        "path": "components.business.price"
+       }
+      }
+     },
+     {
+      "participant": "shop",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "participant": {
+        "name": "shop",
+        "path": "components.business.price"
+       }
+      }
+     }
+    ],
+    "limits": [
+     "The action's quantity is ignored: each sale transfers exactly one pencil and charges the listed price once. The afar purchase is immediate because no order or delivery state is represented."
+    ],
+    "tests": [
+     "If the customer can pay and the shop has a packed pencil, one pencil transfers and the listed price moves from customer cash to shop cash. A customer unable to pay or a shop without stock is refused."
+    ],
+    "semantic_bindings": [
+     "shop: seller and recipient of payment",
+     "customer: buyer and payer",
+     "quantity: one pencil per sale, regardless of requested quantity"
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "renew-raw-stocks",
+    "rationale": "Ongoing production needs renewing raw-material stocks. The represented logger and miner stocks are the only available raw-material stocks; this renewal does not create slats, leads, or finished products.",
+    "selector": {
+     "categories": [
+      "logger",
+      "miner"
+     ],
+     "components": [
+      "stock"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the logging crew or miners have not reached the stock ceiling",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.stock.logs"
+       }
+      },
+      "op": "lt",
+      "right": {
+       "literal": 1000
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.stock.logs",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   }
+  ],
+  "terminal": null
+ },
+ "after_round_4": {
+  "carrier": {
+   "business": {
+    "cash": 10000,
+    "price": 1
+   },
+   "stock": {
+    "logs": 0,
+    "slats": 0,
+    "graphite": 0,
+    "clay": 0,
+    "leads": 0,
+    "paint": 0,
+    "erasers": 0,
+    "ferrules": 0,
+    "brass": 0,
+    "boxes": 0,
+    "pencils": 0,
+    "packed_pencils": 0
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  },
+  "customer": {
+   "business": {
+    "cash": 10000,
+    "price": 1
+   },
+   "stock": {
+    "logs": 0,
+    "slats": 0,
+    "graphite": 0,
+    "clay": 0,
+    "leads": 0,
+    "paint": 0,
+    "erasers": 0,
+    "ferrules": 0,
+    "brass": 0,
+    "boxes": 0,
+    "pencils": 0,
+    "packed_pencils": 0
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  },
+  "factory": {
+   "business": {
+    "cash": 10000,
+    "price": 1
+   },
+   "stock": {
+    "logs": 0,
+    "slats": 0,
+    "graphite": 0,
+    "clay": 0,
+    "leads": 0,
+    "paint": 990,
+    "erasers": 990,
+    "ferrules": 990,
+    "brass": 1000,
+    "boxes": 990,
+    "pencils": 0,
+    "packed_pencils": 10
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  },
+  "lead-maker": {
+   "business": {
+    "cash": 10000,
+    "price": 1
+   },
+   "stock": {
+    "logs": 0,
+    "slats": 0,
+    "graphite": 0,
+    "clay": 979,
+    "leads": 11,
+    "paint": 0,
+    "erasers": 0,
+    "ferrules": 0,
+    "brass": 0,
+    "boxes": 0,
+    "pencils": 0,
+    "packed_pencils": 0
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  },
+  "logger": {
+   "business": {
+    "cash": 10000,
+    "price": 1
+   },
+   "stock": {
+    "logs": 985,
+    "slats": 0,
+    "graphite": 0,
+    "clay": 0,
+    "leads": 0,
+    "paint": 0,
+    "erasers": 0,
+    "ferrules": 0,
+    "brass": 0,
+    "boxes": 0,
+    "pencils": 0,
+    "packed_pencils": 0
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  },
+  "mill": {
+   "business": {
+    "cash": 10000,
+    "price": 1
+   },
+   "stock": {
+    "logs": 0,
+    "slats": 15,
+    "graphite": 0,
+    "clay": 0,
+    "leads": 0,
+    "paint": 0,
+    "erasers": 0,
+    "ferrules": 0,
+    "brass": 0,
+    "boxes": 0,
+    "pencils": 0,
+    "packed_pencils": 0
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  },
+  "miner": {
+   "business": {
+    "cash": 10000,
+    "price": 1
+   },
+   "stock": {
+    "logs": 0,
+    "slats": 0,
+    "graphite": 1001,
+    "clay": 0,
+    "leads": 0,
+    "paint": 0,
+    "erasers": 0,
+    "ferrules": 0,
+    "brass": 0,
+    "boxes": 0,
+    "pencils": 0,
+    "packed_pencils": 0
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  },
+  "shop": {
+   "business": {
+    "cash": 10000,
+    "price": 2
+   },
+   "stock": {
+    "logs": 0,
+    "slats": 0,
+    "graphite": 0,
+    "clay": 0,
+    "leads": 0,
+    "paint": 0,
+    "erasers": 0,
+    "ferrules": 0,
+    "brass": 0,
+    "boxes": 0,
+    "pencils": 0,
+    "packed_pencils": 0
+   },
+   "work": {
+    "waiting_work": 10,
+    "rounds_left": 0
+   }
+  }
+ }
+}
