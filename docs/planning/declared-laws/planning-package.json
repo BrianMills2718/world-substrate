@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "2f8d8e6",
+  "subject_revision": "98a180a",
   "request": "Brian 2026-10-28 \"yes lets make it companhy plannign complaint\" (to: the world declares its own laws, the engine enforces them generically, and an independent AI review checks the rules against the description and the laws, replacing the growing list of heuristic checks)",
   "parts": {
     "checks": {

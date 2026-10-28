@@ -1,4 +1,4 @@
-Checks run 2026-10-28 on branch plan/declared-laws (worktree ws-declared-laws) at 2f8d8e6, based on main 5d6a48e.
+Checks run 2026-10-28 on branch plan/declared-laws (worktree ws-declared-laws) at 98a180a, based on main 5d6a48e.
 
 == durable documents (arc42): python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
 durable-docs: mode=repo repo=. findings=0 (none), exit 0
@@ -26,8 +26,8 @@ exit 0
 
 == project check: PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py
 World Substrate project check passed.
-Neutral runtime tests: 801 passed, 2 skipped, 213 subtests passed in 39.64s
-Passed-tree stamp: aac11be078d5
+Neutral runtime tests: 801 passed, 2 skipped, 213 subtests passed in 59.32s
+Passed-tree stamp: a042f26297c3
 Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
 Planning path: README.md -> roadmap/README.md -> active slice
 Pinned source records checked: 16
