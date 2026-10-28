@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "record_type": "acceptance_criteria",
+  "entries": [
+    {
+      "id": "A1",
+      "criterion": "When I build a world, the build record shows that world's own bookkeeping laws in plain words.",
+      "grounded_in": ["Brian 2026-10-28: the AI that designs the world declares its laws (design part 1, approved \"yes lets make it companhy plannign complaint\")"],
+      "demonstration": [
+        "Open the World Builder.",
+        "Paste the pencil description and press Create simulation.",
+        "When the build finishes, open the build record and read the Laws list."
+      ],
+      "expected": "A short list of sentences in the pencil world's own words, such as \"Pencils are made only by assembling them and used up only by a customer\" and \"A sale moves pencils to the buyer and cash to the seller\", each naming things and moves that appear elsewhere on the page.",
+      "failure_example": "Broken: the Laws list is missing, or a law names something the pencil world does not have (gold, a bank), or the same laws appear word for word for a kitchen description. Working: every law names this world's goods, money and moves.",
+      "representation": {"view": "composite-linked-view: a laws table in the build record, each row opening the moves it names", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "entrypoint": "planned",
+      "status": "not built"
+    },
+    {
+      "id": "A2",
+      "criterion": "A move that breaks a declared law is refused, and the page says which law it broke.",
+      "grounded_in": ["Brian 2026-10-28: the engine enforces declared laws generically and names the law it refuses on (design part 2)"],
+      "demonstration": [
+        "Open the World Builder's replay of the saved pencil13 world with its laws (link given in the S2 report).",
+        "Go to round 8 and find the shop's buy-boxed-pencils move.",
+        "Read what the page says about it."
+      ],
+      "expected": "The move is marked refused (orange, with the word \"refused\") and shows the law's sentence, \"A purchase moves goods one way and payment the other\"; the shop's boxes and the factory's cash are unchanged in that round.",
+      "failure_example": "Broken: the move shows as done, boxes move to the shop and no cash moves to the factory (exactly what pencil13 does today), or it is refused with no law named. Working: refused, law quoted, nothing changed.",
+      "representation": {"view": "composite-linked-view: the run's round list with the refusal row opening its law", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "entrypoint": "planned",
+      "status": "not built"
+    },
+    {
+      "id": "A3",
+      "criterion": "An independent review points out where the rules do not match my description, in my description's words.",
+      "grounded_in": ["Brian 2026-10-28: an independent AI review of the rules replaces the heuristic checks (design part 3)"],
+      "demonstration": [
+        "Open the build record of the saved pencil13 world reviewed in S3 (link given in the S3 report).",
+        "Read the Review findings list."
+      ],
+      "expected": "Each finding names one rule and quotes the words of the description it was checked against; one finding says buy-boxed-pencils takes the boxes but pays the factory nothing.",
+      "failure_example": "Broken: the list is empty, says only \"looks good\", or gives findings without quoting the description. Working: buy-boxed-pencils is named with the quoted description words about the shop buying from the factory.",
+      "representation": {"view": "composite-linked-view: a findings table, each row opening its rule and the quoted words", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "entrypoint": "planned",
+      "status": "not built"
+    },
+    {
+      "id": "A4",
+      "criterion": "The pencil world I build runs with every sale paying for what it takes.",
+      "grounded_in": ["Brian 2026-10-27 \"do that\": a live pencil build to confirm money changes hands on a sale"],
+      "demonstration": [
+        "Open the World Builder, paste the pencil description and press Create simulation.",
+        "Let the run play, then open any sale in the round list or the network view."
+      ],
+      "expected": "Each sale moves pencils to the buyer and cash to the seller in the same step, including the shop buying boxes from the factory; the build record lists the laws and the review findings.",
+      "failure_example": "Broken: a purchase where goods move and cash does not (pencil13's buy-boxed-pencils), or the build fails before the run (pencil14, 422). Working: both sides move on every sale.",
+      "representation": {"view": "composite-linked-view: the run's round list and network view", "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"},
+      "entrypoint": "https://brianmills.dev/world-builder/",
+      "status": "not built"
+    }
+  ]
+}

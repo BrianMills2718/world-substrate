@@ -207,6 +207,10 @@ Every reader document in this repository that the [wiki index](index.md) does no
 
 - [Trace read: pencil build 3SogfsdEGx9M (2026-10-28)](../evidence/pencil13-trace-audit/TRACE_READ.md)
 
+## evidence/pencil14-build-failure
+
+- [pencil14: build failed before the run (2026-10-28)](../evidence/pencil14-build-failure/README.md)
+
 ## evidence/pencil12-trace-audit
 
 - [Trace read: pencil build oRfOptv0O3f3 (2026-10-28)](../evidence/pencil12-trace-audit/TRACE_READ.md)

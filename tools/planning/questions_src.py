@@ -804,10 +804,12 @@ Q = [
   "resolves_with": "One counterexample check, by reading: go through each logged incident (pencil2, 4, 7, 12, 13, 14; airfield #254) and say which law shape would have caught it. If every one is a total or a pairing, S1 keeps the two shapes; a rule of another shape stays an ordinary rule that the independent review (S3) reads against the description, not a law.",
   "owner": "agent",
   "status": "resolved",
-  "evidence": "Read 2026-10-28 against the incident list in docs/plans/declared_laws.md (Incidents): goods from nothing (pencil2/4), dead-end stock (pencil2/4/7) and a purchase that pays nothing (pencil13 buy-boxed-pencils) are totals or pairings; the no-op moves (#254) and the malformed path (pencil14) are not law questions at all (the first is for the review, the second is already refused by the installer). None needs a third shape, so S1 keeps two; S5's four new descriptions are read for a counterexample before S4 retires anything.",
+  "evidence": "Read 2026-10-28 against the incident list in docs/plans/declared_laws.md (Incidents) and the saved worlds tests/fixtures/pencil2-live.json, pencil4-live.json, pencil7-live.json, pencil12-live.json and pencil13-kept.json: goods from nothing (pencil2/4) breaks a total; the purchase that pays nothing (pencil13 buy-boxed-pencils) breaks a pairing. Dead-end stock (pencil2/4/7) is the counterexample: a conserved total is unchanged when stock piles up with no move that uses it, so no total or pairing refuses it; it is a reachability property of the rules, not a bookkeeping law. It stays with what can see it: the test-run report of stock that only grew, and the review (S3), which reads each resource against the description. The no-op moves (#254) are for the review, and the malformed path (pencil14, evidence/pencil14-build-failure/README.md) is already refused by the installer. So S1 keeps two shapes, laws do not claim dead-end stock, and S5's four new descriptions are read for another counterexample before S4 retires anything.",
   "sources": [
    "docs/plans/declared_laws.md",
    "evidence/pencil13-trace-audit/TRACE_READ.md",
+   "evidence/pencil7-trace-audit/TRACE_READ.md",
+   "tests/fixtures/pencil7-live.json",
    "src/world_substrate/assay.py:269"
   ],
   "touches": ["world-law", "law-check"]
@@ -831,7 +833,7 @@ Q = [
   "short": "Which heuristic checks retire",
   "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:840-1220), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
   "blocks": "S4: which checks are removed, and so whether validation stops growing one check per bug",
-  "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at the rules' meaning from their shape (conjuring, second source, dead-end stock, unsourced inputs, vanishing moves, unanswered demand, starved holders) retire one by one, each only when the saved world of every incident it caught is refused by a law or named by the review.",
+  "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at the rules' meaning from their shape (conjuring, second source, unsourced inputs, vanishing moves, unanswered demand, starved holders) retire one by one, each only when the saved world of every incident it caught is refused by a law or named by the review. Dead-end stock is not a law (Q43): it becomes a test-run report (stock that only grew in the scripted run) and stays unless the review names every dead-end incident.",
   "owner": "agent",
   "status": "open",
   "sources": [
@@ -846,7 +848,7 @@ Q = [
   "short": "Refuse at run time or check at build time first",
   "question": "A declared law can be enforced when a move runs (the engine refuses a breach) or checked before any run (read each rule's effects and prove it cannot break a total). Which comes first?",
   "blocks": "S2's scope",
-  "resolves_with": "An argument settles it. The run-time check is the guarantee: it holds for every rule shape and every state, and the build's scripted test run already runs the rules, so a breach there is a build finding for free. A static proof is sound only for add and subtract effects with fixed amounts, so it is an optional speed-up, not the guarantee.",
+  "resolves_with": "An argument settles it. The run-time check is the guarantee for every step that runs: it holds for every rule shape, and the build's scripted test run already runs the rules, so a breach there is a build finding for free. It does not see steps the test run never plays; a breach of those shows later as a refusal in live play, named by its law, which is safe but late. A static proof is sound only for add and subtract effects with fixed amounts, so it is an optional speed-up, not the guarantee.",
   "owner": "agent",
   "status": "resolved",
   "evidence": "Settled by argument 2026-10-28: S2 builds the run-time law check inside Engine.apply's commit, beside the write-scope check (src/world_substrate/engine.py:705), and inside each knock-on wave; a law breach in the test run becomes a build finding sent to the rules writer. The static check is deferred and needs no decision now.",
@@ -855,5 +857,33 @@ Q = [
    "src/world_substrate/engine.py:896"
   ],
   "touches": ["law-check", "test-run"]
+ },
+ {
+  "id": "Q47",
+  "short": "One resource under several field names",
+  "question": "In pencil13 the customer paid from customer.cash into the shop's business.cash: the same money sits under different component names on different entities. A law that names one {component, field} cannot say that both are cash. How does a law name a resource?",
+  "blocks": "S1's law contract: whether the pencil13 pairing and the cash total can be written at all",
+  "resolves_with": "Read the incident: the pencil13 trace audit shows #277 had to match payment by last field name, a guess. The designer knows which fields hold the same thing, so the law should say so: a resource is declared once with every place it is kept ({resource_id, says, kept_in: [{component, field}, ...]}), a total sums all those places over all holders, and a pairing's gives and pays name resource ids, not fields.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by reading 2026-10-28: evidence/pencil13-trace-audit/TRACE_READ.md:24-25 records customer.cash paying into business.cash and the last-field-name match added in #277. docs/plans/declared_laws.md Piece 1 now declares resources with every field they are kept in, and laws name resources.",
+  "sources": [
+   "evidence/pencil13-trace-audit/TRACE_READ.md:24",
+   "docs/plans/declared_laws.md"
+  ],
+  "touches": ["world-law", "entity-component"]
+ },
+ {
+  "id": "Q48",
+  "short": "A wrong law is declared",
+  "question": "The designer may declare a law that is wrong for the world (cash that may be created by a move the description says cannot create it, or a pairing on a move that is a gift). The engine then enforces the wrong thing faithfully. What catches a wrong law?",
+  "blocks": "whether S3's review must read the laws against the description as well as the rules, and whether L1 can pass on laws that are merely well-formed",
+  "resolves_with": "Argument first: the laws are model output like the rules, so they get the same outside reader; the review (S3) receives the description and the laws and is asked about both, and every law refusal in a test run is shown to the rules writer with the law's sentence, so a law that blocks what the description wants shows up as a refusal the writer can contest. Whether the review actually names wrong laws is part of the Q44 measurement: seed one wrong law into a saved pencil world and see whether the review names it.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/plans/declared_laws.md"
+  ],
+  "touches": ["world-law", "rules-review"]
  }
 ]

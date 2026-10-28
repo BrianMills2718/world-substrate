@@ -182,7 +182,7 @@ a{color:var(--have)}
 <tr><td>project check (tests, system model, docs)</td><td>tests run 801, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>wiki and Markdown cap</td><td>md files 154, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 18 open, 28 resolved</h3>
+<h3 class="sub">Open questions: 19 open, 29 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -203,6 +203,7 @@ a{color:var(--have)}
 <tr><td><b>Q38</b> Does S1 close #128</td><td>agent</td><td>whether #128 stays open on the board</td></tr>
 <tr><td><b>Q44</b> Which model reviews the rules</td><td>agent</td><td>S3&#x27;s reviewer design, and whether S4 may retire any heuristic check on the strength of the review</td></tr>
 <tr><td><b>Q45</b> Which heuristic checks retire</td><td>agent</td><td>S4: which checks are removed, and so whether validation stops growing one check per bug</td></tr>
+<tr><td><b>Q48</b> A wrong law is declared</td><td>agent</td><td>whether S3&#x27;s review must read the laws against the description as well as the rules, and whether L1 can pass on laws that are merely well-formed</td></tr>
 </tbody></table></div>
 <h3 class="sub">Diagrams</h3>
 <ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
@@ -213,7 +214,7 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 65 ideas, 99 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (18 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (19 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->

@@ -205,6 +205,10 @@
       "path": "docs/planning/declared-laws/cold-review.md",
       "verdict": "pending",
       "reviewed_revision": ""
+    },
+    "acceptance": {
+      "status": "present",
+      "path": "docs/planning/declared-laws/acceptance-criteria.json"
     }
   },
   "note": "This is the plan's own package, named by docs/plans/declared_laws.md's 'Planning package:' line. The repository package docs/planning/planning-package.json now points its plan part at the same plan; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (Q41). The open-attempt plan keeps its own package (docs/planning/open-attempt/) for its remaining slices."

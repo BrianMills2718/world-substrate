@@ -1,0 +1,21 @@
+[navigated] https://brianmills.dev/world-builder/
+[1.5s] no #ai-moves toggle on the page (AI always chooses)
+[1.5s] pressing Create simulation
+[1.6s] step: Sending your description… 0 s
+[8.6s] step: Reading your description… 5.3 s
+[29.5s] step: Writing the rules… 27.1 s
+[74.8s] step: ✓ Wrote 15 rules and 2 things that happen by themselves · no finish line cut cedar saw cedar mine graphite supply clay make leads assemble pencils pack pencils 
+[74.8s] step: Test-running the rules with simple moves… 73 s
+[104.0s] step: Rewriting the rules… · the last rules did not pass the test run 101.7 s
+[109.1s] step: Test-running the rules with simple moves… 106.7 s
+[117.9s] step: Rewriting the rules… · the last rules did not pass the test run 115.2 s
+[151.1s] step: ✓ Wrote 15 rules and 3 things that happen by themselves · no finish line cut cedar saw cedar mine graphite supply clay make leads assemble pencils pack pencils 
+[151.1s] step: Test-running the rules with simple moves… 147.6 s
+[180.2s] step: Redesigning what each one can do… · the test run showed steps that could never happen 177.5 s
+[195.4s] step: Writing the rules… 192 s
+[console.error] Failed to load resource: the server responded with a status of 422 ()
+[286.9s] notice: mechanic installer rejected shipment-arrival: malformed_path
+[286.9s] run stage visible
+[driver error] page.waitForTimeout: Target page, context or browser has been closed
+[no screenshot] page.screenshot: Target page, context or browser has been closed
+rc=124

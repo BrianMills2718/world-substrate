@@ -64,7 +64,7 @@ bookkeeping wrong (goods from nothing, stock with nowhere to go, a purchase that
 nothing, a malformed field path), and each was fixed by one more hand-written check in
 `scripts/world_builder_service.py:840-1220`, some of which then raised false alarms. pencil14 at `5d6a48e` failed
 outright (422 after about 287 s, job `f0b6d1a3dc0a40848456e6fe2ce172c0`: "mechanic installer rejected
-shipment-arrival: malformed_path"). **Inspectable result of this plan:** the canonical example above, live.
+shipment-arrival: malformed_path"; driver log in `evidence/pencil14-build-failure/`). **Inspectable result of this plan:** the canonical example above, live.
 
 ## Outcome step
 
@@ -96,10 +96,10 @@ The logged symptoms, each with its saved world, used by L6 and S4:
 | --- | --- | --- | --- |
 | A purchase that pays nothing (buy-boxed-pencils) | pencil13 `3SogfsdEGx9M`, `tests/fixtures/pencil13-kept.json` | pairing | nothing |
 | Goods made from nothing | pencil2, pencil4 | total | `_conjuring_processes`, `_second_source_processes` |
-| Stock with nowhere to go | pencil2, pencil4, pencil7 | total (sink missing) | `_dead_end_stock` |
+| Stock with nowhere to go | pencil2, pencil4, pencil7 | not a law: a total is unchanged when stock piles up, so this is reachability (Q43) | `_dead_end_stock`; becomes a test-run report and is read by the review |
 | Customer flagged as dead end though it consumes | pencil12, pencil13 | false alarm | `_dead_end_stock` (fixed in #275/#277) |
 | Moves that change nothing | airfield #254 | review | `_vanishing_moves` in part |
-| Malformed field path | pencil14 | not a law | installer, already refused |
+| Malformed field path | pencil14, `evidence/pencil14-build-failure/README.md` | not a law | installer, already refused |
 
 ## Current truth (read from code 2026-10-28, main `5d6a48e`)
 
@@ -107,7 +107,8 @@ The logged symptoms, each with its saved world, used by L6 and S4:
 | --- | --- |
 | A move's candidate state is checked for writes outside its declared scope and refused whole | `Engine.apply`, `src/world_substrate/engine.py:686-720` |
 | Knock-on effects settle in waves inside the same commit | `_settle`, `engine.py:896`; Decision 009 |
-| Effects are rows `{participant, path, op: set|add|subtract, value}` | `src/world_substrate/engine.py:1000-1110` |
+| Effects are rows `{participant, path, op: set|add|subtract, value}` | `EFFECT_OPS`, `src/world_substrate/action_authoring.py:42`; rows read at `:1052`, applied at `:1109` |
+| A process (tick or knock-on) that writes outside its scope raises `ScopeViolation` and `Engine.advance` restores the pre-tick state; the only refusal of a moment is `reaction_limit` via `_refuse_round` | `src/world_substrate/engine.py:821-870`, `:871-895`, `:1005-1015` |
 | A world-specific conservation check exists for one reference world only, "not a substrate law" | `assay_conservation`, `src/world_substrate/assay.py:269` |
 | A read-only derived view pairs two give events into one exchange | `src/world_substrate/exchange.py:68` |
 | About fourteen build checks guess meaning from rule shape or report the test run | `scripts/world_builder_service.py:840-1220`, used at `:1700-1760` |
@@ -118,16 +119,23 @@ The logged symptoms, each with its saved world, used by L6 and S4:
 
 ### Piece 1. The world declares its laws (copy: Petri-net place invariants; Concordia's stock-and-flow ledger)
 
-The world designer's output gains `laws`, a list in two shapes, each with a plain sentence for the page:
+The world designer's output gains `resources` and `laws`, each with a plain sentence for the page. A **resource** is
+declared once with every place it is kept, because the same thing can sit under different names on different
+entities (pencil13: the customer pays from `customer.cash` into the shop's `business.cash`; Q47):
+`{resource_id, says, kept_in: [{component, field}, ...]}`. A resource's amount on an entity is the sum of the fields
+it is kept in there. Laws come in two shapes and name resources, never raw fields:
 
-- **total**: `{law_id, says, resource: {component, field}, holders: "every entity with this field" | [ids],
-  may_change_by: [move or process ids]}`. The sum of that field over its holders may change only in a step made by a
-  listed move or process (the factory's `make-pencils`, the customer's `use-pencil`); every other step must leave it
-  unchanged. This is a P-invariant with named exempt transitions, and it covers both "nothing from nothing" and
-  "nothing vanishes".
-- **pairing**: `{law_id, says, move: <move id>, gives: {from, to, field}, pays: {from, to, field}}`. Every step
-  of that move that changes `gives` must also change `pays` the other way, both non-zero. "A purchase moves goods one
-  way and payment the other."
+- **total**: `{law_id, says, resource: <resource id>, may_change_by: [move or process ids]}`. The resource's amount
+  summed over every entity may change only in a step made by a listed move or process (the factory's `make-pencils`,
+  the customer's `use-pencil`); every other step must leave it unchanged. This is a P-invariant with named exempt
+  transitions, and it covers both "nothing from nothing" and "nothing vanishes".
+- **pairing**: `{law_id, says, move: <move id>, gives: {resource, from, to}, pays: {resource, from, to}}`, where
+  `from` and `to` are the move's participant roles. Every step of that move that moves `gives` from one to the other
+  must also move `pays` the other way, both non-zero. "A purchase moves goods one way and payment the other."
+
+Laws do not cover stock with nowhere to go: piling up leaves every total unchanged, so it is a reachability question
+(Q43), left to the test-run report and the review. A law can itself be wrong for the world; the review reads the
+laws against the description too (Q48).
 
 Laws name the world's own fields and moves. There is no fixed list of goods or moves; the designer writes the
 laws
@@ -136,10 +144,19 @@ input and is told every move must keep them.
 
 ### Piece 2. The engine enforces declared laws (extends the existing scope check)
 
-`src/world_substrate/laws.py` holds one pure function, `law_breaches(laws, before, after, step_id)`, called in
-`Engine.apply` right after the write-scope check and in each `_settle` wave. A breach refuses the whole step with
-status `law_breach` and a failed check that quotes the law's `says` sentence, exactly as a scope violation does
-today: nothing changes, the event is recorded. Because the build's scripted test run runs the rules, a breach there is
+`src/world_substrate/laws.py` holds one pure function, `law_breaches(laws, before, after, step_id)`, called at every
+commit point. Two cases, because moves and processes are refused differently today:
+
+- **A move** (`Engine.apply`, right after the write-scope check at `engine.py:686-720`): a breach refuses the whole
+  step with status `law_breach` and a failed check that quotes the law's `says` sentence, exactly as a scope
+  violation of a move does today: nothing changes, the refusal event is recorded.
+- **A process** (a tick in `Engine.advance`, or a knock-on wave in `_settle`): today a scope breach here raises
+  `ScopeViolation` and the tick is undone with no event (`engine.py:1005-1015`), because a process is engine-trusted.
+  A law breach is different: it is a mistake in model-written rules, so it must be visible, not a crash.
+  `_refuse_round` (`engine.py:871`) gains a status argument and the law check: a process step that breaks a law
+  undoes the whole moment (the triggering move and every wave) and records one refusal event with status
+  `law_breach`, the process id and the law's sentence, as `reaction_limit` is recorded today. A move whose knock-on
+  effects break a law is therefore refused with the law named, and later rounds continue. Because the build's scripted test run runs the rules, a breach there is
 a build finding sent to the rules writer by name (Q46). This is the existing invariant "Mechanics propose; one
 enclosing transition validates and commits or refuses" (AGENTS.md), with the world's own laws added to what the
 enclosing transition validates; it adds no loop, clock or scheduler (Decision 006).
@@ -169,13 +186,26 @@ cannot state (a move that changes nothing, a rule that contradicts the descripti
 | Id | Check | Run and what its trace must show |
 | --- | --- | --- |
 | L1 | The designer declares laws in the world's own terms | `evidence/declared-laws/s1-pencil/`: the build record's `laws` names the pencil world's own resources and moves, each with a `says` sentence; no law was hand-edited (the bundle's laws equal the model reply in the trace) |
-| L2 | A step that breaks a total or a pairing is refused whole, law named | `tests/test_laws.py`: the pencil13 fixture's buy-boxed-pencils with a pairing law gives status `law_breach`, world unchanged, failed check quotes the law; a make move outside `may_change_by` is refused the same way; a knock-on wave that breaks a law refuses its moment |
+| L2 | A step that breaks a total or a pairing is refused whole, law named | `tests/test_laws.py`: the pencil13 fixture's buy-boxed-pencils with a pairing law gives status `law_breach`, world unchanged, failed check quotes the law; a make move outside `may_change_by` is refused the same way; a knock-on wave that breaks a law undoes its moment and records one `law_breach` event naming the process and the law; a tick process that breaks a law does the same; a write-scope breach by a process still raises `ScopeViolation` |
 | L3 | A test-run breach reaches the rules writer by name | `evidence/declared-laws/s2-pencil/`: if the test run refused a step, the next rules call's request quotes the law; if none was refused, the TRACE_READ says so and L2 carries the claim |
 | L4 | The review is independent and returns findings | `evidence/declared-laws/s3-pencil/`: the review call's model differs from the rules writer's, its request holds only description, laws and rules, and its reply is a findings list; run on `tests/fixtures/pencil13-kept.json` it names buy-boxed-pencils |
 | L5 | The canonical example runs live | `evidence/declared-laws/s3-pencil/` (or S5): the kept world's run shows sales moving cash both ways, no law refusals from its own rules, and the build record lists laws and findings |
 | L6 | Each retired heuristic is covered | `evidence/declared-laws/s4-retire/README.md`: per retired check, every incident it caught (table above) is refused by a law or named by the review on its saved world; checks that report the test run stay |
 | L7 | Existing worlds replay unchanged | `scripts/check_project.py` on each slice's merge commit, exit 0, with the open-attempt plan's A8 replay tests named passing |
 | L8 | Every run is fully traced | each `evidence/declared-laws/<run>/` has `run-log.jsonl` and a `TRACE_READ.md` that passes `scripts/check_trace_reads.py`, read by the implementing agent before reporting |
+
+## What Brian judges on the working page
+
+L1-L8 are the agent's checks. What a person opens and sees to decide it works is in
+`docs/planning/declared-laws/acceptance-criteria.json`, each with steps on the World Builder, the expected result
+and a broken case that looks different:
+
+| Id | Criterion | Broken case to tell it apart |
+| --- | --- | --- |
+| A1 | The build record shows the world's own laws in plain words | no laws, or laws naming things the world lacks |
+| A2 | A move that breaks a law is refused and the page names the law | pencil13's buy-boxed-pencils shows as done with no payment |
+| A3 | The review names where rules miss the description, quoting it | empty, "looks good", or findings with no quoted words |
+| A4 | The pencil world runs with every sale paying | goods move and cash does not; or the build fails (pencil14) |
 
 ## Success and disproof
 
@@ -200,7 +230,7 @@ Never rerun until a behavior appears and report only that run. Review completene
 
 | Slice | What lands | State | Checks |
 | --- | --- | --- | --- |
-| S1 | `laws` in the world design contract (`scripts/generate_world_bundle.py`) and its validator; laws passed to the rules writer; build record and page list them | fully_specifiable_now | L1, L7, L8; one live pencil build |
+| S1 | `resources` and `laws` in the world design contract (`scripts/generate_world_bundle.py`) and its validator; laws passed to the rules writer; build record and page list them | fully_specifiable_now | L1, L7, L8; one live pencil build |
 | S2 | `law_breaches` in `src/world_substrate/laws.py`, called in `Engine.apply` and `_settle`; status `law_breach`; test-run breaches become build findings | fully_specifiable_now | L2, L3, L7; free replays of saved worlds first |
 | S3 | `scripts/review_rules.py` and its findings into the rules writer's revision step | conditional (Q44: model choice) | L4, L5, L8 |
 | S4 | retire the heuristics Q45 names, one by one, each with its incident proof | conditional (Q45, needs S2 and S3) | L6, L7 |
