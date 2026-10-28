@@ -189,6 +189,17 @@ class BuildFindingTests(unittest.TestCase):  # L3's free half: a test-run breach
         self.assertEqual(service._with_structure_breaches(said, [(breach("renew-at-mill"), 24)]), said)
         self.assertEqual(service._with_structure_breaches(best_guidance, []), best_guidance)
 
+    def test_a_move_only_a_law_refuses_in_the_preview_is_recorded_as_a_breach(self):
+        # #293 F: pencil XlX1z5lyl8QT's carrier charges 0, so every buy-boxes breaks the purchase law; the move was
+        # dropped before anyone chose it, and the build record said only that the shop was idle.
+        from scripts.run_authored_world import run_world
+
+        kept = json.loads((REPO / "tests/fixtures/pencil-s3-kept.json").read_text())
+        dry, _, _ = run_world(kept["bundle"], kept["causal_model"], policy="scripted", max_turns=24,
+                              trace_id="test/preview-law")
+        found = {(b["rule_id"], b["law_id"]) for b in dry["summary"].get("law_breaches") or []}
+        self.assertIn(("buy-boxes-from-carrier", "boxes-purchase"), found)
+
 
 class FunctionTests(unittest.TestCase):
     def test_amounts_spread_over_two_fields_are_summed(self):

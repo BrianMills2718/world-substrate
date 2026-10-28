@@ -60,8 +60,11 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
     ids = rule_ids(causal_model)
     laws = {"resources": bundle.get("resources") or [], "laws": bundle.get("laws") or []}
     rules = {"mechanics": causal_model.get("mechanics") or [], "processes": causal_model.get("processes") or []}
+    # The starting numbers let the reviewer see a move that can never work from the start (#293: pencil
+    # XlX1z5lyl8QT's carrier charged 0, so its own purchase law refused every purchase).
+    start = {str(e.get("id")): e.get("components") or {} for e in bundle.get("entities") or [] if isinstance(e, dict)}
     messages = render_prompt(PROMPT, description=description, laws=json.dumps(laws, indent=1),
-                             rules=json.dumps(rules, indent=1))
+                             rules=json.dumps(rules, indent=1), start=json.dumps(start, indent=1))
     value, result = call_llm_json_schema(
         model, messages, review_schema(ids), schema_name="world_substrate_rules_review", task=TASK,
         trace_id=trace_id, max_budget=max_budget, max_tokens=16000, reasoning_effort=reasoning_effort,

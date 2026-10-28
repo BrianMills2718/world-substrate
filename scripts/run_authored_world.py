@@ -321,7 +321,8 @@ def bookkeeping_fields(model: CausalModel) -> dict[str, set[str]]:
     }
 
 
-def _without_no_ops(engine: Engine, page: dict[str, Any], *, bookkeeping: dict[str, set[str]] | None = None) -> dict[str, Any]:
+def _without_no_ops(engine: Engine, page: dict[str, Any], *, bookkeeping: dict[str, set[str]] | None = None,
+                    law_refusals: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """Drop allowed actions that would change nothing right now.
 
     A rule can allow a move whose effects leave the world exactly as it was (for
@@ -337,6 +338,10 @@ def _without_no_ops(engine: Engine, page: dict[str, Any], *, bookkeeping: dict[s
         scratch = scratch or engine.scratch()
         outcome = scratch.submit({**row["action"], "controller": "preview"})
         own = (bookkeeping or {}).get(row["action"].get("kind", ""), set())
+        if outcome.get("status") == "law_breach" and law_refusals is not None:
+            # A move only a law refuses never reaches the real world, so without this the record says only that
+            # nobody did it (#293: pencil XlX1z5lyl8QT's free purchase broke its own purchase law every round).
+            law_refusals.append(outcome["event"])
         if outcome.get("status") == "accepted":
             scratch = None
             if any(_field(c.get("path", "")) not in own for c in _state_changes(outcome["event"])):
@@ -503,6 +508,8 @@ def run_world(
     engine_events: list[dict[str, Any]] = []
     run_ids: dict[str, str] = {}
 
+    # Moves a declared law refused when tried on a scratch copy before anyone chose (see _without_no_ops).
+    preview_law_refusals: list[dict[str, Any]] = []
     for turn in range(1, max_turns + 1):
         if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
             break
@@ -522,7 +529,7 @@ def run_world(
                 # person's ("this worker assembles pencils: was 'grows timber'"), which says nothing about the gap.
                 if failed and (kind not in refused_why or len(failed) < len(refused_why[kind])):
                     refused_why[kind] = failed
-            page = _without_no_ops(engine, raw, bookkeeping=bookkeeping)
+            page = _without_no_ops(engine, raw, bookkeeping=bookkeeping, law_refusals=preview_law_refusals)
             # What the installed rules refused this actor at this moment, and why.
             # Recorded for every policy so a viewer can see refusals even when the
             # policy itself only ever picks allowed actions.
@@ -650,7 +657,7 @@ def run_world(
             said_retry = None
             if outcome["status"] == "stale_revision":
                 retried = True
-                page = _without_no_ops(engine, engine.discover(actor), bookkeeping=bookkeeping)
+                page = _without_no_ops(engine, engine.discover(actor), bookkeeping=bookkeeping, law_refusals=preview_law_refusals)
                 # The same move is still allowed after the earlier moves: take it at the new revision
                 # without asking again. Every accepted move bumps the revision, so asking again made
                 # each round a chain of one-at-a-time AI calls (2026-10-16 Waltzman deploy8: 183
@@ -899,10 +906,11 @@ def run_world(
     if residents is not None:
         # Each resident's Concordia memory after this request; live play sends it back with the next round.
         trace["resident_memory"] = residents.memory_state()
-    breaches = _law_breach_rows(engine_events)
+    breaches = _law_breach_rows(engine_events + preview_law_refusals)
     if breaches:
-        # Steps the engine refused for breaking the world's declared laws, once per (rule, law); only when there
-        # are some, so a world without laws records exactly what it did before (declared-laws plan S2).
+        # Steps the engine refused for breaking the world's declared laws, tried or only previewed, once per (rule,
+        # law); only when there are some, so a world without laws records exactly what it did before (declared-laws
+        # plan S2).
         trace["summary"]["law_breaches"] = breaches
     # Open tasks, sent back with the next round so live play keeps following them.
     trace["underway"] = [{k: t[k] for k in sorted(attempts.TASK_KEYS)} for t in open_tasks]

@@ -35,7 +35,7 @@ class ReviewTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             reviewer.read_findings({"verdict": "pass"}, ids)
 
-    def test_the_request_holds_only_description_laws_and_rules_on_another_family(self):
+    def test_the_request_holds_only_description_laws_rules_and_starting_values_on_another_family(self):
         sent = {}
 
         def fake_call(model, messages, schema, **kwargs):
@@ -53,10 +53,12 @@ class ReviewTests(unittest.TestCase):
         self.assertEqual(found[0]["rule_id"], "buy-boxed-pencils")
         self.assertEqual(cost, 0.05)
         values = json.loads(sent["messages"][0]["content"])
-        self.assertEqual(sorted(values), ["description", "laws", "rules"])
+        self.assertEqual(sorted(values), ["description", "laws", "rules", "start"])
         self.assertEqual(sorted(json.loads(values["laws"])), ["laws", "resources"])
         self.assertEqual(sorted(json.loads(values["rules"])), ["mechanics", "processes"])
         self.assertNotIn("entities", values["laws"] + values["rules"])
+        start = json.loads(values["start"])
+        self.assertEqual(sorted(start), sorted(e["id"] for e in PENCIL13["bundle"]["entities"]))
         self.assertNotEqual(sent["model"].split("/")[1], DEFAULT_MODEL.split("/")[1])
         self.assertIn("buy-boxed-pencils", sent["schema"]["properties"]["findings"]["items"]["properties"]["rule_id"]["enum"])
 
