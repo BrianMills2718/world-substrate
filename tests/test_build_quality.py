@@ -3,6 +3,7 @@ and the build record's knock-on line."""
 
 from __future__ import annotations
 
+import copy
 import json
 import unittest
 from pathlib import Path
@@ -386,22 +387,59 @@ class StarvedHolderTests(unittest.TestCase):
 class RevisePreviousRulesTests(unittest.TestCase):
     """pencil10 (5UGnK9L0Iulf): a retry is shown the rules its guidance is about, so it revises them."""
 
-    def _first_prompt(self, **kwargs) -> dict:
+    def _generate(self, replies, **kwargs):
         calls = []
 
         def fake_call(model, messages, **_):
             calls.append(messages)
-            return SimpleNamespace(content=json.dumps(CAUSAL))
+            return SimpleNamespace(content=json.dumps(replies[min(len(calls), len(replies)) - 1]))
 
         fake = SimpleNamespace(call_llm=fake_call, safe_json_loads=json.loads)
         with patch.dict("sys.modules", {"llm_client": fake}):
-            gcm.generate_causal_model(BUNDLE, **kwargs)
-        return json.loads(calls[0][-1]["content"])
+            generated, _ = gcm.generate_causal_model(BUNDLE, **kwargs)
+        return generated, calls
+
+    def _first_prompt(self, **kwargs) -> dict:
+        changed = copy.deepcopy(CAUSAL)
+        changed["mechanics"][0]["rationale"] = "revised"
+        return json.loads(self._generate([changed], **kwargs)[1][0][-1]["content"])
 
     def test_retry_with_guidance_gets_previous_proposal(self):
         sent = self._first_prompt(guidance="make-pencils needs slats at factory", previous=CAUSAL)
         self.assertEqual(sent["previous_proposal"], CAUSAL)
         self.assertIn("keep every other mechanic", sent["revision_rule"])
+
+    def test_retry_returns_only_the_changed_mechanic_and_the_rest_is_kept(self):
+        # pencil13 3SogfsdEGx9M: five retries in a row each rewrote every rule, 42-60 s per call
+        one = copy.deepcopy(CAUSAL["mechanics"][0])
+        one["rationale"] = "revised"
+        generated, calls = self._generate([{"mechanics": [one]}], guidance="fix it", previous=CAUSAL)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(generated["mechanics"][0]["rationale"], "revised")
+        self.assertEqual(generated["mechanics"][1:], CAUSAL["mechanics"][1:])
+        self.assertEqual(generated.get("processes"), CAUSAL.get("processes"))
+        self.assertNotIn("one mechanic for each of these moves", calls[0][0]["content"])
+
+    def test_retry_that_changes_nothing_is_sent_back(self):
+        one = copy.deepcopy(CAUSAL["mechanics"][0])
+        one["rationale"] = "revised"
+        generated, calls = self._generate([{"mechanics": []}, {"mechanics": [one]}], guidance="fix it",
+                                          previous=CAUSAL)
+        self.assertEqual(len(calls), 2)
+        self.assertIn("changed nothing", calls[1][-1]["content"])
+        self.assertIn("only what changes", calls[1][-1]["content"])
+        self.assertEqual(generated["mechanics"][0]["rationale"], "revised")
+
+    def test_merge_replaces_by_id_or_sole_move_removes_and_adds(self):
+        previous = {"mechanics": [{"mechanic_id": "a", "action_kind": "x"}, {"mechanic_id": "b", "action_kind": "y"}],
+                    "processes": [{"process_id": "p"}], "terminal": {"t": 1}}
+        merged = gcm.merge_revision(previous, {
+            "mechanics": [{"mechanic_id": "a2", "action_kind": "x", "new": 1}, {"mechanic_id": "c", "action_kind": "z"}],
+            "remove_processes": ["p"], "processes": [{"process_id": "q"}]})
+        self.assertEqual([m["mechanic_id"] for m in merged["mechanics"]], ["a2", "b", "c"])
+        self.assertEqual(merged["processes"], [{"process_id": "q"}])
+        self.assertEqual(merged["terminal"], {"t": 1})
+        self.assertEqual(previous["mechanics"][0]["mechanic_id"], "a")
 
     def test_first_try_and_no_guidance_get_none(self):
         self.assertNotIn("previous_proposal", self._first_prompt())

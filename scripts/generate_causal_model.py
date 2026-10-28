@@ -590,6 +590,39 @@ def no_op_effects(causal: dict[str, Any]) -> list[str]:
     return found
 
 
+def merge_revision(previous: dict[str, Any], change: dict[str, Any]) -> dict[str, Any]:
+    """previous with a revision's changed rows written over it, matched by id; rows not named are kept.
+
+    A mechanic whose id is new but whose move has exactly one mechanic in previous replaces that one, so a renamed
+    rewrite of a move does not leave two mechanics for it. Raises ValueError when nothing changes, since the same
+    rules would fail the same way again.
+    """
+    merged = deepcopy(previous)
+    for key, id_key in (("mechanics", "mechanic_id"), ("processes", "process_id")):
+        if key not in merged and not change.get(key):
+            continue
+        rows = [row for row in merged.get(key) or [] if isinstance(row, dict)]
+        removed = {str(x) for x in change.get(f"remove_{key}") or []}
+        rows = [row for row in rows if str(row.get(id_key)) not in removed]
+        for new in change.get(key) or []:
+            if not isinstance(new, dict):
+                continue
+            at = [i for i, row in enumerate(rows) if row.get(id_key) == new.get(id_key)]
+            if not at and key == "mechanics":
+                at = [i for i, row in enumerate(rows) if row.get("action_kind") == new.get("action_kind")]
+                at = at if len(at) == 1 else []
+            if at:
+                rows[at[0]] = new
+            else:
+                rows.append(new)
+        merged[key] = rows
+    if "terminal" in change:
+        merged["terminal"] = change["terminal"]
+    if merged == previous:
+        raise ValueError("the revision changed nothing; change what author_guidance names")
+    return merged
+
+
 def generate_causal_model(
     bundle: dict[str, Any],
     *,
@@ -628,22 +661,32 @@ def generate_causal_model(
         # kept the named defect (pencil10 5UGnK9L0Iulf: "make-pencils needs slats at factory"
         # on all four attempts).
         context["previous_proposal"] = previous
+        # Only the changed rows come back: rewriting the whole proposal made every retry a 42-60 s call of
+        # 4k-7k output tokens (pencil13 3SogfsdEGx9M, five such calls in a row).
         context["revision_rule"] = (
             "previous_proposal is your last proposal and author_guidance says what was wrong with it. "
-            "Return a revised copy of previous_proposal: change what the guidance names, keep every "
-            "other mechanic, process and terminal that is not named."
+            "Return only what changes: in mechanics, each mechanic you change or add, written out in full, "
+            "with the mechanic_id it has in previous_proposal; in processes, likewise by process_id; "
+            "remove_mechanics and remove_processes list ids to delete; include terminal only if it changes. "
+            "Change what the guidance names, and keep every other mechanic, process and terminal: anything "
+            "you leave out is kept from previous_proposal unchanged. Returning nothing changed is rejected."
         )
     moves = [str(row.get("kind")) for row in bundle["actions"] if isinstance(row, dict)]
+    revising = "previous_proposal" in context
+    coverage = (
+        "Return only the mechanics and processes revision_rule asks you to change. " if revising else
+        # pencil12 (share oRfOptv0O3f3): 4 of 8 first replies were {"mechanics": []}, each costing a
+        # 7 s call and a repair before any rules were written.
+        f"mechanics must hold one mechanic for each of these moves: {', '.join(moves)}; "
+        "an empty mechanics list is always rejected. "
+    )
     messages = [
         {
             "role": "system",
             "content": (
                 "You are proposing causal mechanics for a governed world model. "
                 "Return exactly one JSON object and no prose or markdown. You are not writing code. "
-                # pencil12 (share oRfOptv0O3f3): 4 of 8 first replies were {"mechanics": []}, each costing a
-                # 7 s call and a repair before any rules were written.
-                f"mechanics must hold one mechanic for each of these moves: {', '.join(moves)}; "
-                "an empty mechanics list is always rejected. "
+                + coverage +
                 "The response must satisfy response_contract. Every effect must be justified by "
                 "represented state and the action description. Prefer conservative refusal checks "
                 "over assumptions. Do not add reads/writes fields; the local compiler derives authority. "
@@ -682,7 +725,7 @@ def generate_causal_model(
             parsed = safe_json_loads(result.content)
             if not isinstance(parsed, dict):
                 raise ValueError("model returned a non-object causal model")
-            value = parsed
+            value = merge_revision(previous, parsed) if revising else parsed
             tidied = tidy_proposal(value, bundle)
             compiled = CausalModel.from_dict(value, bundle=bundle)
             no_ops = no_op_effects(value)
@@ -710,7 +753,9 @@ def generate_causal_model(
                     "content": (
                         "The local causal compiler rejected that proposal. "
                         f"Compiler error: {type(error).__name__}: {error}. "
-                        "Return a corrected JSON object only. State paths in participant/path and "
+                        + ("Return a corrected JSON object only, again holding only what changes from "
+                           "previous_proposal. " if revising else "Return a corrected JSON object only. ")
+                        + "State paths in participant/path and "
                         "effect/path fields must be copied EXACTLY from allowed_state_paths; do not "
                         "abbreviate component containers (for example use portable.portable, not portable)."
                     ),
