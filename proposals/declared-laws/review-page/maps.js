@@ -417,6 +417,18 @@ window.MAPS = {
     "explain": "Plan declared-laws S2: inside the same commit as the write-scope check, every move and process step is checked against the world's declared laws; a breach refuses the whole step and names the law, and nothing changes. Code: none yet."
    },
    {
+    "id": "world-design",
+    "label": "World design (bundle)",
+    "kind": "Substrate",
+    "explain": "The build's first AI step: it reads the description and writes the world's people, places, things and starting state as an authoring bundle; plan declared-laws S1 adds the world's resources and laws to its output, and the rules writer receives them as input. Code: scripts/generate_world_bundle.py:53."
+   },
+   {
+    "id": "resource",
+    "label": "Declared resource",
+    "kind": "Theory",
+    "explain": "Plan declared-laws S1 (Q47): something the world keeps track of (cash, pencils), declared once with every field it is kept in on different entities (the customer's cash, the shop's business.cash); laws name resources, never raw fields. Code: none yet."
+   },
+   {
     "id": "rules-review",
     "label": "Independent rules review",
     "kind": "Theory",
@@ -978,45 +990,75 @@ window.MAPS = {
    },
    {
     "id": "e92",
-    "source": "gen-rules",
+    "source": "world-design",
     "target": "world-law",
     "label": "declares"
    },
    {
     "id": "e93",
+    "source": "world-design",
+    "target": "resource",
+    "label": "declares"
+   },
+   {
+    "id": "e94",
+    "source": "world-law",
+    "target": "resource",
+    "label": "names"
+   },
+   {
+    "id": "e95",
+    "source": "resource",
+    "target": "entity-component",
+    "label": "is kept in"
+   },
+   {
+    "id": "e96",
+    "source": "world-law",
+    "target": "gen-rules",
+    "label": "is input to"
+   },
+   {
+    "id": "e97",
+    "source": "build",
+    "target": "world-design",
+    "label": "runs first"
+   },
+   {
+    "id": "e98",
     "source": "law-check",
     "target": "world-law",
     "label": "enforces"
    },
    {
-    "id": "e94",
+    "id": "e99",
     "source": "law-check",
     "target": "mechanic",
     "label": "can refuse"
    },
    {
-    "id": "e95",
+    "id": "e100",
     "source": "law-check",
     "target": "process",
     "label": "can refuse"
    },
    {
-    "id": "e96",
+    "id": "e101",
     "source": "rules-review",
     "target": "gen-rules",
     "label": "sends findings to"
    },
    {
-    "id": "e97",
+    "id": "e102",
     "source": "rules-review",
     "target": "world-law",
     "label": "reads"
    },
    {
-    "id": "e98",
+    "id": "e103",
     "source": "rules-review",
-    "target": "test-run",
-    "label": "replaces heuristics in"
+    "target": "build",
+    "label": "replaces meaning-guessing checks in"
    }
   ],
   "layout": {

@@ -50,19 +50,25 @@
 </table></div>
 
 <h2>The incidents this plan must catch</h2>
-<p class="lede">Every logged mistake from the pencil builds, with the saved world that shows it and what will catch it.</p>
+<p class="lede">Every hand-written check that guesses at meaning, the mistake it was written for, and what catches that mistake after this plan. Laws catch bookkeeping; mistakes about what can never happen or what piles up leave every total unchanged, so the test run's reports and the review catch those.</p>
 <div class="tablewrap"><table>
-<tr><th>Incident</th><th>Run</th><th>Caught by, after this plan</th><th>Caught today by</th></tr>
-<tr><td>A purchase that pays nothing (the shop's buy-boxed-pencils)</td><td>pencil13</td><td>A pairing law; the review</td><td><b style="color:var(--miss)">Nothing</b></td></tr>
-<tr><td>Goods made from nothing</td><td>pencil2, pencil4</td><td>A total law</td><td>Two hand-written checks</td></tr>
-<tr><td>Stock with nowhere to go</td><td>pencil2, pencil4, pencil7</td><td>Not a law: the test-run report and the review</td><td>A hand-written check</td></tr>
-<tr><td>The customer flagged as a dead end though it uses pencils</td><td>pencil12, pencil13</td><td>Goes away with the guess that raised it</td><td>A false alarm, patched twice</td></tr>
-<tr><td>Moves that change nothing</td><td>airfield</td><td>The review</td><td>A hand-written check, in part</td></tr>
-<tr><td>A malformed field path</td><td>pencil14 (build failed, 422)</td><td>Not a law: the installer already refuses it</td><td>The installer</td></tr>
+<tr><th>Mistake</th><th>Saved world</th><th>Caught today by</th><th>After this plan</th></tr>
+<tr><td>A purchase that pays nothing (buy-boxed-pencils)</td><td>pencil13</td><td><b style="color:var(--miss)">Nothing</b></td><td>A pairing law; the review</td></tr>
+<tr><td>A process restocks goods that a person makes</td><td>c4-run14</td><td>Conjuring check</td><td>A total law</td></tr>
+<tr><td>A move uses up goods and makes nothing (pack-pencils)</td><td>pencil 4VmgkXIVWn4p</td><td>Vanishing-moves check</td><td>A total law</td></tr>
+<tr><td>A raw good with two sources</td><td>c4-run20</td><td>Second-source check (report only)</td><td>A total law, if the designer names one source</td></tr>
+<tr><td>Inputs nobody makes</td><td>pencil2</td><td>Unsourced-inputs check</td><td>Test-run report; the review</td></tr>
+<tr><td>A move needs a part no one has</td><td>pencil4</td><td>Missing-component check</td><td><b style="color:var(--have)">Stays</b> (a fact, not a guess)</td></tr>
+<tr><td>Stock with nowhere to go</td><td>pencil4</td><td>Dead-end-stock check</td><td>Test-run report; the review</td></tr>
+<tr><td>The customer flagged as a dead end though it uses pencils</td><td>pencil12, pencil13</td><td>A false alarm, patched twice</td><td>Goes with the guess</td></tr>
+<tr><td>A seller never receives what it sells</td><td>pencil9</td><td>Starved-holders check</td><td>Test-run report; the review</td></tr>
+<tr><td>Demand that only grows</td><td>cafe eFmPomcnsyQq</td><td>Unanswered-demand check</td><td>Test-run report; the review</td></tr>
+<tr><td>Processes carry goods people should carry</td><td>c4-run16</td><td>Moving-processes check</td><td>The review</td></tr>
+<tr><td>A malformed field path</td><td>pencil14 (build failed, 422)</td><td>The installer</td><td>Unchanged</td></tr>
 </table></div>
 
 <h2>What you will check on the working page</h2>
-<p class="lede">Each slice ends in something you can open on the World Builder. None is built yet.</p>
+<p class="lede">Each slice ends in something you can open on the World Builder. None is built yet. Full steps and broken cases: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/acceptance-criteria.json">acceptance-criteria.json</a>.</p>
 <div class="tablewrap"><table>
 <tr><th>Id</th><th>What you do</th><th>Works when you see</th><th>Broken looks like</th></tr>
 <tr><td>A1</td><td>Build the pencil world; open the build record's Laws list</td><td>Plain sentences naming this world's goods, money and moves</td><td>No laws, or laws about things the world does not have</td></tr>
@@ -79,10 +85,11 @@
 <div class="tablewrap"><table>
 <tr><th>Check</th><th>Kind</th><th>Plan</th></tr>
 <tr><td>People idle or stuck; the world circling; moves never possible; people never together; refusals at the start</td><td>Reports the test run</td><td><b style="color:var(--have)">Stay</b></td></tr>
-<tr><td>Goods from nothing; a second source; unsourced inputs</td><td>Guesses a total</td><td><b style="color:var(--miss)">Retire</b> once a total law refuses each incident</td></tr>
+<tr><td>Goods from nothing; vanishing moves; a second source</td><td>Guesses bookkeeping</td><td><b style="color:var(--miss)">Retire</b> once a law refuses each incident</td></tr>
+<tr><td>Unsourced inputs</td><td>Guesses what can never happen</td><td>Becomes a test-run report; retires only if the review names its incident</td></tr>
 <tr><td>Stock with nowhere to go</td><td>Not a law: piling up leaves every total unchanged (Q43)</td><td><b style="color:var(--have)">Stay</b> as a test-run report of stock that only grew; the review reads it too</td></tr>
-<tr><td>Starved holders; unanswered demand</td><td>Guesses a sink or a source</td><td><b style="color:var(--miss)">Retire</b> once a law or the review names each incident</td></tr>
-<tr><td>Moves that change nothing; vanishing moves</td><td>Guesses meaning</td><td><b style="color:var(--miss)">Retire</b> once the review names each incident</td></tr>
+<tr><td>Starved holders; unanswered demand</td><td>Guesses what can never happen or only grows</td><td>Becomes a test-run report; retires only if the review names each incident</td></tr>
+<tr><td>Moves that change nothing; processes carrying goods</td><td>Guesses meaning</td><td><b style="color:var(--miss)">Retire</b> once the review names each incident</td></tr>
 </table></div>
 
 <h2>What could go wrong, and what catches it</h2>

@@ -50,12 +50,12 @@
         "Brian 2026-10-28: the engine enforces declared laws generically and names the law it refuses on (design part 2)"
       ],
       "demonstration": [
-        "Open the World Builder's replay of the saved pencil13 world with its laws (link given in the S2 report).",
-        "Go to round 8 and find the shop's buy-boxed-pencils move.",
-        "Read what the page says about it."
+        "Open the World Builder's replay of the saved pencil13 world, re-built in S2 so that the world design AI wrote its laws (the S2 report gives the link and shows the laws came from the model reply, not a person).",
+        "Go to round 8 and find the shop's buy-boxed-pencils move; read what the page says about it.",
+        "Open the S2 report's second replay, a world whose move sets off a knock-on effect that breaks a law (for example a fall that would destroy cash), and read that round."
       ],
-      "expected": "The move is marked refused (orange, with the word \"refused\") and shows the law's sentence, \"A purchase moves goods one way and payment the other\"; the shop's boxes and the factory's cash are unchanged in that round.",
-      "failure_example": "Broken: the move shows as done, boxes move to the shop and no cash moves to the factory (exactly what pencil13 does today), or it is refused with no law named. Working: refused, law quoted, nothing changed.",
+      "expected": "The purchase is marked refused (orange, with the word \"refused\") beside a law in plain words saying a purchase must move payment the other way; the shop's boxes and the factory's cash are unchanged that round. In the knock-on replay the move that set off the effect is refused the same way, the page names the knock-on effect that broke the law, and nothing from that moment is kept.",
+      "failure_example": "Broken: the purchase shows as done, boxes move to the shop and no cash moves to the factory (what pencil13 does today); or it is refused with no law named; or the knock-on effect goes through and only the move is undone. Working: refused, law shown, nothing from the moment kept.",
       "representation": {
         "view": "composite-linked-view: the run's round list with the refusal row opening its law",
         "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
@@ -154,7 +154,7 @@
       "expected": "The build record lists three kinds of checking only: the world's declared laws, the review's findings, and reports of what the test run saw. Each retired check in the S4 table points at a saved world where a law refusal or a review finding now catches its incident, and no new hand-written check was added for a new mistake.",
       "failure_example": "Broken: the build record still lists checks such as 'goods from nothing' or 'starved holders' guessing at meaning, or a new mistake found in S5 was fixed by adding another such check. Working: the new mistake is traced to a missing law or a review finding and fixed there.",
       "representation": {
-        "view": "table: retired check, incident, saved world, what catches it now",
+        "view": "composite-linked-view: its table pane lists retired check, incident, saved world and what catches it now",
         "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
       },
       "entrypoint": "planned",

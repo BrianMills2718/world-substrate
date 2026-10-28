@@ -192,7 +192,9 @@
         "rules-retry",
         "exchange",
         "causal-trace",
-        "run-log"
+        "run-log",
+        "world-design",
+        "resource"
       ]
     },
     "review_page": {

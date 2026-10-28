@@ -54,6 +54,7 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 | **Derived exchange** (`exchange`) | A composite reading (two give events make one exchange) derived from committed events, never a second effect. | `docs/contracts/transition-envelope-v0.md:42` | `src/world_substrate/exchange.py:68` |
 | **Installed mechanic** (`mechanic`) | One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. | `AGENTS.md:3` | `src/world_substrate/action_authoring.py:456` |
 | **Entity and component** (`entity-component`) | An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. | `docs/model/ODD.md:100` | `src/world_substrate/model.py:223` |
+| **World design (bundle)** (`world-design`) | The build's first AI step: it reads the description and writes the world's people, places, things and starting state as an authoring bundle; plan declared-laws S1 adds the world's resources and laws to its output, and the rules writer receives them as input. | `docs/model/ODD.md:332` | `scripts/generate_world_bundle.py:53` |
 
 ## Fixed people-world part
 
@@ -105,6 +106,7 @@ Named in decisions or the roadmap, not on the live path.
 | **Run seed** (`run-seed`) | Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). | `docs/plans/open_attempt.md:192` | `—` |
 | **Declared world law** (`world-law`) | Plan declared-laws S1: a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. | `docs/plans/declared_laws.md` | `—` |
 | **Law check** (`law-check`) | Plan declared-laws S2: inside the same commit as the write-scope check, every move and process step is checked against the world's declared laws; a breach refuses the whole step and names the law, and nothing changes. | `docs/plans/declared_laws.md` | `—` |
+| **Declared resource** (`resource`) | Plan declared-laws S1 (Q47): something the world keeps track of (cash, pencils), declared once with every field it is kept in on different entities (the customer's cash, the shop's business.cash); laws name resources, never raw fields. | `docs/plans/declared_laws.md` | `—` |
 | **Independent rules review** (`rules-review`) | Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. | `docs/plans/declared_laws.md` | `—` |
 
 ## Where the sources disagree
