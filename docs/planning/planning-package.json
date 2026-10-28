@@ -207,7 +207,7 @@
       "status": "present",
       "path": "docs/planning/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c"
+      "reviewed_revision": "3e376db030b31925f7a3b9f8c6d8806e06e17b9a"
     },
     "acceptance": {
       "status": "present",

@@ -30,3 +30,13 @@ Round-8 notes: Q42 now names the 3 calls with no finish reason (fixed). The `che
 Unsure about: only that the mutation was done on a copy rather than the worktree; the edit hit exactly one line and the failure was the expected one.
 
 Verdict: pass
+
+
+## Re-review, 2026-10-28 (declared-laws round 3)
+
+Reviewer: `company-planning:planning-compliance-reviewer` subagent, reviewing all three packages together. Reviewed revision: 3e376db030b31925f7a3b9f8c6d8806e06e17b9a. The full report is in `docs/planning/declared-laws/cold-review.md`.
+
+- **Delta:** the declared-laws plan adds the acceptance part, the `world-design` and `resource` concepts, and questions Q43 to Q48. Counts are 48 questions, 19 of them open; 156 md files; 801 tests. The only validator failure was the old `reviewed_revision`.
+- **Regression:** none found.
+
+Verdict: pass

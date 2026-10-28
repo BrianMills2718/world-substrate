@@ -206,8 +206,8 @@
     "cold_review": {
       "status": "present",
       "path": "docs/planning/declared-laws/cold-review.md",
-      "verdict": "pending",
-      "reviewed_revision": ""
+      "verdict": "pass",
+      "reviewed_revision": "3e376db030b31925f7a3b9f8c6d8806e06e17b9a"
     },
     "acceptance": {
       "status": "present",
