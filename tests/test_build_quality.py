@@ -336,6 +336,15 @@ class StarvedHolderTests(unittest.TestCase):
         self.assertEqual(service._starved_holders(world["bundle"], world["causal_model"]),
                          ["sell-pencils needs boxes at pencil-shop, which starts with none and nothing ever gives it any"])
 
+    def test_pencil10_names_the_factory_without_slats(self):
+        # 5UGnK9L0Iulf: buy-slats went to the lead-maker, so the factory never had a slat and no pencil was made
+        world = self._world("pencil10-live")
+        self.assertEqual(service._starved_holders(world["bundle"], world["causal_model"]), [
+            "buy-pencils needs pencils at shopkeeper, which starts with none and nothing ever gives it any",
+            "make-pencils needs slats at factory, which starts with none and nothing ever gives it any",
+            "sell-pencils needs pencils at shopkeeper, which starts with none and nothing ever gives it any",
+        ])
+
     def test_earlier_pencil_worlds_that_could_never_sell(self):
         # pencil5's carry-boxes took packed pencils and gave them to nobody; pencil7 had no move bringing pencils
         # to the shop; pencil2's factory and lead works had no source for paint, erasers, ferrules or clay
@@ -355,3 +364,28 @@ class StarvedHolderTests(unittest.TestCase):
                      "garden-luna-r3", "pencil-c4-run17", "pencil3-live", "pencil4-live", "pencil8-live"):
             world = self._world(name)
             self.assertEqual(service._starved_holders(world["bundle"], world["causal_model"]), [], name)
+
+
+class RevisePreviousRulesTests(unittest.TestCase):
+    """pencil10 (5UGnK9L0Iulf): a retry is shown the rules its guidance is about, so it revises them."""
+
+    def _first_prompt(self, **kwargs) -> dict:
+        calls = []
+
+        def fake_call(model, messages, **_):
+            calls.append(messages)
+            return SimpleNamespace(content=json.dumps(CAUSAL))
+
+        fake = SimpleNamespace(call_llm=fake_call, safe_json_loads=json.loads)
+        with patch.dict("sys.modules", {"llm_client": fake}):
+            gcm.generate_causal_model(BUNDLE, **kwargs)
+        return json.loads(calls[0][-1]["content"])
+
+    def test_retry_with_guidance_gets_previous_proposal(self):
+        sent = self._first_prompt(guidance="make-pencils needs slats at factory", previous=CAUSAL)
+        self.assertEqual(sent["previous_proposal"], CAUSAL)
+        self.assertIn("keep every other mechanic", sent["revision_rule"])
+
+    def test_first_try_and_no_guidance_get_none(self):
+        self.assertNotIn("previous_proposal", self._first_prompt())
+        self.assertNotIn("previous_proposal", self._first_prompt(previous=CAUSAL))

@@ -529,6 +529,7 @@ def generate_causal_model(
     guidance: str = "",
     model_justification: str | None = None,
     world_kind: str = "task",
+    previous: dict[str, Any] | None = None,
     max_output_tokens: int = MAX_MECHANICS_OUTPUT_TOKENS,
     route_policy: Any = None,
 ) -> tuple[dict[str, Any], Any]:
@@ -550,6 +551,17 @@ def generate_causal_model(
     context["authority_rules"] = [*context["authority_rules"], WORLD_KIND_RULES[world_kind]]
     if guidance.strip():
         context["author_guidance"] = guidance.strip()[:4000]
+    if previous and guidance.strip():
+        # A retry revises the rules the guidance is about instead of starting over: told only
+        # "your previous rules had X", the writer wrote fresh rules that lost earlier fixes and
+        # kept the named defect (pencil10 5UGnK9L0Iulf: "make-pencils needs slats at factory"
+        # on all four attempts).
+        context["previous_proposal"] = previous
+        context["revision_rule"] = (
+            "previous_proposal is your last proposal and author_guidance says what was wrong with it. "
+            "Return a revised copy of previous_proposal: change what the guidance names, keep every "
+            "other mechanic, process and terminal that is not named."
+        )
     messages = [
         {
             "role": "system",
