@@ -299,6 +299,11 @@ class DeadEndStockTests(unittest.TestCase):
         world = self._world("pencil12-attempt3")
         self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]), [])
 
+    def test_payment_between_differently_named_cash_fields_counts(self):
+        # pencil13 3SogfsdEGx9M: the customer paid from customer.cash into the shop's business.cash
+        world = self._world("pencil13-kept")
+        self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]), [])
+
     def test_unpaid_pencils_at_the_customer_are_still_named(self):
         world = self._world("pencil12-attempt3")
         sale = next(m for m in world["causal_model"]["mechanics"] if m["action_kind"] == "sell-pencil")
