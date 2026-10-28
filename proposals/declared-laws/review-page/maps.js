@@ -348,7 +348,7 @@ window.MAPS = {
     "id": "knock-on-now",
     "label": "Knock-on that runs now",
     "kind": "Substrate",
-    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:884."
+    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:896."
    },
    {
     "id": "skill-roll",
@@ -407,8 +407,8 @@ window.MAPS = {
    {
     "id": "world-law",
     "label": "Declared world law",
-    "kind": "Theory",
-    "explain": "Plan declared-laws S1: a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. Code: none yet."
+    "kind": "PerWorld",
+    "explain": "Plan declared-laws S1 (built): a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. The bundle validator checks each law's shape; the rules writer is given the laws and told to keep them; the engine does not yet enforce them (S2). Code: scripts/scaffold_world.py:45."
    },
    {
     "id": "law-check",
@@ -425,8 +425,8 @@ window.MAPS = {
    {
     "id": "resource",
     "label": "Declared resource",
-    "kind": "Theory",
-    "explain": "Plan declared-laws S1 (Q47): something the world keeps track of (cash, pencils), declared once with every field it is kept in on different entities (the customer's cash, the shop's business.cash); laws name resources, never raw fields. Code: none yet."
+    "kind": "PerWorld",
+    "explain": "Plan declared-laws S1 (Q47, built): something the world keeps track of (cash, pencils), declared once with every field it is kept in on different entities (the customer's cash, the shop's business.cash); laws name resources, never raw fields. Each kept_in place must be a numeric field. Code: scripts/scaffold_world.py:45."
    },
    {
     "id": "rules-review",
@@ -1344,8 +1344,7 @@ window.MAPS = {
     "id": "world-law",
     "label": "Declared world law",
     "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan declared-laws S1: a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types."
+    "explain": "Plan declared-laws S1 (built): a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. The bundle validator checks each law's shape; the rules writer is given the laws and told to keep them; the engine does not yet enforce them (S2)."
    },
    {
     "id": "write-scope",

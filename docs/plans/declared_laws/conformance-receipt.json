@@ -1,10 +1,10 @@
 {
   "schema_version": "planning-method-conformance-receipt.v1",
   "record_type": "planning_method_conformance_receipt",
-  "receipt_id": "RECEIPT-declared_laws-0ff1694abda0",
+  "receipt_id": "RECEIPT-declared_laws-91c915ff2753",
   "plan": {
     "plan_ref": "docs/plans/declared_laws.md",
-    "plan_sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+    "plan_sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
   },
   "path_decision": {
     "ref": "docs/plans/declared_laws/path-decision.json",
@@ -26,14 +26,14 @@
   },
   "activation": {
     "facts_ref": "docs/plans/declared_laws/activation-facts.json",
-    "facts_sha256": "2224b79a7b3a2b0747121e14015c98db7183e3634fdedf222a4a6b7c2e775942",
+    "facts_sha256": "8865bfa5170beb05adec30a7702e464c445eb4d6e26d53aaf913ed49ff74389b",
     "facts": {
       "shared_mechanism": true,
       "empirical_comparison_proposed": true,
       "llm_central": true,
       "irreversible_or_spend_action": true,
+      "deploys": true,
       "crosses_system_boundary": false,
-      "deploys": false,
       "claims_external_standard": false,
       "aes_governed_target": false,
       "durable_documents_declared": true,
@@ -46,8 +46,8 @@
       "empirical_comparison_proposed": "declared:derived_current_boundary",
       "llm_central": "declared:derived_current_boundary",
       "irreversible_or_spend_action": "declared:derived_current_boundary",
+      "deploys": "declared:derived_current_boundary",
       "crosses_system_boundary": "default:not_declared",
-      "deploys": "default:not_declared",
       "claims_external_standard": "default:not_declared",
       "aes_governed_target": "default:not_declared",
       "durable_documents_declared": "derived:.agentic/repo.yaml has durable_documents",
@@ -101,8 +101,8 @@
       {
         "overlay_id": "OV-DEPLOYMENT",
         "activation_fact": "deploys",
-        "active": false,
-        "reason": "deploys=false (default:not_declared)"
+        "active": true,
+        "reason": "deploys=true (declared:derived_current_boundary)"
       },
       {
         "overlay_id": "OV-STANDARD-CONFORMANCE",
@@ -126,10 +126,10 @@
   },
   "checklist": {
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:94fa07aab22a4adb28a2530009e40fd15ed45b7a865c1560cdc6b818d6a4fb4b",
-    "definition_sha256": "636aa6b119784556521c218fd7a02bade316a6200c019c260face947c7e7c611",
+    "revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
+    "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
     "bundle_ref": "docs/plans/declared_laws/checklist.json",
-    "bundle_sha256": "fd7f554a0ea31dcab56fab09722a7169dba1df052658334044572cacff8484a5",
+    "bundle_sha256": "ca72b8999dd1866a33532e7aee0c85aaeb30fe4d32b649228eddc4187bf8d36f",
     "coverage": "complete",
     "definition_matches_recompilation": true
   },
@@ -147,7 +147,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#actor-and-result",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -193,7 +193,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#requirements",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -220,7 +220,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#success-and-disproof",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -247,7 +247,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#success-and-disproof",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -274,7 +274,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#when-a-run-fails-or-surprises-us",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -284,7 +284,7 @@
         "materiality": "material",
         "missing": null,
         "rationale": "The evidence explicitly provides every element the requirement names. The procedure is introduced as separate from anticipated modes; it requires preserving the run and trace, reading full inputs/prompts/tool calls/outputs before selecting a fix, citing divergence, classifying evidence into the four named categories, and verifying repairs via new traced runs linked to the original. Unresolved causes explicitly do not permit repair, and review completeness is stated as separate from verdict.",
-        "reused": false
+        "reused": true
       },
       "suggested_action": null
     },
@@ -301,7 +301,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#trace-visibility",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -328,7 +328,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#project-outcome",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         },
         {
           "ref": "roadmap/README.md#actor-recurring-job-and-investment-boundary",
@@ -336,12 +336,12 @@
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/declared_laws/f0496df1fedf/CORE-PROJECT-OUTCOME",
+        "trace_id": "company-planning/method-conformance/declared_laws/c245f0924f5c/CORE-PROJECT-OUTCOME",
         "model": "claude-code/haiku",
         "verdict": "pass",
         "materiality": "material",
         "missing": null,
-        "rationale": "The plan carries the line \"Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary\" and the referenced record explicitly states all four required parts: Actor (\"a World Builder visitor (or Brian as owner)\"), recurring job and baseline (\"describes a situation in plain words, presses Create simulation, and watches the generated people act...\"), inspectable result (\"the run page and its build record: what each person tried, what the rules did and why, every event with its cause\"), and stage/investment boundary (\"prototype stage, one agent at a time...visitor spend capped at $3/day...\"). The plan's actor (\"a World Builder visitor and Brian as owner who pastes a description and watches the generated world run\") matches the outcome's actor. The outcome's actor is a user with work outside the project (scenario design, simulation), not merely the system's builder, and the recurring job (describing scenarios and running simulations) is work done today by hand or with other tools.",
+        "rationale": "The plan explicitly names a project outcome record at `roadmap/README.md#actor-recurring-job-and-investment-boundary`, and the quoted evidence shows that record states all four required parts: a World Builder visitor as the external actor with real work (analyzing situations), the recurring job done today (describing worlds, watching runs), the inspectable result (the run page and build record), and the stage/investment boundary. The plan's actor directly matches the outcome's actor, and the plan articulates how it serves that actor's job by ensuring the books are right so visitors can trust the runs.",
         "reused": false
       },
       "suggested_action": null
@@ -359,7 +359,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#outcome-step",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         },
         {
           "ref": "roadmap/README.md#canonical-outcome-probe",
@@ -371,12 +371,12 @@
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/declared_laws/f0496df1fedf/CORE-OUTCOME-FIRST",
+        "trace_id": "company-planning/method-conformance/declared_laws/c245f0924f5c/CORE-OUTCOME-FIRST",
         "model": "claude-code/haiku",
         "verdict": "pass",
         "materiality": "material",
         "missing": null,
-        "rationale": "All four required lines are present with correct values: the outcome probe path and heading exist, the observed path points to a real traced use (pencil13 live build by Brian on pencil description, 2026-10-28, kept with traced events), the named step 2 appears in the cited probe with matching text, and the vertical class fits a plan that adds laws and review across the full build to an inspectable result.",
+        "rationale": "The plan's `## Outcome step` section contains all four required lines with correct content. The observation (pencil13 trace) is a real execution by an outcome actor on real input with kept results. All elements are explicitly present and substantively satisfy the requirement.",
         "reused": false
       },
       "suggested_action": null
@@ -394,7 +394,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": null,
@@ -413,7 +413,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#system-model",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -440,7 +440,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#capability-reuse",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -467,7 +467,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#authority-and-non-goals",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -494,7 +494,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#irreversible-actions-and-spend",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -521,7 +521,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#uncertainties",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -548,16 +548,16 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#activation-facts",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
-        "trace_id": "company-planning/method-conformance/declared_laws/f0496df1fedf/CORE-ACTIVATION-FACTS",
+        "trace_id": "company-planning/method-conformance/declared_laws/c245f0924f5c/CORE-ACTIVATION-FACTS",
         "model": "claude-code/haiku",
         "verdict": "pass",
         "materiality": "non_material",
         "missing": null,
-        "rationale": "Every activation fact triggered by the plan is declared true (shared_mechanism, empirical_comparison_proposed, llm_central, irreversible_or_spend_action); facts not triggered are declared false (claims_external_standard, aes_governed_target). The plan's law-check mechanism is used generically; the evaluation design proposes comparing reviewer models; the design depends centrally on LLM calls; OpenRouter spend is authorized and documented. The plan explicitly states it claims conformance to no external standard and does not create AES targets.",
+        "rationale": "The plan triggers five activation facts (shared_mechanism, empirical_comparison_proposed, llm_central, irreversible_or_spend_action, deploys), and all five are declared true in the activation-facts block. Facts declared false (claims_external_standard, aes_governed_target) are not triggered by the plan: the prior art section explicitly states the plan claims no external standard conformance, and no AES governance is proposed.",
         "reused": false
       },
       "suggested_action": null
@@ -575,7 +575,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#prior-art-and-ownership",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -602,7 +602,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#prior-art-and-ownership",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -629,7 +629,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#evaluation-design",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -656,7 +656,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#evaluation-design",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -683,7 +683,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#evaluation-design",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -710,7 +710,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#evaluation-design",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -737,7 +737,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#llm-call-boundary",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -764,7 +764,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#llm-call-boundary",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -774,6 +774,33 @@
         "materiality": "material",
         "missing": null,
         "rationale": "The evidence explicitly names OpenRouter as the provider, identifies Brian's owner allowance (granted 2026-10-28) as the spend authority, and specifies the authentic-run condition as \"an authentic live build on the deployed service (owner allowance, through the real page)\" with required evidence in `run-log.jsonl` and `TRACE_READ.md`, explicitly excluding fixture and replay results.",
+        "reused": true
+      },
+      "suggested_action": null
+    },
+    {
+      "item_id": "OV-DEPLOY-PLAN",
+      "effect": "blocking",
+      "applicability_mode": "required",
+      "condition_fact": null,
+      "condition_value": null,
+      "verifier_kind": "semantic",
+      "disposition": "pass",
+      "verifier_result": "pass",
+      "reason_codes": [],
+      "evidence": [
+        {
+          "ref": "docs/plans/declared_laws.md#deployment",
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
+        }
+      ],
+      "semantic": {
+        "trace_id": "company-planning/method-conformance/declared_laws/7515b2a4351c/OV-DEPLOY-PLAN",
+        "model": "claude-code/haiku",
+        "verdict": "pass",
+        "materiality": "material",
+        "missing": null,
+        "rationale": "The evidence explicitly provides all four required elements for the deployment: the target (World Builder API and pages Worker), the deploy command (scripts/deploy_world_builder.sh with specific steps), live checks (health endpoint verification and homepage content verification), and rollback procedures (docker tag/docker-compose for API, rerun deploy script for pages).",
         "reused": true
       },
       "suggested_action": null
@@ -791,7 +818,7 @@
       "evidence": [
         {
           "ref": "docs/plans/declared_laws.md#durable-documents",
-          "sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf"
+          "sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
         }
       ],
       "semantic": {
@@ -807,7 +834,7 @@
     }
   ],
   "item_counts": {
-    "pass": 25,
+    "pass": 26,
     "unresolved": 0,
     "not_applicable": 0,
     "unavailable": 0,
@@ -823,11 +850,11 @@
   "conformance_report": {
     "schema_version": "1.0",
     "record_type": "planning_conformance_report",
-    "report_id": "REPORT-declared_laws-0ff1694abda0",
+    "report_id": "REPORT-declared_laws-91c915ff2753",
     "snapshot_ref": "SNAPSHOT-declared_laws",
-    "snapshot_revision": "sha256:fd7f554a0ea31dcab56fab09722a7169dba1df052658334044572cacff8484a5",
+    "snapshot_revision": "sha256:ca72b8999dd1866a33532e7aee0c85aaeb30fe4d32b649228eddc4187bf8d36f",
     "packet_ref": "docs/plans/declared_laws.md",
-    "packet_revision": "sha256:0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf",
+    "packet_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
     "structural_status": "pass",
     "semantic_review_status": "complete",
     "diagnostics": [],
@@ -841,7 +868,7 @@
   "result": "pass",
   "reason_codes": [],
   "actionable_summary": [
-    "pass: 25 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
+    "pass: 26 items evidenced, 0 confirmed not applicable, 0 advisory deviation(s)"
   ],
   "limitations": [
     "Semantic verdicts judge only the cited plan excerpt against the item statement; they do not judge product strategy."
@@ -850,7 +877,7 @@
     "client": "claude",
     "session": "4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9"
   },
-  "started_at": "2026-10-28T08:10:59Z",
-  "completed_at": "2026-10-28T08:11:53Z",
-  "duration_ms": 53505
+  "started_at": "2026-10-28T08:34:38Z",
+  "completed_at": "2026-10-28T08:36:12Z",
+  "duration_ms": 92671
 }

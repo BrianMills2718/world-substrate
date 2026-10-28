@@ -504,6 +504,18 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       box.append(sum, list);
       nm.append(box);
     }
+    // The laws the world designer declared for this world (declared-laws plan S1).
+    const laws = (b && b.laws) || [];
+    if (laws.length) {
+      const box = document.createElement("details"); box.className = "picture";
+      const sum = document.createElement("summary");
+      sum.textContent = `Laws this world keeps (${laws.length})`;
+      sum.title = "What the world designer said must always stay true here, in this world's own words";
+      const list = document.createElement("ul"); list.className = "small muted";
+      laws.forEach((law) => { const li = document.createElement("li"); li.textContent = String(law.says || law.law_id); list.append(li); });
+      box.append(sum, list);
+      nm.append(box);
+    }
     $("raw").textContent = JSON.stringify({ world: b, rules: data.causal_model }, null, 2);
     const dn = $("dry-notice"); dn.innerHTML = "";
     const d = data.dry_run;

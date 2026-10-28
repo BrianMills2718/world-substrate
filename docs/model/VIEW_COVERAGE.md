@@ -26,6 +26,7 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Description | shown | shown | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | AuthoringBundle | partial | shown | n/a | partial | n/a | n/a | shown | shown (G12 fixed) | shown (G12 fixed) |
+| DeclaredLaws | shown | missing | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | CausalReview (compiler-derived authority) | shown (G5 fixed) | shown (G3 fixed) | n/a | n/a | n/a | n/a | shown (G4 fixed) | n/a | n/a |
 | MechanicProfile (frozen id) | missing (G7) | missing (G7) | missing | missing | n/a | n/a | shown (G7 fixed) | missing (G7) | missing (G7) |
 | Approval | partial | partial | n/a | n/a | n/a | n/a | shown (G6 fixed) | n/a (G14) | n/a (G14) |

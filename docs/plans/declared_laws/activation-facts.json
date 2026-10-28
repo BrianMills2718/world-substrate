@@ -2,20 +2,22 @@
   "schema_version": "method-activation-facts.v1",
   "record_type": "method_activation_facts",
   "plan_ref": "docs/plans/declared_laws.md",
-  "plan_sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf",
+  "plan_sha256": "91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
   "path_decision_ref": "docs/plans/declared_laws/path-decision.json",
   "path_decision_sha256": "69d0a7b699d1f769005466e13deb6fb21992a39eef982a06d42fc5aaa429bb9c",
   "facts": {
     "shared_mechanism": true,
     "empirical_comparison_proposed": true,
     "llm_central": true,
-    "irreversible_or_spend_action": true
+    "irreversible_or_spend_action": true,
+    "deploys": true
   },
   "fact_sources": {
     "shared_mechanism": "derived_current_boundary",
     "empirical_comparison_proposed": "derived_current_boundary",
     "llm_central": "derived_current_boundary",
-    "irreversible_or_spend_action": "derived_current_boundary"
+    "irreversible_or_spend_action": "derived_current_boundary",
+    "deploys": "derived_current_boundary"
   },
-  "recorded_at": "2026-10-28T08:10:57Z"
+  "recorded_at": "2026-10-28T08:34:36Z"
 }

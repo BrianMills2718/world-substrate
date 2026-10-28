@@ -47,7 +47,14 @@ name = "AuthoringBundle"
 what = "Represented structure of one world: world header, components and fields, entities with starting values, action signatures, presentation hints. Not causal law."
 source = "scripts/scaffold_world.py:45"
 schema = "world-substrate-authoring-bundle/v0"
-state = ["world {id, label, summary, location}", "components[] {name, fields[]}", "entities[] {id, label, categories, components, location}", "actions[] {kind, fields}", "presentation"]
+state = ["world {id, label, summary, location}", "components[] {name, fields[]}", "entities[] {id, label, categories, components, location}", "actions[] {kind, fields}", "presentation", "resources[] and laws[] (optional; see DeclaredLaws)"]
+
+[[entities]]
+name = "DeclaredLaws"
+what = "The world's own resources and laws, written by the world designer inside the AuthoringBundle (declared-laws plan S1): each resource names every numeric field it is kept in; a total law names the moves and processes that may change a resource's world total; a pairing law says a move hands one resource over for another. Checked for shape by the bundle validator and given to the rules writer; not yet enforced by the engine (S2)."
+source = "scripts/scaffold_world.py:45"
+schema = "world-substrate-authoring-bundle/v0 (optional keys)"
+state = ["resources[] {resource_id, says, kept_in[] {component, field}}", "laws[] total {law_id, says, resource, may_change_by[] (action kind | process:<id>)}", "laws[] pairing {law_id, says, move, gives {resource, from, to}, pays {resource, from, to}}"]
 
 [[entities]]
 name = "CausalModel"
@@ -1224,6 +1231,10 @@ views = { home = "shown", build = "shown", play = "n/a", round_replay = "n/a", l
 [[coverage]]
 element = "AuthoringBundle"
 views = { home = "partial", build = "shown", play = "n/a", round_replay = "partial", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "partial", scenario_state_panel = "partial" }
+
+[[coverage]]
+element = "DeclaredLaws"
+views = { home = "shown", build = "missing", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "CausalReview"
