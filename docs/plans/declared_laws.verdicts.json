@@ -59,6 +59,17 @@
     "trace_id": "company-planning/method-conformance/declared_laws/a44db59ae5c8/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
+  "181c94b4a7c03f9b34d6f04a17f3c42e395bf25664c7f7f7d6bfc851fbedb27a": {
+    "gaps": null,
+    "item_id": "OV-DEPLOY-PLAN",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence explicitly provides all four required elements for the deployment: the target (World Builder API and pages Worker), the deploy command (scripts/deploy_world_builder.sh with specific steps), live checks (health endpoint verification and homepage content verification), and rollback procedures (docker tag/docker-compose for API, rerun deploy script for pages).",
+    "trace_id": "company-planning/method-conformance/declared_laws/7515b2a4351c/OV-DEPLOY-PLAN",
+    "verdict": "pass"
+  },
   "1c98be2e93b9ca5b7e1d1b47896ad7ef316aca6263bba748d5e495c3342fe1cc": {
     "gaps": null,
     "item_id": "OV-DURABLE-DOCS-DECLARED",
@@ -138,6 +149,17 @@
     "trace_id": "company-planning/method-conformance/declared_laws/7b4fe38eb642/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
+  "40383f0eb4b6afc51d00b0c200171082e60823b00d18745b35ac993bac3174a0": {
+    "gaps": null,
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan triggers four activation facts\u2014empirical_comparison_proposed (via Q44 reviewer evaluation), shared_mechanism (laws, enforcement, review), llm_central (world designer, rules writer, reviewer calls), and irreversible_or_spend_action ($3.00 budget)\u2014and all are declared true. The two untriggered facts (claims_external_standard, aes_governed_target) are correctly declared false. The requirement is satisfied: no triggered fact is declared false.",
+    "trace_id": "company-planning/method-conformance/declared_laws/47110b878ef7/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
   "440acee3e07918c8c50626b8cf7e20d330cd298bd6b6b9dc7b8142945fe72d56": {
     "gaps": null,
     "item_id": "CORE-OUTCOME-FIRST",
@@ -172,6 +194,17 @@
     "rationale": "The evidence describes what run-log.jsonl records: inputs, every build step, each model call with \"request messages, typed result and `llm_client` trace id,\" engine events, and output. It also states \"How to open one\" and names the examining agent and sample policy (\"at least five ordinary steps per run\"). However, the evidence does not explicitly state that the model's reasoning is captured and kept as part of the trace. It mentions request messages (arguments) and typed result (output), but the requirement names \"the model's reasoning where the model exposes it\" as a required element to be kept. While trace IDs may allow retrieval of reasoning details from the VPS table, the evidence does not confirm that reasoning is captured.",
     "trace_id": "company-planning/method-conformance/declared_laws/a44db59ae5c8/CORE-TRACE-VISIBILITY",
     "verdict": "unresolved"
+  },
+  "588f207de5883e5d4fc3e4006cb4ad57c157dcb4646546fa7d50c1169933b730": {
+    "gaps": null,
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan correctly declares all activation facts it triggers as true (shared_mechanism, empirical_comparison_proposed, llm_central, irreversible_or_spend_action) and all facts it does not trigger as false (claims_external_standard, aes_governed_target, crosses_system_boundary). The plan explicitly states \"The plan copies established methods but claims conformance to none,\" confirming it does not trigger claims_external_standard. No activation fact is declared false when the plan actually triggers it.",
+    "trace_id": "company-planning/method-conformance/declared_laws/7515b2a4351c/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
   },
   "5d7be1f5cb03fe0064be10110cff3df6f74b88c5bafe8c6c9fee880a4806144b": {
     "gaps": null,
@@ -232,6 +265,17 @@
     "trace_id": "company-planning/method-conformance/declared_laws/7b4fe38eb642/CORE-OUTCOME-FIRST",
     "verdict": "pass"
   },
+  "7bf99c6e2a08b6b3e9237332635b1ec3193a17aa248f4fd36c8ba444f9659732": {
+    "gaps": null,
+    "item_id": "CORE-OUTCOME-FIRST",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan contains all four required lines in its `## Outcome step` section. The `Outcome probe:` line cites `roadmap/README.md#canonical-outcome-probe`, which is provided in the evidence and defines five steps ending with the visitor reading results. The `Observed:` line cites `evidence/pencil13-trace-audit/TRACE_READ.md`, which the evidence shows is a live owner build at 2026-10-28 where Brian (the outcome's actor) ran the pencil description on the deployed World Builder service and kept the result (share link 3SogfsdEGx9M). The `Step:` line names \"step 2 of the probe\" \u2014 the generation step \u2014 which is indeed a step of the canonical probe and what this plan modifies by adding laws and review to the generation. The `Class: vertical` correctly describes a plan that reaches through every probe step to an inspectable result (the canonical example showing laws, proper cash flow, and review findings), not merely improving one component.",
+    "trace_id": "company-planning/method-conformance/declared_laws/47110b878ef7/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
   "815529d4e079703129d5f0db126b60723b5d39b9ff145bf5d5413db25c276802": {
     "gaps": [
       "who must authorize the spend (evidence states spend is from owner allowance but does not explicitly name who must authorize it)"
@@ -289,6 +333,30 @@
     "trace_id": "company-planning/method-conformance/declared_laws/7b4fe38eb642/OV-PRIOR-ART-DISPOSITION",
     "verdict": "pass"
   },
+  "9fe97ddea9c8f27c56eae6ae7b1e64de27bf43dedb470fa8dbf09c8433667ed3": {
+    "gaps": null,
+    "item_id": "CORE-OUTCOME-FIRST",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan includes the complete four-line Outcome step section with substantive content meeting all requirement conditions: the probe from the roadmap exists with the exact step quoted, the observation cites a committed trace read documenting a genuine live owner run with clear attribution (who, what input, when, what kept), and the class vertical correctly describes a plan reaching inspectable results through the full probe sequence.",
+    "trace_id": "company-planning/method-conformance/declared_laws/7515b2a4351c/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
+  "a219d7ffe69d540a486a1c832f799fccd0fa70feccb9a4bcf9ba9093d667905a": {
+    "gaps": [
+      "deploys activation fact should be declared true (plan states each slice deploys and live builds on the deployed service are the promotion condition for the slice's acceptance)"
+    ],
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "deploys activation fact should be declared true (plan states each slice deploys and live builds on the deployed service are the promotion condition for the slice's acceptance)",
+    "model": "claude-code/haiku",
+    "rationale": "The plan declares `deploys: false` but explicitly requires deployment: \"each slice merges...then deploys and the live commit is confirmed through the health endpoint.\" Live builds on the deployed service are the promotion condition, and acceptance criteria L1\u2013L5 across slices S1\u2013S5 depend on authentic live runs. Deployment is a triggered action the plan requires, not an optional path.",
+    "trace_id": "company-planning/method-conformance/declared_laws/9f0625a17611/CORE-ACTIVATION-FACTS",
+    "verdict": "unresolved"
+  },
   "af1796cfa7a3f24c6cc6f7166ca9104969751d53ae854c0c368fa8d75c703037": {
     "gaps": [
       "'evidence returned but' as a qualifier in the classification for unused/contradicted evidence"
@@ -311,6 +379,17 @@
     "model": "claude-code/haiku",
     "rationale": "All triggered facts are correctly declared as true. The plan introduces a new law-enforcement mechanism (shared_mechanism: true); proposes measurement comparing reviewer models to decide which to use (empirical_comparison_proposed: true, in \"Measurement Q44\" section comparing candidates); centrally depends on three LLM calls\u2014designer, rules writer, and reviewer (llm_central: true, described in \"Build call graph\"); proposes spend on OpenRouter API calls (\"Spend: owner allowance only... about $0.15 per live pencil build... $3.00 across the plan\", irreversible_or_spend_action: true). The optional facts are correctly declared false: no external standard is claimed\u2014the plan explicitly states \"The plan copies established methods but claims conformance to none, so `claims_external_standard` is false\"\u2014and no AES governance is mentioned.",
     "trace_id": "company-planning/method-conformance/declared_laws/a44db59ae5c8/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "b1044a7355ef2a9db8c862b43b2f30f12a896af271663187c0e6efa73856458e": {
+    "gaps": null,
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan explicitly names a project outcome record at `roadmap/README.md#actor-recurring-job-and-investment-boundary`, and the quoted evidence shows that record states all four required parts: a World Builder visitor as the external actor with real work (analyzing situations), the recurring job done today (describing worlds, watching runs), the inspectable result (the run page and build record), and the stage/investment boundary. The plan's actor directly matches the outcome's actor, and the plan articulates how it serves that actor's job by ensuring the books are right so visitors can trust the runs.",
+    "trace_id": "company-planning/method-conformance/declared_laws/c245f0924f5c/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
   "be482febcbdde5f7d015ac6b3ceeed1f02636ad96c48e57a8dd8b6a6f44e788e": {
@@ -355,6 +434,17 @@
     "model": "claude-code/haiku",
     "rationale": "The evidence explicitly names OpenRouter as the provider, identifies Brian's owner allowance (granted 2026-10-28) as the spend authority, and specifies the authentic-run condition as \"an authentic live build on the deployed service (owner allowance, through the real page)\" with required evidence in `run-log.jsonl` and `TRACE_READ.md`, explicitly excluding fixture and replay results.",
     "trace_id": "company-planning/method-conformance/declared_laws/7b4fe38eb642/OV-LLM-AUTHORITY-PROMOTION",
+    "verdict": "pass"
+  },
+  "c8964ca0f9e312b0d8046732e3bb5f007dd6608ec991633723c46517a32f19a8": {
+    "gaps": null,
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan carries the required `Project outcome:` line naming `roadmap/README.md#actor-recurring-job-and-investment-boundary`, and the quoted outcome record states all four required parts explicitly: actor (\"a World Builder visitor (or Brian as owner)\"), recurring job and baseline (\"the visitor describes a situation in plain words, presses Create simulation, and watches the generated people act under the installed rules. Today (2026-10-25)...\"), inspectable result (\"the run page and its build record: what each person tried, what the rules did and why, every event with its cause\"), and stage and investment boundary (\"prototype stage, one agent at a time; this repository and its own deploy only; visitor spend capped at $3/day; owner runs on Brian's owner allowance after a free replay\"). The actor is external to the system (a visitor thinking through scenarios, not the system's builder), the recurring job is one they do today with other tools, and the plan's actor matches the outcome's actor.",
+    "trace_id": "company-planning/method-conformance/declared_laws/9f0625a17611/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
   "cae133e1bb0ca12380e27b6a5c3c9dedbbde1cc9e156b772ca8ed9f09c3c55ac": {
@@ -405,6 +495,28 @@
     "trace_id": "company-planning/method-conformance/declared_laws/7b4fe38eb642/OV-PRIOR-ART-PARALLEL-CHECK",
     "verdict": "pass"
   },
+  "d9fbc19d01d8b4ec326d71bd49425cbcc3792784c0444bf5263e94fb7cd590d0": {
+    "gaps": null,
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "judge_version": 3,
+    "materiality": "non_material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan triggers five activation facts (shared_mechanism, empirical_comparison_proposed, llm_central, irreversible_or_spend_action, deploys), and all five are declared true in the activation-facts block. Facts declared false (claims_external_standard, aes_governed_target) are not triggered by the plan: the prior art section explicitly states the plan claims no external standard conformance, and no AES governance is proposed.",
+    "trace_id": "company-planning/method-conformance/declared_laws/c245f0924f5c/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "dc219874bcd08b8486b846a368aab6dbcadd5a8aaff081ffb68b12d2845da9cc": {
+    "gaps": null,
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan carries the line `Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary`, and the cited record in the evidence states all four required parts for the project as a whole. Actor: \"a World Builder visitor (or Brian as owner)\" \u2014 a person with work of their own outside this project (thinking through real situations). Recurring job and baseline: \"the visitor describes a situation in plain words, presses Create simulation, and watches the generated people act\" with baseline behavior from pencil2\u2013pencil14 runs. Inspectable result: \"the run page and its build record: what each person tried, what the rules did and why, every event with its cause.\" Stage and investment boundary: \"prototype stage, one agent at a time; this repository and its own deploy only; visitor spend capped at $3/day; owner runs on Brian's owner allowance; no new service, engine or repository without Brian's yes.\" The plan's actor in \"## Actor and result\" (\"a World Builder visitor (and Brian as owner)\") matches the outcome's actor. The primary outcome's actor (the visitor) is not the system's builder or maintainer, and the recurring job (\"describes a situation and watches it run\") is work that actor does today by hand or with other tools.",
+    "trace_id": "company-planning/method-conformance/declared_laws/7515b2a4351c/CORE-PROJECT-OUTCOME",
+    "verdict": "pass"
+  },
   "dc41c4886ffd31079838b6d40a348574d0134e2e663c75080ab58b7b2e2df730": {
     "gaps": null,
     "item_id": "CORE-AUTHORITY-NONGOALS",
@@ -425,6 +537,43 @@
     "model": "claude-code/haiku",
     "rationale": "The evidence explicitly defines success (L1-L8 pass from full traces), concrete disproof conditions (six specific failure modes named), and characterizes all success measures as direct checks with exact trace locations specified. It rejects stand-ins and requires examination of full traces; no criterion is without defined evidence.",
     "trace_id": "company-planning/method-conformance/declared_laws/7b4fe38eb642/CORE-SUCCESS-DISPROOF",
+    "verdict": "pass"
+  },
+  "dfd31ee18610886a7dec463ac3754431fc503513a5f9a815911600356ad80125": {
+    "gaps": [
+      "description of the visitor's external job\u2014what work outside the World Builder they do that this project serves",
+      "description of the baseline for that job\u2014how the visitor accomplishes it today by hand or with other tools, without the World Builder",
+      "explanation of how the World Builder helps the visitor's external job (the record describes what they do with the system, not the external job it serves)"
+    ],
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": "(1) description of the visitor's external job\u2014what work outside the World Builder they do that this project serves (2) description of the baseline for that job\u2014how the visitor accomplishes it today by hand or with other tools, without the World Builder (3) explanation of how the World Builder helps the visitor's external job (the record describes what they do with the system, not the external job it serves)",
+    "model": "claude-code/haiku",
+    "rationale": "The plan correctly names the outcome record location (`roadmap/README.md#actor-recurring-job-and-investment-boundary`). The quoted record provides the actor, inspectable result, and investment boundary clearly. However, the requirement mandates that the outcome's actor must be \"a person or role with work of their own outside this project...and the recurring job is one that actor does today by hand or with other tools.\" The quoted evidence states the visitor \"describes a situation in plain words, presses Create simulation, and watches the generated people act\"\u2014what they do *with* the World Builder\u2014but does not establish what their job is *outside* the World Builder or what baseline job they do by hand or with other tools today. The \"baseline\" quoted (\"Today (2026-10-25) each person picks from the moves the rules already allow\") describes a limitation of the *system*, not an external job the visitor performs. Without explicit evidence of the visitor's external work and its current baseline, it cannot be verified that the actor has \"work of their own outside this project\" or that the outcome avoids self-reference.",
+    "trace_id": "company-planning/method-conformance/declared_laws/47110b878ef7/CORE-PROJECT-OUTCOME",
+    "verdict": "unresolved"
+  },
+  "e41465a1fe1ffe2f7b3d2e1ebf18ed1ccc19446a366c34e952166e13e6a1e9d4": {
+    "gaps": null,
+    "item_id": "CORE-OUTCOME-FIRST",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan's `## Outcome step` section contains all four required lines with correct content. The observation (pencil13 trace) is a real execution by an outcome actor on real input with kept results. All elements are explicitly present and substantively satisfy the requirement.",
+    "trace_id": "company-planning/method-conformance/declared_laws/c245f0924f5c/CORE-OUTCOME-FIRST",
+    "verdict": "pass"
+  },
+  "f1605cf1107d8109561ef1143707c6d023913f3e86434a4fbebf8f4799e71a5b": {
+    "gaps": null,
+    "item_id": "CORE-OUTCOME-FIRST",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan includes the complete `## Outcome step` section with all four required lines: (1) **Outcome probe:** cites `roadmap/README.md#canonical-outcome-probe`, which appears in the evidence as the canonical outcome probe defining five steps a visitor takes end-to-end; (2) **Observed:** cites `evidence/pencil13-trace-audit/TRACE_READ.md`, which is provided in full in the evidence as a trace read documenting a live owner build on 2026-10-28 where Brian ran the \"I, Pencil\" description and kept it with share link `3SogfsdEGx9M`, showing who ran it, on what input, when, and what was kept\u2014a real live use, not a fixture or test; (3) **Step:** names step 2 of the probe (\"The builder generates the world...\"), which is explicitly listed as the second item in the canonical outcome probe; (4) **Class:** declares `vertical`, which is appropriate because the pencil13 observation shows the result extends through every probe step (residents act in step 3, page shows in step 4, visitor reads in step 5) with an inspectable result at the end.",
+    "trace_id": "company-planning/method-conformance/declared_laws/9f0625a17611/CORE-OUTCOME-FIRST",
     "verdict": "pass"
   },
   "f4abfeb8a2554373f803b130a2bc2a8b7a2c9200dfd89091aa9a88b34038c3f4": {

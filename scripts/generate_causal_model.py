@@ -419,7 +419,15 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
         "initial_builtin_state": initial_builtin_state,
         "actions": bundle.get("actions", []),
         "allowed_state_paths": paths,
+        # declared-laws plan S1: the world designer's own laws, written for this world (docs/plans/declared_laws.md).
+        "resources": bundle.get("resources", []),
+        "laws": bundle.get("laws", []),
         "authority_rules": [
+            "Every move and process must keep the world's laws: a resource with a total law changes in total only "
+            "through the moves listed in may_change_by and through processes whose process_id is listed there as "
+            "'process:<process_id>'; every other effect on it subtracts from one holder exactly what it adds to "
+            "another. A pairing law's move hands over its 'gives' and its 'pays' in the same move, with a check "
+            "that each giver has enough. When there are no laws, this rule says nothing.",
             "Use only action participants as effect targets.",
             # Airfield s2 (evidence/open-attempt/s2-airfield/): six rules answers wrote no knock-on process at all.
             "Go through the represented things and moves for consequences that follow physically at once (a "

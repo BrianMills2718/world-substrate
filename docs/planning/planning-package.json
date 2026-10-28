@@ -149,7 +149,9 @@
         "kitchen": "reference_worlds/kitchen/mechanics.py",
         "mechanic": "src/world_substrate/action_authoring.py:456",
         "entity-component": "src/world_substrate/model.py:223",
-        "knock-on-now": "src/world_substrate/engine.py:884",
+        "knock-on-now": "src/world_substrate/engine.py:896",
+        "world-law": "scripts/scaffold_world.py:45",
+        "resource": "scripts/scaffold_world.py:45",
         "world-design": "scripts/generate_world_bundle.py:53"
       }
     },

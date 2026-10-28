@@ -42,6 +42,56 @@ def _type_ok(kind: str, value: object) -> bool:
     if kind == "string_list": return isinstance(value, list) and all(isinstance(x, str) for x in value)
     return False
 
+def _validate_laws(value: dict[str, Any], component_map: dict[str, dict[str, Any]], actions: dict[str, dict[str, Any]]) -> None:
+    """The world's own declared resources and laws (declared-laws plan, S1); a bundle without them is unchanged."""
+    resources = value.get("resources", [])
+    if not isinstance(resources, list): raise BundleError("resources must be a list")
+    resource_ids: set[str] = set()
+    for res in resources:
+        if not isinstance(res, dict): raise BundleError("each resource must be an object")
+        rid = _slug(res.get("resource_id"), "resource.resource_id")
+        if rid in resource_ids: raise BundleError(f"duplicate resource: {rid}")
+        resource_ids.add(rid)
+        if not isinstance(res.get("says"), str) or not res["says"].strip(): raise BundleError(f"resource {rid} says must be nonempty")
+        kept = res.get("kept_in")
+        if not isinstance(kept, list) or not kept: raise BundleError(f"resource {rid} kept_in must be a nonempty list")
+        for place in kept:
+            if not isinstance(place, dict): raise BundleError(f"resource {rid} kept_in entry must be an object")
+            comp = component_map.get(place.get("component"))
+            if comp is None: raise BundleError(f"resource {rid} kept_in names unknown component {place.get('component')!r}")
+            field = next((f for f in comp["fields"] if f["name"] == place.get("field")), None)
+            if field is None or field["type"] not in {"integer", "number"}:
+                raise BundleError(f"resource {rid} kept_in {comp['name']}.{place.get('field')} must be a numeric field")
+    laws = value.get("laws", [])
+    if not isinstance(laws, list): raise BundleError("laws must be a list")
+    law_ids: set[str] = set()
+    for law in laws:
+        if not isinstance(law, dict): raise BundleError("each law must be an object")
+        lid = _slug(law.get("law_id"), "law.law_id")
+        if lid in law_ids: raise BundleError(f"duplicate law: {lid}")
+        law_ids.add(lid)
+        if not isinstance(law.get("says"), str) or not law["says"].strip(): raise BundleError(f"law {lid} says must be nonempty")
+        if "move" in law:
+            move = actions.get(law["move"])
+            if move is None: raise BundleError(f"law {lid} names unknown move {law['move']!r}")
+            parties = {"actor"} | {f["name"] for f in move.get("fields", []) if f.get("type") == "entity_ref"}
+            for side in ("gives", "pays"):
+                leg = law.get(side)
+                if not isinstance(leg, dict): raise BundleError(f"law {lid} {side} must be an object")
+                if leg.get("resource") not in resource_ids: raise BundleError(f"law {lid} {side} names unknown resource {leg.get('resource')!r}")
+                for end in ("from", "to"):
+                    if leg.get(end) not in parties: raise BundleError(f"law {lid} {side}.{end} must be one of {sorted(parties)}")
+                if leg["from"] == leg["to"]: raise BundleError(f"law {lid} {side} must move between two parties")
+            if law["gives"]["from"] != law["pays"]["to"] or law["gives"]["to"] != law["pays"]["from"]:
+                raise BundleError(f"law {lid}: whoever gives must be paid, and whoever receives must pay")
+        else:
+            if law.get("resource") not in resource_ids: raise BundleError(f"law {lid} names unknown resource {law.get('resource')!r}")
+            changers = law.get("may_change_by")
+            if not isinstance(changers, list): raise BundleError(f"law {lid} may_change_by must be a list")
+            for changer in changers:
+                if isinstance(changer, str) and changer.startswith("process:") and changer[8:].strip(): continue
+                if changer not in actions: raise BundleError(f"law {lid} may_change_by names unknown move {changer!r}")
+
 def validate_bundle(value: object) -> dict[str, Any]:
     if not isinstance(value, dict): raise BundleError("bundle must be a JSON object")
     if value.get("schema_version") != SCHEMA_VERSION: raise BundleError(f"schema_version must be {SCHEMA_VERSION}")
@@ -130,6 +180,8 @@ def validate_bundle(value: object) -> dict[str, Any]:
             if name in RESERVED_ACTION_FIELDS or name in seen: raise BundleError(f"reserved/duplicate action field: {name}")
             seen.add(name)
             if field.get("type") not in ACTION_TYPES: raise BundleError(f"unsupported action field type at {kind}.{name}")
+
+    _validate_laws(value, component_map, {a["kind"]: a for a in actions})
 
     presentation = value.get("presentation", {})
     if not isinstance(presentation, dict): raise BundleError("presentation must be an object")

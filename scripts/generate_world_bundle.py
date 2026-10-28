@@ -109,6 +109,25 @@ def _contract() -> dict[str, Any]:
             "{assets: {asset_id: {kind: 'emoji', value}}, category_assets: {category: asset_id},"
             " station_roles: {category: one of source|workstation|surface|goal}} (station_roles may be {})"
         ),
+        # declared-laws plan S1, 2026-10-28: the world states its own conservation laws in its own terms, so the
+        # engine can later keep them and name the one a move would break (docs/plans/declared_laws.md).
+        "resources": (
+            "Optional top-level list of the things this world keeps count of that must never appear or vanish "
+            "except in the ways its laws allow: [{resource_id (lowercase-slug), says (one plain sentence), "
+            "kept_in: [{component, field}] naming every integer or number field that holds an amount of it}]. "
+            "Money, stock of goods and stored materials are typical; feelings and scores are not."
+        ),
+        "laws": (
+            "Optional top-level list of what must stay true about those resources, in this world's own terms. "
+            "Two shapes. A total law: {law_id (lowercase-slug), says, resource, may_change_by: [action kinds, or "
+            "'process:<name>' for something the world does by itself]} means the resource's world total changes "
+            "only through those (pressing pulp into paper, a factory making pencils, a customer eating bread); "
+            "every other move only moves it between holders. A pairing law: {law_id, says, move: action kind, "
+            "gives: {resource, from, to}, pays: {resource, from, to}} means that move always hands one thing over "
+            "in return for another, where from and to are 'actor' or one of that action's entity_ref field names "
+            "and whoever gives is whoever is paid (a sale: gives pencils shop->customer, pays money customer->shop). "
+            "Use [] for both when nothing in the description is kept count of."
+        ),
         "not_modeled": (
             "Top-level list of short plain-English strings naming every part of the description you could NOT "
             "represent with this format. Almost everything can be: money, prices, revenue, wages, feelings and "
@@ -192,7 +211,7 @@ def _messages(description: str, world_kind: str = "task") -> list[dict[str, str]
                 "You turn a plain-English description of a small situation into the represented structure "
                 "of a governed simulation. Return exactly one JSON object and no prose or markdown. "
                 "You are describing what exists and what actors may attempt, not what happens: do not "
-                "describe consequences or rules. Follow the contract exactly; the example shows the format."
+                "describe consequences or rules, beyond the resources and laws the contract asks for. Follow the contract exactly; the example shows the format."
             ),
         },
         {

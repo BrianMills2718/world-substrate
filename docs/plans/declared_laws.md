@@ -59,7 +59,15 @@ come from somewhere and go somewhere. **Stable example:** the pencil description
 ## Project outcome
 
 Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary (generative living worlds on top,
-rigorous causal engine underneath). **Recurring job and baseline:** a visitor describes a world and watches it run.
+rigorous causal engine underneath). **External job the World Builder serves:** the visitor (an analyst such as Rand
+Waltzman exploring an influence scenario, a teacher, a planner of a small supply chain) is thinking through how a real
+situation could play out: who would do what, what would run out, what a change would set off. **Their baseline without
+it:** a tabletop exercise or wargame with people playing the parts, a written scenario, or a spreadsheet or
+stock-and-flow model they build by hand; each is slow to set up, and a spreadsheet keeps the books but does not let
+people try things freely. **How the World Builder helps:** it turns their plain description into a running world in
+minutes, in which people try moves freely and the books are kept, so they can watch the situation unfold and rerun it.
+This plan serves that job by making the books right (money and goods neither appear nor vanish except as the world's own
+laws allow), which a reader needs before trusting what the run shows. **Recurring job and baseline:** a visitor describes a world and watches it run.
 Baseline from pencil2 to pencil14 (2026-10-27/28): each live build found one more way the rules writer got the
 bookkeeping wrong (goods from nothing, stock with nowhere to go, a purchase that pays nothing, a move that changes
 nothing, a malformed field path), and each was fixed by one more hand-written check in
@@ -403,11 +411,21 @@ are about $0.60. The visitor allowance stays $3/day.
 ## Activation facts
 
 Recorded in [activation-facts.json](declared_laws/activation-facts.json): shared mechanism yes (the engine and
-the build serve every world), one empirical comparison (Q44, see Measurement), LLM central yes, spend yes (owner
-allowance). Route: [path-decision.json](declared_laws/path-decision.json), reset: this re-plans the World Builder's
+the build serve every world), one empirical comparison (Q44, see Evaluation design), LLM central yes, spend yes (owner
+allowance), deploys yes (see Deployment). Route: [path-decision.json](declared_laws/path-decision.json), reset: this re-plans the World Builder's
 validation after the one-check-per-bug approach hit an implementation obstacle (pencil2-pencil14), with no single
 identified fix. One writer still runs the slices in order. The plan copies
 established methods but claims conformance to none, so `claims_external_standard` is false.
+
+## Deployment
+
+Each slice deploys once, after its pull request merges (squash) on `main`. Targets and commands:
+
+| Target | Deploy command | Live check that the new version serves | Rollback |
+| --- | --- | --- | --- |
+| World Builder API on the personal VPS (container `world-builder`, `/srv/apps/world-builder`) and the pages Worker `world-builder-pages` (home, play, build) | `scripts/deploy_world_builder.sh <merged commit>`: runs the local gate unless that tree already passed, then personal-vps `apps/world-builder/deploy.sh` for the API and `deploy/cloudflare/world-builder/build.sh` plus Wrangler for the pages | `curl https://brianmills.dev/world-builder/api/health` reports `build_commit` equal to the merged commit (the script waits for it and exits 3 otherwise); the home page served at <https://brianmills.dev/world-builder/> contains the slice's new text (S1: "Laws this world keeps") | API: `ssh personal-vps 'docker tag world-builder:<previous short sha> world-builder:current && cd /srv/apps/world-builder && docker-compose up -d'` (the last 3 image tags are kept); pages: rerun `scripts/deploy_world_builder.sh <previous commit>` |
+
+No deploy runs while a live run is in progress on the service.
 
 ## Durable documents
 

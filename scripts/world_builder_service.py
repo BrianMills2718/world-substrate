@@ -467,6 +467,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "dry_run": value.get("dry_run"),
             "dry_run_attempts": value.get("dry_run_attempts"),
             "not_modeled": value.get("not_modeled"),
+            # The world's own declared laws (declared-laws plan S1); the full bundle below carries them too.
+            "laws": [law.get("law_id") for law in bundle.get("laws") or []],
             # Full artifacts, so the exact world can be rebuilt and re-run later.
             "world_fingerprint": _world_fingerprint(bundle, value.get("causal_model")),
             "bundle": bundle,
@@ -1574,6 +1576,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     )
                     if not_modeled:
                         self._progress("note", "Left out of the simulation", "", [str(x).rstrip(". ") for x in not_modeled])
+                    if bundle.get("laws"):
+                        self._progress("note", "Laws this world keeps", "", [str(law.get("says", "")).rstrip(". ") for law in bundle["laws"]])
                     guidance = ""
                     # The last rules written, handed to the next try with the guidance about them (pencil10).
                     previous_rules: dict[str, Any] | None = None
