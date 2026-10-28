@@ -801,6 +801,12 @@ def _law_breach_guidance(breaches: list[dict[str, str]], turns: int) -> str:
     )
 
 
+def _law_breaches_first(guidance: str, breaches: list[dict[str, str]], turns: int) -> str:
+    """Put a test run's law breaches ahead of its other findings: the rules writer keeps 4000 characters of guidance
+    and the world designer 3000, and pencil COc7JzUGIXXn lost its breach behind the rest."""
+    return (_law_breach_guidance(breaches, turns).strip() + " " + guidance.strip()).strip()
+
+
 def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
     """One plain sentence about a quick test run, for the build progress list."""
     if not row.get("ok"):
@@ -921,15 +927,17 @@ def _retry_label(first_model: str) -> str:
     return "Rewriting the rules with a stronger model" if RULES_RETRY_MODEL != first_model else "Rewriting the rules"
 
 
-def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, bool, int, int, int, bool]:
-    """Order rules attempts: by score, then ties go to a test run that did not go in circles, then to fewer moves
-    never offered, then to fewer people who stopped acting (#253: an airfield build kept the one test run that
+def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, int, bool, int, int, int, bool]:
+    """Order rules attempts: by score, then ties go to a test run that broke fewer of the world's laws, then to one
+    that did not go in circles, then to fewer moves never offered, then to fewer people who stopped acting (#253: an airfield build kept the one test run that
     circled and never offered `move`, because it had one stalled person fewer), and last to one whose rules have a
     knock-on process."""
     idle = set(row.get("idle_actors") or []) | set(row.get("stalled_actors") or [])
-    # A move no world entity can ever take part in loses first (2026-10-27 pencil iMrL2U84cLCS kept the attempt
+    # Fewer broken laws first: pencil COc7JzUGIXXn ranked an attempt that broke a law level with one that did not.
+    # A move no world entity can ever take part in loses next (2026-10-27 pencil iMrL2U84cLCS kept the attempt
     # whose shipping could never happen over one where every move ran).
-    return (score, not row.get("circling"), -len(row.get("missing_components") or []),
+    return (score, -len(row.get("law_breaches") or []), not row.get("circling"),
+            -len(row.get("missing_components") or []),
             -len(row.get("never_offered") or []), -len(idle),
             bool(row.get("knock_on_processes")))
 
@@ -1860,7 +1868,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 # and, on a redesign, to the world designer, since the law itself may be what is wrong
                                 # (declared-laws plan S2; #281: pencil laws listed only the moves that make a good).
                                 score = min(score, 2 if world_kind != "task" else 1)
-                                guidance += _law_breach_guidance(breaches, dry_turns)
+                                guidance = _law_breaches_first(guidance, breaches, dry_turns)
                         except ValueError as error:
                             result_row = {"ok": False, "error": str(error)[:300]}
                             score = 0
