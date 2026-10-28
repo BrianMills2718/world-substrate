@@ -1,0 +1,117 @@
+<main>
+<h1>Each world states its own laws; the engine holds the rules to them</h1>
+<p class="lede">Design for fixing the cause of the pencil-world bugs instead of one symptom at a time. Today the AI that writes a world's rules writes every move as raw field changes, and nothing compares those changes with what it knows, so a shop can "buy" boxes without paying (pencil13) and we add one more hand-written check per mistake. In this plan the AI that designs the world also writes the world's laws in its own terms ("pencils are made only by the factory"; "buying boxes moves boxes one way and cash the other"), the engine refuses any move that breaks one and names the law, and a separate AI reviews the rules against the description. Moves stay free: there is no fixed list of move types. <b>Nothing here is built yet</b>; pick an example to see what today's build does and what the planned build will record.</p>
+<p class="lede">This page is the plan's own package. The repository-wide package is on <a href="../../planning-package/review-page/">World Substrate: planning package</a>; both share one set of checks, questions and models (Q41).</p>
+<div class="legend">
+<span class="chip"><span class="sw have"></span>Blue, solid: in the World Builder build now</span>
+<span class="chip"><span class="sw miss"></span>Orange, dashed: added by this plan (planned, not yet run)</span>
+<span class="chip"><span class="sw grey"></span>Grey: what happens today</span>
+</div>
+<div class="examples" role="group" aria-label="Examples">
+<button data-ex="unpaid" aria-pressed="true">Shop takes boxes without paying</button>
+<button data-ex="nothing">Pencils appear from nothing</button>
+<button data-ex="noop">A move that changes nothing</button>
+<button data-ex="sale">An honest sale</button>
+</div>
+<div class="layout">
+<div class="stages" id="stages">
+<div class="stage have" data-s="describe"><span class="t">1. Describe</span><span class="tag">have</span>
+<div class="d">The visitor pastes a description and presses Create simulation.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="laws"><span class="t">2. Design the world and declare its laws</span><span class="tag">new, S1</span>
+<div class="d">The AI that designs places, things and people also lists the world's laws in two shapes: a total only named moves may change, and a move that must move one thing each way. Each law has a plain sentence for the page.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="rules"><span class="t">3. Write the rules</span><span class="tag">have; laws added as input</span>
+<div class="d">The rules writer writes each move's checks and effects, told every move must keep the laws.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="review"><span class="t">4. Independent review</span><span class="tag">new, S3</span>
+<div class="d">A different AI model, with a fresh context, reads the description, the laws and the rules, and lists concrete mismatches. It gives findings, never a pass mark.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="test"><span class="t">5. Test run, laws enforced</span><span class="tag">test run have; law check new, S2</span>
+<div class="d">The build's free scripted run plays the rules. A step that breaks a law is refused whole, with the law named, and nothing changes.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="fix"><span class="t">6. Fix what was found</span><span class="tag">have; inputs new</span>
+<div class="d">The rules writer rewrites only the moves named by a law refusal or a review finding (the "changed moves only" retry from pull request 278).</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="run"><span class="t">7. Keep the world and run it</span><span class="tag">have; law check stays on</span>
+<div class="d">People act each round. The engine keeps checking the laws on every move and knock-on effect.</div></div>
+</div>
+<div class="trace" id="trace" aria-live="polite"></div>
+</div>
+
+<h2>Built in five slices, each one a working World Builder</h2>
+<div class="tablewrap"><table>
+<tr><th>Slice</th><th>State</th><th>What lands</th><th>Shown by</th></tr>
+<tr><td>S1</td><td><b style="color:var(--miss)">Planned</b></td><td>The world designer declares laws; the rules writer gets them; the build record and page list them</td><td>A live pencil build whose record lists its laws in the world's own words (L1)</td></tr>
+<tr><td>S2</td><td><b style="color:var(--miss)">Planned</b></td><td>The engine refuses a move or knock-on effect that breaks a law, naming it; a test-run refusal goes to the rules writer</td><td>Tests on the saved pencil13 world: the unpaid purchase is refused with its law named (L2, L3)</td></tr>
+<tr><td>S3</td><td><b style="color:var(--miss)">Planned</b></td><td>The independent review and its findings into the rules writer's fix step</td><td>The review names pencil13's unpaid purchase; the canonical pencil build live (L4, L5)</td></tr>
+<tr><td>S4</td><td><b style="color:var(--miss)">Planned</b></td><td>Retire the hand-written checks that guess meaning, one at a time, each only after its incidents are caught by a law or the review</td><td>A table of each retired check and the saved worlds that prove it is covered (L6)</td></tr>
+<tr><td>S5</td><td><b style="color:var(--miss)">Planned</b></td><td>Four different descriptions built live in parallel (pencil, airfield, a kitchen, the Waltzman scenario)</td><td>Each run's laws, refusals and findings, read round by round</td></tr>
+</table></div>
+
+<h2>Which checks stay and which go</h2>
+<p class="lede">The build has about fourteen hand-written checks, each added after one bad world. Checks that report what the free test run actually saw are observations, so they stay. Checks that guess a rule's meaning from its shape are what laws and the review replace; each goes only when the saved worlds of the incidents it caught are covered (open question Q45).</p>
+<div class="tablewrap"><table>
+<tr><th>Check</th><th>Kind</th><th>Plan</th></tr>
+<tr><td>People idle or stuck; the world circling; moves never possible; people never together; refusals at the start</td><td>Reports the test run</td><td><b style="color:var(--have)">Stay</b></td></tr>
+<tr><td>Goods from nothing; a second source; unsourced inputs</td><td>Guesses a total</td><td><b style="color:var(--miss)">Retire</b> once a total law refuses each incident</td></tr>
+<tr><td>Stock with nowhere to go; starved holders; unanswered demand</td><td>Guesses a sink or a source</td><td><b style="color:var(--miss)">Retire</b> once a law or the review names each incident</td></tr>
+<tr><td>Moves that change nothing; vanishing moves</td><td>Guesses meaning</td><td><b style="color:var(--miss)">Retire</b> once the review names each incident</td></tr>
+</table></div>
+
+<h2>What could go wrong, and what catches it</h2>
+<div class="tablewrap"><table>
+<tr><th>Risk</th><th>Catch</th></tr>
+<tr><td>Laws turn into fixed move types by the back door</td><td>Laws only constrain totals and pairings of the world's own fields; moves are written freely (requirement R1)</td></tr>
+<tr><td>The designer declares a wrong law, so an honest move is refused</td><td>The refusal shows in the build record with the law's sentence, and both the rules writer and the review see it; S5's reads look for this</td></tr>
+<tr><td>The designer forgets a law</td><td>A missing law catches less, never more wrongly; the review still reads the rules against the description</td></tr>
+<tr><td>The review just agrees with the rules writer</td><td>A different model family, a fresh context, findings not a verdict, and its value measured on the saved incident worlds before any check retires (Q44)</td></tr>
+<tr><td>A law that is not a simple total (a price formula)</td><td>Not a law: an ordinary rule the review reads (Q43, settled by reading every logged incident)</td></tr>
+<tr><td>Saved worlds change</td><td>A world with no laws runs exactly as today; every replay test must pass on each merge</td></tr>
+</table></div>
+
+<!-- package:start -->
+<!-- package:end -->
+<!-- maps:start -->
+<!-- maps:end -->
+<h2>Your decisions</h2>
+<p class="lede"><b>Decided:</b> the three-part design, laws declared by the world's designer, enforced by the engine, and an independent review, instead of fixed move types (you said "yes lets make it companhy plannign complaint" on 2026-10-28, after rejecting fixed move types as destroying the point).</p>
+<p class="lede">Nothing in this plan is waiting on you. The two open questions (which model reviews, Q44; which checks retire, Q45) are settled by checking, inside the plan. S1 starts next.</p>
+
+<footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/declared_laws.md">docs/plans/declared_laws.md</a> · Methods copied: Petri-net place invariants, Concordia's stock-and-flow ledger, LLM+P-style validator feedback · The pencil13 read-through: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/evidence/pencil13-trace-audit/TRACE_READ.md">TRACE_READ.md</a></footer>
+</main>
+<script>
+const EX={
+unpaid:{title:"The shop takes boxes without paying",setup:"pencil13 (2026-10-28): the rules writer gave the shop a buy-boxed-pencils move that moves boxes from the factory to the shop and moves no cash.",stages:["describe","laws","rules","review","test","fix"],ev:[
+["grey","today","The move installed and ran. Customers paid the shop five times; the factory was never paid. No check noticed.","evidence/pencil13-trace-audit/TRACE_READ.md"],
+["miss","laws","The designer declares: buying boxed pencils moves boxes from the factory to the shop and cash from the shop to the factory.","{law_id: boxes-are-paid-for, move: buy-boxed-pencils, gives: boxes, pays: cash}"],
+["miss","review","Finding: buy-boxed-pencils moves boxes but no cash, though the description says shops buy them.","{rule_id: buy-boxed-pencils, problem: …}"],
+["miss","test run","The shop's first purchase is refused: \"buying boxed pencils moves boxes to the shop and cash to the factory\" failed. Nothing changes.","status: law_breach"],
+["miss","fix","The rules writer rewrites only buy-boxed-pencils, now paying the factory.","revision: changed moves only"]],
+out:"Today this bug ran unnoticed. With the plan it is caught twice before the world is kept: by the law in the test run and by the review."},
+nothing:{title:"Pencils appear from nothing",setup:"pencil2 and pencil4: a process added pencils to a shop each round with nothing used up.",stages:["describe","laws","rules","test","fix"],ev:[
+["grey","today","Caught only because a hand-written check guessed it from the rule's shape (conjuring processes).","scripts/world_builder_service.py:867"],
+["miss","laws","The designer declares: the number of pencils changes only by the factory's make move and customers using them.","{law_id: pencils-are-made, resource: pencils, may_change_by: [make-pencils, use-pencil]}"],
+["miss","test run","The restock step is refused: \"pencils are made only by the factory\" failed, naming the step that tried.","status: law_breach"],
+["miss","fix","The rules writer changes the restock into a delivery from the factory.","revision"]],
+out:"The same catch, but from the world's own law instead of a guess that has to be written again for every new kind of good."},
+noop:{title:"A move that changes nothing",setup:"Airfield (issue 254): the fly and teach moves changed nothing at all.",stages:["describe","rules","review","fix"],ev:[
+["grey","today","Caught in part by a hand-written check for moves that change nothing.","scripts/world_builder_service.py:1114"],
+["have","laws","No law fits: nothing is made or paid. This is a question of meaning, not bookkeeping.","—"],
+["miss","review","Finding: fly changes nothing, though the description says the trainee flies the helicopter.","{rule_id: fly, problem: …}"],
+["miss","fix","The rules writer rewrites fly.","revision"]],
+out:"Laws catch bookkeeping; the review catches meaning a law cannot state."},
+sale:{title:"An honest sale",setup:"A customer buys a pencil from the shop: one pencil to the customer, cash to the shop.",stages:["describe","laws","rules","test","run"],ev:[
+["miss","laws","Laws: pencils change only by make and use; buying a pencil moves a pencil one way and cash the other.","laws[]"],
+["have","test run","Accepted: both laws hold, so the step commits as it does today.","status: accepted"],
+["have","run","The kept world runs; each sale moves cash both ways, and the engine keeps checking the laws.","events"]],
+out:"An honest move is never slowed down or changed: the law check only reads the before and after of a step."}};
+function show(k){const e=EX[k];
+document.querySelectorAll(".examples button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ex===k?"true":"false"));
+document.querySelectorAll(".stage").forEach(s=>s.classList.toggle("dim",!e.stages.includes(s.dataset.s)));
+let h="<h3>"+e.title+"</h3><p class='setup'>"+e.setup+"</p>";
+for(const [c,w,t,r] of e.ev){h+="<div class='ev'><span class='who "+c+"'>"+w+"</span><div>"+t+"<div class='rec'>"+r+"</div></div></div>";}
+h+="<div class='outcome'>"+e.out+"</div>";document.getElementById("trace").innerHTML=h;}
+document.querySelectorAll(".examples button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.ex)));
+show("unpaid");
+</script>

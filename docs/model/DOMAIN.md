@@ -103,6 +103,9 @@ Named in decisions or the roadmap, not on the live path.
 | **Executable-law fingerprint** (`law-fingerprint`) | Roadmap hardening item: fingerprint the exact executable law and compiler version. | `roadmap/README.md:252` | `—` |
 | **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:182` | `—` |
 | **Run seed** (`run-seed`) | Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). | `docs/plans/open_attempt.md:192` | `—` |
+| **Declared world law** (`world-law`) | Plan declared-laws S1: a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. | `docs/plans/declared_laws.md` | `—` |
+| **Law check** (`law-check`) | Plan declared-laws S2: inside the same commit as the write-scope check, every move and process step is checked against the world's declared laws; a breach refuses the whole step and names the law, and nothing changes. | `docs/plans/declared_laws.md` | `—` |
+| **Independent rules review** (`rules-review`) | Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. | `docs/plans/declared_laws.md` | `—` |
 
 ## Where the sources disagree
 

@@ -71,6 +71,9 @@ NODES = [
  ('mechanic', 'Installed mechanic', 'Substrate', "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens.", 'AGENTS.md:3', 'src/world_substrate/action_authoring.py:456'),
  ('entity-component', 'Entity and component', 'Substrate', 'An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write.', 'docs/model/ODD.md:100', 'src/world_substrate/model.py:223'),
  ('run-seed', 'Run seed', 'Theory', "Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33).", 'docs/plans/open_attempt.md:192', '—'),
+ ('world-law', 'Declared world law', 'Theory', "Plan declared-laws S1: a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types.", 'docs/plans/declared_laws.md', '—'),
+ ('law-check', 'Law check', 'Theory', "Plan declared-laws S2: inside the same commit as the write-scope check, every move and process step is checked against the world's declared laws; a breach refuses the whole step and names the law, and nothing changes.", 'docs/plans/declared_laws.md', '—'),
+ ('rules-review', 'Independent rules review', 'Theory', "Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark.", 'docs/plans/declared_laws.md', '—'),
 ]
 EDGES = [
  ('engine', 'world', 'changes'),
@@ -164,4 +167,12 @@ EDGES = [
  ('place-way', 'entity-component', 'is an'),
  ('skill-roll', 'run-seed', 'draws dice from'),
  ('run-seed', 'causal-trace', 'recorded in'),
+ ('world-law', 'entity-component', 'constrains'),
+ ('gen-rules', 'world-law', 'declares'),
+ ('law-check', 'world-law', 'enforces'),
+ ('law-check', 'mechanic', 'can refuse'),
+ ('law-check', 'process', 'can refuse'),
+ ('rules-review', 'gen-rules', 'sends findings to'),
+ ('rules-review', 'world-law', 'reads'),
+ ('rules-review', 'test-run', 'replaces heuristics in'),
 ]

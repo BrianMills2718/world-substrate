@@ -795,5 +795,65 @@ Q = [
    "scripts/generate_causal_model.py:475"
   ],
   "touches": ["gen-rules"]
+ },
+ {
+  "id": "Q43",
+  "short": "Laws that are not simple totals",
+  "question": "The law language in the declared-laws plan covers two shapes: a resource whose total only named moves may change (a weighted sum that stays constant, a Petri-net P-invariant), and a move meaning that pairs two effects in one move (goods one way, payment the other). Some worlds have rules that are not totals: a price set by a formula, a share of a stock, a flag that flips. Do any of the logged incidents need a law of another shape, and what happens to such rules?",
+  "blocks": "whether S1's law language is enough for the incidents the plan claims to fix, or grows special cases (the risk the prior-art review named)",
+  "resolves_with": "One counterexample check, by reading: go through each logged incident (pencil2, 4, 7, 12, 13, 14; airfield #254) and say which law shape would have caught it. If every one is a total or a pairing, S1 keeps the two shapes; a rule of another shape stays an ordinary rule that the independent review (S3) reads against the description, not a law.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Read 2026-10-28 against the incident list in docs/plans/declared_laws.md (Incidents): goods from nothing (pencil2/4), dead-end stock (pencil2/4/7) and a purchase that pays nothing (pencil13 buy-boxed-pencils) are totals or pairings; the no-op moves (#254) and the malformed path (pencil14) are not law questions at all (the first is for the review, the second is already refused by the installer). None needs a third shape, so S1 keeps two; S5's four new descriptions are read for a counterexample before S4 retires anything.",
+  "sources": [
+   "docs/plans/declared_laws.md",
+   "evidence/pencil13-trace-audit/TRACE_READ.md",
+   "src/world_substrate/assay.py:269"
+  ],
+  "touches": ["world-law", "law-check"]
+ },
+ {
+  "id": "Q44",
+  "short": "Which model reviews the rules",
+  "question": "The independent rules review must not be the rules writer marking its own work: research finds a model rates its own output too kindly and fixes little without outside feedback. Which model and context should the review use, and is it worth its cost and time?",
+  "blocks": "S3's reviewer design, and whether S4 may retire any heuristic check on the strength of the review",
+  "resolves_with": "Prior art settles the shape (Huang et al. 2023, arXiv 2310.01798; Wataoka et al. 2024, arXiv 2410.21819): a different model family from the rules writer, a fresh context holding only the description, the declared laws and the compiled rules, and output as a list of findings (rule, quoted description words, what is wrong), never a verdict. Whether it earns its place is empirical, so one measurement, named for one decision (S4): run it on the saved worlds of every logged incident (free replays plus one review call each, a few cents) and count which incidents it names.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/plans/declared_laws.md",
+   "scripts/generate_causal_model.py"
+  ],
+  "touches": ["rules-review", "gen-rules"]
+ },
+ {
+  "id": "Q45",
+  "short": "Which heuristic checks retire",
+  "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:840-1220), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
+  "blocks": "S4: which checks are removed, and so whether validation stops growing one check per bug",
+  "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at the rules' meaning from their shape (conjuring, second source, dead-end stock, unsourced inputs, vanishing moves, unanswered demand, starved holders) retire one by one, each only when the saved world of every incident it caught is refused by a law or named by the review.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "scripts/world_builder_service.py:840",
+   "scripts/world_builder_service.py:960",
+   "scripts/world_builder_service.py:1700"
+  ],
+  "touches": ["rules-review", "test-run", "build"]
+ },
+ {
+  "id": "Q46",
+  "short": "Refuse at run time or check at build time first",
+  "question": "A declared law can be enforced when a move runs (the engine refuses a breach) or checked before any run (read each rule's effects and prove it cannot break a total). Which comes first?",
+  "blocks": "S2's scope",
+  "resolves_with": "An argument settles it. The run-time check is the guarantee: it holds for every rule shape and every state, and the build's scripted test run already runs the rules, so a breach there is a build finding for free. A static proof is sound only for add and subtract effects with fixed amounts, so it is an optional speed-up, not the guarantee.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by argument 2026-10-28: S2 builds the run-time law check inside Engine.apply's commit, beside the write-scope check (src/world_substrate/engine.py:705), and inside each knock-on wave; a law breach in the test run becomes a build finding sent to the rules writer. The static check is deferred and needs no decision now.",
+  "sources": [
+   "src/world_substrate/engine.py:686",
+   "src/world_substrate/engine.py:896"
+  ],
+  "touches": ["law-check", "test-run"]
  }
 ]
