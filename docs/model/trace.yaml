@@ -85,7 +85,7 @@ rules:
     statement: >-
       Precondition checks and process due-tests only read; one that writes is refused and the tick is rolled back.
     owner: src/world_substrate/engine.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: only Engine.scratch() was added; _readonly_call paths unchanged
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 adds the law check after commit-side scope checks; checks and due-tests still run read-only on detached views
     checks:
       - tests/test_rule_authority.py::test_checks_are_refused_if_they_write
       - tests/test_rule_authority.py::test_due_cannot_write_and_the_tick_is_rolled_back
@@ -107,7 +107,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: run_authored_world.py changes hide untouched zeros from residents and reuse one scratch engine; the profile is still frozen before the run
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 sets the declared laws on the registry before profile.freeze(); laws are not mechanics and the review path is unchanged
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -119,7 +119,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
-    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): the change adds law ids to the build summary and a 'Laws this world keeps' progress note; approval before run unchanged
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 adds only _law_breach_guidance text to the build loop; approval before run unchanged
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -130,7 +130,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
-    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): no LLM call or budget path changed, only the build summary and a progress note; budget gate unchanged
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 adds no model call; a law breach only changes guidance text sent on existing calls
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -141,7 +141,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
-    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): run rows still written per request with trace ids; the build record gains a laws field only
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2: test-run rows gain law_breaches when there are any; run rows unchanged
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
