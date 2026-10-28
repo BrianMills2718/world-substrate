@@ -79,6 +79,19 @@ class GenerateWorldBundleTests(unittest.TestCase):
         self.assertIn("pick-apple was never possible for anyone.", messages[3]["content"])
         self.assertIn("cannot add actions or fields", messages[3]["content"])
 
+    def test_a_redesign_that_drops_the_laws_is_sent_back(self):
+        # S2 pencil Fw7SHbEtW3Un: the design it revised declared 17 laws, the redesign none.
+        from tests.test_declared_laws import SHOP
+        lawless = {k: v for k, v in SHOP.items() if k not in ("resources", "laws")}
+        module, call = fake_llm(json.dumps(lawless), json.dumps(SHOP))
+        with patch.dict(sys.modules, {"llm_client": module}):
+            bundle, _, _ = generate_world_bundle("A shop sells pencils.", trace_id="t", max_budget=0.01,
+                                                 feedback="sell-pencil was never possible.", previous=SHOP)
+        self.assertEqual(call.call_count, 2)
+        self.assertIn("dropped the world's resources and laws", call.call_args.args[1][-1]["content"])
+        self.assertEqual([law["law_id"] for law in bundle["laws"]], [law["law_id"] for law in SHOP["laws"]])
+        self.assertIn("Keep the world's resources and laws", call.call_args_list[0].args[1][3]["content"])
+
     def test_valid_proposal_is_returned_validated(self):
         module, call = fake_llm(json.dumps(ORCHARD))
         with patch.dict(sys.modules, {"llm_client": module}):

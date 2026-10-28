@@ -274,7 +274,10 @@ def generate_world_bundle(
                     "Rules were written for that structure and test-run, and this is what happened: "
                     f"{feedback.strip()[:3000]} Rules can only change the actor and the entities its fields name, and "
                     "cannot add actions or fields. Return a corrected structure (JSON object only) whose actions and "
-                    "fields let every step and every actor happen, keeping what already worked."
+                    "fields let every step and every actor happen, keeping what already worked. Keep the world's "
+                    "resources and laws, updated for every action you add, rename or change: a move that makes or "
+                    "uses up a resource belongs in that law's may_change_by, and a trade its pairing law names must "
+                    "still exist."
                 ),
             },
         ]
@@ -300,6 +303,12 @@ def generate_world_bundle(
             bundle = validate_bundle(parsed)
             if not bundle["actions"]:
                 raise BundleError("bundle must declare at least one action")
+            if previous is not None and previous.get("laws") and not bundle.get("laws"):
+                # S2 pencil build Fw7SHbEtW3Un: the redesign returned no laws at all though the design it revised
+                # declared 17, so the kept world ran with none (evidence/declared-laws/s2-pencil/).
+                raise BundleError(
+                    "the redesign dropped the world's resources and laws; return them, updated for the new actions"
+                )
             return bundle, [x.strip() for x in not_modeled if x.strip()][:8], result
         except (BundleError, ValueError, TypeError, KeyError) as error:
             last_error = error
