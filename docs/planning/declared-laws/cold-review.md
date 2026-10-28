@@ -35,3 +35,19 @@ Unsure about: the reviewer did not render the page; it read the HTML. It sampled
 Per package, once the fields are filled: declared-laws pass; repository pass; open-attempt pass.
 
 Verdict: pass
+
+## Round 4, 2026-10-28: delta after adoption
+
+Reviewer: `company-planning:planning-compliance-reviewer` subagent. Reviewed revision: 4ff4c274a7a97508fc004c24f2cce6bdae412136. Scope: `git diff 3e376db 4ff4c27`, the adoption through the company-planning gate.
+
+- **Validator:** all three manifests exit 0.
+- **Cites:** every new cite matches the code: `_contract` :93, `MAX_REPAIRS` :215, `validate_bundle` :45, `causal_model_schema` :330, `reasoning` :368, `.agentic/repo.yaml:3-11` and `trace.yaml:22, 28, 31`.
+- **Route:** reset agrees with the path-decision facts. The receipt hashes match the files on disk, and it records 25 items passed.
+
+Findings, all notes:
+
+- `docs/plans/declared_laws.md:406` still says "see Measurement". The section is now "Evaluation design", so the pointer needs updating at the next plan edit, which re-adopts the plan.
+- Keeping the model's reasoning text in the run log is a requirement on the slices, not current behaviour. The plan states it as a requirement.
+- "about $2 and two days" for pencil2-pencil14 was not checked against a cited file, and no decision rests on it.
+
+Verdict: pass

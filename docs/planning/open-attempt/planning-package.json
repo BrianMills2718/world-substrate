@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "3e376db030b31925f7a3b9f8c6d8806e06e17b9a",
+  "subject_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136",
   "request": "Brian 2026-10-25 \"yes\" (to: write a short design for free-form attempts plus the fallback for unmatched attempts, then knock-on effects and skill rolls, tracing the wall, glass and helicopter examples, with a review page)",
   "parts": {
     "checks": {
@@ -60,7 +60,7 @@
           "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 156,
+            "md_files": 157,
             "cap": "exception",
             "orphans": 0
           },
@@ -228,7 +228,7 @@
       "status": "present",
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "3e376db030b31925f7a3b9f8c6d8806e06e17b9a"
+      "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
     }
   },
   "note": "This is the plan's own package, named by docs/plans/open_attempt.md's 'Planning package:' line. The other package is docs/planning/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
