@@ -2,7 +2,7 @@
 plan_id: "declared-laws"
 dependencies: []
 dependencies_reviewed: "2026-10-28"
-planning_path: durable_solo
+planning_path: reset
 planning_path_ref: docs/plans/declared_laws/path-decision.json
 method_conformance_receipt: docs/plans/declared_laws/conformance-receipt.json
 status: adopted
@@ -27,6 +27,7 @@ conflict_surfaces:
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/laws.py, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/action_authoring.py, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_world_bundle.py, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/scaffold_world.py, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_causal_model.py, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/review_rules.py, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/world_builder_service.py, access: write}
@@ -231,19 +232,34 @@ and a broken case that looks different:
 
 ## Success and disproof
 
+**What L1-L8 are:** the agent's acceptance checks for R1-R7, one row each in the table above. Each is a direct check
+of the claimed property, not a stand-in for it: L1 reads the laws themselves in the build record and compares them
+with the designer's reply; L2 and L3 read the refusal events and the rules writer's next request; L4 reads the review
+call's model, request and findings; L5 reads the kept world's own run, sale by sale; L6 replays each incident's saved
+world and reads whether a law or a finding names it; L7 replays law-free saved worlds; L8 reads each run's trace
+files. A test count, a merged pull request or a status line alone satisfies none of them.
+
 **Success:** L1-L8 pass, each judged from the full trace of the run it names. **Disproof:** any of these in a named
 run's trace: a law that names a field or move the world does not have; a committed step whose before and after break a
 declared law; a refusal without the law's sentence; a review call sharing the rules writer's model or conversation; a
 retired check with an incident neither a law nor the review catches; a law-free saved world whose replay differs.
 Trace review: the implementing agent reads every law refusal, every review finding and a sample of at least five
-ordinary steps per run, and writes `TRACE_READ.md`; each of L1-L8 is expected `pass`.
+ordinary steps per run, and writes `TRACE_READ.md`; each of L1-L8 is expected `pass`. Where each trace lives:
+L1, L3, L4, L5 and L6 in `evidence/declared-laws/<run>/run-log.jsonl` (with `TRACE_READ.md` beside it) plus the
+`llm_client` trace ids it records; L2 and L7 in the `scripts/check_project.py` output for the slice's merge commit,
+saved as `evidence/declared-laws/<slice>/check_project.txt`, with the named tests' assertions read; L8 is the reading
+of those files itself. An acceptance criterion that names only an outcome ("tests pass", "pull request merged", "the
+status reads ok") fails this rule; every row names what its trace must show. Exemption: a criterion with no run (a
+pure document edit, such as this adoption commit) says so and why in its slice's `TRACE_READ.md`; no criterion
+L1-L8 is exempt.
 
 ## When a run fails or surprises us
 
-Keep the run and its trace ids; read the full inputs, prompts, each model and tool call's arguments and results,
+This procedure is separate from the anticipated failure modes in Requirements and Uncertainties: those are designed
+for in advance, while this is what to do when a real run fails or surprises us in a way nobody planned. Keep the run and its trace ids; read the full inputs, prompts, each model and tool call's arguments and results,
 intermediate stages (laws, rules, review findings, test-run refusals) and the output (build record, page) before
-choosing a fix; cite where it diverged; classify it evidence absent, unused or contradicted, invalid expectation, or
-unresolved. An unresolved cause permits investigation, not a repair. A repair is verified by a new traced run whose
+choosing a fix; cite where it diverged; classify it evidence absent (never retrieved), evidence returned but unused or contradicted, invalid
+expectation, or unresolved. An unresolved cause permits investigation, not a repair. A repair is verified by a new traced run whose
 `TRACE_READ.md` links the original; the original stays. A new symptom is first asked "which law or review finding
 should have caught this?" and fixed there; a new heuristic check is the last resort and is recorded as a question.
 Never rerun until a behavior appears and report only that run. Review completeness never changes the run verdict.
@@ -289,6 +305,9 @@ Each slice is its own pull request and leaves a working World Builder.
   call (designer, rules writer, reviewer, residents) with request messages, typed result and `llm_client` trace id,
   every engine event with before/after and failed checks (including `law_breach`), and the output (build record, page
   JSON). Kept for ordinary runs, not only failures; this adoption commit alone is document-only and runs nothing.
+- The model's reasoning, where the model exposes it: each call's reasoning text (OpenRouter `reasoning` field, and
+  the residents' `reasoning` field in `scripts/run_authored_world.py:368`) is kept in the run log with the call, not
+  dropped; a model that exposes none is recorded as such.
 - How to open one: `jq . evidence/declared-laws/<run>/run-log.jsonl`; model calls in the VPS `llm_calls` table by
   trace id. Who reads and when: the implementing agent reads every run's trace before reporting its slice: every law
   refusal and review finding in full, and at least five ordinary steps per run across rounds and actors.
@@ -306,7 +325,15 @@ Prior-art review 2026-10-28 (summarised in Decisions D3-D4): Petri-net place inv
 exempt transitions); Concordia contrib `stock_flow_ledger.py` (Apache-2.0, semantics borrowed); LLM+P and Guan et al.
 2023, AutoToS, WorldCoder (a model writes a world model, a validator feeds corrections back); Huang et al. 2023
 (arXiv 2310.01798), SCORE (2404.17140) and Wataoka et al. 2024 (2410.21819): self-review without outside feedback is
-weak and self-preferring, hence D2 of Piece 3. Disposition: **compose**, with a small law language of our own.
+weak and self-preferring, hence D2 of Piece 3. Overall disposition: **compose**, with a small law language of our own.
+Per candidate:
+
+| Candidate | Disposition | What we take |
+| --- | --- | --- |
+| Petri-net place invariants | compose (idea only) | a law is a weighted sum that only named moves may change |
+| Concordia contrib `stock_flow_ledger.py` | bounded exception (semantics borrowed, code not adopted) | holders, an outside boundary, `is_conserved`; its fixed operation set is the fixed-move-types design Brian rejected (D4) |
+| LLM+P, Guan et al. 2023, AutoToS, WorldCoder | compose (method) | a model writes the world model and an outside validator feeds named corrections back to it (Pieces 2 and 3) |
+| Huang et al. 2023, SCORE, Wataoka et al. 2024 | reuse (finding) | the reviewer must be a different model and context from the writer (Piece 3) |
 Owner: World Substrate's rules layer. Parallel-implementation check: one commit path; `grep -n "def apply"
 src/world_substrate/engine.py` stays one hit and `law_breaches` has one caller per commit site.
 
@@ -316,7 +343,15 @@ Build call graph: world designer (existing; output gains `laws`) -> rules writer
 test-run law refusals and review findings added to its revision input) -> reviewer (new, one call per build attempt,
 after compile, before the test run's verdict) -> no further model call. Laws and review findings have no authority to
 change state: laws only refuse, and findings only reach the rules writer. Rules writer and designer stay on the World
-Builder's model; the reviewer uses a different family through `llm_client` (Q44). Failure: a failed or malformed
+Builder's model; the reviewer uses a different family through `llm_client` (Q44). Structured result boundaries:
+the **world designer** returns the world bundle JSON defined by `_contract()` (`scripts/generate_world_bundle.py:93`),
+parsed with `safe_json_loads` and accepted only by `validate_bundle` (`scripts/scaffold_world.py:45`); S1 adds
+`resources` and `laws` to both, and a reply that fails validation goes back for repair, up to `MAX_REPAIRS`. The
+**rules writer** returns the causal model JSON whose schema `causal_model_schema(bundle)`
+(`scripts/generate_causal_model.py:330`) builds from the bundle, then `tidy_proposal` and the installer check it; a
+revision is merged by `merge_revision`. The **reviewer** (new, S3) returns `{"findings": [{"rule_id": str,
+"description_words": str, "problem": str}]}` through `llm_client`'s typed structured call, with `rule_id` checked
+against the compiled rules' ids; any other shape is recorded as a failed review. Failure: a failed or malformed
 review call is recorded with its error and the build continues without findings, visibly. Tracing: each build's calls
 share its trace id, as today.
 
@@ -327,9 +362,9 @@ allowance stays $3/day. Promotion condition: laws and review findings count as w
 build on the deployed service (owner allowance, through the real page) whose `run-log.jsonl` and `TRACE_READ.md` show
 them; fixture and replay results support a slice but are never reported as live.
 
-## Measurement (Q44)
+## Evaluation design
 
-One measurement, for one decision. **Decision it changes:** S4, whether each guessing check retires. If the review
+One measurement (Q44), for one decision. **Decision it changes:** S4, whether each guessing check retires. If the review
 and the laws together catch every incident a check caught, that check goes; if not, it stays and the miss becomes an
 open question. **Why argument cannot settle it:** whether a different model, given the description and the rules,
 notices a payment missing from a purchase is a fact about that model on these worlds; the prior art says self-review
@@ -338,10 +373,18 @@ is weak but says nothing about this reviewer on these rules. **Parity:** every c
 is scored only on whether it names the incident's rule; the heuristics it is compared with run on the same saved
 worlds. **Cost:** about seven saved worlds, one review call each, a few cents and minutes on free replays; a wrong
 retirement would let the next pencil-style bug run unnoticed, which has already cost several paid builds and days.
+Why measuring is cheaper than choosing now and correcting later: retiring a check is reversible in code, but a wrong
+retirement is found only when a live build ships a broken world to a visitor, after paid builds and a trace read
+(pencil2-pencil14 took about $2 and two days to surface their bugs); the replay costs cents and minutes and runs before
+any retirement. **Under each result:** a reviewer that names an incident's rule lets that check retire in S4; one that
+misses it keeps the check and opens a question; if no candidate names more than half, S3's review stays advisory and
+S4 retires only checks a law covers.
 
 ## Irreversible actions and spend
 
-Nothing irreversible: merges are pull requests and deploys redeploy from the previous commit. No deletion of saved
+Who authorizes spend: Brian alone. He authorized this plan's owner-allowance builds on 2026-10-28 ("yes lets make it
+companhy plannign complaint", with the OpenRouter credit he added: "there is more money"); any spend past the caps
+below, or any new spend route, needs his yes first. Nothing irreversible: merges are pull requests and deploys redeploy from the previous commit. No deletion of saved
 worlds or run records, no outreach, no change to other repositories. Spend: owner allowance only, after free replays;
 about $0.15 per live pencil build, at most $1.00 per slice and $3.00 across the plan before reporting; S5's four builds
 are about $0.60. The visitor allowance stays $3/day.
@@ -361,12 +404,18 @@ are about $0.60. The visitor allowance stays $3/day.
 
 Recorded in [activation-facts.json](declared_laws/activation-facts.json): shared mechanism yes (the engine and
 the build serve every world), one empirical comparison (Q44, see Measurement), LLM central yes, spend yes (owner
-allowance). Route: [path-decision.json](declared_laws/path-decision.json), durable_solo. The plan copies
+allowance). Route: [path-decision.json](declared_laws/path-decision.json), reset: this re-plans the World Builder's
+validation after the one-check-per-bug approach hit an implementation obstacle (pencil2-pencil14), with no single
+identified fix. One writer still runs the slices in order. The plan copies
 established methods but claims conformance to none, so `claims_external_standard` is false.
 
 ## Durable documents
 
 Durable documents: system_model#ENT-RUN-RECORD, system_model#PROC-TRANSITION, system_model#PROC-PROCESS-TICK, plans
+
+These roles are declared in the repository's `durable_documents` block (`.agentic/repo.yaml:3-11`): `system_model`
+is `{prose: docs/model/ODD.md, trace: docs/model/trace.yaml}`, where ENT-RUN-RECORD, PROC-TRANSITION and
+PROC-PROCESS-TICK are ids (`docs/model/trace.yaml:22, 28, 31`), and `plans` is `docs/plans/`.
 
 S1 changes ENT-RUN-RECORD (the build record gains `laws`); S2 changes PROC-TRANSITION and PROC-PROCESS-TICK (law
 checks in each commit and wave); S3 changes ENT-RUN-RECORD (`review_findings`). At completion of each slice,

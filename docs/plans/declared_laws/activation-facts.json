@@ -2,9 +2,9 @@
   "schema_version": "method-activation-facts.v1",
   "record_type": "method_activation_facts",
   "plan_ref": "docs/plans/declared_laws.md",
-  "plan_sha256": "fbda6c86135010cbf96334cea06c0d8a344de668ab38b197814378b8edcbda04",
+  "plan_sha256": "0ff1694abda0e12fa46105857e0c771853da9354a367b9f23404e0847be78fcf",
   "path_decision_ref": "docs/plans/declared_laws/path-decision.json",
-  "path_decision_sha256": "6c6f5438350f0979cc27bcf2a8cbc84b0161eb6dcf9e7d44be8bf466430d84da",
+  "path_decision_sha256": "69d0a7b699d1f769005466e13deb6fb21992a39eef982a06d42fc5aaa429bb9c",
   "facts": {
     "shared_mechanism": true,
     "empirical_comparison_proposed": true,
@@ -17,5 +17,5 @@
     "llm_central": "derived_current_boundary",
     "irreversible_or_spend_action": "derived_current_boundary"
   },
-  "recorded_at": "2026-10-28T06:51:24Z"
+  "recorded_at": "2026-10-28T08:10:57Z"
 }

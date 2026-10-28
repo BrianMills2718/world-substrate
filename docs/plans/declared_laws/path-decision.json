@@ -4,7 +4,7 @@
   "decision_id": "PATH-declared-laws",
   "project_id": "world-substrate",
   "scope": "World Builder worlds declare their own laws (totals and pairings) at design time; the engine refuses a step that breaks one, naming it; an independent AI review lists rule/description mismatches for the rules writer; heuristic build checks retire once covered. world-substrate only.",
-  "selected_path": "durable_solo",
+  "selected_path": "reset",
   "facts": {
     "existing_implementation_obstacle": true,
     "reproduced_failure": true,
@@ -53,5 +53,5 @@
     "reversible": "Pull-request merges; revert with git.",
     "boundary_known": "world-substrate and its deploy only; Cybernetic Influence v3 and Concordia read-only."
   },
-  "rationale": "One writer, reversible, single repository; optional contract field keeps saved worlds replay-compatible; continuity carried by the plan."
+  "rationale": "Re-plan after an implementation obstacle (one hand-written check per bug, pencil2-pencil14) with no single identified fix; one writer, reversible, single repository; optional contract field keeps saved worlds replay-compatible."
 }
