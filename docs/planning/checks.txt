@@ -18,11 +18,18 @@ exit 1
 RESULT runs=20 problems=0
 exit 0
 
-== wiki and Markdown cap: python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo .
-EXCEPTION    153/180  BrianMills2718/world-substrate  -- Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from wiki/catalog.md.
-UNREACHABLE     1  BrianMills2718/world-substrate  -- 1 reader docs not linked from wiki/index.md (e.g. scripts/vendor/README.md)
-DURABLE     8  BrianMills2718/world-substrate  -- 8 durable-document findings (e.g. STALE role=system_model id=RULE-ATOMIC-COMMIT-OR-REFUSAL file=src/world_substrate/engine.py: owner changed in 2 commit(s) after the rule was last reviewed (aa8af1380); re-read the rule and set reviewed_at; STALE role=system_model id=RULE-WRITE-SCOPE file=src/world_substrate/engine.py: owner changed )
-REPO  BrianMills2718/world-substrate  md=153  cap=exception  reach=orphans(1)  layout=undeclared(0)  durable=findings(8)
-md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=0 orphans=1 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=0 findings=1 undeclared=0   exit 1
-exit 1
+== wiki and Markdown cap: python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD (without --ref it checks main, which still has the orphan and stale reviews this change fixes)
+EXCEPTION    155/180  BrianMills2718/world-substrate  -- Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from wiki/catalog.md.
+REPO  BrianMills2718/world-substrate  md=155  cap=exception  reach=ok(0)  layout=undeclared(0)  durable=ok(0)
+md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=1 orphans=0 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=1 findings=0 undeclared=0   exit 0
+exit 0
 
+== project check: PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py
+World Substrate project check passed.
+Neutral runtime tests: 801 passed, 2 skipped, 213 subtests passed in 31.10s
+Passed-tree stamp: 58e2eae2599c
+Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
+Planning path: README.md -> roadmap/README.md -> active slice
+Pinned source records checked: 16
+Donor checkout verification skipped (use --with-donors to enable).
+exit 0
