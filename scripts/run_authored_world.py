@@ -21,7 +21,7 @@ from scripts import attempts
 from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
 from scripts.scaffold_world import _render_model, load_bundle, validate_bundle
-from world_substrate.action_authoring import CausalModel, CompiledActionMechanic, CompiledProcessMechanic
+from world_substrate.action_authoring import CausalModel, CompiledActionMechanic, CompiledProcessMechanic, _selector_matches
 from world_substrate.engine import ENGINE_OWNED_PATHS, Engine
 from world_substrate.model import Entity, LocationState, OwnershipState, PortableState, World
 from world_substrate import attempt as open_attempt
@@ -133,14 +133,53 @@ def actor_ids(engine: Engine, model: CausalModel) -> list[str]:
 PRIVATE_TO_HOLDER = ("work",)
 
 
-def _view(engine: Engine, actor: str, page: dict[str, Any]) -> dict[str, Any]:
-    """present() without other people's private bookkeeping records."""
+def live_fields(model: CausalModel) -> list[tuple[dict[str, Any], str]]:
+    """(selector, "component.field") for every field some rule reads or writes on an entity that selector picks.
+
+    A zero that no rule ever touches is not a fact a person can act on, but it reads as one: pencil8
+    (2026-10-28, evidence/pencil8-trace-audit/) gave every person a delivery countdown `work.rounds_left` 0
+    that no rule set, and the factory decided "there are no rounds left" from round 6 and stopped; its own
+    `stock.leads` 0 and `stock.slats` 0, which no rule uses (assembly draws on the mill and lead works),
+    told it it had nothing to build with while the mill held 55 slats.
+    """
+    live: list[tuple[dict[str, Any], str]] = []
+    def note(selectors: dict[str, Any], paths: Any) -> None:
+        for path in paths:
+            parts = str(path).split(".")
+            if len(parts) >= 5 and parts[0] == "entities" and parts[2] == "components":
+                # A role the rule names (<actor>, <it>) picks by its selector; a literal entity id picks everyone.
+                live.append((selectors.get(parts[1].strip("<>"), {}), ".".join(parts[3:5])))
+    for m in model.mechanics:
+        note({"actor": getattr(m, "actor_selector", {}), **(getattr(m, "participants", None) or {})},
+             (*m.read_paths, *m.write_paths))
+    for p in model.processes:
+        note({"it": getattr(p, "selector", {}), **(getattr(p, "participants", None) or {})},
+             (*p.read_paths, *p.write_paths))
+    if model.terminal is not None:
+        note({}, _paths_in(list(model.terminal.checks)))
+    return live
+
+
+def _quiet(engine: Engine, live: list[tuple[dict[str, Any], str]]) -> Any:
+    def hidden(entity_id: str, component: str, field: str, value: Any) -> bool:
+        if value != 0 or isinstance(value, bool):
+            return False
+        entity = engine.world.entities.get(entity_id)
+        key = f"{component}.{field}"
+        return entity is not None and not any(f == key and _selector_matches(entity, sel) for sel, f in live)
+    return hidden
+
+
+def _view(engine: Engine, actor: str, page: dict[str, Any],
+          live: list[tuple[dict[str, Any], str]] | None = None) -> dict[str, Any]:
+    """present() without other people's private bookkeeping records, nor zeros no rule touches (live_fields)."""
     entities = {
         eid: (rec if eid == actor else {**rec, "components": {k: v for k, v in (rec.get("components") or {}).items()
                                                                if k not in PRIVATE_TO_HOLDER}})
         for eid, rec in page["observation"]["entities"].items()
     }
-    return present(engine, actor, {**page, "observation": {**page["observation"], "entities": entities}})
+    return present(engine, actor, {**page, "observation": {**page["observation"], "entities": entities}},
+                   hide=None if live is None else _quiet(engine, live))
 
 
 def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
@@ -388,6 +427,7 @@ def run_world(
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     engine, causal_model, profile_id = build_engine(bundle, causal_value)
     bookkeeping = bookkeeping_fields(causal_model)
+    live = live_fields(causal_model)
     if start_snapshot is not None:
         # Keep going: the same approved law over the world state a previous run
         # ended in. Identity and rule versions must match, so a continuation
@@ -489,7 +529,7 @@ def run_world(
 
             def _resident_turn(actor: str) -> dict[str, Any]:
                 page = pages[actor]
-                context = _view(engine, actor, page)
+                context = _view(engine, actor, page, live)
                 context.update(recent=recents[actor], world_summary=bundle["world"]["summary"],
                                brief=(briefs or {}).get(actor, ""))
                 residents.observe(actor, f"Round {turn + turn_offset}. What just happened: "
@@ -600,7 +640,7 @@ def run_world(
                     residents.observe(actor, f"Round {turn + turn_offset}: your choice was no longer allowed after "
                                       "earlier moves this round; choose again.")
                     attempt = residents.choose(actor, [r["action_id"] for r in page.get("available") or []],
-                                               {**_view(engine, actor, page), "recent": _recent_for(engine, actor, seen),
+                                               {**_view(engine, actor, page, live), "recent": _recent_for(engine, actor, seen),
                                                 "world_summary": bundle["world"]["summary"],
                                                 "brief": (briefs or {}).get(actor, "")})
                     if attempt.get("belief") is not None:
