@@ -51,16 +51,20 @@ rules:
   - id: RULE-ATOMIC-COMMIT-OR-REFUSAL
     statement: >-
       A transition either commits every write and increments the world revision once, or is refused
-      (malformed envelope, stale revision, knock-on effects past the reaction limit) with the material hash
+      (malformed envelope, stale revision, knock-on effects past the reaction limit, a step that breaks a
+      declared law) with the material hash
       unchanged and the refusal recorded.
     owner: src/world_substrate/engine.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28 for the declared-laws plan: engine.py since aa8af13 adds only Engine.scratch(), a detached preview copy that never commits to the run's world; commit-or-refuse unchanged
+    reviewed_at: 927258c65ac4d0dd1658d262eb68804fa394bbc5  # re-read 2026-10-28 (declared-laws S2): a law breach is a new refusal on the same paths (_reject, _refuse_round), the world restored before it is recorded; tests below
     checks:
       - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
       - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
       - tests/test_open_attempt.py::test_a_chain_past_the_reaction_limit_is_refused_whole
       - tests/test_open_attempt.py::test_a_reaction_that_keeps_itself_due_fires_once_per_moment
       - tests/test_open_attempt.py::test_a_round_whose_reactions_do_not_settle_is_undone
+      - tests/test_laws.py::MoveTests::test_a_sale_that_takes_no_money_is_refused_and_names_the_law
+      - tests/test_laws.py::MoveTests::test_a_knock_on_effect_that_breaks_a_law_refuses_the_whole_move
+      - tests/test_laws.py::ProcessTests::test_a_tick_process_that_breaks_a_law_undoes_the_round
     decisions:
       - docs/decisions/003-semantic-mechanical-boundary.md
       - docs/decisions/009-same-moment-knock-on-effects.md
@@ -69,7 +73,7 @@ rules:
       A rule or process may write only the components it declared; reaching undeclared state refuses the
       action or stops the tick with nothing changed, and the refusal replays identically.
     owner: src/world_substrate/engine.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: only Engine.scratch() was added; scope checks unchanged
+    reviewed_at: 927258c65ac4d0dd1658d262eb68804fa394bbc5  # re-read 2026-10-28 (declared-laws S2): the law check runs after the scope checks, which are unchanged; a process scope breach still raises (tests/test_laws.py::ProcessTests::test_a_scope_breach_by_a_process_still_raises)
     checks:
       - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
       - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
