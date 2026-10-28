@@ -53,8 +53,12 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.run_log_dir = Path(self.state_tmp.name) / "runs"
         self.log_patch = patch.dict(service.os.environ, {"WORLD_BUILDER_RUN_LOG_DIR": str(self.run_log_dir)})
         self.log_patch.start()
+        # These tests count rules calls in order; the side-by-side first two are tested on their own below.
+        self.side_patch = patch.object(service, "RULES_SIDE_BY_SIDE", False)
+        self.side_patch.start()
 
     def tearDown(self):
+        self.side_patch.stop()
         self.log_patch.stop()
         self.path_patch.stop()
         self.state_tmp.cleanup()
@@ -116,6 +120,28 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/draft/"))
         self.assertAlmostEqual(generate.call_args.kwargs["max_budget"], service.DRAFT_BUDGET)
         self.assertAlmostEqual(payload["daily_cost_usd"], 0.002, places=6)
+
+    def test_first_two_rule_sets_are_written_at_the_same_time(self):
+        # pencil11 spent 290 s writing rules one set after another. Each fake call waits for a second one to be
+        # running, so this fails (BrokenBarrierError) if the two were written in turn.
+        import threading
+        both = threading.Barrier(2, timeout=10)
+        seen = []
+
+        def write(bundle, **kwargs):
+            seen.append(kwargs.get("guidance"))
+            if len(seen) <= 2:
+                both.wait()
+            return CAUSAL, FakeResult()
+
+        with patch.object(service, "RULES_SIDE_BY_SIDE", True), patch.object(
+            service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult())), patch.object(
+            service, "generate_causal_model", side_effect=write) as mechanics:
+            status, payload = self.post("/generate-world", {"description": "One worker picks a ripe apple."})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(mechanics.call_count, 2)
+        self.assertEqual(seen, ["", ""])
 
     def test_generate_world_returns_structure_mechanics_and_passing_dry_run(self):
         with patch.object(service, "_trace_cost", return_value=0.004), patch.object(

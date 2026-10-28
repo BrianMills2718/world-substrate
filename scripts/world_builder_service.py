@@ -12,7 +12,7 @@ import os
 import re
 import sys
 import threading
-from concurrent.futures import wait as futures_wait
+from concurrent.futures import ThreadPoolExecutor, wait as futures_wait
 import time
 import uuid
 from collections import defaultdict, deque
@@ -35,7 +35,7 @@ from scripts.native_coordination_authoring import (
     generate_native_coordination_draft,
 )
 from scripts.native_coordination_comparison import with_approval_threshold
-from scripts.people_world import about_people, prepare_people_world, unfinished_hedges, write_people_rules
+from scripts.people_world import about_people, keep_until_settled, prepare_people_world, unfinished_hedges, write_people_rules
 from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -82,6 +82,8 @@ WORLD_BUDGET = 0.20
 # until a test run passes. #179, 2026-10-18 (pencil c4-run7/run8): one rewrite still left 5 of 7 moves never
 # possible and was accepted anyway; a rules call costs about $0.005, so four fit WORLD_BUDGET easily.
 RULES_ATTEMPTS = 4
+# Write the first two rule sets at the same time (pencil11: 290 s writing rules one set after another).
+RULES_SIDE_BY_SIDE = os.environ.get("WORLD_BUILDER_RULES_SIDE_BY_SIDE", "1") != "0"
 # Ongoing worlds split RULES_ATTEMPTS across this many structures (#187).
 STRUCTURE_ATTEMPTS = 2
 # A people world (scripts/people_world.py): one stronger-model call for the people, goals and information, one for
@@ -1513,7 +1515,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 # An ongoing world whose best rules still leave a step impossible or an actor idle gets its structure
                 # redesigned once from that evidence: rule rewrites cannot add a missing action or field (#187).
                 structures = STRUCTURE_ATTEMPTS if world_kind != "task" else 1
-                rules_per_structure = max(1, RULES_ATTEMPTS // structures)
+                # The first two rule sets are written at the same time and later tries revise the better one, so
+                # an ongoing world gets one more try per structure to keep a revision (2026-10-28, Brian: "yes").
+                rules_per_structure = max(1, RULES_ATTEMPTS // structures) + (1 if structures > 1 and RULES_SIDE_BY_SIDE else 0)
                 rules_attempt = 0
                 out_of_budget = False
                 redesign_feedback = ""
@@ -1551,7 +1555,21 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     guidance = ""
                     # The last rules written, handed to the next try with the guidance about them (pencil10).
                     previous_rules: dict[str, Any] | None = None
-                    structure_best: tuple[tuple[int, int, int], str] | None = None
+                    # (rank, guidance about it, its rules): the try a later retry revises.
+                    structure_best: tuple[tuple[int, int, int], str, dict[str, Any]] | None = None
+                    spare = None  # try 1, written alongside try 0
+
+                    def write_rules(attempt_now: int, guidance_now: str, previous_now: dict[str, Any] | None):
+                        return generate_causal_model(
+                            bundle,
+                            model=model if attempt_now == 0 else RULES_RETRY_MODEL,
+                            trace_id=trace_id,
+                            max_budget=budget,
+                            guidance=guidance_now,
+                            model_justification=None if attempt_now == 0 else RULES_RETRY_JUSTIFICATION,
+                            world_kind=world_kind,
+                            previous=previous_now,
+                        )
                     for try_index in range(rules_per_structure):
                         attempt = rules_attempt
                         rules_attempt += 1
@@ -1563,16 +1581,20 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         try:
                             try:
                                 sent_previous, previous_rules = previous_rules, None
-                                generated, _ = generate_causal_model(
-                                bundle,
-                                model=model if attempt == 0 else RULES_RETRY_MODEL,
-                                trace_id=trace_id,
-                                max_budget=budget,
-                                guidance=guidance,
-                                model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
-                                world_kind=world_kind,
-                                previous=sent_previous,
-                                )
+                                if try_index >= 2 and structure_best is not None:
+                                    # Revise the better of the tries so far, with what was wrong with it.
+                                    guidance, sent_previous = structure_best[1], structure_best[2]
+                                if try_index == 0 and rules_per_structure > 1 and RULES_SIDE_BY_SIDE:
+                                    # pencil11 spent 290 s writing rules one set at a time; the second set does not
+                                    # depend on the first, so it is written alongside it.
+                                    pool = ThreadPoolExecutor(1, thread_name_prefix="rules")
+                                    spare = pool.submit(contextvars.copy_context().run, write_rules, attempt + 1, "", None)
+                                    pool.shutdown(wait=False)
+                                if try_index == 1 and spare is not None:
+                                    future, spare = spare, None
+                                    generated, _ = future.result()
+                                else:
+                                    generated, _ = write_rules(attempt, guidance, sent_previous)
                             except Exception as error:
                                 # Matched by name: llm_client is imported lazily, only where calls are made.
                                 if type(error).__name__ != "LLMBudgetExceededError":
@@ -1588,6 +1610,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 self._progress("note", "Out of AI budget for this build", "keeping the earlier rules")
                                 out_of_budget = True
                                 break
+                            tidied = (generated.get("review") or {}).get("tidied") or []
+                            if tidied:
+                                self._progress("note", "Fixed small slips in the rules", "", tidied)
                             candidate = _strip_review(generated)
                             # Set before compiling, so a compiler rejection's guidance comes with the rules it names.
                             previous_rules = candidate
@@ -1810,16 +1835,22 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # attempt 4 over attempt 3, whose test run assembled pencils, and nothing recorded either score.
                         result_row["score"] = score
                         result_row["processes"] = len(candidate_compiled.processes)
+                        if tidied:
+                            result_row["tidied"] = tidied
                         attempts.append(result_row)
                         self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
                         rank = _attempt_rank(score, result_row)
                         if best is None or rank > best[0]:
                             best = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled)
                         if structure_best is None or rank > structure_best[0]:
-                            structure_best = (rank, guidance)
+                            structure_best = (rank, guidance, candidate)
                         out_of_budget = out_of_budget or _trace_cost(trace_id) >= budget - 0.01
                         if score >= (2 if world_kind == "task" else 3) or last_try or out_of_budget:
                             break
+                    if spare is not None:
+                        # Not needed (try 0 was good enough or the budget ran out); charge it when it finishes.
+                        keep_until_settled(trace_id, spare)
+                        spare = None
                     if structure_best is not None:
                         structure_feedback = structure_best[1]
                     if best is not None and best[0][0] >= (2 if world_kind == "task" else 3):

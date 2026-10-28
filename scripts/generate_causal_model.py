@@ -495,6 +495,77 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def tidy_proposal(causal: dict[str, Any], bundle: dict[str, Any]) -> list[str]:
+    """Fix, in place, two slips the compiler would reject whole, and say what was fixed.
+
+    pencil11 (stBKjmj-sgiE): three of four rule sets were thrown away, about 70 s each. Twice a check read a
+    participant's ``components.business.cash`` while its selector did not require ``business``; adding the
+    requirement only states what the rule already reads, since an entity without the component could never pass.
+    Once the moves did not match the world's list; a move the world does not have, or a second copy of one, is
+    dropped here. A missing move is left for the compiler, because writing it needs the rules writer."""
+    fixed: list[str] = []
+
+    def paths(node: Any, out: list[tuple[str, str]]) -> None:
+        if isinstance(node, dict):
+            ref = node.get("participant")
+            if isinstance(ref, dict) and isinstance(ref.get("name"), str) and isinstance(ref.get("path"), str):
+                out.append((ref["name"], ref["path"]))
+            elif isinstance(ref, str) and isinstance(node.get("path"), str):
+                out.append((ref, node["path"]))
+            for value in node.values():
+                paths(value, out)
+        elif isinstance(node, list):
+            for value in node:
+                paths(value, out)
+
+    def require(selectors: dict[str, Any], used: list[tuple[str, str]], where: str) -> None:
+        for name, path in used:
+            parts = path.split(".")
+            selector = selectors.get(name)
+            if len(parts) != 3 or parts[0] != "components" or not isinstance(selector, dict):
+                continue
+            components = selector.setdefault("components", [])
+            if isinstance(components, list) and parts[1] not in components:
+                components.append(parts[1])
+                fixed.append(f"{where}: {name} must have {parts[1]} (a rule reads {path})")
+
+    expected = {row.get("kind") for row in bundle.get("actions") or [] if isinstance(row, dict)}
+    kept, seen = [], set()
+    for row in causal.get("mechanics") or []:
+        kind = row.get("action_kind") if isinstance(row, dict) else None
+        if isinstance(row, dict) and (kind not in expected or kind in seen):
+            fixed.append(f"dropped {'a second ' if kind in seen else ''}move {kind!r}"
+                         + ("" if kind in seen else ", which the world does not have"))
+            continue
+        seen.add(kind)
+        kept.append(row)
+    if isinstance(causal.get("mechanics"), list):
+        causal["mechanics"] = kept
+    for row in kept:
+        if not isinstance(row, dict):
+            continue
+        participants = row.get("participants") if isinstance(row.get("participants"), dict) else {}
+        selectors = {"actor": row.get("actor_selector"), **participants}
+        used: list[tuple[str, str]] = []
+        paths([row.get("checks"), row.get("effects")], used)
+        require(selectors, used, str(row.get("action_kind")))
+    for row in causal.get("processes") or []:
+        if not isinstance(row, dict):
+            continue
+        linked = row.get("participants") if isinstance(row.get("participants"), dict) else {}
+        selectors = {"it": row.get("selector"),
+                     **{n: r.get("selector") for n, r in linked.items() if isinstance(r, dict)}}
+        used = []
+        paths([row.get("checks"), row.get("effects")], used)
+        require(selectors, used, str(row.get("process_id")))
+    terminal = causal.get("terminal")
+    if isinstance(terminal, dict):
+        require({"it": terminal.get("selector")},
+                [("it", c["path"]) for c in terminal.get("checks") or [] if isinstance(c, dict) and isinstance(c.get("path"), str)],
+                "finish line")
+    return fixed
+
+
 def no_op_effects(causal: dict[str, Any]) -> list[str]:
     """Effects that can never change anything: add or subtract 0, or set a field to its own value.
 
@@ -607,6 +678,7 @@ def generate_causal_model(
             if not isinstance(parsed, dict):
                 raise ValueError("model returned a non-object causal model")
             value = parsed
+            tidied = tidy_proposal(value, bundle)
             compiled = CausalModel.from_dict(value, bundle=bundle)
             no_ops = no_op_effects(value)
             if no_ops:
@@ -618,6 +690,8 @@ def generate_causal_model(
             review = compiled.as_review()
             out = deepcopy(value)
             out["review"] = review
+            if tidied:
+                out["review"]["tidied"] = tidied
             return out, result
         except (ValueError, TypeError, KeyError) as error:
             last_error = error

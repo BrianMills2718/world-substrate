@@ -212,6 +212,12 @@ def hedged(trace_id: str, call: Callable[[], Any]) -> Any:
     raise errors[0]
 
 
+def keep_until_settled(trace_id: str, future: Future) -> None:
+    """A call this build no longer waits for; its cost is charged when it finishes (see unfinished_hedges)."""
+    with _HEDGE_LOCK:
+        _HEDGES.setdefault(trace_id, []).append(future)
+
+
 def unfinished_hedges(trace_id: str) -> list[Future]:
     """The copies of this build's calls still running (their cost is not in the trace yet); forgets the rest."""
     with _HEDGE_LOCK:

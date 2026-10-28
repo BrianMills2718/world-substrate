@@ -389,3 +389,38 @@ class RevisePreviousRulesTests(unittest.TestCase):
     def test_first_try_and_no_guidance_get_none(self):
         self.assertNotIn("previous_proposal", self._first_prompt())
         self.assertNotIn("previous_proposal", self._first_prompt(previous=CAUSAL))
+
+
+class TidyProposalTests(unittest.TestCase):
+    """pencil11 (stBKjmj-sgiE): three of four rule sets were rejected whole for slips code can fix."""
+
+    def _world(self):
+        world = json.loads((Path(__file__).parent / "fixtures" / "pencil10-live.json").read_text())
+        return world["bundle"], world["causal_model"]
+
+    def test_a_selector_missing_a_component_its_rule_reads_gets_it(self):
+        from world_substrate.action_authoring import CausalModel
+        bundle, causal = self._world()
+        broken = json.loads(json.dumps(causal))
+        row = next(m for m in broken["mechanics"] if "stock" in (m["actor_selector"].get("components") or []))
+        row["actor_selector"]["components"].remove("stock")
+        if not row["actor_selector"]["components"] and not row["actor_selector"].get("categories"):
+            row["actor_selector"]["categories"] = ["agent"]
+        with self.assertRaises(Exception):
+            CausalModel.from_dict(json.loads(json.dumps(broken)), bundle=bundle)
+        fixed = gcm.tidy_proposal(broken, bundle)
+        self.assertTrue(any(f"{row['action_kind']}: actor must have stock" in f for f in fixed), fixed)
+        CausalModel.from_dict(broken, bundle=bundle)
+
+    def test_an_unknown_or_second_move_is_dropped_and_good_rules_are_untouched(self):
+        bundle, causal = self._world()
+        clean = json.loads(json.dumps(causal))
+        self.assertEqual(gcm.tidy_proposal(clean, bundle), [])
+        self.assertEqual(clean, causal)
+        extra = json.loads(json.dumps(causal))
+        extra["mechanics"].append({**extra["mechanics"][0], "action_kind": "teleport"})
+        extra["mechanics"].append(dict(extra["mechanics"][0]))
+        fixed = gcm.tidy_proposal(extra, bundle)
+        self.assertEqual(extra["mechanics"], causal["mechanics"])
+        self.assertEqual(fixed, ["dropped move 'teleport', which the world does not have",
+                                 f"dropped a second move {causal['mechanics'][0]['action_kind']!r}"])
