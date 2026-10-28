@@ -1,10 +1,10 @@
 {
   "record_type": "goal_coverage_trace",
-  "trace_id": "planning-compliance/goal-coverage/20261028T031721-2149ca1a",
+  "trace_id": "planning-compliance/goal-coverage/20261028T033634-2928c598",
   "task": "planning_compliance.goal_coverage",
   "model": "claude-code/sonnet",
   "requested_model": "claude-code/sonnet",
-  "judged_at": "2026-10-28T03:22:14-0400",
+  "judged_at": "2026-10-28T03:42:32-0400",
   "cost_usd": 0.0,
   "prompt_template": "plugins/company-planning/skills/planning-compliance/scripts/coverage_prompt.yaml",
   "messages": [
@@ -14,50 +14,57 @@
     },
     {
       "role": "user",
-      "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-10-28: <<<ok my guess is that you hjave been fixing symptoms not root problems.the rpobelm i assuem si wiht our susbtrate and world generating process and world valdiating rpocess?>>>\n\n2. Brian, 2026-10-28: <<<this \"- Root fix: add a few built-in move types where the engine keeps the books: transfer / exchange / transform\" seems to me liek it destorys the whol e potin of what we are doing. but maybe im missing something. what do you mean the substrate doesnt know what moeny is? the llm generating it surely does.>>>\n\n3. Brian, 2026-10-28: <<<yes lets make it companhy plannign complaint>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<A visitor builds a world on the World Builder whose moves the AI still writes freely, whose own bookkeeping laws the AI declares and the engine enforces by name, and whose rules an independent review reads against the description, so the root problems in the substrate, the world-generating process and the world-validating process are fixed rather than one symptom at a time.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: When I build a world, the build record shows that world's own bookkeeping laws in plain words.\n  demonstration: (1) Open the World Builder. (2) Paste the pencil description and press Create simulation. (3) When the build finishes, open the build record and read the Laws list. \n  expected: A short list of sentences in the pencil world's own words, such as \"Pencils are made only by assembling them and used up only by a customer\" and \"A sale moves pencils to the buyer and cash to the seller\", each naming things and moves that appear elsewhere on the page.\n\n[A2] \n  criterion: The engine itself keeps each world's declared laws: a move, or a knock-on effect it sets off, that breaks one is refused, and the page says which law it broke.\n  demonstration: (1) Open the World Builder's replay of the saved pencil13 world with its laws (link given in the S2 report). (2) Go to round 8 and find the shop's buy-boxed-pencils move. (3) Read what the page says about it. \n  expected: The move is marked refused (orange, with the word \"refused\") and shows the law's sentence, \"A purchase moves goods one way and payment the other\"; the shop's boxes and the factory's cash are unchanged in that round.\n\n[A3] \n  criterion: An independent review points out where the rules do not match my description, in my description's words.\n  demonstration: (1) Open the build record of the saved pencil13 world reviewed in S3 (link given in the S3 report). (2) Read the Review findings list. \n  expected: Each finding names one rule and quotes the words of the description it was checked against; one finding says buy-boxed-pencils takes the boxes but pays the factory nothing.\n\n[A4] \n  criterion: The pencil world I build runs with every sale paying for what it takes.\n  demonstration: (1) Open the World Builder, paste the pencil description and press Create simulation. (2) Let the run play, then open any sale in the round list or the network view. \n  expected: Each sale moves pencils to the buyer and cash to the seller in the same step, including the shop buying boxes from the factory; the build record lists the laws and the review findings.\n\n[A5] \n  criterion: Moves are still written freely in each world's own terms; there is no fixed menu of move types.\n  demonstration: (1) Open the World Builder and build the pencil world; open its list of moves. (2) Build a kitchen description the same way and open its list of moves. \n  expected: Each world's moves carry its own names and effects (cut cedar, assemble pencils, sell a box; chop, plate, serve), and neither list shows built-in kinds such as transfer, exchange or transform.\n\n[A6] \n  criterion: Descriptions the World Builder has never seen, of very different shapes and lengths, each build a world that keeps its own laws, with no code written for any of them.\n  demonstration: (1) Open the World Builder and build each of four different descriptions in turn: the pencil supply chain, the airfield, a kitchen, and the long Waltzman scenario (people and organizations, not goods). (2) For each, open the build record's Laws and Review findings, then the run. (3) Open any refused step, and any sale or hand-over in the run. \n  expected: Each of the four worlds has laws naming its own things and moves (the Waltzman world may declare few or none, and says so); every refused step names the law it broke, including knock-on effects; every hand-over that a law pairs moves both sides; the review's findings quote that description's own words; all four builds finish.\n\n[A7] \n  criterion: Mistakes in a world's rules are caught at the root, by the engine's laws and the independent review, not by a growing list of hand-written checks, one per mistake.\n  demonstration: (1) Open a finished build record on the World Builder and read the panel that says what checked the rules. (2) Open the S4 table on this plan's review page: each retired hand-written check, the incident it was added for, and what catches that incident now. \n  expected: The build record lists three kinds of checking only: the world's declared laws, the review's findings, and reports of what the test run saw. Each retired check in the S4 table points at a saved world where a law refusal or a review finding now catches its incident, and no new hand-written check was added for a new mistake.\n\n\nDEFERRALS:\n\nnone recorded"
+      "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-10-28: <<<ok my guess is that you hjave been fixing symptoms not root problems.the rpobelm i assuem si wiht our susbtrate and world generating process and world valdiating rpocess?>>>\n\n2. Brian, 2026-10-28: <<<this \"- Root fix: add a few built-in move types where the engine keeps the books: transfer / exchange / transform\" seems to me liek it destorys the whol e potin of what we are doing. but maybe im missing something. what do you mean the substrate doesnt know what moeny is? the llm generating it surely does.>>>\n\n3. Brian, 2026-10-28: <<<yes lets make it companhy plannign complaint>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<A visitor builds a world on the World Builder whose moves the AI still writes freely, whose own bookkeeping laws the AI declares and the engine enforces by name, and whose rules an independent review reads against the description, so the root problems in the substrate, the world-generating process and the world-validating process are fixed rather than one symptom at a time.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: When I build a world, the build record shows that world's own bookkeeping laws in plain words.\n  demonstration: (1) Open the World Builder. (2) Paste the pencil description and press Create simulation. (3) When the build finishes, open the build record and read the Laws list. \n  expected: A short list of sentences in the pencil world's own words, such as \"Pencils are made only by assembling them and used up only by a customer\" and \"A sale moves pencils to the buyer and cash to the seller\", each naming things and moves that appear elsewhere on the page.\n\n[A2] \n  criterion: The engine itself keeps each world's declared laws: a move, or a knock-on effect it sets off, that breaks one is refused, and the page says which law it broke.\n  demonstration: (1) Open the World Builder's replay of the saved pencil13 world, re-built in S2 so that the world design AI wrote its laws (the S2 report gives the link and shows the laws came from the model reply, not a person). (2) Go to round 8 and find the shop's buy-boxed-pencils move; read what the page says about it. (3) Open the S2 report's second replay, a world whose move sets off a knock-on effect that breaks a law (for example a fall that would destroy cash), and read that round. \n  expected: The purchase is marked refused (orange, with the word \"refused\") beside a law in plain words saying a purchase must move payment the other way; the shop's boxes and the factory's cash are unchanged that round. In the knock-on replay the move that set off the effect is refused the same way, the page names the knock-on effect that broke the law, and nothing from that moment is kept.\n\n[A3] \n  criterion: An independent review points out where the rules do not match my description, in my description's words.\n  demonstration: (1) Open the build record of the saved pencil13 world reviewed in S3 (link given in the S3 report). (2) Read the Review findings list. \n  expected: Each finding names one rule and quotes the words of the description it was checked against; one finding says buy-boxed-pencils takes the boxes but pays the factory nothing.\n\n[A4] \n  criterion: The pencil world I build runs with every sale paying for what it takes.\n  demonstration: (1) Open the World Builder, paste the pencil description and press Create simulation. (2) Let the run play, then open any sale in the round list or the network view. \n  expected: Each sale moves pencils to the buyer and cash to the seller in the same step, including the shop buying boxes from the factory; the build record lists the laws and the review findings.\n\n[A5] \n  criterion: Moves are still written freely in each world's own terms; there is no fixed menu of move types.\n  demonstration: (1) Open the World Builder and build the pencil world; open its list of moves. (2) Build a kitchen description the same way and open its list of moves. \n  expected: Each world's moves carry its own names and effects (cut cedar, assemble pencils, sell a box; chop, plate, serve), and neither list shows built-in kinds such as transfer, exchange or transform.\n\n[A6] \n  criterion: Descriptions the World Builder has never seen, of very different shapes and lengths, each build a world that keeps its own laws, with no code written for any of them.\n  demonstration: (1) Open the World Builder and build each of four different descriptions in turn: the pencil supply chain, the airfield, a kitchen, and the long Waltzman scenario (people and organizations, not goods). (2) For each, open the build record's Laws and Review findings, then the run. (3) Open any refused step, and any sale or hand-over in the run. \n  expected: Each of the four worlds has laws naming its own things and moves (the Waltzman world may declare few or none, and says so); every refused step names the law it broke, including knock-on effects; every hand-over that a law pairs moves both sides; the review's findings quote that description's own words; all four builds finish.\n\n[A7] \n  criterion: Mistakes in a world's rules are caught at the root, by the engine's laws and the independent review, not by a growing list of hand-written checks, one per mistake.\n  demonstration: (1) Open a finished build record on the World Builder and read the panel that says what checked the rules. (2) Open the S4 table on this plan's review page: each retired hand-written check, the incident it was added for, and what catches that incident now. \n  expected: The build record lists three kinds of checking only: the world's declared laws, the review's findings, and reports of what the test run saw. Each retired check in the S4 table points at a saved world where a law refusal or a review finding now catches its incident, and no new hand-written check was added for a new mistake.\n\n\nDEFERRALS:\n\nnone recorded"
     }
   ],
   "answer": {
     "requirements": [
       {
         "id": "R1",
-        "requirement": "fix root problems",
+        "requirement": "fixing symptoms not root",
         "quote": "fixing symptoms not root problems",
         "asked_by_index": 1,
-        "kind": "outcome"
+        "kind": "constraint"
       },
       {
         "id": "R2",
-        "requirement": "substrate fixed",
+        "requirement": "substrate root problem",
         "quote": "rpobelm i assuem si wiht our susbtrate",
         "asked_by_index": 1,
         "kind": "outcome"
       },
       {
         "id": "R3",
-        "requirement": "world generating process fixed",
+        "requirement": "world generating process",
         "quote": "world generating process",
         "asked_by_index": 1,
         "kind": "outcome"
       },
       {
         "id": "R4",
-        "requirement": "world validating process fixed",
+        "requirement": "world validating process",
         "quote": "world valdiating rpocess",
         "asked_by_index": 1,
         "kind": "outcome"
       },
       {
         "id": "R5",
-        "requirement": "AI writes moves freely",
-        "quote": "it destorys the whol e potin of what we are doing",
+        "requirement": "destroys whole point",
+        "quote": "destorys the whol e potin of what we are doing",
         "asked_by_index": 2,
         "kind": "constraint"
       },
       {
         "id": "R6",
+        "requirement": "llm generating it surely",
+        "quote": "the llm generating it surely does",
+        "asked_by_index": 2,
+        "kind": "constraint"
+      },
+      {
+        "id": "R7",
         "requirement": "company planning compliant",
-        "quote": "make it companhy plannign complaint",
+        "quote": "yes lets make it companhy plannign complaint",
         "asked_by_index": 3,
         "kind": "process"
       }
@@ -68,75 +75,87 @@
         "covered_by": [
           "A7"
         ],
-        "coverage_reason": "A7 requires the S4 table to show every retired hand-written check replaced by a law refusal or review finding, and that no new hand-written check was added for a new mistake; it fails whenever problems are addressed by adding more checks rather than a root enforcement mechanism.",
+        "coverage_reason": "A7 requires the S4 table to show every retired hand-written check now caught by a law refusal or review finding, and explicitly checks that no new hand-written check was added; the demonstration fails if mistakes are still caught symptom-by-symptom.",
         "extent": "full",
         "missing": "",
         "deferral": 0,
         "in_outcome": true,
-        "outcome_reason": "OUTCOME says 'root problems… are fixed rather than one symptom at a time,' keeping this requirement."
+        "outcome_reason": "Constraints need not appear in the outcome line; the outcome restates the spirit as 'fixed rather than one symptom at a time.'"
       },
       {
         "requirement_id": "R2",
         "covered_by": [
           "A2",
-          "A4",
           "A6"
         ],
-        "coverage_reason": "A2 tests engine law enforcement at runtime, A4 tests that a full run executes with correct bookkeeping, and A6 tests all of this across four diverse worlds; each criterion fails if the substrate does not correctly store state and enforce declared laws.",
-        "extent": "full",
-        "missing": "",
+        "coverage_reason": "A2 requires the engine to refuse a law-breaking move and name the broken law, which fails directly if the substrate does not enforce declared laws; A6 extends this across four diverse worlds.",
+        "extent": "partial",
+        "missing": "No criterion tests substrate behaviour beyond law enforcement — state persistence, event ordering, world representation, or other capabilities that may also be root problems are unchecked.",
         "deferral": 0,
         "in_outcome": true,
-        "outcome_reason": "OUTCOME says 'root problems in the substrate… are fixed,' keeping this requirement."
+        "outcome_reason": "The outcome says 'the root problems in the substrate…are fixed,' keeping this requirement."
       },
       {
         "requirement_id": "R3",
         "covered_by": [
           "A1",
+          "A2",
           "A6"
         ],
-        "coverage_reason": "A6 requires four descriptions the Builder has never seen each to produce a working world 'with no code written for any of them,' which fails if the generating process still depended on world-specific patches; A1 checks that the generating process produced laws for the pencil world specifically.",
-        "extent": "full",
-        "missing": "",
+        "coverage_reason": "A1 requires laws in the world's own words in the build record; A2's demonstration records that those laws came from the model reply; A6 checks generation across four diverse descriptions; all three fail if the world-generating process does not produce law declarations.",
+        "extent": "partial",
+        "missing": "No criterion checks the prompt sent to the model or the internal steps of the generating process; only the output (laws present, attributed to the model) is verified.",
         "deferral": 0,
         "in_outcome": true,
-        "outcome_reason": "OUTCOME says 'world-generating process… are fixed,' keeping this requirement."
+        "outcome_reason": "The outcome says 'whose own bookkeeping laws the AI declares,' keeping this requirement."
       },
       {
         "requirement_id": "R4",
         "covered_by": [
-          "A2",
-          "A3"
+          "A3",
+          "A6",
+          "A7"
         ],
-        "coverage_reason": "A2 tests that the engine refuses moves that break a law and names the law broken (runtime validation), and A3 tests that an independent review catches rules that do not match the description (build-time validation); together they cover both layers of the validating process.",
-        "extent": "full",
-        "missing": "",
+        "coverage_reason": "A3 requires each review finding to name a rule and quote the description, failing if the validating process does not read rules against the description; A6 checks that review findings quote description words across four worlds; A7 requires old hand-written symptom-checks to be retired and replaced by law refusals or review findings.",
+        "extent": "partial",
+        "missing": "No criterion checks whether the review process consults the description text directly or uses another internal mechanism; only the review output is inspected.",
         "deferral": 0,
         "in_outcome": true,
-        "outcome_reason": "OUTCOME says 'world-validating process… are fixed,' keeping this requirement."
+        "outcome_reason": "The outcome says 'whose rules an independent review reads against the description,' keeping this requirement."
       },
       {
         "requirement_id": "R5",
         "covered_by": [
-          "A5",
-          "A6"
+          "A5"
         ],
-        "coverage_reason": "A5 explicitly requires each world's moves to carry its own names and effects and that neither list shows built-in kinds such as transfer, exchange, or transform; A5 fails the moment a fixed menu appears; A6 confirms this holds across four different worlds.",
+        "coverage_reason": "A5 opens two worlds' move lists and explicitly expects that neither shows built-in kinds such as transfer, exchange or transform; it fails directly if any built-in move types appear.",
         "extent": "full",
         "missing": "",
         "deferral": 0,
         "in_outcome": true,
-        "outcome_reason": "OUTCOME says 'whose moves the AI still writes freely,' keeping this constraint."
+        "outcome_reason": "Constraints need not appear in the outcome line; the outcome says 'moves the AI still writes freely,' keeping this constraint."
       },
       {
         "requirement_id": "R6",
+        "covered_by": [
+          "A2"
+        ],
+        "coverage_reason": "A2's demonstration requires the S2 report to show that the laws came from the model reply, not a person, which fails if the LLM is not the source of world-specific knowledge; no criterion verifies that the LLM uses its domain knowledge to write semantically correct laws.",
+        "extent": "partial",
+        "missing": "No criterion checks that the LLM correctly applies its domain knowledge (e.g., a model that declares trivially wrong or domain-blind laws would pass A2's attribution check but break Brian's requirement that the LLM 'surely does' know what money is).",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "Constraints need not appear in the outcome line; the outcome says 'bookkeeping laws the AI declares,' keeping this constraint."
+      },
+      {
+        "requirement_id": "R7",
         "covered_by": [],
-        "coverage_reason": "No criterion asks whether the planning package follows the company planning format; demonstrating the working system cannot show planning-document compliance.",
+        "coverage_reason": "All criteria demonstrate the working world-builder system; none would fail if the planning document used a different format than company planning requires.",
         "extent": "none",
         "missing": "",
         "deferral": 0,
         "in_outcome": true,
-        "outcome_reason": "Process requirements are not evaluated against the outcome line; the OUTCOME says nothing about company planning compliance."
+        "outcome_reason": "Process requirements need not appear in the outcome line; the outcome describes the delivered system, not the planning document's format."
       }
     ]
   },
