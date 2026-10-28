@@ -54,7 +54,7 @@ rules:
       (malformed envelope, stale revision, knock-on effects past the reaction limit) with the material hash
       unchanged and the refusal recorded.
     owner: src/world_substrate/engine.py
-    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): a moment whose reactions pass 32 is refused whole; tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28 for the declared-laws plan: engine.py since aa8af13 adds only Engine.scratch(), a detached preview copy that never commits to the run's world; commit-or-refuse unchanged
     checks:
       - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
       - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
@@ -69,7 +69,7 @@ rules:
       A rule or process may write only the components it declared; reaching undeclared state refuses the
       action or stops the tick with nothing changed, and the refusal replays identically.
     owner: src/world_substrate/engine.py
-    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): reactions go through the same _apply_process scope checks; tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: only Engine.scratch() was added; scope checks unchanged
     checks:
       - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
       - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
@@ -81,7 +81,7 @@ rules:
     statement: >-
       Precondition checks and process due-tests only read; one that writes is refused and the tick is rolled back.
     owner: src/world_substrate/engine.py
-    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): due_bindings runs through _readonly_call like due; tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: only Engine.scratch() was added; _readonly_call paths unchanged
     checks:
       - tests/test_rule_authority.py::test_checks_are_refused_if_they_write
       - tests/test_rule_authority.py::test_due_cannot_write_and_the_tick_is_rolled_back
@@ -92,7 +92,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
-    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for process timing (S2): timing is validated, reads/writes still derived; tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: action_authoring.py change since aa8af13 is selector matching reused by the run view; derivation unchanged
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
@@ -103,7 +103,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: aa8af1380bcf7bfc563af3fe64787b0f0674e764  # re-read 2026-10-26 for knock-on effects (S2): the transcript only adds reactions rows; profile still frozen before the run; tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: run_authored_world.py changes hide untouched zeros from residents and reuse one scratch engine; the profile is still frozen before the run
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -115,7 +115,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
-    reviewed_at: fe8c492664ce64396732917dfb2fc1238032c625  # re-read 2026-10-25 for open attempts (S1): statement holds, tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: world_builder_service.py changes since fe8c492 are build-quality checks and rules retries; approval before run unchanged
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -126,7 +126,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
-    reviewed_at: fe8c492664ce64396732917dfb2fc1238032c625  # re-read 2026-10-25 for open attempts: the attempt reader uses the run's approved model, trace_id and max_budget, so it spends inside the same capped run budget; tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: the spare rules try is called with the run's max_budget and charged when it finishes (keep_until_settled); budget gate unchanged
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -137,7 +137,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
-    reviewed_at: fe8c492664ce64396732917dfb2fc1238032c625  # re-read 2026-10-25 for open attempts (S1): statement holds, tests pass
+    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: run rows still written per request with trace ids; build-record fields added only
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot

@@ -1,0 +1,27 @@
+{
+  "id": "world-builder-build-record-laws",
+  "title": "Build record and run: declared laws, law refusals, review findings",
+  "concern": "Did the built world state its own bookkeeping laws in plain words, which moves did the engine refuse and under which law, and what did the independent review say the rules get wrong against the description?",
+  "stakeholder": "Brian, and a drop-in visitor to the World Builder",
+  "intent": ["inspect", "troubleshoot", "trace"],
+  "informationStructure": ["table", "document"],
+  "tasks": ["inspect", "compare", "trace"],
+  "entities": ["law", "move", "refusal", "review finding", "description words"],
+  "relationships": ["refused-under", "quotes", "names-rule"],
+  "relationshipEnds": [
+    {"relationship": "refused-under", "from": "refusal", "to": "law"},
+    {"relationship": "quotes", "from": "review finding", "to": "description words"},
+    {"relationship": "names-rule", "from": "review finding", "to": "move"}
+  ],
+  "scale": {"items": 40, "density": "low"},
+  "interaction": {"mode": "exploratory", "dynamics": "interactive"},
+  "audience": {"expertise": "novice", "frequency": "occasional", "domainFamiliarity": "novice", "notationFamiliarity": "novice", "visualizationLiteracy": "mixed"},
+  "constraints": {"realtime": false, "provenance": true, "allowAggregation": false},
+  "representationRole": "analytic",
+  "abstractionLevel": "detailed",
+  "successCriteria": [
+    "Each law reads as one plain sentence naming this world's own goods, money and moves.",
+    "A refused move shows the law's sentence beside it, in orange with the word 'refused'.",
+    "Each review finding names the rule and quotes the description words it checked against."
+  ]
+}

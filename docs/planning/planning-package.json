@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c",
+  "subject_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136",
   "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
   "parts": {
     "checks": {
@@ -40,30 +40,31 @@
           "command": "python3 scripts/check_trace_reads.py",
           "exit_status": 0,
           "counts": {
-            "runs": 11,
+            "runs": 20,
             "problems": 0
           }
         },
         {
           "name": "project check (tests, system model, docs)",
-          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py",
-          "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
+          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py",
+          "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
           "exit_status": 0,
           "counts": {
-            "tests_run": 728,
+            "tests_run": 801,
             "failed": 0,
             "skipped": 2
           }
         },
         {
           "name": "wiki and Markdown cap",
-          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo .",
+          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 136,
+            "md_files": 157,
             "cap": "exception",
             "orphans": 0
-          }
+          },
+          "note": "Run with --ref HEAD: without it the script checks the default branch, not this change."
         }
       ]
     },
@@ -148,7 +149,8 @@
         "kitchen": "reference_worlds/kitchen/mechanics.py",
         "mechanic": "src/world_substrate/action_authoring.py:456",
         "entity-component": "src/world_substrate/model.py:223",
-        "knock-on-now": "src/world_substrate/engine.py:884"
+        "knock-on-now": "src/world_substrate/engine.py:884",
+        "world-design": "scripts/generate_world_bundle.py:53"
       }
     },
     "diagrams": {
@@ -174,47 +176,26 @@
     },
     "plan": {
       "status": "present",
-      "path": "docs/plans/open_attempt.md",
+      "path": "docs/plans/declared_laws.md",
       "relies_on": [
-        "attempt",
-        "attempt-reading",
-        "unmatched-attempt",
-        "affordance",
-        "check",
-        "move",
-        "mechanic",
-        "event",
-        "process",
-        "resident",
-        "policy",
-        "place-way",
-        "entity-component",
-        "observation",
-        "knock-on-now",
-        "skill-roll",
-        "run-seed",
-        "information",
-        "write-scope",
-        "profile",
-        "approval",
-        "fingerprint",
-        "budget",
-        "run-loop",
-        "task",
-        "engine",
-        "compiler",
+        "world-law",
+        "law-check",
+        "rules-review",
         "gen-rules",
-        "build",
-        "run-log",
-        "causal-trace",
-        "sense",
-        "causal-parent",
-        "contention",
-        "readout",
-        "share",
-        "mechanisms",
         "test-run",
-        "scene-replay"
+        "build",
+        "mechanic",
+        "process",
+        "knock-on-now",
+        "engine",
+        "entity-component",
+        "write-scope",
+        "rules-retry",
+        "exchange",
+        "causal-trace",
+        "run-log",
+        "world-design",
+        "resource"
       ]
     },
     "review_page": {
@@ -226,8 +207,12 @@
       "status": "present",
       "path": "docs/planning/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c"
+      "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
+    },
+    "acceptance": {
+      "status": "present",
+      "path": "docs/planning/declared-laws/acceptance-criteria.json"
     }
   },
-  "note": "This is the repository's package: covers the whole repository; its plan part points at the same adopted plan as the open-attempt package. The other package is docs/planning/open-attempt/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
+  "note": "This is the repository's package: covers the whole repository; its plan part points at the newest adopted plan, docs/plans/declared_laws.md, whose own package is docs/planning/declared-laws/planning-package.json. The open-attempt plan keeps docs/planning/open-attempt/planning-package.json. All three share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
 }

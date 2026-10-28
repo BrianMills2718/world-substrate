@@ -115,6 +115,24 @@
    "explain": "Blocks: whether #128 stays open on the board."
   },
   {
+   "id": "Q44",
+   "label": "Q44: Which model reviews the rules",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: S3's reviewer design, and whether S4 may retire any heuristic check on the strength of the review."
+  },
+  {
+   "id": "Q45",
+   "label": "Q45: Which heuristic checks retire",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: S4: which checks are removed, and so whether validation stops growing one check per bug."
+  },
+  {
+   "id": "Q48",
+   "label": "Q48: A wrong law is declared",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: whether S3's review must read the laws against the description as well as the rules, and whether L1 can pass on laws that are merely well-formed."
+  },
+  {
    "id": "agenda",
    "label": "Agenda count",
    "kind": "Concept",
@@ -218,6 +236,13 @@
    "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s."
   },
   {
+   "id": "rules-review",
+   "label": "Independent rules review",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark."
+  },
+  {
    "id": "run-loop",
    "label": "Run loop",
    "kind": "Concept",
@@ -247,6 +272,13 @@
    "label": "Unmatched attempt",
    "kind": "Concept",
    "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer."
+  },
+  {
+   "id": "world-law",
+   "label": "Declared world law",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Plan declared-laws S1: a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types."
   },
   {
    "id": "write-scope",
@@ -476,6 +508,48 @@
    "id": "Q38-observation",
    "source": "Q38",
    "target": "observation",
+   "label": "bears on"
+  },
+  {
+   "id": "Q44-rules-review",
+   "source": "Q44",
+   "target": "rules-review",
+   "label": "bears on"
+  },
+  {
+   "id": "Q44-gen-rules",
+   "source": "Q44",
+   "target": "gen-rules",
+   "label": "bears on"
+  },
+  {
+   "id": "Q45-rules-review",
+   "source": "Q45",
+   "target": "rules-review",
+   "label": "bears on"
+  },
+  {
+   "id": "Q45-test-run",
+   "source": "Q45",
+   "target": "test-run",
+   "label": "bears on"
+  },
+  {
+   "id": "Q45-build",
+   "source": "Q45",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q48-world-law",
+   "source": "Q48",
+   "target": "world-law",
+   "label": "bears on"
+  },
+  {
+   "id": "Q48-rules-review",
+   "source": "Q48",
+   "target": "rules-review",
    "label": "bears on"
   }
  ],

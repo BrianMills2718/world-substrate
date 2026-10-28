@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c",
+  "subject_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136",
   "request": "Brian 2026-10-25 \"yes\" (to: write a short design for free-form attempts plus the fallback for unmatched attempts, then knock-on effects and skill rolls, tracing the wall, glass and helicopter examples, with a review page)",
   "parts": {
     "checks": {
@@ -40,30 +40,31 @@
           "command": "python3 scripts/check_trace_reads.py",
           "exit_status": 0,
           "counts": {
-            "runs": 11,
+            "runs": 20,
             "problems": 0
           }
         },
         {
           "name": "project check (tests, system model, docs)",
-          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest python scripts/check_project.py",
-          "note": "counts from its unittest runner line 'Neutral runtime tests: Ran N tests'",
+          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py",
+          "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
           "exit_status": 0,
           "counts": {
-            "tests_run": 728,
+            "tests_run": 801,
             "failed": 0,
             "skipped": 2
           }
         },
         {
           "name": "wiki and Markdown cap",
-          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo .",
+          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 136,
+            "md_files": 157,
             "cap": "exception",
             "orphans": 0
-          }
+          },
+          "note": "Run with --ref HEAD: without it the script checks the default branch, not this change."
         }
       ]
     },
@@ -148,7 +149,8 @@
         "kitchen": "reference_worlds/kitchen/mechanics.py",
         "mechanic": "src/world_substrate/action_authoring.py:456",
         "entity-component": "src/world_substrate/model.py:223",
-        "knock-on-now": "src/world_substrate/engine.py:884"
+        "knock-on-now": "src/world_substrate/engine.py:884",
+        "world-design": "scripts/generate_world_bundle.py:53"
       }
     },
     "diagrams": {
@@ -226,7 +228,7 @@
       "status": "present",
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "f8dc6daa76de3c84e195d1027cdde126d7de354c"
+      "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
     }
   },
   "note": "This is the plan's own package, named by docs/plans/open_attempt.md's 'Planning package:' line. The other package is docs/planning/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."

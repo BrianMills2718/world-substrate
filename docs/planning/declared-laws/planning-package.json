@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0",
+  "record_type": "planning_package",
+  "repository": "BrianMills2718/world-substrate",
+  "subject_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136",
+  "request": "Brian 2026-10-28 \"yes lets make it companhy plannign complaint\" (to: the world declares its own laws, the engine enforces them generically, and an independent AI review checks the rules against the description and the laws, replacing the growing list of heuristic checks)",
+  "parts": {
+    "checks": {
+      "status": "present",
+      "path": "docs/planning/checks.txt",
+      "results": [
+        {
+          "name": "durable documents (arc42)",
+          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
+          "exit_status": 0,
+          "counts": {
+            "findings": 0
+          }
+        },
+        {
+          "name": "project navigation",
+          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
+          "exit_status": 0,
+          "counts": {
+            "findings": 0
+          }
+        },
+        {
+          "name": "repository format",
+          "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
+          "exit_status": 1,
+          "counts": {
+            "compliant": 0,
+            "of": 1
+          },
+          "tracked_by": "Q15"
+        },
+        {
+          "name": "trace reads",
+          "command": "python3 scripts/check_trace_reads.py",
+          "exit_status": 0,
+          "counts": {
+            "runs": 20,
+            "problems": 0
+          }
+        },
+        {
+          "name": "project check (tests, system model, docs)",
+          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py",
+          "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
+          "exit_status": 0,
+          "counts": {
+            "tests_run": 801,
+            "failed": 0,
+            "skipped": 2
+          }
+        },
+        {
+          "name": "wiki and Markdown cap",
+          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+          "exit_status": 0,
+          "counts": {
+            "md_files": 157,
+            "cap": "exception",
+            "orphans": 0
+          },
+          "note": "Run with --ref HEAD: without it the script checks the default branch, not this change."
+        }
+      ]
+    },
+    "open_questions": {
+      "status": "present",
+      "path": "docs/planning/open-questions.json"
+    },
+    "system_model": {
+      "status": "present",
+      "path": "docs/model/ODD.md",
+      "executes_typed_rules": true,
+      "basis": "src/world_substrate/engine.py:582",
+      "metamodel": {
+        "path": "docs/model/metamodel.graph.json",
+        "glossary": "docs/model/METAMODEL.md",
+        "maps_onto": {
+          "repository": "BrianMills2718/scientific-hypergraph",
+          "revision": "7b0638fe0aef41c772bb181996516f98be479597",
+          "mapping": "docs/model/metamodel-mapping.json"
+        }
+      }
+    },
+    "domain_model": {
+      "status": "present",
+      "path": "docs/model/domain.graph.json",
+      "glossary": "docs/model/DOMAIN.md",
+      "implemented": {
+        "world": "src/world_substrate/model.py:382",
+        "engine": "src/world_substrate/engine.py:198",
+        "event": "src/world_substrate/engine.py:529",
+        "move": "src/world_substrate/action_authoring.py:49",
+        "process": "src/world_substrate/engine.py:829",
+        "compiler": "src/world_substrate/action_authoring.py:456",
+        "policy": "src/world_substrate/policy.py:50",
+        "sense": "src/world_substrate/semantic.py:15",
+        "profile": "src/world_substrate/profile.py:266",
+        "write-scope": "src/world_substrate/engine.py:88",
+        "causal-trace": "src/world_substrate/engine.py:529",
+        "world-kind": "scripts/world_builder_service.py:113",
+        "builder": "scripts/world_builder_service.py",
+        "approval": "scripts/world_builder_service.py:418",
+        "fingerprint": "scripts/world_builder_service.py:381",
+        "information": "src/world_substrate/information.py:57",
+        "run-loop": "scripts/run_authored_world.py:347",
+        "contention": "scripts/run_authored_world.py:563",
+        "resident": "scripts/concordia_residents.py:44",
+        "task": "scripts/attempts.py:17",
+        "notice": "scripts/attempts.py:234",
+        "build": "scripts/world_builder_service.py:1541",
+        "rules-retry": "scripts/world_builder_service.py:263",
+        "test-run": "scripts/world_builder_service.py:1610",
+        "run-log": "scripts/world_builder_service.py:524",
+        "readout": "scripts/run_readout.py:125",
+        "scene-replay": "scripts/render_scene_replay.py:398",
+        "share": "scripts/world_builder_service.py:598",
+        "budget": "scripts/world_builder_service.py:51",
+        "people-world": "scripts/people_world.py:364",
+        "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
+        "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
+        "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
+        "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
+        "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
+        "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
+        "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
+        "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
+        "rollout": "spikes/any-scenario-2026-10/compile_spec.py:436",
+        "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
+        "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
+        "gen-rules": "scripts/people_world.py:251",
+        "waltzman-ref": "reference_worlds/waltzman/components.py:11",
+        "affordance": "src/world_substrate/engine.py:352",
+        "check": "src/world_substrate/rules.py:48",
+        "attempt": "src/world_substrate/attempt.py:149",
+        "attempt-reading": "src/world_substrate/attempt.py:81",
+        "unmatched-attempt": "src/world_substrate/attempt.py:25",
+        "observation": "src/world_substrate/engine.py:235",
+        "place-way": "scripts/generate_world_bundle.py:96",
+        "projection": "src/world_substrate/projection.py:44",
+        "causal-parent": "src/world_substrate/rules.py:383",
+        "exchange": "src/world_substrate/exchange.py:68",
+        "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
+        "kitchen": "reference_worlds/kitchen/mechanics.py",
+        "mechanic": "src/world_substrate/action_authoring.py:456",
+        "entity-component": "src/world_substrate/model.py:223",
+        "knock-on-now": "src/world_substrate/engine.py:884",
+        "world-design": "scripts/generate_world_bundle.py:53"
+      }
+    },
+    "diagrams": {
+      "status": "present",
+      "items": [
+        {
+          "path": "docs/model/ODD.md",
+          "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
+        },
+        {
+          "path": "docs/model/domain.graph.json",
+          "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
+        },
+        {
+          "path": "docs/model/open-questions.graph.json",
+          "question": "Which concepts carry the unsettled questions, and whose call is each?"
+        },
+        {
+          "path": "docs/model/metamodel.graph.json",
+          "question": "What kinds of things can any world's rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?"
+        }
+      ]
+    },
+    "plan": {
+      "status": "present",
+      "path": "docs/plans/declared_laws.md",
+      "relies_on": [
+        "world-law",
+        "law-check",
+        "rules-review",
+        "gen-rules",
+        "test-run",
+        "build",
+        "mechanic",
+        "process",
+        "knock-on-now",
+        "engine",
+        "entity-component",
+        "write-scope",
+        "rules-retry",
+        "exchange",
+        "causal-trace",
+        "run-log",
+        "world-design",
+        "resource"
+      ]
+    },
+    "review_page": {
+      "status": "present",
+      "path": "proposals/declared-laws/review-page/index.html",
+      "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/declared-laws/review-page/"
+    },
+    "cold_review": {
+      "status": "present",
+      "path": "docs/planning/declared-laws/cold-review.md",
+      "verdict": "pass",
+      "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
+    },
+    "acceptance": {
+      "status": "present",
+      "path": "docs/planning/declared-laws/acceptance-criteria.json"
+    }
+  },
+  "note": "This is the plan's own package, named by docs/plans/declared_laws.md's 'Planning package:' line. The repository package docs/planning/planning-package.json now points its plan part at the same plan; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (Q41). The open-attempt plan keeps its own package (docs/planning/open-attempt/) for its remaining slices."
+}

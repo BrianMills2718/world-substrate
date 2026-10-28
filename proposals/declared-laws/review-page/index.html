@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Declared World Laws</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1d2329;--muted:#5d6670;--line:#c9ced3;--card:#fff;
+--have:#1f5fa8;--have-bg:#e6effa;--miss:#b85c00;--miss-bg:#fdf0e1;--grey:#6b7280;--grey-bg:#f0f1f3;--hi:#1d2329}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181b;--fg:#e7eaed;--muted:#9aa3ac;--line:#3a4148;--card:#1d2125;
+--have:#7fb2ee;--have-bg:#1b2d44;--miss:#f0a454;--miss-bg:#3a2a17;--grey:#a3abb4;--grey-bg:#262a2f;--hi:#e7eaed}}
+:root[data-theme="dark"]{--bg:#15181b;--fg:#e7eaed;--muted:#9aa3ac;--line:#3a4148;--card:#1d2125;
+--have:#7fb2ee;--have-bg:#1b2d44;--miss:#f0a454;--miss-bg:#3a2a17;--grey:#a3abb4;--grey-bg:#262a2f;--hi:#e7eaed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:17px;margin:26px 0 8px}
+.lede{color:var(--muted);margin:0 0 14px;max-width:800px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin:0 0 14px}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+.sw.have{background:var(--have-bg);border:2px solid var(--have)}
+.sw.miss{background:var(--miss-bg);border:2px dashed var(--miss)}
+.sw.grey{background:var(--grey-bg);border:2px solid var(--grey)}
+.examples{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.examples button{font:inherit;font-size:14px;padding:6px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.examples button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px}
+@media (max-width:820px){.layout{grid-template-columns:1fr}.trace{order:-1}}
+.stages{display:flex;flex-direction:column}
+.stage{border-radius:8px;padding:9px 12px;background:var(--card);border:2px solid var(--line)}
+.stage.have{border-color:var(--have);background:var(--have-bg)}
+.stage.miss{border-style:dashed;border-color:var(--miss);background:var(--miss-bg)}
+.stage .t{font-weight:600}
+.stage .tag{font-size:12px;font-weight:600;margin-left:6px}
+.stage.have .tag{color:var(--have)} .stage.miss .tag{color:var(--miss)}
+.stage .d{font-size:14px}
+.stage.dim{opacity:.35}
+.arrow{text-align:center;color:var(--muted);height:18px;line-height:18px}
+.trace{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;align-self:start}
+.trace h3{font-size:16px;margin:0 0 4px}
+.trace .setup{font-size:13px;color:var(--muted);margin:0 0 10px}
+.ev{display:grid;grid-template-columns:86px 1fr;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.ev:first-of-type{border-top:0}
+.ev .who{font-size:12px;font-weight:600;padding:2px 6px;border-radius:4px;align-self:start;text-align:center}
+.ev .who.have{color:var(--have);background:var(--have-bg)}
+.ev .who.miss{color:var(--miss);background:var(--miss-bg);border:1px dashed var(--miss)}
+.ev .who.grey{color:var(--grey);background:var(--grey-bg)}
+.ev .rec{font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);margin-top:2px;word-break:break-word}
+.ev.indent{margin-left:18px}
+.outcome{margin-top:10px;padding-top:8px;border-top:2px solid var(--line);font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+.decision{border:2px solid var(--miss);border-radius:8px;padding:10px 14px;background:var(--miss-bg);max-width:820px}
+.decision b{color:var(--miss)}
+.types .grp{font-size:13px;color:var(--fg);background:var(--grey-bg);text-transform:none}
+.types .tag{font-size:11px;font-weight:600;margin-left:4px}.types .tag.have{color:var(--have)}.types .tag.miss{color:var(--miss)}
+h3.sub{font-size:15px;margin:18px 0 6px}
+ul.plain{margin:0 0 10px;padding-left:20px}ul.plain li{margin:4px 0}
+.qs td{overflow-wrap:anywhere}.pkg .tag{white-space:nowrap;font-size:12px;font-weight:600;padding:1px 6px;border-radius:4px}.pkg .tag.have{color:var(--have);background:var(--have-bg)}.pkg .tag.miss{color:var(--miss);background:var(--miss-bg);border:1px dashed var(--miss)}
+#map-domain{height:900px}#map-questions{height:640px}
+.graph{--gv-bg:var(--card);--gv-ink:var(--fg);--gv-node-bg:var(--card);--gv-line:var(--line);--gv-edge:var(--grey);--gv-ext:var(--grey);--gv-edge-text:var(--muted);--gv-focus:var(--have);--gv-dots:var(--line);
+min-height:420px;border:1px solid var(--line);border-radius:8px;background:var(--card);overflow:hidden;margin:0 0 6px}
+.mapinfo{font-size:14px;margin:0 0 14px;max-width:820px}
+footer{margin-top:26px;font-size:13px;color:var(--muted)}
+a{color:var(--have)}
+</style>
+</head>
+<body>
+<main>
+<h1>Each world states its own laws; the engine holds the rules to them</h1>
+<p class="lede">Design for fixing the cause of the pencil-world bugs instead of one symptom at a time. Today the AI that writes a world's rules writes every move as raw field changes, and nothing compares those changes with what it knows, so a shop can "buy" boxes without paying (pencil13) and we add one more hand-written check per mistake. In this plan the AI that designs the world also writes the world's laws in its own terms ("pencils are made only by the factory"; "buying boxes moves boxes one way and cash the other"), the engine refuses any move that breaks one and names the law, and a separate AI reviews the rules against the description. Moves stay free: there is no fixed list of move types. <b>Nothing here is built yet</b>; pick an example to see what today's build does and what the planned build will record.</p>
+<p class="lede">This page is the plan's own package. The repository-wide package is on <a href="../../planning-package/review-page/">World Substrate: planning package</a>; both share one set of checks, questions and models (Q41).</p>
+<div class="legend">
+<span class="chip"><span class="sw have"></span>Blue, solid: in the World Builder build now</span>
+<span class="chip"><span class="sw miss"></span>Orange, dashed: added by this plan (planned, not yet run)</span>
+<span class="chip"><span class="sw grey"></span>Grey: what happens today</span>
+</div>
+<div class="examples" role="group" aria-label="Examples">
+<button data-ex="unpaid" aria-pressed="true">Shop takes boxes without paying</button>
+<button data-ex="nothing">Pencils appear from nothing</button>
+<button data-ex="noop">A move that changes nothing</button>
+<button data-ex="sale">An honest sale</button>
+</div>
+<div class="layout">
+<div class="stages" id="stages">
+<div class="stage have" data-s="describe"><span class="t">1. Describe</span><span class="tag">have</span>
+<div class="d">The visitor pastes a description and presses Create simulation.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="laws"><span class="t">2. Design the world and declare its laws</span><span class="tag">new, S1</span>
+<div class="d">The AI that designs places, things and people also lists the world's laws in two shapes: a total only named moves may change, and a move that must move one thing each way. Each law has a plain sentence for the page.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="rules"><span class="t">3. Write the rules</span><span class="tag">have; laws added as input</span>
+<div class="d">The rules writer writes each move's checks and effects, told every move must keep the laws.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="review"><span class="t">4. Independent review</span><span class="tag">new, S3</span>
+<div class="d">A different AI model, with a fresh context, reads the description, the laws and the rules, and lists concrete mismatches. It gives findings, never a pass mark.</div></div>
+<div class="arrow">↓</div>
+<div class="stage miss" data-s="test"><span class="t">5. Test run, laws enforced</span><span class="tag">test run have; law check new, S2</span>
+<div class="d">The build's free scripted run plays the rules. A step that breaks a law is refused whole, with the law named, and nothing changes.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="fix"><span class="t">6. Fix what was found</span><span class="tag">have; inputs new</span>
+<div class="d">The rules writer rewrites only the moves named by a law refusal or a review finding (the "changed moves only" retry from pull request 278).</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="run"><span class="t">7. Keep the world and run it</span><span class="tag">have; law check stays on</span>
+<div class="d">People act each round. The engine keeps checking the laws on every move and knock-on effect.</div></div>
+</div>
+<div class="trace" id="trace" aria-live="polite"></div>
+</div>
+
+<h2>Built in five slices, each one a working World Builder</h2>
+<div class="tablewrap"><table>
+<tr><th>Slice</th><th>State</th><th>What lands</th><th>Shown by</th></tr>
+<tr><td>S1</td><td><b style="color:var(--miss)">Planned</b></td><td>The world designer declares laws; the rules writer gets them; the build record and page list them</td><td>A live pencil build whose record lists its laws in the world's own words (L1)</td></tr>
+<tr><td>S2</td><td><b style="color:var(--miss)">Planned</b></td><td>The engine refuses a move or knock-on effect that breaks a law, naming it; a test-run refusal goes to the rules writer</td><td>Tests on the saved pencil13 world: the unpaid purchase is refused with its law named (L2, L3)</td></tr>
+<tr><td>S3</td><td><b style="color:var(--miss)">Planned</b></td><td>The independent review and its findings into the rules writer's fix step</td><td>The review names pencil13's unpaid purchase; the canonical pencil build live (L4, L5)</td></tr>
+<tr><td>S4</td><td><b style="color:var(--miss)">Planned</b></td><td>Retire the hand-written checks that guess meaning, one at a time, each only after its incidents are caught by a law or the review</td><td>A table of each retired check and the saved worlds that prove it is covered (L6)</td></tr>
+<tr><td>S5</td><td><b style="color:var(--miss)">Planned</b></td><td>Four different descriptions built live in parallel (pencil, airfield, a kitchen, the Waltzman scenario)</td><td>Each run's laws, refusals and findings, read round by round</td></tr>
+</table></div>
+
+<h2>The incidents this plan must catch</h2>
+<p class="lede">Every hand-written check that guesses at meaning, the mistake it was written for, and what catches that mistake after this plan. Laws catch bookkeeping; mistakes about what can never happen or what piles up leave every total unchanged, so the test run's reports and the review catch those.</p>
+<div class="tablewrap"><table>
+<tr><th>Mistake</th><th>Saved world</th><th>Caught today by</th><th>After this plan</th></tr>
+<tr><td>A purchase that pays nothing (buy-boxed-pencils)</td><td>pencil13</td><td><b style="color:var(--miss)">Nothing</b></td><td>A pairing law; the review</td></tr>
+<tr><td>A process restocks goods that a person makes</td><td>c4-run14</td><td>Conjuring check</td><td>A total law</td></tr>
+<tr><td>A move uses up goods and makes nothing (pack-pencils)</td><td>pencil 4VmgkXIVWn4p</td><td>Vanishing-moves check</td><td>A total law</td></tr>
+<tr><td>A raw good with two sources</td><td>c4-run20</td><td>Second-source check (report only)</td><td>A total law, if the designer names one source</td></tr>
+<tr><td>Inputs nobody makes</td><td>pencil2</td><td>Unsourced-inputs check</td><td>Test-run report; the review</td></tr>
+<tr><td>A move needs a part no one has</td><td>pencil4</td><td>Missing-component check</td><td><b style="color:var(--have)">Stays</b> (a fact, not a guess)</td></tr>
+<tr><td>Stock with nowhere to go</td><td>pencil4</td><td>Dead-end-stock check</td><td>Test-run report; the review</td></tr>
+<tr><td>The customer flagged as a dead end though it uses pencils</td><td>pencil12, pencil13</td><td>A false alarm, patched twice</td><td>Goes with the guess</td></tr>
+<tr><td>A seller never receives what it sells</td><td>pencil9</td><td>Starved-holders check</td><td>Test-run report; the review</td></tr>
+<tr><td>Demand that only grows</td><td>cafe eFmPomcnsyQq</td><td>Unanswered-demand check</td><td>Test-run report; the review</td></tr>
+<tr><td>Processes carry goods people should carry</td><td>c4-run16</td><td>Moving-processes check</td><td>The review</td></tr>
+<tr><td>A malformed field path</td><td>pencil14 (build failed, 422)</td><td>The installer</td><td>Unchanged</td></tr>
+</table></div>
+
+<h2>What you will check on the working page</h2>
+<p class="lede">Each slice ends in something you can open on the World Builder. None is built yet. Full steps and broken cases: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/acceptance-criteria.json">acceptance-criteria.json</a>.</p>
+<div class="tablewrap"><table>
+<tr><th>Id</th><th>What you do</th><th>Works when you see</th><th>Broken looks like</th></tr>
+<tr><td>A1</td><td>Build the pencil world; open the build record's Laws list</td><td>Plain sentences naming this world's goods, money and moves</td><td>No laws, or laws about things the world does not have</td></tr>
+<tr><td>A2</td><td>Open the saved pencil13 replay, round 8, the shop's purchase</td><td><b style="color:var(--miss)">Refused</b>, with the law "A purchase moves goods one way and payment the other"</td><td>Shown as done: boxes move, no cash moves</td></tr>
+<tr><td>A3</td><td>Open the pencil13 build record's Review findings</td><td>The purchase named, with the description's own words quoted</td><td>Empty, "looks good", or no quoted words</td></tr>
+<tr><td>A4</td><td>Build the pencil world and open any sale</td><td>Pencils to the buyer and cash to the seller in the same step</td><td>Goods move without cash, or the build fails</td></tr>
+<tr><td>A5</td><td>Build the pencil world and a kitchen; open each list of moves</td><td>Moves named in each world's own terms</td><td>Every move one of a few fixed kinds (transfer, exchange, transform)</td></tr>
+<tr><td>A6</td><td>Build four different descriptions (pencil, airfield, kitchen, Waltzman); open each one's laws, findings and run</td><td>Its own laws, kept in every step, refusals named</td><td>The pencil laws reworded, or a step that breaks a law goes through</td></tr>
+<tr><td>A7</td><td>Read what checked the rules in a build record, and the S4 retired-checks table</td><td>Only laws, the review and test-run reports; each retired check proven covered</td><td>A new mistake fixed by one more hand-written check</td></tr>
+</table></div>
+
+<h2>Which checks stay and which go</h2>
+<p class="lede">The build has about fourteen hand-written checks, each added after one bad world. Checks that report what the free test run actually saw are observations, so they stay. Checks that guess a rule's meaning from its shape are what laws and the review replace; each goes only when the saved worlds of the incidents it caught are covered (open question Q45).</p>
+<div class="tablewrap"><table>
+<tr><th>Check</th><th>Kind</th><th>Plan</th></tr>
+<tr><td>People idle or stuck; the world circling; moves never possible; people never together; refusals at the start</td><td>Reports the test run</td><td><b style="color:var(--have)">Stay</b></td></tr>
+<tr><td>Goods from nothing; vanishing moves; a second source</td><td>Guesses bookkeeping</td><td><b style="color:var(--miss)">Retire</b> once a law refuses each incident</td></tr>
+<tr><td>Unsourced inputs</td><td>Guesses what can never happen</td><td>Becomes a test-run report; retires only if the review names its incident</td></tr>
+<tr><td>Stock with nowhere to go</td><td>Not a law: piling up leaves every total unchanged (Q43)</td><td><b style="color:var(--have)">Stay</b> as a test-run report of stock that only grew; the review reads it too</td></tr>
+<tr><td>Starved holders; unanswered demand</td><td>Guesses what can never happen or only grows</td><td>Becomes a test-run report; retires only if the review names each incident</td></tr>
+<tr><td>Moves that change nothing; processes carrying goods</td><td>Guesses meaning</td><td><b style="color:var(--miss)">Retire</b> once the review names each incident</td></tr>
+</table></div>
+
+<h2>What could go wrong, and what catches it</h2>
+<div class="tablewrap"><table>
+<tr><th>Risk</th><th>Catch</th></tr>
+<tr><td>Laws turn into fixed move types by the back door</td><td>Laws only constrain totals and pairings of the world's own fields; moves are written freely (requirement R1)</td></tr>
+<tr><td>The designer declares a wrong law, so an honest move is refused</td><td>The refusal shows in the build record with the law's sentence, and both the rules writer and the review see it; S5's reads look for this</td></tr>
+<tr><td>The designer forgets a law</td><td>A missing law catches less, never more wrongly; the review still reads the rules against the description</td></tr>
+<tr><td>The review just agrees with the rules writer</td><td>A different model family, a fresh context, findings not a verdict, and its value measured on the saved incident worlds before any check retires (Q44)</td></tr>
+<tr><td>A rule that is not a simple total (a price formula, stock with nowhere to go)</td><td>Not a law: an ordinary rule the review reads, and the test run reports stock that only grew (Q43, settled by reading every logged incident and its saved world)</td></tr>
+<tr><td>The same thing sits under different names (the customer's <code>cash</code>, the shop's <code>business.cash</code>)</td><td>A law names a resource declared once with every field it is kept in, never a raw field (Q47)</td></tr>
+<tr><td>Saved worlds change</td><td>A world with no laws runs exactly as today; every replay test must pass on each merge</td></tr>
+</table></div>
+
+<!-- package:start -->
+<h2>The planning package behind this page</h2>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-28 on branch plan/declared-laws (worktree ws-declared-laws) at 4ff4c27, based on main 5d6a48e); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
+<tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>repository format</td><td>compliant 0, of 1 (tracked as Q15)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>trace reads</td><td>runs 20, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project check (tests, system model, docs)</td><td>tests run 801, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 157, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
+</tbody></table></div>
+<h3 class="sub">Open questions: 19 open, 29 resolved</h3>
+<p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
+<div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
+<tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
+<tr><td><b>Q3</b> Agenda item has no content</td><td>agent</td><td>whether the group-decision family&#x27;s agenda needs content or should be dropped</td></tr>
+<tr><td><b>Q12</b> When a people-world run ends</td><td>Brian</td><td>how long visitors watch a run, and its cost</td></tr>
+<tr><td><b>Q14</b> Harness build time not measured</td><td>agent</td><td>when the harness replaces the fixed build calls and the rules retry (Q1) on the live path</td></tr>
+<tr><td><b>Q15</b> Repository format files not yet added</td><td>agent</td><td>whether the repo-format check passes</td></tr>
+<tr><td><b>Q16</b> Goals skip the package gate</td><td>Brian</td><td>whether the next goal can again run without a current system model and question list</td></tr>
+<tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
+<tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
+<tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
+<tr><td><b>Q31</b> Refusal reason reads as a fact</td><td>agent</td><td>whether a person, and a reader of the run, can tell why a move was refused</td></tr>
+<tr><td><b>Q32</b> Readout picks the wrong lens</td><td>agent</td><td>whether a run&#x27;s readout describes the world the visitor wrote</td></tr>
+<tr><td><b>Q33</b> Seeded roll versus no randomness</td><td>agent</td><td>S3&#x27;s design, A7 and the full canonical run (A9)</td></tr>
+<tr><td><b>Q34</b> Read scopes recorded, not enforced</td><td>agent</td><td>whether causal links built from declared reads are complete: F1&#x27;s blocked_by_event names the event that changed what a refused move&#x27;s failed checks read, and Piece 2&#x27;s reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause</td></tr>
+<tr><td><b>Q36</b> How a misreading is caught</td><td>agent</td><td>R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings</td></tr>
+<tr><td><b>Q37</b> Added doorway listed as left out</td><td>agent</td><td>A3 on any newly built airfield world, and whether a visitor can see what the builder added</td></tr>
+<tr><td><b>Q38</b> Does S1 close #128</td><td>agent</td><td>whether #128 stays open on the board</td></tr>
+<tr><td><b>Q44</b> Which model reviews the rules</td><td>agent</td><td>S3&#x27;s reviewer design, and whether S4 may retire any heuristic check on the strength of the review</td></tr>
+<tr><td><b>Q45</b> Which heuristic checks retire</td><td>agent</td><td>S4: which checks are removed, and so whether validation stops growing one check per bug</td></tr>
+<tr><td><b>Q48</b> A wrong law is declared</td><td>agent</td><td>whether S3&#x27;s review must read the laws against the description as well as the rules, and whether L1 can pass on laws that are merely well-formed</td></tr>
+</tbody></table></div>
+<h3 class="sub">Diagrams</h3>
+<ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
+<p>Cold review of this package: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/cold-review.md">cold-review.md</a>.</p>
+<!-- package:end -->
+<!-- maps:start -->
+<h2>The maps behind the plan</h2>
+<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 67 ideas, 104 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
+<div class="graph" id="map-domain"></div>
+<p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (19 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<div class="graph" id="map-questions"></div>
+<p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
+<!-- maps:end -->
+<h2>Your decisions</h2>
+<p class="lede"><b>Decided:</b> the three-part design, laws declared by the world's designer, enforced by the engine, and an independent review, instead of fixed move types (you said "yes lets make it companhy plannign complaint" on 2026-10-28, after rejecting fixed move types as destroying the point).</p>
+<p class="lede">Nothing in this plan is waiting on you. The three open questions (which model reviews, Q44; which checks retire, Q45; what catches a wrong law, Q48) are settled by checking, inside the plan. S1 starts next.</p>
+
+<footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/declared_laws.md">docs/plans/declared_laws.md</a> · Methods copied: Petri-net place invariants, Concordia's stock-and-flow ledger, LLM+P-style validator feedback · The pencil13 read-through: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/evidence/pencil13-trace-audit/TRACE_READ.md">TRACE_READ.md</a></footer>
+</main>
+<script>
+const EX={
+unpaid:{title:"The shop takes boxes without paying",setup:"pencil13 (2026-10-28): the rules writer gave the shop a buy-boxed-pencils move that moves boxes from the factory to the shop and moves no cash.",stages:["describe","laws","rules","review","test","fix"],ev:[
+["grey","today","The move installed and ran. Customers paid the shop five times; the factory was never paid. No check noticed.","evidence/pencil13-trace-audit/TRACE_READ.md"],
+["miss","laws","The designer declares: buying boxed pencils moves boxes from the factory to the shop and cash from the shop to the factory.","{law_id: boxes-are-paid-for, move: buy-boxed-pencils, gives: boxes, pays: cash}"],
+["miss","review","Finding: buy-boxed-pencils moves boxes but no cash, though the description says shops buy them.","{rule_id: buy-boxed-pencils, problem: …}"],
+["miss","test run","The shop's first purchase is refused: \"buying boxed pencils moves boxes to the shop and cash to the factory\" failed. Nothing changes.","status: law_breach"],
+["miss","fix","The rules writer rewrites only buy-boxed-pencils, now paying the factory.","revision: changed moves only"]],
+out:"Today this bug ran unnoticed. With the plan it is caught twice before the world is kept: by the law in the test run and by the review."},
+nothing:{title:"Pencils appear from nothing",setup:"pencil2 and pencil4: a process added pencils to a shop each round with nothing used up.",stages:["describe","laws","rules","test","fix"],ev:[
+["grey","today","Caught only because a hand-written check guessed it from the rule's shape (conjuring processes).","scripts/world_builder_service.py:867"],
+["miss","laws","The designer declares: the number of pencils changes only by the factory's make move and customers using them.","{law_id: pencils-are-made, resource: pencils, may_change_by: [make-pencils, use-pencil]}"],
+["miss","test run","The restock step is refused: \"pencils are made only by the factory\" failed, naming the step that tried.","status: law_breach"],
+["miss","fix","The rules writer changes the restock into a delivery from the factory.","revision"]],
+out:"The same catch, but from the world's own law instead of a guess that has to be written again for every new kind of good."},
+noop:{title:"A move that changes nothing",setup:"Airfield (issue 254): the fly and teach moves changed nothing at all.",stages:["describe","rules","review","fix"],ev:[
+["grey","today","Caught in part by a hand-written check for moves that change nothing.","scripts/world_builder_service.py:1114"],
+["have","laws","No law fits: nothing is made or paid. This is a question of meaning, not bookkeeping.","—"],
+["miss","review","Finding: fly changes nothing, though the description says the trainee flies the helicopter.","{rule_id: fly, problem: …}"],
+["miss","fix","The rules writer rewrites fly.","revision"]],
+out:"Laws catch bookkeeping; the review catches meaning a law cannot state."},
+sale:{title:"An honest sale",setup:"A customer buys a pencil from the shop: one pencil to the customer, cash to the shop.",stages:["describe","laws","rules","test","run"],ev:[
+["miss","laws","Laws: pencils change only by make and use; buying a pencil moves a pencil one way and cash the other.","laws[]"],
+["have","test run","Accepted: both laws hold, so the step commits as it does today.","status: accepted"],
+["have","run","The kept world runs; each sale moves cash both ways, and the engine keeps checking the laws.","events"]],
+out:"An honest move is never slowed down or changed: the law check only reads the before and after of a step."}};
+function show(k){const e=EX[k];
+document.querySelectorAll(".examples button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ex===k?"true":"false"));
+document.querySelectorAll(".stage").forEach(s=>s.classList.toggle("dim",!e.stages.includes(s.dataset.s)));
+let h="<h3>"+e.title+"</h3><p class='setup'>"+e.setup+"</p>";
+for(const [c,w,t,r] of e.ev){h+="<div class='ev'><span class='who "+c+"'>"+w+"</span><div>"+t+"<div class='rec'>"+r+"</div></div></div>";}
+h+="<div class='outcome'>"+e.out+"</div>";document.getElementById("trace").innerHTML=h;}
+document.querySelectorAll(".examples button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.ex)));
+show("unpaid");
+</script>
+<script src="../../planning-package/review-page/graph-viewer.js"></script>
+<script src="maps.js"></script>
+<script>
+for (const [key, el] of [["domain", "map-domain"], ["questions", "map-questions"]]) {
+  const g = window.MAPS[key], byId = Object.fromEntries(g.nodes.map(n => [n.id, n]));
+  const info = document.getElementById(el + "-info");
+  const frame = document.getElementById(el);
+  // Mount only once the map is on screen: laid out while hidden, the viewer draws its links with no positions.
+  const io = new IntersectionObserver(entries => {
+    if (!entries.some(x => x.isIntersecting)) return;
+    io.disconnect();
+    // As on the planning-package page: size the frame to the drawing's shape, then fit it.
+    const viewer = GraphViewer.mount(frame, {graph: g,
+      onLayout: ({width, height}) => { frame.style.height = Math.max(420, Math.min(1400, frame.clientWidth * height / width)) + "px"; viewer && viewer.fit(); },
+      onSelect: p => {
+      if (!p || p.type !== "node") return;
+      const n = byId[p.id], k = g.kinds[n.kind];
+      info.replaceChildren(Object.assign(document.createElement("b"), {textContent: n.label}),
+        document.createTextNode(" (" + (k ? k.label : n.kind) + "): " + n.explain));
+    }});
+  });
+  io.observe(frame);
+}
+</script>
+</body>
+</html>

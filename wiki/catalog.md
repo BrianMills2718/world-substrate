@@ -59,6 +59,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 
 - [Cold review of the planning package](../docs/planning/cold-review.md)
 - [Cold review: open-attempt planning package](../docs/planning/open-attempt/cold-review.md)
+- [Cold review: declared-laws planning package](../docs/planning/declared-laws/cold-review.md)
 
 ## docs/plans
 
@@ -69,6 +70,8 @@ Every reader document in this repository that the [wiki index](index.md) does no
 - [Goal: World Substrate processes can change linked entities in one atomic transition: a process names participants resolved from its own entity (ownership, an entity_ref field, or shared location), so the truck's driver moves with the truck and a dying patient frees the ventilator and bed, proven on the generated truck and hospital worlds.](../docs/plans/linked-process-participants.goal.md)
 - [Plan: linked participants for processes (Decision 007 follow-up)](../docs/plans/linked_process_participants.md)
 - [Plan: open attempts, knock-on effects that run to the end, and skill rolls](../docs/plans/open_attempt.md)
+- [Plan: worlds declare their own laws, the engine enforces them, and an independent review reads the rules](../docs/plans/declared_laws.md)
+- [Goal: worlds declare their own laws (declared-laws /goal launcher, written at adoption)](../docs/plans/declared-laws.goal.md)
 - [Goal: no round runs or bills twice, and a run's record says why each move was refused](../docs/plans/run-loop-contention.goal.md) (superseded 2026-10-26 by open_attempt.md)
 - [Goal: Every actor a scenario names reaches the generated world as an autonomous agent with a role brief taken from the scenario text, so that Rand Waltzman's scenario, rerun through the any-scenario pipeline, has the technical, legal, logistics and community groups acting in it; a fresh assessment states with event-level evidence which of the paper's four mechanisms now appear.](../docs/plans/scenario-actors-kept.goal.md)
 - [Goal: The describe-any-scenario pipeline defines each world in a typed scenario spec ported from Cybernetic Influence v3's world schema (people with behavioral profiles, information items with a source, channel and recipients, scheduled moments, world records with visibility, and a coverage report), compiles it into World Substrate state using the existing information module and the reviewed communicate rule, briefs each agent with its own person profile, and reruns Rand Waltzman's scenario with a fresh assessment of the paper's four mechanisms.](../docs/plans/scenario-spec-adoption.goal.md)
@@ -133,6 +136,10 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## scripts/e2e
 
 - [World Builder checks that cost real model money](../scripts/e2e/README.md)
+
+## scripts/vendor
+
+- [Vendored scripts: the shared graph viewer the World Builder page loads](../scripts/vendor/README.md)
 
 ## spikes/replacement-2026-10
 
@@ -200,6 +207,10 @@ Every reader document in this repository that the [wiki index](index.md) does no
 ## evidence/pencil13-trace-audit
 
 - [Trace read: pencil build 3SogfsdEGx9M (2026-10-28)](../evidence/pencil13-trace-audit/TRACE_READ.md)
+
+## evidence/pencil14-build-failure
+
+- [pencil14: build failed before the run (2026-10-28)](../evidence/pencil14-build-failure/README.md)
 
 ## evidence/pencil12-trace-audit
 
