@@ -1,0 +1,12 @@
+{
+ "replayed_call": 22202,
+ "trace_id": "world-substrate/s3-pencil/replay-review/c71a2313b02c47b0a11a4e215cf451d7",
+ "cost_usd": 0.152206,
+ "findings": [
+  {
+   "rule_id": "carry-boxes-to-shop",
+   "description_words": "trucks deliver the boxes to shops",
+   "problem": "The rule only moves boxed pencils onto the carrier's truck, but does not actually deliver them to the shop."
+  }
+ ]
+}

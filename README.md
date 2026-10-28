@@ -58,6 +58,8 @@ The product being demonstrated is **World Substrate**. **Waltzman Coordination L
 | Waltzman resident cognition | persistent cognition not integrated; existing bounded policy seam is sufficient for the accepted first gate |
 | Waltzman institution / intervention / adequacy | implemented first bounded gate; coalition decision, exact-history fork, intervention, eight declared dependency mappings + residual risk |
 | Saved user worlds/runs | not yet implemented; not required for the promoted Waltzman demo |
+| Declared world laws | implemented and deployed: the world designer declares each world's resources and laws, and the engine refuses a step that breaks one and names the law ([plan](docs/plans/declared_laws.md)) |
+| Independent rules review | implemented and deployed: a second AI on another model family reads the rules against the description and the laws, and its findings go to the rules writer ([live check](evidence/declared-laws/s3-pencil/TRACE_READ.md)) |
 
 The current live authoring path is:
 
@@ -89,6 +91,8 @@ The current Waltzman adequacy report should be read as a bounded dependency inve
 See the [roadmap](roadmap/README.md) and [Waltzman audit](docs/audits/waltzman-coordination-lab-v0.md) for the authoritative sequencing and evidence.
 
 ## Current next move
+
+The World Builder's active work is item 5 of the roadmap's [Exact next action](roadmap/README.md#exact-next-action): worlds that declare their own laws, an engine that enforces them, and an independent review of the rules. The native Waltzman milestone below is the frame it serves.
 
 The active milestone is now **native Waltzman on World Substrate, end to end**. The existing promoted donor-backed surface remains a regression/fallback while this converges; it is no longer the desired permanent runtime path.
 

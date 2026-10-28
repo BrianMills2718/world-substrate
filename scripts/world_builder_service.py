@@ -959,6 +959,10 @@ def _retry_label(first_model: str) -> str:
     return "Rewriting the rules with a stronger model" if RULES_RETRY_MODEL != first_model else "Rewriting the rules"
 
 
+# Below any reviewed try, however many findings it has.
+UNREVIEWED_RANK = 10_000
+
+
 def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, int, int, bool, int, int, int, bool]:
     """Order rules attempts: by score, then ties go to a test run that broke fewer of the world's laws, then to one
     that did not go in circles, then to fewer moves never offered, then to fewer people who stopped acting (#253: an airfield build kept the one test run that
@@ -969,8 +973,11 @@ def _attempt_rank(score: int, row: dict[str, Any]) -> tuple[int, int, int, bool,
     # A move no world entity can ever take part in loses next (2026-10-27 pencil iMrL2U84cLCS kept the attempt
     # whose shipping could never happen over one where every move ran).
     # Then fewer independent-review findings (S3): among tries the build would keep, the one that fixed what the
-    # review named wins.
-    return (score, -len(row.get("law_breaches") or []), -len(row.get("review_findings") or []),
+    # review named wins. A try nobody reviewed ranks below every reviewed one: pencil XlX1z5lyl8QT kept an unreviewed
+    # try in which no sale was ever possible over the reviewed try with the same score.
+    reviewed = "review_findings" in row
+    return (score, -len(row.get("law_breaches") or []),
+            -len(row["review_findings"]) if reviewed else -UNREVIEWED_RANK,
             not row.get("circling"),
             -len(row.get("missing_components") or []),
             -len(row.get("never_offered") or []), -len(idle),
