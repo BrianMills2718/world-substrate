@@ -1,6 +1,6 @@
 # World Substrate
 
-This is a routing stub, not the project wiki. The current wiki is [docs/wiki/README.md](../docs/wiki/README.md).
+This is a routing stub, not the project wiki: as a wiki it is superseded by [docs/wiki/README.md](../docs/wiki/README.md).
 
 Routing stub generated under Plan #268 (project-meta) from this repository's own declared metadata. It states what is known and what is not; it does not invent purpose or status.
 
