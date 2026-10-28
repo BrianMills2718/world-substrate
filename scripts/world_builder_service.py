@@ -993,9 +993,13 @@ def _dead_end_stock(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]
             for p in causal.get("processes") or [] for e in p.get("effects") or [])
 
     def paid(effects: list[dict[str, Any]], buyer: Any) -> bool:
-        # The receiver gives something in the same move and another participant receives it: a trade.
+        # The receiver gives something in the same move and another participant receives it: a trade. Fields
+        # match by their last name, since each side may keep cash in its own component (pencil13 3SogfsdEGx9M:
+        # customer.cash paid into business.cash).
+        def leaf(path: Any) -> str:
+            return str(path).rsplit(".", 1)[-1]
         return any(e.get("op") == "subtract" and e.get("participant") == buyer and any(
-            o.get("op") == "add" and o.get("participant") != buyer and o.get("path") == e.get("path")
+            o.get("op") == "add" and o.get("participant") != buyer and leaf(o.get("path")) == leaf(e.get("path"))
             for o in effects) for e in effects)
 
     found: set[str] = set()
