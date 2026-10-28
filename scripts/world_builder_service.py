@@ -996,6 +996,54 @@ def _dead_end_stock(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]
     return sorted(found)
 
 
+def _starved_holders(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]:
+    """'move needs good at holder, which starts with none and nothing ever gives it any', read per holder.
+
+    2026-10-28 pencil build (share q2sG4d_J7279, evidence/pencil9-trace-audit/): sell-pencils took a box from the
+    shop's own stock, the shop started with no boxes, and the only move that added boxes added them at the factory;
+    the delivery put them "in transit" and nothing ever landed them. The shop never sold in 17 rounds. _unsourced_inputs
+    missed it because it asks whether anyone holds or makes boxes, and the factory did.
+    """
+    entities = bundle.get("entities") or []
+    mechanics = causal.get("mechanics") or []
+
+    def fits(selector: Any, entity: dict[str, Any]) -> bool:
+        selector = selector or {}
+        return (set(selector.get("categories") or []) <= set(entity.get("categories") or [])
+                and set(selector.get("components") or []) <= set(entity.get("components") or {}))
+
+    def role(rule: dict[str, Any], name: Any) -> Any:
+        if name == "actor":
+            return rule.get("actor_selector")
+        if name == "it":
+            return rule.get("selector")
+        return (rule.get("participants") or {}).get(name)
+
+    rules = [*mechanics, *(causal.get("processes") or [])]
+    givers = [(e.get("path"), role(r, e.get("participant"))) for r in rules
+              for e in r.get("effects") or [] if e.get("op") in ("add", "set")]
+    needs = [(m, e.get("path"), role(m, e.get("participant")))
+             for m in mechanics for e in m.get("effects") or [] if e.get("op") == "subtract"]
+    found: set[str] = set()
+    for mechanic, path, selector in needs:
+        parts = str(path or "").split(".")
+        if len(parts) != 3 or parts[0] != "components" or selector is None:
+            continue
+        # The move is possible while any holder it may use has or can get the good; a broad role (carry boxes from
+        # anyone with stock) is not starved because most holders have none.
+        candidates = [entity for entity in entities if fits(selector, entity)]
+        starved = []
+        for entity in candidates:
+            start = ((entity.get("components") or {}).get(parts[1]) or {}).get(parts[2], 0)
+            if (isinstance(start, (int, float)) and not isinstance(start, bool) and start <= 0
+                    and not any(given == path and fits(sel, entity) for given, sel in givers)):
+                starved.append(str(entity.get("id", "?")))
+        if candidates and len(starved) == len(candidates):
+            found.add(f"{mechanic.get('action_kind', '?')} needs {parts[2]} at {' or '.join(starved)}, which starts "
+                      "with none and nothing ever gives it any")
+    return sorted(found)
+
+
 def _never_together(bundle: dict[str, Any], causal: dict[str, Any]) -> list[str]:
     """'kind needs a and b in one place: a in x, b in y' for each move that requires two roles to share a place no
     pair of their entities ever shares, in a world where no move or process changes where anything is.
@@ -1601,9 +1649,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 missing_parts = _missing_components(bundle, candidate)
                                 dead_ends = _dead_end_stock(bundle, candidate)
                                 apart = _never_together(bundle, candidate)
+                                starved = _starved_holders(bundle, candidate)
                                 unanswered = _unanswered_demand(candidate)
                                 score = (3 if not idle and not circling and not never and not conjuring_found
-                                         and not moving_found and not vanishing and not unanswered and not dead_ends and not apart else 2) if alive else 1
+                                         and not moving_found and not vanishing and not unanswered and not dead_ends and not apart and not starved else 2) if alive else 1
                                 guidance = "" if alive else (
                                     f"This is an {world_kind} world. A deterministic dry run of your previous mechanics "
                                     f"gave: terminal {'present' if candidate_compiled.terminal else 'null'}, "
@@ -1697,6 +1746,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                         "the same-place check, and let the goods arrive by a delivery that counts down "
                                         "rounds."
                                     )
+                                if starved:
+                                    guidance += (
+                                        " These moves use up a good where it never arrives, so they can never happen: "
+                                        + "; ".join(starved) + ". Give the holder a source: the step that makes or carries "
+                                        "the good must add it there (a delivery that counts down must add the goods to "
+                                        "the receiver when it ends)."
+                                    )
+                                result_row["starved_holders"] = starved
                                 result_row["dead_end_stock"] = dead_ends
                                 result_row["never_together"] = apart
                                 result_row["missing_components"] = missing_parts

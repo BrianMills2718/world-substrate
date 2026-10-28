@@ -321,3 +321,37 @@ class NeverTogetherTests(unittest.TestCase):
                      "garden-luna-r3", "pencil-c4-run17", "pencil2-live", "pencil3-live", "pencil4-live"):
             world = self._world(name)
             self.assertEqual(service._never_together(world["bundle"], world["causal_model"]), [], name)
+
+
+class StarvedHolderTests(unittest.TestCase):
+    """2026-10-28 pencil q2sG4d_J7279: the shop sold from its own boxes, started with none, and the delivery put the
+    factory's boxes "in transit" without ever landing them, so no sale happened in 17 rounds."""
+
+    @staticmethod
+    def _world(name):
+        return json.loads((Path(__file__).parent / "fixtures" / f"{name}.json").read_text())
+
+    def test_live_pencil_names_the_shop_that_never_gets_boxes(self):
+        world = self._world("pencil9-live")
+        self.assertEqual(service._starved_holders(world["bundle"], world["causal_model"]),
+                         ["sell-pencils needs boxes at pencil-shop, which starts with none and nothing ever gives it any"])
+
+    def test_earlier_pencil_worlds_that_could_never_sell(self):
+        # pencil5's carry-boxes took packed pencils and gave them to nobody; pencil7 had no move bringing pencils
+        # to the shop; pencil2's factory and lead works had no source for paint, erasers, ferrules or clay
+        for name, expected in (("pencil5-live", 1), ("pencil7-live", 1), ("pencil2-live", 5)):
+            world = self._world(name)
+            found = service._starved_holders(world["bundle"], world["causal_model"])
+            self.assertEqual(len(found), expected, (name, found))
+            self.assertTrue(all("which starts with none and nothing ever gives it any" in f for f in found))
+
+    def test_a_broad_role_with_one_stocked_holder_is_not_starved(self):
+        # pencil5's carry-boxes may take from anyone with stock; most hold no packed pencils, the factory makes them
+        world = self._world("pencil5-live")
+        self.assertFalse(any(f.startswith("carry-boxes") for f in service._starved_holders(world["bundle"], world["causal_model"])))
+
+    def test_worlds_that_supply_every_holder_are_not_named(self):
+        for name in ("airfield-s1-live", "c1r18_waltzman_world", "cafe1-live", "cafe2-live", "firefighting-luna-r1",
+                     "garden-luna-r3", "pencil-c4-run17", "pencil3-live", "pencil4-live", "pencil8-live"):
+            world = self._world(name)
+            self.assertEqual(service._starved_holders(world["bundle"], world["causal_model"]), [], name)

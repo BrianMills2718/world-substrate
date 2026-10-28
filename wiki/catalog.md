@@ -188,3 +188,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 
 - [Trace read: pencil build v_0YxZGXVjx3 (2026-10-28)](../evidence/pencil8-trace-audit/TRACE_READ.md)
 
+## evidence/pencil9-trace-audit
+
+- [Trace read: pencil build q2sG4d_J7279 (2026-10-28)](../evidence/pencil9-trace-audit/TRACE_READ.md)
+
