@@ -1549,6 +1549,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     if not_modeled:
                         self._progress("note", "Left out of the simulation", "", [str(x).rstrip(". ") for x in not_modeled])
                     guidance = ""
+                    # The last rules written, handed to the next try with the guidance about them (pencil10).
+                    previous_rules: dict[str, Any] | None = None
                     structure_best: tuple[tuple[int, int, int], str] | None = None
                     for try_index in range(rules_per_structure):
                         attempt = rules_attempt
@@ -1560,6 +1562,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             self._progress("doing", _retry_label(model), "the last rules did not pass the test run")
                         try:
                             try:
+                                sent_previous, previous_rules = previous_rules, None
                                 generated, _ = generate_causal_model(
                                 bundle,
                                 model=model if attempt == 0 else RULES_RETRY_MODEL,
@@ -1568,6 +1571,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 guidance=guidance,
                                 model_justification=None if attempt == 0 else RULES_RETRY_JUSTIFICATION,
                                 world_kind=world_kind,
+                                previous=sent_previous,
                                 )
                             except Exception as error:
                                 # Matched by name: llm_client is imported lazily, only where calls are made.
@@ -1585,6 +1589,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 out_of_budget = True
                                 break
                             candidate = _strip_review(generated)
+                            # Set before compiling, so a compiler rejection's guidance comes with the rules it names.
+                            previous_rules = candidate
                             candidate_compiled = CausalModel.from_dict(candidate, bundle=bundle)
                         except (ActionDeclarationError, ValueError, TypeError, KeyError) as error:
                             # A rule set the compiler rejects is the cheapest failure to
