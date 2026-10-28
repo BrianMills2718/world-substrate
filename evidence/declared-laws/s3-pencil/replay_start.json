@@ -1,0 +1,22 @@
+{
+ "reviewed": "tests/fixtures/pencil-s3-kept.json",
+ "trace_id": "world-substrate/s3-pencil/replay-start/87c538bb1f38472eabc50f55aaec16b1",
+ "cost_usd": 0.055174,
+ "findings": [
+  {
+   "rule_id": "buy-boxes-from-carrier",
+   "description_words": "deliver the boxes to shops",
+   "problem": "The carrier's starting price is 0, so the purchase transfers no cash, causing the purchase law to refuse the move."
+  },
+  {
+   "rule_id": "assemble-pencil-units",
+   "description_words": "glues leads into slats",
+   "problem": "The assembly rule consumes paint, erasers, and ferrules, but does not require or use any glue."
+  },
+  {
+   "rule_id": "missing",
+   "description_words": "keeps running",
+   "problem": "The factory consumes paint, erasers, ferrules, and boxes, but there are no rules to produce or buy more of these supplies once the starting stock runs out."
+  }
+ ]
+}

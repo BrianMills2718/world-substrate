@@ -18,7 +18,9 @@ Trace ids: build `world-builder-live/world/234218fc623642629186ff6d00060167`, wo
 `world-builder-live/run/fa73a74122d5447b8302125af9f5c0c2`, `world-builder-live/run/8f5434598e19400db453c8fe38725711`,
 `world-builder-live/run/16f57467aab143289764899b59cb8250`, readout
 `world-builder-live/readout/d9866b2410084987b497ec1201fbcba7`; the prompt-fix replay
-`world-substrate/s3-pencil/replay-review/c71a2313b02c47b0a11a4e215cf451d7` (`replay.json`).
+`world-substrate/s3-pencil/replay-review/c71a2313b02c47b0a11a4e215cf451d7` (`replay.json`); the
+starting-values replay `world-substrate/s3-pencil/replay-start/87c538bb1f38472eabc50f55aaec16b1`
+(`replay_start.json`).
 
 This build checks S3 (docs/plans/declared_laws.md): L4, the review is a separate call on another model
 family that sees only the description, the laws and the rules and returns findings; L5, the kept world
@@ -62,6 +64,13 @@ The build's six tries (`result.dry_run_attempts` in the generate row):
    (E) the reviewer is not given the world's starting values, so it cannot see a price of 0; (F) a move
    refused only by a pairing law in the preview leaves no `law_breach` in the build record, so the
    designer heard "shop idle", not "your purchase law refuses a free purchase". Filed as an issue with C.
+   Both fixed after the build (#293): the reviewer's request now carries each thing's starting numbers
+   (prompt v1.2), and a move only a law refuses in the preview is recorded as a `law_breach`, so the kept
+   world's record now reads `buy-boxes-from-carrier / boxes-purchase: pencil-shop lost 0, truck-carrier
+   gained 0` (`tests/test_laws.py`). Reviewing the kept try with the new reviewer (`replay_start.py`,
+   $0.055) returned three findings, all true on reading the rules: the carrier's 0 price makes the
+   purchase law refuse the move; assembly never uses the glue the world holds; nothing restocks paint,
+   erasers or ferrules, so a world that "keeps running" stops when they run out.
 4. **The rules writer twice wrote JSON that did not parse (defect C, existing).** Tries 3 and 4: calls
    22204-22207 finished with `stop` at about 22k characters with one extra `}` after a
    `factory_stock.boxes` add in a renewal process; the one repair failed the same way. Prior art (a JSON
