@@ -171,6 +171,17 @@
     "trace_id": "company-planning/method-conformance/declared_laws/a44db59ae5c8/CORE-OUTCOME-FIRST",
     "verdict": "pass"
   },
+  "49bebe3af183db8c1f0e0f52febb2d2a8eae8b37634d91cb8139f5e95ca91ea1": {
+    "gaps": null,
+    "item_id": "CORE-REQUIREMENTS-TRACED",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The evidence shows a complete requirements table with seven explicit requirements (R1\u2013R7). Each requirement names its check in the \"Control\" column (L1, L2, L3, L4, L6, L7, L8) and its status: three are \"Built and run live\" or \"Built\" (R1\u2013R3), showing completion; four are \"Planned\" (R4\u2013R7), explicitly marked as deferred with slices (S3, S4) or schedules (\"in every slice\"). The table sources each requirement to an authority\u2014Brian's 2026-10-28 direction, design decisions, AGENTS.md invariants, and core rules\u2014and includes \"Fails when\" columns that articulate the condition that would violate each requirement. Standards the work relies on (AGENTS.md invariants, core rules) are explicitly required (R6, R7).",
+    "trace_id": "company-planning/method-conformance/declared_laws/0c6b455638e2/CORE-REQUIREMENTS-TRACED",
+    "verdict": "pass"
+  },
   "4bce93b8b31d43ef31fc45457933e052c30ab34a2150eb4c0334250d6561ee6e": {
     "gaps": null,
     "item_id": "CORE-ACTIVATION-FACTS",
@@ -204,6 +215,17 @@
     "model": "claude-code/haiku",
     "rationale": "The plan correctly declares all activation facts it triggers as true (shared_mechanism, empirical_comparison_proposed, llm_central, irreversible_or_spend_action) and all facts it does not trigger as false (claims_external_standard, aes_governed_target, crosses_system_boundary). The plan explicitly states \"The plan copies established methods but claims conformance to none,\" confirming it does not trigger claims_external_standard. No activation fact is declared false when the plan actually triggers it.",
     "trace_id": "company-planning/method-conformance/declared_laws/7515b2a4351c/CORE-ACTIVATION-FACTS",
+    "verdict": "pass"
+  },
+  "5a4df22aa0607861e90a4f955b4d66f95e1f5e8d98f6a8c804a31cb89b33d705": {
+    "gaps": null,
+    "item_id": "CORE-OUTCOME-FIRST",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan explicitly includes the required `## Outcome step` section with all four lines. **Line 1:** `Outcome probe: `roadmap/README.md#canonical-outcome-probe`` is present; the evidence includes the canonical outcome probe showing the five steps a visitor takes to get the result. **Line 2:** `Observed: `evidence/pencil13-trace-audit/TRACE_READ.md`` is present; the evidence quotes the TRACE_READ.md showing pencil13 as a live owner build of the \"I, Pencil\" description on 2026-10-28 with share link 3SogfsdEGx9M (a real use by the outcome's actor, not a test fixture). **Line 3:** `Step: step 2 of the probe, \"The builder generates the world...\"` is present and matches the second step of the cited probe exactly. **Line 4:** `Class: vertical` is present. The class is appropriate: the evidence shows pencil13 as a complete traced execution where the world builds, runs through five rounds, and produces an inspectable result (the build record, run log, and free-replay share link) reachable through all probe steps, meeting the definition of vertical.",
+    "trace_id": "company-planning/method-conformance/declared_laws/0c6b455638e2/CORE-OUTCOME-FIRST",
     "verdict": "pass"
   },
   "5d7be1f5cb03fe0064be10110cff3df6f74b88c5bafe8c6c9fee880a4806144b": {
@@ -392,6 +414,17 @@
     "trace_id": "company-planning/method-conformance/declared_laws/c245f0924f5c/CORE-PROJECT-OUTCOME",
     "verdict": "pass"
   },
+  "b71d8adeeb40b3179103721f909f87d813c79144db58d79f80aa5a131d38b8ab": {
+    "gaps": null,
+    "item_id": "CORE-PROJECT-OUTCOME",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan carries a complete Project outcome line that points to roadmap/README.md#actor-recurring-job-and-investment-boundary. The quoted record explicitly states all four required parts: the actor (a World Builder visitor or Brian as owner, people with external work), the recurring job with baseline (describing a situation and watching it run, done today with tabletop exercises or spreadsheets), the inspectable result (run page and build record showing what was tried and why), and the stage and investment boundary (prototype stage, this repository only, visitor spend capped). The plan's actor (World Builder visitor and owner) matches the outcome's actor exactly. The outcome is not self-referential\u2014the visitor and analyst roles exist independent of the system.",
+    "trace_id": "company-planning/method-conformance/declared_laws/0c6b455638e2/CORE-PROJECT-OUTCOME",
+    "verdict": "pass"
+  },
   "be482febcbdde5f7d015ac6b3ceeed1f02636ad96c48e57a8dd8b6a6f44e788e": {
     "gaps": null,
     "item_id": "CORE-OUTCOME-FIRST",
@@ -493,6 +526,17 @@
     "model": "claude-code/haiku",
     "rationale": "The evidence explicitly names two concrete structural checks under \"Parallel-implementation check\": (1) `grep -n \"def apply\" src/world_substrate/engine.py` stays one hit, and (2) `law_breaches` has one caller per commit site. Both checks directly detect uncoordinated parallel implementations\u2014a silent second `apply` function or unauthorized callers to `law_breaches` would make these checks fail, preventing silent divergence from the stated ownership.",
     "trace_id": "company-planning/method-conformance/declared_laws/7b4fe38eb642/OV-PRIOR-ART-PARALLEL-CHECK",
+    "verdict": "pass"
+  },
+  "d9528f4ae95d17a883b6da45c546259b012d2b1e1683df859cd482254b6da0f7": {
+    "gaps": null,
+    "item_id": "CORE-ACTIVATION-FACTS",
+    "judge_version": 3,
+    "materiality": "material",
+    "missing": null,
+    "model": "claude-code/haiku",
+    "rationale": "The plan's declared activation facts correctly match what it triggers. Facts declared false (claims_external_standard, aes_governed_target) are facts the plan does not trigger: the plan explicitly denies claiming conformance to external standards, and makes no mention of AES targets. Facts declared true match the plan's actual features: LLM-central design, shared mechanism (law checking in engine), empirical evaluation (Q44 reviewer comparison), and proposed spend.",
+    "trace_id": "company-planning/method-conformance/declared_laws/0c6b455638e2/CORE-ACTIVATION-FACTS",
     "verdict": "pass"
   },
   "d9fbc19d01d8b4ec326d71bd49425cbcc3792784c0444bf5263e94fb7cd590d0": {

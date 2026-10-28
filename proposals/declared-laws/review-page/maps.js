@@ -348,7 +348,7 @@ window.MAPS = {
     "id": "knock-on-now",
     "label": "Knock-on that runs now",
     "kind": "Substrate",
-    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:896."
+    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:938."
    },
    {
     "id": "skill-roll",
@@ -408,13 +408,13 @@ window.MAPS = {
     "id": "world-law",
     "label": "Declared world law",
     "kind": "PerWorld",
-    "explain": "Plan declared-laws S1 (built): a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. The bundle validator checks each law's shape; the rules writer is given the laws and told to keep them; the engine does not yet enforce them (S2). Code: scripts/scaffold_world.py:45."
+    "explain": "Plan declared-laws S1 (built): a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. The bundle validator checks each law's shape; the rules writer is given the laws and told to keep them; the engine keeps them at every commit (S2, built). Code: scripts/scaffold_world.py:45."
    },
    {
     "id": "law-check",
     "label": "Law check",
-    "kind": "Theory",
-    "explain": "Plan declared-laws S2: inside the same commit as the write-scope check, every move and process step is checked against the world's declared laws; a breach refuses the whole step and names the law, and nothing changes. Code: none yet."
+    "kind": "Substrate",
+    "explain": "Plan declared-laws S2 (built): inside the same commit as the write-scope check, every move, round process and knock-on effect is checked against the world's declared laws; a breach refuses the whole step or moment as law_breach and names the law, and nothing changes. A test-run breach is a build finding sent to the rules writer and the world designer. Code: src/world_substrate/laws.py:36."
    },
    {
     "id": "world-design",
@@ -1344,7 +1344,7 @@ window.MAPS = {
     "id": "world-law",
     "label": "Declared world law",
     "kind": "Concept",
-    "explain": "Plan declared-laws S1 (built): a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. The bundle validator checks each law's shape; the rules writer is given the laws and told to keep them; the engine does not yet enforce them (S2)."
+    "explain": "Plan declared-laws S1 (built): a law the AI writes when it designs a world, in that world's own terms: a resource whose total only named moves may change (pencils are made only by the factory's make move), or a move meaning such as 'a purchase moves goods one way and payment the other'. Never a fixed list of move types. The bundle validator checks each law's shape; the rules writer is given the laws and told to keep them; the engine keeps them at every commit (S2, built)."
    },
    {
     "id": "write-scope",

@@ -869,7 +869,7 @@
    "evidence": "Settled by argument 2026-10-28: S2 builds the run-time law check inside Engine.apply's commit, beside the write-scope check (src/world_substrate/engine.py:705), and inside each knock-on wave; a law breach in the test run becomes a build finding sent to the rules writer. The static check is deferred and needs no decision now.",
    "sources": [
     "src/world_substrate/engine.py:686",
-    "src/world_substrate/engine.py:896"
+    "src/world_substrate/engine.py:938"
    ],
    "touches": [
     "law-check",

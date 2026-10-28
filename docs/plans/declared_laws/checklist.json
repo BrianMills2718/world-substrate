@@ -7,13 +7,13 @@
     "schema_version": "checklist-definition.v1",
     "record_type": "checklist_definition",
     "checklist_id": "method-conformance.bounded-design",
-    "revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
+    "revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
     "title": "bounded-design method conformance for declared_laws",
     "purpose": "Route-bound evidence that the selected Company Planning method was applied before adoption.",
     "subject_ref": {
       "kind": "planning_review",
       "id": "declared_laws",
-      "revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d"
+      "revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4"
     },
     "items": [
       {
@@ -493,8 +493,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-ACTOR-RESULT-EXAMPLE",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-ACTOR-RESULT-EXAMPLE",
       "evidence_types": [
         "plan_section"
@@ -507,9 +507,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#actor-and-result",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -519,8 +519,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-ROUTE",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-ROUTE",
       "evidence_types": [
         "path_decision_record"
@@ -533,9 +533,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws/path-decision.json",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -545,8 +545,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-REQUIREMENTS-TRACED",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-REQUIREMENTS-TRACED",
       "evidence_types": [
         "plan_document"
@@ -559,9 +559,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#requirements",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -571,8 +571,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-SUCCESS-DISPROOF",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-SUCCESS-DISPROOF",
       "evidence_types": [
         "plan_section"
@@ -585,9 +585,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#success-and-disproof",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -597,8 +597,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-TRACE-REVIEW",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-TRACE-REVIEW",
       "evidence_types": [
         "plan_section"
@@ -611,9 +611,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#success-and-disproof",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -623,8 +623,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-TRACE-DEBUGGING",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-TRACE-DEBUGGING",
       "evidence_types": [
         "plan_section"
@@ -637,9 +637,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#when-a-run-fails-or-surprises-us",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -649,8 +649,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-TRACE-VISIBILITY",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-TRACE-VISIBILITY",
       "evidence_types": [
         "plan_section"
@@ -663,9 +663,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#trace-visibility",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -675,8 +675,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-PROJECT-OUTCOME",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-PROJECT-OUTCOME",
       "evidence_types": [
         "plan_section"
@@ -689,9 +689,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#project-outcome",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -701,8 +701,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-OUTCOME-FIRST",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-OUTCOME-FIRST",
       "evidence_types": [
         "plan_section"
@@ -715,9 +715,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#outcome-step",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -727,8 +727,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-WRITE-SCOPE",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-WRITE-SCOPE",
       "evidence_types": [
         "plan_document"
@@ -741,9 +741,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -753,8 +753,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-SYSTEM-MODEL",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-SYSTEM-MODEL",
       "evidence_types": [
         "plan_document"
@@ -767,9 +767,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#system-model",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -779,8 +779,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-CAPABILITY-REUSE",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-CAPABILITY-REUSE",
       "evidence_types": [
         "plan_document"
@@ -793,9 +793,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#capability-reuse",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -805,8 +805,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-AUTHORITY-NONGOALS",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-AUTHORITY-NONGOALS",
       "evidence_types": [
         "plan_section"
@@ -819,9 +819,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#authority-and-non-goals",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -831,8 +831,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-IRREVERSIBLE-SPEND",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-IRREVERSIBLE-SPEND",
       "evidence_types": [
         "plan_section"
@@ -845,9 +845,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#irreversible-actions-and-spend",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -857,8 +857,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-UNCERTAINTIES",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-UNCERTAINTIES",
       "evidence_types": [
         "plan_section"
@@ -871,9 +871,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#uncertainties",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -883,8 +883,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-CORE-ACTIVATION-FACTS",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "CORE-ACTIVATION-FACTS",
       "evidence_types": [
         "plan_document",
@@ -898,9 +898,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#activation-facts",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -910,8 +910,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-PRIOR-ART-DISPOSITION",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-PRIOR-ART-DISPOSITION",
       "evidence_types": [
         "plan_section"
@@ -924,9 +924,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#prior-art-and-ownership",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -936,8 +936,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-PRIOR-ART-PARALLEL-CHECK",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-PRIOR-ART-PARALLEL-CHECK",
       "evidence_types": [
         "plan_section"
@@ -950,9 +950,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#prior-art-and-ownership",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -962,8 +962,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-EVAL-DECISION",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-EVAL-DECISION",
       "evidence_types": [
         "plan_section"
@@ -976,9 +976,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#evaluation-design",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -988,8 +988,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-EVAL-IRREDUCIBLE-UNCERTAINTY",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-EVAL-IRREDUCIBLE-UNCERTAINTY",
       "evidence_types": [
         "plan_section"
@@ -1002,9 +1002,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#evaluation-design",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -1014,8 +1014,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-EVAL-PARITY",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-EVAL-PARITY",
       "evidence_types": [
         "plan_section"
@@ -1028,9 +1028,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#evaluation-design",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -1040,8 +1040,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-EVAL-COST",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-EVAL-COST",
       "evidence_types": [
         "plan_section"
@@ -1054,9 +1054,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#evaluation-design",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -1066,8 +1066,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-LLM-CALL-BOUNDARY",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-LLM-CALL-BOUNDARY",
       "evidence_types": [
         "plan_section"
@@ -1080,9 +1080,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#llm-call-boundary",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -1092,8 +1092,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-LLM-AUTHORITY-PROMOTION",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-LLM-AUTHORITY-PROMOTION",
       "evidence_types": [
         "plan_section"
@@ -1106,9 +1106,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#llm-call-boundary",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -1118,8 +1118,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-DEPLOY-PLAN",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-DEPLOY-PLAN",
       "evidence_types": [
         "plan_section"
@@ -1132,9 +1132,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#deployment",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null
@@ -1144,8 +1144,8 @@
       "record_type": "checklist_item_observation",
       "observation_id": "OBS-OV-DURABLE-DOCS-DECLARED",
       "checklist_id": "method-conformance.bounded-design",
-      "checklist_revision": "sha256:e0276a4cb352c7fe374ec92e1e30d8fe67556ae28bc0bc5b2b11250e064ac37f",
-      "definition_sha256": "a55cd6c21223ba2ac0035468bbda140d05a0d9be241e82de8cbeeffdb865e6fc",
+      "checklist_revision": "sha256:4e6d3e5775ff748e76dd3b65af451bd0f15c38fa1d72ea4f4581696d77ffc022",
+      "definition_sha256": "7c2eebc2acd0e36104a5e748cd4916e10fcc24b4c124943224b814b184ecc524",
       "item_id": "OV-DURABLE-DOCS-DECLARED",
       "evidence_types": [
         "plan_document"
@@ -1158,9 +1158,9 @@
         "status": "pass",
         "evidence_ref": "docs/plans/declared_laws.md#durable-documents",
         "scope": "plan:docs/plans/declared_laws.md",
-        "observed_at": "2026-10-28T08:34:37Z",
+        "observed_at": "2026-10-28T09:18:53Z",
         "producer": "agent",
-        "source_revision": "sha256:91c915ff275371896dde43f9bace214b1276b6bdd1ac8c75e3418c699adc263d",
+        "source_revision": "sha256:4b0d03f89de63bf8bf824e64b3930a9410e1d14980e9e6d923d0c9aa3faf18d4",
         "limitations": []
       },
       "annotation": null

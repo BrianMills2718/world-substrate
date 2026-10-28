@@ -789,6 +789,18 @@ def _provider_failure(error: BaseException) -> tuple[HTTPStatus, str] | None:
     return None
 
 
+def _law_breach_guidance(breaches: list[dict[str, str]], turns: int) -> str:
+    """Advice for the rules writer and the world designer when a test run's steps broke the world's own laws."""
+    return (
+        f" In the {turns}-round test the engine refused these steps for breaking the world's own laws: "
+        + "; ".join(f"{b['rule_id']} broke {b['law_id']} (\"{b['law']}\"): {b['found']}" for b in breaches)
+        + ". For each: if the description says this step makes or uses up that resource (sawing logs uses logs, "
+        "packing pencils uses loose pencils), the law is incomplete and the world design must list the step in "
+        "that law's may_change_by; a process the world runs by itself must be listed as 'process:<its id>'. "
+        "Otherwise the step is wrong: change it so the resource only moves between holders, or remove it."
+    )
+
+
 def _dry_run_sentence(row: dict[str, Any], world_kind: str) -> str:
     """One plain sentence about a quick test run, for the build progress list."""
     if not row.get("ok"):
@@ -1842,6 +1854,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                     "reached the terminal condition. Make the effects move represented state toward "
                                     "the terminal condition (and keep checks from allowing the same useless action forever)."
                                 )
+                            breaches = result_row.get("law_breaches") or []
+                            if breaches:
+                                # A step the world's own laws refused is a build finding, named to the rules writer
+                                # and, on a redesign, to the world designer, since the law itself may be what is wrong
+                                # (declared-laws plan S2; #281: pencil laws listed only the moves that make a good).
+                                score = min(score, 2 if world_kind != "task" else 1)
+                                guidance += _law_breach_guidance(breaches, dry_turns)
                         except ValueError as error:
                             result_row = {"ok": False, "error": str(error)[:300]}
                             score = 0
