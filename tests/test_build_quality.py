@@ -294,6 +294,18 @@ class DeadEndStockTests(unittest.TestCase):
             world = self._world(name)
             self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]), [], name)
 
+    def test_pencils_a_customer_paid_for_are_not_named(self):
+        # pencil12 oRfOptv0O3f3: the shop handed over packed pencils, the customer received pencils and paid cash
+        world = self._world("pencil12-attempt3")
+        self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]), [])
+
+    def test_unpaid_pencils_at_the_customer_are_still_named(self):
+        world = self._world("pencil12-attempt3")
+        sale = next(m for m in world["causal_model"]["mechanics"] if m["action_kind"] == "sell-pencil")
+        sale["effects"] = [e for e in sale["effects"] if not e["path"].endswith(".cash")]
+        self.assertEqual(service._dead_end_stock(world["bundle"], world["causal_model"]),
+                         ["pencils piles up at customer (sell-pencil)"])
+
 
 class NeverTogetherTests(unittest.TestCase):
     """2026-10-27 pencil czt5uoGw5t3L: buying leads and slats required the factory to be with suppliers on other

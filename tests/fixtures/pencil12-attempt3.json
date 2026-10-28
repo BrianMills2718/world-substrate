@@ -1,0 +1,2279 @@
+{
+ "source": "pencil12 live build 2026-10-28 (share oRfOptv0O3f3), third rule set: llm_calls id 20997 on the World Builder server, trace world-builder-live/world/63fb790f8b9647f99d445db8aed331ee",
+ "description": "I, Pencil: a pencil supply chain that keeps running. Loggers cut cedar in Oregon, a mill saws it into slats, graphite is mined in Sri Lanka and mixed with clay into leads, a factory in Pennsylvania glues leads into slats, paints them and adds erasers and brass ferrules, packs them into boxes, and trucks deliver the boxes to shops across the country, which sell them to customers.",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "pencil-supply-chain",
+   "label": "Pencil Supply Chain",
+   "summary": "Loggers, mills, miners, makers, carriers, shops, and customers keep producing and supplying pencils.",
+   "location": "supply-chain",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "business",
+    "fields": [
+     {
+      "name": "cash",
+      "type": "number",
+      "default": 1000
+     }
+    ]
+   },
+   {
+    "name": "stocks",
+    "fields": [
+     {
+      "name": "logs",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "slats",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "graphite",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "clay",
+      "type": "integer",
+      "default": 100
+     },
+     {
+      "name": "leads",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "paint",
+      "type": "integer",
+      "default": 100
+     },
+     {
+      "name": "erasers",
+      "type": "integer",
+      "default": 100
+     },
+     {
+      "name": "ferrules",
+      "type": "integer",
+      "default": 100
+     },
+     {
+      "name": "pencils",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "boxes",
+      "type": "integer",
+      "default": 100
+     },
+     {
+      "name": "packed_pencils",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   },
+   {
+    "name": "prices",
+    "fields": [
+     {
+      "name": "logs",
+      "type": "number",
+      "default": 10
+     },
+     {
+      "name": "slats",
+      "type": "number",
+      "default": 12
+     },
+     {
+      "name": "graphite",
+      "type": "number",
+      "default": 10
+     },
+     {
+      "name": "leads",
+      "type": "number",
+      "default": 12
+     },
+     {
+      "name": "packed_pencils",
+      "type": "number",
+      "default": 20
+     },
+     {
+      "name": "pencil",
+      "type": "number",
+      "default": 1
+     }
+    ]
+   },
+   {
+    "name": "work",
+    "fields": [
+     {
+      "name": "waiting",
+      "type": "integer",
+      "default": 10
+     }
+    ]
+   },
+   {
+    "name": "shipment",
+    "fields": [
+     {
+      "name": "logs",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "slats",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "graphite",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "leads",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "packed_pencils",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "rounds_left",
+      "type": "integer",
+      "default": 0
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "oregon",
+    "label": "Oregon Cedar Forest",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "sri-lanka",
+    "label": "Sri Lanka Mine",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "mill",
+    "label": "Oregon Sawmill",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "lead-works",
+    "label": "Lead Works",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "pennsylvania",
+    "label": "Pennsylvania Pencil Factory",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "shops",
+    "label": "Shops Across the Country",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "customers",
+    "label": "Customers",
+    "categories": [
+     "place"
+    ],
+    "components": {}
+   },
+   {
+    "id": "logger",
+    "label": "Oregon Logger",
+    "categories": [
+     "actor",
+     "logger"
+    ],
+    "location": "oregon",
+    "components": {
+     "business": {
+      "cash": 1000
+     },
+     "stocks": {
+      "logs": 100,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "sawmill",
+    "label": "Sawmill",
+    "categories": [
+     "actor",
+     "mill"
+    ],
+    "location": "mill",
+    "components": {
+     "business": {
+      "cash": 1000
+     },
+     "stocks": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "miner",
+    "label": "Graphite Miner",
+    "categories": [
+     "actor",
+     "miner"
+    ],
+    "location": "sri-lanka",
+    "components": {
+     "business": {
+      "cash": 1000
+     },
+     "stocks": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 100,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "lead-maker",
+    "label": "Lead Maker",
+    "categories": [
+     "actor",
+     "lead_maker"
+    ],
+    "location": "lead-works",
+    "components": {
+     "business": {
+      "cash": 1000
+     },
+     "stocks": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 100,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "factory",
+    "label": "Pennsylvania Pencil Factory",
+    "categories": [
+     "actor",
+     "factory"
+    ],
+    "location": "pennsylvania",
+    "components": {
+     "business": {
+      "cash": 1000
+     },
+     "stocks": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 100,
+      "erasers": 100,
+      "ferrules": 100,
+      "pencils": 0,
+      "boxes": 100,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "carrier",
+    "label": "Truck Carrier",
+    "categories": [
+     "actor",
+     "carrier"
+    ],
+    "location": "pennsylvania",
+    "components": {
+     "business": {
+      "cash": 1000
+     },
+     "stocks": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "shop",
+    "label": "Pencil Shop",
+    "categories": [
+     "actor",
+     "shop"
+    ],
+    "location": "shops",
+    "components": {
+     "business": {
+      "cash": 1000
+     },
+     "stocks": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "customer",
+    "label": "Pencil Customer",
+    "categories": [
+     "actor",
+     "customer"
+    ],
+    "location": "customers",
+    "components": {
+     "business": {
+      "cash": 100
+     },
+     "stocks": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 0,
+      "leads": 0,
+      "paint": 0,
+      "erasers": 0,
+      "ferrules": 0,
+      "pencils": 0,
+      "boxes": 0,
+      "packed_pencils": 0
+     },
+     "prices": {
+      "logs": 10,
+      "slats": 12,
+      "graphite": 10,
+      "leads": 12,
+      "packed_pencils": 20,
+      "pencil": 1
+     },
+     "work": {
+      "waiting": 10
+     },
+     "shipment": {
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "leads": 0,
+      "packed_pencils": 0,
+      "rounds_left": 0
+     }
+    }
+   },
+   {
+    "id": "cedar",
+    "label": "Cedar Trees",
+    "categories": [
+     "resource"
+    ],
+    "location": "oregon",
+    "components": {}
+   },
+   {
+    "id": "clay-stock",
+    "label": "Clay Supply",
+    "categories": [
+     "resource"
+    ],
+    "location": "lead-works",
+    "components": {}
+   },
+   {
+    "id": "paint-stock",
+    "label": "Paint Supply",
+    "categories": [
+     "resource"
+    ],
+    "location": "pennsylvania",
+    "components": {}
+   },
+   {
+    "id": "eraser-stock",
+    "label": "Eraser Supply",
+    "categories": [
+     "resource"
+    ],
+    "location": "pennsylvania",
+    "components": {}
+   },
+   {
+    "id": "ferrule-stock",
+    "label": "Brass Ferrule Supply",
+    "categories": [
+     "resource"
+    ],
+    "location": "pennsylvania",
+    "components": {}
+   },
+   {
+    "id": "box-stock",
+    "label": "Pencil Box Supply",
+    "categories": [
+     "resource"
+    ],
+    "location": "pennsylvania",
+    "components": {}
+   },
+   {
+    "id": "truck",
+    "label": "Delivery Truck",
+    "categories": [
+     "vehicle",
+     "loose_object"
+    ],
+    "portable": true,
+    "owner_ref": "actor:carrier",
+    "location": "pennsylvania",
+    "components": {}
+   }
+  ],
+  "actions": [
+   {
+    "kind": "cut-cedar",
+    "description": "Cut cedar trees and add logs to the logger's stock.",
+    "fields": []
+   },
+   {
+    "kind": "saw-logs",
+    "description": "Saw available logs into cedar slats.",
+    "fields": []
+   },
+   {
+    "kind": "mine-graphite",
+    "description": "Mine graphite and add it to the miner's stock.",
+    "fields": []
+   },
+   {
+    "kind": "make-leads",
+    "description": "Mix graphite with clay and make pencil leads.",
+    "fields": []
+   },
+   {
+    "kind": "assemble-pencils",
+    "description": "Glue leads into slats, paint the pencils, and fit erasers and brass ferrules.",
+    "fields": []
+   },
+   {
+    "kind": "pack-pencils",
+    "description": "Pack pencils into boxes.",
+    "fields": []
+   },
+   {
+    "kind": "buy-logs",
+    "description": "The sawmill buys logs from the logger.",
+    "fields": [
+     {
+      "name": "buyer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "seller",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "buy-slats",
+    "description": "The factory buys slats from the sawmill.",
+    "fields": [
+     {
+      "name": "buyer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "seller",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "buy-graphite",
+    "description": "The lead maker buys graphite from the miner.",
+    "fields": [
+     {
+      "name": "buyer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "seller",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "buy-leads",
+    "description": "The factory buys leads from the lead maker.",
+    "fields": [
+     {
+      "name": "buyer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "seller",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "buy-packed-pencils",
+    "description": "The shop buys packed pencils from the factory.",
+    "fields": [
+     {
+      "name": "buyer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "seller",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   },
+   {
+    "kind": "sell-pencil",
+    "description": "The shop sells pencils to a customer, moving them from the shop's stock to the customer's stock and reducing the customer's waiting need.",
+    "fields": [
+     {
+      "name": "shop",
+      "type": "entity_ref"
+     },
+     {
+      "name": "customer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "worker": {
+     "kind": "emoji",
+     "value": "\ud83e\uddd1\u200d\ud83c\udfed"
+    },
+    "forest": {
+     "kind": "emoji",
+     "value": "\ud83c\udf32"
+    },
+    "mine": {
+     "kind": "emoji",
+     "value": "\u26cf\ufe0f"
+    },
+    "pencil": {
+     "kind": "emoji",
+     "value": "\u270f\ufe0f"
+    },
+    "truck": {
+     "kind": "emoji",
+     "value": "\ud83d\ude9a"
+    },
+    "shop": {
+     "kind": "emoji",
+     "value": "\ud83c\udfea"
+    },
+    "place": {
+     "kind": "emoji",
+     "value": "\ud83d\udccd"
+    }
+   },
+   "category_assets": {
+    "actor": "worker",
+    "logger": "forest",
+    "miner": "mine",
+    "mill": "worker",
+    "lead_maker": "worker",
+    "factory": "worker",
+    "carrier": "truck",
+    "shop": "shop",
+    "customer": "worker",
+    "resource": "forest",
+    "vehicle": "truck",
+    "place": "place"
+   },
+   "station_roles": {
+    "resource": "source",
+    "mill": "workstation",
+    "lead_maker": "workstation",
+    "factory": "workstation",
+    "shop": "goal"
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "cut-cedar",
+    "version": "1",
+    "action_kind": "cut-cedar",
+    "rationale": "Cutting cedar produces one log.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "logger"
+     ],
+     "components": [
+      "stocks"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the logger is in the cedar forest",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "oregon"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stocks.logs",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Tree depletion and regrowth are not represented."
+    ],
+    "tests": [
+     "Cutting in Oregon adds one log."
+    ],
+    "semantic_bindings": [
+     "cutting cedar produces logs"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "saw-logs",
+    "version": "1",
+    "action_kind": "saw-logs",
+    "rationale": "Sawing consumes one log and produces one slat.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "mill"
+     ],
+     "components": [
+      "stocks"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the sawmill has a log",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.logs"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the sawmill is at the mill",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "mill"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stocks.logs",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.slats",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "One log yields one slat; no other yield is represented."
+    ],
+    "tests": [
+     "With a log at the mill, sawing consumes it and adds a slat."
+    ],
+    "semantic_bindings": [
+     "sawing logs produces slats"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "mine-graphite",
+    "version": "1",
+    "action_kind": "mine-graphite",
+    "rationale": "Mining adds one graphite to the miner's stock.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "miner"
+     ],
+     "components": [
+      "stocks"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the miner is at the Sri Lanka mine",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "sri-lanka"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stocks.graphite",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "The mine reserve is not represented."
+    ],
+    "tests": [
+     "Mining at the mine adds graphite."
+    ],
+    "semantic_bindings": [
+     "mining adds graphite"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "make-leads",
+    "version": "1",
+    "action_kind": "make-leads",
+    "rationale": "One graphite and one clay make one lead.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "lead_maker"
+     ],
+     "components": [
+      "stocks"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the lead maker has graphite",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.graphite"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the lead maker has clay",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.clay"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the lead maker is at the lead works",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "location.location_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "lead-works"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stocks.graphite",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.clay",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.leads",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "One of each represented ingredient is used per lead."
+    ],
+    "tests": [
+     "With both ingredients available, making leads consumes one of each and adds one lead."
+    ],
+    "semantic_bindings": [
+     "graphite and clay make leads"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "assemble-pencils",
+    "version": "1",
+    "action_kind": "assemble-pencils",
+    "rationale": "The represented assembly ingredients are consumed to make one pencil.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "factory"
+     ],
+     "components": [
+      "stocks"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the factory has a slat",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.slats"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory has a lead",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.leads"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory has paint",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.paint"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory has an eraser",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.erasers"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory has a ferrule",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.ferrules"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stocks.slats",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.leads",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.paint",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.erasers",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.ferrules",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Glue is not represented or tracked."
+    ],
+    "tests": [
+     "With all ingredients available, assembly makes one pencil."
+    ],
+    "semantic_bindings": [
+     "assembly makes pencils"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "pack-pencils",
+    "version": "1",
+    "action_kind": "pack-pencils",
+    "rationale": "Packing consumes a pencil and a box and adds one packed pencil.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "factory"
+     ],
+     "components": [
+      "stocks"
+     ]
+    },
+    "participants": {},
+    "parameters": {},
+    "checks": [
+     {
+      "label": "the factory has a pencil",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory has a box",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.stocks.boxes"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.stocks.pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.boxes",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.stocks.packed_pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "One pencil and one box are used per packed pencil."
+    ],
+    "tests": [
+     "With a pencil and box, packing adds one packed pencil."
+    ],
+    "semantic_bindings": [
+     "packing makes packed pencils"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "buy-logs",
+    "version": "1",
+    "action_kind": "buy-logs",
+    "rationale": "The purchase transfers one log and its represented price.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "mill"
+     ],
+     "components": [
+      "business",
+      "stocks",
+      "prices"
+     ]
+    },
+    "participants": {
+     "buyer": {
+      "categories": [
+       "actor",
+       "mill"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     },
+     "seller": {
+      "categories": [
+       "actor",
+       "logger"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "the sawmill is the buyer",
+      "left": {
+       "action_field": "buyer"
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the logger is the seller",
+      "left": {
+       "action_field": "seller"
+      },
+      "op": "eq",
+      "right": {
+       "literal": "logger"
+      }
+     },
+     {
+      "label": "the order is for at least one log",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the logger has a log",
+      "left": {
+       "participant": {
+        "name": "seller",
+        "path": "components.stocks.logs"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the sawmill can pay 10",
+      "left": {
+       "participant": {
+        "name": "buyer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 10
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "seller",
+      "path": "components.stocks.logs",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.stocks.logs",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "literal": 10
+      }
+     },
+     {
+      "participant": "seller",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "literal": 10
+      }
+     }
+    ],
+    "limits": [
+     "Each move transfers one unit and charges once, regardless of quantity; this purchase transfers directly to the sawmill stock, not a timed shipment."
+    ],
+    "tests": [
+     "A qualifying purchase transfers one log and 10 cash."
+    ],
+    "semantic_bindings": [
+     "the sawmill buys logs from the logger"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "buy-slats",
+    "version": "1",
+    "action_kind": "buy-slats",
+    "rationale": "The purchase transfers one slat and its represented price.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "factory"
+     ],
+     "components": [
+      "business",
+      "stocks",
+      "prices"
+     ]
+    },
+    "participants": {
+     "buyer": {
+      "categories": [
+       "actor",
+       "factory"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     },
+     "seller": {
+      "categories": [
+       "actor",
+       "mill"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "the factory is the buyer",
+      "left": {
+       "action_field": "buyer"
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the sawmill is the seller",
+      "left": {
+       "action_field": "seller"
+      },
+      "op": "eq",
+      "right": {
+       "literal": "sawmill"
+      }
+     },
+     {
+      "label": "the order is for at least one slat",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the sawmill has a slat",
+      "left": {
+       "participant": {
+        "name": "seller",
+        "path": "components.stocks.slats"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory can pay 12",
+      "left": {
+       "participant": {
+        "name": "buyer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 12
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "seller",
+      "path": "components.stocks.slats",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.stocks.slats",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "literal": 12
+      }
+     },
+     {
+      "participant": "seller",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "literal": 12
+      }
+     }
+    ],
+    "limits": [
+     "Each move transfers one unit and charges once, regardless of quantity; this purchase transfers directly to the factory stock, not a timed shipment."
+    ],
+    "tests": [
+     "A qualifying purchase transfers one slat and 12 cash."
+    ],
+    "semantic_bindings": [
+     "the factory buys slats from the sawmill"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "buy-graphite",
+    "version": "1",
+    "action_kind": "buy-graphite",
+    "rationale": "The purchase transfers one graphite and its represented price.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "lead_maker"
+     ],
+     "components": [
+      "business",
+      "stocks",
+      "prices"
+     ]
+    },
+    "participants": {
+     "buyer": {
+      "categories": [
+       "actor",
+       "lead_maker"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     },
+     "seller": {
+      "categories": [
+       "actor",
+       "miner"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "the lead maker is the buyer",
+      "left": {
+       "action_field": "buyer"
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the miner is the seller",
+      "left": {
+       "action_field": "seller"
+      },
+      "op": "eq",
+      "right": {
+       "literal": "miner"
+      }
+     },
+     {
+      "label": "the order is for at least one graphite",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the miner has graphite",
+      "left": {
+       "participant": {
+        "name": "seller",
+        "path": "components.stocks.graphite"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the lead maker can pay 10",
+      "left": {
+       "participant": {
+        "name": "buyer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 10
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "seller",
+      "path": "components.stocks.graphite",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.stocks.graphite",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "literal": 10
+      }
+     },
+     {
+      "participant": "seller",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "literal": 10
+      }
+     }
+    ],
+    "limits": [
+     "Each move transfers one unit and charges once, regardless of quantity; this purchase transfers directly to the lead maker stock, not a timed shipment."
+    ],
+    "tests": [
+     "A qualifying purchase transfers one graphite and 10 cash."
+    ],
+    "semantic_bindings": [
+     "the lead maker buys graphite from the miner"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "buy-leads",
+    "version": "1",
+    "action_kind": "buy-leads",
+    "rationale": "The purchase transfers one lead and its represented price.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "factory"
+     ],
+     "components": [
+      "business",
+      "stocks",
+      "prices"
+     ]
+    },
+    "participants": {
+     "buyer": {
+      "categories": [
+       "actor",
+       "factory"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     },
+     "seller": {
+      "categories": [
+       "actor",
+       "lead_maker"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "the factory is the buyer",
+      "left": {
+       "action_field": "buyer"
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the lead maker is the seller",
+      "left": {
+       "action_field": "seller"
+      },
+      "op": "eq",
+      "right": {
+       "literal": "lead-maker"
+      }
+     },
+     {
+      "label": "the order is for at least one lead",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the lead maker has a lead",
+      "left": {
+       "participant": {
+        "name": "seller",
+        "path": "components.stocks.leads"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory can pay 12",
+      "left": {
+       "participant": {
+        "name": "buyer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 12
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "seller",
+      "path": "components.stocks.leads",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.stocks.leads",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "literal": 12
+      }
+     },
+     {
+      "participant": "seller",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "literal": 12
+      }
+     }
+    ],
+    "limits": [
+     "Each move transfers one unit and charges once, regardless of quantity; this purchase transfers directly to the factory stock, not a timed shipment."
+    ],
+    "tests": [
+     "A qualifying purchase transfers one lead and 12 cash."
+    ],
+    "semantic_bindings": [
+     "the factory buys leads from the lead maker"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "buy-packed-pencils",
+    "version": "1",
+    "action_kind": "buy-packed-pencils",
+    "rationale": "The purchase transfers one packed pencil and its represented price.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "shop"
+     ],
+     "components": [
+      "business",
+      "stocks",
+      "prices"
+     ]
+    },
+    "participants": {
+     "buyer": {
+      "categories": [
+       "actor",
+       "shop"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     },
+     "seller": {
+      "categories": [
+       "actor",
+       "factory"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "the shop is the buyer",
+      "left": {
+       "action_field": "buyer"
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the factory is the seller",
+      "left": {
+       "action_field": "seller"
+      },
+      "op": "eq",
+      "right": {
+       "literal": "factory"
+      }
+     },
+     {
+      "label": "the order is for at least one packed pencil",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the factory has a packed pencil",
+      "left": {
+       "participant": {
+        "name": "seller",
+        "path": "components.stocks.packed_pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the shop can pay 20",
+      "left": {
+       "participant": {
+        "name": "buyer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 20
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "seller",
+      "path": "components.stocks.packed_pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.stocks.packed_pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "literal": 20
+      }
+     },
+     {
+      "participant": "seller",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "literal": 20
+      }
+     }
+    ],
+    "limits": [
+     "Each move transfers one unit and charges once, regardless of quantity; this purchase transfers directly to the shop stock, not a timed shipment."
+    ],
+    "tests": [
+     "A qualifying purchase transfers one packed pencil and 20 cash."
+    ],
+    "semantic_bindings": [
+     "the shop buys packed pencils from the factory"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "sell-pencil",
+    "version": "1",
+    "action_kind": "sell-pencil",
+    "rationale": "A sale transfers one packed pencil from the shop to the customer as a pencil and transfers the represented price.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "shop"
+     ],
+     "components": [
+      "business",
+      "stocks",
+      "prices"
+     ]
+    },
+    "participants": {
+     "shop": {
+      "categories": [
+       "actor",
+       "shop"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "prices"
+      ]
+     },
+     "customer": {
+      "categories": [
+       "actor",
+       "customer"
+      ],
+      "components": [
+       "business",
+       "stocks",
+       "work"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "the named shop is acting",
+      "left": {
+       "action_field": "shop"
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "the order is for at least one pencil",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the shop has a packed pencil",
+      "left": {
+       "participant": {
+        "name": "shop",
+        "path": "components.stocks.packed_pencils"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     },
+     {
+      "label": "the customer can pay 1",
+      "left": {
+       "participant": {
+        "name": "customer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "shop",
+      "path": "components.stocks.packed_pencils",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.stocks.pencils",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "shop",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "customer",
+      "path": "components.work.waiting",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ],
+    "limits": [
+     "Each move sells one pencil and charges once, regardless of quantity. The sale moves the pencil from shop stock to customer stock; no separate carrying action is declared."
+    ],
+    "tests": [
+     "A qualifying sale transfers one pencil and 1 cash and reduces the customer's waiting count by one."
+    ],
+    "semantic_bindings": [
+     "the shop sells pencils to the customer"
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "customers-want-more",
+    "rationale": "Customer demand continues arriving in this ongoing production world.",
+    "selector": {
+     "categories": [
+      "actor",
+      "customer"
+     ],
+     "components": [
+      "work"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the customer has a waiting-order count",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.work.waiting"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.work.waiting",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   }
+  ],
+  "terminal": null
+ }
+}
