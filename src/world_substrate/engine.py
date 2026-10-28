@@ -7,6 +7,7 @@ import json
 from copy import deepcopy
 from typing import Any
 
+from .laws import law_breaches
 from .model import World, differences
 from .rules import (
     Check,
@@ -32,6 +33,20 @@ ENGINE_OWNED_PATHS: frozenset[str] = frozenset({"revision"})
 # writes in any world whose actions name their participants differently -- the
 # workshop world's `item`, `part` and `assembly` keys bound to nothing, so a
 # correctly declared write looked out of scope (M6 finding).
+
+
+class _LawBreach(Exception):
+    """A process broke a declared law; carries what the refusal records (never escapes the engine)."""
+
+    def __init__(self, process: ProcessRule, breach: dict[str, str]):
+        super().__init__(breach["law_id"])
+        self.process = process
+        self.breach = breach
+
+
+def _law_check(breach: dict[str, str], process_id: str | None = None) -> Check:
+    by = f" (broken by {process_id}, which happens by itself)" if process_id else ""
+    return Check(f"Keeps the law: {breach['says']}{by}", False, breach["found"], breach["law_id"])
 
 
 class ScopeViolation(RuntimeError):
@@ -729,6 +744,15 @@ class Engine:
                 before,
                 observation,
             )
+        breaches = law_breaches(
+            list(self.registry.laws), list(self.registry.resources), before, after, action.kind, action.as_dict()
+        )
+        if breaches:
+            # The move would break one of the world's own laws: refused whole, the law named.
+            return self._reject(
+                action, command_id, event_id, "law_breach",
+                checks + [_law_check(b) for b in breaches], before, observation,
+            )
         event = self._event(
             event_id=event_id,
             rule_id=rule.rule_id,
@@ -763,10 +787,14 @@ class Engine:
         except Exception:
             self.world = prior
             raise
-        if reactions is None:
-            # Knock-on effects would not settle: the whole moment is refused, so
-            # neither the attempt nor any reaction commits (no partial mutation).
+        if isinstance(reactions, dict):
+            # Knock-on effects would not settle, or one broke a law: the whole moment
+            # is refused, so neither the attempt nor any reaction commits (no partial mutation).
             self.world = prior
+            if reactions["status"] == "law_breach":
+                return self._reject(
+                    action, command_id, event_id, "law_breach", checks + [reactions["check"]], before, observation
+                )
             return self._reject(
                 action,
                 command_id,
@@ -854,14 +882,21 @@ class Engine:
                     if due:
                         # A due process whose effect leaves material state
                         # unchanged commits no event, so it reports none.
-                        event = self._apply_process(
-                            process, command_id, candidate, before
-                        )
+                        try:
+                            event = self._apply_process(
+                                process, command_id, candidate, before
+                            )
+                        except _LawBreach as broken:
+                            return self._refuse_round(
+                                saved, command_id, process, "law_breach", _law_check(broken.breach)
+                            )
                         if event is not None:
                             produced.append(event)
                             reactions = self._settle(event, command_id)
-                            if reactions is None:
-                                return self._refuse_round(saved, command_id, process)
+                            if isinstance(reactions, dict):
+                                return self._refuse_round(
+                                    saved, command_id, process, reactions["status"], reactions["check"]
+                                )
                             produced.extend(reactions)
             except Exception:
                 self.world = saved
@@ -869,33 +904,40 @@ class Engine:
         return {"status": "accepted", "events": produced}
 
     def _refuse_round(
-        self, saved: World, command_id: str, process: ProcessRule
+        self,
+        saved: World,
+        command_id: str,
+        process: ProcessRule,
+        status: str = "reaction_limit",
+        check: Check | None = None,
     ) -> dict[str, Any]:
-        """Undo a round whose knock-on effects would not settle, and record why."""
+        """Undo a round whose knock-on effects would not settle, or that broke a law, and record why."""
         self.world = saved
         state = self.world.material_dict()
-        event = self._event(
+        common = dict(
             event_id=_identifier("e", len(self.world.events) + 1),
             rule_id=process.rule_id,
             rule_version=process.version,
             cause=command_id,
-            status="reaction_limit",
-            checks=[_reaction_limit_check()],
             before=state,
             after=state,
             read_paths=process.read_paths,
             write_paths=process.write_paths,
             bearer={"kind": "process", "id": process.rule_id, "controller": None},
         )
+        if status == "law_breach":
+            event = self._event(**common, status="law_breach", checks=[check])
+        else:
+            event = self._event(**common, status="reaction_limit", checks=[_reaction_limit_check()])
         self.world.commands.append(
-            {"command_id": command_id, "op": "advance", "steps": 1, "status": "reaction_limit"}
+            {"command_id": command_id, "op": "advance", "steps": 1, "status": status}
         )
         self.world.events.append(event)
-        return {"status": "reaction_limit", "events": [event]}
+        return {"status": status, "events": [event]}
 
     def _settle(
         self, trigger: dict[str, Any], command_id: str
-    ) -> list[dict[str, Any]] | None:
+    ) -> list[dict[str, Any]] | dict[str, Any]:
         """Run knock-on effects of a committed event until nothing more is due.
 
         Waves: every immediate process is asked, on the state the last wave left,
@@ -903,8 +945,10 @@ class Engine:
         order. Each (process, entity) pair fires at most once per moment, so a
         reaction cannot feed itself. Each reaction cites as its hard causal parent
         the event of this moment that last changed its entity, else the trigger.
-        Returns None when more than REACTION_LIMIT reactions would happen; the
-        caller then refuses the whole moment.
+        Returns a refusal record ``{status, check}`` instead when more
+        than REACTION_LIMIT reactions would happen (``reaction_limit``) or a
+        reaction would break a declared law (``law_breach``); the caller then
+        refuses the whole moment.
         """
         processes = [p for p in self.registry.processes() if _is_immediate(p)]
         reactions: list[dict[str, Any]] = []
@@ -943,9 +987,15 @@ class Engine:
                 )
                 candidate = _rule_world(self.world)
                 before = candidate.material_dict()
-                event = self._apply_process(
-                    process, command_id, candidate, before, entity_ids=ids, parents=parents
-                )
+                try:
+                    event = self._apply_process(
+                        process, command_id, candidate, before, entity_ids=ids, parents=parents
+                    )
+                except _LawBreach as broken:
+                    return {
+                        "status": "law_breach",
+                        "check": _law_check(broken.breach, process.rule_id),
+                    }
                 if event is None:
                     continue
                 # Marks the event as a knock-on effect and which wave of its moment it ran in.
@@ -953,7 +1003,7 @@ class Engine:
                 reactions.append(event)
                 moment.append(event["event_id"])
                 if len(reactions) > REACTION_LIMIT:
-                    return None
+                    return {"status": "reaction_limit", "check": _reaction_limit_check()}
         return reactions
 
     def _apply_process(
@@ -1012,6 +1062,13 @@ class Engine:
                 f"process {process.rule_id} wrote outside its declared scope: "
                 f"{violations} (declared {list(process.write_paths)})"
             )
+        breaches = law_breaches(
+            list(self.registry.laws), list(self.registry.resources), before, after, f"process:{process.rule_id}"
+        )
+        if breaches:
+            # Unlike a scope breach, a law breach is a mistake in model-written rules: it is
+            # recorded as a refusal by the caller, not raised as a crash. Nothing has committed.
+            raise _LawBreach(process, breaches[0])
         event = self._event(
             event_id=event_id,
             rule_id=process.rule_id,

@@ -51,7 +51,7 @@ state = ["world {id, label, summary, location}", "components[] {name, fields[]}"
 
 [[entities]]
 name = "DeclaredLaws"
-what = "The world's own resources and laws, written by the world designer inside the AuthoringBundle (declared-laws plan S1): each resource names every numeric field it is kept in; a total law names the moves and processes that may change a resource's world total; a pairing law says a move hands one resource over for another. Checked for shape by the bundle validator and given to the rules writer; not yet enforced by the engine (S2)."
+what = "The world's own resources and laws, written by the world designer inside the AuthoringBundle (declared-laws plan S1): each resource names every numeric field it is kept in; a total law names the moves and processes that may change a resource's world total; a pairing law says a move hands one resource over for another. Checked for shape by the bundle validator, given to the rules writer, and kept by the engine at every commit (S2: src/world_substrate/laws.py:36 law_breaches; a breach is a law_breach refusal)."
 source = "scripts/scaffold_world.py:45"
 schema = "world-substrate-authoring-bundle/v0 (optional keys)"
 state = ["resources[] {resource_id, says, kept_in[] {component, field}}", "laws[] total {law_id, says, resource, may_change_by[] (action kind | process:<id>)}", "laws[] pairing {law_id, says, move, gives {resource, from, to}, pays {resource, from, to}}"]
@@ -349,20 +349,20 @@ schedule = "on request; scripted runs synchronous, AI runs as a job; live play a
 
 [[processes]]
 name = "act"
-what = "Engine.submit/apply: validate envelope -> look up rule -> revision check + rule checks on a detached candidate -> apply -> refuse on engine-owned or out-of-scope writes -> commit (revision+1) or refuse. One event and one command per attempt."
+what = "Engine.submit/apply: validate envelope -> look up rule -> revision check + rule checks on a detached candidate -> apply -> refuse on engine-owned or out-of-scope writes -> refuse a step that breaks a declared law (law_breach) -> commit (revision+1) or refuse. One event and one command per attempt."
 source = "src/world_substrate/engine.py:409"
 routes = []
 changes = ["World", "Entity"]
-writes = ["accepted", "invalid_action", "unsupported_action", "stale_revision", "precondition_failed", "scope_violation", "reaction_limit", "action", "invalid_action_command"]
+writes = ["accepted", "invalid_action", "unsupported_action", "stale_revision", "precondition_failed", "scope_violation", "reaction_limit", "law_breach", "action", "invalid_action_command"]
 schedule = "once per submitted attempt"
 
 [[processes]]
 name = "advance"
-what = "Engine.advance: tick+1, then every due each_round process (in declared order) applies on a detached candidate, and its knock-on effects settle (see [knock_on_effects]); an out-of-scope process write raises and restores the pre-tick world (no event is written); a round whose knock-on effects pass the reaction limit is undone and recorded as reaction_limit."
+what = "Engine.advance: tick+1, then every due each_round process (in declared order) applies on a detached candidate, and its knock-on effects settle (see [knock_on_effects]); an out-of-scope process write raises and restores the pre-tick world (no event is written); a round whose knock-on effects pass the reaction limit is undone and recorded as reaction_limit; a round whose process or knock-on effect breaks a declared law is undone and recorded as law_breach, and the advance stops there."
 source = "src/world_substrate/engine.py:829"
 routes = []
 changes = ["World", "Entity"]
-writes = ["accepted", "reaction_limit", "advance"]
+writes = ["accepted", "reaction_limit", "law_breach", "advance"]
 schedule = "once per round, after all actors"
 
 [[processes]]
@@ -554,8 +554,18 @@ name = "reaction_limit"
 meaning = "The knock-on effects of an attempt or a round event would pass the reaction limit (32 per moment): the whole moment is refused and nothing commits. Its failed check reads 'Knock-on effects settle within 32 reactions'."
 written_by = ["act", "advance"]
 writers = [
-  { file = "src/world_substrate/engine.py", function = "apply", line = 762 },
-  { file = "src/world_substrate/engine.py", function = "_refuse_round", line = 870 },
+  { file = "src/world_substrate/engine.py", function = "apply", line = 802 },
+  { file = "src/world_substrate/engine.py", function = "_refuse_round", line = 931 },
+]
+
+[[engine_events]]
+name = "law_breach"
+meaning = "A step would break one of the world's declared laws (DeclaredLaws): a move, a knock-on effect of it, or a round process changed a resource's total through a step its total law does not list, or a pairing move did not hand over and pay as its law says. The whole step or moment is refused and nothing commits; the failed check reads 'Keeps the law: <the law's sentence>' (naming the process when a process broke it), actual is what was found, required is the law id."
+written_by = ["act", "advance"]
+writers = [
+  { file = "src/world_substrate/engine.py", function = "apply", line = 753 },
+  { file = "src/world_substrate/engine.py", function = "apply", line = 796 },
+  { file = "src/world_substrate/engine.py", function = "_refuse_round", line = 929 },
 ]
 
 [[engine_events]]
@@ -1322,6 +1332,10 @@ views = { home = "n/a", build = "n/a", play = "n/a", round_replay = "n/a", livin
 
 [[coverage]]
 element = "reaction_limit"
+views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "shown", scenario_state_panel = "shown" }
+
+[[coverage]]
+element = "law_breach"
 views = { home = "partial", build = "partial", play = "partial", round_replay = "partial", living_scene = "partial", composed_living_scene = "partial", owner_run_log = "partial", scenario_replay = "shown", scenario_state_panel = "shown" }
 
 [[coverage]]

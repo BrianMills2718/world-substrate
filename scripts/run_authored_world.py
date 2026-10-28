@@ -52,6 +52,21 @@ def _component_types(bundle: dict[str, Any]) -> dict[str, type]:
     return result
 
 
+def _law_breach_rows(events: list[dict[str, Any]]) -> list[dict[str, str]]:
+    rows: dict[tuple[str, str], dict[str, str]] = {}
+    for event in events:
+        if event.get("status") != "law_breach":
+            continue
+        for check in event.get("checks") or []:
+            if not check.get("ok") and str(check.get("label", "")).startswith("Keeps the law: "):
+                key = (event.get("rule_id") or "", str(check.get("required")))
+                rows.setdefault(key, {
+                    "rule_id": key[0], "law_id": key[1],
+                    "law": check["label"][len("Keeps the law: "):], "found": str(check.get("actual")),
+                })
+    return list(rows.values())
+
+
 def build_engine(bundle: dict[str, Any], causal_value: dict[str, Any]) -> tuple[Engine, CausalModel, str]:
     bundle = validate_bundle(bundle)
     model = CausalModel.from_dict(causal_value, bundle=bundle)
@@ -71,6 +86,8 @@ def build_engine(bundle: dict[str, Any], causal_value: dict[str, Any]) -> tuple[
         if rejects:
             raise ValueError(f"mechanic installer rejected {declared_process.process_id}: {rejects[0].code}")
         registry.register_process(compiled_process)
+    # The world's own declared laws, kept by the engine at every commit (declared-laws plan, S2).
+    registry.set_laws(bundle.get("laws") or [], bundle.get("resources") or [])
     profile_id = profile.freeze()
 
     types = _component_types(bundle)
@@ -870,6 +887,11 @@ def run_world(
     if residents is not None:
         # Each resident's Concordia memory after this request; live play sends it back with the next round.
         trace["resident_memory"] = residents.memory_state()
+    breaches = _law_breach_rows(engine_events)
+    if breaches:
+        # Steps the engine refused for breaking the world's declared laws, once per (rule, law); only when there
+        # are some, so a world without laws records exactly what it did before (declared-laws plan S2).
+        trace["summary"]["law_breaches"] = breaches
     # Open tasks, sent back with the next round so live play keeps following them.
     trace["underway"] = [{k: t[k] for k in sorted(attempts.TASK_KEYS)} for t in open_tasks]
     return trace, engine, causal_model

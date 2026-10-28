@@ -111,7 +111,7 @@ TYPES = [
      "A process with timing immediately, run in waves inside the same moment as the move or round step "
      "that triggered it until nothing more is due; each process and thing pair fires once per moment, and "
      "more than 32 reactions refuses the whole moment (slice S2 of docs/plans/open_attempt.md, ODD 8.20).",
-     "src/world_substrate/engine.py:896", "no_counterpart", "",
+     "src/world_substrate/engine.py:938", "no_counterpart", "",
      "a timing rule over effectful processes; the kernel has none"),
     ("skill-roll", "Skill roll", "rules", False,
      "A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3).",

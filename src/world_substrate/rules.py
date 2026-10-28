@@ -449,6 +449,14 @@ class RuleRegistry:
     def __init__(self) -> None:
         self._actions: dict[str, ActionRule] = {}
         self._processes: list[ProcessRule] = []
+        # The world's own declared laws and the resources they count (declared-laws plan, S2); empty keeps
+        # every existing world as it was.
+        self.laws: tuple[dict[str, Any], ...] = ()
+        self.resources: tuple[dict[str, Any], ...] = ()
+
+    def set_laws(self, laws: list[dict[str, Any]], resources: list[dict[str, Any]]) -> None:
+        self.laws = tuple(laws)
+        self.resources = tuple(resources)
 
     def register_action(self, rule: ActionRule) -> None:
         if rule.action_kind in self._actions:

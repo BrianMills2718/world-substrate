@@ -51,16 +51,20 @@ rules:
   - id: RULE-ATOMIC-COMMIT-OR-REFUSAL
     statement: >-
       A transition either commits every write and increments the world revision once, or is refused
-      (malformed envelope, stale revision, knock-on effects past the reaction limit) with the material hash
+      (malformed envelope, stale revision, knock-on effects past the reaction limit, a step that breaks a
+      declared law) with the material hash
       unchanged and the refusal recorded.
     owner: src/world_substrate/engine.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28 for the declared-laws plan: engine.py since aa8af13 adds only Engine.scratch(), a detached preview copy that never commits to the run's world; commit-or-refuse unchanged
+    reviewed_at: 927258c65ac4d0dd1658d262eb68804fa394bbc5  # re-read 2026-10-28 (declared-laws S2): a law breach is a new refusal on the same paths (_reject, _refuse_round), the world restored before it is recorded; tests below
     checks:
       - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
       - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
       - tests/test_open_attempt.py::test_a_chain_past_the_reaction_limit_is_refused_whole
       - tests/test_open_attempt.py::test_a_reaction_that_keeps_itself_due_fires_once_per_moment
       - tests/test_open_attempt.py::test_a_round_whose_reactions_do_not_settle_is_undone
+      - tests/test_laws.py::test_a_sale_that_takes_no_money_is_refused_and_names_the_law
+      - tests/test_laws.py::test_a_knock_on_effect_that_breaks_a_law_refuses_the_whole_move
+      - tests/test_laws.py::test_a_tick_process_that_breaks_a_law_undoes_the_round
     decisions:
       - docs/decisions/003-semantic-mechanical-boundary.md
       - docs/decisions/009-same-moment-knock-on-effects.md
@@ -69,7 +73,7 @@ rules:
       A rule or process may write only the components it declared; reaching undeclared state refuses the
       action or stops the tick with nothing changed, and the refusal replays identically.
     owner: src/world_substrate/engine.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: only Engine.scratch() was added; scope checks unchanged
+    reviewed_at: 927258c65ac4d0dd1658d262eb68804fa394bbc5  # re-read 2026-10-28 (declared-laws S2): the law check runs after the scope checks, which are unchanged; a process scope breach still raises (tests/test_laws.py::test_a_scope_breach_by_a_process_still_raises)
     checks:
       - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
       - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
@@ -81,7 +85,7 @@ rules:
     statement: >-
       Precondition checks and process due-tests only read; one that writes is refused and the tick is rolled back.
     owner: src/world_substrate/engine.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: only Engine.scratch() was added; _readonly_call paths unchanged
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 adds the law check after commit-side scope checks; checks and due-tests still run read-only on detached views
     checks:
       - tests/test_rule_authority.py::test_checks_are_refused_if_they_write
       - tests/test_rule_authority.py::test_due_cannot_write_and_the_tick_is_rolled_back
@@ -103,7 +107,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: 5d6a48eca1aae33176e6259a60c06be9a1822e6c  # re-read 2026-10-28: run_authored_world.py changes hide untouched zeros from residents and reuse one scratch engine; the profile is still frozen before the run
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 sets the declared laws on the registry before profile.freeze(); laws are not mechanics and the review path is unchanged
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -115,7 +119,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
-    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): the change adds law ids to the build summary and a 'Laws this world keeps' progress note; approval before run unchanged
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 adds only _law_breach_guidance text to the build loop; approval before run unchanged
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -126,7 +130,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
-    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): no LLM call or budget path changed, only the build summary and a progress note; budget gate unchanged
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2 adds no model call; a law breach only changes guidance text sent on existing calls
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -137,7 +141,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
-    reviewed_at: a88af2f71df8a4e1e3df8ac2399e8ba13167d324  # re-read 2026-10-28 (S1 declared laws; squash merge #280, file identical to fd8342a): run rows still written per request with trace ids; the build record gains a laws field only
+    reviewed_at: 593254f7a5e5f629c4402c9a5ce5f7e6d2c4086e  # re-read 2026-10-28 (declared-laws S2): S2: test-run rows gain law_breaches when there are any; run rows unchanged
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
