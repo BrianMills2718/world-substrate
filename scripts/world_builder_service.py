@@ -1651,7 +1651,29 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     structure_breaches: list[tuple[dict[str, str], int]] = []
                     # Every review finding this structure's tries drew, for the redesign (S3).
                     structure_findings: list[dict[str, str]] = []
+                    # The full entry of this structure's best try, so it can be reviewed after the loop.
+                    structure_best_entry: tuple[Any, ...] | None = None
                     spare = None  # try 1, written alongside try 0
+
+                    def review_try(row: dict[str, Any], rules: dict[str, Any], world_bundle: dict[str, Any]) -> list[dict[str, str]]:
+                        """Run the independent review on one try; record findings or the error on its row."""
+                        nonlocal out_of_budget
+                        self._progress("doing", "A second AI is checking the rules against your description")
+                        try:
+                            found, _ = review_rules(description, world_bundle, rules, trace_id=trace_id, max_budget=budget)
+                        except Exception as error:
+                            # A failed review is recorded and the build goes on without it, visibly.
+                            row["review_error"] = f"{type(error).__name__}: {error}"[:300]
+                            self._progress("note", "The second check of the rules failed", row["review_error"][:160])
+                            out_of_budget = out_of_budget or type(error).__name__ == "LLMBudgetExceededError"
+                            return []
+                        row["review_findings"] = found
+                        structure_findings.extend(found)
+                        self._progress("done", f"The check found {len(found)} place{'s' if len(found) != 1 else ''} "
+                                       "where the rules miss the description" if found
+                                       else "The check found nothing the rules miss",
+                                       "", [_finding_sentence(f) for f in found])
+                        return found
 
                     def write_rules(attempt_now: int, guidance_now: str, previous_now: dict[str, Any] | None):
                         return generate_causal_model(
@@ -1941,23 +1963,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         if result_row.get("ok") and (score >= top or last_try):
                             # The independent review (declared-laws plan S3) reads a try only when the build would
                             # otherwise keep it: a try the test run already faults is revised on that first.
-                            self._progress("doing", "A second AI is checking the rules against your description")
-                            try:
-                                found, _ = review_rules(description, bundle, candidate, trace_id=trace_id,
-                                                        max_budget=budget)
-                                result_row["review_findings"] = found
-                                if found:
-                                    guidance = _review_findings_first(guidance, found)
-                                    structure_findings += found
-                                self._progress("done", f"The check found {len(found)} place{'s' if len(found) != 1 else ''} "
-                                               "where the rules miss the description" if found
-                                               else "The check found nothing the rules miss",
-                                               "", [_finding_sentence(f) for f in found])
-                            except Exception as error:
-                                # A failed review is recorded and the build goes on without it, visibly.
-                                result_row["review_error"] = f"{type(error).__name__}: {error}"[:300]
-                                self._progress("note", "The second check of the rules failed", result_row["review_error"][:160])
-                                out_of_budget = out_of_budget or type(error).__name__ == "LLMBudgetExceededError"
+                            found = review_try(result_row, candidate, bundle)
+                            if found:
+                                guidance = _review_findings_first(guidance, found)
                         if tidied:
                             result_row["tidied"] = tidied
                         attempts.append(result_row)
@@ -1967,9 +1975,22 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             best = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled)
                         if structure_best is None or rank > structure_best[0]:
                             structure_best = (rank, guidance, candidate)
+                            structure_best_entry = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled)
                         out_of_budget = out_of_budget or _trace_cost(trace_id) >= budget - 0.01
                         if (score >= top and not result_row.get("review_findings")) or last_try or out_of_budget:
                             break
+                    if (structure_best_entry is not None and structure_best_entry[3].get("ok") and not out_of_budget
+                            and not {"review_findings", "review_error"} & set(structure_best_entry[3])):
+                        # No try of this structure was reviewed: the last try by number failed to compile, so the
+                        # gate above never fired (pencil s3p2, 2026-10-29: the kept world was never reviewed). Review
+                        # the structure's best try now, so its findings reach the redesign and the build record.
+                        _, rules_b, compiled_b, row_b, bundle_b, not_modeled_b = structure_best_entry
+                        found = review_try(row_b, rules_b, bundle_b)
+                        reranked = (_attempt_rank(row_b["score"], row_b), rules_b, compiled_b, row_b, bundle_b, not_modeled_b)
+                        if best is None or best[3] is row_b or reranked[0] > best[0]:
+                            best = reranked
+                        structure_best = (reranked[0], _review_findings_first(structure_best[1], found) if found
+                                          else structure_best[1], rules_b)
                     if spare is not None:
                         # Not needed (try 0 was good enough or the budget ran out); charge it when it finishes.
                         keep_until_settled(trace_id, spare)

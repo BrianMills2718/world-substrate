@@ -627,6 +627,28 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(rows[1]["review_findings"], [])
         self.assertEqual(payload["dry_run"]["review_findings"], [])
 
+    def test_the_kept_try_is_reviewed_when_the_last_try_fails_to_compile(self):
+        # Pencil s3p2 (2026-10-29): no try reached the top score and the last try by number was rejected by the
+        # compiler, so the review gate never fired and the kept world went unreviewed.
+        finding = {"rule_id": "pick", "description_words": "picks a ripe apple",
+                   "problem": "Picking takes the apple but leaves the tree's count unchanged."}
+        broken = {"mechanics": "not a list"}
+        writes = iter([CAUSAL] + [broken] * 10)
+        stuck = {"summary": {"turns": 12, "terminal_reached": False, "accepted_actions": 24}}
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "run_world", return_value=(stuck, None, None)), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult())), patch.object(
+            service, "generate_causal_model", side_effect=lambda *a, **k: (next(writes), FakeResult())), patch.object(
+            service, "review_rules", return_value=([finding], 0.0)) as review:
+            status, payload = self.post("/generate-world", {"description": "orchard"})
+        self.assertEqual(status, 200, payload)
+        rows = payload["dry_run_attempts"]
+        self.assertTrue(rows[0]["ok"], rows[0])
+        self.assertLess(rows[0]["score"], 2)
+        self.assertFalse(rows[-1]["ok"])
+        self.assertEqual(review.call_count, 1)
+        self.assertEqual(payload["dry_run"]["review_findings"], [finding])
+
     def test_a_failed_review_is_recorded_and_the_build_goes_on(self):
         def broken(*args, **kwargs):
             raise RuntimeError("provider returned 502")

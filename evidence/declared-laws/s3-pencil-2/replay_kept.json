@@ -1,0 +1,17 @@
+{
+ "reviewed": "tests/fixtures/pencil-s3p2-kept.json",
+ "trace_id": "world-substrate/s3-pencil-2/replay-kept/2149adac14ce46c18661644aad141d70",
+ "cost_usd": 0.056048,
+ "findings": [
+  {
+   "rule_id": "missing",
+   "description_words": "deliver the boxes to shops",
+   "problem": "There is a rule for trucks to pick up boxed pencils for delivery, but no rule lets them arrive and transfer the boxes into the shops' stock."
+  },
+  {
+   "rule_id": "sell-pencils",
+   "description_words": "which sell them to customers",
+   "problem": "The rule sells unboxed pencils to customers, but the factory packed them into boxes and there is no way for shops to unpack or sell the boxed pencils."
+  }
+ ]
+}
