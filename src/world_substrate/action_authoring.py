@@ -15,7 +15,7 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import dataclass, field
 from itertools import product
-from typing import Any
+from typing import Any, Callable
 
 from .model import Entity, World, owner_ref
 from .profile import MechanicPackage
@@ -537,7 +537,15 @@ class CompiledActionMechanic:
         # so a long product does not cut off later actors' own moves (c1r18, 2026-10-22: 8 deliveries x 8 items x
         # 11 members passed 256 before any technical or logistics delivery, so neither group could ever speak).
         # When nothing links up, the plain product stays, so refusals still say why the move is impossible.
-        linked = self._linked_bindings(world, actor_id, participant_names, participant_choices)
+        # Narrow the participants by the checks that read only them, widest test first: every such check, then
+        # equality checks alone (a role or stage named in the rule), then id links alone. Without this a long product
+        # never reached the one right buyer before the cap (pencil s3p4, 2026-10-30: 8 buyers x 8 sellers x 8
+        # quantities, buyers in id order, so the mill never appeared and buy-logs read as never possible).
+        linked: list[tuple[str, ...]] = []
+        for keep in _BINDING_TIERS:
+            linked = self._linked_bindings(world, actor_id, participant_names, participant_choices, keep)
+            if linked:
+                break
         if linked:
             combinations = (
                 (*bound, *params) for bound in linked for params in product(*parameter_choices)
@@ -566,13 +574,17 @@ class CompiledActionMechanic:
         return actions
 
     def _linked_bindings(
-        self, world: World, actor_id: str, names: list[str], choices: list[list[str]]
+        self, world: World, actor_id: str, names: list[str], choices: list[list[str]],
+        keep: Callable[[dict[str, Any]], bool] | None = None,
     ) -> list[tuple[str, ...]]:
-        """Participant tuples that pass every id-link check (an `eq` against `entity_id`), in product order."""
+        """Participant tuples that pass every kept check reading only the actor and participants, in product order.
+
+        By default the kept checks are the id links (an `eq` against `entity_id`)."""
+        keep = keep or _is_id_link
         links = [
             (row, refs)
             for row in self.declared.checks
-            if row["op"] == "eq" and ("entity_id" in row["left"] or "entity_id" in row["right"])
+            if keep(row)
             for left, right in [(_expr_refs(row["left"]), _expr_refs(row["right"]))]
             if left is not None and right is not None
             for refs in [left | right]
@@ -591,7 +603,7 @@ class CompiledActionMechanic:
                         right = _resolve_expr(row["right"], world, {}, bound, None)
                     except (KeyError, TypeError, ValueError, ActionDeclarationError):
                         return False
-                    if not _compare(left, "eq", right):
+                    if not _compare(left, row["op"], right):
                         return False
             return True
 
@@ -1138,6 +1150,17 @@ def _resolve_expr(expr: dict[str, Any], world: World, action: dict[str, Any], pa
             raise ActionDeclarationError("event_id is unavailable during checks")
         return event_id
     raise ActionDeclarationError("unresolvable expression")
+
+
+def _is_id_link(row: dict[str, Any]) -> bool:
+    return row["op"] == "eq" and ("entity_id" in row["left"] or "entity_id" in row["right"])
+
+
+_BINDING_TIERS: tuple[Callable[[dict[str, Any]], bool], ...] = (
+    lambda row: True,
+    lambda row: row["op"] == "eq",
+    _is_id_link,
+)
 
 
 def _expr_refs(expr: dict[str, Any]) -> set[str] | None:

@@ -283,5 +283,26 @@ class NullableRefLinkTests(unittest.TestCase):
             CausalModel.from_dict(causal, bundle=deepcopy(PENCIL_TRY5["bundle"]))
 
 
+PENCIL_S3P4 = json.loads((REPO / "tests/fixtures/pencil-s3p4-kept.json").read_text())
+
+
+class DiscoveryReachesTheRightParticipantTests(unittest.TestCase):
+    """Pencil s3p4 (defect I): buy-logs has 8 buyers x 8 sellers x 8 quantities, past the 256 discovery cap.
+
+    Buyers came in id order, so the mill was never reached and the dry run said buy-logs (and the chain after it)
+    could never happen, though live the mill bought logs and the shop sold pencils.
+    """
+
+    def test_every_move_is_offered_and_pencils_sell_in_a_scripted_run(self):
+        from scripts.run_authored_world import run_world
+        dry, _, _ = run_world(deepcopy(PENCIL_S3P4["bundle"]), deepcopy(PENCIL_S3P4["causal_model"]),
+                              policy="scripted", max_turns=24)
+        self.assertEqual(dry["summary"]["never_offered"], {})
+        moves = [v.get("did", {}).get("kind") for t in dry["transcript"] for v in t["actors"].values()
+                 if v.get("status") == "accepted"]
+        self.assertGreater(moves.count("buy-logs"), 0)
+        self.assertGreater(moves.count("sell-pencils"), 0)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
