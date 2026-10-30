@@ -1770,11 +1770,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             result_row = {"ok": True, **dry["summary"]}
                             if world_kind != "task":
                                 # Ongoing/open worlds succeed by staying alive, not by finishing.
-                                alive = (
-                                    candidate_compiled.terminal is None
-                                    and bool(candidate_compiled.processes)
-                                    and dry["summary"]["active_at_end"]
-                                )
+                                # Judged from what the test run saw, not from whether the rules have a process: pencil
+                                # s3p4's try 4 still made every move in its last rounds with no process, and lost to a
+                                # try in which pencils could never be sold because "alive" required one.
+                                alive = candidate_compiled.terminal is None and dry["summary"]["active_at_end"]
                                 summary = dry["summary"]
                                 idle = sorted(set(summary.get("idle_actors") or []) | set(summary.get("stalled_actors") or []))
                                 # Going in circles: one kind of move is all that still happens

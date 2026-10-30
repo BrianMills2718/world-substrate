@@ -140,6 +140,42 @@ class RetryWordingTests(unittest.TestCase):
             self.assertEqual(service._retry_label("openrouter/x/cheap"), "Rewriting the rules with a stronger model")
 
 
+class AliveFromTheTestRunTests(unittest.TestCase):
+    """An ongoing world is alive when its test run is still active at the end, process or not (pencil s3p4 try 4)."""
+
+    def test_rules_without_a_process_that_keep_every_move_going_are_not_scored_as_dead(self):
+        world = json.loads((REPO / "tests/fixtures/pencil-s3p4-kept.json").read_text())
+        rules = copy.deepcopy(world["causal_model"])
+        rules["processes"] = []
+        out = {}
+
+        class Build(service.WorldBuilderHandler):
+            def __init__(self):
+                pass
+
+            def _progress(self, *args, **kwargs):
+                pass
+
+            def _llm_budget(self, client, cap, **kwargs):
+                return cap
+
+            def _json(self, status, value):
+                out.update(value)
+
+            def _error(self, status, message):
+                out["error"] = message
+
+        with patch.object(service, "RULES_SIDE_BY_SIDE", False), patch.object(service, "_trace_cost", return_value=0.0), \
+                patch.object(service, "generate_world_bundle", return_value=(world["bundle"], [], SimpleNamespace(cost=0.0))), \
+                patch.object(service, "generate_causal_model", return_value=(rules, SimpleNamespace(cost=0.0))), \
+                patch.object(service, "review_rules", return_value=([], 0.0)):
+            Build()._generate_world("test", {"description": world["description"], "world_kind": "ongoing"})
+        self.assertNotIn("error", out)
+        first = out["dry_run_attempts"][0]
+        self.assertTrue(first["active_at_end"])
+        self.assertGreaterEqual(first["score"], 2)  # was 1: "alive" required a process
+
+
 if __name__ == "__main__":
     unittest.main()
 
