@@ -235,6 +235,30 @@ class AuthoredWorldRunTests(unittest.TestCase):
             run_world(self.bundle, self.causal, policy="random")
 
 
+class NeverOfferedNamesTheRealGapTests(unittest.TestCase):
+    """The test run's "never possible" note names the gap a rewrite must fix, not a step it already has."""
+
+    def _never(self, fixture: str) -> dict[str, str]:
+        saved = json.loads((REPO / "tests/fixtures" / fixture).read_text())
+        trace, _, _ = run_world(saved["bundle"], saved["causal_model"], policy="scripted", max_turns=24)
+        return trace["summary"]["never_offered"]
+
+    def test_a_raiser_a_law_always_refused_is_named_with_the_law(self):
+        # Saved pencil s3: the carrier's price was 0, so every purchase broke the purchase law and boxes never arrived.
+        why = self._never("pencil-s3-kept.json")["sell-boxes"]
+        self.assertIn("every buy-boxes broke law boxes-purchase", why)
+        self.assertIn("lost 0", why)
+
+    def test_a_role_no_one_fits_names_the_missing_part(self):
+        # Saved pencil4: ship-pencil-boxes wanted a shop with a shipment part; the note used to be empty.
+        self.assertEqual(self._never("pencil4-live.json")["ship-pencil-boxes"],
+                         "no one fits its to (closest, pencil-shop, lacks a shipment part)")
+
+    def test_the_comparison_is_named(self):
+        # Saved pencil13: mining was allowed only while the miner held less than it asked for.
+        self.assertIn("was 20, needed below 1", self._never("pencil13-kept.json")["mine-graphite"])
+
+
 class RepairBayLiveProofTests(unittest.TestCase):
     def setUp(self):
         self.bundle = load_bundle(REPAIR_BUNDLE_PATH)
