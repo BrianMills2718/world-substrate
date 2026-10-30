@@ -18,8 +18,6 @@ print("compiled ok; processes:", [p["process_id"] for p in value.get("processes"
 dry, _, _ = run_world(bundle, value, policy="scripted", max_turns=24)
 s = dry["summary"]
 print({k: s.get(k) for k in ("turns", "accepted_actions", "never_offered", "idle_actors")})
-sold = [e for e in dry.get("events", dry.get("engine_events", [])) if "sell-pencils" in json.dumps(e)[:400]]
-print("events mentioning sell-pencils:", len(sold))
 import collections
 kinds = collections.Counter()
 for t in dry.get("transcript") or []:
