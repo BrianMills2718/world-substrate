@@ -14,7 +14,10 @@ The scripted-mover bug (#193) was also confirmed by no-spend replays of saved pe
 
 **Instead.** Every world a live run builds becomes a saved fixture. Before any paid run, replay the saved
 worlds the change could affect, with scripted moves, and check the property you care about (every person
-offered their own key move, the chain reaches the customer). Pay for a live run only after those pass.
+offered their own key move, the chain reaches the customer). Pay for a live run only after those pass. Two scripts do this: `scripts/check_saved_worlds.py` replays every
+saved world in `tests/fixtures/` and fails if one listed as whole stops being whole (`--update` rewrites the
+list), and `scripts/replay_build.py [--follow-record] <evidence folder>` reruns a recorded build with today's code
+and its own recorded model replies, so it shows which try today's code would keep.
 
 ## 2. Read the run itself, not a summary of it
 

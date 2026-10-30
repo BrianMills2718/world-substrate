@@ -51,6 +51,27 @@ def read_findings(value: Any, ids: list[str]) -> list[dict[str, str]]:
             for r in rows if isinstance(r, dict) and r.get("rule_id") in known and str(r.get("problem", "")).strip()]
 
 
+def starting_values(bundle: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Each thing's starting state under the paths rules read, built-in fields included.
+
+    Where a thing is, who owns it and whether it can be carried are entity fields, not components; the reviewer
+    shown only components reported them missing four times in one café build (s4c, 2026-10-29).
+    """
+    here = (bundle.get("world") or {}).get("location")
+    start: dict[str, dict[str, Any]] = {}
+    for e in bundle.get("entities") or []:
+        if not isinstance(e, dict):
+            continue
+        row: dict[str, Any] = {"categories": list(e.get("categories") or []),
+                               "location": {"location_id": e.get("location") or here}}
+        if e.get("owner_ref") is not None:
+            row["ownership"] = {"owner_ref": e["owner_ref"]}
+        if e.get("portable") is not None:
+            row["portable"] = {"portable": bool(e["portable"])}
+        start[str(e.get("id"))] = {**row, "components": e.get("components") or {}}
+    return start
+
+
 def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[str, Any], *, trace_id: str,
                  max_budget: float, model: str = REVIEW_MODEL,
                  reasoning_effort: str = "medium") -> tuple[list[dict[str, str]], float]:
@@ -62,7 +83,7 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
     rules = {"mechanics": causal_model.get("mechanics") or [], "processes": causal_model.get("processes") or []}
     # The starting numbers let the reviewer see a move that can never work from the start (#293: pencil
     # XlX1z5lyl8QT's carrier charged 0, so its own purchase law refused every purchase).
-    start = {str(e.get("id")): e.get("components") or {} for e in bundle.get("entities") or [] if isinstance(e, dict)}
+    start = starting_values(bundle)
     messages = render_prompt(PROMPT, description=description, laws=json.dumps(laws, indent=1),
                              rules=json.dumps(rules, indent=1), start=json.dumps(start, indent=1))
     value, result = call_llm_json_schema(
@@ -73,4 +94,5 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
     return read_findings(value, ids), float(getattr(result, "cost", 0.0) or 0.0)
 
 
-__all__ = ["MISSING", "REVIEW_MODEL", "TASK", "read_findings", "review_rules", "review_schema", "rule_ids"]
+__all__ = ["MISSING", "REVIEW_MODEL", "TASK", "read_findings", "review_rules", "review_schema", "rule_ids",
+           "starting_values"]
