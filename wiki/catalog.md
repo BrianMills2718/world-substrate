@@ -159,6 +159,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 - [Q44: which model reviews the rules (2026-10-28)](../evidence/declared-laws/s3-review-choice/README.md)
 - [Trace read: S3 live pencil build, the review ran and an unreviewed try was kept](../evidence/declared-laws/s3-pencil/TRACE_READ.md)
 - [Trace read: S3 pencil build 2, no review ran and one round played](../evidence/declared-laws/s3-pencil-2/TRACE_READ.md)
+- [Trace read: S3 pencil build 3, the review named the gap and the compiler refused the fix](../evidence/declared-laws/s3-pencil-3/TRACE_READ.md)
 - [Q23: do generated moves check walls? (2026-10-25)](../evidence/open-attempt/q23/README.md)
 - [Q28: can generated worlds reuse the library damage processes? (2026-10-26)](../evidence/open-attempt/q28/README.md)
 

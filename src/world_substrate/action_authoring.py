@@ -751,6 +751,7 @@ def _selector(value: object, bundle: dict[str, Any], label: str) -> dict[str, An
 
 
 PROCESS_LINKS = ("owner_of_it", "owned_by_it", "co_located")  # plus "ref:<component>.<field>" (entity_ref field on it)
+REF_LINK_TYPES = ("entity_ref", "entity_ref_or_null")
 
 
 def _process_participants(value: object, bundle: dict[str, Any], process_id: str) -> dict[str, dict[str, Any]]:
@@ -768,8 +769,14 @@ def _process_participants(value: object, bundle: dict[str, Any], process_id: str
         link = row["link"]
         if isinstance(link, str) and link.startswith("ref:"):
             parts = link[4:].split(".")
-            if len(parts) != 2 or field_types.get((parts[0], parts[1])) != "entity_ref":
-                raise ActionDeclarationError(f"{label}: {link!r} must name an entity_ref field as ref:<component>.<field>")
+            # entity_ref_or_null too: a reference that is empty until set (a shipment's destination before a
+            # delivery starts) resolves to nobody, so the process does not fire (_link_candidates). Pencil s3p3
+            # try 5: the arrival process was refused for this alone and the shop never received a pencil.
+            found = field_types.get((parts[0], parts[1])) if len(parts) == 2 else None
+            if found not in REF_LINK_TYPES:
+                raise ActionDeclarationError(
+                    f"{label}: {link!r} must name an entity_ref or entity_ref_or_null field as ref:<component>.<field>"
+                    + (f" (that field's type is {found})" if found else " (no such component field)"))
         elif link not in PROCESS_LINKS:
             raise ActionDeclarationError(
                 f"{label}: unknown link {link!r}; use one of {list(PROCESS_LINKS)} or ref:<component>.<field>")
