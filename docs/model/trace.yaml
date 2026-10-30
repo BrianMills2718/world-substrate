@@ -96,7 +96,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
-    reviewed_at: a23bd63fe04ab7f6e754942d6adc6f8bee248287  # re-read 2026-10-30 (restamped to the #301 squash merge, same content). Earlier: re-read 2026-10-30 (H: a ref: link may name an entity_ref_or_null field; the read path it derives is the same, an empty reference binds nobody; authority still derived by the compiler). Earlier: re-read 2026-10-28: action_authoring.py change since aa8af13 is selector matching reused by the run view; derivation unchanged
+    reviewed_at: 6eafae06742e8230b69af78858f21d8fb38f6ce8  # re-read 2026-10-30 (discovery narrows participants before the cap, defect I; authority checks unchanged). Earlier: re-read 2026-10-30 (restamped to the #301 squash merge, same content). Earlier: re-read 2026-10-30 (H: a ref: link may name an entity_ref_or_null field; the read path it derives is the same, an empty reference binds nobody; authority still derived by the compiler). Earlier: re-read 2026-10-28: action_authoring.py change since aa8af13 is selector matching reused by the run view; derivation unchanged
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
