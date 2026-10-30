@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts.run_authored_world import build_engine, run_world
+from scripts.run_authored_world import build_engine, mark_only_fillers, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate import attempt as open_attempt
 
@@ -460,6 +460,37 @@ class SpeakerSelfReferenceTests(unittest.TestCase):
         got = open_attempt.read_interpretation(self._reading("pencil-shop"), self.TEXT, self.SIGNATURES,
                                                {"pencil-shop", "customer"}, actor="customer")
         self.assertTrue(got.get("unmatched"))
+
+
+class OnlyFillerTests(unittest.TestCase):
+    """s4w Waltzman, 2026-10-29: 7 of 20 attempts were lost because the reader had to quote words for fields only one
+    thing can fill ("the meeting pace", "the time until the deadline"), which no one says when they speak."""
+
+    def setUp(self):
+        self.world = json.loads((REPO / "tests/fixtures/waltzman-s4-kept.json").read_text())
+        engine, model, _ = build_engine(self.world["bundle"], self.world["causal_model"])
+        self.plain = open_attempt.signatures_for(self.world["bundle"], model.mechanics)
+        self.marked = mark_only_fillers(engine, model, json.loads(json.dumps(self.plain)))
+        self.ids = set(engine.world.entities)
+
+    def _read(self, signatures, row):
+        return open_attempt.read_interpretation(row["reply"], row["attempt"], signatures, self.ids, row["actor"])
+
+    def test_the_recorded_replies_all_read_once_the_only_filler_is_given(self):
+        rows = self.world["attempt_replies"]
+        self.assertEqual(sum(bool(self._read(self.plain, r).get("unmatched")) for r in rows), 7)
+        self.assertEqual([r["call_id"] for r in rows if self._read(self.marked, r).get("unmatched")], [])
+        pace = next(r for r in rows if r["call_id"] == 22712)
+        self.assertEqual(self._read(self.marked, pace)["fields"]["meeting_pace"], "meeting-pace")
+
+    def test_a_field_with_a_choice_still_needs_the_persons_words(self):
+        open_fields = [f for s in self.marked for f in s["fields"] if f.get("type") == "entity_ref" and "only" not in f]
+        self.assertTrue(open_fields)
+        signatures = [{"kind": "tell", "fields": [{"name": "to", "type": "entity_ref"}]}]
+        reply = {"kind": "tell", "why": "", "nearest_kind": "tell",
+                 "fields": [{"field": "to", "value": "country-two", "quoted_span": ""}]}
+        self.assertTrue(open_attempt.read_interpretation(reply, "I tell them", signatures, self.ids, "partnership")
+                        .get("unmatched"))
 
 
 class UnstatedAmountTests(unittest.TestCase):

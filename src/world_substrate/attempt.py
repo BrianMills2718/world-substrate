@@ -101,6 +101,8 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
     if signature is None:
         return {"unmatched": True, "nearest_kind": nearest, "why": why}
     declared = {str(f["name"]): str(f["type"]) for f in signature.get("fields") or []}
+    # A field only one entity can fill needs no words from the person (signatures carry it as "only").
+    only = {str(f["name"]): str(f["only"]) for f in signature.get("fields") or [] if f.get("only")}
     rows = value.get("fields") if isinstance(value.get("fields"), list) else []
     fields: dict[str, Any] = {}
     spans: dict[str, str] = {}
@@ -110,6 +112,8 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
             problems.append(f"field row {row!r} is not one of {kind}'s fields once")
             continue
         name, raw, span = str(row["field"]), str(row.get("value", "")), str(row.get("quoted_span", ""))
+        if name in only:
+            continue
         ok, typed = _coerce(declared[name], raw)
         if declared[name] == "integer" and (not span or span not in attempt):
             # An amount the person never said is one: 2026-10-27 pencil c_SrKPfa3rpE, the lead-maker's "I try to make
@@ -129,6 +133,8 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
             fields[name], spans[name] = typed, span
     for name in [n for n, t in declared.items() if t == "integer" and n not in fields and not problems]:
         fields[name], spans[name] = 1, ""
+    for name, eid in only.items():
+        fields[name], spans[name] = eid, ""
     missing = sorted(set(declared) - set(fields))
     if missing and not problems:
         problems.append(f"no value for {', '.join(missing)}")
