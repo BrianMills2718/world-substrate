@@ -130,6 +130,23 @@ def _selector_matches(entity: Entity, selector: dict[str, Any]) -> bool:
     )
 
 
+def mark_only_fillers(engine: Engine, model: CausalModel, signatures: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Mark each entity field that only one thing in the world can fill with that thing's id ("only").
+
+    The attempt reader then fills it for the person: in s4w Waltzman (2026-10-29) 7 of 20 attempts were lost because
+    no one says "the meeting pace" or "the time until the deadline" when they say what they try.
+    """
+    for mechanic, signature in zip(model.mechanics, signatures):
+        for row in signature["fields"]:
+            selector = (getattr(mechanic, "participants", None) or {}).get(row["name"])
+            if row.get("type") != "entity_ref" or not selector:
+                continue
+            fits = [e.entity_id for e in engine.world.entities.values() if _selector_matches(e, selector)]
+            if len(fits) == 1:
+                row["only"] = fits[0]
+    return signatures
+
+
 def actor_ids(engine: Engine, model: CausalModel) -> list[str]:
     selectors = [m.actor_selector for m in model.mechanics]
     actors = [
@@ -532,7 +549,8 @@ def run_world(
                               memory=resident_memory, open_attempts=open_attempts)
     # Open attempts (docs/plans/open_attempt.md): what each person says they try is read into one typed move against
     # the installed rules' kinds; a reading that fits none goes in as an unmatched attempt and changes nothing.
-    signatures = open_attempt.signatures_for(bundle, causal_model.mechanics) if open_attempts else []
+    signatures = mark_only_fillers(engine, causal_model, open_attempt.signatures_for(bundle, causal_model.mechanics)) \
+        if open_attempts else []
     readings: dict[str, dict[str, Any]] = {}
     unmatched: list[dict[str, Any]] = []
     beliefs: dict[str, dict[str, Any]] = {}
