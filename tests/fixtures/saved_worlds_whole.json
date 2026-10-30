@@ -1,0 +1,17 @@
+{
+ "note": "saved worlds whose every move is offered in a 24-round scripted test; scripts/check_saved_worlds.py fails if one stops being whole",
+ "whole": [
+  "cafe1-live.json",
+  "cafe2-live.json",
+  "firefighting-luna-r1.json",
+  "garden-luna-r3.json",
+  "pencil-c4-run17.json",
+  "pencil-s2-kept.json",
+  "pencil-s3p3-try5.json",
+  "pencil-s3p4-kept.json",
+  "pencil12-attempt3.json",
+  "pencil12-live.json",
+  "pencil3-live.json",
+  "pencil8-live.json"
+ ]
+}
