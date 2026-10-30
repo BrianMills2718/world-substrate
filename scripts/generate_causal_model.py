@@ -726,6 +726,11 @@ def generate_causal_model(
             max_tokens=max_output_tokens,
             reasoning_effort=reasoning_effort,
             num_retries=1,
+            # JSON mode: the provider must return one well-formed object. Without it the writer misplaced a brace
+            # in 10 saved replies (pencil s3p2 tries 2 and 5: the object closed before remove_mechanics), and
+            # the one repair rarely fixed it (#293 C). llm_client sends require_parameters, so only providers
+            # that honor this serve the call.
+            response_format={"type": "json_object"},
             # The shared client requires a stated reason for any non-default route.
             **({"model_justification": model_justification} if model_justification else {}),
             # An llm_client OpenRouterRoutePolicyV1, e.g. the World Builder's fastest-provider route.
@@ -755,6 +760,12 @@ def generate_causal_model(
             last_error = error
             if attempt == 1:
                 break
+            where = ""
+            if isinstance(error, json.JSONDecodeError):
+                # Show the writer where its JSON broke; the bare decoder message alone did not lead to a fix.
+                where = (f" The JSON breaks at character {error.pos}, here: "
+                         f"{error.doc[max(0, error.pos - 120):error.pos]!r} <HERE> {error.doc[error.pos:error.pos + 80]!r}. "
+                         "Check that every brace and bracket closes where it should and the whole reply is one object.")
             messages = [
                 *messages,
                 {"role": "assistant", "content": result.content},
@@ -762,7 +773,7 @@ def generate_causal_model(
                     "role": "user",
                     "content": (
                         "The local causal compiler rejected that proposal. "
-                        f"Compiler error: {type(error).__name__}: {error}. "
+                        f"Compiler error: {type(error).__name__}: {error}.{where} "
                         + ("Return a corrected JSON object only, again holding only what changes from "
                            "previous_proposal. " if revising else "Return a corrected JSON object only. ")
                         + "State paths in participant/path and "
