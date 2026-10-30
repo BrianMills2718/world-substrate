@@ -409,7 +409,13 @@ def _llm_choice(
     )
 
 
-def _never_why(kind: str, failed: list[dict[str, Any]], causal_value: dict[str, Any]) -> str:
+_OP_WORDS = {"eq": "", "ne": "anything but ", "lt": "below ", "lte": "at most ", "gt": "above ", "gte": "at least ",
+             "contains": "something containing "}
+
+
+def _never_why(kind: str, failed: list[dict[str, Any]], causal_value: dict[str, Any],
+               law_blocked: dict[str, dict[str, str]] | None = None,
+               entities: list[dict[str, Any]] | None = None) -> str:
     """Why a move was never possible: its closest refusal's failed checks, each with what raises the state it reads.
     2026-10-18 live pencil ML-LqyMAzAYo: assemble-pencils needed the assembler's own stock.slats, which only mill-slats
     raised, on the miller's own stock; nothing carried slats over, and the rewrite was never told so."""
@@ -417,14 +423,21 @@ def _never_why(kind: str, failed: list[dict[str, Any]], causal_value: dict[str, 
     rule = next((m for m in mechanics if m.get("action_kind") == kind), {})
     reasons = []
     for c in failed[:2]:
-        text = f"{c.get('label')}: was {c.get('actual')!r}, needed {c.get('required')!r}"
-        left = next(((x.get("left") or {}).get("participant") for x in rule.get("checks") or []
-                     if x.get("label") == c.get("label")), None) or {}
+        declared = next((x for x in rule.get("checks") or [] if x.get("label") == c.get("label")), {})
+        # The comparison too: "was 20, needed 1" read as a shortage when the rule demanded graphite below the amount
+        # mined (2026-10-29 saved pencil13: mine-graphite only while the miner had less than it asked for).
+        op = _OP_WORDS.get(str(declared.get("op", "eq")), f"{declared.get('op')} ")
+        text = f"{c.get('label')}: was {c.get('actual')!r}, needed {op}{c.get('required')!r}"
+        left = (declared.get("left") or {}).get("participant") or {}
         path = left.get("path", "")
         if path.startswith("components."):
             raises = lambda e: e.get("path") == path and e.get("op") in ("add", "set")  # noqa: E731
             raisers = [f"{m['action_kind']} (on its {e.get('participant')})" for m in mechanics if m is not rule
                        for e in m.get("effects") or [] if raises(e)]
+            # A raiser a declared law refused every time never ran, so naming it alone sent the rewrite after the wrong
+            # gap (2026-10-29 saved pencil s3: every buy-boxes broke the purchase law because the carrier's price was 0).
+            blocked = [f"every {k} broke law {b['law_id']} ({b['found']})" for k, b in (law_blocked or {}).items()
+                       if any(r.startswith(f"{k} (") for r in raisers)]
             raisers += [f"process {p['process_id']}" for p in causal_value.get("processes") or []
                         for e in p.get("effects") or [] if raises(e)]
             field = path.removeprefix("components.")
@@ -432,7 +445,22 @@ def _never_why(kind: str, failed: list[dict[str, Any]], causal_value: dict[str, 
                      else f"; nothing ever raises {field}")
             if raisers and left.get("name") == "actor" and all(r.endswith("(on its actor)") for r in raisers):
                 text += f", each on the one who does it, so no action ever brings {field} to this actor"
+            if blocked:
+                text += ", but " + "; ".join(blocked)
         reasons.append(text)
+    if not failed:
+        # Nobody was ever even refused it, so a role fits no one (2026-10-29 saved pencil4: ship-pencil-boxes wanted a
+        # shop with a shipment part, and the shop had none); name the role and the closest one who nearly fits.
+        roles = {"actor": rule.get("actor_selector") or {}, **(rule.get("participants") or {})}
+        gaps = []
+        for role, want in roles.items():
+            def missing(e: dict[str, Any]) -> list[str]:
+                return ([c for c in want.get("categories") or [] if c not in (e.get("categories") or [])]
+                        + [f"a {c} part" for c in want.get("components") or [] if c not in (e.get("components") or {})])
+            near = sorted(((missing(e), str(e.get("id"))) for e in entities or []), key=lambda m: len(m[0]))
+            if near and near[0][0]:
+                gaps.append(f"no one fits its {role} (closest, {near[0][1]}, lacks " + ", ".join(near[0][0]) + ")")
+        return "; ".join(gaps) or "it was never put to anyone"
     return "; ".join(reasons)
 
 
@@ -836,6 +864,11 @@ def run_world(
     terminal_reached = bool(
         causal_model.terminal is not None and causal_model.terminal.reached(engine.world)
     )
+    # Moves a declared law refused every time they were tried or previewed, by kind, with the first breach found.
+    kind_of = {m.mechanic_id: m.action_kind for m in causal_model.mechanics}
+    accepted = {kind_of.get(e.get("rule_id")) for e in engine_events if e.get("status") == "accepted"}
+    law_blocked = {kind_of[b["rule_id"]]: b for b in reversed(_law_breach_rows(engine_events + preview_law_refusals))
+                   if b["rule_id"] in kind_of and kind_of[b["rule_id"]] not in accepted}
     if not transcript and start_snapshot is None:
         raise ValueError("run produced no actions; review actor selectors, checks, and parameter choices")
     trace = {
@@ -891,7 +924,7 @@ def run_world(
                 for row in t["actors"].values() if row.get("changed")
             }),
             "never_offered": {
-                kind: _never_why(kind, refused_why.get(kind) or [], causal_value)
+                kind: _never_why(kind, refused_why.get(kind) or [], causal_value, law_blocked, bundle.get("entities"))
                 for kind in sorted({getattr(m, "action_kind", "") for m in causal_model.mechanics} - offered_kinds - {""})
             },
             # Open attempts that fit no installed rule: each changed nothing, and names the next rule a build could add.
