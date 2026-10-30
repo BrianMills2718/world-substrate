@@ -98,6 +98,24 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
             self.assertIn(action["kind"], system)
         self.assertIn("an empty mechanics list is always rejected", system)
 
+    def test_rules_writer_asks_for_json_mode_and_is_shown_where_its_json_broke(self):
+        # pencil s3p2 tries 2 and 5: the object closed one brace early, twice, and the repair repeated it (#293 C)
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
+        good = json.dumps(causal)
+        broken = good[:-1] + '}, "remove_mechanics": []}'
+        call = MagicMock(side_effect=[SimpleNamespace(content=c, cost=0.0, model="fake-model") for c in (broken, good)])
+        fake_module = ModuleType("llm_client")
+        fake_module.call_llm = call
+        fake_module.safe_json_loads = json.loads
+        with patch.dict(sys.modules, {"llm_client": fake_module}):
+            generate_causal_model(bundle, model="fake-model", trace_id="test-json-mode")
+        self.assertEqual(call.call_args_list[0].kwargs["response_format"], {"type": "json_object"})
+        repair = call.call_args_list[1].args[1][-1]["content"]
+        self.assertIn("The JSON breaks at character", repair)
+        self.assertIn("<HERE>", repair)
+        self.assertIn("remove_mechanics", repair)
+
 
 if __name__ == "__main__":
     unittest.main()
