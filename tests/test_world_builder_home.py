@@ -177,7 +177,7 @@ if __name__ == "__main__":
 class WorldNetworkTests(unittest.TestCase):
     """The Network view's typed-graph/v1 converter, run in node against a real built world."""
 
-    def run_page_functions(self, call: str):
+    def run_page_functions(self, call: str, fixture_name: str = "airfield-s1-live.json"):
         import json, shutil, subprocess
         node = shutil.which("node")
         if node is None:
@@ -188,9 +188,10 @@ class WorldNetworkTests(unittest.TestCase):
             match = re.search(rf"^  function {name}\(.*?^  \}}$", page, re.S | re.M)
             self.assertIsNotNone(match, f"the page needs one {name}")
             parts.append(match.group(0))
-        fixture = (HOME.parents[1] / "tests/fixtures/airfield-s1-live.json").read_text()
+        fixture = (HOME.parents[1] / "tests/fixtures" / fixture_name).read_text()
         script = "\n".join(parts) + f"\nconst world = {fixture};\nconsole.log(JSON.stringify({call}));"
-        result = subprocess.run([node, "-e", script], capture_output=True, text=True, check=True)
+        # On stdin: a large world does not fit in one command-line argument.
+        result = subprocess.run([node, "-"], input=script, capture_output=True, text=True, check=True)
         return json.loads(result.stdout)
 
     def test_the_world_becomes_a_typed_graph(self):
@@ -214,6 +215,17 @@ class WorldNetworkTests(unittest.TestCase):
         self.assertTrue(all(e["source"] in kinds and e["target"] in kinds for e in graph["edges"]))
         # Only blue, orange and grey (Brian is red-green colourblind).
         self.assertEqual({k["color"] for k in graph["kinds"].values()}, {"#6fa8dc", "#7d8a90", "#a9b5ba", "#f0a35e"})
+
+    def test_dense_worlds_use_the_force_layout_and_small_ones_keep_elk(self):
+        # 2026-10-30 s4 hang: ELK's layered layout of a 77-box, 464-link world held the page's only thread for
+        # 16 s, and again each round a link moved, so Playwright could not even read the Play button.
+        # c1r18 (84 boxes, 542 links) is the same failure class; ELK took 12 s on it.
+        dense = self.run_page_functions("worldNetwork(world.bundle, world.causal_model)", "c1r18_waltzman_world.json")
+        self.assertGreater(len(dense["edges"]), 300)
+        self.assertEqual(dense["layout"], {"algorithm": "force"})
+        # Small worlds keep the layered picture they had (airfield: 17 boxes, 39 links).
+        small = self.run_page_functions("worldNetwork(world.bundle, world.causal_model)")
+        self.assertEqual(small["layout"], {})
 
     def test_a_round_moves_its_links_and_lights_what_it_touched(self):
         turn = {"turn": 4, "world_changes": ["recurring-training-requests"],
