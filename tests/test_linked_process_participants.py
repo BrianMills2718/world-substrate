@@ -253,5 +253,35 @@ class PipelineHospitalAttempt4Tests(unittest.TestCase):
         self.assertEqual(deaths[0]["status"], "accepted")
 
 
+PENCIL_TRY5 = json.loads((REPO / "tests/fixtures/pencil-s3p3-try5.json").read_text())
+
+
+class NullableRefLinkTests(unittest.TestCase):
+    """Pencil s3p3 try 5 (defect H): a shipment's destination is entity_ref_or_null, empty until a delivery starts."""
+
+    def test_a_ref_link_to_a_nullable_entity_ref_compiles(self):
+        model = CausalModel.from_dict(deepcopy(PENCIL_TRY5["causal_model"]), bundle=deepcopy(PENCIL_TRY5["bundle"]))
+        arrival = next(p for p in model.processes if p.process_id == "deliver-transit-pencils")
+        self.assertEqual(arrival.participants["destination"]["link"], "ref:shipment.destination")
+
+    def test_deliveries_arrive_and_the_shop_sells_in_a_scripted_run(self):
+        from scripts.run_authored_world import run_world
+        dry, _, _ = run_world(deepcopy(PENCIL_TRY5["bundle"]), deepcopy(PENCIL_TRY5["causal_model"]),
+                              policy="scripted", max_turns=24)
+        self.assertEqual(dry["summary"]["never_offered"], {})
+        moves = [v.get("did", {}).get("kind") for t in dry["transcript"] for v in t["actors"].values()
+                 if v.get("status") == "accepted"]
+        arrivals = [w for t in dry["transcript"] for w in t.get("world_changes") or [] if w == "deliver-transit-pencils"]
+        self.assertGreater(moves.count("sell-pencils"), 0)
+        self.assertGreater(len(arrivals), 0)
+
+    def test_a_ref_link_to_a_number_field_names_its_type(self):
+        causal = deepcopy(PENCIL_TRY5["causal_model"])
+        arrival = next(p for p in causal["processes"] if p["process_id"] == "deliver-transit-pencils")
+        arrival["participants"]["destination"]["link"] = "ref:shipment.rounds_left"
+        with self.assertRaisesRegex(ActionDeclarationError, "that field's type is integer"):
+            CausalModel.from_dict(causal, bundle=deepcopy(PENCIL_TRY5["bundle"]))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
