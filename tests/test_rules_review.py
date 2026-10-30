@@ -59,6 +59,13 @@ class ReviewTests(unittest.TestCase):
         self.assertNotIn("entities", values["laws"] + values["rules"])
         start = json.loads(values["start"])
         self.assertEqual(sorted(start), sorted(e["id"] for e in PENCIL13["bundle"]["entities"]))
+        # Built-in place and owner are shown under the paths rules read (s4c café: 4 false "missing" findings).
+        for entity in PENCIL13["bundle"]["entities"]:
+            row = start[entity["id"]]
+            self.assertEqual(row["location"]["location_id"],
+                             entity.get("location") or PENCIL13["bundle"]["world"]["location"])
+            if entity.get("owner_ref") is not None:
+                self.assertEqual(row["ownership"]["owner_ref"], entity["owner_ref"])
         self.assertNotEqual(sent["model"].split("/")[1], DEFAULT_MODEL.split("/")[1])
         self.assertIn("buy-boxed-pencils", sent["schema"]["properties"]["findings"]["items"]["properties"]["rule_id"]["enum"])
 
