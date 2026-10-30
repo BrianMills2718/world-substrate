@@ -317,13 +317,32 @@ class RepairBayLiveProofTests(unittest.TestCase):
                 rule("vote", "vote", ("entities.<actor>.components.work.voted",),
                      ("entities.<actor>.components.work.voted", "entities.<actor>.components.member.note")),
             ],
-            processes=[types.SimpleNamespace(process_id="tally", read_paths=("entities.<it>.components.work.voted",))],
+            processes=[types.SimpleNamespace(process_id="tally", read_paths=("entities.<it>.components.work.voted",),
+                                             write_paths=()),
+                       types.SimpleNamespace(process_id="new-meeting", read_paths=(),
+                                             write_paths=("entities.<it>.components.work.discuss_done",))],
             terminal=None,
         )
         found = bookkeeping_fields(model)
         self.assertEqual(found["discuss"], {"components.work.discuss_done"})
         # Read by another rule, or by nothing at all: still a real effect.
         self.assertEqual(found["vote"], set())
+        # With no reset the flag changes once and stays changed: a real effect.
+        model.processes.pop()
+        self.assertEqual(bookkeeping_fields(model)["discuss"], set())
+
+    def test_a_one_way_change_only_its_own_move_reads_stays_on_offer(self):
+        # s4c café, 2026-10-29: stacking a chair and mopping the floor were dropped as
+        # "bookkeeping", leaving the barista only "knock over".
+        kept = json.loads((REPO / "tests/fixtures/cafe-s4-kept.json").read_text())
+        _, model, _ = build_engine(kept["bundle"], kept["causal_model"])
+        found = bookkeeping_fields(model)
+        for kind in ("stack-chair", "mop-floor", "carry-tray"):
+            self.assertEqual(found.get(kind, set()), set(), kind)
+        trace, _, _ = run_world(kept["bundle"], kept["causal_model"], max_turns=24, trace_id="test/cafe")
+        done = {(row.get("did") or {}).get("kind") for turn in trace["transcript"]
+                for row in turn["actors"].values() if row.get("changed")}
+        self.assertTrue({"stack-chair", "mop-floor"} <= done, done)
 
     def test_a_move_still_allowed_after_a_stale_revision_is_not_asked_again(self):
         # Every accepted move bumps the revision, so most AI choices in a round are stale by the time they

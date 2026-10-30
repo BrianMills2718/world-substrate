@@ -302,21 +302,31 @@ def bookkeeping_fields(model: CausalModel) -> dict[str, set[str]]:
     run members chose such a move ("discuss concern at meeting") in 88% of rounds
     10-40 (2026-10-16, deploy10). Fields read by any other rule stay real effects;
     so do fields no rule reads at all, since a person or the readout may.
+
+    The flag also has to be reset by some other rule or process: that reset is
+    what lets the move repeat forever while changing nothing. A field only the
+    move itself writes changes once and stays changed (stacking a chair, mopping
+    a floor), so it is a real effect; treating it as a flag left a live café's
+    barista with nothing to do but knock things over (2026-10-29, s4c).
     """
     readers: dict[str, set[str]] = {}
-    def note(rule_id: str, paths: Any) -> None:
+    writers: dict[str, set[str]] = {}
+    def note(into: dict[str, set[str]], rule_id: str, paths: Any) -> None:
         for path in paths:
             field = _field(path)
             if field.count(".") >= 2:  # a field, not just "has this component"
-                readers.setdefault(field, set()).add(rule_id)
+                into.setdefault(field, set()).add(rule_id)
     for m in model.mechanics:
-        note(m.mechanic_id, m.read_paths)
+        note(readers, m.mechanic_id, m.read_paths)
+        note(writers, m.mechanic_id, m.write_paths)
     for p in model.processes:
-        note(p.process_id, p.read_paths)
+        note(readers, p.process_id, p.read_paths)
+        note(writers, p.process_id, getattr(p, "write_paths", ()))
     if model.terminal is not None:
-        note("terminal", _paths_in(list(model.terminal.checks)))
+        note(readers, "terminal", _paths_in(list(model.terminal.checks)))
     return {
-        m.action_kind: {f for f in map(_field, m.write_paths) if readers.get(f) == {m.mechanic_id}}
+        m.action_kind: {f for f in map(_field, m.write_paths)
+                        if readers.get(f) == {m.mechanic_id} and writers.get(f, set()) - {m.mechanic_id}}
         for m in model.mechanics
     }
 
