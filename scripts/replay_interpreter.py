@@ -8,7 +8,7 @@ repo, calls_path, out = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
 sys.path[:0] = [str(repo / "src"), str(repo)]
 from world_substrate import attempt as A
 calls = {json.loads(l)["id"]: json.loads(l) for l in open(calls_path)}
-trace = f"world-substrate-seller-wording-{uuid.uuid4().hex[:8]}"
+trace = f"world-substrate-interpreter-replay-{uuid.uuid4().hex[:8]}"  # seller-wording (2026-10-30) and unmatched-replay (2026-10-31) ran under world-substrate-seller-wording-*
 rows = []
 for spec in sys.argv[4:]:
     cid, n = (spec.split(":") + ["1"])[:2]

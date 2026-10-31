@@ -127,7 +127,7 @@ bought one", which matches `r5-e00002`, `r7-e00011`, `r8-e00011` and `r9-e00001`
    call for a delivery, so no attempt of that kind went unmatched or was refused. Truckers shipped in rounds 7 and
    10, the only rounds after packing. Round 9's refused sale was a real race, not a gap: the customers bought the
    shop's one pencil earlier in the same round (`r9-e00001`). A world whose description has shops order would get
-   an order move from the rules writer, and a shop could still try one in its own words.
+   an order move from the rules writer, and a shop could still try one in its own words. Correction (same day): the shops of the earlier `../s3-pencil` run did try to order five times (calls 22229-22290), and nothing reached the factory; that is the real gap, recorded in `../unmatched-replay/README.md` finding 2.
 7. **Fixed: everyone was told "Turn 0".** The person's prompt printed the world's tick, and an authored world installs
    no clock process, so the tick stays 0. Call 22648 (round 11) read "Turn 0" above memory lines ending "Round 10".
    The runner now passes the round number (`scripts/run_authored_world.py` `_view`). Test:
