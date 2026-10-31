@@ -2187,9 +2187,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         score -= 1
                         guidance += " " + " ".join(g["finding"] for g in gates)
                     dry_row["knock_on_processes"] = _knock_on_processes(built["causal_model"])
-                    if dry_row.get("ok") and (score >= 4 or attempt == 1):
+                    # No rewrite can follow this try: the last one, the budget nearly spent, or the wait too long.
+                    last_try = (attempt == 1 or _trace_cost(trace_id) >= budget - 0.15
+                                or time.monotonic() - started > PEOPLE_REWRITE_BY_S)
+                    if dry_row.get("ok") and (score >= 4 or last_try):
                         # The independent review (declared-laws plan S3) reads a try the build would keep; its
                         # findings go first in the one rewrite. The people path had none until s4 (2026-10-30).
+                        # s4w2 Waltzman (2026-10-31): a first try scoring 3 was kept unreviewed when the test run
+                        # passed the rewrite time limit; a try that will be kept is now always reviewed.
                         self._progress("doing", "A second AI is checking the rules against your description")
                         try:
                             found, _ = review_rules(description, built["bundle"], built["causal_model"],

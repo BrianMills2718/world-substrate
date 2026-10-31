@@ -21,7 +21,7 @@ from scripts import attempts
 from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
 from scripts.scaffold_world import _render_model, load_bundle, validate_bundle
-from world_substrate.action_authoring import CausalModel, CompiledActionMechanic, CompiledProcessMechanic, _selector_matches
+from world_substrate.action_authoring import CausalModel, CompiledActionMechanic, CompiledProcessMechanic, _entity_value, _selector_matches
 from world_substrate.engine import ENGINE_OWNED_PATHS, Engine
 from world_substrate.model import Entity, LocationState, OwnershipState, PortableState, World
 from world_substrate import attempt as open_attempt
@@ -144,6 +144,18 @@ def mark_only_fillers(engine: Engine, model: CausalModel, signatures: list[dict[
             fits = [e.entity_id for e in engine.world.entities.values() if _selector_matches(e, selector)]
             if len(fits) == 1:
                 row["only"] = fits[0]
+        # A check "<other participant>.<path> eq <this field>" ties this field to state the person need not name
+        # ("from"): s4w2 Waltzman (2026-10-31), the concern a support waits on.
+        names = {row["name"] for row in signature["fields"]}
+        for check in getattr(mechanic, "checks", None) or ():
+            if check.get("op") != "eq":
+                continue
+            for one, other in ((check["left"], check["right"]), (check["right"], check["left"])):
+                ref, field = one.get("participant"), other.get("entity_id")
+                if ref and field in names and ref.get("name") in names and ref["name"] != field:
+                    row = next(r for r in signature["fields"] if r["name"] == field)
+                    if row.get("type") == "entity_ref" and not row.get("only"):
+                        row["from"] = {"participant": ref["name"], "path": ref["path"]}
     return signatures
 
 
@@ -274,8 +286,8 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
     over_budget, llm_error = (getattr(llm_client, name, ()) for name in ("LLMBudgetExceededError", "LLMError"))
     labels = {eid: entity.label for eid, entity in sorted(engine.world.entities.items())}
     try:
-        return open_attempt.interpret(text, actor=actor, signatures=signatures, entities=labels, model=model,
-                                      trace_id=trace_id, max_budget=max_budget)
+        reading, cost = open_attempt.interpret(text, actor=actor, signatures=signatures, entities=labels, model=model,
+                                               trace_id=trace_id, max_budget=max_budget)
     except over_budget:
         raise
     except llm_error as exc:
@@ -283,6 +295,12 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
         # pencil nEEW93EirxNe lost 4 whole rounds to one unread attempt (500 "internal world-builder error").
         return {"unmatched": True, "unread": True, "nearest_kind": open_attempt.NONE,
                 "why": f"the attempt could not be read: {exc}"[:300]}, 0.0
+
+    def value_of(entity_id: str, path: str) -> Any:
+        entity = engine.world.entities.get(entity_id)
+        return _entity_value(entity, path) if entity is not None else None
+
+    return open_attempt.fill_derived(reading, signatures, value_of, set(labels)), cost
 
 
 def _same_move(one: dict[str, Any] | None, other: dict[str, Any] | None) -> bool:
