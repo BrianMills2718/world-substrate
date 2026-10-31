@@ -72,7 +72,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         }))
 
     def post(self, path: str, body: dict, *, origin: str | None = None, extra_headers: dict[str, str] | None = None,
-             timeout: float = 5):
+             timeout: float = 30):  # 5 s timed out a scripted run under the full parallel check (2026-10-31)
         headers = {"Content-Type": "application/json"}
         if origin is not None:
             headers["Origin"] = origin
