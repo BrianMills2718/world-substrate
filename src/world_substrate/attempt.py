@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 PROMPT = Path(__file__).resolve().parents[2] / "prompts/attempt_interpreter.yaml"
 TASK = "world-builder-attempt-interpreter"
@@ -103,6 +103,9 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
     declared = {str(f["name"]): str(f["type"]) for f in signature.get("fields") or []}
     # A field only one entity can fill needs no words from the person (signatures carry it as "only").
     only = {str(f["name"]): str(f["only"]) for f in signature.get("fields") or [] if f.get("only")}
+    # A field the rules tie to another participant's state ("from") is filled from that state (fill_derived); words
+    # the person said for it are kept when they fit, and never make the reading unmatched.
+    derived = {str(f["name"]) for f in signature.get("fields") or [] if f.get("from")}
     rows = value.get("fields") if isinstance(value.get("fields"), list) else []
     fields: dict[str, Any] = {}
     spans: dict[str, str] = {}
@@ -115,6 +118,10 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
         if name in only:
             continue
         ok, typed = _coerce(declared[name], raw)
+        if name in derived:
+            if ok and (declared[name] != "entity_ref" or typed in entity_ids):
+                fields[name], spans[name] = typed, span
+            continue
         if declared[name] == "integer" and (not span or span not in attempt):
             # An amount the person never said is one: 2026-10-27 pencil c_SrKPfa3rpE, the lead-maker's "I try to make
             # leads from my clay and graphite" was refused in 3 rounds as quantity='' or 'unspecified'; pencil
@@ -135,12 +142,38 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
         fields[name], spans[name] = 1, ""
     for name, eid in only.items():
         fields[name], spans[name] = eid, ""
-    missing = sorted(set(declared) - set(fields))
+    missing = sorted(set(declared) - set(fields) - derived)
     if missing and not problems:
         problems.append(f"no value for {', '.join(missing)}")
     if problems:
         return {"unmatched": True, "nearest_kind": kind, "why": "the reading did not fit the world: " + "; ".join(problems)}
     return {"kind": kind, "fields": fields, "quoted_spans": spans, "nearest_kind": kind, "why": why}
+
+
+def fill_derived(reading: dict[str, Any], signatures: list[dict[str, Any]],
+                 value_of: Callable[[str, str], Any], entity_ids: set[str]) -> dict[str, Any]:
+    """Fill each "from" field of a matched reading from the state of the participant it is tied to.
+
+    s4w2 Waltzman (2026-10-31): Country B's "restore full support" was refused or unmatched in 6 rounds because the
+    reader named the decision, or nothing, as the concern; the rule says the concern is the one the support waits on.
+    `value_of(entity_id, path)` reads the world. A reading still missing a field afterwards is unmatched.
+    """
+    if reading.get("unmatched") or reading.get("kind") == WAIT_KIND:
+        return reading
+    signature = next((s for s in signatures if s["kind"] == reading["kind"]), None) or {}
+    fields, spans = dict(reading["fields"]), dict(reading["quoted_spans"])
+    for row in signature.get("fields") or []:
+        source = row.get("from")
+        if not source or source["participant"] not in fields:
+            continue
+        value = value_of(str(fields[source["participant"]]), source["path"])
+        if isinstance(value, str) and value in entity_ids:
+            fields[row["name"]], spans[row["name"]] = value, ""
+    missing = sorted({str(f["name"]) for f in signature.get("fields") or []} - set(fields))
+    if missing:
+        return {"unmatched": True, "nearest_kind": reading["kind"],
+                "why": f"the reading did not fit the world: no value for {', '.join(missing)}"}
+    return {**reading, "fields": fields, "quoted_spans": spans}
 
 
 def envelope(reading: dict[str, Any], *, actor: str, attempt: str, base_revision: int,
@@ -181,4 +214,4 @@ def interpret(attempt: str, *, actor: str, signatures: list[dict[str, Any]], ent
 
 
 __all__ = ["NONE", "TASK", "UNMATCHED_KIND", "WAIT_KIND", "envelope", "interpret", "interpreter_schema",
-           "read_interpretation", "signatures_for"]
+           "fill_derived", "read_interpretation", "signatures_for"]

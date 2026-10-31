@@ -11,7 +11,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts.run_authored_world import build_engine, mark_only_fillers, run_world
+from scripts.run_authored_world import _component_types, _read_attempt, build_engine, mark_only_fillers, run_world
+from world_substrate.engine import Engine
+from world_substrate.model import World
 from scripts.scaffold_world import load_bundle
 from world_substrate import attempt as open_attempt
 
@@ -491,6 +493,58 @@ class OnlyFillerTests(unittest.TestCase):
                  "fields": [{"field": "to", "value": "country-two", "quoted_span": ""}]}
         self.assertTrue(open_attempt.read_interpretation(reply, "I tell them", signatures, self.ids, "partnership")
                         .get("unmatched"))
+
+
+class DerivedFieldTests(unittest.TestCase):
+    """s4w2 Waltzman, 2026-10-31: Country B's "I try to restore Country B's full support" was refused in rounds 5, 9
+    and 10 (the reader named the decision as the concern) and unmatched in rounds 4, 6 and 8 (no words for it), though
+    the rule says the concern is the one Country B's support waits on, and that concern was resolved in round 3."""
+
+    def setUp(self):
+        self.world = json.loads((REPO / "tests/fixtures/waltzman-s4w2-restore.json").read_text())
+        engine, self.model, _ = build_engine(self.world["bundle"], self.world["causal_model"])
+        self.registry, self.fresh = engine.registry, engine.world
+        self.signatures = mark_only_fillers(engine, self.model, open_attempt.signatures_for(
+            self.world["bundle"], self.model.mechanics))
+
+    def _engine_before(self, round_number):
+        snapshot = self.world["snapshots_before_round"][str(round_number)]
+        return Engine(World.from_snapshot(snapshot, component_types=_component_types(self.world["bundle"])),
+                      self.registry)
+
+    def _read(self, engine, row):
+        recorded = open_attempt.read_interpretation(row["reply"], row["attempt"], self.signatures,
+                                                    set(engine.world.entities), row["actor"])
+        with patch.object(open_attempt, "interpret", return_value=(recorded, 0.0)), \
+                patch.dict(sys.modules, {"llm_client": types.ModuleType("llm_client")}):
+            reading, _ = _read_attempt(engine, row["actor"], row["attempt"], self.signatures, model="m",
+                                       trace_id="t", max_budget=0.0)
+        return reading
+
+    def test_the_concern_is_marked_as_coming_from_the_support(self):
+        restore = next(s for s in self.signatures if s["kind"] == "restore-full-support")
+        matter = next(f for f in restore["fields"] if f["name"] == "matter")
+        self.assertEqual(matter.get("from"), {"participant": "support", "path": "components.support.condition_id"})
+
+    def test_country_bs_recorded_readings_all_name_the_concern_its_support_waits_on(self):
+        outcomes = {}
+        for row in self.world["attempt_replies"]:
+            engine = self._engine_before(row["round"])
+            reading = self._read(engine, row)
+            self.assertEqual(reading.get("kind"), "restore-full-support", (row["call_id"], reading))
+            if row["actor"] == "country-b":
+                self.assertEqual(reading["fields"]["matter"], "info-legal-local-concern-to-country-b")
+            outcome = engine.submit(open_attempt.envelope(reading, actor=row["actor"], attempt=row["attempt"],
+                                                          base_revision=engine.world.revision, controller="test"))
+            outcomes[row["call_id"]] = outcome["status"]
+        # The decision was rejected only during round 10, so each recorded world still let the restore work.
+        self.assertEqual(set(outcomes.values()), {"accepted"}, outcomes)
+
+    def test_a_named_concern_that_is_wrong_is_replaced_by_the_one_in_the_rules(self):
+        row = next(r for r in self.world["attempt_replies"] if r["call_id"] == 22890)
+        reading = self._read(self._engine_before(5), row)
+        self.assertEqual(reading["fields"]["matter"], "info-legal-local-concern-to-country-b")
+        self.assertEqual(reading["quoted_spans"]["matter"], "")
 
 
 class UnstatedAmountTests(unittest.TestCase):

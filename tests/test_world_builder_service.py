@@ -769,6 +769,26 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("no rule lets them decide", rules.call_args_list[1].kwargs["guidance"])
         self.assertEqual(payload["dry_run_attempts"][0]["review_findings"], [finding])
 
+    def test_a_people_try_kept_because_the_wait_is_too_long_is_still_reviewed(self):
+        # s4w2 Waltzman (2026-10-31): two members stalled (score 3), the test run ended past the rewrite time limit,
+        # and the build kept that first try without the independent review.
+        stalled = {"turns": 8, "accepted_actions": 69, "active_at_end": True, "moves_at_end": ["a", "b"],
+                   "idle_actors": [], "stalled_actors": ["country-d"], "terminal_reached": False}
+        finding = {"rule_id": service.MISSING_RULE, "description_words": "decide together",
+                   "problem": "no rule lets them decide"}
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={}), \
+                patch.object(service, "PEOPLE_REWRITE_BY_S", -1.0), \
+                patch.object(service, "run_world", return_value=({"summary": stalled, "transcript": []}, None, None)), \
+                patch.object(service, "review_rules", return_value=([finding], 0.0)) as review, \
+                patch.object(service, "write_people_rules", return_value=self._people_built()) as rules:
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(rules.call_count, 1)
+        self.assertEqual(review.call_count, 1)
+        self.assertEqual(payload["dry_run"]["review_findings"], [finding])
+
     def test_rules_cut_off_for_length_are_retried_shorter_then_reported_plainly(self):
         class LLMError(Exception):
             pass
