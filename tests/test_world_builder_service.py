@@ -748,6 +748,27 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/people/"))
         self.assertAlmostEqual(people.call_args.kwargs["max_budget"], service.PEOPLE_WORLD_BUDGET)
 
+    def test_a_people_world_declares_laws_and_its_rules_get_the_independent_review(self):
+        # s4 Waltzman (2026-10-30): the people path asked for no laws and ran no review; both now run as for things.
+        declared = {"resources": [{"resource_id": "apples", "says": "Apples.", "kept_in": []}], "laws": []}
+        finding = {"rule_id": service.MISSING_RULE, "description_words": "decide together",
+                   "problem": "no rule lets them decide"}
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={"bundle": {}}) as prepare, \
+                patch.object(service, "declare_people_laws", return_value=(declared, ["law x dropped: y"])) as laws, \
+                patch.object(service, "review_rules", side_effect=[([finding], 0.0), ([], 0.0)]) as review, \
+                patch.object(service, "write_people_rules", return_value=self._people_built()) as rules:
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(laws.call_count, 1)
+        self.assertEqual(prepare.return_value["bundle"]["resources"], declared["resources"])
+        self.assertEqual(payload["law_notes"], ["law x dropped: y"])
+        self.assertEqual(review.call_count, 2)
+        self.assertEqual(rules.call_count, 2)
+        self.assertIn("no rule lets them decide", rules.call_args_list[1].kwargs["guidance"])
+        self.assertEqual(payload["dry_run_attempts"][0]["review_findings"], [finding])
+
     def test_rules_cut_off_for_length_are_retried_shorter_then_reported_plainly(self):
         class LLMError(Exception):
             pass

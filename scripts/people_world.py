@@ -254,6 +254,99 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
             "work_cycle": work_cycle}
 
 
+def _field_writers(causal: dict[str, Any]) -> dict[tuple[str, str], set[str]]:
+    """(component, field) -> the steps of a compiled rule set that write it: action kinds and 'process:<id>'."""
+    writers: dict[tuple[str, str], set[str]] = {}
+    steps = [(m["action_kind"], m) for m in causal.get("mechanics") or []]
+    steps += [(f"process:{p['process_id']}", p) for p in causal.get("processes") or []]
+    for step, rule in steps:
+        for effect in rule.get("effects") or []:
+            parts = str(effect.get("path") or "").split(".")
+            if len(parts) == 3 and parts[0] == "components":
+                writers.setdefault((parts[1], parts[2]), set()).add(step)
+    return writers
+
+
+def keep_compiled_laws(bundle: dict[str, Any], compiled: dict[str, Any]) -> tuple[list[dict[str, Any]], list[str]]:
+    """The declared laws the compiled rules can keep, and a note for each one dropped.
+
+    The compiled coordination rules are exact and reviewed, and the rules writer cannot change them, so a law that one
+    of them would break is the law being wrong: a total law must list every compiled step that writes a field its
+    resource is kept in, and a pairing law must name a move the rules writer writes.
+    """
+    kept_in = {r["resource_id"]: {(k["component"], k["field"]) for k in r.get("kept_in") or []}
+               for r in bundle.get("resources") or []}
+    writers = _field_writers(compiled)
+    compiled_moves = {m["action_kind"] for m in compiled.get("mechanics") or []}
+    laws, dropped = [], []
+    for law in bundle.get("laws") or []:
+        if "move" in law:
+            if law["move"] in compiled_moves:
+                dropped.append(f"law {law['law_id']} dropped: {law['move']} is a compiled rule, not one the rules writer writes")
+                continue
+        else:
+            missing = sorted({step for place in kept_in.get(law["resource"], set()) for step in writers.get(place, set())}
+                             - set(law.get("may_change_by") or []))
+            if missing:
+                dropped.append(f"law {law['law_id']} dropped: compiled {', '.join(missing)} change(s) "
+                               f"{law['resource']} and the law does not list them")
+                continue
+        laws.append(law)
+    return laws, dropped
+
+
+def declare_people_laws(description: str, prepared: dict[str, Any], *, trace_id: str,
+                        max_budget: float) -> tuple[dict[str, Any], list[str]]:
+    """The people world's own resources and laws (declared-laws plan, piece 1), in the same contract as a world of
+    things, written over the compiled structure: it adds no fields or moves, only says which counts must stay true.
+
+    Returns ({resources, laws}, notes). A world with nothing kept count of declares none. Laws the compiled rules
+    would break are dropped with a note (keep_compiled_laws); a reply that does not validate declares none, noted.
+    """
+    from llm_client import call_llm, safe_json_loads
+    from scripts.generate_world_bundle import _contract
+    from scripts.scaffold_world import BundleError, validate_bundle
+
+    bundle, compiled = prepared["bundle"], prepared["compiled"]
+    writers = _field_writers(compiled)
+    numeric = []
+    for comp in bundle.get("components") or []:
+        for field in comp["fields"]:
+            if field["type"] in {"integer", "number"}:
+                holders = sorted({c for e in bundle["entities"] if comp["name"] in e["components"]
+                                  for c in e["categories"][:1]})
+                numeric.append({"component": comp["name"], "field": field["name"], "held_by": holders,
+                                "written_by_compiled": sorted(writers.get((comp["name"], field["name"]), set()))})
+    compiled_moves = {m["action_kind"] for m in compiled.get("mechanics") or []}
+    moves = [{"kind": a["kind"], "description": a.get("description", ""),
+              "compiled": a["kind"] in compiled_moves} for a in bundle["actions"]]
+    contract = _contract()
+    messages = [
+        {"role": "system", "content": (
+            "You state the laws of a simulated world of people: which counts it keeps that must never change except "
+            "in the ways its laws allow. The world's structure is fixed; you add no fields, moves or processes. "
+            "Some moves and processes are compiled rules that are already exact (marked compiled, and listed per "
+            "field under written_by_compiled); a total law on a field they write must list every one of them. "
+            "Counts that are only clocks or tallies of what happened (rounds left, times something was raised) are "
+            "not resources. Return one JSON object {\"resources\": [...], \"laws\": [...]} and nothing else.\n"
+            "resources: " + contract["resources"] + "\nlaws: " + contract["laws"])},
+        {"role": "user", "content": json.dumps({"description": description, "numeric_fields": numeric,
+                                                "moves": moves}, indent=1)},
+    ]
+    result = call_llm(PEOPLE_MODEL, messages, task="world-builder-people-laws", trace_id=trace_id,
+                      max_budget=max_budget, reasoning_effort=EFFORT, num_retries=1,
+                      max_tokens=8000, model_justification=PEOPLE_MODEL_WHY,
+                      openrouter_route_policy=fast_route(PEOPLE_MODEL))
+    try:
+        value = safe_json_loads(result.content)
+        declared = {"resources": list(value.get("resources") or []), "laws": list(value.get("laws") or [])}
+        validate_bundle({**bundle, **declared})
+    except (BundleError, ValueError, TypeError, AttributeError) as error:
+        return {"resources": [], "laws": []}, [f"laws not declared: {type(error).__name__}: {error}"[:300]]
+    laws, notes = keep_compiled_laws({**bundle, **declared}, compiled)
+    return {"resources": declared["resources"], "laws": laws}, notes
+
+
 def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: float, progress: Progress,
                        guidance: str = "") -> dict[str, Any]:
     """The rules for what people's attempts cause, merged with the compiled ones. Raises on a rule set the compiler
@@ -348,6 +441,17 @@ def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -
     if unruled:
         bundle = {**bundle, "actions": [a for a in bundle["actions"] if a["kind"] in ruled]}
         dropped = dropped + [f"action {k} removed: its rule only wrote what compiled rules own" for k in unruled]
+        # The declared laws must name only moves the world still has: a pairing law on a removed move goes, and a
+        # total law stops listing it (nothing can make that move any more).
+        laws = []
+        for law in bundle.get("laws") or []:
+            if law.get("move") in unruled:
+                dropped.append(f"law {law['law_id']} removed: its move {law['move']} was removed")
+                continue
+            if "may_change_by" in law:
+                law = {**law, "may_change_by": [c for c in law["may_change_by"] if c not in unruled]}
+            laws.append(law)
+        bundle["laws"] = laws
     causal, pinned = sp.pin_named_slots(spec, causal)
     causal, due = sp.fix_moment_due_checks(causal)
     build_engine(bundle, causal)  # compile + install: raises if any rule is rejected
