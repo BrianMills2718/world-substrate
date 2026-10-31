@@ -35,7 +35,7 @@ from scripts.native_coordination_authoring import (
     generate_native_coordination_draft,
 )
 from scripts.native_coordination_comparison import with_approval_threshold
-from scripts.people_world import about_people, keep_until_settled, prepare_people_world, unfinished_hedges, write_people_rules
+from scripts.people_world import about_people, declare_people_laws, keep_until_settled, prepare_people_world, unfinished_hedges, write_people_rules
 from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.review_rules import MISSING as MISSING_RULE, review_rules
@@ -2064,6 +2064,23 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     if type(error).__name__ == "LLMBudgetExceededError":  # llm_client is imported lazily
                         raise ValueError(_budget_message(error)) from None
                     raise
+                # The world's own laws over the counts it keeps (declared-laws plan, piece 1), the same contract as a
+                # world of things: s4 Waltzman (2026-10-30) was built with none because only that path asked.
+                self._progress("doing", "Working out which counts this world must keep")
+                try:
+                    declared, law_notes = declare_people_laws(description, prepared, trace_id=trace_id,
+                                                              max_budget=budget)
+                except Exception as error:
+                    if type(error).__name__ == "LLMBudgetExceededError":
+                        raise ValueError(_budget_message(error)) from None
+                    declared, law_notes = {"resources": [], "laws": []}, [f"laws not declared: {type(error).__name__}: {error}"[:300]]
+                if declared["resources"] or declared["laws"]:
+                    prepared["bundle"].update(declared)
+                if declared["laws"]:
+                    self._progress("note", "Laws this world keeps", "",
+                                   [str(law.get("says", "")).rstrip(". ") for law in declared["laws"]])
+                for note in law_notes:
+                    self._progress("note", "A law was left out", note[:160])
                 guidance, attempts = "", []
                 best: tuple[int, dict[str, Any], dict[str, Any]] | None = None
                 for attempt in range(2):
@@ -2141,6 +2158,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             )
                         if idle:
                             guidance += _idle_guidance(dry, idle, dry_turns)
+                        breaches = summary.get("law_breaches") or []
+                        if breaches:
+                            # A step the world's own laws refused goes to the rules writer first (declared-laws S2).
+                            score -= 1
+                            guidance = _law_breaches_first(guidance, breaches, dry_turns)
                     except ValueError as error:
                         dry_row, score = {"ok": False, "error": str(error)[:300]}, 0
                         guidance = (
@@ -2165,6 +2187,24 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         score -= 1
                         guidance += " " + " ".join(g["finding"] for g in gates)
                     dry_row["knock_on_processes"] = _knock_on_processes(built["causal_model"])
+                    if dry_row.get("ok") and (score >= 4 or attempt == 1):
+                        # The independent review (declared-laws plan S3) reads a try the build would keep; its
+                        # findings go first in the one rewrite. The people path had none until s4 (2026-10-30).
+                        self._progress("doing", "A second AI is checking the rules against your description")
+                        try:
+                            found, _ = review_rules(description, built["bundle"], built["causal_model"],
+                                                    trace_id=trace_id, max_budget=budget)
+                            dry_row["review_findings"] = found
+                            self._progress("done", f"The check found {len(found)} place{'s' if len(found) != 1 else ''} "
+                                           "where the rules miss the description" if found
+                                           else "The check found nothing the rules miss",
+                                           "", [_finding_sentence(f) for f in found])
+                            if found:
+                                guidance = _review_findings_first(guidance, found)
+                        except Exception as error:
+                            # A failed review is recorded and the build goes on without it, visibly.
+                            dry_row["review_error"] = f"{type(error).__name__}: {error}"[:300]
+                            self._progress("note", "The second check of the rules failed", dry_row["review_error"][:160])
                     attempts.append(dry_row)
                     sentence = _dry_run_sentence(dry_row, "ongoing")
                     if dry_row.get("circling"):
@@ -2172,7 +2212,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     self._progress("done", "Test run: " + sentence)
                     if best is None or score > best[0]:
                         best = (score, built, dry_row)
-                    if score >= 4 or attempt == 1 or _trace_cost(trace_id) >= budget - 0.15:
+                    if ((score >= 4 and not dry_row.get("review_findings")) or attempt == 1
+                            or _trace_cost(trace_id) >= budget - 0.15):
                         break
                     if time.monotonic() - started > PEOPLE_REWRITE_BY_S:
                         self._progress("note", "Kept these rules", "a rewrite would make the wait too long")
@@ -2181,6 +2222,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                    "the test run went in circles" if dry_row.get("circling")
                                    else "some people could not act" if dry_row.get("stalled_actors") or dry_row.get("idle_actors")
                                    else "a move refused up front on what its own task uses up" if dry_row.get("attempt_findings")
+                                   else "the test run broke the world's own laws" if dry_row.get("law_breaches")
+                                   else "the second check found rules that miss the description" if dry_row.get("review_findings")
                                    else "the test run went quiet")
                 assert best is not None
                 _, built, dry_row = best
@@ -2212,6 +2255,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "people": built["people"],
                 "coverage": built["coverage"],
                 "dropped_generated_rules": built["dropped_generated_rules"],
+                "law_notes": law_notes,
                 "dry_run": dry_row,
                 "dry_run_attempts": attempts,
                 "cost_usd": trace_cost,

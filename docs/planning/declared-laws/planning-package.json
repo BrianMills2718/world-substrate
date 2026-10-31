@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136",
+  "subject_revision": "f83c6d8a1589dfb8ec8d129c0e0a0e3e3fb9df82",
   "request": "Brian 2026-10-28 \"yes lets make it companhy plannign complaint\" (to: the world declares its own laws, the engine enforces them generically, and an independent AI review checks the rules against the description and the laws, replacing the growing list of heuristic checks)",
   "parts": {
     "checks": {
@@ -40,7 +40,7 @@
           "command": "python3 scripts/check_trace_reads.py",
           "exit_status": 0,
           "counts": {
-            "runs": 20,
+            "runs": 30,
             "problems": 0
           }
         },
@@ -50,7 +50,7 @@
           "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
           "exit_status": 0,
           "counts": {
-            "tests_run": 801,
+            "tests_run": 850,
             "failed": 0,
             "skipped": 2
           }
@@ -60,7 +60,7 @@
           "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 157,
+            "md_files": 168,
             "cap": "exception",
             "orphans": 0
           },
@@ -153,7 +153,8 @@
         "world-law": "scripts/scaffold_world.py:45",
         "law-check": "src/world_substrate/laws.py:36",
         "resource": "scripts/scaffold_world.py:45",
-        "world-design": "scripts/generate_world_bundle.py:53"
+        "world-design": "scripts/generate_world_bundle.py:53",
+        "rules-review": "scripts/review_rules.py:92"
       }
     },
     "diagrams": {
@@ -210,7 +211,7 @@
       "status": "present",
       "path": "docs/planning/declared-laws/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
+      "reviewed_revision": "f83c6d8a1589dfb8ec8d129c0e0a0e3e3fb9df82"
     },
     "acceptance": {
       "status": "present",

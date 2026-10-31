@@ -829,10 +829,13 @@
    "blocks": "S3's reviewer design, and whether S4 may retire any heuristic check on the strength of the review",
    "resolves_with": "Prior art settles the shape (Huang et al. 2023, arXiv 2310.01798; Wataoka et al. 2024, arXiv 2410.21819): a different model family from the rules writer, a fresh context holding only the description, the declared laws and the compiled rules, and output as a list of findings (rule, quoted description words, what is wrong), never a verdict. Whether it earns its place is empirical, so one measurement, named for one decision (S4): run it on the saved worlds of every logged incident (free replays plus one review call each, a few cents) and count which incidents it names.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "Settled by the named measurement 2026-10-28: evidence/declared-laws/s3-review-choice/README.md (21 calls, 0 errors, $0.4356) ran three models on seven saved incident worlds; gemini-3.1-pro-preview named 7 of 9 known bugs including pencil13's unpaid purchase, deepseek 4, the same-family control 6. scripts/review_rules.py:92 uses gemini on a fresh context of description, laws and rules. Since 2026-10-30 people worlds get the same review (scripts/world_builder_service.py, _generate_people_world).",
    "sources": [
     "docs/plans/declared_laws.md",
-    "scripts/generate_causal_model.py"
+    "scripts/generate_causal_model.py",
+    "evidence/declared-laws/s3-review-choice/README.md:12",
+    "scripts/review_rules.py:92"
    ],
    "touches": [
     "rules-review",
@@ -844,7 +847,7 @@
    "short": "Which heuristic checks retire",
    "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:840-1220), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
    "blocks": "S4: which checks are removed, and so whether validation stops growing one check per bug",
-   "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape.",
+   "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape. Progress 2026-10-30: the people-world change (scripts/people_world.py:298) asks people worlds for laws and sends their rules to the review too; no live people-world build has run on it yet, laws can be dropped or left out (Q49), and the retirement table is still owed.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -897,14 +900,41 @@
   },
   {
    "id": "Q48",
-   "short": "A wrong law is declared",
-   "question": "The designer may declare a law that is wrong for the world (cash that may be created by a move the description says cannot create it, or a pairing on a move that is a gift). The engine then enforces the wrong thing faithfully. What catches a wrong law?",
-   "blocks": "whether S3's review must read the laws against the description as well as the rules, and whether L1 can pass on laws that are merely well-formed",
-   "resolves_with": "Argument first: the laws are model output like the rules, so they get the same outside reader; the review (S3) receives the description and the laws and is asked about both, and every law refusal in a test run is shown to the rules writer with the law's sentence, so a law that blocks what the description wants shows up as a refusal the writer can contest. Whether the review actually names wrong laws is part of the Q44 measurement, and it decides S3's prompt: seed one wrong law into a saved pencil world; if the review does not name it, S3 adds a separate laws-against-description pass to the review before S4 relies on it.",
+   "short": "A law that allows too much",
+   "question": "The designer may declare a law that is wrong for the world. Too narrow (a total that omits a move the description needs) shows up as a refusal and the review names it; that half is settled. Too permissive (a total that lets a move create cash the description says it cannot, or a pairing on a move that is a gift) breaks nothing at run time. What catches a law that allows too much?",
+   "blocks": "S4: whether a heuristic check whose incident is a conjured good may retire on the strength of a declared total law, when that law might itself list the conjuring move",
+   "resolves_with": "Argument: a permissive law is model output read by the same outside reviewer, which is asked about moves that conjure or destroy a good the description says comes from somewhere (prompts/rules_reviewer.yaml:35). So S4 retires a conjuring check only when the review names the conjuring move on the incident's saved world, not when a law merely exists. That rule is the answer; it stays open until S4 applies it to the conjuring checks' saved worlds, and reopens if the review misses a permissive law on one of them.",
+   "owner": "agent",
+   "status": "open",
+   "evidence": "Too-narrow half settled 2026-10-30: evidence/declared-laws/s3-review-choice/README.md:20 (gemini on pencil-s2-2: \"the cedar law does not name this move and would refuse it\"); prompts/rules_reviewer.yaml:37 asks about laws naming too few moves; ODD 8.22 (docs/model/ODD.md:273) records that the review reads the laws, the decision this question first blocked.",
+   "sources": [
+    "docs/plans/declared_laws.md:409",
+    "prompts/rules_reviewer.yaml:37",
+    "evidence/declared-laws/s3-review-choice/README.md:20",
+    "docs/model/ODD.md:273"
+   ],
+   "touches": [
+    "world-law",
+    "rules-review"
+   ]
+  },
+  {
+   "id": "Q49",
+   "short": "A law the designer leaves out",
+   "question": "In 5 of 9 saved pencil builds the designer declared no payment law (s1-pencil, s2-pencil-2, s2-pencil-3, s3-pencil-2 with no laws at all, and the shared s3-pencil-4 run whose 8 laws only limit which moves change a stock). A missing law refuses nothing, and the reviewer is told not to report a good for being absent from the laws. What catches a sale nobody pays for when no law covers it?",
+   "blocks": "S4: Q45 retires a check when its incident's saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.",
+   "resolves_with": "Argument from the runs: the review already looks for 'a purchase that moves goods but no money' (prompts/rules_reviewer.yaml:30-31) whether or not a law names it, so the catch is the review, not the law. S4 therefore retires a pairing check only when the review names the unpaid move on the incident's saved world; the s3-review-choice run shows that held for pencil13 (gemini) and failed for pencil-s2-kept (no reviewer), so the pairing checks stay until the review catches pencil-s2-kept. Asking the designer for a pairing law on every move that changes two holders' stock is the other route; it is a prompt change to try only if the review keeps missing it.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/declared_laws.md"
+    "evidence/declared-laws/s1-pencil/TRACE_READ.md:28",
+    "evidence/declared-laws/s2-pencil-2/TRACE_READ.md:19",
+    "evidence/declared-laws/s2-pencil-3/TRACE_READ.md:21",
+    "evidence/declared-laws/s3-pencil-2/TRACE_READ.md:50",
+    "prompts/rules_reviewer.yaml:25",
+    "evidence/declared-laws/s3-review-choice/README.md:13",
+    "evidence/declared-laws/s3-review-choice/README.md:18",
+    "docs/plans/declared_laws.md:409"
    ],
    "touches": [
     "world-law",

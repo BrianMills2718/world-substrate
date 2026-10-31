@@ -56,6 +56,7 @@ Fixed code every world runs through: the Engine, compiler, run loop, service, re
 | **Entity and component** (`entity-component`) | An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. | `docs/model/ODD.md:100` | `src/world_substrate/model.py:223` |
 | **Law check** (`law-check`) | Plan declared-laws S2 (built): inside the same commit as the write-scope check, every move, round process and knock-on effect is checked against the world's declared laws; a breach refuses the whole step or moment as law_breach and names the law, and nothing changes. A test-run breach is a build finding sent to the rules writer and the world designer. | `docs/model/ODD.md (8.21)` | `src/world_substrate/laws.py:36` |
 | **World design (bundle)** (`world-design`) | The build's first AI step: it reads the description and writes the world's people, places, things and starting state as an authoring bundle; plan declared-laws S1 adds the world's resources and laws to its output, and the rules writer receives them as input. | `docs/model/ODD.md:332` | `scripts/generate_world_bundle.py:53` |
+| **Independent rules review** (`rules-review`) | Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. | `docs/model/ODD.md (8.22)` | `scripts/review_rules.py:92` |
 
 ## Fixed people-world part
 
@@ -107,7 +108,6 @@ Named in decisions or the roadmap, not on the live path.
 | **Executable-law fingerprint** (`law-fingerprint`) | Roadmap hardening item: fingerprint the exact executable law and compiler version. | `roadmap/README.md:252` | `—` |
 | **Skill roll** (`skill-roll`) | Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it. | `docs/plans/open_attempt.md:182` | `—` |
 | **Run seed** (`run-seed`) | Plan S3: one seed drawn when a run starts and recorded in the run record; each roll's dice come from hash(run seed, event id) and are recorded, so a replay reads the dice and never rolls (Q33). | `docs/plans/open_attempt.md:192` | `—` |
-| **Independent rules review** (`rules-review`) | Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. | `docs/plans/declared_laws.md` | `—` |
 
 ## Where the sources disagree
 

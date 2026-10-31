@@ -72,7 +72,7 @@ a{color:var(--have)}
 <body>
 <main>
 <h1>Each world states its own laws; the engine holds the rules to them</h1>
-<p class="lede">Design for fixing the cause of the pencil-world bugs instead of one symptom at a time. Today the AI that writes a world's rules writes every move as raw field changes, and nothing compares those changes with what it knows, so a shop can "buy" boxes without paying (pencil13) and we add one more hand-written check per mistake. In this plan the AI that designs the world also writes the world's laws in its own terms ("pencils are made only by the factory"; "buying boxes moves boxes one way and cash the other"), the engine refuses any move that breaks one and names the law, and a separate AI reviews the rules against the description. Moves stay free: there is no fixed list of move types. <b>Nothing here is built yet</b>; pick an example to see what today's build does and what the planned build will record.</p>
+<p class="lede">Design for fixing the cause of the pencil-world bugs instead of one symptom at a time. Today the AI that writes a world's rules writes every move as raw field changes, and nothing compares those changes with what it knows, so a shop can "buy" boxes without paying (pencil13) and we add one more hand-written check per mistake. In this plan the AI that designs the world also writes the world's laws in its own terms ("pencils are made only by the factory"; "buying boxes moves boxes one way and cash the other"), the engine refuses any move that breaks one and names the law, and a separate AI reviews the rules against the description. Moves stay free: there is no fixed list of move types. <b>Built so far (2026-10-30): S1 to S3</b>, declared laws, the engine's law check and the review, on things worlds and, from this change, on people worlds too; S4 is in progress and S5 is not started. The examples below show the build before this plan and what it now records.</p>
 <p class="lede">This page is the plan's own package. The repository-wide package is on <a href="../../planning-package/review-page/">World Substrate: planning package</a>; both share one set of checks, questions and models (Q41).</p>
 <div class="legend">
 <span class="chip"><span class="sw have"></span>Blue, solid: in the World Builder build now</span>
@@ -114,10 +114,10 @@ a{color:var(--have)}
 <h2>Built in five slices, each one a working World Builder</h2>
 <div class="tablewrap"><table>
 <tr><th>Slice</th><th>State</th><th>What lands</th><th>Shown by</th></tr>
-<tr><td>S1</td><td><b style="color:var(--miss)">Planned</b></td><td>The world designer declares laws; the rules writer gets them; the build record and page list them</td><td>A live pencil build whose record lists its laws in the world's own words (L1)</td></tr>
-<tr><td>S2</td><td><b style="color:var(--miss)">Planned</b></td><td>The engine refuses a move or knock-on effect that breaks a law, naming it; a test-run refusal goes to the rules writer</td><td>Tests on the saved pencil13 world: the unpaid purchase is refused with its law named (L2, L3)</td></tr>
-<tr><td>S3</td><td><b style="color:var(--miss)">Planned</b></td><td>The independent review and its findings into the rules writer's fix step</td><td>The review names pencil13's unpaid purchase; the canonical pencil build live (L4, L5)</td></tr>
-<tr><td>S4</td><td><b style="color:var(--miss)">Planned</b></td><td>Retire the hand-written checks that guess meaning, one at a time, each only after its incidents are caught by a law or the review</td><td>A table of each retired check and the saved worlds that prove it is covered (L6)</td></tr>
+<tr><td>S1</td><td><b>Built</b> (#280)</td><td>The world designer declares laws; the rules writer gets them; the build record and page list them</td><td>A live pencil build whose record lists its laws in the world's own words (L1)</td></tr>
+<tr><td>S2</td><td><b>Built</b> (#284)</td><td>The engine refuses a move or knock-on effect that breaks a law, naming it; a test-run refusal goes to the rules writer</td><td>Tests on the saved pencil13 world: the unpaid purchase is refused with its law named (L2, L3)</td></tr>
+<tr><td>S3</td><td><b>Built</b> (#291)</td><td>The independent review and its findings into the rules writer's fix step</td><td>The review names pencil13's unpaid purchase; the canonical pencil build live (L4, L5)</td></tr>
+<tr><td>S4</td><td><b style="color:var(--miss)">In progress</b></td><td>Retire the hand-written checks that guess meaning, one at a time, each only after its incidents are caught by a law or the review</td><td>A table of each retired check and the saved worlds that prove it is covered (L6)</td></tr>
 <tr><td>S5</td><td><b style="color:var(--miss)">Planned</b></td><td>Four different descriptions built live in parallel (pencil, airfield, a kitchen, the Waltzman scenario)</td><td>Each run's laws, refusals and findings, read round by round</td></tr>
 </table></div>
 
@@ -140,14 +140,14 @@ a{color:var(--have)}
 </table></div>
 
 <h2>What you will check on the working page</h2>
-<p class="lede">Each slice ends in something you can open on the World Builder. None is built yet. Full steps and broken cases: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/acceptance-criteria.json">acceptance-criteria.json</a>.</p>
+<p class="lede">Each slice ends in something you can open on the World Builder. Status 2026-10-30: A1 and A5 are built and can be opened on the shared pencil run (<a href="https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow">ke-eNkQ6Q_Ow</a>); you have not judged them yet. A2 and A3 are built in the engine and the build but the page does not yet show them; A4, A6 and A7 are not built. Full steps and broken cases: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/acceptance-criteria.json">acceptance-criteria.json</a>.</p>
 <div class="tablewrap"><table>
 <tr><th>Id</th><th>What you do</th><th>Works when you see</th><th>Broken looks like</th></tr>
-<tr><td>A1</td><td>Build the pencil world; open the build record's Laws list</td><td>Plain sentences naming this world's goods, money and moves</td><td>No laws, or laws about things the world does not have</td></tr>
+<tr><td>A1</td><td>Build the pencil world; open the build record's Laws list. <b>Built:</b> open <a href="https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow">the shared pencil run</a>, press "See how it works", open "Laws this world keeps (8)" (no payment law in this run, Q49)</td><td>Plain sentences naming this world's goods, money and moves</td><td>No laws, or laws about things the world does not have</td></tr>
 <tr><td>A2</td><td>Open the saved pencil13 replay, round 8, the shop's purchase</td><td><b style="color:var(--miss)">Refused</b>, with the law "A purchase moves goods one way and payment the other"</td><td>Shown as done: boxes move, no cash moves</td></tr>
 <tr><td>A3</td><td>Open the pencil13 build record's Review findings</td><td>The purchase named, with the description's own words quoted</td><td>Empty, "looks good", or no quoted words</td></tr>
 <tr><td>A4</td><td>Build the pencil world and open any sale</td><td>Pencils to the buyer and cash to the seller in the same step</td><td>Goods move without cash, or the build fails</td></tr>
-<tr><td>A5</td><td>Build the pencil world and a kitchen; open each list of moves</td><td>Moves named in each world's own terms</td><td>Every move one of a few fixed kinds (transfer, exchange, transform)</td></tr>
+<tr><td>A5</td><td>Build the pencil world and a kitchen; open each list of moves. <b>Built:</b> compare the rules under "See how it works" on <a href="https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow">the pencil run</a> and <a href="https://brianmills.dev/world-builder/?run=eJYoI6N8SdS9">the cafe run</a></td><td>Moves named in each world's own terms</td><td>Every move one of a few fixed kinds (transfer, exchange, transform)</td></tr>
 <tr><td>A6</td><td>Build four different descriptions (pencil, airfield, kitchen, Waltzman); open each one's laws, findings and run</td><td>Its own laws, kept in every step, refusals named</td><td>The pencil laws reworded, or a step that breaks a law goes through</td></tr>
 <tr><td>A7</td><td>Read what checked the rules in a build record, and the S4 retired-checks table</td><td>Only laws, the review and test-run reports; each retired check proven covered</td><td>A new mistake fixed by one more hand-written check</td></tr>
 </table></div>
@@ -178,16 +178,16 @@ a{color:var(--have)}
 
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-28 on branch plan/declared-laws (worktree ws-declared-laws) at 4ff4c27, based on main 5d6a48e); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-30 on branch ws-s4-people-laws at f83c6d8, based on main c7c786c); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 0, of 1 (tracked as Q15)</td><td><span class="tag miss">exit 1</span></td></tr>
-<tr><td>trace reads</td><td>runs 20, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>project check (tests, system model, docs)</td><td>tests run 801, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>wiki and Markdown cap</td><td>md files 157, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>trace reads</td><td>runs 30, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project check (tests, system model, docs)</td><td>tests run 850, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 168, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 19 open, 29 resolved</h3>
+<h3 class="sub">Open questions: 19 open, 30 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -206,9 +206,9 @@ a{color:var(--have)}
 <tr><td><b>Q36</b> How a misreading is caught</td><td>agent</td><td>R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings</td></tr>
 <tr><td><b>Q37</b> Added doorway listed as left out</td><td>agent</td><td>A3 on any newly built airfield world, and whether a visitor can see what the builder added</td></tr>
 <tr><td><b>Q38</b> Does S1 close #128</td><td>agent</td><td>whether #128 stays open on the board</td></tr>
-<tr><td><b>Q44</b> Which model reviews the rules</td><td>agent</td><td>S3&#x27;s reviewer design, and whether S4 may retire any heuristic check on the strength of the review</td></tr>
 <tr><td><b>Q45</b> Which heuristic checks retire</td><td>agent</td><td>S4: which checks are removed, and so whether validation stops growing one check per bug</td></tr>
-<tr><td><b>Q48</b> A wrong law is declared</td><td>agent</td><td>whether S3&#x27;s review must read the laws against the description as well as the rules, and whether L1 can pass on laws that are merely well-formed</td></tr>
+<tr><td><b>Q48</b> A law that allows too much</td><td>agent</td><td>S4: whether a heuristic check whose incident is a conjured good may retire on the strength of a declared total law, when that law might itself list the conjuring move</td></tr>
+<tr><td><b>Q49</b> A law the designer leaves out</td><td>agent</td><td>S4: Q45 retires a check when its incident&#x27;s saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.</td></tr>
 </tbody></table></div>
 <h3 class="sub">Diagrams</h3>
 <ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
@@ -225,7 +225,7 @@ a{color:var(--have)}
 <!-- maps:end -->
 <h2>Your decisions</h2>
 <p class="lede"><b>Decided:</b> the three-part design, laws declared by the world's designer, enforced by the engine, and an independent review, instead of fixed move types (you said "yes lets make it companhy plannign complaint" on 2026-10-28, after rejecting fixed move types as destroying the point).</p>
-<p class="lede">Nothing in this plan is waiting on you. The three open questions (which model reviews, Q44; which checks retire, Q45; what catches a wrong law, Q48) are settled by checking, inside the plan. S1 starts next.</p>
+<p class="lede">Nothing in this plan is waiting on you. Q44 (which model reviews) is settled: gemini, chosen on seven saved incident worlds. Still open and settled by checking inside the plan: which checks retire (Q45), a law that allows too much (Q48) and a law the designer leaves out (Q49). S1 to S3 are built; S4 is in progress.</p>
 
 <footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/declared_laws.md">docs/plans/declared_laws.md</a> · Methods copied: Petri-net place invariants, Concordia's stock-and-flow ledger, LLM+P-style validator feedback · The pencil13 read-through: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/evidence/pencil13-trace-audit/TRACE_READ.md">TRACE_READ.md</a></footer>
 </main>
