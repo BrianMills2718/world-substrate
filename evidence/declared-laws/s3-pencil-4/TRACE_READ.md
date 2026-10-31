@@ -117,5 +117,6 @@ bought one", which matches `r5-e00002`, `r7-e00011`, `r8-e00011` and `r9-e00001`
    before this fix. Whether "no process" should outrank "every move works" is S4's question, not changed here.
 5. **New: sellers cannot sell under the buyer's name for a trade.** The miner (round 2) and the mill (rounds 3,
    6, 10) worded "I sell one ... to ..."; the interpreter matched nothing because the trade is named `buy-graphite`
-   and `buy-slats`, though the same rules let anyone start it (truckers did in round 3). Five lost turns. Not fixed
-   here; recorded for the interpreter's prompt or two-sided move names.
+   and `buy-slats`, though the same rules let anyone start it (truckers did in round 3). Five lost turns. Fixed
+   2026-10-31 in the interpreter's prompt (version 1.1): replayed on the recorded inputs, 15 of 15 now match with the
+   right roles, and the controls are unchanged (`../seller-wording/README.md`).

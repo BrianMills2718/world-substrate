@@ -1,5 +1,5 @@
 name: world_substrate_attempt_interpreter
-version: "1.0"
+version: "1.1"
 description: >
   Reads one person's own sentence of what they physically try and names the
   world action kind it is, with a value and the exact words for each field.
@@ -19,6 +19,11 @@ messages:
       - Choose the kind whose description matches what the person does with
         their body, voice or hands. Never pick a different, safer kind than the
         one they describe.
+      - A kind may be named from one side of an exchange ("buy-slats",
+        "sell-pencils"). A person on the other side doing that same exchange
+        (selling where the kind says buy, buying where it says sell, giving
+        where it says take) is trying that kind: fill its fields by who plays
+        each part, which may make the person the seller or the giver.
       - For every field of that kind give a value: for an entity field, the id
         of the entity their words name (from the entity list); otherwise the
         value they state. Copy into quoted_span the exact words of the attempt
