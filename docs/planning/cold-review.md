@@ -31,3 +31,27 @@ Reviewer: `company-planning:planning-compliance-reviewer` subagent, reviewing al
 - **Regression:** none found.
 
 Verdict: pass
+
+
+## Re-review, 2026-10-30 (people-world laws, rounds 4 and 5)
+
+Reviewer: `company-planning:planning-compliance-reviewer` subagent, reviewing the package rebuilt at f83c6d8 (people worlds declare laws and get the review, 66e4b3b). Reviewed revision: f83c6d8a1589dfb8ec8d129c0e0a0e3e3fb9df82.
+
+Round 4 returned revise with six blocking findings, all fixed in 0948968:
+
+1. A missing question about laws the designer leaves out (5 of 9 pencil builds declared no payment law): added as Q49. It blocks S4, A1 and A4, and is settled by argument: the review catches an unpaid sale, so the pairing checks stay until the review catches pencil-s2-kept.
+2. Q48 was half answered already: narrowed to laws that allow too much, with the too-narrow half's evidence cited.
+3. `rules-review` was marked theory: it is now Substrate at `scripts/review_rules.py:92`.
+4. The people-world law path (`declare_people_laws`, `keep_compiled_laws`) was missing from ODD 8.21 and the system model: added.
+5. A stale review-page paragraph ("S1 starts next", Q44 open): updated.
+6. The A1 and A5 steps could not be followed at the entrypoint: the shared-link steps and the cafe link were added.
+
+Round 5 checked those fixes: validator 9 of 9 parts ok, 139 citations resolved, the package fresh, coverage 6 of 7 requirements (the seventh is about the planning process). Its notes are applied in the commit that records this review: Q49 cites the table rows (lines 13 and 18), Q48 says what keeps it open, and the page's A1 and A5 rows show the shared-link steps.
+
+Carried notes, not blocking:
+- The open-attempt package is out of date.
+- A1 and A5 use a plain list, not the router's linked table (recorded in A1).
+- "about $2 and two days" (`declared_laws.md:388`) has no source.
+- Keeping run-log reasoning text is still a slice requirement.
+
+Verdict: pass

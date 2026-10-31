@@ -883,7 +883,7 @@ Q = [
   "short": "A law that allows too much",
   "question": "The designer may declare a law that is wrong for the world. Too narrow (a total that omits a move the description needs) shows up as a refusal and the review names it; that half is settled. Too permissive (a total that lets a move create cash the description says it cannot, or a pairing on a move that is a gift) breaks nothing at run time. What catches a law that allows too much?",
   "blocks": "S4: whether a heuristic check whose incident is a conjured good may retire on the strength of a declared total law, when that law might itself list the conjuring move",
-  "resolves_with": "Argument: a permissive law is model output read by the same outside reviewer, which is asked about moves that conjure or destroy a good the description says comes from somewhere (prompts/rules_reviewer.yaml:35). So S4 retires a conjuring check only when the review names the conjuring move on the incident's saved world, not when a law merely exists. Settled by that rule unless a saved world shows the review missing one; no new test is needed.",
+  "resolves_with": "Argument: a permissive law is model output read by the same outside reviewer, which is asked about moves that conjure or destroy a good the description says comes from somewhere (prompts/rules_reviewer.yaml:35). So S4 retires a conjuring check only when the review names the conjuring move on the incident's saved world, not when a law merely exists. That rule is the answer; it stays open until S4 applies it to the conjuring checks' saved worlds, and reopens if the review misses a permissive law on one of them.",
   "owner": "agent",
   "status": "open",
   "evidence": "Too-narrow half settled 2026-10-30: evidence/declared-laws/s3-review-choice/README.md:20 (gemini on pencil-s2-2: \"the cedar law does not name this move and would refuse it\"); prompts/rules_reviewer.yaml:37 asks about laws naming too few moves; ODD 8.22 (docs/model/ODD.md:273) records that the review reads the laws, the decision this question first blocked.",
@@ -909,7 +909,8 @@ Q = [
    "evidence/declared-laws/s2-pencil-3/TRACE_READ.md:21",
    "evidence/declared-laws/s3-pencil-2/TRACE_READ.md:50",
    "prompts/rules_reviewer.yaml:25",
-   "evidence/declared-laws/s3-review-choice/README.md:12",
+   "evidence/declared-laws/s3-review-choice/README.md:13",
+   "evidence/declared-laws/s3-review-choice/README.md:18",
    "docs/plans/declared_laws.md:409"
   ],
   "touches": ["world-law", "rules-review"]
