@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import sys
 import tempfile
+import types
 import unittest
 from copy import deepcopy
 from pathlib import Path
@@ -140,6 +141,22 @@ class WaltzmanTests(unittest.TestCase):
             run_world(bundle, causal, policy="resident", max_turns=1, start_snapshot=first["final_snapshot"],
                       turn_offset=first["summary"]["last_turn"], underway=first["underway"])
         self.assertEqual(set(told), {3})
+
+    def test_the_llm_policy_is_told_the_round_too(self):
+        told: list[int] = []
+
+        def render_prompt(path, **context):
+            told.append(context["tick"])
+            return []
+
+        fake = types.ModuleType("llm_client")
+        fake.render_prompt = render_prompt
+        fake.call_llm_json_schema = lambda *a, **k: ({"action_id": "wait", "reasoning": "test"},
+                                                     types.SimpleNamespace(cost=0.0))
+        bundle, causal = self.world["bundle"], self.world["causal_model"]
+        with patch.dict(sys.modules, {"llm_client": fake}):
+            run_world(bundle, causal, policy="llm", max_turns=2)
+        self.assertEqual(sorted(set(told)), [1, 2])
 
 
 class BuildCheckTests(unittest.TestCase):
