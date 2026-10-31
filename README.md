@@ -58,7 +58,7 @@ The product being demonstrated is **World Substrate**. **Waltzman Coordination L
 | Waltzman resident cognition | persistent cognition not integrated; existing bounded policy seam is sufficient for the accepted first gate |
 | Waltzman institution / intervention / adequacy | implemented first bounded gate; coalition decision, exact-history fork, intervention, eight declared dependency mappings + residual risk |
 | Saved user worlds/runs | not yet implemented; not required for the promoted Waltzman demo |
-| Declared world laws | implemented and deployed: the world designer declares each world's resources and laws, and the engine refuses a step that breaks one and names the law ([plan](docs/plans/declared_laws.md)) |
+| Declared world laws | implemented and deployed: the world designer declares each world's resources and laws (people worlds too, from 2026-10-30, keeping only laws that list every built-in coordination rule that changes their counts), and the engine refuses a step that breaks one and names the law ([plan](docs/plans/declared_laws.md)) |
 | Independent rules review | implemented and deployed: a second AI on another model family reads the rules against the description and the laws, and its findings go to the rules writer ([live check](evidence/declared-laws/s3-pencil/TRACE_READ.md)) |
 
 The current live authoring path is:
