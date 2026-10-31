@@ -817,7 +817,8 @@ def run_world(
                 row["attempt"] = {"text": beliefs[actor].get("attempt"), "reading": readings[actor]}
                 if (did or {}).get("kind") == open_attempt.UNMATCHED_KIND:
                     unmatched.append({"round": turn + turn_offset, "actor": actor, "attempt": did.get("attempt"),
-                                      "nearest_kind": did.get("nearest_kind"), "why": did.get("why")})
+                                      "nearest_kind": did.get("nearest_kind"), "why": did.get("why"),
+                                      **({"asks": did["asks"]} if did.get("asks") in actors else {})})
             rows[actor] = row
         round_no = turn + turn_offset
         starting: dict[str, list[dict[str, Any]]] = {}
@@ -830,6 +831,8 @@ def run_world(
                     row["started_task"] = True
                     starting.setdefault(row["event_id"], []).append({**task, "expects": expects})
         if residents is not None:
+            # Requests reach the one asked after everyone's own record of this round.
+            requests: list[tuple[str, str]] = []
             for actor in actors:
                 row, attempt = rows[actor], beliefs.get(actor) or {}
                 row["belief"], row["expects"] = attempt.get("belief"), attempt.get("expected_effect")
@@ -842,7 +845,17 @@ def run_world(
                     # A started task says what was started, not whether it will work (#128): the ending reaches the
                     # person only through what they see in later rounds.
                     result = "you started it; it is now under way"
-                if (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND:
+                asked = (row.get("did") or {}).get("asks")
+                if (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and asked in actors:
+                    # A request to another person changes nothing in the world; its words reach the one asked, who
+                    # decides what to do (evidence/declared-laws/unmatched-replay: 12 of 17 unread tries were these).
+                    residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You said: "
+                                      f"\"{row['did']['attempt']}\" It changed nothing yet; your words reach "
+                                      f"{engine.world.entities[asked].label}, who decides what to do.")
+                    requests.append((asked, f"Round {turn + turn_offset + 1}: {engine.world.entities[actor].label} "
+                                     f"asked you, in their words: \"{row['did']['attempt']}\""))
+                    row["asked"] = asked
+                elif (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND:
                     # Nothing in the world answers this kind of try yet (Q22 default: it changes nothing).
                     residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You tried to "
                                       f"{row['did']['attempt']}; nothing came of it.")
@@ -855,6 +868,8 @@ def run_world(
                 else:
                     residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You did {did}, "
                                       f"expecting: {row['expects']} Result: {result}.")
+            for asked, text in requests:
+                residents.observe(asked, text)
         advanced = engine.advance(1)
         # This round's events in order: each ends the open tasks whose field it moves on (a person's move or the
         # world's process), then opens the tasks it started. An earlier event cannot end a later start.

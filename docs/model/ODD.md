@@ -371,6 +371,10 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
   it", and the run lists it in `summary.unmatched_attempts`. A lost race resubmits the same move at the new revision;
   nobody is asked again. Each row keeps `attempt {text, reading}`; the envelope is the recorded command, so replay
   calls no model. Letting an AI game master give unmatched attempts an effect is decision D2: not yet (Brian, 2026-10-26).
+  An unmatched attempt that asks another person in the run to act also carries `asks` (the one asked, read by the
+  interpreter, prompt 1.2): it still changes nothing, the asker is told their words reach that person, and the person
+  asked hears the words, quoted, as the next round's first note after their own (`run_authored_world.py`, "Requests
+  reach the one asked"); the run lists it with `asks` in `summary.unmatched_attempts`.
 - **Member flags:** every person's `member` record carries `authorized` and `approved`, both False and never written
   by any rule (`spikes/any-scenario-2026-10/compile_spec.py:33-34`, `:626`); residents see them, and in c1r24 one read
   its own `authorized False` as the decision not being authorized (#231).
