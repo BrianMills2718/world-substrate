@@ -428,8 +428,8 @@
   {
    "id": "rules-review",
    "label": "Independent rules review",
-   "kind": "Theory",
-   "explain": "Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Code: none yet."
+   "kind": "Substrate",
+   "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:92."
   }
  ],
  "edges": [

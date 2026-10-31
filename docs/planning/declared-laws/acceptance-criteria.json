@@ -42,7 +42,7 @@
       },
       "entrypoint": "https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow",
       "status": "built",
-      "built_note": "S1 (#280): the shared s3-pencil-4 run lists \"Laws this world keeps\" (scripts/world_builder_home.html:507); evidence/declared-laws/s3-pencil-4/TRACE_READ.md. Brian has not judged it."
+      "built_note": "S1 (#280). To see it today: open https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow, press \"See how it works\", then open \"Laws this world keeps (8)\" (scripts/world_builder_home.html:507). Gaps: the laws show as a plain collapsed list, not the linked table the router chose (router/build-record.recommendation.json); and this run's 8 laws only limit which moves change each stock, with no payment law, so the expected sale-pays law is absent here (open question Q49). Brian has not judged it."
     },
     {
       "id": "A2",
@@ -124,7 +124,7 @@
       },
       "entrypoint": "https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow",
       "status": "built",
-      "built_note": "Moves are written per world by the rules writer; no fixed kinds exist in src/world_substrate. The kitchen half is shown by evidence/declared-laws/s4-cafe. Brian has not judged it."
+      "built_note": "Moves are written per world by the rules writer; there are no fixed kinds. To see it today: open the pencil run https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow and the cafe run https://brianmills.dev/world-builder/?run=eJYoI6N8SdS9 (evidence/declared-laws/s4-cafe), press \"See how it works\" on each and compare the rules lists. Brian has not judged it."
     },
     {
       "id": "A6",

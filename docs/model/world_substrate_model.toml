@@ -51,7 +51,7 @@ state = ["world {id, label, summary, location}", "components[] {name, fields[]}"
 
 [[entities]]
 name = "DeclaredLaws"
-what = "The world's own resources and laws, written by the world designer inside the AuthoringBundle (declared-laws plan S1): each resource names every numeric field it is kept in; a total law names the moves and processes that may change a resource's world total; a pairing law says a move hands one resource over for another. Checked for shape by the bundle validator, given to the rules writer, and kept by the engine at every commit (S2: src/world_substrate/laws.py:36 law_breaches; a breach is a law_breach refusal)."
+what = "The world's own resources and laws, written by the world designer inside the AuthoringBundle (declared-laws plan S1): each resource names every numeric field it is kept in; a total law names the moves and processes that may change a resource's world total; a pairing law says a move hands one resource over for another. Checked for shape by the bundle validator, given to the rules writer, and kept by the engine at every commit (S2: src/world_substrate/laws.py:36 law_breaches; a breach is a law_breach refusal). People worlds get theirs from a separate call after compiling (scripts/people_world.py:298 declare_people_laws); keep_compiled_laws (:270) drops a law the compiled coordination rules would break, and an invalid reply declares none."
 source = "scripts/scaffold_world.py:45"
 schema = "world-substrate-authoring-bundle/v0 (optional keys)"
 state = ["resources[] {resource_id, says, kept_in[] {component, field}}", "laws[] total {law_id, says, resource, may_change_by[] (action kind | process:<id>)}", "laws[] pairing {law_id, says, move, gives {resource, from, to}, pays {resource, from, to}}"]

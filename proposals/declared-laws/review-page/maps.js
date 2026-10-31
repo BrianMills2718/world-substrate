@@ -431,8 +431,8 @@ window.MAPS = {
    {
     "id": "rules-review",
     "label": "Independent rules review",
-    "kind": "Theory",
-    "explain": "Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Code: none yet."
+    "kind": "Substrate",
+    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:92."
    }
   ],
   "edges": [
@@ -1189,9 +1189,15 @@ window.MAPS = {
    },
    {
     "id": "Q48",
-    "label": "Q48: A wrong law is declared",
+    "label": "Q48: A law that allows too much",
     "kind": "AgentQuestion",
-    "explain": "Blocks: whether S3's review must read the laws against the description as well as the rules, and whether L1 can pass on laws that are merely well-formed."
+    "explain": "Blocks: S4: whether a heuristic check whose incident is a conjured good may retire on the strength of a declared total law, when that law might itself list the conjuring move."
+   },
+   {
+    "id": "Q49",
+    "label": "Q49: A law the designer leaves out",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: S4: Q45 retires a check when its incident's saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.."
    },
    {
     "id": "agenda",
@@ -1300,8 +1306,7 @@ window.MAPS = {
     "id": "rules-review",
     "label": "Independent rules review",
     "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan declared-laws S3: a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark."
+    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds."
    },
    {
     "id": "run-loop",
@@ -1597,6 +1602,18 @@ window.MAPS = {
    {
     "id": "Q48-rules-review",
     "source": "Q48",
+    "target": "rules-review",
+    "label": "bears on"
+   },
+   {
+    "id": "Q49-world-law",
+    "source": "Q49",
+    "target": "world-law",
+    "label": "bears on"
+   },
+   {
+    "id": "Q49-rules-review",
+    "source": "Q49",
     "target": "rules-review",
     "label": "bears on"
    }
