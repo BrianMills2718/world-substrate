@@ -425,6 +425,7 @@ def _llm_choice(
     max_budget: float,
     recent: list[str],
     brief: str = "",
+    round_no: int | None = None,
 ) -> tuple[dict[str, Any] | None, str, float]:
     from llm_client import call_llm_json_schema, render_prompt
 
@@ -433,7 +434,7 @@ def _llm_choice(
         return None, "wait: no offered action", 0.0
     schema = json.loads(json.dumps(CHOICE_SCHEMA))
     schema["properties"]["action_id"]["enum"] = offered + [WAIT]
-    context = _view(engine, actor, page)
+    context = _view(engine, actor, page, round_no=round_no)
     context["recent"] = recent
     context["world_summary"] = world_summary
     context["brief"] = brief
@@ -698,6 +699,7 @@ def run_world(
                         max_budget=max_budget,
                         recent=recents[actor],
                         brief=(briefs or {}).get(actor, ""),
+                        round_no=turn + turn_offset,
                     )
                     for actor in actors
                 }
@@ -776,6 +778,7 @@ def run_world(
                         max_budget=max_budget,
                         recent=_recent_for(engine, actor, seen),
                         brief=(briefs or {}).get(actor, ""),
+                        round_no=turn + turn_offset,
                     )
                     cost += call_cost
                 if again is None:
