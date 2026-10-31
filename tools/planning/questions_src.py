@@ -823,10 +823,13 @@ Q = [
   "blocks": "S3's reviewer design, and whether S4 may retire any heuristic check on the strength of the review",
   "resolves_with": "Prior art settles the shape (Huang et al. 2023, arXiv 2310.01798; Wataoka et al. 2024, arXiv 2410.21819): a different model family from the rules writer, a fresh context holding only the description, the declared laws and the compiled rules, and output as a list of findings (rule, quoted description words, what is wrong), never a verdict. Whether it earns its place is empirical, so one measurement, named for one decision (S4): run it on the saved worlds of every logged incident (free replays plus one review call each, a few cents) and count which incidents it names.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
+  "evidence": "Settled by the named measurement 2026-10-28: evidence/declared-laws/s3-review-choice/README.md (21 calls, 0 errors, $0.4356) ran three models on seven saved incident worlds; gemini-3.1-pro-preview named 7 of 9 known bugs including pencil13's unpaid purchase, deepseek 4, the same-family control 6. scripts/review_rules.py:92 uses gemini on a fresh context of description, laws and rules. Since 2026-10-30 people worlds get the same review (scripts/world_builder_service.py, _generate_people_world).",
   "sources": [
    "docs/plans/declared_laws.md",
-   "scripts/generate_causal_model.py"
+   "scripts/generate_causal_model.py",
+   "evidence/declared-laws/s3-review-choice/README.md:12",
+   "scripts/review_rules.py:92"
   ],
   "touches": ["rules-review", "gen-rules"]
  },
@@ -835,7 +838,7 @@ Q = [
   "short": "Which heuristic checks retire",
   "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:840-1220), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
   "blocks": "S4: which checks are removed, and so whether validation stops growing one check per bug",
-  "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape.",
+  "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape. Progress 2026-10-30: the S4 evidence (evidence/declared-laws/s4-waltzman, s4-cafe) and the people-world laws change put every built world, people and things alike, under declared laws and the review; the retirement table itself is still owed.",
   "owner": "agent",
   "status": "open",
   "sources": [

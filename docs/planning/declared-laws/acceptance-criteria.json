@@ -40,8 +40,9 @@
         "view": "composite-linked-view: a laws table in the build record, each row opening the moves it names",
         "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
       },
-      "entrypoint": "planned",
-      "status": "not built"
+      "entrypoint": "https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow",
+      "status": "built",
+      "built_note": "S1 (#280): the shared s3-pencil-4 run lists \"Laws this world keeps\" (scripts/world_builder_home.html:507); evidence/declared-laws/s3-pencil-4/TRACE_READ.md. Brian has not judged it."
     },
     {
       "id": "A2",
@@ -62,7 +63,8 @@
         "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
       },
       "entrypoint": "planned",
-      "status": "not built"
+      "status": "not built",
+      "built_note": "S2 (#284) engine refusal is built and tested (src/world_substrate/laws.py); the page view of a refusal naming its law has not been walked on a saved world, so this stays not built."
     },
     {
       "id": "A3",
@@ -82,7 +84,8 @@
         "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
       },
       "entrypoint": "planned",
-      "status": "not built"
+      "status": "not built",
+      "built_note": "S3 (#291) review runs and its findings are saved in the share record (review_findings), but the page has no findings panel yet, so this stays not built."
     },
     {
       "id": "A4",
@@ -119,8 +122,9 @@
         "view": "composite-linked-view: the moves list in the build record, each move opening its effects and the laws that touch it",
         "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
       },
-      "entrypoint": "planned",
-      "status": "not built"
+      "entrypoint": "https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow",
+      "status": "built",
+      "built_note": "Moves are written per world by the rules writer; no fixed kinds exist in src/world_substrate. The kitchen half is shown by evidence/declared-laws/s4-cafe. Brian has not judged it."
     },
     {
       "id": "A6",

@@ -115,12 +115,6 @@
    "explain": "Blocks: whether #128 stays open on the board."
   },
   {
-   "id": "Q44",
-   "label": "Q44: Which model reviews the rules",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: S3's reviewer design, and whether S4 may retire any heuristic check on the strength of the review."
-  },
-  {
    "id": "Q45",
    "label": "Q45: Which heuristic checks retire",
    "kind": "AgentQuestion",
@@ -507,18 +501,6 @@
    "id": "Q38-observation",
    "source": "Q38",
    "target": "observation",
-   "label": "bears on"
-  },
-  {
-   "id": "Q44-rules-review",
-   "source": "Q44",
-   "target": "rules-review",
-   "label": "bears on"
-  },
-  {
-   "id": "Q44-gen-rules",
-   "source": "Q44",
-   "target": "gen-rules",
    "label": "bears on"
   },
   {

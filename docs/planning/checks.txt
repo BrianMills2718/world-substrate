@@ -1,7 +1,7 @@
-Checks run 2026-10-28 on branch plan/declared-laws (worktree ws-declared-laws) at 4ff4c27, based on main 5d6a48e.
+Checks run 2026-10-30 on branch ws-s4-people-laws at f83c6d8, based on main c7c786c.
 
 == durable documents (arc42): python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
-durable-docs: mode=repo repo=. findings=0 (none), exit 0
+durable-docs: mode=repo repo=/home/brian/code2/worktrees/ws-s4-people-laws findings=0 (none), exit 0
 exit 0
 
 == project navigation: python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .
@@ -15,19 +15,19 @@ RESULT repo-format compliant=0 of=1 exit=1
 exit 1
 
 == trace reads: python3 scripts/check_trace_reads.py
-RESULT runs=20 problems=0
+RESULT runs=30 problems=0
 exit 0
 
-== wiki and Markdown cap: python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD (without --ref it checks main, which still has the orphan and stale reviews this change fixes)
-EXCEPTION    157/180  BrianMills2718/world-substrate  -- Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from wiki/catalog.md.
-REPO  BrianMills2718/world-substrate  md=157  cap=exception  reach=ok(0)  layout=undeclared(0)  durable=ok(0)
+== wiki and Markdown cap: python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD
+EXCEPTION    168/180  BrianMills2718/world-substrate  -- Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from wiki/catalog.md.
+REPO  BrianMills2718/world-substrate  md=168  cap=exception  reach=ok(0)  layout=undeclared(0)  durable=ok(0)
 md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=1 orphans=0 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=1 findings=0 undeclared=0   exit 0
 exit 0
 
 == project check: PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py
 World Substrate project check passed.
-Neutral runtime tests: 801 passed, 2 skipped, 213 subtests passed in 90.84s (0:01:30)
-Passed-tree stamp: 46adda07d0e9
+Neutral runtime tests: 850 passed, 2 skipped, 222 subtests passed in 63.01s (0:01:03)
+Passed-tree stamp: 46ccc9159127
 Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
 Planning path: README.md -> roadmap/README.md -> active slice
 Pinned source records checked: 16
