@@ -307,6 +307,75 @@ def _push(engine):
     return engine.submit(dict(offered[0]["action"], controller="test"))
 
 
+class RequestTests(unittest.TestCase):
+    """A try that asks another person to act reaches that person and changes nothing else. The world is the kept
+    s3-pencil build, where the shop's "place an order ... with the pencil factory" reached no one in 5 rounds
+    (evidence/declared-laws/unmatched-replay, calls 22229-22279); the shop's words are that run's own."""
+
+    ORDER = "I try to place an order for boxed pencils with the pencil factory."
+
+    def _run(self, asks):
+        kept = json.loads((REPO / "tests/fixtures/pencil-s3-kept.json").read_text())
+        fake = types.ModuleType("llm_client")
+        fake.render_prompt = lambda path, **kwargs: [{"role": "user", "content": "{}"}]
+
+        def call_llm_json_schema(model, messages, schema, **kwargs):
+            if kwargs["task"] == open_attempt.TASK:
+                self.assertIn("asks", schema["required"])
+                return ({"kind": "none", "fields": [], "nearest_kind": "buy-boxes", "asks": asks,
+                         "why": "no kind is placing an order"}, types.SimpleNamespace(cost=0.0))
+            # Everyone waits, except the shop's round-1 order below.
+            return ({"belief": "b", "attempt": "wait", "expected_effect": "e", "work": "none", "reasoning": "r"},
+                    types.SimpleNamespace(cost=0.0))
+
+        fake.call_llm_json_schema = call_llm_json_schema
+        import scripts.concordia_residents  # noqa: F401
+        from scripts import concordia_residents as cr
+
+        real_choose = cr.Residents.choose
+
+        def choose(self_, actor, available, context):
+            out = real_choose(self_, actor, available, context)
+            if actor == "pencil-shop" and context.get("tick") == 1:
+                out = {**out, "attempt": RequestTests.ORDER}
+            return out
+
+        with patch.dict(sys.modules, {"llm_client": fake}), patch.object(cr.Residents, "choose", choose):
+            trace, engine, _ = run_world(kept["bundle"], kept["causal_model"], policy="resident",
+                                         model_name="fixture-model", max_turns=2, trace_id="fixture-trace",
+                                         open_attempts=True)
+        return trace, engine
+
+    def test_a_request_reaches_the_one_asked_and_changes_nothing(self):
+        trace, engine = self._run("pencil-factory")
+        row = trace["transcript"][0]["actors"]["pencil-shop"]
+        self.assertEqual(row["did"]["kind"], open_attempt.UNMATCHED_KIND)
+        self.assertEqual((row["did"]["asks"], row["asked"], row["changes"]), ("pencil-factory", "pencil-factory", []))
+        listed = [u for u in trace["summary"]["unmatched_attempts"] if u["actor"] == "pencil-shop"]
+        self.assertEqual([(u["round"], u.get("asks")) for u in listed], [(1, "pencil-factory")])
+        factory = trace["resident_memory"]["pencil-factory"]
+        shop_label = engine.world.entities["pencil-shop"].label
+        heard = [m for m in factory if "asked you" in m]
+        self.assertEqual(heard, [f'Round 2: {shop_label} asked you, in their words: "{self.ORDER}"'])
+        # The factory's own record of round 1 comes first, then the request it hears for round 2.
+        self.assertLess(next(i for i, m in enumerate(factory) if m.startswith("Round 1:") and "asked" not in m),
+                        factory.index(heard[0]))
+        self.assertTrue(any("your words reach" in m for m in trace["resident_memory"]["pencil-shop"]))
+        # The recorded command carries who was asked; replay needs no model.
+        command = next(c for c in engine.world.commands if c.get("action", {}).get("kind") == "unmatched-attempt")
+        self.assertEqual(command["action"]["asks"], "pencil-factory")
+        with patch.dict(sys.modules, {"llm_client": None}):
+            self.assertTrue(engine.replay()["ok"])
+
+    def test_asking_no_one_or_oneself_or_a_place_is_an_ordinary_unmatched_try(self):
+        for asks in ("none", "pencil-shop", "pennsylvania", "no-such-id"):
+            trace, _ = self._run(asks)
+            row = trace["transcript"][0]["actors"]["pencil-shop"]
+            self.assertNotIn("asked", row, asks)
+            self.assertFalse(any("asked you" in m for ms in trace["resident_memory"].values() for m in ms), asks)
+            self.assertTrue(any("nothing came of it" in m for m in trace["resident_memory"]["pencil-shop"]), asks)
+
+
 class KnockOnEffectTests(unittest.TestCase):
     def test_glass_chain_completes_in_one_moment(self):  # A5 (declared fixture)
         engine, _, _ = build_engine(GLASS_BUNDLE, GLASS_RULES)

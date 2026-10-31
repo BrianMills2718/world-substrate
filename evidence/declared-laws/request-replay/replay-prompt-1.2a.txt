@@ -1,0 +1,28 @@
+21638 0 cedar-mill was none now buy-slats {'buyer': 'pencil-factory', 'seller': 'cedar-mill', 'quantity': 1} asks None
+21860 0 lead-works was none now unmatched None asks None
+21861 0 sawmill was none now unmatched None asks logger
+21883 0 sawmill was none now unmatched None asks logger
+21894 0 sawmill was none now unmatched None asks logger
+21905 0 sawmill was none now unmatched None asks None
+21916 0 pencil-factory was none now unmatched None asks trucking-company
+21917 0 sawmill was none now unmatched None asks logger
+21928 0 sawmill was none now unmatched None asks logger
+21939 0 pencil-factory was none now unmatched None asks graphite-mine
+21723 0 sawmill was none now buy-slats {'buyer': 'pencil-factory', 'seller': 'sawmill', 'quantity': 1} asks None
+21740 0 graphite-mine was none now buy-graphite {'buyer': 'lead-maker', 'seller': 'graphite-mine', 'quantity': 1} asks None
+21805 0 sawmill was none now buy-slats {'buyer': 'pencil-factory', 'seller': 'sawmill', 'quantity': 1} asks None
+22346 0 pencil-shops was none now unmatched None asks pencil-factory
+22533 0 miner was none now buy-graphite {'buyer': 'lead-maker', 'seller': 'miner', 'quantity': 1} asks None
+22541 0 mill was none now buy-slats {'buyer': 'factory', 'seller': 'mill', 'quantity': 1} asks None
+22575 0 customers was none now sell-pencils {'shop': 'shops', 'customer': 'customers', 'quantity': 1} asks None
+22586 0 mill was none now buy-slats {'buyer': 'factory', 'seller': 'mill', 'quantity': 1} asks None
+22644 0 mill was none now buy-slats {'buyer': 'factory', 'seller': 'mill', 'quantity': 1} asks None
+22218 0 sawmill was none now unmatched None asks cedar-logger
+22229 0 pencil-shop was none now unmatched None asks pencil-factory
+22258 0 pencil-shop was none now unmatched None asks pencil-factory
+22268 0 pencil-shop was none now unmatched None asks pencil-factory
+22279 0 pencil-shop was none now unmatched None asks pencil-factory
+22290 0 pencil-shop was none now unmatched None asks pencil-factory
+22783 0 waiter was none now unmatched None asks None
+22793 0 waiter was none now unmatched None asks None
+trace world-substrate-interpreter-replay-8ed5c884 cost 0.007

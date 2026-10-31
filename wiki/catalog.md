@@ -166,6 +166,7 @@ Every reader document in this repository that the [wiki index](index.md) does no
 - [Trace read: S4 Waltzman build 2, the kept first try skipped review; Country B's concern filled from its support's state](../evidence/declared-laws/s4-waltzman-2/TRACE_READ.md)
 - [Seller wording: interpreter prompt 1.1 replayed on recorded attempts, 15 of 15 exchange attempts now match](../evidence/declared-laws/seller-wording/README.md)
 - [Unmatched replay: all 27 unread live attempts replayed; 10 now match, 12 of the rest are requests to another person](../evidence/declared-laws/unmatched-replay/README.md)
+- [Request replay: prompt 1.2 names who an unmatched attempt asks; 16 of the 27 now match, the 7 real requests name the one asked](../evidence/declared-laws/request-replay/README.md)
 - [Q23: do generated moves check walls? (2026-10-25)](../evidence/open-attempt/q23/README.md)
 - [Q28: can generated worlds reuse the library damage processes? (2026-10-26)](../evidence/open-attempt/q28/README.md)
 

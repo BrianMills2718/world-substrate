@@ -10,6 +10,11 @@ An attempt that fits no kind goes through the engine's existing unsupported path
 recorded with its words, nothing in the world changes, and the run lists it so the next build can add a rule. Letting
 an AI game master invent an effect instead is decision D2 in the plan: not yet (Brian, 2026-10-26).
 
+An unmatched attempt that asks someone else to act ("I ask the logger to send logs to my sawmill") also names the one
+asked (`asks`). It still changes nothing; the runner passes the words to that person, who decides what to do. In the
+11 declared-laws runs, 12 of the 17 attempts today's reader still leaves unmatched were such requests
+(evidence/declared-laws/unmatched-replay).
+
 The reading is kept with the move, and the envelope it produced is what the engine records as the command, so a
 replay never calls the model again.
 """
@@ -39,7 +44,7 @@ def interpreter_schema(signatures: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["kind", "fields", "nearest_kind", "why"],
+        "required": ["kind", "fields", "nearest_kind", "asks", "why"],
         "properties": {
             "kind": {"type": "string", "enum": kinds + [WAIT_KIND, NONE],
                      "description": "The action kind this attempt is, 'wait' for doing nothing, or 'none' if no kind fits."},
@@ -59,6 +64,8 @@ def interpreter_schema(signatures: list[dict[str, Any]]) -> dict[str, Any]:
             },
             "nearest_kind": {"type": "string", "enum": kinds + [NONE],
                              "description": "When kind is 'none', the closest kind; otherwise the chosen kind."},
+            "asks": {"type": "string", "description": "When the person asks, tells or orders someone else to do "
+                     "something rather than doing it themself, the entity id of the one asked; otherwise 'none'."},
             "why": {"type": "string", "description": "One sentence on which words decided the kind."},
         },
     }
@@ -88,8 +95,19 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
 
     Returns {"kind", "fields", "quoted_spans", "nearest_kind", "why"} for a matched move, {"kind": "wait", ...} for a
     wait, or {"unmatched": True, "nearest_kind", "why"} when no kind fits or the reading does not fit the world (an
-    unknown entity, a missing field, words not in the attempt). Never says whether the move will work.
+    unknown entity, a missing field, words not in the attempt). An unmatched reading also carries "asks", the entity
+    the attempt asks to act, when the reader named one that is in the world and is not the speaker. Never says whether
+    the move will work.
     """
+    reading = _read(value, attempt, signatures, entity_ids, actor)
+    asks = str(value.get("asks") or NONE) if isinstance(value, dict) else NONE
+    if reading.get("unmatched") and asks in entity_ids and asks != actor:
+        return {**reading, "asks": asks}
+    return reading
+
+
+def _read(value: object, attempt: str, signatures: list[dict[str, Any]], entity_ids: set[str],
+          actor: str | None) -> dict[str, Any]:
     if not isinstance(value, dict):
         return {"unmatched": True, "nearest_kind": NONE, "why": "the reading was not an object"}
     kind = str(value.get("kind") or NONE)
@@ -184,7 +202,8 @@ def envelope(reading: dict[str, Any], *, actor: str, attempt: str, base_revision
     head = {"actor": actor, "base_revision": base_revision, "controller": controller}
     if reading.get("unmatched"):
         return {**head, "kind": UNMATCHED_KIND, "attempt": attempt,
-                "nearest_kind": reading.get("nearest_kind"), "why": reading.get("why")}
+                "nearest_kind": reading.get("nearest_kind"), "why": reading.get("why"),
+                **({"asks": reading["asks"]} if reading.get("asks") else {})}
     return {**head, "kind": reading["kind"], **reading["fields"]}
 
 
