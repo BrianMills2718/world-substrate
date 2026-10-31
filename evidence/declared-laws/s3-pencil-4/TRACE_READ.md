@@ -120,3 +120,18 @@ bought one", which matches `r5-e00002`, `r7-e00011`, `r8-e00011` and `r9-e00001`
    and `buy-slats`, though the same rules let anyone start it (truckers did in round 3). Five lost turns. Fixed
    2026-10-31 in the interpreter's prompt (version 1.1): replayed on the recorded inputs, 15 of 15 now match with the
    right roles, and the controls are unchanged (`../seller-wording/README.md`).
+6. **"Shops cannot request deliveries" is not a defect of this world.** Re-read 2026-10-31 for every shops and
+   truckers turn. The description says trucks deliver boxes to shops; it never has a shop order them, and the
+   rules match it (`ship-packed-boxes`: the truckers start a shipment). Shops waited in rounds 1-2, 4-7 and 10-11
+   because the factory had nothing packed, and they said so (call 22648 and earlier). They never tried to order or
+   call for a delivery, so no attempt of that kind went unmatched or was refused. Truckers shipped in rounds 7 and
+   10, the only rounds after packing. Round 9's refused sale was a real race, not a gap: the customers bought the
+   shop's one pencil earlier in the same round (`r9-e00001`). A world whose description has shops order would get
+   an order move from the rules writer, and a shop could still try one in its own words.
+7. **Fixed: everyone was told "Turn 0".** The person's prompt printed the world's tick, and an authored world installs
+   no clock process, so the tick stays 0. Call 22648 (round 11) read "Turn 0" above memory lines ending "Round 10".
+   The runner now passes the round number (`scripts/run_authored_world.py` `_view`). Test:
+   `tests/test_attempt_from_belief.py::WaltzmanTests::test_each_person_is_told_the_round_not_the_worlds_tick`.
+8. **Seen once: the actor model missed an offered move.** In round 11 the shop held one packed pencil, and
+   `unpack-pencils` was in its list (call 22648), yet it said unpacking was "not offered" and waited. One case in
+   88 person-turns. It is a model slip, not a rules gap, so nothing was changed for it.
