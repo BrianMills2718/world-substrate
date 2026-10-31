@@ -217,15 +217,20 @@ def _quiet(engine: Engine, live: list[tuple[dict[str, Any], str]]) -> Any:
 
 
 def _view(engine: Engine, actor: str, page: dict[str, Any],
-          live: list[tuple[dict[str, Any], str]] | None = None) -> dict[str, Any]:
-    """present() without other people's private bookkeeping records, nor zeros no rule touches (live_fields)."""
+          live: list[tuple[dict[str, Any], str]] | None = None, round_no: int | None = None) -> dict[str, Any]:
+    """present() without other people's private bookkeeping records, nor zeros no rule touches (live_fields).
+
+    `round_no` replaces the world's tick in what the person is told: an authored world installs no clock process, so
+    its tick stays 0, and every person read "Turn 0" beside memory lines saying "Round 11" (2026-10-30 pencil s3p4,
+    call 22648)."""
     entities = {
         eid: (rec if eid == actor else {**rec, "components": {k: v for k, v in (rec.get("components") or {}).items()
                                                                if k not in PRIVATE_TO_HOLDER}})
         for eid, rec in page["observation"]["entities"].items()
     }
-    return present(engine, actor, {**page, "observation": {**page["observation"], "entities": entities}},
-                   hide=None if live is None else _quiet(engine, live))
+    shown = present(engine, actor, {**page, "observation": {**page["observation"], "entities": entities}},
+                    hide=None if live is None else _quiet(engine, live))
+    return shown if round_no is None else {**shown, "tick": round_no}
 
 
 def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
@@ -639,7 +644,7 @@ def run_world(
 
             def _resident_turn(actor: str) -> dict[str, Any]:
                 page = pages[actor]
-                context = _view(engine, actor, page, live)
+                context = _view(engine, actor, page, live, turn + turn_offset)
                 context.update(recent=recents[actor], world_summary=bundle["world"]["summary"],
                                brief=(briefs or {}).get(actor, ""))
                 residents.observe(actor, f"Round {turn + turn_offset}. What just happened: "
@@ -750,7 +755,7 @@ def run_world(
                     residents.observe(actor, f"Round {turn + turn_offset}: your choice was no longer allowed after "
                                       "earlier moves this round; choose again.")
                     attempt = residents.choose(actor, [r["action_id"] for r in page.get("available") or []],
-                                               {**_view(engine, actor, page, live), "recent": _recent_for(engine, actor, seen),
+                                               {**_view(engine, actor, page, live, turn + turn_offset), "recent": _recent_for(engine, actor, seen),
                                                 "world_summary": bundle["world"]["summary"],
                                                 "brief": (briefs or {}).get(actor, "")})
                     if attempt.get("belief") is not None:

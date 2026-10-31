@@ -121,6 +121,26 @@ class WaltzmanTests(unittest.TestCase):
         started = [u for u in _tasks(trace) if u["expects"] == "The concern is resolved."]
         self.assertTrue(started)
 
+    def test_each_person_is_told_the_round_not_the_worlds_tick(self):
+        """An authored world has no clock process, so its tick stays 0; live play asks one round at a time, and on
+        round 11 the pencil shop read "Turn 0" beside memory saying "Round 10" (2026-10-30 s3p4, call 22648)."""
+        import scripts.concordia_residents as concordia
+
+        told: list[int] = []
+
+        def choose(residents, actor, offered, context):
+            told.append(context["tick"])
+            return {"belief": "b", "action_id": "wait", "expected_effect": "e", "reasoning": "test"}
+
+        bundle, causal = self.world["bundle"], self.world["causal_model"]
+        with patch.object(concordia.Residents, "choose", choose):
+            first, _, _ = run_world(bundle, causal, policy="resident", max_turns=2)
+            self.assertEqual(sorted(set(told)), [1, 2])
+            told.clear()
+            run_world(bundle, causal, policy="resident", max_turns=1, start_snapshot=first["final_snapshot"],
+                      turn_offset=first["summary"]["last_turn"], underway=first["underway"])
+        self.assertEqual(set(told), {3})
+
 
 class BuildCheckTests(unittest.TestCase):
     def test_a_fuel_gate_on_driving_is_flagged(self):
