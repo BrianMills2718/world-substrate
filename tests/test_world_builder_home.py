@@ -219,6 +219,9 @@ class WorldNetworkTests(unittest.TestCase):
         self.assertEqual(focus["some"], 2)
         self.assertTrue(focus["closed"])
         self.assertIn('id="net-whole"', HOME.read_text())
+        # Redrawn every round, so it must use the fast layout: 2026-11-04 the slow one froze the page for over 20 s.
+        layout = self.run_page_functions("focusNetwork(worldNetwork(world.bundle, world.causal_model), new Set()).layout", "c1r18_waltzman_world.json")
+        self.assertEqual(layout, {"algorithm": "force"})
 
     def test_the_world_becomes_a_typed_graph(self):
         graph = self.run_page_functions("worldNetwork(world.bundle, world.causal_model)")
