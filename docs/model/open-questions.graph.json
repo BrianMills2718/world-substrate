@@ -136,7 +136,7 @@
    "id": "Q50",
    "label": "Q50: What counts as finished",
    "kind": "BrianQuestion",
-   "explain": "Blocks: Whether any further paid build is run, and which defect is fixed next.."
+   "explain": "Blocks: Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.."
   },
   {
    "id": "Q51",
@@ -148,7 +148,7 @@
    "id": "Q52",
    "label": "Q52: Does the person asked respond",
    "kind": "AgentQuestion",
-   "explain": "Blocks: Whether the next paid run happens, and whether requests are worth more work.."
+   "explain": "Blocks: Whether requests are worth more work.."
   },
   {
    "id": "agenda",
