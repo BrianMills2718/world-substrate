@@ -96,7 +96,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
-    reviewed_at: f6b89cdb686e3e202830baa7cdbbbea8ce80c66c  # re-read 2026-10-30 (#303 squash; discovery narrows participants before the cap, defect I; authority checks unchanged). Earlier: re-read 2026-10-30 (restamped to the #301 squash merge, same content). Earlier: re-read 2026-10-30 (H: a ref: link may name an entity_ref_or_null field; the read path it derives is the same, an empty reference binds nobody; authority still derived by the compiler). Earlier: re-read 2026-10-28: action_authoring.py change since aa8af13 is selector matching reused by the run view; derivation unchanged
+    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
@@ -107,7 +107,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: 891868707ef663ba271070166fb1bd4b07257c6e  # re-read 2026-11-03 (#331 squash: render_run adds a per-round story read from the recorded changes; no AI call, profile untouched)
+    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -119,7 +119,7 @@ rules:
       law on the native coordination path. On the landing page, pressing Create simulation is that approval
       (Decision 005 amendment, 2026-10-15).
     owner: scripts/world_builder_service.py
-    reviewed_at: 2cf3847f0598df67de07953c28492e046191f0ad  # re-read 2026-11-03 (#329 squash: a shared run's picture is drawn on read from its recorded rounds; no AI call, no write, no budget or approval path touched)
+    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -130,7 +130,7 @@ rules:
     statement: >-
       No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
     owner: scripts/world_builder_service.py
-    reviewed_at: 2cf3847f0598df67de07953c28492e046191f0ad  # re-read 2026-11-03 (#329 squash: a shared run's picture is drawn on read from its recorded rounds; no AI call, no write, no budget or approval path touched)
+    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -141,7 +141,7 @@ rules:
     statement: >-
       Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
     owner: scripts/world_builder_service.py
-    reviewed_at: 2cf3847f0598df67de07953c28492e046191f0ad  # re-read 2026-11-03 (#329 squash: a shared run's picture is drawn on read from its recorded rounds; no AI call, no write, no budget or approval path touched)
+    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
