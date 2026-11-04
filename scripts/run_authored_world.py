@@ -1233,12 +1233,17 @@ def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, A
                 rec = row["actors"][actor]
                 status = rec.get("status")
                 state = "acted" if status == "accepted" else "waited" if status == "no_action" else "refused"
-                move = (rec.get("did" if state == "acted" else "wanted") or {}).get("kind")
+                wanted = rec.get("wanted") or {}
+                unread = wanted.get("kind") == "unmatched-attempt"
+                move = wanted.get("nearest_kind") if unread else (rec.get("did" if state == "acted" else "wanted") or {}).get("kind")
                 more = ["Changed: " + "; ".join(mine) + "."] if mine else []
-                if state == "refused":
+                if unread:
+                    # Not the world saying no: nothing judged this move, because the words were not understood.
+                    more.insert(0, f"It tried: \u201c{wanted.get('attempt', '')}\u201d The system could not match these words to a move, so the rules never judged it.")
+                elif state == "refused":
                     more.insert(0, "Refused. It needed, and did not have: " + "; ".join(map(str, rec.get("refused_because") or [_words(status)])) + ".")
                 people[actor] = {"state": state, "more": more,
-                                 "did": _words(move) if state == "acted" else "waited" if state == "waited" else "refused" + (": " + _words(move) if move else "")}
+                                 "did": _words(move) if state == "acted" else "waited" if state == "waited" else ("not understood" if unread else "refused") + (": " + _words(move) if move else "")}
         changed = []
         for eid in who:
             # Only what moved: a row repeating every unchanged value hides the one that changed.

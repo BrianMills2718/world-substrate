@@ -196,7 +196,7 @@ class WorldNetworkTests(unittest.TestCase):
             self.skipTest("node is not installed")
         page = HOME.read_text()
         parts = []
-        for name in ("worldNetwork", "roundTouched", "applyRound"):
+        for name in ("worldNetwork", "roundTouched", "applyRound", "focusNetwork"):
             match = re.search(rf"^  function {name}\(.*?^  \}}$", page, re.S | re.M)
             self.assertIsNotNone(match, f"the page needs one {name}")
             parts.append(match.group(0))
@@ -205,6 +205,20 @@ class WorldNetworkTests(unittest.TestCase):
         # On stdin: a large world does not fit in one command-line argument.
         result = subprocess.run([node, "-"], input=script, capture_output=True, text=True, check=True)
         return json.loads(result.stdout)
+
+    def test_a_big_world_shows_what_the_round_touched_and_can_show_everything(self):
+        # 2026-11-03, the shared Waltzman run: 77 boxes at once could not be read.
+        focus = self.run_page_functions(
+            "(() => { const g = worldNetwork(world.bundle, world.causal_model);"
+            " const none = focusNetwork(g, new Set()); const some = focusNetwork(g, new Set([g.nodes[0].id, g.nodes[1].id]));"
+            " return { total: g.nodes.length, none: none.nodes.map((n) => n.kind), some: some.nodes.length,"
+            " closed: some.edges.every((e) => [g.nodes[0].id, g.nodes[1].id].includes(e.source) && [g.nodes[0].id, g.nodes[1].id].includes(e.target)) }; })()",
+            "c1r18_waltzman_world.json")
+        self.assertGreater(focus["total"], 25)
+        self.assertEqual(set(focus["none"]), {"actor"})
+        self.assertEqual(focus["some"], 2)
+        self.assertTrue(focus["closed"])
+        self.assertIn('id="net-whole"', HOME.read_text())
 
     def test_the_world_becomes_a_typed_graph(self):
         graph = self.run_page_functions("worldNetwork(world.bundle, world.causal_model)")

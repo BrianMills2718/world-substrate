@@ -652,7 +652,7 @@ class CompiledActionMechanic:
         checks: list[Check] = [
             Check("Actor exists", actor is not None),
             Check(
-                "Actor matches mechanic selector",
+                "the one acting is allowed to make this move",
                 actor is not None and _selector_matches(actor, self.declared.actor_selector),
             ),
         ]
@@ -661,10 +661,10 @@ class CompiledActionMechanic:
             entity_id = record.get(name)
             entity = world.entities.get(entity_id) if isinstance(entity_id, str) else None
             participants[name] = entity_id if isinstance(entity_id, str) else ""
-            checks.append(Check(f"Participant {name} exists", entity is not None))
+            checks.append(Check(f"the {name} named exists", entity is not None))
             checks.append(
                 Check(
-                    f"Participant {name} matches mechanic selector",
+                    f"the {name} named is the right kind of thing for this move",
                     entity is not None and _selector_matches(entity, selector),
                 )
             )
