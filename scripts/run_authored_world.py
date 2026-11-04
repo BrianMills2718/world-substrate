@@ -1113,7 +1113,7 @@ const nameOf=a=>document.querySelector('[data-actor="'+a+'"] .name').textContent
 render=function(i){base(i);const f=FRAMES[idx];tell(f);said();if(!crowded)return;
  const shown=pick||ids.find(a=>f.actors[a]&&f.actors[a].action)||ids[0];
  ids.forEach(a=>{const th=document.querySelector('[data-thought="'+a+'"]');th.classList.toggle('hidden-card',a!==shown);th.classList.toggle('one-card',a===shown);
-  const t=th.querySelector('strong');if(t)t.textContent=nameOf(a)+' \u00b7 '+((f.actors[a]||{}).action||'wait').replace(/-/g,' ')});
+  const t=th.querySelector('strong'),said=((STORY.rounds[f.turn]||{}).people||{})[a];if(t)t.textContent=nameOf(a)+' \u00b7 '+(said?said.did:((f.actors[a]||{}).action||'wait').replace(/-/g,' '))});
  ids.forEach(a=>{document.querySelector('[data-actor="'+a+'"]').classList.toggle('picked',a===shown);const th=document.querySelector('[data-thought="'+a+'"]');
   const more=((STORY.rounds[f.turn]||{}).people||{})[a];if(more&&more.more.length){const d=document.createElement('div');d.className='card-more';d.textContent=more.more.join(' ');th.append(d)}});
  spreadPeople(f);spreadThings(f);said()};
