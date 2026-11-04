@@ -691,7 +691,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Brian, 2026-10-06: "we should probably have some 'are you still there after
   // 100 moves' that pauses and the user can unpause".
   const CHECK_IN_ROUNDS = 100, STUCK_ROUNDS = 15;
-  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, REPLAY_PAUSE_MS = 600;
+  const QUIET_ROUNDS_TO_PAUSE = 4, STRIP_ROUNDS = 10, FEED_ROUNDS = 6, REPLAY_PAUSE_MS = 2500;
   let live = null;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   function setTip(el, text) {
@@ -886,13 +886,16 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       // 2026-10-21 C5 check: a refused first round left "Starting the first round…" under the refusal.
       : live.playing ? "Starting the first round…" : "No rounds have run yet.";
     $("live-status").textContent = live.why;
-    // No picture until a round has run: before that it was an empty white box.
-    $("replay").closest("details").hidden = !n;
+    // No picture until a round has run: before that it was an empty white box. A recording has no
+    // picture at all, so it stays hidden there (Brian, 2026-11-03: "this is blank").
+    $("replay").closest("details").hidden = !n || live.replay;
     const btn = $("play-btn");
-    btn.textContent = live.playing ? "⏸ Pause" : "▶ Play";
-    btn.disabled = live.finished;
+    const watchAgain = live.finished && live.replay;
+    btn.textContent = live.playing ? "⏸ Pause" : watchAgain ? "▶ Watch again" : "▶ Play";
+    btn.disabled = live.finished && !live.replay;
     setTip(btn, live.playing
       ? "Stop after the current round; the world waits exactly where it is until you press Play"
+      : watchAgain ? "Watch this recording again from round 1; no AI is called"
       : live.finished ? "This world reached its finish line; use Start over to run it again" : "Carry on from exactly where it stopped, one round at a time");
     const feed = $("feed"); feed.innerHTML = "";
     live.rounds.slice(-FEED_ROUNDS).reverse().forEach((turn) => {
@@ -997,6 +1000,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
 
   function play() {
+    if (live && live.finished && live.replay) { startLive({ rounds: live.recorded }); return; }
     if (!live || live.finished) return;
     live.gen++; live.playing = true; live.sincePlay = 0;
     live.why = live.replay ? "Replaying the recorded rounds; nothing is being decided now." : "An AI is choosing each move, so each round takes a few seconds.";
@@ -1013,7 +1017,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const recorded = (options && options.rounds) || (world.shared && world.shared.rounds) || null;
     live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: recorded ? recorded.slice() : [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
              totals: { allowed: 0, refused: 0, held: 0, byItself: 0 }, finished: false, endsAt: null, why: "",
-             sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded };
+             sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded, recorded };
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
     $("share-btn").hidden = live.replay;

@@ -278,11 +278,11 @@ Never rerun until a behavior appears and report only that run. Review completene
 
 | Slice | What lands | State | Checks |
 | --- | --- | --- | --- |
-| S1 | `resources` and `laws` in the world design contract (`scripts/generate_world_bundle.py`) and its validator; laws passed to the rules writer; build record and page list them | fully_specifiable_now | L1, L7, L8; one live pencil build |
-| S2 | `law_breaches` in `src/world_substrate/laws.py`, called in `Engine.apply` after the scope check and in `_apply_process` (ticks and knock-on waves); `_settle` returns a refusal record; `_reject` and `_refuse_round` record `law_breach`; status `law_breach`; test-run breaches become build findings | fully_specifiable_now | L2, L3, L7; free replays of saved worlds first |
-| S3 | `scripts/review_rules.py` and its findings into the rules writer's revision step | conditional (Q44: model choice) | L4, L5, L8 |
-| S4 | retire the heuristics Q45 names, one by one, each with its incident proof | conditional (Q45, needs S2 and S3) | L6, L7 |
-| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | conditional (needs S1-S3) | L1, L5, L8 per run; read for Q43 counterexamples |
+| S1 | `resources` and `laws` in the world design contract (`scripts/generate_world_bundle.py`) and its validator; laws passed to the rules writer; build record and page list them | built (#280) | L1, L7, L8; one live pencil build |
+| S2 | `law_breaches` in `src/world_substrate/laws.py`, called in `Engine.apply` after the scope check and in `_apply_process` (ticks and knock-on waves); `_settle` returns a refusal record; `_reject` and `_refuse_round` record `law_breach`; status `law_breach`; test-run breaches become build findings | built (#284) | L2, L3, L7; free replays of saved worlds first |
+| S3 | `scripts/review_rules.py` and its findings into the rules writer's revision step | built (#291-#304; Q44 resolved) | L4, L5, L8 |
+| S4 | retire the heuristics Q45 names, one by one, each with its incident proof | conditional (Q45; none retired yet) | L6, L7 |
+| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | waiting on Q50 (S1-S3 built; new paid builds wait for Brian's answer) | L1, L5, L8 per run; read for Q43 counterexamples |
 
 Each slice is its own pull request and leaves a working World Builder.
 
@@ -401,11 +401,14 @@ are about $0.60. The visitor allowance stays $3/day.
 
 ## Uncertainties
 
+- Q50 (Brian, open): what counts as finished. This plan's done_when and do_not_gate_on stay as adopted, so Brian's
+  review gates no merge; his 2026-11-03 objection to repeated rebuilds holds S5's paid builds until he answers.
 - Q43 (agent, resolved by reading): two law shapes cover every logged incident; S5 is read for a counterexample.
-- Q44 (agent, open): which model reviews, and whether the review earns its cost; settled by the review run on the
-  saved incident worlds before S4.
+- Q44 (agent, resolved): which model reviews; settled by the review run on the saved incident worlds
+  (`evidence/declared-laws/s3-review-choice/README.md`).
 - Q45 (agent, open): which heuristic checks retire; settled per check in S4.
 - Q46 (agent, resolved by argument): run-time refusal first; a static proof is optional.
+- Q48 (agent, open in part) and Q49 (agent, open): a law too permissive, and a law the designer leaves out.
 - Wrong or missing laws: a designer that declares too few laws catches less, never more wrongly; a designer that
   declares a wrong law makes the test run refuse a legitimate move, which shows as a law refusal in the build record
   and goes to the rules writer and the review. L1 and S5's reads check both.

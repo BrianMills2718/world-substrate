@@ -1,35 +1,30 @@
-Checks run 2026-10-30 on branch ws-s4-people-laws at f83c6d8, based on main c7c786c.
+Checks run 2026-11-04 on branch fix/shared-run-play at f824249, based on main 0199ba7.
 
-== durable documents (arc42): python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
-durable-docs: mode=repo repo=/home/brian/code2/worktrees/ws-s4-people-laws findings=0 (none), exit 0
+== durable documents (arc42): python3 $COMPANY_PLANNING/scripts/durable_docs_check.py --repo . --arc42
+durable-docs: mode=repo repo=. findings=0 (none), exit 0
 exit 0
 
-== project navigation: python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .
+== project navigation: python3 $COMPANY_PLANNING/scripts/validate_project_navigation.py .
 DELEGATED wiki/index.md: workspace wiki rule; project-wiki/v1 schema not applied; reachability, cap and layout are checked by python3 ~/code/project-meta/scripts/md_file_cap.py --repo R
 REPORT ONLY: 0 finding(s); semantic truth and approval were not evaluated
 exit 0
 
-== repository format: python3 $HOME/code2/workspace/scripts/repo_format.py .
+== repository format: python3 /home/brian/code2/workspace/scripts/repo_format.py .
 : missing docs/index.md, docs/architecture/arc42.md, docs/architecture/*.c4, openspec/specs/*/spec.md, lefthook.yml, Makefile
 RESULT repo-format compliant=0 of=1 exit=1
 exit 1
 
-== trace reads: python3 scripts/check_trace_reads.py
-RESULT runs=30 problems=0
+== trace reads: python3 scripts/check_trace_reads.py --root evidence
+RESULT runs=31 problems=0
 exit 0
 
-== wiki and Markdown cap: python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD
-EXCEPTION    168/180  BrianMills2718/world-substrate  -- Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from wiki/catalog.md.
-REPO  BrianMills2718/world-substrate  md=168  cap=exception  reach=ok(0)  layout=undeclared(0)  durable=ok(0)
+== wiki and Markdown cap: python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD
+EXCEPTION    172/180  BrianMills2718/world-substrate  -- Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from wiki/catalog.md.
+REPO  BrianMills2718/world-substrate  md=172  cap=exception  reach=ok(0)  layout=undeclared(0)  durable=ok(0)
 md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=1 orphans=0 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=1 findings=0 undeclared=0   exit 0
 exit 0
 
-== project check: PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py
+== project check (tests, system model, docs): scripts/check_project.py at f824249
 World Substrate project check passed.
-Neutral runtime tests: 850 passed, 2 skipped, 222 subtests passed in 63.01s (0:01:03)
-Passed-tree stamp: 46ccc9159127
-Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
-Planning path: README.md -> roadmap/README.md -> active slice
-Pinned source records checked: 16
-Donor checkout verification skipped (use --with-donors to enable).
-exit 0
+Neutral runtime tests: 859 passed, 2 skipped, 222 subtests passed in 27.54s
+exit=0

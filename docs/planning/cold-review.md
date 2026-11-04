@@ -55,3 +55,14 @@ Carried notes, not blocking:
 - Keeping run-log reasoning text is still a slice requirement.
 
 Verdict: pass
+
+## 2026-11-04 re-review, repo planning package
+
+Reviewer: `company-planning:planning-compliance-reviewer` subagent, delta since f83c6d8, three rounds.
+Reviewed revision: f824249cf6738faad501bfd07b99e2ee5a54ed78
+Verdict: pass
+
+- **Round 1, revise:** Q50 had no recommendation or default; Q45 denied a live people-world build; the plan showed S3 and Q44 as open and left out Q48 and Q49; nothing covered whether an asked person acts on a request (Q52 added).
+- **Round 2, revise:** the Q45 fix cut its sentence mid-word; Q51 wrongly said #316's probes used `?share=` (only the issue body misprints it); Q50 conflicted with the plan's done_when and do_not_gate_on; the review page named the wrong plan.
+- **Round 3, pass:** all fixed. Project check 859 passed, 2 skipped, exit 0; trace reads 31 runs, 0 problems.
+- **Notes kept:** the 2026-11-01 build has no evidence folder yet (follow-up); Q45 cites `people_world.py:298` for the law call only, not the review wiring; `asks` is not yet a domain concept.

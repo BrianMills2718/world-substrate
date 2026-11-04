@@ -133,6 +133,24 @@
    "explain": "Blocks: S4: Q45 retires a check when its incident's saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.."
   },
   {
+   "id": "Q50",
+   "label": "Q50: What counts as finished",
+   "kind": "BrianQuestion",
+   "explain": "Blocks: Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.."
+  },
+  {
+   "id": "Q51",
+   "label": "Q51: Live network with no lines",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether the Network view can be trusted in a live run; issue #316.."
+  },
+  {
+   "id": "Q52",
+   "label": "Q52: Does the person asked respond",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether requests are worth more work.."
+  },
+  {
    "id": "agenda",
    "label": "Agenda count",
    "kind": "Concept",
@@ -230,6 +248,12 @@
    "explain": "One AI summary of a run whose every cited event id is checked against the run."
   },
   {
+   "id": "resident",
+   "label": "Resident",
+   "kind": "Concept",
+   "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, and answers belief, attempt (in its own words), expected effect and work; the older menu reply picks an offered move."
+  },
+  {
    "id": "rules-retry",
    "label": "Rules retry",
    "kind": "Concept",
@@ -246,6 +270,12 @@
    "label": "Run loop",
    "kind": "Concept",
    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run."
+  },
+  {
+   "id": "share",
+   "label": "Share link and replay",
+   "kind": "Concept",
+   "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls."
   },
   {
    "id": "skill-roll",
@@ -548,6 +578,42 @@
    "id": "Q49-rules-review",
    "source": "Q49",
    "target": "rules-review",
+   "label": "bears on"
+  },
+  {
+   "id": "Q50-build",
+   "source": "Q50",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q50-share",
+   "source": "Q50",
+   "target": "share",
+   "label": "bears on"
+  },
+  {
+   "id": "Q51-share",
+   "source": "Q51",
+   "target": "share",
+   "label": "bears on"
+  },
+  {
+   "id": "Q51-build",
+   "source": "Q51",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q52-attempt",
+   "source": "Q52",
+   "target": "attempt",
+   "label": "bears on"
+  },
+  {
+   "id": "Q52-resident",
+   "source": "Q52",
+   "target": "resident",
    "label": "bears on"
   }
  ],
