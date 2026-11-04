@@ -838,7 +838,7 @@ Q = [
   "short": "Which heuristic checks retire",
   "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:840-1220), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
   "blocks": "S4: which checks are removed, and so whether validation stops growing one check per bug",
-  "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape. Progress 2026-10-30: the people-world change (scripts/people_world.py:298) asks people worlds for laws and sends their rules to the review too; no live people-world build has run on it yet, laws can be dropped or left out (Q49), and the retirement table is still owed.",
+  "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape. Progress 2026-10-30: the people-world change (scripts/people_world. A live people-world build has now run on it: s4-waltzman-2 (2026-10-31, deployed 232bab9, share NZfTwkrNpsQo, $0.149), which showed the independent review was skipped when the test run passed the rewrite limit (fixed in #317) and a Network view drawn without lines on the live page (#316).",
   "owner": "agent",
   "status": "open",
   "sources": [
@@ -914,5 +914,40 @@ Q = [
    "docs/plans/declared_laws.md:409"
   ],
   "touches": ["world-law", "rules-review"]
+ }
+ ,{
+  "id": "Q50",
+  "short": "What counts as finished",
+  "question": "Nothing states when the World Builder is good enough, so each paid build finds a new defect and asks for another build. In Brian's words on 2026-11-03: \"we just seem to be rerunning the simulation\". What result ends this work?",
+  "blocks": "Whether any further paid build is run, and which defect is fixed next.",
+  "resolves_with": "Brian's judgement on a working run, not a test: he reads one shared Waltzman run and says what is wrong. His first reaction (\"this is blank and doesnt play\") is fixed in the change that added this question.",
+  "owner": "brian",
+  "status": "open",
+  "recommendation": "Finished when Brian reads one shared Waltzman run and the people behave believably and something surprising follows from their choices. Keep one saved world and improve it; his reaction to it picks the next fix.",
+  "default": "No paid rebuilds. The saved Waltzman world stays the one being improved until Brian says otherwise.",
+  "sources": ["scripts/world_builder_home.html:890", "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5"],
+  "touches": ["build", "share"]
+ },
+ {
+  "id": "Q51",
+  "short": "Live network with no lines",
+  "question": "Issue #316 says the live Network view drew NaN links in the s4w2 build and that the shared link did not reproduce it. Its shared-link check used ?share=NZfTwkrNpsQo, but the page reads only ?run= (scripts/world_builder_home.html:1223), so that address opens the empty front page, not the run. Is the NaN fault still open?",
+  "blocks": "Whether the Network view can be trusted in a live run; issue #316.",
+  "resolves_with": "One counterexample settles the shared case: the ?run= link draws the links with no console error (browser check 2026-11-03, recorded on #316). #316's three replay checks used a different driver and stand, so only the live first-round case stays unreproduced. Read the console in the next live run; no paid run for this alone.",
+  "owner": "agent",
+  "status": "open",
+  "sources": ["scripts/world_builder_home.html:1223", "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:59"],
+  "touches": ["share", "build"]
+ },
+ {
+  "id": "Q52",
+  "short": "Does the person asked respond",
+  "question": "#326 delivers a request to the person asked, and a live pencil build (2026-11-01, 1 round played) delivered one: the shop's words reached the supplier's memory for round 2. Round 2 never ran, because the test browser closed. Does an asked person act on a request, or ignore it?",
+  "blocks": "Whether the next paid run happens, and whether requests are worth more work.",
+  "resolves_with": "Reading what the person asked tries in the next round. Replaying a saved world through /run costs cents and needs no rebuild; a new build needs Brian's yes.",
+  "owner": "agent",
+  "status": "open",
+  "sources": ["evidence/declared-laws/request-replay/README.md:41", "scripts/run_authored_world.py:835"],
+  "touches": ["attempt", "resident"]
  }
 ]
