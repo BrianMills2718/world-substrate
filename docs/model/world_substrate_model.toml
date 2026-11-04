@@ -673,6 +673,7 @@ scope = "product"
 written_by = ["run", "reference_tooling"]
 writers = [
   { file = "scripts/run_authored_world.py", function = "run_world", line = 406 },
+  { file = "scripts/run_authored_world.py", function = "recorded_trace", line = 1134 },
   { file = "scripts/run_contested_world.py", function = "contested_run", line = 356 },
   { file = "scripts/run_greenhouse_fixture.py", function = "retained_run", line = 119 },
   { file = "scripts/run_native_coordination.py", function = "run_native_coordination", line = 1087 },

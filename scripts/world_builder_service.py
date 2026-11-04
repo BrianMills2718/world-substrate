@@ -36,7 +36,7 @@ from scripts.native_coordination_authoring import (
 )
 from scripts.native_coordination_comparison import with_approval_threshold
 from scripts.people_world import about_people, declare_people_laws, keep_until_settled, prepare_people_world, unfinished_hedges, write_people_rules
-from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, render_run, run_world
+from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, recorded_trace, render_run, run_world
 from scripts.run_native_coordination import run_native_coordination
 from scripts.review_rules import MISSING as MISSING_RULE, review_rules
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -659,6 +659,16 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
                  for r in runs],
         "world_fingerprint": fingerprint,
     }
+
+
+def _share_picture(record: dict[str, Any]) -> dict[str, str]:
+    """Draw a shared run's picture from its recorded rounds, so old links get it too; no AI is called."""
+    try:
+        bundle = validate_bundle(record["world"]["bundle"])
+        compiled = CausalModel.from_dict(record["world"]["causal_model"], bundle=bundle)
+        return {"replay_html": render_run(bundle, recorded_trace(bundle, record["rounds"]), compiled)}
+    except Exception as exc:  # The rounds and network still play; the page says why there is no picture.
+        return {"picture_error": f"{type(exc).__name__}: {exc}"[:300]}
 
 
 def _save_share(client: str, record: dict[str, Any]) -> str | None:
@@ -1366,7 +1376,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if record is None:
                 self._error(HTTPStatus.NOT_FOUND, "That shared run does not exist (check the link).")
                 return
-            self._json(HTTPStatus.OK, {"ok": True, **record})
+            self._json(HTTPStatus.OK, {"ok": True, **record, **_share_picture(record)})
             return
         if path.startswith("/jobs/"):
             job_id = path[len("/jobs/"):]

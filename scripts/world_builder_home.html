@@ -228,6 +228,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div id="stuck-note"></div>
     <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
     <details class="picture" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
+    <p id="picture-note" hidden></p>
     <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
     </details>
     <details class="picture" id="network" open><summary title="Show or hide the whole world as a network: who and what exists, where each one is, which moves the rules allow and what changes by itself. What changed in the latest round is lit up.">Network</summary>
@@ -886,9 +887,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       // 2026-10-21 C5 check: a refused first round left "Starting the first round…" under the refusal.
       : live.playing ? "Starting the first round…" : "No rounds have run yet.";
     $("live-status").textContent = live.why;
-    // No picture until a round has run: before that it was an empty white box. A recording has no
-    // picture at all, so it stays hidden there (Brian, 2026-11-03: "this is blank").
-    $("replay").closest("details").hidden = !n || live.replay;
+    // No picture until a round has run: before that it was an empty white box.
+    $("replay").closest("details").hidden = !n;
+    showPictureProblem();
+    if (live.replay && n) tellPicture();
     const btn = $("play-btn");
     const watchAgain = live.finished && live.replay;
     btn.textContent = live.playing ? "⏸ Pause" : watchAgain ? "▶ Watch again" : "▶ Play";
@@ -1012,6 +1014,26 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     renderLive();
   }
 
+  // A recording's picture holds every round; the page tells it which round to show.
+  function recordedPicture() { return (world && world.shared && world.shared.replay_html) || ""; }
+  // A picture that cannot be drawn says so and why; it never quietly disappears.
+  function showPictureProblem() {
+    const broken = Boolean(live && live.replay && !recordedPicture());
+    $("replay").hidden = broken;
+    $("picture-note").hidden = !broken;
+    if (broken) $("picture-note").textContent = "The picture of this recording could not be drawn"
+      + (world.shared && world.shared.picture_error ? " (" + world.shared.picture_error + ")" : "")
+      + ". The rounds and the network below still play.";
+  }
+  function tellPicture() {
+    const frame = $("replay").contentWindow, n = live.rounds.length;
+    if (frame && n) frame.postMessage({ type: "ws-round", round: live.rounds[n - 1].turn }, "*");
+  }
+  $("replay").addEventListener("load", () => { if (live && live.replay) tellPicture(); });
+  // The picture says how tall it is, so no empty space sits under it.
+  window.addEventListener("message", (e) => {
+    if (e.source === $("replay").contentWindow && e.data && e.data.type === "ws-picture-height" && e.data.height > 100) $("replay").style.height = e.data.height + "px";
+  });
   function startLive(options) {
     if (!world) return;
     const recorded = (options && options.rounds) || (world.shared && world.shared.rounds) || null;
@@ -1021,8 +1043,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
     $("share-btn").hidden = live.replay;
-    $("replay").closest("details").hidden = live.replay;  // a recording has no picture yet
-    $("replay").srcdoc = ""; delete $("detail").dataset.touched; $("detail").textContent = "";
+    showPictureProblem();
+    $("replay").srcdoc = live.replay ? recordedPicture() : ""; delete $("detail").dataset.touched; $("detail").textContent = "";
     $("net-detail").textContent = "";
     show("run");
     play();

@@ -9,7 +9,7 @@ from unittest.mock import patch
 from pathlib import Path
 
 from scripts.bootstrap_scene_profile import _entity_binding
-from scripts.run_authored_world import _llm_choice, _scripted_choice, bookkeeping_fields, _runtime_catalog, build_engine, render_run, run_world
+from scripts.run_authored_world import _llm_choice, _scripted_choice, bookkeeping_fields, _runtime_catalog, build_engine, recorded_trace, render_run, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate.action_authoring import ActionDeclarationError
 
@@ -85,6 +85,14 @@ class AuthoredWorldRunTests(unittest.TestCase):
         html = render_run(self.bundle, trace, model)
         self.assertIn("'Round '+f.turn", html)
         self.assertNotIn("'Turn '+f.turn+' / '", html)
+
+    def test_recorded_rounds_draw_a_picture_the_page_can_drive(self):
+        # 2026-11-03, Brian on a shared run: "this is blank", then "you didnt fix it you just seemed to have removed it".
+        trace, _, model = run_world(self.bundle, self.causal, policy="scripted", max_turns=2)
+        html = render_run(self.bundle, recorded_trace(self.bundle, trace["transcript"]), model)
+        self.assertIn(f"Round '+f.turn", html)
+        self.assertIn("ws-round", html)
+        self.assertEqual(html.count("</body>"), 1)
 
     def test_moves_that_change_nothing_are_never_chosen(self):
         # 2026-10-06: two cooks "recorded" an already-waiting order every round
