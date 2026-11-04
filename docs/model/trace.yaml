@@ -107,7 +107,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: 2cf3847f0598df67de07953c28492e046191f0ad  # re-read 2026-11-03 (#329 squash: a shared run's picture is drawn on read from its recorded rounds; no AI call, no write, no budget or approval path touched)
+    reviewed_at: 891868707ef663ba271070166fb1bd4b07257c6e  # re-read 2026-11-03 (#331 squash: render_run adds a per-round story read from the recorded changes; no AI call, profile untouched)
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
