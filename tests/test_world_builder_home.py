@@ -13,7 +13,10 @@ class WorldBuilderHomeTests(unittest.TestCase):
 
     def test_a_shared_recording_shows_its_picture_and_can_be_watched_again(self):
         # 2026-11-03, Brian on a shared run: "this is blank and doesnt play".
-        self.assertIn('.hidden = !n || (live.replay && !recordedPicture());', self.page)
+        # 2026-11-03, Brian on hiding it: "you didnt fix it you just seemed to have removed it".
+        # A picture that cannot be drawn says so and why.
+        self.assertIn('$("picture-note").hidden = !broken;', self.page)
+        self.assertIn('world.shared.picture_error', self.page)
         self.assertIn('frame.postMessage({ type: "ws-round"', self.page)
         self.assertIn('btn.disabled = live.finished && !live.replay;', self.page)
         self.assertIn('startLive({ rounds: live.recorded })', self.page)
