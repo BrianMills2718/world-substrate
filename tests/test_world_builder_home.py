@@ -11,10 +11,10 @@ class WorldBuilderHomeTests(unittest.TestCase):
     def setUp(self):
         self.page = HOME.read_text()
 
-    def test_a_shared_recording_has_no_blank_picture_and_can_be_watched_again(self):
+    def test_a_shared_recording_shows_its_picture_and_can_be_watched_again(self):
         # 2026-11-03, Brian on a shared run: "this is blank and doesnt play".
-        self.assertIn('.hidden = !n || live.replay;', self.page)
-        self.assertNotIn('$("replay").closest("details").hidden = !n;', self.page)
+        self.assertIn('.hidden = !n || (live.replay && !recordedPicture());', self.page)
+        self.assertIn('frame.postMessage({ type: "ws-round"', self.page)
         self.assertIn('btn.disabled = live.finished && !live.replay;', self.page)
         self.assertIn('startLive({ rounds: live.recorded })', self.page)
         # Slow enough to read a round before the next one replaces it.

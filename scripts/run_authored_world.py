@@ -1087,6 +1087,54 @@ def _runtime_catalog(bundle: dict[str, Any], causal_model: CausalModel | None = 
     return catalog
 
 
+# Added to the picture of a generated world. With more than four people their cards covered the whole
+# scene (Brian, 2026-11-03, shared Waltzman run), so one card shows at a time and selecting a person
+# shows theirs; nothing is dropped. A page playing a recording drives the picture round by round.
+_PICTURE_SCRIPT = """<style>.thought.hidden-card{display:none}.thought.one-card{left:2%!important;right:auto!important;top:20%!important;
+max-height:60%;overflow:auto}.crowded .action{display:none}.crowded .actor{cursor:pointer}.driven .controls{display:none}
+.card-hint{position:absolute;right:2%;top:2%;z-index:20;background:#15191de8;color:#fff;border-radius:8px;padding:4px 9px;font-size:12px}
+.crowded .thought.one-card{top:17%!important;width:33%;max-height:35%;font-size:12px}.crowded .hud{left:2%;top:2%;transform:none;padding:4px 10px}
+.crowded .hud *{font-size:15px}/*BYITSELF*/
+.crowded .avatar{width:42px;height:42px;font-size:22px}.crowded .actor{width:18%;height:auto}.crowded .name{width:auto;max-width:100%;font-size:11px;padding:2px 6px;margin-top:3px;max-height:2.5em;overflow:hidden}
+.piled .entity{font-size:15px;width:14.5%;display:flex;gap:3px;align-items:flex-start}.piled .entity small{position:static;transform:none;white-space:normal;display:block;font-size:9px;
+line-height:1.15;max-height:3.5em;overflow:hidden}</style>
+<script>(function(){
+const ids=Object.keys(PROFILE.actors),crowded=ids.length>4,base=render;let pick=null;
+const nameOf=a=>document.querySelector('[data-actor="'+a+'"] .name').textContent;
+render=function(i){base(i);if(!crowded)return;const f=FRAMES[idx];
+ const shown=pick||ids.find(a=>f.actors[a]&&f.actors[a].action)||ids[0];
+ ids.forEach(a=>{const th=document.querySelector('[data-thought="'+a+'"]');th.classList.toggle('hidden-card',a!==shown);th.classList.toggle('one-card',a===shown);
+  const t=th.querySelector('strong');if(t)t.textContent=nameOf(a)+' \u00b7 '+((f.actors[a]||{}).action||'wait').replace(/-/g,' ')});
+ spreadPeople(f);spreadThings(f)};
+// People standing too close to read share rows; people in other places stay where they are.
+function spreadPeople(f){const row=ids.map(a=>[a,f.actor_positions[a]]).sort((x,y)=>x[1][0]-y[1][0]);let group=[];
+ const flush=()=>{if(group.length>1){const cx=group.reduce((n,g)=>n+g[1][0],0)/group.length,cols=Math.min(5,group.length),rows=Math.ceil(group.length/cols),
+   left=Math.max(1,Math.min(99-cols*19,cx+4-cols*9.5));group.forEach((g,n)=>{const el=document.querySelector('[data-actor="'+g[0]+'"]');
+   el.style.left=(left+(n%cols)*19)+'%';el.style.top=(100-(rows-Math.floor(n/cols))*24)+'%'})}group=[]};
+ row.forEach(g=>{if(group.length&&(g[1][0]-group[group.length-1][1][0]>12||Math.abs(g[1][1]-group[0][1][1])>8))flush();group.push(g)});flush()}
+// Things piled in one spot become a grid beside the card; their state styling is kept.
+function spreadThings(f){const es=Object.keys(PROFILE.entities).map(id=>document.querySelector('[data-entity="'+id+'"]')),pos=es.map(e=>[parseFloat(e.style.left),parseFloat(e.style.top)]);
+ let near=0;pos.forEach((p,i)=>pos.forEach((q,j)=>{if(i<j&&Math.abs(p[0]-q[0])<9&&Math.abs(p[1]-q[1])<9)near++}));
+ if(near<es.length)return;document.body.classList.add('piled');const rows=Math.ceil(es.length/4);
+ es.forEach((e,n)=>{e.style.left=(37+(n%4)*15.5)+'%';e.style.top=(17+Math.floor(n/4)*Math.min(9,35/rows))+'%';const s=e.querySelector('small');if(s)e.title=s.textContent})}
+if(crowded){document.body.classList.add('crowded');const stage=document.querySelector('.stage'),hint=document.createElement('div');hint.className='card-hint';
+ hint.textContent='Select a person to read what they thought';stage.append(hint);
+ ids.forEach(a=>{const el=document.querySelector('[data-actor="'+a+'"]');el.title='Show what '+nameOf(a)+' thought this round';
+  el.addEventListener('click',()=>{pick=a;render(idx)})})}
+window.addEventListener('message',e=>{if(e.source!==window.parent||!e.data||e.data.type!=='ws-round')return;playing=false;clearInterval(timer);
+ document.body.classList.add('driven');let j=-1;FRAMES.forEach((f,n)=>{if(f.turn===e.data.round)j=n});if(j>=0)render(j)});
+render(idx);const said=()=>{try{window.parent.postMessage({type:'ws-picture-height',height:document.querySelector('.shell').offsetHeight+24},'*')}catch(e){}};said();window.addEventListener('resize',said)})();</script></body>"""
+
+
+_BYITSELF_CSS = ".crowded .byitself{left:2%;right:2%;top:10%;bottom:auto;transform:none;font-size:11px;padding:3px 10px;border-radius:8px;width:auto}"
+
+
+def recorded_trace(bundle: dict[str, Any], rounds: list[dict[str, Any]]) -> dict[str, Any]:
+    """The part of a run's trace the picture needs, rebuilt from recorded rounds; no AI is called."""
+    return {"schema_version": "world-substrate-contested-run/v3", "world": bundle["world"]["id"],
+            "actors": list(rounds[0]["actors"]), "transcript": rounds, "model": "recorded", "cost_usd": 0}
+
+
 def render_run(
     bundle: dict[str, Any],
     trace: dict[str, Any],
@@ -1114,7 +1162,7 @@ def render_run(
     return html.replace(
         "'Turn '+f.turn+' / '+FRAMES.length",
         "'Round '+f.turn+(FRAMES.length>1?' ('+(idx+1)+' of '+FRAMES.length+')':'')",
-    )
+    ).replace("</body>", _PICTURE_SCRIPT.replace("/*BYITSELF*/", _BYITSELF_CSS if "id='byitself'" in html else ""))
 
 
 def main() -> int:

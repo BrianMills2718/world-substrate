@@ -936,6 +936,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
             self.assertEqual(status, 200, shared)
             self.assertEqual(shared["rounds"], 3)
             status, record = self.get("/share/" + shared["share_id"])
+            self.assertIn("ws-round", record["replay_html"])  # Old and new links get a picture, with no AI call.
         self.assertEqual(status, 200, record)
         self.assertEqual(record["schema"], service.SHARE_SCHEMA)
         self.assertEqual(record["rounds"], transcript)  # exactly what the server answered, in order
