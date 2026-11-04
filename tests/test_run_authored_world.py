@@ -9,7 +9,7 @@ from unittest.mock import patch
 from pathlib import Path
 
 from scripts.bootstrap_scene_profile import _entity_binding
-from scripts.run_authored_world import _llm_choice, _scripted_choice, bookkeeping_fields, _runtime_catalog, build_engine, recorded_trace, render_run, run_world
+from scripts.run_authored_world import _llm_choice, _picture_story, _scripted_choice, bookkeeping_fields, _runtime_catalog, build_engine, recorded_trace, render_run, run_world
 from scripts.scaffold_world import load_bundle
 from world_substrate.action_authoring import ActionDeclarationError
 
@@ -93,6 +93,33 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertIn(f"Round '+f.turn", html)
         self.assertIn("ws-round", html)
         self.assertEqual(html.count("</body>"), 1)
+
+    def test_the_picture_says_what_each_person_did_and_what_changed(self):
+        # 2026-11-03: rounds 1 and 10 of a shared run looked the same; people never moved and
+        # things never changed on screen, though every before and after value was on record.
+        rounds = [{"turn": 1, "world_events": [
+            {"rule_id": "moment-countdown", "changes": [{"path": "entities.deadline.components.moment.ticks_until", "before": 1, "after": -1}]},
+        ], "actors": {
+            "a": {"status": "accepted", "did": {"kind": "raise-support"}, "changes": [
+                {"path": "entities.vote.components.decision.status", "before": "open", "after": "passed"},
+                {"path": "entities.vote.components.decision.notes", "before": 0, "after": 0},
+            ]},
+            "b": {"status": "precondition_failed", "wanted": {"kind": "object"}, "refused_because": ["Nobody asked"], "changes": []},
+            "c": {"status": "no_action", "changes": []},
+        }}]
+        bundle = {"entities": [{"id": "a", "label": "Ann"}, {"id": "vote", "label": "The vote"}, {"id": "deadline", "label": "Deadline"}, {"id": "idle", "label": "Thing"}]}
+        story = _picture_story(bundle, {"actors": ["a", "b", "c"], "transcript": rounds})["rounds"][1]
+        self.assertEqual((story["people"]["a"]["state"], story["people"]["a"]["did"]), ("acted", "raise support"))
+        self.assertEqual(story["people"]["b"]["state"], "refused")
+        self.assertIn("Nobody asked", story["people"]["b"]["more"][0])
+        self.assertEqual(story["people"]["c"]["did"], "waited")
+        vote = next(c for c in story["changed"] if c["label"] == "The vote")
+        self.assertEqual((vote["now"], vote["was"], vote["by"]), ("status: passed", "status: open", "Ann"))
+        self.assertEqual(story["changed"][-1]["now"], "passed")  # a clock goes last and never says "in -1 rounds"
+        self.assertEqual([s["label"] for s in story["same"]], ["Thing"])
+        # A live round arrives alone: what did not change is unknown, so it is not claimed.
+        rounds[0]["turn"] = 7
+        self.assertEqual(_picture_story(bundle, {"actors": ["a", "b", "c"], "transcript": rounds})["rounds"][7]["same"], [])
 
     def test_moves_that_change_nothing_are_never_chosen(self):
         # 2026-10-06: two cooks "recorded" an already-waiting order every round

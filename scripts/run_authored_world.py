@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import contextvars
 import json
+import re
 import sys
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -1097,20 +1098,43 @@ max-height:60%;overflow:auto}.crowded .action{display:none}.crowded .actor{curso
 .crowded .hud *{font-size:15px}/*BYITSELF*/
 .crowded .avatar{width:42px;height:42px;font-size:22px}.crowded .actor{width:18%;height:auto}.crowded .name{width:auto;max-width:100%;font-size:11px;padding:2px 6px;margin-top:3px;max-height:2.5em;overflow:hidden}
 .piled .entity{font-size:15px;width:14.5%;display:flex;gap:3px;align-items:flex-start}.piled .entity small{position:static;transform:none;white-space:normal;display:block;font-size:9px;
-line-height:1.15;max-height:3.5em;overflow:hidden}</style>
+line-height:1.15;max-height:3.5em;overflow:hidden}
+.piled .entity{display:none!important}.crowded .stage{aspect-ratio:4/3}.piled .thought.one-card{width:96%;top:9%!important;max-height:38%}.driven .top{display:none}
+.crowded .name{max-height:none}.did{display:block;font-size:10px;line-height:1.15;margin-top:2px;color:#1b2226}
+.st-acted .avatar{outline:4px solid #2f7fd6}.st-refused .avatar{outline:4px dashed #d9722b}.st-refused .did{color:#8a4310;font-weight:700}.st-waited .avatar{outline:3px solid #9aa0a4;opacity:.65}.st-waited .did{color:#555}
+.picked .name{background:#1f5c9e}.card-more{margin-top:6px;font-size:12px;color:#39434a}
+#ws-story{color:#e8edf0;font-size:13px;margin-top:10px}#ws-story h3{font-size:13px;margin:10px 0 4px}#ws-story .key{color:#aeb8bd;font-size:12px}
+#ws-story .row{border-left:3px solid #4d5a62;padding:3px 8px;margin:3px 0}#ws-story .row.new{border-left-color:#5aa2ee;background:#ffffff0d}#ws-story b{font-weight:600}#ws-story .now{color:#fff;font-weight:700}#ws-story .by{color:#aeb8bd;font-size:12px}
+@media(max-width:600px){.shell{padding:4px}.crowded .stage{aspect-ratio:2/3}.crowded .name{overflow-wrap:anywhere}.crowded .avatar{width:30px;height:30px;font-size:15px}.crowded .name{font-size:8px;padding:1px 2px}.did{font-size:8px}
+.card-hint{font-size:9px;max-width:40%;padding:2px 5px}.crowded .hud{padding:2px 6px}.crowded .hud *{font-size:11px}.piled .thought.one-card{top:9%!important;max-height:38%;font-size:11px}}</style>
 <script>(function(){
-const ids=Object.keys(PROFILE.actors),crowded=ids.length>4,base=render;let pick=null;
+const STORY=/*STORY*/;const ids=Object.keys(PROFILE.actors),crowded=ids.length>4,base=render;let pick=null;
 const nameOf=a=>document.querySelector('[data-actor="'+a+'"] .name').textContent;
-render=function(i){base(i);if(!crowded)return;const f=FRAMES[idx];
+render=function(i){base(i);const f=FRAMES[idx];tell(f);said();if(!crowded)return;
  const shown=pick||ids.find(a=>f.actors[a]&&f.actors[a].action)||ids[0];
  ids.forEach(a=>{const th=document.querySelector('[data-thought="'+a+'"]');th.classList.toggle('hidden-card',a!==shown);th.classList.toggle('one-card',a===shown);
   const t=th.querySelector('strong');if(t)t.textContent=nameOf(a)+' \u00b7 '+((f.actors[a]||{}).action||'wait').replace(/-/g,' ')});
- spreadPeople(f);spreadThings(f)};
+ ids.forEach(a=>{document.querySelector('[data-actor="'+a+'"]').classList.toggle('picked',a===shown);const th=document.querySelector('[data-thought="'+a+'"]');
+  const more=((STORY.rounds[f.turn]||{}).people||{})[a];if(more&&more.more.length){const d=document.createElement('div');d.className='card-more';d.textContent=more.more.join(' ');th.append(d)}});
+ spreadPeople(f);spreadThings(f);said()};
+// What each person did and what the world now looks like: this is what changes from round to round.
+function tell(f){const r=STORY.rounds[f.turn];if(!r)return;
+ ids.forEach(a=>{const el=document.querySelector('[data-actor="'+a+'"]'),p=r.people[a]||{state:'waited',did:'waited'};
+  el.classList.remove('st-acted','st-refused','st-waited');el.classList.add('st-'+p.state);
+  let d=el.querySelector('.did');if(!d){d=document.createElement('span');d.className='did';el.append(d)}d.textContent=p.did});
+ let box=document.getElementById('ws-story');if(!box){box=document.createElement('div');box.id='ws-story';document.querySelector('.stage').after(box)}
+ box.replaceChildren();const add=(tag,cls,text,to)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=text;(to||box).append(e);return e};
+ add('div','key','Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.');
+ add('h3','','Changed this round ('+r.changed.length+')');
+ if(!r.changed.length)add('div','row','Nothing changed.');
+ r.changed.forEach(c=>{const w=add('div','row new','');add('b','',c.label+': ',w);add('span','now',c.now,w);if(c.was)add('span','',' (was '+c.was+')',w);if(c.by)add('div','by',c.by,w)});
+ if(r.same.length){const o=box.querySelector('details');const det=add('details','','');add('summary','','Not changed this round ('+r.same.length+')',det);det.addEventListener('toggle',said);
+  r.same.forEach(c=>{const w=add('div','row','',det);add('b','',c.label,w);if(c.now){add('span','',': ',w);add('span','now',c.now,w)}})}}
 // People standing too close to read share rows; people in other places stay where they are.
 function spreadPeople(f){const row=ids.map(a=>[a,f.actor_positions[a]]).sort((x,y)=>x[1][0]-y[1][0]);let group=[];
  const flush=()=>{if(group.length>1){const cx=group.reduce((n,g)=>n+g[1][0],0)/group.length,cols=Math.min(5,group.length),rows=Math.ceil(group.length/cols),
    left=Math.max(1,Math.min(99-cols*19,cx+4-cols*9.5));group.forEach((g,n)=>{const el=document.querySelector('[data-actor="'+g[0]+'"]');
-   el.style.left=(left+(n%cols)*19)+'%';el.style.top=(100-(rows-Math.floor(n/cols))*24)+'%'})}group=[]};
+   el.style.left=(left+(n%cols)*19)+'%';el.style.top=(100-(rows-Math.floor(n/cols))*25.5)+'%'})}group=[]};
  row.forEach(g=>{if(group.length&&(g[1][0]-group[group.length-1][1][0]>12||Math.abs(g[1][1]-group[0][1][1])>8))flush();group.push(g)});flush()}
 // Things piled in one spot become a grid beside the card; their state styling is kept.
 function spreadThings(f){const es=Object.keys(PROFILE.entities).map(id=>document.querySelector('[data-entity="'+id+'"]')),pos=es.map(e=>[parseFloat(e.style.left),parseFloat(e.style.top)]);
@@ -1123,10 +1147,115 @@ if(crowded){document.body.classList.add('crowded');const stage=document.querySel
   el.addEventListener('click',()=>{pick=a;render(idx)})})}
 window.addEventListener('message',e=>{if(e.source!==window.parent||!e.data||e.data.type!=='ws-round')return;playing=false;clearInterval(timer);
  document.body.classList.add('driven');let j=-1;FRAMES.forEach((f,n)=>{if(f.turn===e.data.round)j=n});if(j>=0)render(j)});
-render(idx);const said=()=>{try{window.parent.postMessage({type:'ws-picture-height',height:document.querySelector('.shell').offsetHeight+24},'*')}catch(e){}};said();window.addEventListener('resize',said)})();</script></body>"""
+function said(){try{window.parent.postMessage({type:'ws-picture-height',height:document.querySelector('.shell').offsetHeight+24},'*')}catch(e){}}
+render(idx);said();window.addEventListener('resize',said)})();</script></body>"""
 
 
-_BYITSELF_CSS = ".crowded .byitself{left:2%;right:2%;top:10%;bottom:auto;transform:none;font-size:11px;padding:3px 10px;border-radius:8px;width:auto}"
+_BYITSELF_CSS = ".piled .byitself{display:none!important}.crowded .byitself{left:2%;right:2%;top:10%;bottom:auto;transform:none;font-size:11px;padding:3px 10px;border-radius:8px;width:auto}"
+
+
+def _words(text: Any) -> str:
+    return str(text).replace("_", " ").replace("-", " ")
+
+
+def _shown_value(field: str, value: Any) -> str | None:
+    """One recorded value in plain words; None for bookkeeping a reader has no use for."""
+    if field == "occurrences" or field.endswith(("_id", "_by")):
+        return None
+    if field == "happening_now":
+        return "happening now" if value else None
+    if field == "ticks_until":
+        return "now" if value == 0 else "passed" if value < 0 else f"in {value} round{'' if value == 1 else 's'}"
+    if isinstance(value, bool):
+        return f"{_words(field)}: {'yes' if value else 'no'}"
+    if "fraction" in field and isinstance(value, (int, float)):
+        return f"{round(value * 100)}%"
+    if isinstance(value, float):
+        value = round(value, 2)
+    return f"{_words(field)}: {_words(value)}"
+
+
+def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, Any]:
+    """Per round, what each person did and what changed, from the recorded before and after values."""
+    actors = set(trace["actors"])
+    names = {row["id"]: row.get("label") or row["id"] for row in bundle["entities"]}
+    # A message's label is its text cut short; the whole text is on record, so show that.
+    for row in bundle["entities"]:
+        content = row.get("components", {}).get("information", {}).get("content")
+        if content:
+            cut = names[row["id"]].rfind(" (to ")
+            names[row["id"]] = content + (names[row["id"]][cut:] if cut >= 0 else "")
+    # Generated labels can carry ids such as country_a; show the name the id stands for.
+    label = lambda eid: re.sub(
+        r"\b[a-z0-9]+(?:_[a-z0-9]+)+\b",
+        lambda m: names.get(m.group(0).replace("_", "-"), m.group(0)),
+        names.get(eid, eid),
+    )
+    rounds = trace.get("transcript") or []
+    # A live round arrives alone: its unchanged things are unknown, so only a full recording lists them.
+    from_start = bool(rounds) and rounds[0].get("turn") == 1
+    now: dict[str, dict[str, Any]] = {}
+    for row in rounds:
+        for change in [c for a in row["actors"].values() for c in a.get("changes") or []] + [
+            c for e in row.get("world_events") or [] for c in e.get("changes") or []
+        ]:
+            part = change["path"].split(".")
+            if part[0] == "entities" and len(part) >= 3:
+                now.setdefault(part[1], {}).setdefault(part[-1], change.get("before"))
+    # "Deployment pace: pace: preparing" says pace twice.
+    say = lambda eid, field, value: (
+        (_shown_value(field, value) or "").split(": ", 1)[-1]
+        if _words(field) in label(eid).lower() else _shown_value(field, value)
+    )
+    show = lambda eid: " \u00b7 ".join(v for v in (say(eid, f, x) for f, x in now.get(eid, {}).items()) if v)
+    story: dict[int, dict[str, Any]] = {}
+    for row in rounds:
+        before = {eid: dict(fields) for eid, fields in now.items()}
+        who: dict[str, list[str]] = {}
+        people: dict[str, dict[str, Any]] = {}
+        moves = [(a, names.get(a, a), rec.get("changes") or []) for a, rec in row["actors"].items()]
+        moves += [(None, "by itself: " + _words(e.get("rule_id", "")), e.get("changes") or []) for e in row.get("world_events") or []]
+        for actor, source, changes in moves:
+            mine: list[str] = []
+            for change in changes:
+                part = change["path"].split(".")
+                if part[0] != "entities" or len(part) < 3:
+                    continue
+                now.setdefault(part[1], {})[part[-1]] = change.get("after")
+                if source not in who.setdefault(part[1], []):
+                    who[part[1]].append(source)
+                if actor and part[1] != actor and not part[-1].endswith("_done"):
+                    text = _shown_value(part[-1], change.get("after"))
+                    line = f"{label(part[1])} \u2192 {text}" if text else None
+                    if line and line not in mine:
+                        mine.append(line)
+            if actor:
+                rec = row["actors"][actor]
+                status = rec.get("status")
+                state = "acted" if status == "accepted" else "waited" if status == "no_action" else "refused"
+                move = (rec.get("did" if state == "acted" else "wanted") or {}).get("kind")
+                more = ["Changed: " + "; ".join(mine) + "."] if mine else []
+                if state == "refused":
+                    more.insert(0, "Refused. It needed, and did not have: " + "; ".join(map(str, rec.get("refused_because") or [_words(status)])) + ".")
+                people[actor] = {"state": state, "more": more,
+                                 "did": _words(move) if state == "acted" else "waited" if state == "waited" else "refused" + (": " + _words(move) if move else "")}
+        changed = []
+        for eid in who:
+            # Only what moved: a row repeating every unchanged value hides the one that changed.
+            moved = [f for f in now[eid] if say(eid, f, now[eid][f]) != say(eid, f, before.get(eid, {}).get(f))]
+            shown = [say(eid, f, now[eid][f]) for f in moved]
+            if eid in actors or not any(shown):
+                continue
+            changed.append({"label": label(eid), "now": " \u00b7 ".join(v for v in shown if v),
+                            "was": " \u00b7 ".join(v for v in (say(eid, f, before.get(eid, {}).get(f)) for f in moved) if v),
+                            "by": ", ".join(who[eid]), "tick": moved == ["ticks_until"]})
+        # A clock counting down is the least news in a round, so it goes last.
+        changed.sort(key=lambda row: row["tick"])
+        seen = {c["label"] for c in changed}
+        same = [{"label": label(r["id"]), "now": show(r["id"])} for r in bundle["entities"]
+                if from_start and r["id"] not in actors and label(r["id"]) not in seen]
+        story[row["turn"]] = {"people": people, "changed": changed, "same": same}
+    return {"rounds": story}
 
 
 def recorded_trace(bundle: dict[str, Any], rounds: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1162,7 +1291,8 @@ def render_run(
     return html.replace(
         "'Turn '+f.turn+' / '+FRAMES.length",
         "'Round '+f.turn+(FRAMES.length>1?' ('+(idx+1)+' of '+FRAMES.length+')':'')",
-    ).replace("</body>", _PICTURE_SCRIPT.replace("/*BYITSELF*/", _BYITSELF_CSS if "id='byitself'" in html else ""))
+    ).replace("</body>", _PICTURE_SCRIPT.replace("/*BYITSELF*/", _BYITSELF_CSS if "id='byitself'" in html else "").replace(
+        "/*STORY*/", json.dumps(_picture_story(bundle, trace)).replace("</", "<\\/")))
 
 
 def main() -> int:
