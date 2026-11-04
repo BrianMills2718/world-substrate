@@ -107,7 +107,7 @@ rules:
     statement: >-
       The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
     owner: scripts/run_authored_world.py
-    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
+    reviewed_at: 096c129d045079ff524288f98c700953851cdd27  # re-read 2026-11-03 (#335 squash: card title wording only)
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
