@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "f83c6d8a1589dfb8ec8d129c0e0a0e3e3fb9df82",
+  "subject_revision": "f824249cf6738faad501bfd07b99e2ee5a54ed78",
   "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
   "parts": {
     "checks": {
@@ -40,7 +40,7 @@
           "command": "python3 scripts/check_trace_reads.py",
           "exit_status": 0,
           "counts": {
-            "runs": 30,
+            "runs": 31,
             "problems": 0
           }
         },
@@ -50,7 +50,7 @@
           "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
           "exit_status": 0,
           "counts": {
-            "tests_run": 850,
+            "tests_run": 859,
             "failed": 0,
             "skipped": 2
           }
@@ -60,7 +60,7 @@
           "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 168,
+            "md_files": 172,
             "cap": "exception",
             "orphans": 0
           },
@@ -210,8 +210,7 @@
     "cold_review": {
       "status": "present",
       "path": "docs/planning/cold-review.md",
-      "verdict": "pass",
-      "reviewed_revision": "f83c6d8a1589dfb8ec8d129c0e0a0e3e3fb9df82"
+      "verdict": "pending"
     },
     "acceptance": {
       "status": "present",
