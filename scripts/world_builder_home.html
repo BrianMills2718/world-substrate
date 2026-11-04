@@ -231,9 +231,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <p id="picture-note" hidden></p>
     <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
     </details>
-    <details class="picture" id="network" open><summary title="Show or hide the whole world as a network: who and what exists, where each one is, which moves the rules allow and what changes by itself. What changed in the latest round is lit up.">Network</summary>
+    <details class="picture" id="network" open data-focus="1"><summary title="Show or hide the whole world as a network: who and what exists, where each one is, which moves the rules allow and what changes by itself. What changed in the latest round is lit up.">Network</summary>
     <div class="legend net-legend"><span><span class="net-key" style="border-color:#6fa8dc"></span>chooses moves</span><span><span class="net-key" style="border-color:#7d8a90"></span>place</span><span><span class="net-key" style="border-color:#a9b5ba"></span>thing</span><span><span class="net-key" style="border-color:#f0a35e"></span>move the rules allow</span><span><span class="net-key" style="border-color:#f0a35e;border-style:dashed"></span>changes by itself</span></div>
     <p class="small muted" id="net-caption" role="status"></p>
+      <button type="button" class="secondary" id="net-whole" hidden title="Switch between what this round touched and every box in the world"></button>
     <div class="net-frame" id="net-graph" aria-label="The world as a network"></div>
     <p class="detail" id="net-detail"></p>
     </details>
@@ -642,6 +643,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       const who = labelFor(a.actor), act = a.row.wanted ? words(a.row.wanted.kind) : "";
       if (kind === "accepted") text = `Round ${a.turn}: ${who} — ${act}. Allowed: every check held.`;
       else if (kind === "waited") text = `Round ${a.turn}: ${who} waited — none of the rules allowed anything for them right then.`;
+      else if (a.row.wanted.kind === "unmatched-attempt") text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” The system could not match these words to a move, so the rules never judged it.`;
       else if ((a.row.refused_because || []).length) text = `Round ${a.turn}: ${who} tried to ${act}. Refused, because this check was false: ` + a.row.refused_because.map((r) => typeof r === "string" ? r : r.label || JSON.stringify(r)).join("; ");
       else text = `Round ${a.turn}: ${who} wanted to ${act}, but someone else acted first in the same round and it was no longer possible.`;
       if (kind === "waited" && a.row.belief) text = `Round ${a.turn}: ${who} chose to wait.`;
@@ -742,6 +744,16 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // document drawn by the shared representation-router graph-viewer (scripts/vendor/graph-viewer.js). Boxes are
   // who and what exists; each move the rules allow is an orange box linked to who can make it and what it uses;
   // each change the world makes by itself is a dashed orange box linked to what it changes.
+  const NET_FOCUS_OVER = 25;
+  $("net-whole").addEventListener("click", () => { const b = $("network"); b.dataset.focus = b.dataset.focus === "1" ? "0" : "1"; renderNetwork(); });
+  // The part of a big world one round touched, with the links among it; the people alone before anything has happened.
+  function focusNetwork(graph, touched) {
+    const keep = touched.size ? touched : new Set(graph.nodes.filter((n) => n.kind === "actor").map((n) => n.id));
+    const nodes = graph.nodes.filter((n) => keep.has(n.id));
+    const ids = new Set(nodes.map((n) => n.id));
+    return { ...graph, nodes, edges: graph.edges.filter((e) => ids.has(e.source) && ids.has(e.target)),
+      layout: nodes.length > 50 ? { algorithm: "force" } : {} };
+  }
   function worldNetwork(bundle, causalModel) {
     const ents = bundle.entities || [], ids = new Set(ents.map((e) => e.id));
     const words = (s) => String(s).replace(/[-_]+/g, " ");
@@ -856,10 +868,18 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (box.hidden || !box.open) return;
     if (!live.net) live.net = { entities: JSON.parse(JSON.stringify(world.bundle.entities)), applied: 0, shape: "" };
     while (live.net.applied < live.rounds.length) applyRound(live.net.entities, live.rounds[live.net.applied++]);
-    const graph = worldNetwork({ ...world.bundle, entities: live.net.entities }, world.causal_model);
+    const whole = worldNetwork({ ...world.bundle, entities: live.net.entities }, world.causal_model);
+    const turnNow = live.rounds[live.rounds.length - 1];
+    // A world of dozens of boxes drawn at once is an unreadable tangle, so a big one shows what this round touched;
+    // one button shows all of it (Brian, 2026-11-03: the Network was unreadable; nothing is dropped).
+    const big = whole.nodes.length > NET_FOCUS_OVER;
+    const focused = big && box.dataset.focus === "1";
+    const graph = focused ? focusNetwork(whole, turnNow ? roundTouched(turnNow) : new Set()) : whole;
+    $("net-whole").hidden = !big;
+    $("net-whole").textContent = focused ? `Show the whole world (${whole.nodes.length} boxes)` : "Show only what this round touched";
     try { await loadGraphViewer(); }
     catch (err) { $("net-caption").textContent = "The network picture could not load: " + err.message; return; }
-    const shape = JSON.stringify(graph.edges.map((e) => e.id));
+    const shape = JSON.stringify([graph.nodes.map((n) => n.id), graph.edges.map((e) => e.id)]);
     if (!netViewer) {
       // A highlight sent before the first layout is lost, so send the latest one again once it is drawn.
       netViewer = GraphViewer.mount($("net-graph"), { graph, onSelect: (pick) => { $("net-detail").textContent = pick ? netDescribe(pick.id) : ""; },
@@ -870,9 +890,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const lit = turn ? [...roundTouched(turn)].filter((id) => graph.nodes.some((n) => n.id === id)) : [];
     const litSet = new Set(lit);
     graph.edges.forEach((e) => { if (litSet.has(e.source) && litSet.has(e.target)) lit.push(e.id); });
-    live.net.lit = lit.length ? lit : null;
+    live.net.lit = lit.length && !focused ? lit : null;
     netViewer.highlight(live.net.lit);
-    $("net-caption").textContent = turn
+    $("net-caption").textContent = focused
+      ? (turn ? `Showing ${graph.nodes.length} of ${whole.nodes.length} boxes: who acted in round ${turn.turn} and what that used or changed. Select a box to see its state now.` : `Showing ${graph.nodes.length} of ${whole.nodes.length} boxes: the people. Select a box to see its state.`)
+      : turn
       ? (litSet.size ? `Lit up: what round ${turn.turn} used or changed. Select a box to see its state now.` : `Nothing changed in round ${turn.turn}. Select a box to see its state now.`)
       : "Before round 1. Select a box to see its state.";
   }

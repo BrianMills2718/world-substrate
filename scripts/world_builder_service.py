@@ -661,6 +661,26 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
     }
 
 
+_OLD_CHECK_WORDS = (
+    (re.compile(r"^Participant (\w+) matches mechanic selector$"), r"the \1 named is the right kind of thing for this move"),
+    (re.compile(r"^Participant (\w+) exists$"), r"the \1 named exists"),
+    (re.compile(r"^Actor matches mechanic selector$"), "the one acting is allowed to make this move"),
+)
+
+
+def _plain_old_checks(rounds: list[dict[str, Any]]) -> None:
+    """Recordings keep the engine's old check names (exact strings it wrote, not prose); show today's plain ones."""
+    for row in rounds:
+        for rec in row.get("actors", {}).values():
+            if rec.get("refused_because"):
+                out = []
+                for text in rec["refused_because"]:
+                    for pattern, plain in _OLD_CHECK_WORDS:
+                        text = pattern.sub(plain, str(text))
+                    out.append(text)
+                rec["refused_because"] = out
+
+
 def _share_picture(record: dict[str, Any]) -> dict[str, str]:
     """Draw a shared run's picture from its recorded rounds, so old links get it too; no AI is called."""
     try:
@@ -1376,6 +1396,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if record is None:
                 self._error(HTTPStatus.NOT_FOUND, "That shared run does not exist (check the link).")
                 return
+            _plain_old_checks(record["rounds"])
             self._json(HTTPStatus.OK, {"ok": True, **record, **_share_picture(record)})
             return
         if path.startswith("/jobs/"):

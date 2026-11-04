@@ -117,6 +117,12 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertEqual((vote["now"], vote["was"], vote["by"]), ("status: passed", "status: open", "Ann"))
         self.assertEqual(story["changed"][-1]["now"], "passed")  # a clock goes last and never says "in -1 rounds"
         self.assertEqual([s["label"] for s in story["same"]], ["Thing"])
+        # Words the system could not read are not the world saying no: Country B, six times.
+        rounds[0]["actors"]["c"] = {"status": "unsupported_action", "changes": [], "refused_because": [],
+                                    "wanted": {"kind": "unmatched-attempt", "attempt": "I try", "nearest_kind": "restore-support"}}
+        unread = _picture_story(bundle, {"actors": ["a", "b", "c"], "transcript": rounds})["rounds"][1]["people"]["c"]
+        self.assertEqual(unread["did"], "not understood: restore support")
+        self.assertIn("never judged", unread["more"][0])
         # A live round arrives alone: what did not change is unknown, so it is not claimed.
         rounds[0]["turn"] = 7
         self.assertEqual(_picture_story(bundle, {"actors": ["a", "b", "c"], "transcript": rounds})["rounds"][7]["same"], [])
