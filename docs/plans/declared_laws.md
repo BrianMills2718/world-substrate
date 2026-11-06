@@ -44,6 +44,43 @@ conflict_surfaces:
 
 Planning package: docs/planning/declared-laws/planning-package.json
 
+<!-- planning-compliance-checklist:v1 -->
+## Compliance checklist
+
+Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the validator and fails
+if any line below differs from what it says now. Unticked pending items are not passes.
+
+Manifest: `docs/planning/planning-package.json`
+Package revision: `c99cbc704c5a`
+Verdict: compliant, 2 pending
+
+- [ ] part investigation: pending
+- [x] part checks: ok
+- [x] part open_questions: ok
+- [x] part system_model: ok
+- [x] part domain_model: ok
+- [x] part diagrams: ok
+- [x] part plan: ok
+- [x] part acceptance: ok
+- [x] part review_page: ok
+- [x] part cold_review: ok
+- [ ] substance route follows from its path decision: failing
+- [x] substance citations resolve: ok
+- [x] substance domain model has a glossary: ok
+- [ ] substance project layer checks against the planning layer: failing
+- [x] substance concepts point at their code: ok
+- [x] substance plan names the concepts it relies on: ok
+- [x] substance type-level model of executable rules: ok
+- [x] substance cold review read this revision: ok
+- [ ] initiative initiative names its home: pending
+- [ ] tiers spectrum rungs 1-11 are cited: failing
+- [ ] tiers production rungs 12-14 are cited when it runs in production: failing
+- [ ] tiers thesaurus separates near-identical names (rung 4): failing
+- [x] coverage goal coverage: ok
+- [x] freshness package is current: ok
+<!-- /planning-compliance-checklist -->
+
+
 This is the plan's own package. The repository's package (`docs/planning/planning-package.json`, page
 `proposals/planning-package/review-page/`) covers the whole repository; its plan part now points at this plan,
 and both share the checks, open-questions ledger, models and diagrams rebuilt by `tools/planning/` (Q41).
