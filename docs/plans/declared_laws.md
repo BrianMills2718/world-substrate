@@ -73,7 +73,7 @@ laws allow), which a reader needs before trusting what the run shows. **Recurrin
 Baseline from pencil2 to pencil14 (2026-10-27/28): each live build found one more way the rules writer got the
 bookkeeping wrong (goods from nothing, stock with nowhere to go, a purchase that pays nothing, a move that changes
 nothing, a malformed field path), and each was fixed by one more hand-written check in
-`scripts/world_builder_service.py:840-1220`, some of which then raised false alarms. pencil14 at `5d6a48e` failed
+`scripts/world_builder_service.py:870-1250`, some of which then raised false alarms. pencil14 at `5d6a48e` failed
 outright (422 after about 287 s, job `f0b6d1a3dc0a40848456e6fe2ce172c0`: "mechanic installer rejected
 shipment-arrival: malformed_path"; driver log in `evidence/pencil14-build-failure/`). **Inspectable result of this plan:** the canonical example above, live.
 
@@ -134,7 +134,7 @@ to the review.
 | A process (tick or knock-on) that writes outside its scope raises `ScopeViolation` and the state is restored (`engine.py:1005-1015`). A moment is refused only for `reaction_limit`, `_settle` returning `None`: in `Engine.apply` through `_reject` with the move's rule id (`engine.py:760-781`), in `Engine.advance` through `_refuse_round` with the process's rule id, which ends the advance (`engine.py:858-866`, `:871-895`) | `src/world_substrate/engine.py` |
 | A world-specific conservation check exists for one reference world only, "not a substrate law" | `assay_conservation`, `src/world_substrate/assay.py:269` |
 | A read-only derived view pairs two give events into one exchange | `src/world_substrate/exchange.py:68` |
-| About fourteen build checks guess meaning from rule shape or report the test run | `scripts/world_builder_service.py:840-1220`, used at `:1700-1760` |
+| About fourteen build checks guess meaning from rule shape or report the test run | `scripts/world_builder_service.py:870-1250`, used at `:1700-1760` |
 | The rules writer revises only the moves it changes | `merge_revision`, `scripts/generate_causal_model.py` (#278) |
 | Nothing declares a law, and nothing reviews the rules against the description | absent |
 
@@ -282,7 +282,7 @@ Never rerun until a behavior appears and report only that run. Review completene
 | S2 | `law_breaches` in `src/world_substrate/laws.py`, called in `Engine.apply` after the scope check and in `_apply_process` (ticks and knock-on waves); `_settle` returns a refusal record; `_reject` and `_refuse_round` record `law_breach`; status `law_breach`; test-run breaches become build findings | built (#284) | L2, L3, L7; free replays of saved worlds first |
 | S3 | `scripts/review_rules.py` and its findings into the rules writer's revision step | built (#291-#304; Q44 resolved) | L4, L5, L8 |
 | S4 | retire the heuristics Q45 names, one by one, each with its incident proof | conditional (Q45; none retired yet) | L6, L7 |
-| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | waiting on Q50 (S1-S3 built; new paid builds wait for Brian's answer) | L1, L5, L8 per run; read for Q43 counterexamples |
+| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | waiting on Q50 (S1-S3 built; new paid builds wait for Brian's answer; one Waltzman rebuild ran 2026-11-04 on his yes for that build, `evidence/declared-laws/s4-waltzman-3/`) | L1, L5, L8 per run; read for Q43 counterexamples |
 
 Each slice is its own pull request and leaves a working World Builder.
 
@@ -316,7 +316,7 @@ Each slice is its own pull request and leaves a working World Builder.
   every engine event with before/after and failed checks (including `law_breach`), and the output (build record, page
   JSON). Kept for ordinary runs, not only failures; this adoption commit alone is document-only and runs nothing.
 - The model's reasoning, where the model exposes it: each call's reasoning text (OpenRouter `reasoning` field, and
-  the residents' `reasoning` field in `scripts/run_authored_world.py:368`) is kept in the run log with the call, not
+  the residents' `reasoning` field in `scripts/run_authored_world.py:369`) is kept in the run log with the call, not
   dropped; a model that exposes none is recorded as such.
 - How to open one: `jq . evidence/declared-laws/<run>/run-log.jsonl`; model calls in the VPS `llm_calls` table by
   trace id. Who reads and when: the implementing agent reads every run's trace before reporting its slice: every law
@@ -366,7 +366,7 @@ review call is recorded with its error and the build continues without findings,
 share its trace id, as today.
 
 Provider: OpenRouter through `llm_client`; designer and rules writer on the World Builder's `DEFAULT_MODEL`
-(`scripts/run_authored_world.py:37`), the reviewer on a model of another family chosen in S3 (Q44). Spend authority:
+(`scripts/run_authored_world.py:38`), the reviewer on a model of another family chosen in S3 (Q44). Spend authority:
 Brian's owner allowance, given for this plan by his 2026-10-28 "yes" and his added OpenRouter credit; the visitor
 allowance stays $3/day. Promotion condition: laws and review findings count as working only after an authentic live
 build on the deployed service (owner allowance, through the real page) whose `run-log.jsonl` and `TRACE_READ.md` show
