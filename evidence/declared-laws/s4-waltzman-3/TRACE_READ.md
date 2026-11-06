@@ -21,6 +21,13 @@ each person's stated reason, status and reading. The kind and build traces were 
    Group raised a new concern (r8-e00017) that made Country One conditional (r8-e00021), and the deadline fell the same
    round with 3 of 5: rejected (r8-e00023). Country Four brought it back in round 9 (r9-e00001). Round 10 repeated the
    pattern: Country Two restored and the Community Group's new concern (r10-e00001) took Country Four out (r10-e00023).
+   This rejection also rests on a rule the build's own review flagged and kept: the review (call 23042) found that
+   `decision-postponed-at-deadline` starts with `max_postponements` 0, so "the decision can never be delayed", and the
+   build record (`run-log.jsonl` row 1, `dry_run.review_findings`) shows one try with that finding and no rewrite. So at the
+   round-8 deadline postponing was impossible; whether a postponement would have fired instead was not tested. The rewrite was
+   most likely skipped by the 80 s rewrite limit (`PEOPLE_REWRITE_BY_S`, `scripts/world_builder_service.py:266`, checked
+   at `:2254`): the first model call was at 15:53:10 and the review returned at 15:55:29, while cost was $0.14 of the
+   $1.30 build budget. The progress line that would say so is not in the saved record (open question Q55).
 4. **Reopening without new evidence is a question for the rules, unanswered here.** Country Two's stated reason for
    reopening is that it should not treat the concern as settled, not that anything new came up. Whether a world should
    allow that is not settled by this read.
