@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "f824249cf6738faad501bfd07b99e2ee5a54ed78",
+  "subject_revision": "c99cbc704c5a8f2876c464b313373d343108cf1e",
   "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
   "parts": {
     "checks": {
@@ -40,7 +40,7 @@
           "command": "python3 scripts/check_trace_reads.py",
           "exit_status": 0,
           "counts": {
-            "runs": 31,
+            "runs": 33,
             "problems": 0
           }
         },
@@ -50,7 +50,7 @@
           "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
           "exit_status": 0,
           "counts": {
-            "tests_run": 859,
+            "tests_run": 862,
             "failed": 0,
             "skipped": 2
           }
@@ -60,7 +60,7 @@
           "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 172,
+            "md_files": 174,
             "cap": "exception",
             "orphans": 0
           },
@@ -103,23 +103,23 @@
         "profile": "src/world_substrate/profile.py:266",
         "write-scope": "src/world_substrate/engine.py:88",
         "causal-trace": "src/world_substrate/engine.py:529",
-        "world-kind": "scripts/world_builder_service.py:113",
+        "world-kind": "scripts/world_builder_service.py:116",
         "builder": "scripts/world_builder_service.py",
-        "approval": "scripts/world_builder_service.py:418",
-        "fingerprint": "scripts/world_builder_service.py:381",
+        "approval": "scripts/world_builder_service.py:421",
+        "fingerprint": "scripts/world_builder_service.py:384",
         "information": "src/world_substrate/information.py:57",
-        "run-loop": "scripts/run_authored_world.py:347",
-        "contention": "scripts/run_authored_world.py:563",
+        "run-loop": "scripts/run_authored_world.py:594",
+        "contention": "scripts/run_authored_world.py:740",
         "resident": "scripts/concordia_residents.py:44",
         "task": "scripts/attempts.py:17",
         "notice": "scripts/attempts.py:234",
-        "build": "scripts/world_builder_service.py:1541",
-        "rules-retry": "scripts/world_builder_service.py:263",
-        "test-run": "scripts/world_builder_service.py:1610",
-        "run-log": "scripts/world_builder_service.py:524",
+        "build": "scripts/world_builder_service.py:1591",
+        "rules-retry": "scripts/world_builder_service.py:266",
+        "test-run": "scripts/world_builder_service.py:1797",
+        "run-log": "scripts/world_builder_service.py:556",
         "readout": "scripts/run_readout.py:125",
         "scene-replay": "scripts/render_scene_replay.py:398",
-        "share": "scripts/world_builder_service.py:598",
+        "share": "scripts/world_builder_service.py:603",
         "budget": "scripts/world_builder_service.py:51",
         "people-world": "scripts/people_world.py:364",
         "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
@@ -211,7 +211,8 @@
       "status": "present",
       "path": "docs/planning/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "f824249cf6738faad501bfd07b99e2ee5a54ed78"
+      "reviewed_revision": "c99cbc704c5a8f2876c464b313373d343108cf1e",
+      "package_commit": "686445ea2efb4978bc7a6207b4811e29f0a1c737"
     },
     "acceptance": {
       "status": "present",

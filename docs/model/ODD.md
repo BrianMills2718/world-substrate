@@ -36,9 +36,9 @@ Each pattern is something a check or a person could observe. VIEW_COVERAGE.md re
 | P1 | Every submitted attempt produces exactly one Engine event and one command; commands replay to identical statuses. | `World.events`, `World.commands`, `Engine.replay_commands` (`src/world_substrate/engine.py:879`) |
 | P2 | A refused attempt leaves `hash_before == hash_after` and the revision unchanged. | event `changes` empty; `hash_*` (`engine.py:529-580`) |
 | P3 | `revision` rises by exactly one per committed event; `tick` rises by one per round. | `engine.py:667`, `:842`, `advance` |
-| P4 | No `/run` or `/compare-native-coordination` executes without `approved: true`; every `/run` recompiles the causal model before any policy or model call. | HTTP 409 (`scripts/world_builder_service.py:998-1000`); compile at `:1006` |
+| P4 | No `/run` or `/compare-native-coordination` executes without `approved: true`; every `/run` recompiles the causal model before any policy or model call. | HTTP 409 (`scripts/world_builder_service.py:2473-2475`); compile at `:2480-2482` |
 | P5 | Causal-model action kinds equal the bundle's action kinds, exactly. | `src/world_substrate/action_authoring.py:383-391` |
-| P6 | A continued round uses the same law: world identity and rule versions match. | `scripts/run_authored_world.py:233-242` |
+| P6 | A continued round uses the same law: world identity and rule versions match. | `scripts/run_authored_world.py:545-552` |
 | P7 | Every logged request leaves one run-log line; LLM spend never exceeds the day's cap. | `runs_<date>.jsonl`; budget ledger (`world_builder_service.py:183-220`) |
 | P8 | Presentation never writes canonical state; two renders of the same projection give the same logical frames. | `living_scene.py` frame builder; renderers read-only |
 | P9 | Counts a view prints equal counts of the model element they name (allowed = accepted events; refused = refused attempts). | home outcome line (refused = submitted attempts that did not go through; held back by the rules counted separately; fixed 2026-10-06, see G2) |
@@ -197,7 +197,7 @@ There is no global clock in the service: everything is request-driven. Inside a 
 
 **Tick order inside `run_scenario`** (`spikes/any-scenario-2026-10/run_scenario.py:148-290`): each actor in bundle order is offered `Engine.discover` actions; its observation is cut to the fields in `sensing.json`; it is woken only if a categorical field or its offered kinds changed, or an earlier attempt awaits its observed effect. A woken resident returns an Attempt: an offered action goes through `Engine.submit`; `unlisted` goes to the game master; `continue` does nothing. Then `Engine.advance(1)` (with the clock process registered). The run ends at the terminal, after `quiet_ticks` (default 25) ticks with no material change, at `max_ticks` (200) or past the run budget.
 
-**Round order inside `run`** (`scripts/run_authored_world.py:215-401`): each actor in a rotating order (`:324-325`) is shown its offered actions (`Engine.discover`), minus any allowed move that would change nothing (each is previewed on a scratch copy, `:144-162`), the policy picks one (scripted: the first offered, `:165-169`; LLM: chosen by the model, in parallel), then the picks are submitted in order. A pick that lost to an earlier actor (`stale_revision`) is re-decided once against the new state (`:345-368`). After all actors, `Engine.advance(1)` runs due processes (`:387`). The run stops at the turn limit or when the finish line holds.
+**Round order inside `run`** (`scripts/run_authored_world.py:216-402`): each actor in a rotating order (`:324-325`) is shown its offered actions (`Engine.discover`), minus any allowed move that would change nothing (each is previewed on a scratch copy, `:144-162`), the policy picks one (scripted: the first offered, `:165-169`; LLM: chosen by the model, in parallel), then the picks are submitted in order. A pick that lost to an earlier actor (`stale_revision`) is re-decided once against the new state (`:345-368`). After all actors, `Engine.advance(1)` runs due processes (`:387`). The run stops at the turn limit or when the finish line holds.
 
 ## 6. Design concepts
 
@@ -238,17 +238,17 @@ Each rule below is enforced by the cited code.
 
 **8.5 Compiler** (`src/world_substrate/action_authoring.py:367-400`). `schema_version` must be `world-substrate-causal-model/v0`; mechanics nonempty, unique action kinds equal to the bundle's action kinds; at most 28 processes (`MAX_PROCESSES`, `:29`); process and mechanic ids unique; every path, selector, operator and value is type-checked against the bundle (`:599-900`). Reads and writes are derived, never declared by the proposer (RULE-DERIVED-AUTHORITY).
 
-**8.6 Installer and freeze** (`scripts/run_authored_world.py:48-67`, `src/world_substrate/profile.py:110-279`). Each mechanic and process package is validated; any `reject` finding aborts the run. `freeze()` hashes packages + findings (sha256, first 16 hex) and forbids further installs (RULE-FROZEN-PROFILE).
+**8.6 Installer and freeze** (`scripts/run_authored_world.py:49-68`, `src/world_substrate/profile.py:110-279`). Each mechanic and process package is validated; any `reject` finding aborts the run. `freeze()` hashes packages + findings (sha256, first 16 hex) and forbids further installs (RULE-FROZEN-PROFILE).
 
-**8.7 Approval gate** (`scripts/world_builder_service.py:997-1006`, `:956-962`). `approved` must be the boolean `true` (else HTTP 409; RULE-APPROVAL-BEFORE-RUN); the bundle is validated and the causal model compiled before any policy or model call. Native-coordination runs and comparisons additionally require the causal model to equal the reviewed shared coordination mechanics, and comparisons change only `gate.required_approvals`.
+**8.7 Approval gate** (`scripts/world_builder_service.py:2473-2475`, `:2480-2482`). `approved` must be the boolean `true` (else HTTP 409; RULE-APPROVAL-BEFORE-RUN); the bundle is validated and the causal model compiled before any policy or model call. Native-coordination runs and comparisons additionally require the causal model to equal the reviewed shared coordination mechanics, and comparisons change only `gate.required_approvals`.
 
-**8.8 Continuation** (`scripts/run_authored_world.py:233-244`). `continue_from` must be a `world-substrate-snapshot/v1` whose `world_id`, `content_id`, `rule_versions` and `engine_id` equal a freshly built engine's; entity state is taken from the snapshot as given (see G11).
+**8.8 Continuation** (`scripts/run_authored_world.py:545-552`). `continue_from` must be a `world-substrate-snapshot/v1` whose `world_id`, `content_id`, `rule_versions` and `engine_id` equal a freshly built engine's; entity state is taken from the snapshot as given (see G11).
 
-**8.9 Run rows** (`scripts/run_authored_world.py:327-389`). Each actor gets one row per round: `wanted`, `did`, `status` (an engine status, or `no_action` when nothing was chosen, or `nothing_left` when a lost race left nothing), `retried`, `said`, `refused_because` (labels of failed checks, excluding the revision check), `lost_what_it_wanted`, `changed` (an accepted move that changed state other than engine bookkeeping, `:381`), `blocked_by_rules` (withheld offers, one per distinct action kind and reason, `:261-281`). Allowed moves that would change nothing are removed from the offer before the policy sees them (`_without_no_ops`, `:144-162`; since #117); they are recorded neither as offered nor as blocked.
+**8.9 Run rows** (`scripts/run_authored_world.py:328-390`). Each actor gets one row per round: `wanted`, `did`, `status` (an engine status, or `no_action` when nothing was chosen, or `nothing_left` when a lost race left nothing), `retried`, `said`, `refused_because` (labels of failed checks, excluding the revision check), `lost_what_it_wanted`, `changed` (an accepted move that changed state other than engine bookkeeping, `:381`), `blocked_by_rules` (withheld offers, one per distinct action kind and reason, `:261-281`). Allowed moves that would change nothing are removed from the offer before the policy sees them (`_without_no_ops`, `:144-162`; since #117); they are recorded neither as offered nor as blocked.
 
-**8.10 Run summary** (`scripts/run_authored_world.py:412-441`). `accepted_actions` counts accepted rows; `world_changes` counts process events; `active_at_end` is true when some actor move `changed` the world in the last third of rounds (process changes and no-op moves do not count); `idle_actors` lists actors with no move that changed anything.
+**8.10 Run summary** (`scripts/run_authored_world.py:413-442`). `accepted_actions` counts accepted rows; `world_changes` counts process events; `active_at_end` is true when some actor move `changed` the world in the last third of rounds (process changes and no-op moves do not count); `idle_actors` lists actors with no move that changed anything.
 
-**8.11 Dry run scoring** (`scripts/world_builder_service.py:783-849`). Up to two mechanic attempts; each is run scripted for a fixed number of rounds. Task worlds score 2 if the finish line is reached, else 1; ongoing worlds score 3 (alive, everyone acted), 2 (alive), 1; a run error scores 0. Ties prefer fewer idle actors. The best attempt is returned.
+**8.11 Dry run scoring** (`scripts/world_builder_service.py:813-879`). Up to two mechanic attempts; each is run scripted for a fixed number of rounds. Task worlds score 2 if the finish line is reached, else 1; ongoing worlds score 3 (alive, everyone acted), 2 (alive), 1; a run error scores 0. Ties prefer fewer idle actors. The best attempt is returned.
 
 **8.12 Budget** (`scripts/world_builder_service.py:137-220`). Cap $3.00/day for visitors (`DAILY_LLM_BUDGET`, `:51`), $5.00 for the owner (`OWNER_DAILY_BUDGET`, `:59`, its own ledger file). Each LLM request reserves up to its own cap (world $0.20, mechanics $0.12, run $0.12) from what remains, then settles to the recorded trace cost; an unreadable cost charges the whole reservation; an unreadable ledger refuses spend (RULE-BUDGET-FAILS-CLOSED).
 
@@ -318,7 +318,7 @@ process, affordance, attempt, observation) and how each maps onto the shared hyp
   process may stop a remedy (status back to `open`). `group_decision.agenda_items` is a bare count: an agenda item has
   no content (`scripts/people_world.py:279`).
 
-### 11.2 Build (`/generate-world`, people path, `scripts/world_builder_service.py:1538-1711`)
+### 11.2 Build (`/generate-world`, people path, `scripts/world_builder_service.py:1569-1742`)
 
 Spec (one call) -> compile the fixed rules -> actions (one call) -> rules for uncovered actions (one call) -> assembly
 (`people_world.assemble_people_world`, `:325-361`: drop impossible checks, limit to the work cycle, merge, drop a
@@ -340,7 +340,7 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
   second only (Q25).
 - The build streams up to 40 progress steps through `/jobs/<id>` (`:342-343`, `:722-736`).
 
-### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:347-815`)
+### 11.3 Run with live residents (`/run`, policy `resident`, `scripts/run_authored_world.py:348-816`)
 
 - **Resident:** one Concordia agent per person (`scripts/concordia_residents.py`), memory of up to 12 notes,
   round-tripped through the page. On the live path (open attempts, below) it answers `belief, attempt, expected_effect,

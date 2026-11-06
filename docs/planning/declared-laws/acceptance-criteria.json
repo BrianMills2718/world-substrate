@@ -42,7 +42,7 @@
       },
       "entrypoint": "https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow",
       "status": "built",
-      "built_note": "S1 (#280). To see it today: open https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow, press \"See how it works\", then open \"Laws this world keeps (8)\" (scripts/world_builder_home.html:507). Gaps: the laws show as a plain collapsed list, not the linked table the router chose (router/build-record.recommendation.json); and this run's 8 laws only limit which moves change each stock, with no payment law, so the expected sale-pays law is absent here (open question Q49). Brian has not judged it."
+      "built_note": "S1 (#280). To see it today: open https://brianmills.dev/world-builder/?run=ke-eNkQ6Q_Ow, press \"See how it works\", then open \"Laws this world keeps (8)\" (scripts/world_builder_home.html:509). Gaps: the laws show as a plain collapsed list, not the linked table the router chose (router/build-record.recommendation.json); and this run's 8 laws only limit which moves change each stock, with no payment law, so the expected sale-pays law is absent here (open question Q49). Brian has not judged it."
     },
     {
       "id": "A2",

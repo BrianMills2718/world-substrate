@@ -151,6 +151,18 @@
    "explain": "Blocks: Whether requests are worth more work.."
   },
   {
+   "id": "Q54",
+   "label": "Q54: People keep trying a closed door",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether residents see enough of the world to choose moves that can succeed; how much of a run is wasted turns.."
+  },
+  {
+   "id": "Q55",
+   "label": "Q55: A flagged world kept without a rewrite",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether the shared Waltzman run (share jyVbywXT8N8F) is fit for Brian to judge under Q50, and whether the plan's S3 (review findings go to the rules writer's revision step) holds on the people-world path.."
+  },
+  {
    "id": "agenda",
    "label": "Agenda count",
    "kind": "Concept",
@@ -221,7 +233,7 @@
    "id": "mechanisms",
    "label": "Mechanisms library",
    "kind": "Concept",
-   "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28)."
+   "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
   },
   {
    "id": "observation",
@@ -614,6 +626,36 @@
    "id": "Q52-resident",
    "source": "Q52",
    "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q54-resident",
+   "source": "Q54",
+   "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q54-attempt",
+   "source": "Q54",
+   "target": "attempt",
+   "label": "bears on"
+  },
+  {
+   "id": "Q55-rules-review",
+   "source": "Q55",
+   "target": "rules-review",
+   "label": "bears on"
+  },
+  {
+   "id": "Q55-build",
+   "source": "Q55",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q55-rules-retry",
+   "source": "Q55",
+   "target": "rules-retry",
    "label": "bears on"
   }
  ],
