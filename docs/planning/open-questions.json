@@ -11,7 +11,7 @@
    "owner": "agent",
    "status": "open",
    "sources": [
-    "scripts/world_builder_service.py:263",
+    "scripts/world_builder_service.py:266",
     "scripts/world_builder_service.py:1698",
     "docs/plans/waltzman-tasks-slice2.goal.md:100",
     "evidence/waltzman-tasks-slice2/c1r24/c1r-run24.log",
@@ -26,16 +26,16 @@
   {
    "id": "Q2",
    "short": "A refusal is not linked to its cause",
-   "question": "When an earlier move this round changes the state before a person's move, does the record say which event blocked it? On the live open-attempt path the same attempt is resubmitted at the new revision and only its rule's checks decide it (scripts/run_authored_world.py:572-574); menu paths ask once more (:581). On every path the refused row lists the failed check labels (refused_because, :622-627) but not the event that changed the state.",
+   "question": "When an earlier move this round changes the state before a person's move, does the record say which event blocked it? On the live open-attempt path the same attempt is resubmitted at the new revision and only its rule's checks decide it (scripts/run_authored_world.py:740-750); menu paths ask once more (:754-772). On every path the refused row lists the failed check labels (refused_because, :622-627) but not the event that changed the state.",
    "blocks": "whether a reader of a run (or the readout) can say why a person's move was refused, in any world",
    "resolves_with": "An argument settles it: the run loop already knows which submitted event changed the revision before the loser's pick, so naming it costs nothing and belongs in the run loop, not any world. Build it and check on free replays of saved worlds (c1r24 Waltzman, truck) that each refused row names its blocking event id. Starting point: c1r24 call 18016 shows the round's moves but not the link.",
    "owner": "agent",
    "status": "resolved",
    "sources": [
-    "scripts/run_authored_world.py:564",
-    "scripts/run_authored_world.py:572",
-    "scripts/run_authored_world.py:582",
-    "scripts/run_authored_world.py:623",
+    "scripts/run_authored_world.py:594",
+    "scripts/run_authored_world.py:740",
+    "scripts/run_authored_world.py:728",
+    "scripts/run_authored_world.py:800",
     "evidence/waltzman-tasks-slice2/c1r22/TRACE_READ.md:125"
    ],
    "touches": [
@@ -178,14 +178,14 @@
   {
    "id": "Q10",
    "short": "Retry keeps the first words",
-   "question": "A menu retry's own words are stored as said_on_retry (scripts/run_authored_world.py:638-639), but the 'What happened' readout quotes only said (:621), the words behind the first choice. Should the readout quote the retry's words?",
+   "question": "A menu retry's own words are stored as said_on_retry (scripts/run_authored_world.py:815-816), but the 'What happened' readout quotes only said (scripts/run_readout.py:96), the words behind the first choice. Should the readout quote the retry's words?",
    "blocks": "whether the readout's quoted words match the move that ran",
-   "resolves_with": "Reading the code settles it: the row keeps both (run_authored_world.py:584, :599-600) and the scene replay already prefers said_on_retry (render_scene_replay.py:398), but run_readout.py:93 reads said only. Make the readout prefer said_on_retry the same way and check it on a free replay.",
+   "resolves_with": "Reading the code settles it: the row keeps both (run_authored_world.py:799, :816) and the scene replay already prefers said_on_retry (render_scene_replay.py:398), but run_readout.py:93 reads said only. Make the readout prefer said_on_retry the same way and check it on a free replay.",
    "owner": "agent",
    "status": "resolved",
    "sources": [
-    "scripts/run_authored_world.py:622",
-    "scripts/run_authored_world.py:638",
+    "scripts/run_authored_world.py:799",
+    "scripts/run_authored_world.py:816",
     "scripts/run_readout.py:93",
     "scripts/render_scene_replay.py:398"
    ],
@@ -225,7 +225,7 @@
    "default": "Runs keep ending at the round cap the visitor picked.",
    "sources": [
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
-    "scripts/run_authored_world.py:419",
+    "scripts/run_authored_world.py:594",
     "scripts/run_authored_world.py:40"
    ],
    "touches": [
@@ -475,14 +475,14 @@
   {
    "id": "Q26",
    "short": "Run page hides own-words attempts",
-   "question": "The run page's round text reads row.belief and row.expects (scripts/world_builder_home.html:629-631) and never summary.unmatched_attempts; since #333 it shows an attempt the system could not read in the person's own words (scripts/world_builder_home.html:646, and the picture's card at scripts/run_authored_world.py:1242), but an allowed or refused move still shows only the move, not the words behind it (view gap G17). The plan's inspectable result is that the run page shows each person's own-words attempt. How should the page show them?",
+   "question": "The run page's round text reads row.belief and row.expects (scripts/world_builder_home.html:651) and never summary.unmatched_attempts; since #333 it shows an attempt the system could not read in the person's own words (scripts/world_builder_home.html:646, and the picture's card at scripts/run_authored_world.py:1242), but an allowed or refused move still shows only the move, not the words behind it (view gap G17). The plan's inspectable result is that the run page shows each person's own-words attempt. How should the page show them?",
    "blocks": "the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done",
    "resolves_with": "Build and look: show each row's attempt text and reading in the round text and list summary.unmatched_attempts, then open the saved S1 airfield share (evidence/open-attempt/s1-airfield/) in a browser and confirm Sam's refused and unmatched attempts read in his own words.",
    "owner": "agent",
    "status": "open",
    "sources": [
     "docs/model/VIEW_COVERAGE.md:191",
-    "scripts/world_builder_home.html:629",
+    "scripts/world_builder_home.html:651",
     "docs/plans/open_attempt.md:65",
     "evidence/open-attempt/s1-airfield/TRACE_READ.md"
    ],
@@ -518,7 +518,7 @@
   {
    "id": "Q28",
    "short": "Reuse the spill and damage rules",
-   "question": "The hand-written mechanisms library already has a vessel-failure spill process and heat damage (src/world_substrate/mechanisms/damage.py:116). A generated world's registry holds only its compiled mechanics and the rules writer's declared processes (build_engine, scripts/run_authored_world.py:56-59); the library processes are never registered there. Should S2's glass chain reuse the library's spill and damage processes, or have the rules writer write its own?",
+   "question": "The hand-written mechanisms library already has a vessel-failure spill process and heat damage (src/world_substrate/mechanisms/damage.py:116). A generated world's registry holds only its compiled mechanics and the rules writer's declared processes (build_engine, scripts/run_authored_world.py:71); the library processes are never registered there. Should S2's glass chain reuse the library's spill and damage processes, or have the rules writer write its own?",
    "blocks": "how S2's glass chain is built, and whether generated and reference worlds share physics",
    "resolves_with": "Reading the code and one free probe: compare the library processes' read and write paths (entities.<vessel>.condition.value, container, liquid) with what a generated bundle declares; if a generated glass can carry those components, offer the library processes to the build as installable rules and probe the glass chain on the saved airfield fixture; otherwise the rules writer writes declared processes and the library stays reference-only.",
    "owner": "agent",
@@ -526,7 +526,7 @@
    "evidence": "No reuse. The library processes read built-in entity slots (condition, container, liquid, thermal) and the physical ledger, which build_engine never sets for a generated world, and neither can run immediately. Free probe on the S2 glass fixture: both report due False after the chain, the glass has only its bundle component, no physical ledger (evidence/open-attempt/q28/README.md, probe.out). The rules writer writes its own timing-immediately processes.",
    "sources": [
     "src/world_substrate/mechanisms/damage.py:116",
-    "scripts/run_authored_world.py:59",
+    "scripts/run_authored_world.py:71",
     "tests/fixtures/airfield-s1-live.json",
     "evidence/open-attempt/q28/README.md"
    ],
@@ -807,7 +807,7 @@
    "resolves_with": "One counterexample check, by reading: go through each logged incident (pencil2, 4, 7, 12, 13, 14; airfield #254) and say which law shape would have caught it. If every one is a total or a pairing, S1 keeps the two shapes; a rule of another shape stays an ordinary rule that the independent review (S3) reads against the description, not a law.",
    "owner": "agent",
    "status": "resolved",
-   "evidence": "Read 2026-10-28 against the incident table in docs/plans/declared_laws.md (Incidents), rebuilt per build check from the incident each check's docstring names (scripts/world_builder_service.py:870-1230) and its saved world. Bookkeeping incidents are totals or pairings: restock-production-inputs (c4-run14), pack-pencils making nothing (4VmgkXIVWn4p, evidence/vanishing-goods/pencil3-share.json), a second graphite source (c4-run20, a total only if the designer names one source) and buy-boxed-pencils paying nothing (pencil13). The counterexamples are reachability, not laws: inputs nobody makes (pencil2), stock with nowhere to go (pencil4 iMrL2U84cLCS), a seller that never receives what it sells (pencil9) and demand that only grows (cafe eFmPomcnsyQq) leave every total unchanged, so no law refuses them; they go to reports of what the test run saw and to the review. A missing component (pencil4) is structure and a malformed path (pencil14) is refused by the installer. So S1 keeps two law shapes and laws claim only the bookkeeping rows; S5's four descriptions are read for another counterexample before S4 retires anything.",
+   "evidence": "Read 2026-10-28 against the incident table in docs/plans/declared_laws.md (Incidents), rebuilt per build check from the incident each check's docstring names (scripts/world_builder_service.py:922-1272) and its saved world. Bookkeeping incidents are totals or pairings: restock-production-inputs (c4-run14), pack-pencils making nothing (4VmgkXIVWn4p, evidence/vanishing-goods/pencil3-share.json), a second graphite source (c4-run20, a total only if the designer names one source) and buy-boxed-pencils paying nothing (pencil13). The counterexamples are reachability, not laws: inputs nobody makes (pencil2), stock with nowhere to go (pencil4 iMrL2U84cLCS), a seller that never receives what it sells (pencil9) and demand that only grows (cafe eFmPomcnsyQq) leave every total unchanged, so no law refuses them; they go to reports of what the test run saw and to the review. A missing component (pencil4) is structure and a malformed path (pencil14) is refused by the installer. So S1 keeps two law shapes and laws claim only the bookkeeping rows; S5's four descriptions are read for another counterexample before S4 retires anything.",
    "sources": [
     "docs/plans/declared_laws.md",
     "evidence/pencil13-trace-audit/TRACE_READ.md",
@@ -845,14 +845,14 @@
   {
    "id": "Q45",
    "short": "Which heuristic checks retire",
-   "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:870-1250), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
+   "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:922-1272), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
    "blocks": "S4: which checks are removed, and so whether validation stops growing one check per bug",
-   "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape. Progress 2026-10-30: the people-world change (scripts/people_world.py:298) asks people worlds for laws and sends their rules to the review too. One live people-world build has run since (evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5): it declared no laws, which fits that world, and its review was skipped; #317 fixed the skip, and the next live people-world build (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, 2026-11-04) exercised it: the designer again declared no laws (llm-calls id 23037 returned empty resources and laws) and the review ran (id 23042, two findings). Laws can be dropped or left out (Q49), no check has been retired yet, and the retirement table is still owed.",
+   "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape. Progress 2026-10-30: the people-world change (scripts/people_world.py:298) asks people worlds for laws and sends their rules to the review too. One live people-world build has run since (evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5): it declared no laws, which fits that world, and its review was skipped; #317 fixed the skip, and the next live people-world build (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, 2026-11-04) exercised it: the designer again declared no laws (llm-calls id 23037 returned empty resources and laws) and the review ran (id 23042) with two findings, one of them that decision-postponed-at-deadline starts with max_postponements 0 so the decision can never be delayed; the build kept those rules without a rewrite (Q55). Laws can be dropped or left out (Q49), no check has been retired yet, and the retirement table is still owed.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "scripts/world_builder_service.py:870",
-    "scripts/world_builder_service.py:990",
+    "scripts/world_builder_service.py:922",
+    "scripts/world_builder_service.py:949",
     "scripts/world_builder_service.py:1731",
     "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3"
    ],
@@ -947,7 +947,7 @@
    "short": "What counts as finished",
    "question": "The declared-laws plan's done_when (L1-L8) checks that its parts work, and its do_not_gate_on excludes Brian's review of a run. Nothing states when the product itself is good enough, so each paid build finds a new defect and asks for another. In Brian's words on 2026-11-03: \"we just seem to be rerunning the simulation\". What result ends this work?",
    "blocks": "Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.",
-   "resolves_with": "Brian's judgement on a working run, not a test: he reads one shared Waltzman run and says what is wrong. Since 2026-11-04 a shared run recorded after #317 and #320 exists: the Waltzman rebuild at 096c129, share jyVbywXT8N8F (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, saved without a readout), so that is the one to judge. His first reaction (\"this is blank and doesnt play\") was answered by #328 and #329: a shared run's picture is now drawn from its recorded rounds (scripts/world_builder_home.html:913).",
+   "resolves_with": "Brian's judgement on a working run, not a test: he reads one shared Waltzman run and says what is wrong. Since 2026-11-04 a shared run recorded after #317 and #320 exists: the Waltzman rebuild at 096c129, share jyVbywXT8N8F (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, saved without a readout), but its rules carry a review finding the build kept (no postponement possible, Q55), and the rules are written afresh on each build (5 of 5 needed and no postponement here, 4 of 5 and one postponement in s4-waltzman-2, evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:16), so it is the one to judge only once Q55 is answered or with that caveat stated beside it; the recommendation to keep one saved world and improve it is what makes builds that differ comparable. His first reaction (\"this is blank and doesnt play\") was answered by #328 and #329: a shared run's picture is now drawn from its recorded rounds (scripts/world_builder_home.html:913).",
    "owner": "brian",
    "status": "open",
    "recommendation": "Finished when Brian reads one shared Waltzman run and the people behave believably and something surprising follows from their choices. Keep one saved world and improve it; his reaction to it picks the next fix.",
@@ -965,13 +965,13 @@
   {
    "id": "Q51",
    "short": "Live network with no lines",
-   "question": "Issue #316 says the live Network view drew NaN links in the s4w2 build. Its body misprints the shared address as ?share=NZfTwkrNpsQo; the page reads only ?run= (scripts/world_builder_home.html:1268), and the probes behind the issue used ?run=. The shared case draws its links. Is the fault in a live first round still open?",
+   "question": "Issue #316 says the live Network view drew NaN links in the s4w2 build. Its body misprints the shared address as ?share=NZfTwkrNpsQo; the page reads only ?run= (scripts/world_builder_home.html:1272), and the probes behind the issue used ?run=. The shared case draws its links. Is the fault in a live first round still open?",
    "blocks": "Whether the Network view can be trusted in a live run; issue #316.",
    "resolves_with": "The shared case held twice: the probes behind the issue (786 links, no NaN) and a browser check on 2026-11-03 (no console error, links drawn). Only the live first-round case stays unreproduced. Read the console in the next live run; no paid run for this alone.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "scripts/world_builder_home.html:1268",
+    "scripts/world_builder_home.html:1272",
     "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:59"
    ],
    "touches": [
@@ -1030,6 +1030,26 @@
    "touches": [
     "resident",
     "attempt"
+   ]
+  },
+  {
+   "id": "Q55",
+   "short": "A flagged world kept without a rewrite",
+   "question": "In the 2026-11-04 Waltzman rebuild the rules review found that decision-postponed-at-deadline starts with max_postponements 0, so the decision can never be delayed, and the build kept those rules after one try. The run was then rejected at the round-8 deadline with postponing impossible. Why does a build keep a world its review flagged, and should it?",
+   "blocks": "Whether the shared Waltzman run (share jyVbywXT8N8F) is fit for Brian to judge under Q50, and whether the plan's S3 (review findings go to the rules writer's revision step) holds on the people-world path.",
+   "resolves_with": "The cause by reading, no paid run: the people-world loop breaks before a rewrite once the build has run longer than PEOPLE_REWRITE_BY_S (80 s, scripts/world_builder_service.py:266, checked at :2254); this build's first call was 15:53:10 and its review returned 15:55:29, while cost ($0.14) was far under PEOPLE_WORLD_BUDGET ($1.30, :94), so the time limit is the likely cause; the progress line that would confirm it is not saved. What remains is technical: when the review names a rule, either rewrite despite the time limit or keep the rules and show the finding beside the run. Check it on a free replay of the saved world before any new build.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:19",
+    "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl:9",
+    "scripts/world_builder_service.py:2254",
+    "scripts/world_builder_service.py:266"
+   ],
+   "touches": [
+    "rules-review",
+    "build",
+    "rules-retry"
    ]
   }
  ]

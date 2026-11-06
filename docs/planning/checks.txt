@@ -1,4 +1,4 @@
-Checks run 2026-11-06 on branch planning-refresh-20261106 at efa3d0d (main 935d17e plus this branch's planning edits).
+Checks run 2026-11-06 on branch planning-refresh-20261106 (main 935d17e plus this branch's planning and evidence edits; subject c99cbc7).
 
 == durable documents (arc42): python3 $COMPANY_PLANNING/scripts/durable_docs_check.py --repo . --arc42
 durable-docs: mode=repo repo=. findings=0 (none), exit 0

@@ -36,9 +36,9 @@ Each pattern is something a check or a person could observe. VIEW_COVERAGE.md re
 | P1 | Every submitted attempt produces exactly one Engine event and one command; commands replay to identical statuses. | `World.events`, `World.commands`, `Engine.replay_commands` (`src/world_substrate/engine.py:879`) |
 | P2 | A refused attempt leaves `hash_before == hash_after` and the revision unchanged. | event `changes` empty; `hash_*` (`engine.py:529-580`) |
 | P3 | `revision` rises by exactly one per committed event; `tick` rises by one per round. | `engine.py:667`, `:842`, `advance` |
-| P4 | No `/run` or `/compare-native-coordination` executes without `approved: true`; every `/run` recompiles the causal model before any policy or model call. | HTTP 409 (`scripts/world_builder_service.py:1028-1030`); compile at `:1006` |
+| P4 | No `/run` or `/compare-native-coordination` executes without `approved: true`; every `/run` recompiles the causal model before any policy or model call. | HTTP 409 (`scripts/world_builder_service.py:2473-2475`); compile at `:1006` |
 | P5 | Causal-model action kinds equal the bundle's action kinds, exactly. | `src/world_substrate/action_authoring.py:383-391` |
-| P6 | A continued round uses the same law: world identity and rule versions match. | `scripts/run_authored_world.py:234-243` |
+| P6 | A continued round uses the same law: world identity and rule versions match. | `scripts/run_authored_world.py:545-552` |
 | P7 | Every logged request leaves one run-log line; LLM spend never exceeds the day's cap. | `runs_<date>.jsonl`; budget ledger (`world_builder_service.py:183-220`) |
 | P8 | Presentation never writes canonical state; two renders of the same projection give the same logical frames. | `living_scene.py` frame builder; renderers read-only |
 | P9 | Counts a view prints equal counts of the model element they name (allowed = accepted events; refused = refused attempts). | home outcome line (refused = submitted attempts that did not go through; held back by the rules counted separately; fixed 2026-10-06, see G2) |
@@ -240,9 +240,9 @@ Each rule below is enforced by the cited code.
 
 **8.6 Installer and freeze** (`scripts/run_authored_world.py:49-68`, `src/world_substrate/profile.py:110-279`). Each mechanic and process package is validated; any `reject` finding aborts the run. `freeze()` hashes packages + findings (sha256, first 16 hex) and forbids further installs (RULE-FROZEN-PROFILE).
 
-**8.7 Approval gate** (`scripts/world_builder_service.py:1027-1036`, `:956-962`). `approved` must be the boolean `true` (else HTTP 409; RULE-APPROVAL-BEFORE-RUN); the bundle is validated and the causal model compiled before any policy or model call. Native-coordination runs and comparisons additionally require the causal model to equal the reviewed shared coordination mechanics, and comparisons change only `gate.required_approvals`.
+**8.7 Approval gate** (`scripts/world_builder_service.py:2473-2475`, `:956-962`). `approved` must be the boolean `true` (else HTTP 409; RULE-APPROVAL-BEFORE-RUN); the bundle is validated and the causal model compiled before any policy or model call. Native-coordination runs and comparisons additionally require the causal model to equal the reviewed shared coordination mechanics, and comparisons change only `gate.required_approvals`.
 
-**8.8 Continuation** (`scripts/run_authored_world.py:234-245`). `continue_from` must be a `world-substrate-snapshot/v1` whose `world_id`, `content_id`, `rule_versions` and `engine_id` equal a freshly built engine's; entity state is taken from the snapshot as given (see G11).
+**8.8 Continuation** (`scripts/run_authored_world.py:545-552`). `continue_from` must be a `world-substrate-snapshot/v1` whose `world_id`, `content_id`, `rule_versions` and `engine_id` equal a freshly built engine's; entity state is taken from the snapshot as given (see G11).
 
 **8.9 Run rows** (`scripts/run_authored_world.py:328-390`). Each actor gets one row per round: `wanted`, `did`, `status` (an engine status, or `no_action` when nothing was chosen, or `nothing_left` when a lost race left nothing), `retried`, `said`, `refused_because` (labels of failed checks, excluding the revision check), `lost_what_it_wanted`, `changed` (an accepted move that changed state other than engine bookkeeping, `:381`), `blocked_by_rules` (withheld offers, one per distinct action kind and reason, `:261-281`). Allowed moves that would change nothing are removed from the offer before the policy sees them (`_without_no_ops`, `:144-162`; since #117); they are recorded neither as offered nor as blocked.
 
