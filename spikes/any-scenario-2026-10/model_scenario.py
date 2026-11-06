@@ -34,7 +34,7 @@ from rule_writer import propose_rule  # noqa: E402
 from spend import CAP, plan_spend  # noqa: E402
 
 MAX_REPAIRS = 8
-RULE_MODEL = "openrouter/openai/gpt-5.6-sol"
+RULE_MODEL = "openrouter/openai/gpt-6.1-sol"
 RULE_MODEL_WHY = ("Rule writing needs the stronger tier: eight gpt-5.6-luna attempts on 2026-10-07 produced rules with "
                   "non-actor actors, wrong location checks and missing depletion rules that repairs could not fix.")
 

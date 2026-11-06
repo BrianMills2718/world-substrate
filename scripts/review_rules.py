@@ -15,7 +15,7 @@ PROMPT = Path(__file__).resolve().parents[1] / "prompts/rules_reviewer.yaml"
 TASK = "world-substrate-rules-review"
 # Another family than the rules writer's gpt-6-luna (Q44): chosen by the review of saved incident worlds,
 # evidence/declared-laws/s3-review-choice/README.md.
-REVIEW_MODEL = "openrouter/google/gemini-3.1-pro-preview"
+REVIEW_MODEL = "openrouter/google/gemini-4-argon"
 MISSING = "missing"
 
 

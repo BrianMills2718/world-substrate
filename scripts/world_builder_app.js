@@ -9,7 +9,7 @@
   let runPolicy = "scripted", runTurns = 12, executionMode = "authored_world";
   let runBundle = null, runCausalModel = null, runExecutionMode = null;
   let comparisonResult = null, comparisonBundle = null, comparisonThreshold = null, comparisonBusy = false;
-  const LIVE_MODEL = "openrouter/openai/gpt-5.6-luna";
+  const LIVE_MODEL = "openrouter/openai/gpt-6-luna";
   let active = new URLSearchParams(location.search).get("section") || "world";
   const sections = ["world", "components", "entities", "actions", "mechanics", "presentation", "run", "logs", "export"];
   if (!sections.includes(active)) active = "world";

@@ -35,7 +35,7 @@ from world_substrate.action_authoring import (  # noqa: E402
     CompiledProcessMechanic,
 )
 
-RULE_MODEL = "openrouter/openai/gpt-5.6-sol"
+RULE_MODEL = "openrouter/openai/gpt-6.1-sol"
 RULE_MODEL_WHY = "Mid-run rule writing uses the same stronger tier as layer-1 repairs (luna rules failed to compile)."
 
 
