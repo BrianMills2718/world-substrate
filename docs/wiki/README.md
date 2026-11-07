@@ -45,6 +45,7 @@ The stakeholder demo is already promoted: it combines natural-language authoring
 | --- | --- |
 | Current direction / exact next action | [Roadmap](../../roadmap/README.md) |
 | Durable system boundaries | [Architecture](../architecture.md) |
+| Waltzman lineage, original product intent and recommendations | [November 7 simulator review](../research/waltzman-lineage-review-2026-11-07.md) (assessment; recommendations not adopted) |
 | What would have made this faster (read before planning a goal) | [Lessons](lessons.md) |
 | The system itself as a checked model (entities, processes, records, view coverage gaps) | [System model](../model/ODD.md) · [View coverage](../model/VIEW_COVERAGE.md) |
 | What the substrate is made of (concepts, typed kinds, what is built vs theory) | [Domain model](../model/DOMAIN.md) · [Metamodel](../model/METAMODEL.md) |

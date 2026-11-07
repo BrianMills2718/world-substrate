@@ -136,6 +136,8 @@ Full field lists with sources are in the model file's `[[entities]]`. In plain w
 
 ### 4.1 Kinds of things a world can represent, and which path can produce each
 
+The any-scenario column below describes the older ODD-outline path. For the later scenario-spec path and the live people-world path, use sections 10 and 11: they add profiles, information items and scheduled moments. Do not read this earlier comparison as a capability inventory of all current authoring routes.
+
 The machine-readable twin is `[[world_kinds]]` in the model file (the test checks every row gives every path). "Fixed template" means the path only fills a fixed shape.
 
 | Kind | World Builder generators | Native-coordination draft | Any-scenario pipeline | Hand-authored reference worlds |
