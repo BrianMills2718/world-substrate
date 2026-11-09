@@ -219,9 +219,24 @@ class WorldNetworkTests(unittest.TestCase):
         self.assertEqual(focus["some"], 2)
         self.assertTrue(focus["closed"])
         self.assertIn('id="net-whole"', HOME.read_text())
-        # Redrawn every round, so it must use the fast layout: 2026-11-04 the slow one froze the page for over 20 s.
-        layout = self.run_page_functions("focusNetwork(worldNetwork(world.bundle, world.causal_model), new Set()).layout", "c1r18_waltzman_world.json")
-        self.assertEqual(layout, {"algorithm": "force"})
+        # One round shows only the links that happened: who made which move and what it used, not every move
+        # someone could make (2026-11-04: still a tangle at 18-32 boxes). Small rounds get the layered layout;
+        # a big one gets force, because the layered one froze the page for over 20 s (#338).
+        r = self.run_page_functions(
+            "(() => { const g = worldNetwork(world.bundle, world.causal_model);"
+            " const can = g.edges.find((e) => e.label === 'can'); const kind = can.target.slice(2), actor = can.source.slice(2);"
+            " const turn = { actors: { [actor]: { status: 'accepted', did: { kind } } } };"
+            " const f = focusNetwork(g, roundTouched(turn), turn);"
+            " const big = focusNetwork(g, new Set(g.nodes.map((n) => n.id)), turn);"
+            " return { edges: f.edges.map((e) => e.source + '>' + e.target), made: can.source + '>' + can.target,"
+            " otherCan: g.edges.filter((e) => e.source === can.source && e.label === 'can').length,"
+            " layout: f.layout, bigLayout: big.layout, bigNodes: big.nodes.length }; })()",
+            "c1r18_waltzman_world.json")
+        self.assertEqual(r["edges"], [r["made"]])
+        self.assertGreater(r["otherCan"], 1)
+        self.assertEqual(r["layout"], {})
+        self.assertGreater(r["bigNodes"], 40)
+        self.assertEqual(r["bigLayout"], {"algorithm": "force"})
 
     def test_the_world_becomes_a_typed_graph(self):
         graph = self.run_page_functions("worldNetwork(world.bundle, world.causal_model)")
