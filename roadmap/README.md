@@ -3,185 +3,121 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-09-18
+reviewed_through: 2026-11-09
 ---
 
 # World Substrate living roadmap
 
-**Authority:** [Decision 006](../docs/decisions/006-governed-rules-layer-scope.md) (current scope), [Decision 007](../docs/decisions/007-any-scenario-path.md) (describe-any-scenario path: model up front, attempts over time, rules written mid-run), [Decision 001](../docs/decisions/001-project-scope.md), [Decision 002](../docs/decisions/002-observability-and-replay.md), [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md), [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md), and [Decision 005](../docs/decisions/005-native-waltzman-delivery.md).
-**Stage:** prototype substrate complete; deployed authoring/run alpha; promoted donor-backed Waltzman demo retained; native Waltzman convergence path (description -> editable draft -> approved mechanics -> native Engine run -> automatic living UI -> comparison) landed on main 2026-10-05; the replacement-first gate (recorded 2026-10-05) limits World Substrate to its governed-rules layer.
-**Current frontier (2026-10-05):** the first configurable native coordination vertical, one-shot authoring, and run comparison have landed (#75, #79, #80): two materially different coordination worlds run through one shared mechanics profile, pass replay acceptance, and render through the automatic view. The replacement-first gate (Brian's 2026-10-01 rule) is recorded: Concordia, Mesa and a PDDL toolchain each compose with World Substrate's governed-rules layer and none replaces it, so World Substrate keeps that layer and stops growing its own runtime extras. Preserve the promoted donor experience as regression/fallback while the native path is built; do not make donor hosting migration, conversational editing, bespoke assets, Jev optimization, or a repo merger part of this critical path.
-**Deployment boundary:** the 2026-09-09 donor-backed promotion remains valid evidence and a fallback surface. The 2026-09-18 product decision now targets World Substrate as the native substrate for the next Waltzman release. Public cutover waits until the native description-to-view path meets Decision 005's stopping rule; the existing donor route must not be silently presented as a fresh native run if generation fails.
+**Authority:** [Decision 006](../docs/decisions/006-governed-rules-layer-scope.md) (current scope: the governed-rules layer on commodity runtimes), [Decision 007](../docs/decisions/007-any-scenario-path.md) (describe any scenario), [Decision 008](../docs/decisions/008-build-worlds-in-an-agent-harness.md) (build worlds in an agent harness), [Decision 009](../docs/decisions/009-same-moment-knock-on-effects.md) (same-moment effects are rule semantics), and Decisions [001](../docs/decisions/001-project-scope.md) to [005](../docs/decisions/005-native-waltzman-delivery.md). Architecture: [arc42](../docs/architecture/arc42.md). Required behavior: the [capability specs](../docs/index.md#2-what-the-code-must-do-openspec-capability-specs).
+**Stage (2026-11-09, `main` at `0e66a98`, #345):** live World Builder alpha. A plain description becomes a world with declared laws and rules, a second model reviews the rules, a free scripted test checks them, and Concordia residents play it live; residents can write open attempts and requests reach the person asked. Two adopted plans are under way: [declared laws](../docs/plans/declared_laws.md) (S1 to S3 built, S4 under way, S5's paid builds wait on Q50) and [open attempts](../docs/plans/open_attempt.md) (S1 and S2 built, S3 skill rolls not built).
+**Recent work (#323 to #345, 2026-10-31 to 2026-11-09):** requests reach the person asked (#326); a shared run shows its picture and can be watched (#328, #329, #331); refusals say what really happened (#333); the Network shows one round and uses the fast layout (#338, #344); the Waltzman rebuild was recorded (#339); the planning package caught up (#340); model routes were renamed (#341); the Waltzman lineage review was written, its recommendations not adopted (#342); Brian's scale reason for rules over an AI judge was recorded (#345).
+**Deployment boundary:** the World Builder backend runs on the personal VPS and its pages on Cloudflare; shipping is `scripts/deploy_world_builder.sh`. The donor-backed `/waltzman/` demo stays a fallback and must not be presented as a native run.
 
 ## Outcome and success criteria
 
 ### End goal
 
-Build a **generatively authored, reviewable, persistent simulation platform for plausible worlds**. A user describes a bounded world conversationally; the system compiles represented structure and executable law; the user reviews important assumptions and causal coverage; residents/processes inhabit the world; the world evolves under installed mechanics; and the user watches and interrogates the result through a dynamic visual surface.
-
-The product thesis remains:
+Build a **generatively authored, reviewable, persistent simulation platform for plausible worlds**. A person describes a bounded world in plain words; the system compiles its structure and executable law; the person can review the important assumptions; residents and processes inhabit the world under the installed rules; and the person watches and questions the result through a live view.
 
 > **Generative worlds with executable laws.**
 > Generative-World Builder on top; rigorous causal world engine underneath.
 
+Why rules rather than an AI judge: scale. Brian, 2026-11-09, quoted in full in [arc42 section 1](../docs/architecture/arc42.md#architectural-thesis): facts must carry their implications and blockers down causal chains far longer than a model can follow.
+
 ### Actor, recurring job and investment boundary
 
 - **Actor:** a World Builder visitor (or Brian as owner) at <https://brianmills.dev/world-builder/>.
-- **Recurring job and baseline:** the visitor describes a situation in plain words, presses Create
-  simulation, and watches the generated people act under the installed rules. Today (2026-10-25) each
-  person picks from the moves the rules already allow, so impossible attempts, same-moment knock-on
-  chains and skill-shaped failures never appear (`docs/plans/open_attempt.md`, "Current truth").
-- **Inspectable result:** the run page and its build record: what each person tried, what the rules
-  did and why, every event with its cause.
-- **Stage and investment boundary:** prototype stage, one agent at a time; this repository and its own
-  deploy only; visitor spend capped at $3/day; owner runs on Brian's owner allowance after a free replay;
-  no new service, engine or repository without Brian's yes.
+- **Recurring job and baseline:** the visitor describes a situation in plain words, presses Create simulation (which is the approval), and watches the generated people act under the installed rules. Today each person picks a move the rules offer or writes an open attempt in their own words (S1); same-moment knock-on chains run inside one commit (S2); skill-shaped failures never appear because skill rolls are not built (S3).
+- **Inspectable result:** the run page and its build record: what each person tried, what the rules did and why, every event with its cause; a share link replays the run for free.
+- **Stage and investment boundary:** prototype stage; this repository and its own deploy only; visitors share $3.00 a day and the owner has $5.00 a day (`scripts/world_builder_service.py`); new paid builds under the declared-laws plan wait on Q50; no new service, engine or repository without Brian's yes.
 
 ### Causal product contract
 
-A World Substrate causal claim explains why a transition occurred **inside the represented world under the installed mechanics that governed that run**.
-
-That is not, by itself, a claim that those mechanics are scientifically or empirically true of the corresponding real-world system. Predictive validity, calibration, and real-world causal identification require separate evidence.
-
-Current `causal_parent_event_ids` are **mechanic-declared hard causal ancestry** validated against retained history. They are not inferred merely from temporal order or prompt/context inclusion, but the runtime also does not yet derive them automatically from instrumented reads.
-
-The current Waltzman adequacy surface is a **bounded dependency inventory**: declared consequential assumptions are mapped to represented state and installed enforcement surfaces, with residual risk. It is not counterfactual proof of necessity/sufficiency. Stronger automatic counterfactual/mutation verification is deferred unless later evidence makes it worth building.
+A World Substrate causal claim explains why a transition occurred **inside the represented world under the installed mechanics that governed that run**. It is not, by itself, a claim that those mechanics are true of the real world; predictive validity and real-world causal identification need separate evidence. `causal_parent_event_ids` are mechanic-declared and validated against retained history, never inferred from temporal order or from what a resident was shown. The Waltzman adequacy report is a bounded dependency inventory with residual risk, not counterfactual proof.
 
 ### Current showcase world — Waltzman Coordination Lab
 
-The demo is a **World Substrate product demo**. **Waltzman Coordination Lab is the showcase/reference world used to demonstrate it**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*. Cybernetic Influence remains research lineage, not the product surface.
-
-The demo makes the product thesis visible end to end: a bounded coordination world runs under canonical executable mechanics; residents receive asymmetric represented information, communicate through represented channels, act under resource/process/institution constraints, and evolve on one canonical simulated timeline; the user watches and interrogates that world through the living client; and Waltzman trust/risk/readiness analysis remains detachable analysis rather than hidden universal world state.
-
-Waltzman remains a **reviewed reference world** for the living-view/causal semantics, but the stakeholder demo is no longer limited to replaying it. The promoted visitor-facing release accepts a natural-language situation and runs a fresh generated simulation through the bounded Cybernetic V3 donor path. Public presentation must keep that implementation boundary truthful rather than implying the current World Builder generated the donor run.
-
-Generality remains an architectural constraint and later validation target, not the immediate deliverable. Predictive behavioral validity is not a current promotion gate.
+Rand Waltzman's bio-surveillance coordination scenario (*From Minds to Coordination*) is the showcase. It builds through the people-world path (`scripts/people_world.py` and the scenario-spec pipeline in `spikes/any-scenario-2026-10/`), declares laws over the counts it keeps and gets the same rules review as a world of things (#314). The hand-authored Waltzman reference world (`reference_worlds/waltzman/`) remains the regression fixture for the living-view and causal semantics. The [lineage review of 2026-11-07](../docs/audits/waltzman-lineage-review-2026-11-07.md) found the generated Waltzman world stipulates some of what the paper's mechanisms should produce; its recommendations are not adopted (Q60).
 
 ### Prototype phase — complete
 
-The substrate phase has established:
-
-1. persistent typed canonical state;
-2. bounded actor observations and state-derived affordances;
-3. scripted/human/LLM selection outside consequence authority;
-4. semantic/mechanical separation;
-5. reviewed/frozen declaration profiles;
-6. atomic commit/refusal with write-scope enforcement;
-7. retained causal evidence and full-log debugging; and
-8. transfer to multiple materially different worlds.
+Persistent typed canonical state; bounded observations and state-derived affordances; scripted, human and LLM selection outside consequence authority; semantic/mechanical separation; reviewed frozen profiles; atomic commit or refusal with write-scope enforcement; retained causal evidence; transfer to materially different worlds (Castaway, Kitchen, Workshop, Greenhouse, Orchard, Repair Bay, Waltzman).
 
 ### Waltzman demo acceptance criteria
 
-The first public Waltzman demo succeeds when one coherent scenario demonstrates all of the following through the real World Substrate path:
-
-1. **Real living world:** the graphical client is driven by canonical World Substrate snapshots/events rather than a synthetic timeline, with stable entity/event identity and no presentation-owned world truth.
-2. **Represented information:** residents receive different information through explicit source/recipient/channel/provenance/visibility semantics; delivery and observation remain distinct from hard causal ancestry.
-3. **Resident interaction:** residents communicate and select bounded attempts through the policy seam while the Engine and installed mechanics retain consequence authority.
-4. **Coordination constraints:** consequential outcomes depend on represented resources/process/institution state rather than model narration alone.
-5. **One simulated timeline:** the scenario expresses its required trigger ticks and duration-bearing meeting without making render time or cognition cadence canonical world time.
-6. **Inspectable causality:** the user can inspect mechanic-declared hard parentage, information/context evidence, state changes, and refusals without collapsing those categories.
-7. **Waltzman analysis is detachable:** trust/risk/readiness proxies can be recomputed/hidden without altering canonical state/history.
-8. **Intervention/fork proof:** the user can compare the blocked baseline with a represented exact-history intervention branch without rewriting the original history.
-9. **Bounded dependency report:** the scenario exposes consequential dependency assumptions, their represented/enforcement mappings, known unsupported relationships, and residual risk without claiming counterfactual proof or global completeness.
-10. **Demo continuity:** the full scenario is understandable as one public product experience rather than disconnected repository assays.
-
-These criteria are now satisfied for the promoted stakeholder slice through the retained reference world plus the donor authoring/fresh-run path. Durable saved user worlds/runs, broad second-domain proof, generalized institution authoring, massive scale, persistent cognition, generic future-event scheduling, and predictive validity remain outside that completed promotion gate.
+The 2026-09-09 stakeholder promotion met ten criteria through the reference world plus the donor authoring path: a living view driven by canonical snapshots and events; represented information with source, recipient, channel and visibility; residents acting through the policy seam; outcomes depending on represented resources and institutions; one simulated timeline; inspectable causality with information kept apart from causal parents; detachable Waltzman analysis; an exact-history intervention fork; a bounded dependency report; and one continuous public experience. Evidence: [promotion record](../evidence/waltzman/public-promotion-2026-09-09.md). Saved user worlds, persistent cognition, generic scheduling and predictive validity were outside that gate.
 
 ## Canonical outcome probe
 
-M1 remains the neutral substrate baseline: persistent actors/vessels, finite resources, autonomous processes, atomic rejection, causal events, snapshots, and exact pinned replay. It proves the core seam; it is not the product destination.
+The steps a visitor takes end to end, which every plan's outcome step names one of:
 
-Current product fixtures have narrower roles:
-
-- **Kitchen** — replicated watched-world behavior and polished/Automatic presentation.
-- **Greenhouse** — post-renderer new-world portability and multi-entity effects.
-- **Orchard** — live authoring acceptance fixture.
-- **Repair Bay** — first nontrivial deployed authoring world.
-- **Warehouse Rush** — retained draft evidence of a real generated-law/representation omission and minimal repair; not active roadmap work.
-- **Waltzman Coordination Lab** — current integrated product deliverable and public demo.
-
-The steps a visitor takes to get the result end to end, which every plan's outcome step names one of:
-
-1. Describe a situation in plain words on https://brianmills.dev/world-builder/ and press Create simulation.
-2. The builder generates the world (places, things, people, the moves they may attempt) and its rules.
-3. The residents act in the generated world each round, and the installed rules decide each effect (accepted, refused with the failing check, or changed state that later rules react to).
-4. The page shows the rollout round by round, with each event's cause and the build record.
+1. Describe a situation in plain words on <https://brianmills.dev/world-builder/> and press Create simulation.
+2. The builder generates the world (places, things, people, the moves they may attempt), its declared laws and its rules; a second model reviews the rules; a free scripted test checks that something can happen.
+3. The residents act each round, and the installed rules decide each effect: accepted, refused with the failing check, or changed state that later rules react to.
+4. The page shows the run round by round, with each event's cause and the build record.
 5. The visitor reads why things happened, follows a cause back, and can replay the saved run for free.
+
+Fixtures with narrower roles: M1 Castaway freshwater (the neutral substrate baseline with exact replay), Kitchen (replicated watched-world behavior), Greenhouse (new-world presentation), Orchard (live authoring acceptance), Repair Bay (first nontrivial deployed authoring world), Warehouse Rush (a law/representation omission and its repair), and the Waltzman reference world.
 
 ## Current truth
 
-State, not milestone narrative:
+State, not narrative. Code paths are the evidence; the [arc42 building blocks](../docs/architecture/arc42.md#5-building-block-view) map each one.
 
-- One `World` owns canonical material truth. Policy prose, UI animation state, resident private cognition, and analysis are not alternate authorities.
-- Engine write scopes are enforced. Declared read scopes are retained but not runtime-enforced.
-- Current action write-scope placeholder binding is participant-bounded but not yet role-specific.
-- Linguistic Core supplies semantic senses/roles, not effects. Generic live authoring can still compile actions before semantic closure is complete.
-- The current `SemanticBinding` object is a World Substrate profile over pinned Linguistic Core meaning: it cites a reviewed LC sense and role identities, then adds World-Substrate-owned specialization, causal classification, bearer, mechanic identity, and interpretation limits. `unheat` remains deliberately unbound rather than minting an unsupported LC sense.
-- Linguistic Core's fact-oriented design already targets typed n-ary facts, objectification, and richer role semantics. Future adoption of a more explicit predicate-local role-definition contract can strengthen World Substrate's semantic bindings without moving persistence, effects, scheduling, authority, or commit semantics into Linguistic Core.
-- The constrained causal declaration/compiler path is deployed: model proposes data, local compiler derives authority, a human explicitly approves, then an ordinary frozen declaration profile runs through the Engine.
-- `MechanicProfile.freeze()` gives the package/declaration set a stable ID; future durable generated-law provenance should additionally fingerprint the exact executable law plus compiler/interpreter version.
-- Every live Builder diagnosis starts from complete request/response logs and retained causal traces; summaries/replay are orientation surfaces only.
-- Repair Bay proved nontrivial generated law can compile and a bounded LLM policy can reach terminal without a heavier cognition framework.
-- Warehouse Rush v0 exposed a real law/representation omission (`route` did not enforce physical dock); v1 represents `target_dock`. Its experiment record landed in #86 (PR #37 is closed); its provider retry is deferred.
-- The World Builder is at `https://brianmills.dev/world-builder/`; its generate/run backend runs on the personal VPS since 2026-10-05 (personal-vps `apps/world-builder`, image `deploy/vps/Dockerfile`, Worker `world-builder-api`); it was offline from about 2026-09-15 to 2026-10-05 after the Mac mini origin went away. Verified 2026-10-05 by a browser generate -> approve -> run fresh simulation, an unapproved run refused with 409, and the spend ledger surviving a container restart.
-- Natural-language building (2026-10-05): the World Builder opens on a landing page (`scripts/world_builder_home.html`, published as `/world-builder/`) with a three-step tutorial. A plain-English description goes to `/generate-world` (`scripts/generate_world_bundle.py` proposes structure, `generate_causal_model` proposes rules, and a zero-cost scripted dry run checks that the rules allow anything, with one dry-run-guided mechanics retry). The visitor reviews the rules in plain words and must approve them before `/run`. Since 2026-10-15 (Brian) the page is one box and one Create simulation button: pressing it is the approval, the run starts at once, and the rules open afterwards from "See how it works". Measured 2026-10-05 over four rounds of the same six descriptions (four examples plus two from a cold first-visit review): 21 of 24 builds were runnable, but only 11 of 24 reached their finish line (3, 1, 5 and 2 per round), at $0.003–0.013 each. Finishing varies more between rounds than between prompt versions, so the page states plainly when a world does not finish. A stronger model (`openrouter/openai/gpt-5.6-sol`) finished 6 of 6 of the same descriptions at about $0.05 per world against $0.008, so the service now uses it only for the rules retry, when the cheap first attempt does not reach its finish line (`RULES_RETRY_MODEL` in `scripts/world_builder_service.py`). Since 2026-10-16 that retry uses `openrouter/openai/gpt-6-luna` (Brian: luna for everything for cost, sol only when sharing with Waltzman). Re-measured on 2026-10-23 over four rounds of the same six descriptions, with gpt-6-luna for every call: 23 of 24 builds reached their finish line, at $0.0032 per build. The miss had correct rules that need 15 rounds of the scripted test, which stops at 12. Four finished builds drop a stated constraint (a shared knife nobody takes, a finish after one of three loans), so 19 of 24 are both faithful and finished. gpt-6-luna stays the default ([trace read](../evidence/luna-rules-2026-10-23/TRACE_READ.md)). The form editor remains at `/world-builder/build/` as the advanced path.
-- World kinds (2026-10-05, Brian: "my conception is that this is like continuous worlds we should be building ... a do a task world. or an open world and i dont know what is in between"): the landing page offers **a task to finish** (finish line; the run stops) and **keeps running** (no finish line; work keeps arriving or residents live by changing needs, as described). Ongoing and open were separate choices until 2026-10-06; they differed only in one sentence of advice to the AI, so they were merged ("open" remains an accepted older name). The rule language gained optional `processes`: things the world does by itself every round with no actor, in the same selector/check/effect language, compiled to ordinary process rules with installer-checked scopes. Runs return a `final_snapshot` and `/run` resumes from it (same world and rule versions only), so the same world can be continued. Since 2026-10-06 approval starts **live play**: the page asks for one round at a time, shows it as it happens, and Pause/Play stop and resume from exactly that state, with no round cap (the daily budget is the limit); it pauses itself at a finish line, after 4 quiet rounds, or on an error, and says why. Builds and runs go through background jobs (`{"async": true}` then `GET /jobs/<id>`) because Cloudflare cuts requests at 100 seconds.
-- Shipping (2026-10-06): one command, `scripts/deploy_world_builder.sh [rev]`, runs the gate, deploys the backend to the VPS and the pages (Worker `world-builder-pages`, built from this repo by `deploy/cloudflare/world-builder/build.sh`), then checks the live page matches the build and reports the backend commit. Browser and measurement checks live in `scripts/e2e/` and `scripts/measure_world_builder.py` and spend the owner allowance (`WORLD_BUILDER_OWNER_PASSWORD`), never the public budget.
-- The promoted stakeholder surface is `https://brianmills.dev/waltzman/`, served through the Cybernetic V3 donor path; its live simulator moved to the personal Netcup VPS on 2026-09-16 (cybernetic_influence_v3 ADR-016, PR #34) and `api/runs` answers.
-- The standalone visualization URL still serves the synthetic prototype. It is retained as a legacy/public design surface rather than the exact next product action.
-- `evidence/renders/waltzman-demo-v0.html` remains a self-contained canonical reference client with embedded baseline/intervention projection bundles; it is regression/reference evidence, not the outreach endpoint.
-- `scripts/waltzman_demo_service.py` additionally exposes the same projection over JSON/SSE and remains an optional observer/live seam.
-- `world_substrate.information` implements bounded first-class information/delivery v0 with source, recipient, channel, visibility, delivery status, provenance linkage, and actor-local asymmetric visibility.
-- Rules/processes can opt into `causal_parent_event_ids`; these are mechanic-declared and history-validated, not inferred from message history or prompt context.
-- The Waltzman fixture has a represented two-tick meeting, tick-specific autonomous prerequisite changes, an installed coalition gate, and a forked stabilization intervention.
-- The Waltzman bounded dependency report maps eight declared consequential assumptions to represented/enforcement surfaces and retains explicit residual risk; automatic counterfactual/mutation proof is not implemented or required for the demo.
-- The core time/process runtime remains integer-tick `Engine.advance()` + `due(world)`. Generic SimPy future-event scheduling is not implemented because the current scenario does not require it.
-- Persistent resident memory/planning, generic rich process/institution authoring, saved user worlds/runs, and conversational generation of Waltzman's richer mechanics remain later work.
-- The CVS sustainment seam (#43) is merged as a separate integration track and does not define this roadmap.
-- The native coordination vertical is on main: `scripts/check_native_coordination.py` passes for constrained-handoff (2 approvals) and distributed-approval (4 approvals) on shared profile `8856da622ab4813a`, with automatic `render.html` for each and no provider spend.
+- One `World` owns canonical truth. Prompts, page state, residents' memories and analyses are not alternate authorities.
+- Write scopes are enforced. Declared read scopes are recorded, not enforced; the project check reports `read_scopes_enforced` as a constant (Q34, Q66).
+- Write-scope placeholders are bound to participants, not to one specific action role (Q67).
+- A world's declared laws are checked at every commit; a step that breaks one is refused and names the law (`src/world_substrate/laws.py`). People worlds declare laws too (#314).
+- An independent rules review by a model of another family (chosen as gemini-3.1-pro-preview in `evidence/declared-laws/s3-review-choice/`; the route is `openrouter/google/gemini-4-argon` since #341, `scripts/review_rules.py:18`) runs on every kept try; an unreviewed try ranks below every reviewed one.
+- Open attempts (S1): an interpreter reads a resident's words into one typed move or leaves it unmatched; an unmatched attempt changes nothing except a request to another person, which is delivered to that person (#326).
+- Same-moment knock-on effects (S2): `timing: immediately` processes settle in waves inside the one commit, at most 32 reactions (`REACTION_LIMIT`, `src/world_substrate/engine.py`); a moment over the cap is refused whole.
+- Residents run on Concordia since 2026-10-16 (`scripts/concordia_residents.py`); the Concordia game master is off, so there is no AI judge.
+- The Decision 008 agent harness (`scripts/world_harness.py`) exists but the live service does not call it (Q14).
+- The people-world path imports code from `spikes/any-scenario-2026-10/` at run time (`scripts/people_world.py:26,76-77`).
+- The mechanic profile id does not include a compiler or interpreter version (Q69); the 256-move discovery cap truncates silently (Q69); a mechanic that raises mid-rule is rolled back and re-raised, not recorded as a refusal (Q69).
+- About fourteen hand-written build checks still run, each added after one bad world; none has been retired by declared laws yet (Q45).
+- Rules default to `openrouter/openai/gpt-6-luna`: re-measured on 2026-10-23, 23 of 24 builds reached their finish line and 19 of 24 were also faithful, at $0.0032 per build ([trace read](../evidence/luna-rules-2026-10-23/TRACE_READ.md)).
+- The World Builder page is one box and Create simulation (Brian, 2026-10-15); live play goes one round per request and pauses at a finish line, after 4 quiet rounds, on an error and every 100 rounds; builds and runs are background jobs because Cloudflare cuts requests at 100 seconds; share links store and replay runs.
+- Deployment: pages on Cloudflare Worker `world-builder-pages`, API edge `world-builder-api`, service container on the personal VPS since 2026-10-05 (binding `0.0.0.0:8813` inside the container, `LLM_CLIENT_TIMEOUT_POLICY=ban`); up to four AI jobs at once. All public pages answered HTTP 200 on 2026-11-09.
+- Scheduling is integer ticks; `Engine.advance()` checks each process with `due(world)`; World Builder processes run `each_round` or `immediately`. No future-event queue exists.
+- deck.gl is loaded only by the Waltzman reference client (`scripts/render_waltzman_demo.py`); the World Builder draws its network with the vendored graph viewer. Pydantic AI, SimPy, Cytoscape.js, PettingZoo and Mesa are not used in `src/` or `scripts/`.
+- The native coordination vertical, one-shot authoring and run comparison are on main since 2026-10-05 (#75, #79, #80); `scripts/check_native_coordination.py` passes for two worlds on one shared profile with no provider spend.
+- Semantic binding: six of seven M1 action kinds cite a reviewed Linguistic Core sense; `unheat` is deliberately unbound. Kitchen and Greenhouse events can carry Castaway mechanic ids because binding is by bare action kind (Q64).
+- Hosted CI exists in `.github/workflows/native-coordination-linux.yml`, against the workspace's no-hosted-CI rule (Q70).
 
 ## Applicable context
 
-- [Decision 001](../docs/decisions/001-project-scope.md): this repository is canonical executable-consequence authority.
-- [Decision 002](../docs/decisions/002-observability-and-replay.md): important attempts/refusals/consequences remain inspectable; exact replay is not universal.
-- [Decision 003](../docs/decisions/003-semantic-mechanical-boundary.md): semantic predicates do not imply effects; cognition and analysis remain distinct layers.
-- [Decision 004](../docs/decisions/004-product-and-adoption-strategy.md): own causal reality; borrow commodity cognition/rendering/scheduling/graph infrastructure.
-- [Architecture](../docs/architecture.md): causal claims are internal to the represented world/model; real-world validity requires separate evidence.
-- [Living-world projection](../docs/research/living-world-projection-2026-09.md): current visualization/overlay semantics and public integration path.
-- [Technology procurement](../docs/research/technology-procurement-2026-09.md): selected external defaults and conformance boundaries.
-- [Competitive landscape](../docs/research/competitive-landscape-2026-09.md): adjacent systems and the "own reality; borrow minds" positioning.
-- [Source dispositions](../docs/source-dispositions.md): neighboring repositories are donors/evidence unless explicitly adopted.
-- [Semantic–mechanical binding v0](../docs/contracts/semantic-mechanical-binding-v0.md): downstream profile over pinned Linguistic Core senses/roles; meaning and consequence authority remain separate.
+- [arc42](../docs/architecture/arc42.md): goal, requirements, constraints, source dispositions, building blocks, deployment and risks.
+- [Capability specs](../docs/index.md#2-what-the-code-must-do-openspec-capability-specs): transition engine, rule authoring, mechanic installation, authoring bundle, semantic binding, information delivery, live projection, scenes, native coordination and the World Builder page.
+- [System model](../docs/model/ODD.md) with [trace.yaml](../docs/model/trace.yaml): each enforced rule, its owner and its test.
+- [Open questions](../docs/planning/open-questions.json) and the [planning package](../docs/planning/planning-package.json).
+- [Lessons](../docs/wiki/lessons.md): read before planning a goal.
+- [Flexible simulator prior art](../docs/research/flexible-simulator-prior-art-2026-10.md), [competitive landscape](../docs/research/competitive-landscape-2026-09.md), [technology procurement](../docs/research/technology-procurement-2026-09.md).
 
 ## Constraints and authorities
 
 ```text
-conversational authoring
-  -> represented state + dependency intent
-  -> reviewed semantic/action structure
-  -> constrained/generated mechanics
-  -> local compiler + approval + frozen declaration profile
-  -> resident action OR autonomous process trigger
-  -> Engine checks + one commit/refusal
-  -> canonical state + causal/evidence history
-  -> read-only live projection
-  -> optional analytic plugins
+plain-language description  (Create simulation = approval)
+  -> authoring bundle (structure, declared resources and laws) + causal model (rules as data)
+  -> local compiler derives authority; independent rules review; free scripted test
+  -> frozen mechanic profile
+  -> resident move or open attempt (Concordia) OR process trigger
+  -> Engine checks + one commit/refusal + same-moment knock-on waves + declared-law check
+  -> canonical state + causal events + run log
+  -> read-only views (round feed, Network, build record, share-link replay)
 ```
 
 Hard constraints:
 
-- policy/model prose cannot mutate canonical state;
+- policy or model prose cannot mutate canonical state;
 - a mechanic cannot enlarge its own write authority;
-- generated source code is not a causal-law fallback;
+- generated source code is never a causal-law fallback;
 - analysis cannot rewrite history or duplicate primitive effects;
-- presentation/overlay state is downstream and read-only;
-- resident harnesses may choose attempts/utterances but not adjudicate consequences;
-- SimPy may schedule opportunities, never own resource truth/effects;
-- information delivery/context must not automatically become hard causal parentage;
-- causal claims about the represented world must not be marketed as automatic real-world causal truth;
-- the current adequacy inventory must not be marketed as counterfactual proof;
-- commodity selection is not a reason for local framework bake-offs; and
-- generic breadth must buy real product/evidence value rather than exist for completeness.
+- presentation is downstream and read-only;
+- resident harnesses choose attempts and utterances but never adjudicate consequences;
+- information delivery and context never become hard causal parentage automatically;
+- causal claims about the represented world are not marketed as real-world causal truth;
+- the adequacy inventory is not marketed as counterfactual proof;
+- no engine, scheduler, renderer or cognition capability of World Substrate's own (Decision 006); a bounded same-moment fixpoint inside the existing commit does not count (Decision 009).
 
 ## Vertical slices and current work
 
@@ -189,89 +125,31 @@ Hard constraints:
 
 | Milestone | State | What it establishes |
 | --- | --- | --- |
-| M0–M7b substrate/generative mechanics | complete | persistent governed world + authoring/compiler/policy seams |
-| Kitchen + generic replay | complete first gate | watched-world behavior + portable read-only visualization |
-| Greenhouse/Orchard | complete first gate | new-world presentation + live generated-law authoring |
-| Repair Bay | complete first gate | nontrivial deployed authoring and LLM inhabitant proof |
-| Warehouse Rush | retained draft evidence | law/representation failure discovered and minimally repaired |
-| Commodity procurement | complete | deck.gl / Pydantic AI / SimPy / Cytoscape defaults selected |
-| Living-world visual prototype | complete prototype | desired interaction/overlay model established |
-| Waltzman live projection | implemented local first gate | canonical snapshot/event deltas reconstruct both branches; static HTML + JSON/SSE |
-| Waltzman information/conversation | implemented v0 first gate | asymmetric source/recipient/channel/provenance/visibility + context evidence |
-| Waltzman timeline/activity | implemented scenario first gate | tick-specific processes + represented two-tick meeting |
-| Waltzman institution/intervention | implemented scenario first gate | explicit commitments + coalition gate + exact-history stabilization fork |
-| Waltzman bounded dependency report | implemented v0 | eight declared dependency mappings + residual risk; no global/counterfactual proof |
-| Waltzman reference-world demo | implemented local | coherent living coordination world with detachable analysis; retained as presentation/evidence fixture |
-| Waltzman outreach authoring/run path | existing donor capability | Cybernetic V3 public V2 path supports prose -> editable configuration -> approval -> fresh run -> retained evidence |
-| Waltzman outreach + living replay | implemented donor integration | Cybernetic V3 Plans 37–38 provide the first-two-minute funnel and read-only living replay over retained general-run summaries |
-| Waltzman stakeholder demo | **promoted 2026-09-09** | `65eb465a` public donor build; separated Sol authoring/execution certification; approved fresh `general_world_v2` run `run_0e488a37157f`; desktop/mobile living replay verified |
-| Shared Netcup VPS migration (donor) | complete 2026-09-16 | Waltzman live simulator on the personal VPS (cybernetic_influence_v3 ADR-016); World Builder backend moved to the VPS on 2026-10-05 |
-| Native coordination vertical | **landed 2026-10-05** | #75 vertical, #79 one-shot authoring, #80 run comparison; replay acceptance passes |
-| Replacement-first gate | **recorded 2026-10-05** | Concordia, Mesa, PDDL all compose with the governed-rules layer; none replaces it; native runtime growth stops |
-| Provenance/authority/repro hardening | queued post-demo | exact law fingerprint, role-specific scopes, visible action-space overflow, appropriate CI/locking |
-| Semantic binding alignment | later / when earned | consume richer LC role/relation representation without moving mechanics or effects into LC; close real vocabulary gaps rather than minting local `lc:` senses |
-| Persistence / second-domain proof | later | durable user worlds/runs and proof beyond Waltzman |
+| M0 to M7b substrate and generative mechanics | complete | persistent governed world; authoring, compiler and policy seams |
+| Kitchen, Greenhouse, Orchard, Repair Bay | complete first gates | watched-world behavior, portable replay, live generated-law authoring |
+| Waltzman reference world and stakeholder demo | promoted 2026-09-09 | living projection, information, intervention fork, bounded adequacy; donor-backed public demo |
+| Native coordination vertical | landed 2026-10-05 | #75, #79, #80 |
+| Replacement-first gate | recorded 2026-10-05 | Concordia, Mesa, PDDL compose; none replaces the governed-rules layer |
+| Natural-language World Builder | live since 2026-10-05 | one box, Create simulation, live play, share links |
+| Concordia residents | live since 2026-10-16 | AI residents through an established framework |
+| Open attempts | S1 and S2 built; S3 not built | own-words attempts; same-moment knock-on effects; skill rolls next |
+| Declared laws | S1 to S3 built; S4 under way; S5 waits on Q50 | worlds declare laws, the engine keeps them, a second model reviews the rules |
+| Hardening | queued | law fingerprint with compiler version, role-bound scopes, visible discovery overflow, recorded mechanic exceptions, locking |
+| Persistence and second-domain proof | later | saved user worlds beyond share links; proof beyond Waltzman |
 
-### Active slice — hold at the governed-rules layer
+### Active slice — declared laws S4, then skill rolls
 
-The replacement-first gate is recorded: Concordia, Mesa and PDDL each **compose** with the governed-rules layer and none replaces it (see "Replacement-first gate disposition"). Brian approved holding World Substrate at that layer ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md)); eligible work is in [Exact next action](#exact-next-action).
+1. **Declared laws S4** ([plan](../docs/plans/declared_laws.md)): let declared laws and the rules review retire the hand-written build checks. Done so far: free replay of every saved world (`scripts/check_saved_worlds.py`), fixes from the S4 live builds (one-way moves kept #309, places and owners shown to the reviewer #310, fields only one thing can fill #312, people worlds get laws and review #314, every kept people try reviewed #317, trades named from one side #319, the round told to each person #320 and #323). Not yet done: retiring any hand-written check (Q45).
+2. **Declared laws S5**: live builds of four varied descriptions in parallel. Waits on Brian's answer to Q50; one Waltzman rebuild ran on 2026-11-04 on his yes for that build (`evidence/declared-laws/s4-waltzman-3/`).
+3. **Open attempts S3** ([plan](../docs/plans/open_attempt.md)): seeded, recorded skill rolls on action mechanics, with the roll's skill path in derived reads (Q33, Q40).
 
-### Previous slice — donor hosting migration (complete) and post-demo authority hardening
+### Hardening queue
 
-The stakeholder demo is already promoted, and the donor backend left the Mac on 2026-09-16. The section below is kept as the record of that slice; the active slice is the replacement-first gate in Exact next action.
+Small reversible changes, none reopening the architecture: fingerprint the exact executable law plus compiler version; bind write-scope placeholders to one action role; make discovery-cap overflow visible; record mechanic exceptions as refusals; enforce or honestly report read scopes; add a lockfile when a dependency enters a reproducible production path. Details and sources: Q34, Q66, Q67, Q69.
 
-The promoted regression target is:
+### Deliberately deferred
 
-```text
-ordinary-language situation
-      v
-Cybernetic V3 public V2 authoring + coverage/review
-      v
-approved generated scenario/run
-      v
-Cybernetic V3 retained execution
-      v
-run summary / raw retained evidence
-      v
-World-Substrate-style living-view adapter
-      v
-residents + information + constraints + accepted/rejected changes
-+ timeline + mechanic-declared ancestry + detachable Waltzman analysis
-```
-
-This remains an integration strategy, not a new product identity. **World Substrate is the product/demo surface.** Cybernetic V3 is a bounded implementation donor for mature authoring/execution capability. Do not expose two engines for the same run or imply that World Builder generated laws it did not generate.
-
-#### Hosting migration sequence
-
-1. **Preserve regression target:** retain donor commit `65eb465a48f8f1f996afd81f64105a99c982f070`, the approved fresh-run evidence, and current public behavior as the comparison target.
-2. **Provision shared VPS:** deploy the existing donor backend on the approved shared Netcup VPS without reviving the closed Cloudflare Container path or changing the simulation/product contract.
-3. **Certify before cutover:** verify health, route certification, retained-run access, browser network/console behavior, and rollback against the VPS origin.
-4. **Cut over with rollback:** move the public route only after independent verification; retain the Mac origin until the VPS route is proven stable.
-5. **Record outcome evidence:** refresh this roadmap and the derived wiki after the hosting result is retained; hosting changes must not be mistaken for a new simulator architecture.
-
-#### Current hardening queue
-
-After or independently of the hosting cutover where safe, continue small reversible changes:
-
-1. fingerprint exact executable generated-law identity plus compiler/interpreter version for durable approval/run provenance;
-2. bind action write-scope placeholders to exact action roles, not merely any named participant;
-3. make authored affordance-space overflow explicit rather than silently truncating after the finite candidate cap;
-4. add appropriate CI/project gates and exact dependency locking as external dependencies enter reproducible production paths; and
-5. keep semantic closure honest: bind only reviewed Linguistic Core senses/roles, preserve `unheat` as unbound until an upstream reviewed sense exists, and treat future predicate-local role-definition support as semantic precision rather than consequence authority.
-
-None of these requires reopening the product architecture.
-
-#### Deliberately deferred
-
-- automatic counterfactual/mutation causal-adequacy verification;
-- always-on read-scope enforcement;
-- persistent resident cognition;
-- generic SimPy future-event scheduling;
-- conversational generation of Waltzman's richer institution/activity/information mechanics;
-- saved user worlds/auth; and
-- massive/distributed scale.
-
-Promote one only when a concrete product/evidence need earns it.
+Automatic counterfactual adequacy verification; always-on read-scope enforcement; persistent resident cognition; a future-event scheduler; saved user worlds and identity; massive or distributed scale. Promote one only when a concrete product or evidence need earns it.
 
 ## Decisions and assumptions
 
@@ -289,172 +167,110 @@ Three executed spikes hosted the governed-rules layer on the constrained-handoff
 
 **Wrong when:** the first LLM-resident run through Concordia needs a game-master component that writes state outside `Engine.submit`, or more glue than the `CognitionAdapter` path; a Mesa (or other) release ships transactional state with write scopes and per-change history; the PDDL translator needs hand edits for distributed-approval, or the validator and `engine.submit` disagree on any step of a recorded run. Any one of these means re-running the gate for that candidate.
 
-Spike-noted defects to fix in World Substrate itself: a mechanic that raises mid-rule surfaces as an exception rather than a recorded refusal event (already listed as P2 below); the PDDL export's constant order varies with the hash seed (cosmetic, from the library's writer).
+Spike-noted defects to fix in World Substrate itself: a mechanic that raises mid-rule surfaces as an exception rather than a recorded refusal event (listed under Q69 below); the PDDL export's constant order varies with the hash seed (cosmetic, from the library's writer).
 
-### Product/adoption strategy
+### Product and adoption posture
 
-| Layer | Current posture |
+| Layer | Posture on 2026-11-09 |
 | --- | --- |
-| Canonical state / identity | keep project-owned |
-| Transition kernel / authority / trace semantics | keep project-owned |
-| Causal declaration/compiler | keep project-owned |
-| Semantic/mechanical binding | keep project-owned as a World Substrate profile over pinned Linguistic Core meaning |
-| Dependency inventory / bounded adequacy | project-owned; current v0 is mapping + residual risk, not counterfactual proof |
-| Scene/projection semantics | keep project-owned; renderer stays downstream |
-| Living browser rendering | deck.gl 9.4.x selected; MapLibre optional for real geography |
-| Resident cognition | Pydantic AI selected behind `CognitionAdapter`; integrate only when earned |
-| Simulated scheduling | SimPy selected for event/time scheduling only; integrate only when earned |
-| Activity duration | project-owned semantic/causal contract when earned; completion rechecks current world |
-| Expanded graph inspection | Cytoscape.js selected when needed |
-| Multi-agent evaluation | PettingZoo later if useful; never alternate world authority |
-| Persistence/auth | standard commodity infrastructure later |
+| Canonical state, transition kernel, authority, trace semantics | project-owned |
+| Rule language, compiler, declared laws, rules review | project-owned |
+| Semantic binding | project-owned profile over pinned Linguistic Core meaning |
+| Resident loop | Concordia (integrated) |
+| Spatial structure, sweeps, stochastic activation | Mesa when a world needs it (not integrated) |
+| Formal validation and reachability | PDDL export (spike only) |
+| Live view | vendored shared graph viewer in the World Builder; deck.gl only in the Waltzman reference client |
+| Scheduling | integer ticks today; SimPy was selected in 2026-09 but never integrated, and Decision 006 now routes scheduling to Concordia or Mesa |
+| Persistence and identity | share links only; commodity infrastructure later |
 
-### Information / causality rule
+### Information and causality rule
 
-Do not collapse these relationships:
-
-- **world interaction** — e.g. Mara speaks to Ari;
-- **information lineage** — representation, source, recipient, channel, delivery/observation;
-- **cognition context/evidence** — information the resident harness was shown;
-- **mechanic-declared hard causal ancestry** — parent dependencies explicitly named by installed transitions and validated against history; and
-- **analytic interpretation** — post-run/observer inference.
-
-Temporal precedence or prompt inclusion is never sufficient to label an information event a hard cause of a resident decision.
+Keep apart: world interaction (Mara speaks to Ari); information lineage (representation, source, recipient, channel, delivery); cognition context (what a resident was shown); mechanic-declared causal ancestry; and analytic interpretation. Temporal order or prompt inclusion never makes information a hard cause of a decision.
 
 ### Adequacy rule
 
-Current bounded adequacy answers:
-
-> Which consequential assumptions did we explicitly inventory, where are they represented, which installed rule surfaces are intended to enforce them, and what known residual risk remains?
-
-It does **not** yet answer:
-
-> Have we automatically proven each dependency necessary and sufficient by counterfactual intervention?
-
-The latter is a deferred research option.
+The bounded adequacy report answers which consequential assumptions were inventoried, where they are represented, which rules enforce them and what residual risk remains. It does not prove each dependency necessary and sufficient; that is a deferred research option.
 
 ### Semantic-profile rule
 
-Linguistic Core contributes reusable meanings, role concepts, and semantic relationships. World Substrate may profile those meanings into local action/process bindings, but the profile owns only the bridge: specialization, causal classification, represented bearer, selected mechanic, and interpretation limits. A richer LC n-ary/role-definition contract may improve the semantic half of that bridge; it must not acquire World Substrate's persistence, effects, scheduling, write authority, or commit semantics.
+Linguistic Core contributes meanings and roles. World Substrate's profile owns only the bridge (specialization, causal classification, bearer, mechanic, limits) and never moves persistence, effects, scheduling, write authority or commit semantics into Linguistic Core.
 
-### Approval / law provenance rule
+### Approval and law provenance rule
 
-A reviewer should ultimately be able to approve human-readable law and have that approval point to one exact executable law identity for the run. Current declaration-profile freezing is a partial implementation of this chain. Strengthen it before durable user-generated laws become long-lived/persisted; do not block the hand-authored Waltzman reference demo on it.
+An approval should point to one exact executable law identity for the run. Freezing the profile is a partial implementation; add the compiler version before user-generated laws become long-lived (Q69).
 
 ### Experiment-selection rule
 
-- **Novel uncertainty:** experiment.
-- **Commodity uncertainty:** research → reason → select.
-- **Integration uncertainty:** prove the selected adapter conforms; do not run comparative framework tournaments.
+Novel uncertainty: experiment. Commodity uncertainty: research, reason, select. Integration uncertainty: prove the selected adapter conforms. A test runs only when a named decision cannot be settled by argument or prior art.
 
 ## Evidence and review artifacts
 
-Primary current artifacts:
+- <https://brianmills.dev/world-builder/> (live alpha), <https://brianmills.dev/world-builder/play/> (Replay Studio), <https://brianmills.dev/waltzman/> (donor fallback).
+- Declared-laws and open-attempt run evidence: every trace read is listed in the [documentation index](../docs/index.md#8-run-evidence); the latest Waltzman build is [s4-waltzman-3](../evidence/declared-laws/s4-waltzman-3/TRACE_READ.md).
+- [gpt-6-luna rules measurement](../evidence/luna-rules-2026-10-23/TRACE_READ.md).
+- Replacement-first spikes: `spikes/replacement-2026-10/` ([Concordia](../spikes/replacement-2026-10/concordia/README.md), [Mesa](../spikes/replacement-2026-10/mesa/README.md), [PDDL](../spikes/replacement-2026-10/pddl/README.md)).
+- Waltzman reference world: `evidence/waltzman/`, `evidence/renders/waltzman-demo-v0.html`, [promotion record](../evidence/waltzman/public-promotion-2026-09-09.md).
+- Planning review pages: `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt,declared-laws}/review-page/`.
 
-- `https://brianmills.dev/world-builder/` — deployed authoring/run alpha (backend on the personal VPS since 2026-10-05);
-- `https://brianmills.dev/waltzman/` — promoted stakeholder surface using the bounded Cybernetic V3 donor path;
-- `https://brianmills.dev/world-substrate-visualization/` — legacy synthetic standalone surface; retained design evidence rather than active promotion target;
-- `evidence/renders/waltzman-demo-v0.html` — self-contained canonical Waltzman reference client and regression fixture;
-- `prototypes/living-world-overlay-v0.html` — retained synthetic design prototype;
-- [Waltzman integrated demo audit](../docs/audits/waltzman-coordination-lab-v0.md) + `evidence/waltzman/`;
-- [Information/delivery v0](../docs/contracts/information-delivery-v0.md) and [live projection v0](../docs/contracts/live-projection-v0.md);
-- [Semantic–mechanical binding v0](../docs/contracts/semantic-mechanical-binding-v0.md);
-- [Living-world projection research](../docs/research/living-world-projection-2026-09.md);
-- [Technology procurement](../docs/research/technology-procurement-2026-09.md);
-- [Repair Bay live proof](../docs/audits/repair-bay-live-preflight.md) + retained traces;
-- [Live authoring audit](../docs/audits/live-world-authoring.md);
-- [Kitchen audit](../docs/audits/kitchen-contested-world.md) and retained renders;
-- [Scene profile v0](../docs/contracts/scene-profile-v0.md);
-- [World authoring bundle v0](../docs/contracts/world-authoring-bundle-v0.md); and
-- [Action mechanic declaration v0](../docs/contracts/action-mechanic-declaration-v0.md).
-
-Open PRs: none as of 2026-10-05 (#37 closed with its experiment landed in #86; #43, #75, #79, #80 merged).
+Open pull requests: none on 2026-11-09 (`gh pr list --state open`).
 
 ## Risks and needs resolution
 
-| Priority | Risk / open need | Current stance |
+| Priority | Risk or open need | Current stance |
 | --- | --- | --- |
-| P0 | native authoring may not express Waltzman-class information/activity/institution constraints | prove two configurable native coordination worlds first; if generic generation is too narrow, use a reviewed reusable coordination-mechanics package rather than narrated consequences |
-| P0 | the zero-review Automatic replay path and richer Waltzman Living Scene path may not compose directly | measure the smallest adapter/mapping from one actual native coordination run before redesigning either renderer |
-| P0 | further native engine/runtime work may duplicate mature off-the-shelf runtimes | gate recorded: no native runtime growth; host loops on Concordia/Mesa when needed |
-| P1 | frozen profile does not yet fingerprint every executable determinant | add exact executable law + compiler/interpreter provenance |
-| P1 | action placeholder write authority is participant-bounded rather than role-specific | bind placeholders to exact action fields |
-| P1 | authored affordance discovery can hit a finite candidate cap | make overflow explicit/paged/refused rather than silent |
-| P1 | repository production reproducibility needs stronger CI/locking | add as selected external dependencies become part of production manifests |
-| P2 | generic live actions are not semantically closed against Linguistic Core | consume reviewed LC senses/roles when available; do not mint fake `lc:` senses locally; adopt richer role-definition support when it earns a real binding improvement |
-| P2 | information v0 is intentionally narrow | extend only for demonstrated latency/corruption/audience needs |
-| P2 | generic authoring cannot generate Waltzman's richer mechanics | use another concrete world to earn the smallest generic extension |
-| P2 | no durable resident cognition | Pydantic AI selected; integrate only when needed |
-| P2 | no saved user worlds/run history | later, after workflow earns persistence |
-| P2 | mechanic/process exceptions are not first-class failure events | fix when it materially affects evidence trust/debugging |
-| P3 | read scopes not runtime-enforced | optional verification design exists; not current blocker |
-| P3 | automatic counterfactual adequacy proof not implemented | explicitly deferred idea |
-| P3 | distributed/massive scale not demonstrated | defer until measured pressure |
-| upstream | `unheat` lacks suitable pinned Linguistic Core sense | donor-owned semantic gap |
+| P0 | paid builds keep finding new defects with no stated end (Q50) | Brian decides what result ends the declared-laws work; new paid builds wait |
+| P0 | the generated Waltzman world stipulates outcomes its mechanisms should produce (Q60) | lineage review recorded; no change adopted |
+| P1 | hand-written build checks keep growing (Q45) | retire them only when declared laws and the review demonstrably cover the incident |
+| P1 | declared laws can be wrong for the world, or missing (Q48, Q49) | read S4 and S5 builds for counterexamples |
+| P1 | the agent harness is not on the live path (Q14) | measure a harness build against the 150 s first-round target |
+| P1 | law fingerprint lacks compiler version; silent discovery truncation; unrecorded mechanic exceptions (Q69) | hardening queue |
+| P1 | write-scope placeholders are not role-bound (Q67) | hardening queue |
+| P2 | read scopes are recorded, not enforced, and the check reports a constant (Q34, Q66) | report honestly first; enforce when a run needs it |
+| P2 | live path imports spike code (`spikes/any-scenario-2026-10/`) | move what the live path needs into `scripts/` or `src/` when next changed |
+| P2 | hosted CI conflicts with the no-hosted-CI rule (Q70) | Brian decides |
+| P2 | `schemas/world-authoring-bundle-v0.schema.json` rejects law-bearing bundles (Q65) | fix the schema to match the validator |
+| P3 | `unheat` lacks a pinned Linguistic Core sense | upstream semantic gap |
+| P3 | no counterfactual adequacy proof; no scale demonstration | deferred |
 
 ## Human decisions
 
-| Decision | Status |
+Answered (kept as the record): World Substrate is the one canonical project (001); observability required, exact replay not (002); meaning does not imply effects, and richer Linguistic Core roles do not move mechanics upstream (003, 2026-09-12 review); own causal reality and borrow commodity machinery (004); converge the next Waltzman release on native World Substrate (005, 2026-09-18); hold at the governed-rules layer (006, 2026-10-05); describe any scenario (007); build worlds in an agent harness (008); same-moment effects are rule semantics (009, 2026-10-26); Create simulation is the approval (2026-10-15); Concordia hosts residents; gpt-6-luna is the default model, sol only when sharing with Waltzman (2026-10-16); adopt the open-attempt plan (2026-10-25) and the declared-laws plan (2026-10-28).
+
+Open, each in the [open questions ledger](../docs/planning/open-questions.json) with what it blocks:
+
+| Question | What it decides |
 | --- | --- |
-| Canonical project is World Substrate | answered — Decision 001 |
-| Observability required; exact replay not universal | answered — Decision 002 |
-| Semantics do not imply effects | answered — Decision 003 |
-| Linguistic Core relation/role refinement moves causal mechanics upstream? | answered — no; LC may improve semantic relation/role representation while World Substrate retains persistence, effects, authority, scheduling, and commit semantics |
-| Product face | answered — generative living worlds over causal engine |
-| Causal claim boundary | answered — causal explanation is internal to installed represented-world mechanics; real-world validity is separate |
-| Current prototype/deliverable | answered — Waltzman Coordination Lab demo |
-| Integrated Waltzman first gate | answered — implemented/reviewed/landed |
-| Public Waltzman demo | **answered — interactive natural-language generation + fresh run + living inspection; static replay alone is insufficient** |
-| World Builder integration required for the fastest 2026-09-09 promotion? | answered — no; donor reuse was the fastest promotion path and remains valid historical evidence |
-| Cybernetic V3 role going forward? | answered — donor, analysis/UX source, and temporary regression/fallback implementation lineage; not the required runtime for the native World Substrate product |
-| Native World Substrate path for the next Waltzman release? | **answered 2026-09-18 — yes; World Substrate owns the draft/mechanics/Engine/history/UI path, with selected Cybernetic ideas promoted only when the Waltzman vertical needs them** |
-| Waltzman richer mechanics generated by the current Builder today? | answered — no; this is the first active uncertainty to resolve with a configurable native coordination vertical |
-| Adequacy needs full counterfactual machinery before demo? | answered — no; current mapped dependency inventory + residual risk is sufficient, stronger verification deferred |
-| Exact executable-law fingerprint required before Waltzman demo? | answered — no; important post-demo hardening for durable generated-law provenance |
-| Waltzman constructs in universal core state? | answered — no; Waltzman analytics detachable |
-| Behavioral predictive validity current goal? | answered — no |
-| Commodity selection method | answered — research/reason/select, not local bake-offs |
-| Shrink onto runtimes, keep native, or freeze? | **answered 2026-10-05 — narrow governed-rules layer; no native runtime growth; Builder backend restored** ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md)) |
-| Living renderer | answered — deck.gl 9.4.x |
-| Resident cognition harness | answered — Pydantic AI behind adapter when earned |
-| Scheduler | answered — SimPy for scheduling only when earned |
-| Time model direction | answered — one canonical timeline; independent mechanism cadences |
-| Graph inspector | answered — Cytoscape.js when needed |
+| Q50 | what result ends the declared-laws work, and whether S5's paid builds run |
+| Q12 | whether a people-world run stops once nothing changes |
+| Q16 | whether writing a `/goal` requires a planning package |
+| Q17 | whether the offline any-scenario pipeline gets a view and approval step or stays a spike |
+| Q60 | whether to act on the Waltzman lineage review |
+| Q70 | whether the hosted CI workflow stays |
 
 ## Refresh and reset triggers
 
 Refresh this roadmap when:
 
-- the first configurable native coordination vertical lands or exposes a mechanics/viewer gap;
-- the native one-shot authoring flow first produces a fresh automatic-view run;
+- Brian answers Q50, Q60 or Q70;
+- a declared-laws or open-attempt slice lands, or a hand-written build check is retired;
+- the agent harness reaches the live path;
+- a hardening item lands;
 - any Decision 006 wrong-when condition fires;
-- post-demo executable-law provenance/role-authority/affordance-overflow hardening lands;
-- Linguistic Core publishes or adopts a relation/role contract that materially changes how World Substrate semantic bindings are represented;
-- conversational authoring first produces richer information/activity/institution mechanics;
-- a new dependency-inventory counterexample exposes an in-scope gap;
-- a scenario earns resident cognition or a future-event queue;
-- persistence/auth changes product authority; or
-- evidence contradicts a current truth statement.
+- evidence contradicts a current-truth statement.
 
 Replan rather than extend blindly if:
 
-- live projection requires presentation to invent canonical facts;
-- generated mechanics routinely require arbitrary model-written code;
-- information and cognition cannot be separated without leaking observer truth;
-- causal-adequacy work grows faster than useful world complexity;
+- a view needs to invent canonical facts;
+- generated rules routinely need model-written code;
+- information and cognition cannot be kept apart without leaking observer truth;
+- adequacy work grows faster than useful world complexity;
 - an external dependency requires surrendering Engine consequence authority; or
-- a new feature is proposed only for completeness rather than a concrete product/evidence need.
+- a feature is proposed for completeness rather than a concrete product or evidence need.
 
 ## Exact next action
 
-**The replacement-first gate is recorded (see "Replacement-first gate disposition"); do not add native runtime capability.**
+1. **Declared laws S4:** retire the first hand-written build check whose incident a declared law or the rules review now covers, proven on the saved worlds with `scripts/check_saved_worlds.py` and `scripts/replay_build.py` before any paid run (Q45).
+2. While Q50 is open, run no new paid builds under the declared-laws plan; free replays and merges continue.
+3. In parallel, the hardening queue items that need no paid run (Q66, Q67, Q69).
 
-Every candidate came out as compose, not adopt. Brian approved the narrow governed-rules-layer direction on 2026-10-05 ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md)). Eligible work is limited to:
-
-1. hardening that protects existing behaviour (the queue above: executable-law fingerprint, role-specific write scopes, explicit affordance overflow, mechanic exceptions as recorded refusals);
-2. keeping the public World Builder backend healthy on the VPS (restored 2026-10-05; deploy with personal-vps `apps/world-builder/deploy.sh`);
-3. when a world first needs LLM residents or spatial/sweep structure, hosting it on Concordia or Mesa per the disposition instead of extending the native loop.
-4. the adopted open-attempt plan ([docs/plans/open_attempt.md](../docs/plans/open_attempt.md), Brian's "yes" on 2026-10-25): open attempts (S1, built), same-moment knock-on effects (S2, built: tested chain, live generated run owed) and skill rolls (S3). Brian ruled on 2026-10-26 ([Decision 009](../docs/decisions/009-same-moment-knock-on-effects.md), open question Q27) that S2's fixpoint inside the one existing commit in `engine.py` is rule semantics, not the engine capability this roadmap and Decision 006 forbid.
-5. the adopted declared-laws plan ([docs/plans/declared_laws.md](../docs/plans/declared_laws.md), Brian's "yes" and "i approve" on 2026-10-28): the world designer declares its own world's resources and laws (S1, built and live at `a88af2f`, #280; its live pencil build, `evidence/declared-laws/s1-pencil/`, showed the designer lists only the move that makes each good, so S2 first settles #281), the engine enforces declared laws and names the law a move would break (S2, built and live at `75c0a2b`, #284, with #281 settled; its live pencil build, `evidence/declared-laws/s2-pencil/`, showed the designer now lists the using-up moves and a money law, but its redesign dropped every law, fixed so a redesign must keep them; the second build, `evidence/declared-laws/s2-pencil-2/`, kept its laws and showed the engine refusing a live step that broke one, while the test-run breach was cut off before it reached the designer, fixed so breaches go first; the third, `evidence/declared-laws/s2-pencil-3/`, showed the tie rank then dropped the other tries' breaches, fixed so a redesign hears every breach, and that one unreadable attempt failed whole rounds, fixed so it is listed and the round goes on), and an independent AI review of the rules (S3, built: gemini-3.1-pro-preview chosen in `evidence/declared-laws/s3-review-choice/` as the only reviewer of another family that named pencil13's unpaid purchase; its findings go first in the rules writer's next try and the build record lists them; its live pencil build, `evidence/declared-laws/s3-pencil/`, kept a try nobody reviewed, fixed so an unreviewed try ranks below every reviewed one, and showed the reviewer treating goods no law names as forbidden, fixed in its prompt; the kept world never sold a box because the carrier's price was 0 and the purchase law refused a free purchase, which neither the reviewer, who is not shown starting values, nor the build record caught) lets heuristic build checks retire (S4). It replaces adding one hand-written check per bookkeeping bug. S4 so far (2026-10-30): `scripts/check_saved_worlds.py` replays every saved world for free and fails if a whole one breaks; two live builds, `evidence/declared-laws/s4-cafe/` and `evidence/declared-laws/s4-waltzman/`, found one-way moves dropped as bookkeeping (K, fixed #309), the reviewer not shown places and owners (J, fixed #310) and attempts lost on fields only one thing can fill (M, fixed with this record); Waltzman's description builds through the people (scenario-spec) path, which until 2026-10-30 asked for no laws and ran no independent review; it now declares its laws over the counts it keeps, in the same contract as a world of things, keeps only laws the compiled coordination rules can keep (`scripts/people_world.py` `keep_compiled_laws`), and its rules get the same review (`tests/test_people_laws.py`). The rebuilt Waltzman world (`evidence/declared-laws/s4-waltzman-2/`, 2026-10-30) showed two gaps, both fixed (#317): a people-path try kept for running out of time skipped the review, and Country B's attempts named no concern for a field the rules tie to another participant. A free replay of the pencil sellers' lost turns (`evidence/declared-laws/seller-wording/`) led to the interpreter reading a trade named from one side as the other side's move too (#319). Every person's prompt said "Turn 0" until #320, and "shops cannot request deliveries" turned out to follow the description, not a rules gap (`evidence/declared-laws/s3-pencil-4/TRACE_READ.md` findings 6-8).
-
-Do not add engine, scheduler, renderer or cognition capability of World Substrate's own ([Decision 009](../docs/decisions/009-same-moment-knock-on-effects.md) sets out what does not count: a bounded same-moment fixpoint inside the existing commit).
+Do not add engine, scheduler, renderer or cognition capability of World Substrate's own ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md); [Decision 009](../docs/decisions/009-same-moment-knock-on-effects.md) sets out what does not count).

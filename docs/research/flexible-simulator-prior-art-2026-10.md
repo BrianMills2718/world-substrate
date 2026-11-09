@@ -8,6 +8,8 @@ reviewed_through: 2026-10-25
 
 > **Research, not a decision.** This survey answers one question Brian asked on 2026-10-24: are we inventing our own framework for a simulator where agents may *try anything*, the world decides what happens, and effects spread on their own? Accepted doctrine stays in [the decisions](../decisions/). The three detailed reports are in [flexible-simulator-prior-art-2026-10/](flexible-simulator-prior-art-2026-10/): [formal theory](flexible-simulator-prior-art-2026-10/formal.md), [games and interactive fiction](flexible-simulator-prior-art-2026-10/games.md), [LLM-agent platforms](flexible-simulator-prior-art-2026-10/llm-sims.md). Each one has a per-framework coverage table, its sources, and a list of claims it could not verify.
 
+> **Status note, 2026-11-09.** Kept as a reference. Since this survey the open-attempt plan built pieces 1 and 2 (open attempts, same-moment knock-on effects, [Decision 009](../decisions/009-same-moment-knock-on-effects.md)); piece 3 (skill rolls) is not built. SimPy was never integrated: [Decision 006](../decisions/006-governed-rules-layer-scope.md) routes scheduling to Concordia or Mesa, so read "SimPy or Concordia" below in that light. Current architecture: [arc42](../architecture/arc42.md).
+
 Clickable version: [the loop page](https://hive.brianmills.dev/plans/world-substrate/main/proposals/flexible-simulator/review-page/) (source `proposals/flexible-simulator/review-page/index.html`) traces each example through one attempt-to-commit loop.
 
 ## Bottom line
