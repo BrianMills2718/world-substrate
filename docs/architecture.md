@@ -4,6 +4,14 @@
 
 A rich world comes from **shared persistent state, semantic grounding, and installed mechanics with explicit local causal authority**. LLM sophistication is useful for policy, cognition, and mechanic proposal, but model prose must not compensate for missing world law or directly mutate canonical state.
 
+**Why (Brian's reason).** The point is scale, not determinism. Brian, 2026-11-09: "an ai adjudicator doesnt really scale and that we need to facts to have implications and blockers. like 50 things could propagate down a causal chain 100 links deep taht the llm would not be able to understand so we need that causal chain to automaticlaly rpogate and to deliver the resutls of that propagation to he ai judge along with blockers." Brian, 2026-07-22: "in general i dont care about determinism. oftne it is better to have simulations that vary to give you more snese of the possiblity space of outcomes. what i am concerned with is an understanable trace of any simulation and general reasonability/fidelity."
+
+Where the code stands against that reason (2026-11-09):
+
+- **Propagation exists.** A change that follows at once runs as a knock-on process, in waves inside the same moment ([Decision 009](decisions/009-same-moment-knock-on-effects.md)). The cap is 32 reactions per moment (`REACTION_LIMIT`, `src/world_substrate/engine.py`), and a moment that passes it is refused whole. Slower effects run once per round.
+- **Blockers reach only the person who tried.** A refused move tells that person which check failed. It does not name the earlier change behind the failure.
+- **There is no AI judge.** The Concordia game master is kept off (`scripts/concordia_residents.py`, module docstring). An attempt outside the rulebook changes nothing, apart from a request to another person, which is passed on to that person.
+
 ```text
 represented state
       |
