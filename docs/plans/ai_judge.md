@@ -59,10 +59,23 @@ stuff". So authority splits three ways:
   A credential can be told, overheard, copied, forged or phished.
 - **Who is supposed to use it** (norm): only Alice should log in; only signed cargo should pass. Breakable.
 
-Writing "only Alice can log in" as a constraint would make social engineering impossible, which is wrong. The
-earlier Cybernetic Influence work discussed this at length (password-comparison fixture with a protected
-verifier, `cybernetic_influence_v3/src/cybernetic_influence/causal_core/fixtures.py:81`); its conclusions are
-being retrieved so they are reused, not re-derived.
+Writing "only Alice can log in" as a constraint would make social engineering impossible, which is wrong.
+
+What the earlier Cybernetic Influence work (v3) already settled, to reuse rather than re-derive (searched
+2026-11-09; the original chat discussion was not found in the chat archive, so these come from v3's code and docs):
+
+- It kept four things apart: identity proof, normative permission, technical availability, and the physical
+  outcome (`docs/archive/plans/005-physical-access-generalization.md:20-26`); "software enforcement differs from
+  written permission" (`docs/archive/plans/011-purchase-payment-representation-boundary.md:52`).
+- A credential was a protected verifier string, and whoever submitted the matching string was accepted
+  (`src/cybernetic_influence/causal_core/fixtures.py:79-95,391-396`). Who holds the credential was not recorded.
+- Social engineering and tailgating were explicitly out of scope (`src/cybernetic_influence/api.py:6716`), and
+  "a claim of authority distinct from actual technical control" and "a norm or obligation distinct from personal
+  preference" were listed as not represented
+  (`docs/research/general-purpose-simulator-ontology-and-machinery.md:1071-1085`).
+
+So this plan adds what v3 left out: who holds each credential, as a fact that can change (told, stolen, phished),
+and norms as breakable rules with consequences only when someone acts on them.
 
 ## Agent technical calls (to confirm in the full plan)
 
