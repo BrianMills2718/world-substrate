@@ -43,8 +43,26 @@ Agent proposal, 2026-11-09, awaiting Brian:
   not be written as a declared law, because the engine refuses every step that breaks a declared law, so nobody
   could ever take a bribe.
 - **The judge's job** is then narrow: when the rulebook is silent, rule on constraints only (can coins change hands
-  here? does a signed release clear the cargo?), write the ruling as a rule, and route every choice to the person
-  whose choice it is.
+  here? what actually opens the gate?), write the ruling as a rule, and route every choice to the person whose
+  choice it is.
+
+Brian's refinement, 2026-11-09: "there is a ddifference between as igned release clearing the cargo as a norm and
+like some programmatic enry with abar code or whateve.r this was deiscussed pretty extneively in the form of hte
+idea of a password managed comptuer where only 1 person was supped to use it with ehir password but if they could
+be social engineered for exampel to get a password then someone else woul eb abel to sue it. i liek the ostrom
+stuff". So authority splits three ways:
+
+- **What the mechanism checks** (constraint): the computer logs in whoever types the right password; a barcode
+  gate opens for whatever valid code it reads. A gate a guard opens is not a mechanism: it opens when the guard
+  decides to.
+- **Who holds the credential** (a fact in the world): Alice knows the password; the trader holds a signed release.
+  A credential can be told, overheard, copied, forged or phished.
+- **Who is supposed to use it** (norm): only Alice should log in; only signed cargo should pass. Breakable.
+
+Writing "only Alice can log in" as a constraint would make social engineering impossible, which is wrong. The
+earlier Cybernetic Influence work discussed this at length (password-comparison fixture with a protected
+verifier, `cybernetic_influence_v3/src/cybernetic_influence/causal_core/fixtures.py:81`); its conclusions are
+being retrieved so they are reused, not re-derived.
 
 ## Agent technical calls (to confirm in the full plan)
 
