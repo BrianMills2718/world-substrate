@@ -13,10 +13,12 @@ window.PAGE_DATA = {
      {
       "name": "durable documents (arc42)",
       "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-      "exit_status": 0,
+      "exit_status": 1,
       "counts": {
-       "findings": 0
-      }
+       "findings": 16
+      },
+      "tracked_by": "Q77",
+      "note": "8 arc42 and goal-field findings in docs/architecture/arc42.md and 8 STALE system-model rules whose owner files changed after review; the same 16 on origin/main d89a446 (md_file_cap's durable column reports 16 for both refs), none added by this change."
      },
      {
       "name": "project navigation",
@@ -29,29 +31,28 @@ window.PAGE_DATA = {
      {
       "name": "repository format",
       "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
-      "exit_status": 1,
+      "exit_status": 0,
       "counts": {
-       "compliant": 0,
+       "compliant": 1,
        "of": 1
-      },
-      "tracked_by": "Q15"
+      }
      },
      {
       "name": "trace reads",
-      "command": "python3 scripts/check_trace_reads.py",
+      "command": "python3 scripts/check_trace_reads.py --root evidence",
       "exit_status": 0,
       "counts": {
-       "runs": 33,
+       "runs": 38,
        "problems": 0
       }
      },
      {
       "name": "project check (tests, system model, docs)",
-      "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py",
+      "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
       "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
       "exit_status": 0,
       "counts": {
-       "tests_run": 862,
+       "tests_run": 891,
        "failed": 0,
        "skipped": 2
       }
@@ -59,13 +60,17 @@ window.PAGE_DATA = {
      {
       "name": "wiki and Markdown cap",
       "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
-      "exit_status": 0,
+      "exit_status": 1,
       "counts": {
-       "md_files": 174,
+       "md_files": 162,
        "cap": "exception",
-       "orphans": 0
+       "unreachable": 28,
+       "not_linked": 10,
+       "more_than_two_links_deep": 18,
+       "durable_findings": 16
       },
-      "note": "Run with --ref HEAD: without it the script checks the default branch, not this change."
+      "tracked_by": "Q77",
+      "note": "Run with --ref HEAD: without it the script checks the default branch, not this change. All 28 unreachable documents are also unreachable on origin/main d89a446 (29 there; docs/planning/ai-judge/cold-review.md is reachable here): 13 older documents, the 5 J0 trace reads (now linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10 (md_file_cap does not read .doc-reachability-ignore)."
      }
     ]
    },
@@ -1677,14 +1682,15 @@ window.PAGE_DATA = {
   {
    "id": "Q77",
    "short": "Wiki cap and durable-document checks fail on main",
-   "question": "On origin/main 0dcbcd6 the wiki and Markdown cap check (md_file_cap.py --repo . --ref HEAD) exits 1: the file count is now within the exception limit (143 of 180), but 13 documents are more than two links deep from the entry point (for example docs/VISUAL_FEEDBACK.md, docs/audits/kitchen-contested-world.md) and the durable-document check (durable_docs_check.py --arc42) reports 12 findings (3 arc42 headings, 1 extension label, 2 goal fields and 2 goal context or lineage findings in docs/architecture/arc42.md, and 4 system-model rules whose owner files, scripts/world_builder_service.py (3 rules) and scripts/run_authored_world.py (1), changed after their last review in a commit that only reworded a comment). Should the deep documents be linked closer or retired, and the arc42 and goal fields and rule reviews brought up to date?",
+   "question": "On origin/main d89a446 (and unchanged on the estimate-rules branch, 2026-11-10) the wiki and Markdown cap check (md_file_cap.py --repo . --ref HEAD) exits 1: the file count is within the exception limit (162 of 180), but 28 documents are unreachable from the entry point (10 not linked, 18 more than two links deep): 13 older documents (for example docs/VISUAL_FEEDBACK.md, docs/audits/kitchen-contested-world.md), the 5 J0 trace reads under evidence/ai-judge/j0/ (linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10, which md_file_cap counts although .doc-reachability-ignore excludes them. The durable-document check (durable_docs_check.py --arc42) reports 16 findings: 3 arc42 headings, 1 extension label, 2 goal fields, 1 goal context and 1 lineage finding in docs/architecture/arc42.md, and 8 system-model rules whose owner files changed after their last review (RULE-ATOMIC-COMMIT-OR-REFUSAL, RULE-WRITE-SCOPE and RULE-CHECKS-ARE-READ-ONLY on src/world_substrate/engine.py and RULE-DERIVED-AUTHORITY on action_authoring.py, changed by the judge plan's J0; RULE-FROZEN-PROFILE on scripts/run_authored_world.py; RULE-APPROVAL-BEFORE-RUN, RULE-BUDGET-FAILS-CLOSED and RULE-DURABLE-RUN-RECORD on scripts/world_builder_service.py). Should the deep documents be linked closer or retired, the archive files excluded, the arc42 and goal fields filled and the rule reviews brought up to date?",
    "blocks": "Whether the wiki-compliance and durable-document checks pass again for every package in this repository.",
-   "resolves_with": "Argument: read the 13 deep documents and link or retire them by the documentation rules (docs/AGENTS.md); fill the arc42 goal fields from docs/GOAL.md; re-read the 4 rules against the comment-only changes in those two files and set reviewed_at. No run needed.",
+   "resolves_with": "Argument: read the 13 older documents and link or retire them by the documentation rules (docs/AGENTS.md); link the J0 trace reads from docs/index.md (the judge's follow-up pull request #363 does); have md_file_cap honour .doc-reachability-ignore or link the archived OpenSpec changes; fill the arc42 goal fields from docs/GOAL.md; re-read the 8 rules against their owner files' changes and set reviewed_at (#363 re-reads the four J0 touched). No run needed.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/planning/ai-judge/checks.txt:3",
-    "docs/planning/ai-judge/checks.txt:32"
+    "docs/planning/checks.txt:20",
+    "docs/planning/checks.txt:38",
+    "docs/planning/estimate-rules/checks.txt:38"
    ],
    "touches": [
     "run-log"
