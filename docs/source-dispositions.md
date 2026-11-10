@@ -1,5 +1,9 @@
 # Source dispositions
 
+> **Superseded on 2026-11-09 by [the arc42 architecture](architecture/arc42.md#source-dispositions).** This page is kept until a
+> line-by-line comparison confirms arc42 carries all of it, then it will be retired. Where the two
+> disagree, arc42 wins; read arc42 first.
+
 This page prevents related projects from becoming competing authorities. Exact reviewed revisions and hashes are recorded in [the source manifest](../references/sources.json). A donor classification is not an instruction to adopt its code.
 
 | Source | What it contributes | Disposition | Adoption proof required | Authority limit |

@@ -1,5 +1,9 @@
 # World Substrate architecture
 
+> **Superseded on 2026-11-09 by [the arc42 architecture](architecture/arc42.md).** This page is kept until a
+> line-by-line comparison confirms arc42 carries all of it, then it will be retired. Where the two
+> disagree, arc42 wins; read arc42 first.
+
 ## Architectural thesis
 
 A rich world comes from **shared persistent state, semantic grounding, and installed mechanics with explicit local causal authority**. LLM sophistication is useful for policy, cognition, and mechanic proposal, but model prose must not compensate for missing world law or directly mutate canonical state.

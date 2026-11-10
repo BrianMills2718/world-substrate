@@ -168,6 +168,8 @@ Cybernetic Influence v3's world schema, `GeneralSimulationProposalV1` (`cybernet
 | Relationships (two or more participants with a description) | `relationship_extension` (`:136`) | **Partly.** No relationship kind. `entity_ref` fields and `owner_ref` link entities, and linked process participants follow those links (`owner_of_it`, `owned_by_it`, `co_located`, `ref:`). | `action_authoring.py:669-741` |
 | Coverage report (per requested behavior: exact / coarse / descriptive / unsupported, with compiler evidence) | `ExecutionCoverageReportV1` (`:477`) | **Partly.** No per-request coverage classification. The nearest are the compiler-derived `CausalReview` (reads, writes, limits), the bundle generator's `not_modeled` list, the pipeline's `CheckReport` (including ODD outflow coverage), and Waltzman's hand-built causal adequacy report. | `action_authoring.py:402`, `scripts/generate_world_bundle.py:62`, `checks.py:335`, `reference_worlds/waltzman/adequacy.py` |
 
+Process-level linked participants reuse Petri-net transition semantics: one firing consumes and produces across several places, atomically, through the same selector, derived-path and effect machinery as action participants and the unchanged write-scope enforcement. Mesa or NetLogo `ask` (Python-level mutation with no declared write scope) and the Concordia game master (prose resolution with no typed rule or commit primitive) were bounded exceptions, because neither keeps the Engine's authority (Decision 006). Folded on 2026-11-09 from the retired plan `docs/plans/linked_process_participants.md` (last commit `43e1dca`).
+
 ## 5. Processes and scheduling
 
 There is no global clock in the service: everything is request-driven. Inside a run, time is an integer tick and a round is the unit of scheduling.
@@ -280,6 +282,12 @@ Issue #106 (actors that move to the same place stack on one point) **does show u
 
 ## 10. The any-scenario pipeline and this model
 
+**The Waltzman scenario text** the pipeline is run on, from the paper's opening as summarized in `cybernetic_influence_v3/docs/WALTZMAN_OUTREACH_DRAFT.md` (the `docs/research/001-from-minds-to-coordination.md` the plan also cited does not exist in this repository):
+
+> A partnership of four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system. Technical, legal, logistics and community groups each raise small, true but local concerns through their own channels to different members. Members meet regularly; the concerns slow meetings, reopen settled issues and make support conditional, which can delay or block deployment.
+
+Folded on 2026-11-09 from the retired plan `docs/plans/waltzman_scenario_run.md` (last commit `cb24858`).
+
 **Default world definition since plan `scenario-spec-adoption` (2026-10-08).** `model_scenario.py --world-def spec`, the default, defines a world as a `ScenarioSpec` (`scenario_spec.json`). That is `ScenarioSpecV1`, ported from Cybernetic Influence v3's `ScenarioSpecV2` at `1c1c207`, and it adds an information item's holder and channel. `compile_spec.py` turns it into World Substrate state:
 
 - people become `member` actors, each with a profile brief shown only to its own agent;
@@ -289,7 +297,7 @@ Issue #106 (actors that move to the same place stack on one point) **does show u
 
 On this path, generated worlds therefore have the kinds that section 4.2 marks lacking or unused: people with profiles, information items with recipients, and scheduled moments. The older outline path is still available as `--world-def odd`.
 
-The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its evidence folders (`truck`, `hospital`, `linked`, `scenario-spec`, `waltzman`, `waltzman-spec` under `spikes/any-scenario-2026-10/evidence/`), the substrate component kinds (`information`, `delivery`) and the process link kinds are checked against the code by `tests/test_system_model.py`. Its two views (`scenario_replay`, `scenario_state_panel`) and gaps G12-G16 are in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The pipeline is a spike under an adopted plan (`docs/plans/scenario_actors_kept.md` changes `odd_brief` and `model.json`); when it changes a record, the drift test fails until this model is updated. Plan for this extension: [system_model_pipeline.md](../plans/system_model_pipeline.md).
+The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its evidence folders (`truck`, `hospital`, `linked`, `scenario-spec`, `waltzman`, `waltzman-spec` under `spikes/any-scenario-2026-10/evidence/`), the substrate component kinds (`information`, `delivery`) and the process link kinds are checked against the code by `tests/test_system_model.py`. Its two views (`scenario_replay`, `scenario_state_panel`) and gaps G12-G16 are in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The pipeline is a spike, and the live people-world path imports it (`scripts/people_world.py:26,76-77`); when it changes a record, the drift test fails until this model is updated. The plans that extended it, `docs/plans/scenario_actors_kept.md` (last commit `49da160`) and `docs/plans/system_model_pipeline.md` (`8232c22`), were retired on 2026-11-09; [arc42 section 8](../architecture/arc42.md#provenance-of-retired-material) lists them.
 
 ## 11. People worlds on the live path (added 2026-10-24, at `6a8e37e`)
 

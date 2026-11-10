@@ -163,6 +163,120 @@
    "explain": "Blocks: Whether the shared Waltzman run (share jyVbywXT8N8F) is fit for Brian to judge under Q50, and whether the plan's S3 (review findings go to the rules writer's revision step) holds on the people-world path.."
   },
   {
+   "id": "Q56",
+   "label": "Q56: A rule that writes less than it declared",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether a world's declared write scopes can be read as what its rules actually maintain; a generated rule that silently stops updating a field it owns goes unnoticed.."
+  },
+  {
+   "id": "Q57",
+   "label": "Q57: String fields have no declared values",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether the interpreter and compiler can refuse a value outside a world's vocabulary (a dock, a route, a status) instead of accepting any string.."
+  },
+  {
+   "id": "Q58",
+   "label": "Q58: Promises beyond support (a Commitment kind)",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether a people world can hold a promise one person makes another that is not support for the decision.."
+  },
+  {
+   "id": "Q59",
+   "label": "Q59: Does the people path transfer to a different situation",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether 'describe any scenario' (Decision 007) holds beyond decision-with-concerns situations; feeds Q60.."
+  },
+  {
+   "id": "Q60",
+   "label": "Q60: Act on the Waltzman lineage review",
+   "kind": "BrianQuestion",
+   "explain": "Blocks: What the next goal is after the declared-laws slices, and whether a Waltzman run can be shown as evidence of a social mechanism.."
+  },
+  {
+   "id": "Q61",
+   "label": "Q61: Outside vocabularies never evaluated",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether the run log's causal fields, the derived scopes and the project's causal claims use an outside vocabulary or stay project-specific.."
+  },
+  {
+   "id": "Q62",
+   "label": "Q62: Meaning coverage beyond the six bound moves",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Adding any overlay term beyond the six bound M1 move kinds, and binding generated move kinds to a meaning.."
+  },
+  {
+   "id": "Q63",
+   "label": "Q63: A non-authoritative estimate as a rule input",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Any world whose rules need a bounded estimate (time to repair, a likelihood) that no installed mechanic computes.."
+  },
+  {
+   "id": "Q64",
+   "label": "Q64: Meaning is looked up by bare move name",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether an event's semantic_binding and mechanic id can be trusted to describe the rule that actually ran.."
+  },
+  {
+   "id": "Q65",
+   "label": "Q65: The bundle schema refuses declared laws",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Any outside tool or test that validates a declared-laws bundle against the published schema.."
+  },
+  {
+   "id": "Q66",
+   "label": "Q66: The read-scope status fact is a constant",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether the status check is evidence about read scopes or only about the spec's text; Q34.."
+  },
+  {
+   "id": "Q67",
+   "label": "Q67: Write-path placeholders bind to any participant",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether a declared write scope limits a rule to the participants it names; listed in the roadmap hardening queue.."
+  },
+  {
+   "id": "Q68",
+   "label": "Q68: No lockfile; donor check needs a missing checkout",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Reproducing a run's exact dependencies, and running the donor check at all.."
+  },
+  {
+   "id": "Q69",
+   "label": "Q69: Hardening: law identity, discovery cap, mechanic errors",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.."
+  },
+  {
+   "id": "Q70",
+   "label": "Q70: A hosted CI workflow against the local-checks rule",
+   "kind": "BrianQuestion",
+   "explain": "Blocks: Whether the repository keeps a hosted check beside its local one; nothing merges on it today.."
+  },
+  {
+   "id": "Q71",
+   "label": "Q71: The live build imports spike code",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether spike code is held to the live path's tests and review; whether the spike folder can be archived.."
+  },
+  {
+   "id": "Q72",
+   "label": "Q72: Living-scene profiles refuse a render key the layout reads (plausible)",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether a scene author can set the gather radius the layout documents.."
+  },
+  {
+   "id": "Q73",
+   "label": "Q73: Decision 006's wrong-when names a missing adapter",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether that wrong-when condition can ever be checked.."
+  },
+  {
+   "id": "affordance",
+   "label": "Affordance (offered move)",
+   "kind": "Concept",
+   "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against."
+  },
+  {
    "id": "agenda",
    "label": "Agenda count",
    "kind": "Concept",
@@ -211,6 +325,36 @@
    "explain": "One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed."
   },
   {
+   "id": "compiler",
+   "label": "Compiler",
+   "kind": "Concept",
+   "explain": "Turns proposed rules into installed rules and derives what each may read and write."
+  },
+  {
+   "id": "concern",
+   "label": "Concern",
+   "kind": "Concept",
+   "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by."
+  },
+  {
+   "id": "engine",
+   "label": "Engine",
+   "kind": "Concept",
+   "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick."
+  },
+  {
+   "id": "entity-component",
+   "label": "Entity and component",
+   "kind": "Concept",
+   "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write."
+  },
+  {
+   "id": "event",
+   "label": "Event",
+   "kind": "Concept",
+   "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012."
+  },
+  {
    "id": "gen-rules",
    "label": "Generated actions and rules",
    "kind": "Concept",
@@ -230,6 +374,25 @@
    "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
   },
   {
+   "id": "law-check",
+   "label": "Law check",
+   "kind": "Concept",
+   "explain": "Plan declared-laws S2 (built): inside the same commit as the write-scope check, every move, round process and knock-on effect is checked against the world's declared laws; a breach refuses the whole step or moment as law_breach and names the law, and nothing changes. A test-run breach is a build finding sent to the rules writer and the world designer."
+  },
+  {
+   "id": "law-fingerprint",
+   "label": "Executable-law fingerprint",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version."
+  },
+  {
+   "id": "mechanic",
+   "label": "Installed mechanic",
+   "kind": "Concept",
+   "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens."
+  },
+  {
    "id": "mechanisms",
    "label": "Mechanisms library",
    "kind": "Concept",
@@ -240,6 +403,12 @@
    "label": "Observation",
    "kind": "Concept",
    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world."
+  },
+  {
+   "id": "people-world",
+   "label": "People world",
+   "kind": "Concept",
+   "explain": "A world built from a description about people: people, information, moments and the fixed people rules."
   },
   {
    "id": "person",
@@ -254,10 +423,22 @@
    "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; written per world as entities from the bundle contract, and the move rule checks the way."
   },
   {
+   "id": "profile",
+   "label": "Frozen mechanic profile",
+   "kind": "Concept",
+   "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile."
+  },
+  {
    "id": "readout",
    "label": "Readout",
    "kind": "Concept",
    "explain": "One AI summary of a run whose every cited event id is checked against the run."
+  },
+  {
+   "id": "remedy",
+   "label": "Remedy",
+   "kind": "Concept",
+   "explain": "A fix of a concern that takes 2 rounds; it can be stopped part-way by the concern's holder objecting."
   },
   {
    "id": "resident",
@@ -284,6 +465,18 @@
    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run."
   },
   {
+   "id": "scene-replay",
+   "label": "Scene replay",
+   "kind": "Concept",
+   "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words."
+  },
+  {
+   "id": "sense",
+   "label": "Linguistic Core sense and roles",
+   "kind": "Concept",
+   "explain": "The meaning and participant roles of a move kind, supplied by Linguistic Core; never its effects, quantities or timing."
+  },
+  {
    "id": "share",
    "label": "Share link and replay",
    "kind": "Concept",
@@ -295,6 +488,12 @@
    "kind": "Concept",
    "dashed": true,
    "explain": "Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it."
+  },
+  {
+   "id": "support",
+   "label": "Support",
+   "kind": "Concept",
+   "explain": "A member's stance on the decision: none, full or conditional on a concern."
   },
   {
    "id": "task",
@@ -313,6 +512,18 @@
    "label": "Unmatched attempt",
    "kind": "Concept",
    "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer."
+  },
+  {
+   "id": "waltzman-ref",
+   "label": "Waltzman reference components",
+   "kind": "Concept",
+   "explain": "Trust, risk, readiness and commitment components and analyses of the hand-written Waltzman world."
+  },
+  {
+   "id": "world-design",
+   "label": "World design (bundle)",
+   "kind": "Concept",
+   "explain": "The build's first AI step: it reads the description and writes the world's people, places, things and starting state as an authoring bundle; plan declared-laws S1 adds the world's resources and laws to its output, and the rules writer receives them as input."
   },
   {
    "id": "world-law",
@@ -656,6 +867,252 @@
    "id": "Q55-rules-retry",
    "source": "Q55",
    "target": "rules-retry",
+   "label": "bears on"
+  },
+  {
+   "id": "Q56-write-scope",
+   "source": "Q56",
+   "target": "write-scope",
+   "label": "bears on"
+  },
+  {
+   "id": "Q56-law-check",
+   "source": "Q56",
+   "target": "law-check",
+   "label": "bears on"
+  },
+  {
+   "id": "Q56-mechanic",
+   "source": "Q56",
+   "target": "mechanic",
+   "label": "bears on"
+  },
+  {
+   "id": "Q57-entity-component",
+   "source": "Q57",
+   "target": "entity-component",
+   "label": "bears on"
+  },
+  {
+   "id": "Q57-attempt-reading",
+   "source": "Q57",
+   "target": "attempt-reading",
+   "label": "bears on"
+  },
+  {
+   "id": "Q57-compiler",
+   "source": "Q57",
+   "target": "compiler",
+   "label": "bears on"
+  },
+  {
+   "id": "Q58-support",
+   "source": "Q58",
+   "target": "support",
+   "label": "bears on"
+  },
+  {
+   "id": "Q58-people-world",
+   "source": "Q58",
+   "target": "people-world",
+   "label": "bears on"
+  },
+  {
+   "id": "Q59-people-world",
+   "source": "Q59",
+   "target": "people-world",
+   "label": "bears on"
+  },
+  {
+   "id": "Q59-group-decision",
+   "source": "Q59",
+   "target": "group-decision",
+   "label": "bears on"
+  },
+  {
+   "id": "Q59-gen-rules",
+   "source": "Q59",
+   "target": "gen-rules",
+   "label": "bears on"
+  },
+  {
+   "id": "Q60-support",
+   "source": "Q60",
+   "target": "support",
+   "label": "bears on"
+  },
+  {
+   "id": "Q60-concern",
+   "source": "Q60",
+   "target": "concern",
+   "label": "bears on"
+  },
+  {
+   "id": "Q60-remedy",
+   "source": "Q60",
+   "target": "remedy",
+   "label": "bears on"
+  },
+  {
+   "id": "Q60-waltzman-ref",
+   "source": "Q60",
+   "target": "waltzman-ref",
+   "label": "bears on"
+  },
+  {
+   "id": "Q61-causal-trace",
+   "source": "Q61",
+   "target": "causal-trace",
+   "label": "bears on"
+  },
+  {
+   "id": "Q61-causal-parent",
+   "source": "Q61",
+   "target": "causal-parent",
+   "label": "bears on"
+  },
+  {
+   "id": "Q61-write-scope",
+   "source": "Q61",
+   "target": "write-scope",
+   "label": "bears on"
+  },
+  {
+   "id": "Q62-sense",
+   "source": "Q62",
+   "target": "sense",
+   "label": "bears on"
+  },
+  {
+   "id": "Q63-mechanic",
+   "source": "Q63",
+   "target": "mechanic",
+   "label": "bears on"
+  },
+  {
+   "id": "Q63-skill-roll",
+   "source": "Q63",
+   "target": "skill-roll",
+   "label": "bears on"
+  },
+  {
+   "id": "Q64-sense",
+   "source": "Q64",
+   "target": "sense",
+   "label": "bears on"
+  },
+  {
+   "id": "Q64-mechanic",
+   "source": "Q64",
+   "target": "mechanic",
+   "label": "bears on"
+  },
+  {
+   "id": "Q64-event",
+   "source": "Q64",
+   "target": "event",
+   "label": "bears on"
+  },
+  {
+   "id": "Q65-world-design",
+   "source": "Q65",
+   "target": "world-design",
+   "label": "bears on"
+  },
+  {
+   "id": "Q65-world-law",
+   "source": "Q65",
+   "target": "world-law",
+   "label": "bears on"
+  },
+  {
+   "id": "Q65-builder",
+   "source": "Q65",
+   "target": "builder",
+   "label": "bears on"
+  },
+  {
+   "id": "Q66-write-scope",
+   "source": "Q66",
+   "target": "write-scope",
+   "label": "bears on"
+  },
+  {
+   "id": "Q66-check",
+   "source": "Q66",
+   "target": "check",
+   "label": "bears on"
+  },
+  {
+   "id": "Q67-write-scope",
+   "source": "Q67",
+   "target": "write-scope",
+   "label": "bears on"
+  },
+  {
+   "id": "Q67-engine",
+   "source": "Q67",
+   "target": "engine",
+   "label": "bears on"
+  },
+  {
+   "id": "Q68-check",
+   "source": "Q68",
+   "target": "check",
+   "label": "bears on"
+  },
+  {
+   "id": "Q69-profile",
+   "source": "Q69",
+   "target": "profile",
+   "label": "bears on"
+  },
+  {
+   "id": "Q69-law-fingerprint",
+   "source": "Q69",
+   "target": "law-fingerprint",
+   "label": "bears on"
+  },
+  {
+   "id": "Q69-affordance",
+   "source": "Q69",
+   "target": "affordance",
+   "label": "bears on"
+  },
+  {
+   "id": "Q69-engine",
+   "source": "Q69",
+   "target": "engine",
+   "label": "bears on"
+  },
+  {
+   "id": "Q70-check",
+   "source": "Q70",
+   "target": "check",
+   "label": "bears on"
+  },
+  {
+   "id": "Q71-people-world",
+   "source": "Q71",
+   "target": "people-world",
+   "label": "bears on"
+  },
+  {
+   "id": "Q71-build",
+   "source": "Q71",
+   "target": "build",
+   "label": "bears on"
+  },
+  {
+   "id": "Q72-scene-replay",
+   "source": "Q72",
+   "target": "scene-replay",
+   "label": "bears on"
+  },
+  {
+   "id": "Q73-resident",
+   "source": "Q73",
+   "target": "resident",
    "label": "bears on"
   }
  ],

@@ -3,11 +3,12 @@ schema_version: project-wiki/v1
 type: ProjectWiki
 role: derived-navigation
 status: active
-reviewed_through: 2026-09-19
+reviewed_through: 2026-11-09
 authority_refs:
   - ../../README.md
   - ../../roadmap/README.md
-  - ../architecture.md
+  - ../architecture/arc42.md
+  - ../../openspec/specs/
   - ../decisions/001-project-scope.md
   - ../decisions/002-observability-and-replay.md
   - ../decisions/003-semantic-mechanical-boundary.md
@@ -21,232 +22,192 @@ authority_refs:
 
 # World Substrate project wiki
 
-This is the single compact orientation surface for the repository. It summarizes current truth and routes readers to native authorities; it does not replace architecture, contracts, decisions, code, evidence, or the roadmap.
+One page of current state. It summarizes and routes; it does not replace the
+[architecture](../architecture/arc42.md), the [capability specs](../index.md#2-what-the-code-must-do-openspec-capability-specs),
+the decisions, the code, the evidence or the [roadmap](../../roadmap/README.md). Every document is
+listed in the [documentation index](../index.md). Checked against `main` at `0e66a98` on 2026-11-09.
 
 ## What this project is
 
-World Substrate is a persistent, observable simulation engine and generative authoring system. Human or model policies express intents; installed mechanics with explicit local authority determine canonical consequences.
+World Substrate is a persistent, observable world engine with a generative builder on top. A person
+describes a world in plain words; a model proposes its structure and rules as data; a local compiler
+derives what each rule may read and write; and once the rules are approved, residents (scripted, human
+or AI) say what they try while installed rules alone decide what changes. Every change or refusal is
+recorded with its cause.
 
-The product direction is now a **generative living-world builder over a rigorous causal engine**. The user should be able to describe a world conversationally, review represented structure and executable law, run residents/processes through it, watch it evolve spatially, and inspect why outcomes occurred without allowing presentation, cognition, or analysis to become alternate truth.
+Brian's reason for keeping consequences in rules rather than an AI judge is scale (2026-11-09, quoted in
+full in [arc42 section 1](../architecture/arc42.md#architectural-thesis)): facts must carry their
+implications and blockers down long causal chains automatically.
 
-The product being demonstrated is **World Substrate**. **Waltzman Coordination Lab is its current showcase/reference world**, inspired by Cybernetic Influence v3 and Waltzman's *From Minds to Coordination*; Cybernetic Influence is research lineage, not the product or demo surface. Its first integrated local gate runs through canonical World Substrate state/events. Waltzman-specific trust structure, perceived risk, coordination readiness, detection/diagnosis/stabilization, and evasion analysis remain detachable plugins over evidence rather than universal world variables.
+The public surface is the **World Builder** at <https://brianmills.dev/world-builder/>: one box and one
+Create simulation button. Pressing it is the approval (Brian, 2026-10-15). The builder makes the world,
+its declared laws and its rules, has another model review the rules, runs a free scripted test, then
+plays the world live one round at a time with Concordia residents. **Waltzman Coordination Lab**
+(Rand Waltzman's bio-surveillance coordination scenario) is the showcase world; the older donor-backed
+demo at <https://brianmills.dev/waltzman/> is kept as a fallback. Both answered HTTP 200 on 2026-11-09.
 
-Public surfaces:
-
-- World Builder: `https://brianmills.dev/world-builder/`
-- Promoted Waltzman stakeholder demo: `https://brianmills.dev/waltzman/`
-- Legacy standalone living-world URL: `https://brianmills.dev/world-substrate-visualization/`
-
-The stakeholder demo is already promoted: it combines natural-language authoring, a fresh retained run, and living inspection through the bounded Cybernetic V3 donor path. That route remains useful regression/fallback evidence, but [Decision 005](../decisions/005-native-waltzman-delivery.md) makes native World Substrate convergence the active product frontier: one-shot text -> editable draft -> approved mechanics -> native Engine run -> automatic generic UI -> bounded Waltzman inspection/comparison. The old standalone URL remains legacy/design evidence.
+Scope is set by [Decision 006](../decisions/006-governed-rules-layer-scope.md): World Substrate is the
+governed-rules layer (rules as data, compiler-derived authority, approval, atomic commit or refusal with a
+recorded cause). Resident loops, scheduling and planning come from Concordia, Mesa or a PDDL export when a
+world needs them.
 
 ## Start here
 
-| Need | Read next |
+| Need | Read |
 | --- | --- |
-| Current direction / exact next action | [Roadmap](../../roadmap/README.md) |
-| Durable system boundaries | [Architecture](../architecture.md) |
-| Waltzman lineage, original product intent and recommendations | [November 7 simulator review](../research/waltzman-lineage-review-2026-11-07.md) (assessment; recommendations not adopted) |
-| What would have made this faster (read before planning a goal) | [Lessons](lessons.md) |
-| The system itself as a checked model (entities, processes, records, view coverage gaps) | [System model](../model/ODD.md) · [View coverage](../model/VIEW_COVERAGE.md) |
-| What the substrate is made of (concepts, typed kinds, what is built vs theory) | [Domain model](../model/DOMAIN.md) · [Metamodel](../model/METAMODEL.md) |
-| What the project does not yet know, and the plan it calls for | [Open questions](../planning/open-questions.json) · [Repo planning package](../planning/planning-package.json) · [Open-attempt package](../planning/open-attempt/planning-package.json); review pages at `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt}/review-page/` |
-| Open-attempt plan: free-form attempts (S1, built), same-moment knock-on effects (S2, built; ODD 8.20), skill rolls (S3, next) | [Open-attempt plan](../plans/open_attempt.md) |
-| Declared-laws plan: worlds declare their own resources and laws (S1, built; ODD 8.21), the engine keeps them (S2, built), an independent rules review (S3, built); S4 in progress: people worlds such as Waltzman now declare laws and get the review too | [Declared-laws plan](../plans/declared_laws.md) · [review page](https://hive.brianmills.dev/plans/world-substrate/main/proposals/declared-laws/review-page/) |
-| Scope: governed-rules layer on commodity runtimes | [Decision 006](../decisions/006-governed-rules-layer-scope.md) |
-| Any-scenario path / build worlds in an agent harness | [Decision 007](../decisions/007-any-scenario-path.md) · [Decision 008](../decisions/008-build-worlds-in-an-agent-harness.md) |
-| Same-moment knock-on effects are rule semantics, not engine capability | [Decision 009](../decisions/009-same-moment-knock-on-effects.md) |
-| Product + procurement doctrine | [Decision 004](../decisions/004-product-and-adoption-strategy.md) |
-| Native Waltzman delivery / donor boundary / stopping rule | [Decision 005](../decisions/005-native-waltzman-delivery.md) |
-| Living-world overlay semantics | [Living-world projection](../research/living-world-projection-2026-09.md) |
-| Implemented information/delivery seam | [Information and delivery v0](../contracts/information-delivery-v0.md) |
-| Implemented canonical client seam | [Live projection v0](../contracts/live-projection-v0.md) |
-| Integrated Waltzman evidence | [Waltzman Coordination Lab v0 audit](../audits/waltzman-coordination-lab-v0.md) |
-| Selected commodity defaults | [Technology procurement](../research/technology-procurement-2026-09.md) |
-| Multi-timescale time/process model | [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) |
-| Competitive / adjacent systems | [Competitive landscape](../research/competitive-landscape-2026-09.md) |
-| Off-the-shelf candidates to evaluate (not decisions) | [Off-the-shelf candidates 2026-09-25](../research/off-the-shelf-candidates-2026-09-25.md) |
-| Prior art for a flexible simulator (attempts, affordances, knock-on effects) | [Flexible simulator prior art 2026-10](../research/flexible-simulator-prior-art-2026-10.md) |
-| Implemented transition seam | [Core contract v0](../contracts/core-v0.md) |
-| Live causal declaration language | [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) |
-| CVS analytical-model structural import | [CVS Situation IR structural import v0](../contracts/cvs-situation-import-v0.md) |
-| Semantic/mechanical contract | [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) |
-| Mechanic installation/profile | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) |
-| Replay/scene declaration | [Scene profile v0](../contracts/scene-profile-v0.md) · [Living Scene v1](../contracts/living-scene-v1.md) |
-| Native coordination acceptance / diagnostic evidence | [Native coordination diagnostic bundle v0](../contracts/native-coordination-diagnostics-v0.md) |
-| Native first-release static readiness (execution still pending) | [Native Waltzman static readiness review](../audits/native-waltzman-release-static-readiness-2026-09-19.md) |
-| Cross-repo donor roles | [Source dispositions](../source-dispositions.md) |
-| Nontrivial live-authoring evidence | [Repair Bay live proof](../audits/repair-bay-live-preflight.md) |
+| Every document, in reading order | [Documentation index](../index.md) |
+| Architecture: goal, requirements, building blocks, deployment, risks | [arc42](../architecture/arc42.md) |
+| What the code must do | [OpenSpec capability specs](../index.md#2-what-the-code-must-do-openspec-capability-specs) |
+| Stage, active slice and exact next action | [Roadmap](../../roadmap/README.md) |
+| What would have made earlier work faster (read before planning) | [Lessons](lessons.md) |
+| The system as a checked model | [ODD](../model/ODD.md), [trace.yaml](../model/trace.yaml), [view coverage](../model/VIEW_COVERAGE.md) |
+| What a world is made of, built versus theory | [Domain model](../model/DOMAIN.md), [metamodel](../model/METAMODEL.md) |
+| What the project does not yet know | [Open questions](../planning/open-questions.json), [planning package](../planning/planning-package.json) |
+| Open attempts, knock-on effects, skill rolls | [Open-attempt plan](../plans/open_attempt.md): S1 and S2 built, S3 not built |
+| Worlds declare their own laws | [Declared-laws plan](../plans/declared_laws.md): S1 to S3 built, S4 under way, S5 waits on Q50 |
+| Waltzman lineage against the general simulator vision | [Lineage review, 2026-11-07](../audits/waltzman-lineage-review-2026-11-07.md) (recommendations not adopted) |
+| Prior art for attempts, affordances, knock-on effects | [Flexible simulator prior art](../research/flexible-simulator-prior-art-2026-10.md) |
 
 ## Concepts and terminology
 
-- **Canonical state:** the only material world truth. Prompts, UI state, resident beliefs, and analyses do not compete with it.
-- **Semantic binding:** a World Substrate profile over reviewed Linguistic Core meaning: pinned sense/role identities plus local specialization, causal classification, causal bearer, mechanic identity, and interpretation limits. Meaning does not imply effects.
-- **Causal bearer:** represented actor, process, institution, disposition, or input whose presence changes possible transitions.
-- **Mechanic:** installed rule/process with applicability, checks, declared reads/writes, effects, limits, and trace behavior.
-- **Mechanic profile:** validated/frozen declaration set for a run. Future durable generated-law provenance should additionally fingerprint the exact executable law and compiler/interpreter version.
-- **Affordance:** one currently available action instance derived from canonical state.
-- **Observation:** actor-authorized projection of world state/information.
-- **Authoring bundle:** represented entities/components/action signatures/presentation intent; not executable law by itself.
-- **Causal model:** constrained reviewable declaration of executable action law; data, not model-written source code.
-- **Declared enforcement coverage:** whether explicitly declared behavior is mapped to enforceable interfaces.
-- **Bounded causal adequacy:** a scoped dependency inventory mapping consequential assumptions to represented state/enforcement surfaces plus residual risk. Current v0 is not counterfactual proof of necessity/sufficiency.
-- **World interaction:** a represented occurrence such as moving, speaking, meeting, transferring, failing, or operating.
-- **Information lineage:** representation + source + recipient + channel + delivery/observation/provenance.
-- **Cognition context/evidence:** information an external resident runtime was allowed to see; this is not automatically hard causal parentage.
-- **Mechanic-declared hard causal ancestry:** parent/dependency relations explicitly named by installed transitions and validated against retained history. Current runtime does not automatically derive them from instrumented reads.
-- **Analytic interpretation:** detachable post-run/observer inference such as Waltzman or Levin findings.
-- **Simulation time:** the canonical represented timeline for world actions/processes; it is distinct from browser/render time.
-- **Process/institution cadence:** when a world mechanism becomes eligible to act on that timeline; different mechanisms need not share one rate.
-- **Duration-bearing activity:** represented ongoing work such as travel, repair, testing, transport, or meetings when elapsed time/interruption matters; completion is another world transition opportunity.
-- **Task under way (attempt from belief, #128):** a person's move that only starts a duration-bearing activity (sets a field a world process watches); later rounds' processes advance it and end it, stopped part-way or finished, from what is true then. `scripts/attempts.py` finds starts and endings in the Engine's events; the person is told each round what they expected beside what they see; the page lists tasks under way. A task a world process starts (the rollout an authorization starts) is followed the same way with `world` as its starter, when it can end two ways and is not a value the world starts in. In a group decision a remedy can end two ways: it finishes (the concern records `answered` and `remedy_by`) or the concern's holder stops it part-way (`object-to-remedy`); the build flags a world where every task people start can only finish (`attempts.part_way_findings`) and removes a move's copy of the decision's status into a record no rule sets back (`spec_pipeline.drop_decision_copies`). Design: `docs/plans/attempt-from-belief/`; slice 2: `docs/plans/waltzman-tasks-slice2.goal.md`.
-- **Cognition cadence:** when a private resident runtime wakes to deliberate/replan; by default this should be driven by meaningful events rather than every low-level world step.
-- **Projection state:** possible / enabled / active / realized relationship status derived for visualization from mechanics, current state, and retained history.
-- **Core overlay:** generic read-only projection of residents, information, resources, processes, authority, or causal history.
-- **Analytic overlay:** optional plugin annotation over evidence; never a hidden world variable merely because it is visually overlaid.
+The full glossary is [arc42 section 12](../architecture/arc42.md#12-glossary). The terms used most:
 
-**Causal product contract:** when World Substrate says why an outcome happened, it means why the outcome followed **inside this represented world under its installed mechanics**. That is not, by itself, a scientific claim that the mechanics are true of the corresponding real-world system. Predictive validity and real-world causal identification require separate evidence.
-
-The causal layers remain: substrate processes, installed institutions, resident cognition, and derived analysis. Resident memory/plans remain private unless a selected world explicitly represents them as mechanic-readable state.
-
-Linguistic Core's fact-oriented design is converging on richer typed n-ary relation/role representation. World Substrate can consume that semantic precision when it becomes a stable interface, but it does not move persistence, quantities, effects, scheduling, write authority, or commit semantics into Linguistic Core.
+- **Canonical state:** the one material world truth. Prompts, page state, residents' beliefs and analyses
+  read it and never compete with it.
+- **Authoring bundle:** what exists in a world (entities, typed properties, relations, action signatures,
+  presentation intent, declared resources and laws). Not executable law by itself.
+- **Causal model:** the reviewable rule language (`world-substrate-causal-model/v0`): actions and
+  processes with selectors, checks and effects, as data, never model-written source.
+- **Derived authority:** the read and write paths the compiler finds in a rule. A rule cannot write
+  outside them; read scopes are recorded but not enforced.
+- **Mechanic profile:** the frozen set of installed rules for one run. Its id does not yet include a
+  compiler version (open question).
+- **Declared law:** a world's own conservation or payment law, checked at every commit; a step that
+  breaks one is refused and names it (`src/world_substrate/laws.py`).
+- **Open attempt:** a resident's move in their own words, read by an interpreter into one typed move or
+  left unmatched; an unmatched attempt changes nothing except a request to another person, which is
+  passed on to that person (#326).
+- **Same-moment knock-on effect:** a `timing: immediately` process that reacts inside the same commit, in
+  waves of at most 32 reactions ([Decision 009](../decisions/009-same-moment-knock-on-effects.md)).
+- **Task under way:** a move that only starts a duration-bearing activity; later rounds' processes finish
+  it or stop it part-way, from what is true then (`scripts/attempts.py`; read in
+  [c1r24](../../evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md)).
+- **Semantic binding:** an action kind's citation of a reviewed Linguistic Core sense and roles. Meaning
+  never implies an effect; six of seven M1 kinds are bound and `unheat` is deliberately unbound.
+- **Information lineage versus causal parent:** who was told what, by which channel, is recorded
+  separately from the causal parents a rule declares. Being shown a message is not proof it caused a
+  decision.
+- **Causal claim boundary:** "why this happened" means why inside the represented world under its
+  installed rules, not a claim about the real world.
 
 ## Sources and evidence
 
-[Source dispositions](../source-dispositions.md) classifies donor roles and [references/sources.json](../../references/sources.json) pins reviewed revisions. Donor repositories are sources, not automatic runtime dependencies.
+Donor repositories and their roles are in [arc42 section 3](../architecture/arc42.md#source-dispositions);
+[references/sources.json](../../references/sources.json) pins reviewed revisions. Donors are sources, not
+runtime dependencies.
 
-Important current evidence:
+Every run reported as evidence is a folder with `run-log.jsonl` and a `TRACE_READ.md`, enforced by
+`scripts/check_trace_reads.py`; the [documentation index](../index.md#8-run-evidence) lists all of them.
+The evidence most often needed:
 
-- M1–M7b substrate / semantic / mechanic-authoring / policy-consumer evidence;
-- three replicated Kitchen full-service traces;
-- Greenhouse zero-review replay as a post-renderer new-world proof;
-- Orchard live causal generation + fresh-run acceptance;
-- Repair Bay as the first nontrivial deployed authoring world;
-- Warehouse Rush draft evidence showing a route→physical-dock omission and minimal `target_dock` repair;
-- the Waltzman blocked baseline + exact-history recovery fork, canonical living projection, information/causal distinction, detachable analysis, and bounded dependency/adequacy report;
-- the promoted generated-run stakeholder surface and retained promotion proof in `evidence/waltzman/public-promotion-2026-09-09.md`; and
-- full World Builder request/response/operator/causal logs as the debugging source of truth.
+- the declared-laws builds, S1 to S4, including the Waltzman rebuild of 2026-11-04
+  ([s4-waltzman-3](../../evidence/declared-laws/s4-waltzman-3/TRACE_READ.md));
+- the open-attempt airfield runs ([S2](../../evidence/open-attempt/s2-airfield/TRACE_READ.md));
+- the gpt-6-luna rules measurement: 23 of 24 builds reached their finish line, 19 of 24 also faithful, at
+  $0.0032 per build ([trace read](../../evidence/luna-rules-2026-10-23/TRACE_READ.md));
+- three replicated Kitchen full-service traces (`evidence/kitchen/full-service-replication-v1-summary.json`);
+- the Waltzman reference world's blocked baseline and intervention fork (`evidence/waltzman/`).
 
-The synthetic living-world UI source remains versioned at `prototypes/living-world-overlay-v0.html` as design evidence. The canonical Waltzman client at `evidence/renders/waltzman-demo-v0.html` remains a real-run reference/regression artifact; the promoted outreach endpoint is the generated-run `/waltzman/` surface.
+Full World Builder request, response, compiler, operator and causal logs are the debugging source of
+truth; summaries and replays are orientation only.
 
 ## Accepted authorities and decisions
 
-- [Roadmap](../../roadmap/README.md) owns current sequencing and exact next action.
-- [Architecture](../architecture.md) owns durable boundaries.
-- [Decision 001](../decisions/001-project-scope.md) owns canonical project scope.
-- [Decision 002](../decisions/002-observability-and-replay.md) owns observability/replay doctrine.
-- [Decision 003](../decisions/003-semantic-mechanical-boundary.md) owns the semantic/effect boundary.
-- [Decision 004](../decisions/004-product-and-adoption-strategy.md) owns product direction and commodity-selection doctrine.
-- [Decision 005](../decisions/005-native-waltzman-delivery.md) owns the native Waltzman delivery target, Cybernetic donor boundary, first-release stopping rule, and explicit uncertainties/failure responses.
-- Implemented contracts own only their declared seam.
-- Code/tests own runtime behavior.
-- Revision/run-bound evidence owns observed outcome claims.
-- Human product decision, 2026-09-09: the static canonical Waltzman client is retained reference/presentation evidence, not the finished outreach demo; the sendable demo requires natural-language generation + fresh execution + living inspection, and the Cybernetic donor path was authorized as the fastest promotion route.
-- Human product decision, 2026-09-18: the next Waltzman release should converge that experience onto native World Substrate authoring/execution/automatic UI; Cybernetic remains donor/analysis lineage and the existing donor-backed surface remains regression/fallback during convergence.
-- Human semantic review, 2026-09-12: richer Linguistic Core n-ary/role representation may refine semantic bindings, but the semantic/mechanical boundary remains unchanged; effects and consequence authority stay in World Substrate.
-
-Decision 004 classifies uncertainty as:
-
-- **novel** → experiment;
-- **commodity** → research → reason → select; and
-- **integration** → bounded conformance test.
-
-Selected defaults are deck.gl 9.4.x, Pydantic AI 2.41.x behind `CognitionAdapter`, SimPy 4.1.2 for scheduling only, and Cytoscape.js 3.34.x for expanded graph inspection.
+- [Roadmap](../../roadmap/README.md) owns sequencing and the exact next action.
+- [arc42](../architecture/arc42.md) owns durable boundaries; the [capability specs](../../openspec/specs/)
+  own required behavior, each for its own seam.
+- Decisions [001](../decisions/001-project-scope.md) (one canonical project),
+  [002](../decisions/002-observability-and-replay.md) (observability required, exact replay not),
+  [003](../decisions/003-semantic-mechanical-boundary.md) (meaning does not imply effects),
+  [004](../decisions/004-product-and-adoption-strategy.md) (own causal reality, borrow the rest),
+  [005](../decisions/005-native-waltzman-delivery.md) (native Waltzman delivery),
+  [006](../decisions/006-governed-rules-layer-scope.md) (governed-rules layer only),
+  [007](../decisions/007-any-scenario-path.md) (describe any scenario),
+  [008](../decisions/008-build-worlds-in-an-agent-harness.md) (build worlds in an agent harness) and
+  [009](../decisions/009-same-moment-knock-on-effects.md) (same-moment effects are rule semantics).
+- Code and tests own runtime behavior; run-bound evidence owns observed outcomes.
+- Human product decisions recorded without exact words: 2026-09-09 (a sendable demo needs
+  natural-language generation, a fresh run and living inspection), 2026-09-18 (converge on native World
+  Substrate), 2026-09-12 (richer Linguistic Core roles allowed; the semantic/effect boundary unchanged).
 
 ## Working context
 
-| Area | Current state |
+| Area | State on 2026-11-09 |
 | --- | --- |
-| Core transition engine | implemented; write scopes enforced; rule views detached |
-| Semantic grounding | six of seven M1 kinds bound; generic live actions not yet semantically closed; `unheat` intentionally remains unbound rather than inventing an LC sense |
-| Causal generation | constrained JSON proposal + local compiler + explicit approval + frozen declaration profile |
-| Live policies | scripted/LLM; LLM selects only Engine-minted action IDs |
-| Replay | portable read-only scene-profile renderer across multiple worlds |
-| World Builder | deployed authoring + mechanics review/approval + fresh scripted/LLM runs; backend on the personal VPS since 2026-10-05 |
-| Full logs | deployed; complete request/response/compiler/operator/causal traces available |
-| Living-world UI | generated-run living replay stakeholder-promoted on `65eb465a`; live simulator on the personal Netcup VPS since 2026-09-16; canonical Waltzman reference client remains retained evidence |
-| Live projection | implemented local first gate: exact initial-snapshot + retained-event/delta reconstruction, self-contained HTML, JSON, and one-way SSE |
-| Information/conversation | implemented bounded v0: source/recipient/channel/visibility/delivery/provenance + asymmetric actor observation; not a belief model |
-| Processes/institutions | Waltzman first gate has tick-specific processes, explicit commitments, a duration-bearing meeting, and an installed coalition gate; generic authoring remains narrow |
-| Resident cognition | Pydantic AI selected but not integrated; current bounded policy seam remains sufficient for existing fixtures |
-| Scheduling | core remains integer-tick + per-step `due()` checks; Waltzman proves scenario-specific independent trigger ticks + duration activity; SimPy future-event queue still unintegrated |
-| Multi-timescale execution | first scenario gate implemented on canonical ticks with independently due processes + represented meeting duration; generic scheduler contract remains later |
-| Graph inspector | Cytoscape selected; not needed for the promoted stakeholder demo |
-| Persistence/auth | no saved user worlds/runs or identity-backed approvals yet |
-
-Open work at the handoff point:
-
-- No open PRs as of 2026-10-05: #37 closed (experiment landed in #86); #43 and the native coordination chain #75/#79/#80 merged.
+| Transition engine | built; write scopes enforced; read scopes recorded only (the check reports a constant, Q34) |
+| Rule authoring | built: rules as data, compiler-derived authority, processes `each_round` or `immediately`, linked participants |
+| Declared laws and rules review | built (S1 to S3); people worlds such as Waltzman declare laws and get the review (#314) |
+| Open attempts | built (S1); requests reach the person asked (#326); skill rolls not built (S3) |
+| Residents | Concordia residents since 2026-10-16 (`scripts/concordia_residents.py`); the Concordia game master is off |
+| World Builder | live on the VPS since 2026-10-05; share links store and replay runs; the Network shows one round at a time (#338, #344) |
+| Budget | visitors share $3.00 a day, the owner $5.00; up to four AI jobs at once (`scripts/world_builder_service.py`) |
+| Agent harness (Decision 008) | `scripts/world_harness.py` exists but the live service does not call it (Q14) |
+| People-world path | imports code from `spikes/any-scenario-2026-10/` at run time (`scripts/people_world.py:26,76-77`) |
+| Scheduling | integer ticks; `Engine.advance()` checks each process with `due(world)`; no future-event queue |
+| Living scene renderers | maintained, not extended (Decision 006) |
+| Persistence and identity | no saved user worlds beyond share links; owner identified by password only |
 
 ## Needs resolution
 
-The roadmap owns ordering. Current unresolved work is split into the **active replacement-first gate**, **post-demo hardening**, and **later capabilities**.
+The [open questions ledger](../planning/open-questions.json) holds each item with what it blocks, what
+would settle it, its owner and sources. The ones that shape the next work:
 
-1. **Replacement-first gate — recorded 2026-10-05:** Concordia, Mesa and PDDL each compose with the governed-rules layer and none replaces it; World Substrate holds at that layer (roadmap disposition). The donor hosting migration is complete (2026-09-16); the World Builder backend moved to the VPS on 2026-10-05.
-2. **First-two-minute UX — promoted regression target:** preserve the configure-first local-information-to-collective-action experience; do not reopen it as unfinished acquisition work unless evidence regresses.
-3. **Executable-law provenance — post-demo hardening:** bind future approval/run identity to a fingerprint of the exact executable law plus compiler/interpreter version.
-4. **Local-authority correctness — post-demo hardening:** bind write-scope placeholders to exact action roles and make authored affordance-cap overflow explicit rather than silently truncating valid actions.
-5. **Repository reproducibility — post-demo hardening:** add appropriate CI/project gates and exact dependency locking when selected external dependencies enter reproducible production paths.
-6. **Semantic closure — later / when blocking:** continue to cite reviewed LC senses/roles, keep unsupported bindings visible, and consume a richer LC role/relation contract only when it materially improves a real binding or authoring/review path.
-7. **Generative causal closure — later research:** continue dependency inventories, gap finding, residual risk, and smallest-repair work. Automatic counterfactual/mutation verification is a deferred option, not a current requirement.
-8. **Generative richer-world authoring — later:** the current Builder does not yet conversationally author Waltzman's information/activity/institution mechanics. Extend the declaration language only from another concrete world/product need.
-9. **Resident cognition / generic scheduling / persistence — later:** integrate Pydantic AI, SimPy future-event scheduling, and saved user worlds only when a real scenario earns them.
-10. **Mechanic failure events / read verification / scale — later:** retain as explicit boundaries and promote them only when they block a real product or evidence need.
+1. **Q50 (Brian):** whether the declared-laws plan's paid S5 builds may run.
+2. **Q12, Q16, Q17 (Brian):** stopping a run that has gone quiet; whether `/goal` work needs plan
+   adoption; a view and approval step for the offline any-scenario pipeline.
+3. **Q14:** the Decision 008 harness exists but the live service does not use it.
+4. **Q34:** declared read scopes are not enforced.
+5. **Q45, Q48, Q49:** retiring hand-written build checks once declared laws cover them; laws that are
+   wrong for their world; builds that declare no payment law.
+6. Hardening carried from the architecture review: law fingerprints without a compiler version,
+   write-scope placeholders not bound to one action role, the 256-move discovery cap truncating silently,
+   and mechanic exceptions not recorded as refusals ([arc42 section 11](../architecture/arc42.md#11-risks-and-technical-debt)).
 
 ## Architecture and workflow
 
 ```text
-conversational authoring
-      |
-      v
-represented world + dependency intent
-      |
-      v
-semantic/action structure + generated causal declarations
-      |
-      v
-local compiler derives authority -> human approval -> frozen declaration profile
-      |
-      v
-resident action OR process trigger
-      |
-      v
-Engine.submit()/process coordinator -> checks -> commit/refusal
-      |
-      +--> canonical state + causal/evidence history
-      |
-      +--> read-only live projection -> deck.gl living world
-      |                             -> optional Cytoscape inspector
-      |
-      +--> detachable analyses -> Waltzman / Levin / future plugins
+plain-language description  --(Create simulation = approval)-->
+  structure + declared laws (authoring bundle)      rules (causal model)
+                 \                                   /
+                  compiler derives authority; laws checked; rules reviewed by a second model
+                                    |
+                     free scripted test run; frozen mechanic profile
+                                    |
+        Concordia resident picks an offered move or writes an open attempt
+                                    |
+     Engine: checks -> one commit or refusal -> same-moment knock-on waves -> declared-law check
+                                    |
+            canonical state + causal events + run log (run-log.jsonl, trace ids)
+                                    |
+          read-only views: round feed, Network, build record, share-link replay
 ```
 
-Pydantic AI, SimPy, deck.gl, Cytoscape, persistence, and auth are replaceable external machinery around the owned causal seam. SimPy schedules opportunities only; Pydantic AI selects attempts/utterances only; renderers and analyses are read-only. The target time model uses one canonical simulated timeline with independent process/institution/activity cadences; browser frame rate, playback speed, cognition wake cadence, and analysis sampling are not alternate world clocks.
-
-A conversation is visible world activity even with overlays off. The information overlay adds delivery/provenance semantics. A causal overlay includes that conversation only where an installed mechanic explicitly declares the stronger parent relation. Prompt/context inclusion alone is not proof that the information caused a later decision.
+The building blocks and their code are in [arc42 section 5](../architecture/arc42.md#5-building-block-view)
+and [model.c4](../architecture/model.c4). Views, residents' memories and analyses never write canonical
+state.
 
 ## Human-reviewable artifacts
 
-Use these first:
-
-- `https://brianmills.dev/world-builder/` — deployed Build/Play alpha.
-- `https://brianmills.dev/waltzman/` — promoted stakeholder demo: natural-language authoring, fresh retained run, and living inspection through the bounded donor path.
-- `https://brianmills.dev/world-substrate-visualization/` — legacy synthetic public surface retained as design evidence.
-- `evidence/renders/waltzman-demo-v0.html` — implemented self-contained canonical Waltzman reference/regression client.
-- `prototypes/living-world-overlay-v0.html` — retained synthetic design prototype.
-- [Waltzman Coordination Lab v0 audit](../audits/waltzman-coordination-lab-v0.md) — integrated reference-world evidence and claim boundaries.
-- [Native Waltzman static readiness review](../audits/native-waltzman-release-static-readiness-2026-09-19.md) — six-item Decision 005 implementation map; static only, with Linux/provider/browser execution still pending.
-- [Living-world projection](../research/living-world-projection-2026-09.md) — overlay semantics and accepted integration path.
-- [Technology procurement](../research/technology-procurement-2026-09.md) — selected external stack and boundaries.
-- [Multi-timescale execution](../research/multi-timescale-execution-2026-09.md) — canonical simulation-time / independent-cadence target and current integer-tick limitation.
-- [Off-the-shelf candidates](../research/off-the-shelf-candidates-2026-09-25.md) — unevaluated standards/theory/implementation candidates from a cross-repo review.
-- `evidence/renders/kitchen-spatial-replay-v1.html` — polished flagship replay.
-- `evidence/renders/greenhouse-zero-review-v0.html` — new-world Automatic presentation proof.
-- [Repair Bay live proof](../audits/repair-bay-live-preflight.md) — nontrivial authoring/run evidence.
-- [Action mechanic declaration v0](../contracts/action-mechanic-declaration-v0.md) — current generated-law language.
-- [Semantic–mechanical binding v0](../contracts/semantic-mechanical-binding-v0.md) — current downstream LC-to-mechanic profile contract.
-- [Scene profile v0](../contracts/scene-profile-v0.md) — retained contested-run replay presentation contract.
-- [Living Scene v1](../contracts/living-scene-v1.md) — deterministic read-only logical frames over canonical live projections.
+- <https://brianmills.dev/world-builder/>: the World Builder (one box, Create simulation, live play).
+- <https://brianmills.dev/world-builder/play/>: Replay Studio over retained traces.
+- <https://brianmills.dev/world-builder/build/>: the advanced form editor.
+- <https://brianmills.dev/waltzman/>: the donor-backed Waltzman demo, kept as fallback.
+- <https://brianmills.dev/world-substrate-visualization/>: the 2026-09 synthetic prototype, design evidence only.
+- Review pages for the planning packages: `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt,declared-laws}/review-page/`.
+- `evidence/renders/waltzman-demo-v0.html`, `evidence/renders/kitchen-spatial-replay-v1.html` and
+  `evidence/renders/greenhouse-zero-review-v0.html`: retained reference replays.
 
 ## Roadmap
 
-Use [the canonical roadmap](../../roadmap/README.md) for current priorities, risks, refresh triggers, and the exact next action. The wiki is navigation and current-state orientation; it must not become a second roadmap.
+Use [the roadmap](../../roadmap/README.md) for priorities, risks, refresh triggers and the exact next
+action. This wiki is orientation only and must not become a second roadmap.

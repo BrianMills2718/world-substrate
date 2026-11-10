@@ -1,0 +1,162 @@
+# world-builder-page Specification
+
+## Purpose
+
+What the public World Builder page (`scripts/world_builder_home.html`, served at `https://brianmills.dev/world-builder/`) must do for a visitor. Each requirement is one rule from the World Builder visual and usability feedback log, kept word for word with its source, where it is enforced and the Representation Router heuristic it maps to.
+
+Folded on 2026-11-09 from `docs/VISUAL_FEEDBACK.md` (living feedback log, reviewed through 2026-10-05, last commit `75899e2`). Rules that apply beyond this project are promoted to Representation Router heuristics.
+
+## Requirements
+
+### Requirement: Opens on a landing page
+
+The Builder opens on a landing page with a short tutorial, not the form editor.
+
+Where it is enforced: `scripts/world_builder_home.html` (published as `/world-builder/`); `tests/test_world_builder_home.py`.
+
+Router heuristic: `describe-first-creation-surface` (representation-router #65).
+
+Source: Brian, 2026-10-05: "it should open on a landing page with a tutorial."
+
+Current state: since 2026-10-15 the landing page is the one-box page of the requirement "One box and one Create simulation button"; the step tutorial was removed then (feedback log, 2026-10-15).
+
+### Requirement: Natural-language building
+
+Building is done through natural language; the form editor is an advanced route.
+
+Where it is enforced: `/generate-world`; landing page links `build/` as "Advanced editor".
+
+Router heuristic: `describe-first-creation-surface`.
+
+Source: Brian, 2026-10-05: "the build thing i would have no idea how to do. building should be done through natural language"
+
+### Requirement: A failed build says what to try
+
+A failed build says what went wrong and what to try.
+
+Where it is enforced: `plainError` in the landing page.
+
+Router heuristic: existing: `every-label-explains-itself`.
+
+Source: Cold first-visit review, 2026-10-05
+
+### Requirement: Unrepresentable parts are listed
+
+Parts of a description the simulator cannot represent are listed, not dropped silently.
+
+Where it is enforced: `not_modeled` from `scripts/generate_world_bundle.py`.
+
+Router heuristic: none (project-specific).
+
+Source: Cold first-visit review, 2026-10-05 ("before noon" disappeared)
+
+### Requirement: Refusals are shown per person per round
+
+A run shows what the rules refused and why, grouped one square per person per round.
+
+Where it is enforced: `blocked_by_rules` in `scripts/run_authored_world.py`; landing page strip.
+
+Router heuristic: existing: `density-budget`, `every-mark-opens-its-subject`.
+
+Source: Cold first-visit review, 2026-10-05 (headline promised refusals; none visible); 39 squares judged noisy
+
+### Requirement: Rule checks read as plain English
+
+Rule checks read as plain English with the things' names, never jargon.
+
+Where it is enforced: label rule in `scripts/generate_causal_model.py`.
+
+Router heuristic: existing: `every-label-explains-itself`.
+
+Source: Cold first-visit review, 2026-10-05 ("ownership context", "Actor is available")
+
+### Requirement: Surprise world and clarifying dialogue
+
+Offer "I'm feeling lucky" (one click to a surprise world, built and run) and a dialogue where the AI helps flesh out and clarify the idea.
+
+Where it is enforced: `/surprise`, `/clarify` (`scripts/world_dialogue.py`); landing page buttons.
+
+Router heuristic: `describe-first-creation-surface` (extend).
+
+Source: Brian, 2026-10-05: "there should be an \"im feeling lucky\" option as well as a dialogue option where the ai helps flesh out and clarify"
+
+### Requirement: Worlds are continuous, not only tasks
+
+Worlds are continuous, not only tasks: offer a task world, an open world, and the in-between (ongoing work); open and ongoing worlds keep going.
+
+Where it is enforced: kind choice on the landing page; `processes` in the rule language; Keep going via `continue_from`.
+
+Router heuristic: none yet (project-specific).
+
+Source: Brian, 2026-10-05: "it is stopping in the world i built at least in 4 turns and my conception is that this is like continuous worlds we should be building. i guess that should be one of the choices. like a do a task world. or an open world and i dont know what is in between"
+
+Current state: ongoing and open were merged into one choice, Keeps running, on 2026-10-06, and the world kind sits behind Options since 2026-10-15; Keeps running is the default (feedback log, 2026-10-06 and 2026-10-15).
+
+### Requirement: Owner budget override
+
+The owner can always override the budget with a password.
+
+Where it is enforced: `X-World-Builder-Owner` + `WORLD_BUILDER_OWNER_PASSWORD`; separate owner ledger ($5/day); Owner access link on the landing page.
+
+Router heuristic: none (project-specific).
+
+Source: Brian, 2026-10-05: "i always want to be able to put in a password to override the budget"
+
+### Requirement: Every control has a tooltip
+
+Every control always has a tooltip, and choices that look alike say plainly how they differ.
+
+Where it is enforced: `title` on every button, link, text box, choice card and runtime chip; long press shows it on phones; visible one-line meanings under Build it now / Talk it through first / Surprise me; `test_every_control_has_a_tooltip`.
+
+Router heuristic: existing, was broken here: `every-label-explains-itself`.
+
+Source: Brian, 2026-10-06: "we should always have tool tips. i dont know the difference between build my world, and describe my world"
+
+### Requirement: Secondary pages link home
+
+Every secondary page links back to the landing page.
+
+Where it is enforced: home links in Play and the advanced editor.
+
+Router heuristic: existing: `navigation-holds-only-live-views`.
+
+Source: Cold first-visit review, 2026-10-05
+
+### Requirement: Never red against green
+
+Never red against green; allowed is solid blue, refused is orange dashed with a word.
+
+Where it is enforced: landing page palette; `tests/test_world_builder_home.py`.
+
+Router heuristic: existing.
+
+Source: Brian's standing preference (red-green colorblind)
+
+### Requirement: One box and one Create simulation button
+
+The landing page is one box and one Create simulation button; pressing it is the approval and the run starts. Everything else (world kind, AI moves, the dialogue, I'm feeling lucky, example runs, the editor, owner access) sits behind Options or More.
+
+Where it is enforced: `scripts/world_builder_home.html`; `tests/test_world_builder_home.py::test_one_screen_has_one_primary_action`.
+
+Router heuristic: existing: `one-primary-action` (UI UX Pro Max, Impeccable distill).
+
+Source: Brian, 2026-10-15: "it should just basically be a screen to type in what you want and then i button to create simulation"; "i approve" (run without a review stop)
+
+## Feedback log
+
+The dated log of critiques behind these rules, kept from the feedback log:
+
+- 2026-10-05: Brian asked for a landing page with a tutorial and natural-language building. Built and deployed (world-substrate #92, machine-coordination #84). A cold first-visit review found five problems; fixed in #93–#95 and machine-coordination #85.
+- 2026-10-05: Brian asked for an "I'm feeling lucky" option and a clarifying dialogue. Built (this PR). He also asked for continuous worlds: "my conception is that this is like continuous worlds we should be building ... a do a task world. or an open world and i dont know what is in between". Next increment.
+- 2026-10-06: Brian could not tell "Build my world" from "Help me describe it" and asked for tooltips everywhere. The router heuristic `every-label-explains-itself` already required this and the page broke it. Renamed to Build it now / Talk it through first / Surprise me with visible one-line meanings; tooltips on every control, enforced by a test.
+- 2026-10-06: Brian still did not see tooltips ("i still dont see the tool tips i have asked for multiple times and should be a policy default for any ui"). Native `title` tooltips appear only after a long still hover and never on phones, so they did not count. Replaced with a styled bubble shown within 150 ms of hover or keyboard focus for every control, ⓘ buttons beside the three start buttons (tap on phones), long press anywhere; `scripts/e2e/world_builder_e2e.mjs tooltips` hovers every visible control in a real browser and fails if any shows no bubble. A page-script syntax test was added after a name collision broke every handler on the page during this change.
+- 2026-10-06: Brian still could not tell "Build it now" from "Surprise me". The names did not say who writes the story, and an empty box silently built the grey example text, which looked like a surprise too. Renamed Build what I wrote / Help me write it / Make one up for me, with lines saying "you write the story" vs "the AI writes the story (the box is ignored)"; Build what I wrote is disabled until the box has text.
+- 2026-10-06: Brian kept getting a trivial ~4-round world from the "I, Pencil" supply chain ("i want to see a full kind of continually running system"). Causes, from his two logged builds: the page defaulted to "A task to finish" (5 rounds then done); the open-world build had nobody able to act, only drains, yet was reported alive; every world was capped at 10 things, 4 actions and 6 actors. Fixed: default is now Ongoing work; alive means people still act; ongoing/open worlds may be 10-30 things with up to 12 actors as a chain of specialists with restocking inputs and returning demand; the quick test names actors who never act and sends them back for repair; AI characters choose in parallel (a 7-business, 12-round run: about 3.5 to 2.1 minutes of model time). Measured on his exact description: 5 of 5 ongoing/open builds stayed active for 24 rounds, 12-17 things each.
+- 2026-10-06: Brian: "i want to be able to play or pause my world in real time not just come into a 12 turn thing that is already done". His pencil chain had also gone quiet: six of eight businesses could never act because a rule compared the stock's "owned-by-itself" reference with the worker (`owner_ref` misread as "the owner of"), and the builder handed it over without saying so. Fixed: approval now starts live play, one round at a time, with Pause/Play, a newest-first feed of what each person did and what the world did by itself, an AI-moves switch that works mid-play, and automatic pauses (finish line, 4 quiet rounds, errors) that say why; the scene picture folds away under the feed and shows the round just read. Review warns when the quick test found people who never act. Generation now sees each failed check's actual and required values, and the rules prompt spells out `owner_ref`. Server: no 300-round cap, AI rounds have their own hourly allowance, AI characters get the previous rounds' moves.
+- 2026-10-06: Brian could not tell "Ongoing work" from "An open world" and asked whether they needed to be different. They did not: the engine, the quick test and live play treated them identically; only one sentence of advice to the AI differed. Merged into one choice, **Keeps running**, whose advice covers both and follows the description; `world_kind: "open"` is still accepted and treated as ongoing.
+- 2026-10-06: Brian asked whether Build what I wrote / Help me write it / Make one up for me needed to be different categories. They did not: all three put a description in the box and build it; only who writes the description differed. Now one start button whose label says what it will do (text in the box: **Build my world**; empty box: **Surprise me: the AI makes one up**), with a line underneath saying the same, and the writing help as a quiet link above it ("Not sure what to write? Let the AI ask you a few questions").
+- 2026-10-06: Brian: "how can we reduce text to clean up the interface". Cut: the lede paragraph and the line under the step tabs (their text moved into the headline and step tooltips), the start screen's helper line, "What kind of world?" and "Your description" labels, the build-time hint, long kind descriptions (one short line each, detail in tooltips), the rules intro sentence (now the heading's tooltip), the "When is it finished?" section for worlds that keep running, the "Paused. Press Play" line that repeated the heading; the left-out list and the per-attempt squares fold away. Also fixed a bug: the round ⓘ button style (`.info`) also matched blue notices (`.notice.info`), squeezing the quick-test result into a 20-pixel column since the ⓘ buttons were added.
+- 2026-10-06: Moves that change nothing no longer count. In a diner world both cooks "recorded" an already-waiting order every round (its only effect set the stage to the value it already had), and the quick test called the world busy. Each allowed move is now tried on a scratch copy first; moves whose only changes are engine bookkeeping (revision, cause stamps) are not offered to anyone, and "still busy" / "never acted" count only real changes. Same diner afterwards: cooks take the knife, chop, serve and return it.
+- 2026-10-06: Brian's toy workshop ran 178 rounds of "Jonas: accept order" while everything else was refused, the picture had disappeared (it had been folded away), and he asked for an "are you still there after 100 moves" pause. Cause of the loop: Mira held the shared glue pot and no rule let her put it down, so the only move left was re-accepting the recurring order. Fixed: the quick test now reports who stalled in its last third and which moves were still happening, and "going in circles" (one kind of move left out of three or more) or stalled people send the rules back for repair with the blocking checks; the review warns if it survives; live play names anyone who has not changed anything for 15 rounds; play pauses itself every 100 rounds ("Still watching?"); the picture shows by default, above a 6-round feed. Regression: `scripts/e2e/stuck_world_e2e.mjs` with his world as a fixture.
+- 2026-10-15: Brian called the deployed Waltzman pages "horrible" UX and asked for one box and one Create simulation button. Six UI skills (Anthropic frontend-design, UI UX Pro Max, Taste Skill, Impeccable, Emil Kowalski, and the local ui/ux-comprehension skills) agreed: one primary action, a button named for what happens, an honest wait, everything else behind disclosure. Removed the step bar, the world-kind cards, four example chips, the info button and the review stop; the wait shows elapsed time, an honest estimate and Cancel instead of timed captions. Brian approved running without a review stop; the rules open from "See how it works". Measured through the page against the live API: the example task world went from Create to running in about 35 s; Waltzman's own scenario text built in 33 s but finished in round 1 (one country could decide activation at once), so the page is simple now and the generated Waltzman rules are the next gap.
+- 2026-10-15: Brian: "why is it only 5 rounds instead of a continuous world?" His run (21:53 UTC, "a pencil logistics and supply network", trace world-builder-live/world/a5a21fc5f86442e5925f11a4f1114a24) was built as a task because the one-box redesign made task the default: one actor carried one order through four rules and reached the finish line in 5 moves, with no processes. Default restored to Keeps running. He also asked to see the build as it happens: the page now lists each build step as the service finishes it (things found, rules written, test-run result, retries).
