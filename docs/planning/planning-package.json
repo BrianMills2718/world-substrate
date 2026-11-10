@@ -161,7 +161,10 @@
         "world-design": "scripts/generate_world_bundle.py:53",
         "rules-review": "scripts/review_rules.py:75",
         "run-stop": "scripts/run_stop.py:65",
-        "consequence-report": "scripts/consequence_report.py:67"
+        "consequence-report": "scripts/consequence_report.py:67",
+        "judge-ruling": "scripts/judge.py:288",
+        "ruling-rule": "scripts/rulings.py:91",
+        "midrun-setting": "scripts/rulings.py:47"
       }
     },
     "diagrams": {
