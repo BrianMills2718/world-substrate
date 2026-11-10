@@ -1371,6 +1371,60 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, second)
         self.assertNotEqual(second["snapshot_seal"], seal)
 
+    @pytest.mark.req("ai-judge/the-setting-is-saved-with-the-world-and-defaults-to-approved-by-create")
+    def test_a_new_world_saves_its_judge_ruling_setting_and_refuses_an_unknown_one(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, default = self.post("/generate-world", {"description": "an orchard"})
+            self.assertEqual(status, 200, default)
+            status, waiting = self.post("/generate-world", {"description": "an orchard", "judge_rulings": "wait"})
+            self.assertEqual(status, 200, waiting)
+        self.assertEqual((default["judge_rulings"], waiting["judge_rulings"]), ("create", "wait"))
+        with patch.object(service, "generate_world_bundle") as world:
+            status, refused = self.post("/generate-world", {"description": "orchard", "judge_rulings": "sometimes"})
+        self.assertEqual(status, 422, refused)
+        world.assert_not_called()
+        # A shared run records the setting with the world, like "Simulate as" and the stop setting.
+        causal = {"mechanics": [], "pace": 1.0}
+        built = {"bundle": {"world": {"label": "w"}, "pace": 1.0}, "causal_model": causal, "judge_rulings": "wait"}
+        fingerprint = service._world_fingerprint(built["bundle"], causal)
+        build_id, run_id = service.TRACE_ROOT + "/people/" + "1" * 32, service.TRACE_ROOT + "/run/" + "2" * 32
+        rows = {
+            build_id: {"path": "/generate-world", "client": "c", "request": {"description": "a market"},
+                       "result": {**built, "world_fingerprint": fingerprint}},
+            run_id: {"path": "/run", "client": "c", "trace_id": run_id,
+                     "request": {**built, "continued": False, "world_fingerprint": fingerprint},
+                     "result": {"summary": {"first_turn": 1, "last_turn": 1}, "transcript": [{"turn": 1}]}},
+        }
+        with patch.object(service, "_logged_entries", return_value=rows), \
+                patch.object(service.CausalModel, "from_dict") as from_dict, patch.object(service, "validate_bundle"):
+            from_dict.return_value.as_review.return_value = {}
+            record = service._assemble_share(build_id, [run_id])
+        self.assertEqual(record["world"]["judge_rulings"], "wait")
+
+    @pytest.mark.req("ai-judge/a-continued-round-keeps-the-installed-rule")
+    def test_the_runs_rulings_ride_in_the_sealed_state_and_an_unsealed_list_is_refused(self):
+        causal = self._ongoing_causal()
+        status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1})
+        self.assertEqual(status, 200, first)
+        snap, seal, approval = first["trace"]["final_snapshot"], first["snapshot_seal"], first["approval"]
+        # A run with no rulings is sealed exactly as it was before rulings existed.
+        self.assertEqual(service._snapshot_seal(snap, BUNDLE, causal, approval), seal)
+        ruling = {"id": "R1", "status": "installed", "kind": "hand-coins", "attempts": []}
+        sealed = service._snapshot_seal(snap, BUNDLE, causal, approval, [ruling])
+        self.assertNotEqual(sealed, seal)
+        base = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1, "approval": approval,
+                "turn_offset": first["summary"]["last_turn"], "continue_from": snap}
+        # A list the server did not seal, an edited one, and a list added to a round sealed without one are all refused.
+        for label, extra in (("added", {"continue_seal": seal, "rulings": [ruling]}),
+                             ("edited", {"continue_seal": sealed, "rulings": [{**ruling, "status": "held"}]}),
+                             ("dropped", {"continue_seal": sealed})):
+            with self.subTest(label):
+                status, payload = self.post("/run", {**base, **extra})
+                self.assertEqual(status, 422, payload)
+                self.assertIn("does not match the last round", payload["error"])
+
     def test_every_round_names_the_approval_that_let_it_run(self):
         # Issue #122 (G6): approval was only an approved:true flag; nothing recorded who approved which rules when.
         causal = self._ongoing_causal()

@@ -303,3 +303,66 @@ def blocked_chain(length: int = 40) -> tuple[dict[str, Any], dict[str, Any]]:
         "semantic_bindings": ["truck is the truck whose horn is honked"],
     }]
     return bundle, rules
+
+
+def port_two_traders() -> tuple[dict[str, Any], dict[str, Any]]:
+    """The port of the canonical example with a second trader, Ines, who holds 30 coins and so can make the same kind
+    of offer later (plan A4: "a second trader's later offer"). No rule covers handing coins yet."""
+    bundle, rules = port()
+    bundle["world"]["summary"] += " Ines, another trader, holds 30 coins."
+    bundle["entities"].append({"id": "ines", "label": "Ines", "categories": ["actor", "trader"],
+                               "location": "customs-desk", "components": {"purse": {"coins": 30}}})
+    return bundle, rules
+
+
+LUMBER_ATTEMPT = ("I buy every log in the pile from Sam and pay Sam the posted price for each log.")
+
+
+def lumberyard() -> tuple[dict[str, Any], dict[str, Any]]:
+    """The "price times quantity" world (plan A4): Sam sells logs from a pile at a posted price of 10 coins a log, and
+    Bo wants every log in the pile. What Bo pays is a price times a quantity, two stored values multiplied, which the
+    declaration language has no way to write; the only installed moves are Sam's, to restock the pile, and Bo's, to count it."""
+    bundle = {
+        "schema_version": "world-substrate-authoring-bundle/v0",
+        "world": {"id": "lumberyard", "label": "Lumberyard", "location": "yard",
+                  "summary": "A lumberyard: Sam sells logs from a pile at a posted price of 10 coins a log. Bo has 100 "
+                             "coins and wants logs."},
+        "components": [
+            {"name": "purse", "fields": [{"name": "coins", "type": "integer", "default": 0}]},
+            {"name": "stock", "fields": [{"name": "logs", "type": "integer", "default": 0},
+                                         {"name": "price", "type": "integer", "default": 10},
+                                         {"name": "counted", "type": "boolean", "default": False}]},
+        ],
+        "actions": [
+            {"kind": "restock-pile", "description": "The seller adds a log to the pile.",
+             "fields": [{"name": "pile", "type": "entity_ref"}]},
+            {"kind": "count-pile", "description": "The buyer counts the logs in the pile.",
+             "fields": [{"name": "pile", "type": "entity_ref"}]},
+        ],
+        "entities": [
+            {"id": "yard", "label": "yard", "categories": ["place"], "components": {}},
+            {"id": "sam", "label": "Sam", "categories": ["actor", "seller"], "location": "yard",
+             "components": {"purse": {"coins": 0}}},
+            {"id": "bo", "label": "Bo", "categories": ["actor", "buyer"], "location": "yard",
+             "components": {"purse": {"coins": 100}}},
+            {"id": "pile", "label": "log pile", "categories": ["pile"], "location": "yard",
+             "components": {"stock": {"logs": 3, "price": 10, "counted": False}}},
+        ],
+        "presentation": {"assets": {}, "category_assets": {}, "station_roles": {}},
+    }
+    move = _officer_move(
+        "restock-pile", "The seller adds a log to a pile holding fewer than ten.",
+        [{"label": "the pile holds fewer than ten logs", "left": _field("pile", "components.stock.logs"),
+          "op": "lt", "right": _lit(10)}],
+        {"participant": "pile", "path": "components.stock.logs", "op": "add", "value": _lit(1)}, actor="seller")
+    move["participants"] = {"pile": {"categories": ["pile"], "components": ["stock"]}}
+    move["semantic_bindings"] = ["pile is the log pile restocked"]
+    count = _officer_move(
+        "count-pile", "The buyer counts the logs in a pile not yet counted.",
+        [{"label": "the pile is not counted yet", "left": _field("pile", "components.stock.counted"),
+          "op": "eq", "right": _lit(False)}],
+        {"participant": "pile", "path": "components.stock.counted", "op": "set", "value": _lit(True)}, actor="buyer")
+    count["participants"] = {"pile": {"categories": ["pile"], "components": ["stock"]}}
+    count["semantic_bindings"] = ["pile is the log pile counted"]
+    rules = {"schema_version": "world-substrate-causal-model/v0", "mechanics": [move, count], "processes": []}
+    return bundle, rules

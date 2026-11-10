@@ -74,7 +74,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
     def test_build_steps_show_while_the_job_runs(self):
         self.assertIn('id="build-steps"', self.page)
         self.assertIn("if (onProgress) onProgress(data.progress || []);", self.page)
-        self.assertIn('apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value, run_stop: runStop() }, 1000, (steps) =>', self.page)
+        self.assertIn('apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value, run_stop: runStop(), judge_rulings: $("judge-rulings").value }, 1000, (steps) =>', self.page)
         self.assertIn("function renderSteps(steps)", self.page)
 
     def test_dialogue_and_escape_hatches_sit_behind_disclosures(self):
@@ -176,7 +176,9 @@ class WorldBuilderHomeTests(unittest.TestCase):
                     "blocked_by_rules": [{"action": {"kind": "rest"}, "reason": "d"}]},
             "dee": {"status": "nothing_left", "wanted": {"kind": "fetch"}},
         }}
-        script = match.group(0) + "\nconsole.log(JSON.stringify(countRound(" + json.dumps(turn) + ")));"
+        helper = re.search(r"^  const settledByRule = .*?;$", self.page, re.M)
+        self.assertIsNotNone(helper, "countRound counts a judged attempt its new rule carried out as allowed")
+        script = helper.group(0) + "\n" + match.group(0) + "\nconsole.log(JSON.stringify(countRound(" + json.dumps(turn) + ")));"
         result = subprocess.run([node, "-e", script], capture_output=True, text=True, check=True)
         self.assertEqual(json.loads(result.stdout), {"allowed": 1, "refused": 2, "held": 2})
         # Headline and squares both count through it, in plain words.
@@ -210,6 +212,54 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('fold("Limits", m.limits)', self.page)
         self.assertIn('fold("Changes", pr.writes)', self.page)
         self.assertIn('summary.textContent = "Show details"', self.page)
+
+    @pytest.mark.req("ai-judge/the-create-page-offers-the-setting-and-the-run-page-lists-every-ruling")
+    def test_create_page_offers_the_ruling_setting_and_the_run_page_lists_every_ruling(self):
+        import re
+        self.assertIn("Judge rulings during a run", self.page)
+        self.assertRegex(self.page, r'<select id="judge-rulings" title="[^"]+">\s*<option value="create" selected>Approved by Create</option>\s*<option value="wait">Wait for my approval</option>')
+        self.assertTrue(all("title=" in t for t in re.findall(r'<label class="small"[^>]*>', self.page)))
+        # Sent with the build, kept with the world, and sent with each round with the run's sealed rulings.
+        self.assertIn('judge_rulings: $("judge-rulings").value', self.page)
+        self.assertIn("if (world.judge_rulings) request.judge_rulings = world.judge_rulings;", self.page)
+        self.assertIn("request.rulings = live.rulings;", self.page)
+        self.assertIn("live.rulings = run.trace.rulings || [];", self.page)
+        # The run page lists every ruling; a held one has Approve and Reject, answered with the next round.
+        self.assertIn('id="rulings-panel"', self.page)
+        self.assertIn('yes.textContent = "Approve"', self.page)
+        self.assertIn('no.textContent = "Reject"', self.page)
+        self.assertIn("request.decisions = sentDecisions.map(", self.page)
+        self.assertIn("no rule could express this. Listed as a language gap", self.page)
+        self.assertIn("installed, passed the rules check and test run", self.page)
+        self.assertIn("pending: waiting for your approval", self.page)
+        # The judge panel says what became of the ruling, and the first sentence starts with a capital.
+        self.assertIn("is installed as rule", self.page)
+        self.assertIn("line.charAt(0).toUpperCase()", self.page)
+        self.assertNotIn("Recorded, not installed yet: a confirmed rule does not change this run.", self.page)
+
+    @pytest.mark.req("ai-judge/the-create-page-offers-the-setting-and-the-run-page-lists-every-ruling")
+    def test_a_waiting_attempt_is_not_counted_as_refused_until_the_owner_answers(self):
+        import json, shutil, subprocess
+        node = shutil.which("node")
+        if node is None:
+            self.skipTest("node is not installed")
+        count = re.search(r"^  function countRound\(turn\) \{.*?^  \}$", self.page, re.S | re.M).group(0)
+        helper = re.search(r"^  const settledByRule = .*?;$", self.page, re.M).group(0)
+        held = {"disposition": {"status": "held", "ruling_id": "R1"}}
+        turn = {"turn": 1, "actors": {
+            "vik": {"status": "refused", "wanted": {"kind": "unmatched-attempt"}, "judge": held},
+            "ines": {"status": "pending_ruling", "wanted": {"kind": "hand-coins"}, "ruling": {"id": "R1"}},
+            "rosa": {"status": "refused", "wanted": {"kind": "unmatched-attempt"},
+                     "judge": {"disposition": {"status": "installed", "settled": {"status": "accepted"}}}},
+            "bo": {"status": "refused", "wanted": {"kind": "unmatched-attempt"},
+                   "judge": {"disposition": {"status": "language_gap"}}}},
+            "ruling_events": [{"ruling_id": "R1", "actor": "vik", "result": "accepted"},
+                              {"ruling_id": "R1", "actor": "ines", "result": "refused"}]}
+        script = helper + "\n" + count + "\nconsole.log(JSON.stringify(countRound(" + json.dumps(turn) + ")));"
+        result = subprocess.run([node, "-e", script], capture_output=True, text=True, check=True)
+        # Waiting: neither. Carried out by the new rule: allowed. A language gap: refused. The owner's answer settles
+        # the waiting ones: one allowed, one refused.
+        self.assertEqual(json.loads(result.stdout), {"allowed": 2, "refused": 2, "held": 0})
 
 
 if __name__ == "__main__":

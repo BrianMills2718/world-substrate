@@ -310,14 +310,15 @@ class RunTests(unittest.TestCase):
         self.assertNotIn("hand-coins", engine.registry.action_kinds())
 
     @pytest.mark.req("ai-judge/the-judge-rules-on-each-unmatched-attempt-in-a-run")
-    def test_a_confirmed_ruling_is_recorded_and_not_installed(self):
+    def test_a_confirmed_ruling_is_recorded_and_installed_by_the_default_setting(self):
         llm = FakeLlm({"propose": [propose(coin_rule(), {"to": "rosa", "amount": 40}, whose="rosa")],
                        "review": [review("confirm")]}, reading=self.UNASKED)
         trace, engine = self._run(llm)
         row = trace["transcript"][0]["actors"]["vik"]
         self.assertEqual(row["judge"]["outcome"], "confirmed")
         self.assertEqual(row["judge"]["rule"]["mechanic"]["mechanic_id"], "hand-coins")
-        self.assertNotIn("hand-coins", engine.registry.action_kinds())
+        # J3 installs a checked ruling under the default setting; the offer needed Rosa's choice, so no coin moved.
+        self.assertIn("hand-coins", engine.registry.action_kinds())
         self.assertEqual(engine.world.material_dict()["entities"]["vik"]["components"]["purse"]["coins"], 40)
         self.assertAlmostEqual(trace["cost_usd"], 0.02)  # the judge's two calls count toward the run's spend
 
