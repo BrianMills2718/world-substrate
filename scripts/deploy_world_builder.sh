@@ -37,8 +37,9 @@ fi
 echo "== backend"
 vps=$(mktemp -d)
 git -C "$HOME/code/personal-vps" fetch -q origin
-# deploy.sh also runs ../../host/prune-app-images.sh to drop old image tags on the VPS.
-git -C "$HOME/code/personal-vps" archive origin/main apps/world-builder host/prune-app-images.sh | tar -C "$vps" -xf -
+# deploy.sh calls helpers in ../../host/ (prune-app-images.sh, docker-build-logged.sh since personal-vps #243), so
+# copy the whole folder rather than naming each helper (2026-11-09: a named list broke when #243 added one).
+git -C "$HOME/code/personal-vps" archive origin/main apps/world-builder host | tar -C "$vps" -xf -
 "$vps/apps/world-builder/deploy.sh" "$repo" "$commit"
 rm -rf "$vps"
 echo "== pages"
