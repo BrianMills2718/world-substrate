@@ -102,6 +102,8 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
     the entity the attempt asks to act, when the reader named one that is in the world and is not the speaker, and
     "names", every entity in the world its words name other than the speaker (the consequence report's pass 1 reads
     them). Never says whether the move will work.
+
+    Implements: ai-judge/pass-1-reports-what-installed-rules-compute-for-the-people-an-attempt-involves
     """
     reading = _read(value, attempt, signatures, entity_ids, actor)
     if not reading.get("unmatched"):
