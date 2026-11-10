@@ -71,6 +71,10 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
 .legend .tick{cursor:default;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:4px}
 .detail{min-height:24px;font-size:14px;margin:6px 0 12px}
+.judge{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:14px;overflow-wrap:anywhere}
+.judge h3{font-size:15px;margin:10px 0 4px}.judge h3:first-child{margin-top:0}
+.judge ul{margin:2px 0 6px;padding-left:18px}.judge li{margin:2px 0}
+.judge .by{color:var(--muted);font-size:13px}.judge .stop-blocked{color:var(--warn)}
 details.picture{margin-top:10px}
 details.picture>summary{cursor:pointer;font-weight:600;padding:6px 0}
 iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius:10px;background:#fff}
@@ -264,6 +268,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick held"></span>held back by the rules (not allowed to try)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
     <div class="strip" id="strip" aria-label="Every attempt in the last 10 rounds, in order. Select one to see why."></div>
     <p class="detail" id="detail"></p>
+    <div class="judge" id="judge-panel" hidden aria-label="The judge's ruling on this attempt"></div>
     </details>
 
     <div class="row" style="margin-top:14px">
@@ -682,17 +687,105 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       const who = labelFor(a.actor), act = a.row.wanted ? words(a.row.wanted.kind) : "";
       if (kind === "accepted") text = `Round ${a.turn}: ${who} — ${act}. Allowed: every check held.`;
       else if (kind === "waited") text = `Round ${a.turn}: ${who} waited — none of the rules allowed anything for them right then.`;
+      else if (a.row.wanted.kind === "unmatched-attempt" && a.row.judge) text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” No installed rule covers these words, so the world’s game master ruled on it: ${judgeLine(a.row.judge)}`;
       else if (a.row.wanted.kind === "unmatched-attempt") text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” The system could not match these words to a move, so the rules never judged it.`;
       else if (a.row.status === "reaction_limit") text = `Round ${a.turn}: ${who} tried to ${act}. refused: ` + a.row.refused_because.map(plainCheck).join("; ") + ". Nothing changed.";
       else if ((a.row.refused_because || []).length) text = `Round ${a.turn}: ${who} tried to ${act}. Refused, because this check was false: ` + a.row.refused_because.map((r) => typeof r === "string" ? r : r.label || JSON.stringify(r)).join("; ");
       else text = `Round ${a.turn}: ${who} wanted to ${act}, but someone else acted first in the same round and it was no longer possible.`;
       if (kind === "waited" && a.row.belief) text = `Round ${a.turn}: ${who} chose to wait.`;
+      // An attempt an installed rule matched is decided by that rule; the judge is asked only when none does (A3).
+      if (a.row.attempt && a.row.wanted && a.row.wanted.kind !== "unmatched-attempt") text += " Decided by rule, judge not asked.";
       // Concordia residents say what they believed and what they expected the move to change.
       if (a.row.belief) text += ` They believed: ${a.row.belief}` + (a.row.expects ? ` They expected: ${a.row.expects}` : "");
     }
     t.setAttribute("aria-label", text); t.title = text;
-    t.addEventListener("click", () => { $("detail").textContent = text; });
+    t.addEventListener("click", () => {
+      $("detail").textContent = text;
+      const panel = $("judge-panel"); panel.innerHTML = "";
+      panel.hidden = !(a.row && a.row.judge);
+      if (!panel.hidden) panel.append(...judgePanel(a.row));
+    });
     return t;
+  }
+
+  // The judge's ruling on an attempt no installed rule covers (ai-judge plan J2, A2 and A5): what it was given first,
+  // its ruling, the rule it proposed with that rule's test run, and its answer. J2 records a ruling; it installs nothing.
+  function judgeLine(j) {
+    const to = j.whose_choice ? ` The words went to ${labelFor(j.whose_choice)}, whose choice it is.` : "";
+    const said = {
+      confirmed: `it proposed a rule, test-ran it and confirmed it${j.revised ? " after one revision" : ""} (recorded, not installed yet).`,
+      withdrawn: "it proposed a rule, test-ran it and withdrew it.",
+      language_gap: "no rule could express this.",
+      no_rule: "nothing about what the world allows was in question, so it proposed no rule.",
+      failed: "the judge could not rule (its call failed).",
+    }[j.outcome] || String(j.outcome || "");
+    return said + to;
+  }
+  const show_ = (x) => (x !== null && typeof x === "object") ? JSON.stringify(x) : (typeof x === "string" ? labelFor(x) : String(x));
+  function valuesLine(id, v) {
+    const parts = [];
+    if (v.location) parts.push("at " + labelFor(v.location));
+    Object.entries(v.components || {}).forEach(([c, fs]) => Object.entries(fs || {}).forEach(([f, x]) => parts.push(`${words(c)} ${words(f)}: ${show_(x)}`)));
+    return `${labelFor(id)}: ${parts.join("; ") || "nothing recorded"}`;
+  }
+  function moveLine(r) {
+    const target = Object.entries(r.action || {}).filter(([k]) => !["actor", "kind", "base_revision", "controller"].includes(k)).map(([, v]) => show_(v)).join(", ");
+    const failed = (r.checks || []).filter((c) => !c.ok).map((c) => `“${c.label}” is not true` + (c.actual !== undefined ? ` (it is ${show_(c.actual)})` : ""));
+    return `${words((r.action || {}).kind)}${target ? " (" + target + ")" : ""}` + (failed.length ? ": blocked, " + failed.join("; ") : ": open");
+  }
+  function changeLine(c) {
+    if (c.things) return `${c.things.slice(0, 6).map(labelFor).join(", ")}${c.things.length > 6 ? ` and ${count(c.things.length - 6)} more` : ""}: ${c.fields.map(field).join(", ")} ${show_(c.before)} → ${show_(c.after)} (${count(c.changes)} change${c.changes === 1 ? "" : "s"})`;
+    return `${labelFor(c.entity)}’s ${field(c.path)}: ${show_(c.before)} → ${show_(c.after)}`;
+  }
+  function stopLine(run) {
+    const st = run.stopping_point || {};
+    const failed = (st.failed || []).map((f) => `“${f.check}” is not true (it is ${show_(f.actual)})`).join("; ");
+    if (st.kind === "blocked") return `blocked at step ${count(st.after_step)}: ${failed} (${words(st.rule_id || "")}, ${labelFor(st.it || "")})`;
+    if (st.kind === "refused") return `the rule refused the test move: ${failed}`;
+    if (st.kind === "settled") return `nothing else followed after step ${count(st.after_step)}: the world settled`;
+    return words(st.kind || run.status || "unknown");
+  }
+  function judgePanel(row) {
+    const j = row.judge, out = [];
+    const h = (text) => { const e = document.createElement("h3"); e.textContent = text; return e; };
+    const p = (text, cls) => { const e = document.createElement("p"); e.textContent = text; if (cls) e.className = cls; e.style.margin = "2px 0"; return e; };
+    const ul = (lines, cls) => { const e = document.createElement("ul"); lines.forEach((x) => { const li = document.createElement("li"); li.textContent = x; if (cls && cls(x)) li.className = cls(x); e.append(li); }); return e; };
+    out.push(p(`By ${j.by || "the world’s game master"}. ` + judgeLine(j)));
+    const one = (row.consequence || {}).pass_one;
+    if (one) {
+      out.push(h("What the judge was given first"));
+      out.push(p("The facts: each person and thing the attempt involves, as they are now."));
+      out.push(ul(Object.entries(one.values || {}).map(([id, v]) => valuesLine(id, v))));
+      Object.entries(one.moves || {}).forEach(([who, m]) => {
+        const rows = [...(m.blocked || []), ...(m.available || [])].slice(0, 12);
+        if (rows.length) { out.push(p(`${labelFor(who)}’s moves under the installed rules:`)); out.push(ul(rows.map(moveLine))); }
+      });
+      out.push(p(`It also read the whole world (${count(j.world_chars || 0)} characters: the description, every rule and every current value).`, "by"));
+    }
+    if (j.outcome === "failed") { out.push(p(String(j.error || ""), "by")); return out; }
+    out.push(h("Its ruling")); out.push(p(j.ruling || "(none given)"));
+    if ((j.blockers || []).length) { out.push(p("What it said stands in the way:")); out.push(ul(j.blockers)); }
+    (j.tests || []).forEach((t, i) => {
+      out.push(h(i === 0 ? "The rule it proposed" : "Its one revision"));
+      const r = t.rule || {}, act = r.action || {}, mech = r.mechanic || {};
+      if (t.rule) {
+        out.push(p(`“${words(act.kind || mech.action_kind || "")}”: ${act.description || mech.rationale || ""}`));
+        const lines = (mech.checks || []).map((c) => "allowed only when " + (c.label || "a check holds"))
+          .concat((mech.effects || []).map((e) => { try { return effectText(e); } catch (_) { return JSON.stringify(e); } }));
+        if (lines.length) out.push(ul(lines));
+      }
+      const check = t.rules_check || {};
+      if (!check.ok) { out.push(p("The World Builder’s rules check rejected it: " + (check.error || "no rule given"), "stop-blocked")); return; }
+      const run = t.test_run || {};
+      out.push(p(`Test run on a copy of the world as it is now (nothing installed): ${words(run.status || "")}, ${count(run.chain_length || 0)} knock-on step${run.chain_length === 1 ? "" : "s"}.`));
+      const changes = run.net_changes || [];
+      out.push(p(changes.length ? `What changed${run.net_changes_grouped ? ` (${count(run.net_change_count)} changes, grouped)` : ""}:` : "Nothing changed."));
+      if (changes.length) out.push(ul(changes.slice(0, 20).map(changeLine)));
+      out.push(p("Where it stopped: " + stopLine(run), (run.stopping_point || {}).kind === "blocked" || (run.stopping_point || {}).kind === "refused" ? "stop-blocked" : ""));
+    });
+    if (j.tests && j.tests.length) { out.push(h("Its answer")); out.push(p(`${words(j.outcome || "")}${j.why ? ": " + j.why : ""}`)); }
+    out.push(p("Recorded, not installed yet: a confirmed rule does not change this run.", "by"));
+    return out;
   }
 
   // What one round adds to the counts. The headline and the squares both use

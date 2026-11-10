@@ -163,3 +163,143 @@ def unwritable_rule() -> dict[str, Any]:
             if isinstance(row.get(side), dict) and (row[side].get("participant") or {}).get("name") == "to":
                 row[side]["participant"]["name"] = "from"
     return rule
+
+
+def long_line(chains: int = 50, crates: int = 4, stages: int = 25) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Brian's "50 things ... down a causal chain 100 links deep" as a world small enough to read whole (the plan's
+    "long chain ruling"): 50 lines of 4 crates, each crate passing 25 stages in order (one process per stage), the first
+    stage of a crate once the crate before it has passed its last stage, and the first crate's once the start button
+    is pressed. No installed move presses it. Pressing it sets off 50 chains 100 steps deep: 5,000 steps."""
+    fields = [{"name": "prev", "type": "entity_ref", "default": "button"}] + [
+        {"name": f"s{n}", "type": "boolean", "default": False} for n in range(1, stages + 1)]
+    entities = [
+        {"id": "yard", "label": "yard", "categories": ["place"], "components": {}},
+        {"id": "sam", "label": "Sam", "categories": ["actor"], "location": "yard", "components": {}},
+        {"id": "button", "label": "start button", "categories": ["button"], "location": "yard",
+         "components": {"switch": {"pressed": False, "dusted": False}}},
+    ]
+    for c in range(1, chains + 1):
+        for k in range(1, crates + 1):
+            entities.append({"id": f"l{c}c{k}", "label": f"line {c} crate {k}",
+                             "categories": ["crate", "first" if k == 1 else "next"],
+                             "components": {"line": {"prev": "button" if k == 1 else f"l{c}c{k - 1}",
+                                                     **{f"s{n}": False for n in range(1, stages + 1)}}}})
+    bundle = {
+        "schema_version": "world-substrate-authoring-bundle/v0",
+        "world": {"id": "long-line", "label": "Long line", "location": "yard",
+                  "summary": f"A packing yard: {chains} lines of {crates} crates. Each crate passes {stages} stages in "
+                             "order, each stage done once the stage before it is; a crate's first stage starts once the "
+                             "crate before it in its line has passed its last stage, and the first crate's once the "
+                             "start button is pressed. Sam stands by the start button."},
+        "components": [{"name": "switch", "fields": [{"name": "pressed", "type": "boolean", "default": False},
+                                                     {"name": "dusted", "type": "boolean", "default": False}]},
+                       {"name": "line", "fields": fields}],
+        "actions": [{"kind": "dust-button", "description": "Dust the start button.",
+                     "fields": [{"name": "thing", "type": "entity_ref"}]}],
+        "entities": entities,
+        "presentation": {"assets": {}, "category_assets": {}, "station_roles": {}},
+    }
+
+    def process(pid: str, rationale: str, category: str, label: str, before: dict[str, Any], n: int,
+                prev: dict[str, Any] | None = None) -> dict[str, Any]:
+        return {
+            "process_id": pid, "rationale": rationale,
+            "selector": {"categories": [category], "components": ["line"]}, "timing": "immediately",
+            **({"participants": {"prev": {"link": "ref:line.prev", "selector": prev}}} if prev else {}),
+            "checks": [{"label": label, "left": before, "op": "eq", "right": _lit(True)},
+                       {"label": f"stage {n} is not done yet", "left": _field("it", f"components.line.s{n}"),
+                        "op": "eq", "right": _lit(False)}],
+            "effects": [{"participant": "it", "path": f"components.line.s{n}", "op": "set", "value": _lit(True)}],
+        }
+
+    processes = [
+        process("first-crate-starts", "A line's first crate starts once the start button is pressed.", "first",
+                "the start button is pressed", _field("prev", "components.switch.pressed"), 1,
+                {"categories": ["button"], "components": ["switch"]}),
+        process("next-crate-starts", "A crate starts once the crate before it has passed its last stage.", "next",
+                "the crate before it is done", _field("prev", f"components.line.s{stages}"), 1,
+                {"categories": ["crate"], "components": ["line"]}),
+    ] + [process(f"stage-{n}", f"Stage {n} is done once stage {n - 1} is.", "crate", f"stage {n - 1} is done",
+                 _field("it", f"components.line.s{n - 1}"), n) for n in range(2, stages + 1)]
+    rules = {
+        "schema_version": "world-substrate-causal-model/v0",
+        "mechanics": [{
+            "schema_version": "world-substrate-action-mechanic/v0",
+            "mechanic_id": "dust-button", "version": "1", "action_kind": "dust-button",
+            "rationale": "Dusting the start button cleans it and does not press it.",
+            "actor_selector": {"categories": ["actor"], "components": []},
+            "participants": {"thing": {"categories": ["button"], "components": ["switch"]}}, "parameters": {},
+            "checks": [{"label": "the button is not dusted yet", "left": _field("thing", "components.switch.dusted"),
+                        "op": "eq", "right": _lit(False)}],
+            "effects": [{"participant": "thing", "path": "components.switch.dusted", "op": "set", "value": _lit(True)}],
+            "limits": ["Dusting never presses the button."], "tests": ["Dusting sets the button dusted."],
+            "semantic_bindings": ["thing is what is dusted"],
+        }],
+        "processes": processes,
+    }
+    return bundle, rules
+
+
+def press_rule() -> dict[str, Any]:
+    """A ruling for the long line: a person may press a start button that is not pressed yet."""
+    return {
+        "action": {"kind": "press-button", "description": "Press a start button.",
+                   "fields": [{"name": "button", "type": "entity_ref"}]},
+        "mechanic": {
+            "schema_version": "world-substrate-action-mechanic/v0",
+            "mechanic_id": "press-button", "version": "1", "action_kind": "press-button",
+            "rationale": "A start button that is not pressed can be pressed by a person.",
+            "actor_selector": {"categories": ["actor"], "components": []},
+            "participants": {"button": {"categories": ["button"], "components": ["switch"]}}, "parameters": {},
+            "checks": [{"label": "the button is not pressed yet", "left": _field("button", "components.switch.pressed"),
+                        "op": "eq", "right": _lit(False)}],
+            "effects": [{"participant": "button", "path": "components.switch.pressed", "op": "set",
+                         "value": _lit(True)}],
+            "limits": ["Only a button not yet pressed can be pressed."],
+            "tests": ["Pressing the button sets it pressed."], "semantic_bindings": ["button is what is pressed"],
+        },
+    }
+
+
+def empty_purse() -> tuple[dict[str, Any], dict[str, Any]]:
+    """The port once the coin rule is installed (plan A3), with a second trader, Ines, who holds no coins."""
+    bundle, rules = port()
+    rule = coin_rule()
+    bundle["actions"].append(rule["action"])
+    rules["mechanics"].append(rule["mechanic"])
+    bundle["world"]["summary"] += " Ines, another trader, holds no coins."
+    bundle["entities"].append({"id": "ines", "label": "Ines", "categories": ["actor", "trader"],
+                               "location": "customs-desk", "components": {"purse": {"coins": 0}}})
+    return bundle, rules
+
+
+def blocked_chain(length: int = 40) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The J0 truck world with no move for the lever (plan A2, "blocked chain ruling"): Sam's one installed move is to
+    honk the truck's horn, so moving the lever is an attempt no rule covers. A ruling that lets Sam shove the lever
+    over sets off the loading line, which stops at step `length` because the truck has no fuel."""
+    from tests.knock_on_worlds import truck_without_fuel
+
+    bundle, rules = truck_without_fuel(length)
+    bundle["world"]["id"], bundle["world"]["label"] = "blocked-chain", "Blocked chain"
+    bundle["world"]["summary"] = (
+        f"A lever in the yard starts a {length}-step loading line; when its last step is done the truck is loaded, "
+        "and a loaded truck leaves if it has fuel. The truck has no fuel. Sam works in the yard. No one has a move "
+        "for the lever yet; Sam can honk the truck's horn.")
+    [truck] = [c for c in bundle["components"] if c["name"] == "truck"]
+    truck["fields"].append({"name": "honked", "type": "boolean", "default": False})
+    bundle["entities"][-1]["components"]["truck"]["honked"] = False
+    bundle["actions"] = [{"kind": "honk-horn", "description": "Honk the truck's horn.",
+                          "fields": [{"name": "truck", "type": "entity_ref"}]}]
+    rules["mechanics"] = [{
+        "schema_version": "world-substrate-action-mechanic/v0",
+        "mechanic_id": "honk-horn", "version": "1", "action_kind": "honk-horn",
+        "rationale": "Anyone in the yard can honk the truck's horn.",
+        "actor_selector": {"categories": ["actor"], "components": []},
+        "participants": {"truck": {"categories": ["truck"], "components": ["truck"]}}, "parameters": {},
+        "checks": [{"label": "the horn has not been honked", "left": _field("truck", "components.truck.honked"),
+                    "op": "eq", "right": _lit(False)}],
+        "effects": [{"participant": "truck", "path": "components.truck.honked", "op": "set", "value": _lit(True)}],
+        "limits": ["The horn is honked once."], "tests": ["Honking sets the horn honked."],
+        "semantic_bindings": ["truck is the truck whose horn is honked"],
+    }]
+    return bundle, rules

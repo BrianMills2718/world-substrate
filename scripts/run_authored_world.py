@@ -611,11 +611,16 @@ def run_world(
     run_spent_usd: float = 0.0,
     spent: Callable[[], float] | None = None,
     reaction_limit: int | None = None,
+    judge: bool = False,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
     if open_attempts and policy != "resident":
         raise ValueError("open_attempts needs the resident policy")
+    if judge and not open_attempts:
+        raise ValueError("the judge rules on unmatched attempts, so it needs open_attempts")
+    if judge:
+        from scripts import judge as judge_rule  # Concordia's game master (ai-judge plan J2)
     if type(max_turns) is not int or not 1 <= max_turns <= MAX_TURNS:
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     # New runs have no cap on knock-on effects (Decision 009 as amended, ai-judge plan J0); the limit is recorded
@@ -828,6 +833,9 @@ def run_world(
         rows: dict[str, Any] = {}
         # Knock-on steps a failed check stopped this round (ai-judge plan J0), from each move and the world's own turn.
         round_blocked: list[dict[str, Any]] = []
+        # Unmatched attempts the judge rules on after everyone's move (ai-judge plan J2), each with the world as it was
+        # when it was tried.
+        to_judge: list[tuple[str, dict[str, Any], Engine]] = []
         for actor in order:
             wanted = intents[actor]
             if wanted is None:
@@ -934,12 +942,34 @@ def run_world(
                     # the world now is the world it was tried in.
                     named = did.get("names") or ([did["asks"]] if did.get("asks") else [])
                     row["consequence"] = {"pass_one": consequence_report.pass_one(engine, actor, named, people=actors)}
+                    if judge:
+                        to_judge.append((actor, row, judge_rule.frozen(engine)))
                     unmatched.append({"round": turn + turn_offset, "actor": actor, "attempt": did.get("attempt"),
                                       "nearest_kind": did.get("nearest_kind"), "why": did.get("why"),
                                       **({"asks": did["asks"]} if did.get("asks") in actors else {}),
                                       **({"names": list(did["names"])} if did.get("names") else {}),
                                       "event_id": row["event_id"]})
             rows[actor] = row
+        if to_judge:
+            # The judge (Concordia's game master) rules on each unmatched attempt of the round, in parallel: each
+            # reads the world as it was when that attempt was tried. A ruling is recorded, not installed (J3 installs).
+            def _rule_on(job: tuple[str, dict[str, Any], Engine]) -> dict[str, Any]:
+                who, row, then = job
+                try:
+                    return judge_rule.judge(bundle, causal_value, then, actor=who, attempt=str(row["did"].get("attempt")),
+                                            pass_one=row["consequence"]["pass_one"], people=actors, model=model_name,
+                                            trace_id=trace_id, max_budget=max_budget)
+                except Exception as error:  # a failed judge call is recorded and the run goes on, as with the review
+                    return {"by": judge_rule.BY, "outcome": "failed", "error": f"{type(error).__name__}: {error}",
+                            "cost_usd": 0.0}
+
+            with ThreadPoolExecutor(max_workers=len(to_judge)) as pool:
+                rulings = list(pool.map(lambda job: contextvars.copy_context().run(_rule_on, job), to_judge))
+            for (who, row, _), ruling in zip(to_judge, rulings):
+                row["judge"] = ruling
+                cost += float(ruling.get("cost_usd") or 0.0)
+                listed = next(u for u in unmatched if u["event_id"] == row["event_id"])
+                listed["judge"] = {k: ruling.get(k) for k in ("outcome", "whose_choice", "ruling")}
         round_no = turn + turn_offset
         starting: dict[str, list[dict[str, Any]]] = {}
         for actor in actors:
@@ -965,7 +995,10 @@ def run_world(
                     # A started task says what was started, not whether it will work (#128): the ending reaches the
                     # person only through what they see in later rounds.
                     result = "you started it; it is now under way"
+                # Whose choice the attempt needs: the person the words ask, else the one the judge names (Decided 4).
                 asked = (row.get("did") or {}).get("asks")
+                if asked not in actors:
+                    asked = (row.get("judge") or {}).get("whose_choice")
                 if (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and asked in actors:
                     # A request to another person changes nothing in the world; its words reach the one asked, who
                     # decides what to do (evidence/declared-laws/unmatched-replay: 12 of 17 unread tries were these).
