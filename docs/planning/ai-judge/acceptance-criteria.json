@@ -1,7 +1,7 @@
 {
  "schema_version": "1.0",
  "record_type": "acceptance_criteria",
- "outcome": "Worlds stay faithful as they grow too big for an AI to track: the engine works out every knock-on effect and blocker of an attempt, however long the chain (100 links, 50 at once), and delivers those results to an AI judge with the blockers: first the facts and nearby checks it can work out with no rule, then the full test run of the rule the judge proposes, before anything is installed; the judge decides only what no rule covers, its rulings become checked rules for everyone (installed during the run by default, or held with the attempt pending for my approval by the world's setting), the person being bribed decides whether a bribe works, saved runs replay unchanged, and a mechanism, who holds its credential and the norm about who should use it stay separate, as in Ostrom's grammar, so a password learned by social engineering works for whoever holds it while the breach of 'only Alice should log in' is recorded.",
+ "outcome": "Worlds stay faithful as they grow too big for an AI to track: the engine works out every knock-on effect and blocker of an attempt, however long the chain (100 links, 50 at once), and delivers those results to an AI judge with the blockers: first the facts and nearby checks it can work out with no rule, then the full test run of the rule the judge proposes, before anything is installed; the judge decides only what no rule covers, its rulings become checked rules for everyone (installed during the run by default, or held with the attempt pending for my approval by the world's setting), the person being bribed decides whether a bribe works, saved runs replay unchanged, and a mechanism, who holds its credential and the norm about who should use it stay separate, as in Ostrom's grammar, so a password learned by social engineering works for whoever holds it while the breach of 'only Alice should log in' is recorded, and a world can stop at a stopping point written in plain words that the judge assesses after each round, alongside its round and spending limits.",
  "asked_by": [
   {
    "who": "Brian",
@@ -26,6 +26,12 @@
    "date": "2026-11-09",
    "words": "can we make this configurable? or is that more troubel than it is worth. if so i say yes",
    "source": "quoted in docs/plans/ai_judge.md:155 (Decided 5); 'this' is the question whether a judge ruling made during a run is installed at once or waits for Brian's approval, and the yes is to making that a per-world setting"
+  },
+  {
+   "who": "Brian",
+   "date": "2026-11-10",
+   "words": "i should be able to stop a world based on budget or number of rounds or a natural langue stopping potin that the judge assesses once we build him",
+   "source": "quoted in docs/plans/ai_judge.md (Requirements, Stopping point); the budget and round limits are built (scripts/run_stop.py), the plain-words stopping point is R11"
   }
  ],
  "entries": [
@@ -198,14 +204,39 @@
     "tests/test_open_attempt.py:466-501 (the refusal at the old limit), kept and run against the recorded limit; src/world_substrate/engine.py:1005 writes the refusal into the commands.",
     "Open question Q81; docs/plans/ai_judge.md, Agent technical calls."
    ]
+  },
+  {
+   "id": "A8",
+   "criterion": "A world stops by its budget, by a number of rounds, or at a stopping point written in plain words that the judge assesses after each round: each is an optional condition of the world's stop setting, beside quiet rounds, and the run stops at whichever fires first and says which.",
+   "grounded_in": [
+    "Brian 2026-11-10: \"i should be able to stop a world based on budget or number of rounds or a natural langue stopping potin that the judge assesses once we build him\" (docs/plans/ai_judge.md, Stopping point); requirements R11, R7, R8"
+   ],
+   "demonstration": [
+    "On the World Builder Create page, open Options and under When to stop a run tick \"Stop when this run has spent $\" and enter 0.05; build any world and press Play until it stops.",
+    "Build a world again with \"Stop after 3 rounds\" ticked; press Play until it stops.",
+    "Build a team world that must agree a budget, with \"Stop when\" set to \"stop once the team has agreed a budget\"; run it until it stops, then open the stop line, the judge's reason and one earlier round's panel.",
+    "Build that team world again with \"Stop after 3 rounds\" as well, where the team cannot agree by round 3; run it."
+   ],
+   "expected": "Budget: the run stops after the round in which its recorded AI spending reached $0.05 and says \"Stopped at round N: this run had spent $X of its $0.05 limit\" (with \"it went a little over\" when the last round took it past). Rounds: it stops at round 3 with \"the limit of 3 rounds you set\". Stopping point: the run stops after the round in which the team agrees a budget and says \"Stopped at round N: the team has agreed a budget (the judge's reading of your stopping point)\"; the reason opens to what the judge read, and each earlier round's panel shows \"stopping point: not yet\" with the judge's reason. With the round limit of 3 as well, the run stops at round 3 on the round limit instead.",
+   "failure_example": "Broken: a run plays a round after its recorded spending reached the limit, plays past the round limit, keeps going after the team has agreed, stops before they agree, or stops without saying which condition fired. Working: it stops at the first condition met and names it.",
+   "representation": {
+    "view": "composite-linked-view: the run page's stop line linked to the judge's per-round assessment of the stopping point",
+    "router_record": "docs/planning/ai-judge/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Built so far (2026-11-10), the budget and round limits: scripts/run_stop.py (limit_check, budget, round_limit), scripts/run_authored_world.py (checked before the first round of a request and after each round), tests/test_run_stop.py and tests/test_world_builder_service.py; OpenSpec world-builder-page requirement \"A run stops at a round or spending limit\". The stopping point is not built, so A8 as a whole is not built.",
+    "Stopping point: run records evidence/ai-judge/j5/ (planned)."
+   ]
   }
  ],
  "coverage": {
   "model": "openrouter/anthropic/claude-sonnet-5.5",
-  "judged_at": "2026-11-09T23:36:52-0500",
-  "asked_by_sha256": "f64420b8006715340a8aacf547a8e4af1e658c87e3e4ed9f9b7f980bf25d50ef",
-  "criteria_sha256": "2f2dc2bc7c3ddad4bfad3beab116ba45a761504c071d46138197ed41e2f0e53e",
-  "outcome_sha256": "c442dba5bfcc062129fd3e6a27f5defa59f4f49994df65f79a2232977300af06",
+  "judged_at": "2026-11-10T00:49:45-0500",
+  "asked_by_sha256": "bb5b142a88c2a3c3f12bac301e5932fc816d696d27c4e11fc270d8d75fdcf7a7",
+  "criteria_sha256": "3df09c363dcb69f0aac5cf36e915d0ea94c553e210b0b92b7a8f42a11ef97ebb",
+  "outcome_sha256": "04d73ee1c755825f9994c874dff8c9fb2ffe03b1e4254ee414a18839377ebe39",
   "criteria_judged": {
    "A1": "e93f8bb2536b81d5a09658c92e399b4ccb783d535f14b302761ae896047afcd6",
    "A2": "dc45e1e4d8a19b0f9d397ff976d418e44f5709f853a16921b77d5c83bca8fb6a",
@@ -213,94 +244,102 @@
    "A4": "424fa2dfab88006dd8adfe62434cff7e27f7f0ee7a8d6af663faac57f6dbf90a",
    "A5": "bae82268e1ccd810abd3460171b395dc449835f2f3accc229bc8cc5d369f67cf",
    "A6": "2bbc3bcc47b1552e3038b8bf56722beb83d49ed964d3a7d5a8dfeabf45fa3ef1",
-   "A7": "0276ed68b1112e4c857b841c011dd1a19da18ec00ed2cf5416e646e919cbbd83"
+   "A7": "0276ed68b1112e4c857b841c011dd1a19da18ec00ed2cf5416e646e919cbbd83",
+   "A8": "bd495c86addbdd07c09184dd8e040aa526c2984c8efdade3a04d141b2cd7d371"
   },
   "deferrals_judged": [],
-  "trace_id": "planning-compliance/goal-coverage/20261109T233635-a3b864cc-run1",
-  "cost_usd": 0.070072,
+  "trace_id": "planning-compliance/goal-coverage/20261110T004929-2ad5f055-run1",
+  "cost_usd": 0.07749400000000001,
   "requirements": [
    {
     "id": "R1",
+    "requirement": "facts have implications and blockers",
+    "quote": "we need to facts to have implications and blockers",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R2",
     "requirement": "causal chain propagates automatically",
     "quote": "we need that causal chain to automaticlaly rpogate",
     "asked_by_index": 1,
     "kind": "outcome"
    },
    {
-    "id": "R2",
-    "requirement": "chains 100 links deep",
-    "quote": "a causal chain 100 links deep",
-    "asked_by_index": 1,
-    "kind": "outcome"
-   },
-   {
     "id": "R3",
-    "requirement": "50 things propagating",
-    "quote": "like 50 things could propagate",
+    "requirement": "50 things, 100 links deep",
+    "quote": "like 50 things could propagate down a causal chain 100 links deep",
     "asked_by_index": 1,
-    "kind": "outcome"
+    "kind": "constraint"
    },
    {
     "id": "R4",
-    "requirement": "deliver results to AI judge",
-    "quote": "to deliver the resutls of that propagation to he ai judge",
+    "requirement": "deliver propagation results to judge",
+    "quote": "to deliver the resutls of that propagation to he ai judge along with blockers",
     "asked_by_index": 1,
     "kind": "outcome"
    },
    {
     "id": "R5",
-    "requirement": "blockers delivered to judge",
-    "quote": "along with blockers",
-    "asked_by_index": 1,
-    "kind": "outcome"
-   },
-   {
-    "id": "R6",
-    "requirement": "facts have implications",
-    "quote": "we need to facts to have implications and blockers",
-    "asked_by_index": 1,
-    "kind": "outcome"
-   },
-   {
-    "id": "R7",
     "requirement": "bribe decided by person bribed",
     "quote": "whether the bribe works seems like should be a deicsion made by the person being bribed",
     "asked_by_index": 2,
     "kind": "outcome"
    },
    {
-    "id": "R8",
-    "requirement": "rules vs decisions difference",
+    "id": "R6",
+    "requirement": "discuss rules versus decisions",
     "quote": "maybe we need to discuss the difference between rules/constraints and ddecisions?",
     "asked_by_index": 2,
     "kind": "process"
    },
    {
-    "id": "R9",
-    "requirement": "norm separate from programmatic entry",
-    "quote": "there is a ddifference between as igned release clearing the cargo as a norm and like some programmatic enry with abar code or whateve.r",
+    "id": "R7",
+    "requirement": "release norm vs programmatic entry",
+    "quote": "there is a ddifference between as igned release clearing the cargo as a norm and like some programmatic enry with abar code",
     "asked_by_index": 3,
     "kind": "outcome"
    },
    {
-    "id": "R10",
-    "requirement": "password social engineering case",
+    "id": "R8",
+    "requirement": "social-engineered password works for others",
     "quote": "if they could be social engineered for exampel to get a password then someone else woul eb abel to sue it",
     "asked_by_index": 3,
     "kind": "outcome"
    },
    {
-    "id": "R11",
+    "id": "R9",
     "requirement": "Ostrom stuff",
     "quote": "i liek the ostrom stuff",
     "asked_by_index": 3,
     "kind": "outcome"
    },
    {
-    "id": "R12",
-    "requirement": "make this configurable",
+    "id": "R10",
+    "requirement": "make it configurable",
     "quote": "can we make this configurable?",
     "asked_by_index": 4,
+    "kind": "outcome"
+   },
+   {
+    "id": "R11",
+    "requirement": "stop by budget",
+    "quote": "i should be able to stop a world based on budget",
+    "asked_by_index": 5,
+    "kind": "outcome"
+   },
+   {
+    "id": "R12",
+    "requirement": "stop by number of rounds",
+    "quote": "number of rounds",
+    "asked_by_index": 5,
+    "kind": "outcome"
+   },
+   {
+    "id": "R13",
+    "requirement": "stop by natural language point",
+    "quote": "a natural langue stopping potin that the judge assesses",
+    "asked_by_index": 5,
     "kind": "outcome"
    }
   ],
@@ -308,69 +347,10 @@
    {
     "requirement_id": "R1",
     "covered_by": [
-     "A1"
-    ],
-    "coverage_reason": "A1 checks that changes automatically set off every knock-on effect, with a summary line of steps run.",
-    "extent": "full",
-    "missing": "",
-    "deferral": 0,
-    "in_outcome": true,
-    "outcome_reason": "The outcome says the engine works out every knock-on effect of an attempt, however long the chain."
-   },
-   {
-    "requirement_id": "R2",
-    "covered_by": [
-     "A1"
-    ],
-    "coverage_reason": "A1's 'fifty chains' run has chains of 100 steps and would fail if depth were limited.",
-    "extent": "full",
-    "missing": "",
-    "deferral": 0,
-    "in_outcome": true,
-    "outcome_reason": "The outcome names 100 links."
-   },
-   {
-    "requirement_id": "R3",
-    "covered_by": [
-     "A1"
-    ],
-    "coverage_reason": "A1 runs 50 chains in one moment and expects 5,000 steps.",
-    "extent": "full",
-    "missing": "",
-    "deferral": 0,
-    "in_outcome": true,
-    "outcome_reason": "The outcome says 50 at once."
-   },
-   {
-    "requirement_id": "R4",
-    "covered_by": [
+     "A1",
      "A2"
     ],
-    "coverage_reason": "A2 checks the judge is handed the engine's worked-out facts and the test run results, visible in what the judge read.",
-    "extent": "full",
-    "missing": "",
-    "deferral": 0,
-    "in_outcome": true,
-    "outcome_reason": "The outcome says the engine delivers those results to an AI judge."
-   },
-   {
-    "requirement_id": "R5",
-    "covered_by": [
-     "A2"
-    ],
-    "coverage_reason": "A2 requires blockers, installed and from the test run, to appear in what the judge read.",
-    "extent": "full",
-    "missing": "",
-    "deferral": 0,
-    "in_outcome": true,
-    "outcome_reason": "The outcome says results are delivered with the blockers."
-   },
-   {
-    "requirement_id": "R6",
-    "covered_by": [
-     "A1"
-    ],
-    "coverage_reason": "A1 checks that facts' implications and blockers are worked out automatically, with the blocker shown on a step.",
+    "coverage_reason": "A1 fails if facts lack worked-out implications and blockers (truck without fuel shows the blocker); A2 shows blockers handed to the judge.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
@@ -378,86 +358,159 @@
     "outcome_reason": "The outcome says the engine works out every knock-on effect and blocker of an attempt."
    },
    {
-    "requirement_id": "R7",
+    "requirement_id": "R2",
     "covered_by": [
-     "A5"
+     "A1"
     ],
-    "coverage_reason": "A5 shows the bribed person's own choice decides and coins move only if she signs.",
+    "coverage_reason": "A1 requires every change to set off all knock-on effects automatically, with the fifty-chains run summary failing otherwise.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The outcome says the person being bribed decides whether a bribe works."
+    "outcome_reason": "The engine works out every knock-on effect, however long the chain."
    },
    {
-    "requirement_id": "R8",
+    "requirement_id": "R3",
+    "covered_by": [
+     "A1",
+     "A7"
+    ],
+    "coverage_reason": "A1's saved run of 50 chains of 100 steps must finish with 5,000 steps; A7 removes the limit.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "Outcome names 100 links and 50 at once."
+   },
+   {
+    "requirement_id": "R4",
+    "covered_by": [
+     "A2"
+    ],
+    "coverage_reason": "A2 checks the judge is given the worked-out facts, blockers and test run of the proposed rule before answering.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "Outcome says the results are delivered to an AI judge with the blockers."
+   },
+   {
+    "requirement_id": "R5",
+    "covered_by": [
+     "A5"
+    ],
+    "coverage_reason": "A5 fails if the judge or a rule decides the bribe rather than the bribed person's own choice.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "Outcome says the person being bribed decides whether a bribe works."
+   },
+   {
+    "requirement_id": "R6",
     "covered_by": [],
-    "coverage_reason": "No criterion asks for any discussion of rules versus decisions; A5 only applies the distinction to bribes.",
+    "coverage_reason": "No criterion asks for a discussion of rules versus decisions; it is a process request.",
     "extent": "none",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Not an outcome requirement; it is a process item."
+    "outcome_reason": "Process kind, not an outcome line item."
+   },
+   {
+    "requirement_id": "R7",
+    "covered_by": [
+     "A6"
+    ],
+    "coverage_reason": "A6 fails if the gate's code reading is not kept apart from the cargo norm about signed release.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "Outcome says mechanism, credential holder and norm stay separate."
+   },
+   {
+    "requirement_id": "R8",
+    "covered_by": [
+     "A6"
+    ],
+    "coverage_reason": "A6's password run fails unless Mallory can log in with the phished password and the norm breach is shown.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "Outcome says a password learned by social engineering works for whoever holds it."
    },
    {
     "requirement_id": "R9",
     "covered_by": [
      "A6"
     ],
-    "coverage_reason": "A6 checks that the barcode gate opens on a valid code while the cargo norm breach is shown separately.",
+    "coverage_reason": "A6 requires Ostrom's grammar of institutions with each norm and rule in its parts.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The outcome keeps mechanism, credential holder and norm separate."
+    "outcome_reason": "Outcome cites Ostrom's grammar."
    },
    {
     "requirement_id": "R10",
     "covered_by": [
-     "A6"
+     "A4"
     ],
-    "coverage_reason": "A6's password run has Mallory phish Alice, log in, and the norm breach shown.",
+    "coverage_reason": "A4 requires the per-world setting for installing versus holding rulings, which both options are demonstrated.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The outcome describes the password learned by social engineering working for whoever holds it, with the breach recorded."
+    "outcome_reason": "Outcome says installed by default or held for approval by the world's setting."
    },
    {
     "requirement_id": "R11",
     "covered_by": [
-     "A6"
+     "A8"
     ],
-    "coverage_reason": "A6 requires following Ostrom's grammar, with each norm and rule written in its parts.",
+    "coverage_reason": "A8 builds a world with a spend limit and checks it stops with the budget message.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The outcome says 'as in Ostrom's grammar'."
+    "outcome_reason": "Outcome mentions spending limits."
    },
    {
     "requirement_id": "R12",
     "covered_by": [
-     "A4"
+     "A8"
     ],
-    "coverage_reason": "A4 makes the installed-or-pending behaviour of rulings a per-world setting and checks both modes.",
+    "coverage_reason": "A8 ticks Stop after 3 rounds and checks the run stops at round 3.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The outcome keeps it as installed by default or held for approval by the world's setting."
+    "outcome_reason": "Outcome mentions round limits."
+   },
+   {
+    "requirement_id": "R13",
+    "covered_by": [
+     "A8"
+    ],
+    "coverage_reason": "A8 builds a team world with a plain-words stopping point the judge assesses and checks the stop and reason.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "Outcome says a stopping point in plain words that the judge assesses after each round."
    }
   ],
   "agreement": {
    "runs": 2,
    "agreed": true,
    "trace_ids": [
-    "planning-compliance/goal-coverage/20261109T233635-a3b864cc-run1",
-    "planning-compliance/goal-coverage/20261109T233635-a3b864cc-run2"
+    "planning-compliance/goal-coverage/20261110T004929-2ad5f055-run1",
+    "planning-compliance/goal-coverage/20261110T004929-2ad5f055-run2"
    ],
    "costs_usd": [
-    0.035036,
-    0.035036
+    0.038642,
+    0.038852
    ]
   },
   "trace": "coverage-trace.json"

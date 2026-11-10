@@ -171,7 +171,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
           <legend class="small">When to stop a run</legend>
           <label class="small" title="The run stops by itself once nothing has changed for this many rounds in a row (a group decision must also be deployed or rejected). The page says why it stopped, and Play runs more rounds anyway."><input type="radio" name="run-stop" value="quiet" checked> Stop once nothing is changing, after
             <input type="number" id="quiet-rounds" min="1" max="100" step="1" value="6" title="How many rounds in a row with nothing changing before the run stops (1 to 100)" aria-label="Quiet rounds before stopping"> quiet rounds</label>
-          <label class="small" title="The run never stops by itself for being quiet; it keeps playing round after round until you pause it."><input type="radio" name="run-stop" value="every_round"> Always run every round</label>
+          <label class="small" title="The run never stops by itself for being quiet; it keeps playing round after round until you pause it or a limit below is reached."><input type="radio" name="run-stop" value="every_round"> Don’t stop for being quiet</label>
+          <label class="small" title="Also stop once this many rounds have been played (1 to 500). Whichever stop comes first ends the run; Play runs more rounds anyway."><input type="checkbox" id="stop-rounds-on" aria-label="Stop after a number of rounds"> Stop after
+            <input type="number" id="stop-rounds" min="1" max="500" step="1" value="40" title="How many rounds to play before the run stops (1 to 500)" aria-label="Rounds before stopping"> rounds</label>
+          <label class="small" title="Also stop once the AI calls of this run have cost this much, as recorded for each call ($0.01 to $100). It is checked before each round, so the round under way finishes and can go a little over. Play runs more rounds anyway."><input type="checkbox" id="stop-spend-on" aria-label="Stop at a spending limit"> Stop when this run has spent $<input type="number" id="stop-spend" min="0.01" max="100" step="0.01" value="0.50" title="The most this run may spend on AI, in dollars ($0.01 to $100)" aria-label="Spending limit in dollars"></label>
         </fieldset>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
         <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
@@ -353,11 +356,24 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
   const kind = () => (document.querySelector('input[name="kind"]:checked') || {}).value || "ongoing";
   // When a run stops by itself (Q12; Brian, 2026-11-10: "stop condition should be configurable"); saved with the world.
+  // Brian, 2026-11-10: "i should be able to stop a world based on budget or number of rounds": optional limits that
+  // combine with the quiet choice; whichever fires first stops the run (scripts/run_stop.py).
   const runStop = () => {
-    if ((document.querySelector('input[name="run-stop"]:checked') || {}).value === "every_round") return { mode: "every_round" };
-    const n = Math.round(Number($("quiet-rounds").value));
-    return { mode: "quiet", quiet_rounds: n >= 1 && n <= 100 ? n : 6 };
+    let stop;
+    if ((document.querySelector('input[name="run-stop"]:checked') || {}).value === "every_round") stop = { mode: "every_round" };
+    else { const n = Math.round(Number($("quiet-rounds").value)); stop = { mode: "quiet", quiet_rounds: n >= 1 && n <= 100 ? n : 6 }; }
+    if ($("stop-rounds-on").checked) { const r = Math.round(Number($("stop-rounds").value)); stop.max_rounds = r >= 1 && r <= 500 ? r : 40; }
+    if ($("stop-spend-on").checked) { const x = Math.round(Number($("stop-spend").value) * 100) / 100; stop.max_spend_usd = x >= 0.01 && x <= 100 ? x : 0.5; }
+    return stop;
   };
+  // The world's stop setting less any limit the visitor chose to play past ("Press Play to run more rounds anyway").
+  const activeStop = () => {
+    const stop = { ...world.run_stop };
+    (live.lifted || []).forEach((key) => { delete stop[key]; });
+    return stop;
+  };
+  const STOP_REASONS = ["quiet_rounds", "round_limit", "budget"];
+  const LIFTS = { round_limit: "max_rounds", budget: "max_spend_usd" };
 
   function plainError(err) {
     const msg = String(err.message || err);
@@ -984,8 +1000,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: "resident", turns: 1 };
     if (world.briefs) request.briefs = world.briefs;
     // A world saved without a stop setting runs every round, as before.
-    if (world.run_stop) request.run_stop = world.run_stop;
+    if (world.run_stop) request.run_stop = activeStop();
     if (world.run_stop && live.snapshot && live.stopHistory) request.stop_history = live.stopHistory;
+    // What this run has spent so far, as recorded by the server, so a spending limit counts the whole run.
+    if (request.run_stop && request.run_stop.max_spend_usd != null && live.snapshot && live.spent != null) request.run_spent_usd = live.spent;
     if (live.memory) request.resident_memory = live.memory;
     if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
     // AI rounds take a few seconds and go through a job.
@@ -1000,7 +1018,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         live.playing = false; live.finished = true;
         const runs = (world.shared && world.shared.runs) || [], last = runs.length ? runs[runs.length - 1].stopped : null;
         live.why = `End of the shared run: ${live.rounds.length} rounds, replayed from the recording with no AI calls.`
-          + (last && last.reason === "quiet_rounds" ? " " + last.why : "");
+          + (last && last.why ? " " + last.why : "");
         renderLive();
         if (world.shared && world.shared.readout) renderReadout(world.shared.readout);
         return;
@@ -1018,12 +1036,14 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         if (run.trace.resident_memory) live.memory = run.trace.resident_memory;
         live.underway = run.trace.underway || [];
         live.stopHistory = run.trace.stop_history || null;
+        if (run.trace.run_spent_usd != null) live.spent = run.trace.run_spent_usd;
         const stopped = run.summary.stopped;
-        if (stopped && stopped.reason === "quiet_rounds") live.stopsAt = stopped;
+        if (stopped && STOP_REASONS.includes(stopped.reason)) live.stopsAt = stopped;
         if (run.trace_id) live.runIds.push(run.trace_id);
         if (run.replay_html) $("replay").srcdoc = run.replay_html;
         if (!rounds.length) {
           live.playing = false;
+          if (live.stopsAt) { stopHere(); renderLive(); return; }
           if (run.summary.terminal_reached) { live.finished = true; live.why = "Finished: the finish line was reached."; }
           else live.why = "Paused by itself: nobody can do anything and nothing changes by itself any more.";
           renderLive(); return;
@@ -1046,9 +1066,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       if (live.endsAt && turn.turn >= live.endsAt) {
         live.finished = true; live.playing = false; live.why = "Finished: the finish line was reached.";
       } else if (live.stopsAt && turn.turn >= live.stopsAt.round && !live.replay) {
-        // The world's stop setting ended the run; Play carries on and counts quiet rounds afresh.
-        live.playing = false; live.why = live.stopsAt.why + " Press Play to run more rounds anyway.";
-        live.stopsAt = null; live.stopHistory = null;
+        live.playing = false; stopHere();
       } else if (live.quiet >= QUIET_ROUNDS_TO_PAUSE && !live.replay) {
         live.playing = false; live.quiet = 0;
         live.why = `Paused by itself: nothing happened for ${QUIET_ROUNDS_TO_PAUSE} rounds. Open “Why things were refused” to see what is blocking everyone.`;
@@ -1060,6 +1078,15 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       // A replay is instant; pause so each round can be read. AI rounds take long enough already.
       if (live.playing && live.replay) await sleep(REPLAY_PAUSE_MS);
     }
+  }
+
+  // The world's stop setting ended the run. Play carries on: quiet rounds are counted afresh, and a round or spending
+  // limit that fired is not applied again in this run.
+  function stopHere() {
+    live.why = live.stopsAt.why + " Press Play to run more rounds anyway.";
+    const lift = LIFTS[live.stopsAt.reason];
+    if (lift) live.lifted = (live.lifted || []).concat([lift]);
+    live.stopsAt = null; live.stopHistory = null;
   }
 
   function play() {
