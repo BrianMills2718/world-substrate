@@ -82,7 +82,7 @@ State, not narrative. Code paths are the evidence; the [arc42 building blocks](.
 - deck.gl is loaded only by the Waltzman reference client (`scripts/render_waltzman_demo.py`); the World Builder draws its network with the vendored graph viewer. Pydantic AI, SimPy, Cytoscape.js, PettingZoo and Mesa are not used in `src/` or `scripts/`.
 - The native coordination vertical, one-shot authoring and run comparison are on main since 2026-10-05 (#75, #79, #80); `scripts/check_native_coordination.py` passes for two worlds on one shared profile with no provider spend.
 - Semantic binding: six of seven M1 action kinds cite a reviewed Linguistic Core sense; `unheat` is deliberately unbound. Kitchen and Greenhouse events can carry Castaway mechanic ids because binding is by bare action kind (Q64).
-- Hosted CI exists in `.github/workflows/native-coordination-linux.yml`, against the workspace's no-hosted-CI rule (Q70).
+- No hosted CI: `.github/workflows/native-coordination-linux.yml` was removed on 2026-11-10 (Q70, Brian approved); `scripts/check_project.py` already ran every command it ran and gates each merge through `ship`.
 
 ## Applicable context
 
@@ -226,7 +226,7 @@ Open pull requests: none on 2026-11-09 (`gh pr list --state open`).
 | P1 | write-scope placeholders are not role-bound (Q67) | hardening queue |
 | P2 | read scopes are recorded, not enforced, and the check reports a constant (Q34, Q66) | report honestly first; enforce when a run needs it |
 | P2 | live path imports spike code (`spikes/any-scenario-2026-10/`, Q71) | move what the live path needs into `scripts/` or `src/` when next changed |
-| P2 | hosted CI conflicts with the no-hosted-CI rule (Q70) | decided by agent 2026-11-09: fold its tests into the project check, then remove it |
+| P2 | hosted CI conflicts with the no-hosted-CI rule (Q70) | done 2026-11-10 (Brian approved): the project check already ran every test it ran; workflow removed |
 | P2 | `schemas/world-authoring-bundle-v0.schema.json` rejects law-bearing bundles (Q65) | fix the schema to match the validator |
 | P3 | `unheat` lacks a pinned Linguistic Core sense | upstream semantic gap |
 | P3 | no counterfactual adequacy proof; no scale demonstration | deferred |
