@@ -1,6 +1,6 @@
 # Vendored scripts
 
-`graph-viewer.js`: the shared typed-graph/v1 viewer from `representation-router/graph-viewer`
-(`dist/graph-viewer.js` at representation-router commit `eb17a37`, sha256
-`101445b4238138dd1846878d436e553a9a80beef942790923bb844093512ca64`). The World Builder page loads it
+`graph-viewer.js`: the shared typed-graph/v1 viewer from `representation-router/graph-viewer`, version 0.14.2
+(`dist/graph-viewer.js` at representation-router merge commit `1691ad6` (PR brianmills-spec/representation-router#183), sha256
+`c2e12458dd6c7bcd349232de5b7bf83c8edb4c2fff168a41e74c56c53401dc75`). The World Builder page loads it
 only when its Network view opens. Refresh by copying a newer `dist/graph-viewer.js` and updating this line.

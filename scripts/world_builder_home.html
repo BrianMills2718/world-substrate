@@ -894,7 +894,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const shape = JSON.stringify([graph.nodes.map((n) => n.id), graph.edges.map((e) => e.id)]);
     if (!netViewer) {
       // A highlight sent before the first layout is lost, so send the latest one again once it is drawn.
-      netViewer = GraphViewer.mount($("net-graph"), { graph, onSelect: (pick) => { $("net-detail").textContent = pick ? netDescribe(pick.id) : ""; },
+      netViewer = GraphViewer.mount($("net-graph"), { graph, fullPage: false, onSelect: (pick) => { $("net-detail").textContent = pick ? netDescribe(pick.id) : ""; },
         onLayout: () => { if (live && live.net) netViewer.highlight(live.net.lit); } });
     } else if (shape !== live.net.shape) netViewer.update(graph);
     live.net.shape = shape;
