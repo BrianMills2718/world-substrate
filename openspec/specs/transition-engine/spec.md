@@ -119,7 +119,7 @@ advance(W, steps)               -> (W', events)
 replay(W_0, commands, pinned identities) -> (W_n, events, hashes)
 ```
 
-The v0 `tick`/`advance` contract is the implemented M1 timing baseline. `Engine.advance()` currently checks registered processes step-by-step through their `due(world)` hooks; it does **not** claim an independently scheduled future-event queue, duration-bearing activities, or multiple canonical clocks. The richer target keeps one canonical simulated timeline while allowing mechanisms to have independent cadences. See [multi-timescale execution](../../../docs/research/multi-timescale-execution-2026-09.md).
+The v0 `tick`/`advance` contract is the implemented M1 timing baseline. `Engine.advance()` currently checks registered processes step-by-step through their `due(world)` hooks; it does **not** claim an independently scheduled future-event queue, duration-bearing activities, or multiple canonical clocks. The richer target keeps one canonical simulated timeline while allowing mechanisms to have independent cadences. See [multi-timescale execution](../../../docs/architecture/arc42.md#time-and-cadence) (the note itself is retired; `git show 75f32bb:docs/research/multi-timescale-execution-2026-09.md`).
 
 `observe` and `discover` are actor-authorized projections of `W`; they neither
 own alternate state nor calculate consequences. `O_i` is intentionally lossy:

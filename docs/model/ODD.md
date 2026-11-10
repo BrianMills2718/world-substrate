@@ -264,7 +264,7 @@ Each rule below is enforced by the cited code.
 
 **8.16 Information visibility** (`src/world_substrate/information.py:57-102`, used by `Engine.observe`, `engine.py:235`). An information item is visible to its source always; to others only when `active` and either `public` or delivered (`delivered`/`observed`) to them; a visibility other than `direct`/`public` hides it from everyone. A delivery row is visible to its recipient once delivered and to the item's source. An event whose observation held active information carries it as `information_context` (cognition context, not causal ancestry; `engine.py:577`; RULE-INFORMATION-IS-NOT-CAUSE).
 
-**8.17 Linked process participants** (`action_authoring.py:672-741`). Names other than `it`/`actor`; each `{link, selector}`; link one of `PROCESS_LINKS` or `ref:<component>.<field>` naming an `entity_ref` field. Bindings are the product of each link's candidates; an empty link drops the binding. Effects may target any participant by name.
+**8.17 Linked process participants** (`action_authoring.py:672-741`). Names other than `it`/`actor`; each `{link, selector}`; link one of `PROCESS_LINKS` or `ref:<component>.<field>` naming an `entity_ref` field. Bindings are the product of each link's candidates; an empty link drops the binding. Effects may target any participant by name. Not shown by the pipeline alone: with the generator's repair ordering, a death outflow named only in a structure finding can go unrepaired within the repair budget (check L5 of the retired linked-participants plan: 4 attempts, stopped at the spend cap).
 
 **8.18 Pipeline modeling** (`spikes/any-scenario-2026-10/model_scenario.py`). The ODD is condensed by `odd_brief` and appended to the scenario text, cut so the whole stays under the bundle generator's 2,000-character limit (`:434`); the brief is not saved. Mechanics use `ATTEMPT_GUIDANCE` (checks say only whether an actor may begin; processes play out feasibility) and the stronger rule model. `build_engine` compiles and installs; a reject stops the step. Repairs: keep a candidate when its count of stable blocking findings (all except `extreme_conditions` and `behavior_anomaly`, which are LLM-judged) falls, or when it fixes the targeted finding with at most two new ones; return the best model seen (`:329-392`). Sensing and stock mappings are LLM outputs validated client-side against the bundle's fields (`:137`, `:174-176`).
 
@@ -295,7 +295,9 @@ Folded on 2026-11-09 from the retired plan `docs/plans/waltzman_scenario_run.md`
 - scheduled moments become `moment` countdowns;
 - each behavior gets a row in a `CoverageReport` (`coverage.json`).
 
-On this path, generated worlds therefore have the kinds that section 4.2 marks lacking or unused: people with profiles, information items with recipients, and scheduled moments. The older outline path is still available as `--world-def odd`.
+On this path, generated worlds therefore have the kinds that section 4.2 marks lacking or unused: people with profiles, information items with recipients, and scheduled moments. The older outline path is still available as `--world-def odd`. That path's known defect: `odd_brief` cuts the ODD summary to 1,500 characters (`model_scenario.py:88`), and the `task` world kind allows 2-10 entities, so the first Waltzman run (outline path, 2026-10-08, `evidence/waltzman/`) lost its four groups; none of the four mechanisms appeared, members approved in round 1 and the system was activated in round 2.
+
+The retired scenario-spec adoption plan's checks, which `tests/test_scenario_spec.py` cites: S1 parses the recorded Cybernetic Influence pencil draft; S2 is the compiler plus Engine delivery test; S3 the drift test; S4 the pipeline run; S5 the agent run (`run-20261008T184545`, 12 ticks, 105 events); S6 the assessment. All four mechanisms appeared; conditional support and meeting slowing were only roughly represented (conditional support is a count with no link to a concern). `pin_named_slots` fixed a deadline-named slot that accepted any moment.
 
 The pipeline's file records (`[[pipeline_records]]`), the `Attempt` fields, its evidence folders (`truck`, `hospital`, `linked`, `scenario-spec`, `waltzman`, `waltzman-spec` under `spikes/any-scenario-2026-10/evidence/`), the substrate component kinds (`information`, `delivery`) and the process link kinds are checked against the code by `tests/test_system_model.py`. Its two views (`scenario_replay`, `scenario_state_panel`) and gaps G12-G16 are in [VIEW_COVERAGE.md](VIEW_COVERAGE.md). The pipeline is a spike, and the live people-world path imports it (`scripts/people_world.py:26,76-77`); when it changes a record, the drift test fails until this model is updated. The plans that extended it, `docs/plans/scenario_actors_kept.md` (last commit `49da160`) and `docs/plans/system_model_pipeline.md` (`8232c22`), were retired on 2026-11-09; [arc42 section 8](../architecture/arc42.md#provenance-of-retired-material) lists them.
 
@@ -339,7 +341,7 @@ decision-gated move's copies of the decision's status (E4, `spec_pipeline.py:199
   or more than `PEOPLE_REWRITE_BY_S` = 80 s have passed (`:263`, `:1665-1669`; the time check is `:1667`). In the canonical Waltzman build the test
   run starts at 85-111 s, so the retry never runs there (open question Q1).
 - **Test-run record** (`:1623-1657`): circling, stalled actors, `long_tasks` (each task kind, who starts it, and
-  `can_fail_part_way`), `part_way_findings` (E1, `scripts/attempts.py:131-146`) and `attempt_findings`; each lowers the
+  `can_fail_part_way`), `part_way_findings` (a task that can fail part-way but never did in the test run, `scripts/attempts.py:131-146`) and `attempt_findings`; each lowers the
   score by 1.
 - **Places and ways** (since Q23, 2026-10-25): when a description names separate places, the bundle contract asks the
   world-writing AI for place entities, every other entity's starting `location`, a move action with `to` and `way`
@@ -396,7 +398,7 @@ rollout), ended by a process event. It records who started it, when, what they e
 change plus the person's own words about the work, at most 600 characters), and how it ended: finished, or failed
 part-way (the ending event put the field back), with the ending event id and who ended it (`:17`, `:157-187`). Open
 tasks travel with the page between rounds (`carried`, at most 24, `:190-210`). A task's starter sees a memory line
-about it; the other people a finished task names see a notice with its words (`:226-255`).
+about it; the other people a finished task names see a notice with its words (`:226-255`). A finished remedy records whether it answered the concern and who did it; a task a world process starts, such as the rollout, is followed to its ending event; and the build removes a record that reads "activated" while the decision is not deployed (checks E1-E5 of the retired tasks-slice2 goal, which `tests/test_tasks_slice2.py` cites).
 
 ### 11.5 Records the service now keeps
 

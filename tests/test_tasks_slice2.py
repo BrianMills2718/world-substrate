@@ -1,4 +1,4 @@
-"""Tasks that can really fail part-way (#128 slice 2, docs/plans/waltzman-tasks-slice2.goal.md E1-E4).
+"""Tasks that can really fail part-way (#128 slice 2, checks E1-E4 of the retired goal docs/plans/waltzman-tasks-slice2.goal.md, see docs/model/ODD.md section 11.4; git show 6a8e37e:docs/plans/waltzman-tasks-slice2.goal.md).
 
 All on saved worlds with no AI calls (tests/AGENTS.md, #215). The c1r20 build (tests/fixtures/c1r20_waltzman_build.json)
 holds the AI answers the live build used on 2026-10-23; tests/replay_build.py runs them through today's pipeline, so

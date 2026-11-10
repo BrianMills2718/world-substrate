@@ -1,4 +1,4 @@
-"""ScenarioSpecV1, ported from Cybernetic Influence v3 (docs/plans/scenario_spec_adoption.md, check S1).
+"""ScenarioSpecV1, ported from Cybernetic Influence v3 (check S1 of the retired plan docs/plans/scenario_spec_adoption.md, see docs/model/ODD.md section 10).
 
 Input is the recorded Cybernetic Influence pencil draft (draft_49524bf20017, approved 2026-10-07), copied from the
 VPS to spikes/any-scenario-2026-10/evidence/scenario-spec/pencil_draft.json; its people are invented.

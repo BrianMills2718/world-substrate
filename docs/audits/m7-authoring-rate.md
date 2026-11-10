@@ -5,7 +5,7 @@ reviewed_through: 2026-09-04
 authority_refs:
   - ./m3-overheat-authoring-experiment.md
   - ./m4-spill-experiment.md
-  - ../contracts/mechanic-profile-v0.md
+  - ../../openspec/specs/mechanic-installation/spec.md
   - ../../roadmap/README.md
 ---
 

@@ -26,22 +26,15 @@ REQUIRED = (
     "README.md",
     "docs/AGENTS.md",
     "docs/wiki/README.md",
-    "docs/architecture.md",
-    "docs/contracts/core-v0.md",
-    "docs/contracts/semantic-mechanical-binding-v0.md",
-    "docs/contracts/mechanic-profile-v0.md",
-    "docs/contracts/transition-envelope-v0.md",
-    "docs/contracts/read-scope-enforcement-v0.md",
+    "docs/architecture/arc42.md",
+    "openspec/specs/transition-engine/spec.md",
+    "openspec/specs/semantic-binding/spec.md",
+    "openspec/specs/mechanic-installation/spec.md",
     "docs/decisions/001-project-scope.md",
     "docs/decisions/002-observability-and-replay.md",
     "docs/decisions/003-semantic-mechanical-boundary.md",
-    "docs/source-dispositions.md",
-    "docs/research/synthesis.md",
-    "docs/research/world-substrate-strategy-session.md",
-    "docs/research/agent-ecology2-review.md",
     "docs/research/cybernetic-influence-lineage-review.md",
     "docs/research/discussion-traceability.md",
-    "docs/audits/m2-give-path-audit.md",
     "docs/audits/m3-overheat-authoring-experiment.md",
     "docs/audits/m4-spill-experiment.md",
     "docs/audits/m7b-relational-authoring.md",
@@ -169,7 +162,7 @@ def markdown_files() -> list[Path]:
 
 # --- Contract status against the code it describes ---------------------------
 #
-# `REQUIRED` above asserts that a contract file exists and is linked. Nothing
+# `REQUIRED` above asserts that a contract file (an OpenSpec spec since 2026-11-09) exists. Nothing
 # asserted that what it *says about itself* is still true, which is why
 # semantic-mechanical-binding-v0.md spent several commits claiming one binding
 # of seven while six were implemented, and claiming no binding reached an event
@@ -197,11 +190,12 @@ STATUS_FACT_BLOCK = re.compile(
 
 
 def _parse_status_facts(text: str) -> dict[str, object]:
-    match = STATUS_FACT_BLOCK.search(text)
-    if match is None:
-        return {}
+    # A spec that folds several contracts carries one block per contract; read them all.
     facts: dict[str, object] = {}
-    for line in match.group(1).splitlines():
+    lines = [
+        line for match in STATUS_FACT_BLOCK.finditer(text) for line in match.group(1).splitlines()
+    ]
+    for line in lines:
         line = line.strip()
         if not line or line.startswith("#"):
             continue
@@ -355,7 +349,7 @@ def check_contract_status(root: Path) -> list[str]:
     live = _live_facts(root)
     declared_anywhere = 0
     for name in REQUIRED:
-        if not name.startswith("docs/contracts/"):
+        if not name.startswith("openspec/specs/"):
             continue
         path = root / name
         if not path.exists():

@@ -162,6 +162,8 @@ shown as represented transmission metadata. Message content is included only
 when the information is public or the requested observer is authorized by the
 canonical information-delivery visibility rules. A public scene with no observer
 therefore cannot expose direct/private content merely because a delivery exists.
+Message content is assigned to the DOM with `textContent`, never injected as
+markup.
 
 An exact declared `action.feedback` operation may display the retained event
 status and failed check labels. It does not generate a new explanation and does

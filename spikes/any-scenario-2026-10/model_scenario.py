@@ -393,7 +393,7 @@ def repair_loop(bundle, causal, stocks, reviewer, out: Path, name: str, stamp: s
 
 
 def main_spec(args, out: Path, stamp: str) -> int:
-    """The scenario-spec path (docs/plans/scenario_spec_adoption.md)."""
+    """The scenario-spec path (docs/model/ODD.md section 10; the plan docs/plans/scenario_spec_adoption.md is retired)."""
     from compile_spec import compile_spec
     from spec_pipeline import (action_signatures, behavior_coverage, merge_causal, person_briefs, pin_named_slots,
                                record_fields,

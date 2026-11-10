@@ -1,6 +1,6 @@
 # Catalog of older documents
 
-Every document still in the repository that the [documentation index](index.md) does not link in its reading order, grouped by folder. Titles are each file's own first heading. Older audits, contracts, plans and notes listed here are not yet retired; arc42, the OpenSpec specs and the roadmap carry their current facts and win where they disagree. Add a line here when you add a document a reader should find.
+Every document still in the repository that the [documentation index](index.md) does not link in its reading order, grouped by folder. Titles are each file's own first heading. Older audits and notes listed here stay because code, tests, the lessons page or the open questions cite them; arc42, the OpenSpec specs and the roadmap carry their current facts and win where they disagree. Retired documents are listed in [arc42 section 8](architecture/arc42.md#provenance-of-retired-material). Add a line here when you add a document a reader should find.
 
 ## docs
 
@@ -8,51 +8,18 @@ Every document still in the repository that the [documentation index](index.md) 
 
 ## docs/architecture
 
-- [World Substrate goal and requirements](architecture/GOAL.md)
 
 ## docs/audits
 
 - [A third world, built against a measurement](audits/kitchen-contested-world.md)
-- [Repair Bay: nontrivial live-authoring proof](audits/repair-bay-live-preflight.md)
-- [Castaway zero-review scene portability](audits/castaway-zero-review.md)
-- [Greenhouse fourth-world authoring proof](audits/greenhouse-authoring-proof.md)
-- [Kitchen zero-review replay breadth proof](audits/kitchen-zero-review.md)
-- [Living Scene embodied renderer first gate](audits/living-scene-embodied-renderer.md)
-- [Living Scene information and outcome feedback gate](audits/living-scene-information-feedback.md)
-- [M2 audit: the M1 `give` path against the proposed contracts](audits/m2-give-path-audit.md)
 - [M3: the first offline mechanics-authoring experiment](audits/m3-overheat-authoring-experiment.md)
 - [M4: an honestly-authored mechanic, and where the assays go quiet](audits/m4-spill-experiment.md)
 - [M5: a policy drives the world](audits/m5-policy-consumer.md)
 - [M6: a second world, and what "substrate" actually meant](audits/m6-second-world.md)
 - [M7: can an agent author a mechanic it was not handed?](audits/m7-authoring-rate.md)
 - [M7b: was the triviality the model's, or the language's?](audits/m7b-relational-authoring.md)
-- [Native Waltzman first-release static readiness review](audits/native-waltzman-release-static-readiness-2026-09-19.md)
-- [Explicit action-presentation bindings](audits/scene-action-presentation-bindings.md)
-- [Scene-profile presentation auto-layout](audits/scene-profile-auto-layout.md)
-- [Scene-profile bootstrap experiment](audits/scene-profile-bootstrap.md)
-- [Waltzman Kitchen-quality living-world v2](audits/waltzman-kitchen-quality-v2.md)
-- [Waltzman Living Replay v1 integration evidence](audits/waltzman-living-replay-v1.md)
-- [Waltzman Living Scene v1 composition evidence](audits/waltzman-living-scene-profile-v1.md)
-- [Waltzman M1 living-world acceptance — automated evidence](audits/waltzman-m1-acceptance-2026-09-09.md)
 - [Warehouse Rush live-authoring experiment](audits/warehouse-rush-preflight.md)
-- [Workshop scene-profile greenfield proof](audits/workshop-scene-greenfield.md)
-- [Visual/schema world authoring builder](audits/world-authoring-builder.md)
-- [Code-first world authoring starter](audits/world-authoring-starter.md)
-- [World Replay Studio product surface](audits/world-replay-studio.md)
 
-## docs/contracts
-
-- [Scene profile v0](contracts/scene-profile-v0.md)
-- [World authoring bundle v0](contracts/world-authoring-bundle-v0.md)
-- [Composed Living Scene presentation](contracts/composed-living-scene-v1.md)
-- [CVS Situation IR structural import v0](contracts/cvs-situation-import-v0.md)
-- [Living Scene v1](contracts/living-scene-v1.md)
-- [Mechanic profile contract v0](contracts/mechanic-profile-v0.md)
-- [Native coordination one-shot authoring v0](contracts/native-coordination-authoring-v0.md)
-- [Native coordination comparison v0](contracts/native-coordination-comparison-v0.md)
-- [Native coordination diagnostic bundle v0](contracts/native-coordination-diagnostics-v0.md)
-- [Read-scope enforcement contract v0](contracts/read-scope-enforcement-v0.md)
-- [Transition envelope contract v0](contracts/transition-envelope-v0.md)
 
 ## docs/decisions
 
@@ -71,43 +38,21 @@ Every document still in the repository that the [documentation index](index.md) 
 
 ## docs/plans
 
-- [Goal: The describe-any-scenario world definition becomes one metamodel joined from Brian's existing pieces rather than a further reinvention: Cybernetic Influence's scenario kinds mapped onto the scientific-hypergraph kernel (concepts and n-ary relations) and the observation-to-action vocabulary (observation, belief, decision, affordance, action, effect), plus two new kinds the Waltzman run showed are missing, commitments (debtor, creditor, condition, state conditional/met/broken) and issues (open, resolved, reopened). Brian reviews it as a diagram first; then the pipeline compiles commitments and issues with reviewed rules, and Waltzman's scenario is rerun and reassessed.](plans/scenario-metamodel.goal.md)
-- [Plan: one scenario metamodel joined from existing pieces](plans/scenario_metamodel.md)
-- [Plan: extend the system model to the any-scenario pipeline](plans/system_model_pipeline.md)
 - [Goal: residents say in their own words what they physically try (open-attempt /goal launcher)](plans/open-attempt.goal.md)
-- [Goal: Prove the Decision 007 describe-any-scenario path end to end in world-substrate: plain-language scenario -> checked model -> LLM residents on Concordia with the World Substrate Engine as sole consequence authority -> attempts resolved over time -> game master writes checked rules mid-run -> structured changes rendered as living-scene frames.](plans/any-scenario-poc.goal.md)
-- [Plan: describe-any-scenario proof of concept (Decision 007)](plans/any_scenario_poc.md)
-- [Goal: Best of all worlds — one box, rich people, exact rules, live](plans/best-of-all-worlds.goal.md)
-- [Goal: World Substrate processes can change linked entities in one atomic transition: a process names participants resolved from its own entity (ownership, an entity_ref field, or shared location), so the truck's driver moves with the truck and a dying patient frees the ventilator and bed, proven on the generated truck and hospital worlds.](plans/linked-process-participants.goal.md)
-- [Plan: linked participants for processes (Decision 007 follow-up)](plans/linked_process_participants.md)
 - [Plan: open attempts, knock-on effects that run to the end, and skill rolls](plans/open_attempt.md)
 - [Plan: worlds declare their own laws, the engine enforces them, and an independent review reads the rules](plans/declared_laws.md)
 - [Goal: worlds declare their own laws (declared-laws /goal launcher, written at adoption)](plans/declared-laws.goal.md)
-- [Goal: no round runs or bills twice, and a run's record says why each move was refused](plans/run-loop-contention.goal.md) (superseded 2026-10-26 by open_attempt.md)
-- [Goal: Every actor a scenario names reaches the generated world as an autonomous agent with a role brief taken from the scenario text, so that Rand Waltzman's scenario, rerun through the any-scenario pipeline, has the technical, legal, logistics and community groups acting in it; a fresh assessment states with event-level evidence which of the paper's four mechanisms now appear.](plans/scenario-actors-kept.goal.md)
-- [Goal: The describe-any-scenario pipeline defines each world in a typed scenario spec ported from Cybernetic Influence v3's world schema (people with behavioral profiles, information items with a source, channel and recipients, scheduled moments, world records with visibility, and a coverage report), compiles it into World Substrate state using the existing information module and the reviewed communicate rule, briefs each agent with its own person profile, and reruns Rand Waltzman's scenario with a fresh assessment of the paper's four mechanisms.](plans/scenario-spec-adoption.goal.md)
-- [Plan: keep every actor a scenario names, and brief each with its role](plans/scenario_actors_kept.md)
-- [Plan: define generated worlds in Cybernetic Influence's scenario schema](plans/scenario_spec_adoption.md)
-- [Goal: The checked system model in docs/model/ covers what it left out: the describe-any-scenario pipeline (its steps, records, views and evidence), information items (src/world_substrate/information.py) and linked process participants, with a list of the kinds of things a world can represent and which path produces each, and a comparison with Cybernetic Influence v3's world schema.](plans/system-model-pipeline.goal.md)
-- [Goal: Waltzman, attempts from belief, and read traces](plans/waltzman-belief-and-traces.goal.md)
-- [Goal: Rand Waltzman's bio-surveillance coordination scenario, typed as plain text, runs end to end through the any-scenario pipeline (checked model, AI members on Concordia with the World Substrate Engine as sole consequence authority, game master writing checked rules mid-run, replay frames), and a short plain-language assessment states, with event-level evidence, which of the paper's four mechanisms the generated world represents and which it misses.](plans/waltzman-scenario-run.goal.md)
-- [Goal: tasks that can really fail part-way (#128, second slice)](plans/waltzman-tasks-slice2.goal.md)
-- [Plan: run Waltzman's scenario through the any-scenario pipeline](plans/waltzman_scenario_run.md)
 
 ## docs/research
 
-- [Agent Ecology 2 — Targeted Review for World Substrate](research/agent-ecology2-review.md)
 - [Cybernetic Influence Lineage Review for World Substrate](research/cybernetic-influence-lineage-review.md)
 - [World Substrate discussion traceability](research/discussion-traceability.md)
 - [Prior art for a flexible world simulator (2026-10)](research/flexible-simulator-prior-art-2026-10.md)
 - [Formal simulation and agent theory: prior art survey (scope: formal)](research/flexible-simulator-prior-art-2026-10/formal.md)
 - [Games and interactive fiction survey: prior art for a flexible world simulator](research/flexible-simulator-prior-art-2026-10/games.md)
 - [LLM-agent simulation platforms 2023-2026: prior-art survey (scope: llm-sims)](research/flexible-simulator-prior-art-2026-10/llm-sims.md)
-- [Jev-inspired ideas for non-cognitive world modeling](research/jev-world-modeling-exploration-2026-09.md)
 - [Off-the-shelf candidates to evaluate (2026-09-25)](research/off-the-shelf-candidates-2026-09-25.md)
-- [Research synthesis](research/synthesis.md)
 - [Living-world UI references — 2026-09-09](research/ui-references/README.md)
-- [World Substrate Theory and Strategy — Working Memo](research/world-substrate-strategy-session.md)
 
 ## evidence/best-of-all-worlds
 

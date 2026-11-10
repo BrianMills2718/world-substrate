@@ -566,7 +566,7 @@ def run_world(
     cost = 0.0
     residents = None
     if policy == "resident":
-        # Concordia residents play the people (increment 2, best-of-all-worlds.goal.md): each keeps its own memory,
+        # Concordia residents play the people (increment 2 of the retired best-of-all-worlds goal, git show e332eb7:docs/plans/best-of-all-worlds.goal.md): each keeps its own memory,
         # carried between one-round requests, and names its belief and expected effect with every move.
         from scripts.concordia_residents import Residents
 

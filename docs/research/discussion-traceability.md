@@ -4,7 +4,7 @@ status: active
 reviewed_through: 2026-09-08
 authority_refs:
   - ../../roadmap/README.md
-  - ../architecture.md
+  - ../architecture/arc42.md
   - ../decisions/001-project-scope.md
   - ../decisions/002-observability-and-replay.md
   - ../decisions/003-semantic-mechanical-boundary.md
@@ -32,56 +32,56 @@ This index maps the 2026-09-02 strategy discussion and donor reviews to their cu
 
 | Discussion proposition | Status | Authoritative destination | Notes |
 | --- | --- | --- | --- |
-| Persistent canonical world state is fundamental | **accepted** | [Architecture](../architecture.md), [Decision 001](../decisions/001-project-scope.md) | Resident cognition and analysis do not become competing world truth |
+| Persistent canonical world state is fundamental | **accepted** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), [Decision 001](../decisions/001-project-scope.md) | Resident cognition and analysis do not become competing world truth |
 | Observability is a core product requirement | **accepted** | [Decision 002](../decisions/002-observability-and-replay.md) | Traces expose observation/read, attempt, binding, authority, checks, effects, refusal, and result |
 | Determinism and exact reproducibility are not product goals | **accepted** | [Decision 002](../decisions/002-observability-and-replay.md) | M1 replay remains an implemented fact and optional diagnostic |
-| Policies and natural-language prose do not directly mutate canonical state | **accepted** | [Decision 001](../decisions/001-project-scope.md), [Architecture](../architecture.md) | Installed mechanics determine consequences |
+| Policies and natural-language prose do not directly mutate canonical state | **accepted** | [Decision 001](../decisions/001-project-scope.md), [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`) | Installed mechanics determine consequences |
 | Linguistic Core is the semantic sense-and-role interface | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | It does not supply persistence, effects, scheduling, or invariants |
-| Existing ontologies should be inspected before inventing classifications | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md), [semantic binding proposal](../contracts/semantic-mechanical-binding-v0.md) | SUMO, FrameNet, PropBank, Wikidata properties, and QUDT are candidate donors |
+| Existing ontologies should be inspected before inventing classifications | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md), [semantic binding proposal](../../openspec/specs/semantic-binding/spec.md) | SUMO, FrameNet, PropBank, Wikidata properties, and QUDT are candidate donors |
 | A linguistic predicate is not automatically an executable primitive | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Binding classification remains provisional |
 | Only represented bearers with independent causal force write canonical state | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Bearers include agents, processes, dispositions, institutions, and explicit exogenous inputs |
 | Composite and emergent descriptions must not double-apply primitive effects | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Collective Competence is the main theory donor |
-| One enclosing transition owns each causally coupled commit | **accepted** | [Architecture](../architecture.md), [transition envelope proposal](../contracts/transition-envelope-v0.md) | This is narrower than universal ACID |
-| Accounting and conservation are goal-relative | **accepted** | [Decision 002](../decisions/002-observability-and-replay.md), [mechanic profile proposal](../contracts/mechanic-profile-v0.md) | No universal mass/energy requirement |
+| One enclosing transition owns each causally coupled commit | **accepted** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), [transition envelope proposal](../../openspec/specs/transition-engine/spec.md) | This is narrower than universal ACID |
+| Accounting and conservation are goal-relative | **accepted** | [Decision 002](../decisions/002-observability-and-replay.md), [mechanic profile proposal](../../openspec/specs/mechanic-installation/spec.md) | No universal mass/energy requirement |
 | Pre-run mechanics-agent authoring is the initial extensibility hypothesis | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md), [Roadmap](../../roadmap/README.md) | Installer review and a frozen profile precede a run |
 | Runtime installation or revision of world laws | **deferred** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Prospective installation, retroactive correction, branching, and technology-local invention remain future research |
-| One canonical simulated timeline with independently scheduled mechanism cadences | **accepted** | [Architecture](../architecture.md), [multi-timescale execution](multi-timescale-execution-2026-09.md) | Render time, cognition wake cadence, and analysis sampling are separate; current engine remains the integer-tick baseline |
-| Resident cognition should normally wake on meaningful events rather than every low-level simulation step | **accepted** | [Architecture](../architecture.md), [Decision 004](../decisions/004-product-and-adoption-strategy.md) | Pydantic AI remains behind `CognitionAdapter`; wake policy does not grant world authority |
+| One canonical simulated timeline with independently scheduled mechanism cadences | **accepted** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), [multi-timescale execution](../architecture/arc42.md#time-and-cadence) (the note itself is retired; `git show 75f32bb:docs/research/multi-timescale-execution-2026-09.md`) | Render time, cognition wake cadence, and analysis sampling are separate; current engine remains the integer-tick baseline |
+| Resident cognition should normally wake on meaningful events rather than every low-level simulation step | **accepted** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), [Decision 004](../decisions/004-product-and-adoption-strategy.md) | Pydantic AI remains behind `CognitionAdapter`; wake policy does not grant world authority |
 | Jev-style System-1/System-2 hybrid cognition behind `CognitionAdapter` | **deferred** | [Technology procurement](technology-procurement-2026-09.md) | Potential provider optimization for fast typed decisions with escalation to general reasoning; World Substrate does not own the cognitive architecture and this is not current roadmap work |
 
 ## Semantic and causal model
 
 | Discussion proposition | Status | Repository destination | Remaining question |
 | --- | --- | --- | --- |
-| Primitive action, autonomous process, state relation, composite, analytic pattern, declaration, and installed institution form a useful binding classification | **provisional** | [Semantic binding proposal](../contracts/semantic-mechanical-binding-v0.md) | Does an existing donor ontology provide a better classification? |
+| Primitive action, autonomous process, state relation, composite, analytic pattern, declaration, and installed institution form a useful binding classification | **provisional** | [Semantic binding proposal](../../openspec/specs/semantic-binding/spec.md) | Does an existing donor ontology provide a better classification? |
 | Causal-force counterfactual test | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Application to particular social and institutional terms remains case-specific |
 | Ordinary exchange consists of independently initiated gives | **accepted direction** | [Roadmap M2](../../roadmap/README.md) | Must be established by implementation evidence |
 | One participant may give while the other reneges | **active** | [Roadmap M2](../../roadmap/README.md) | Required negative scenario |
 | A derived exchange classification performs no additional transfers | **active** | [Roadmap M2](../../roadmap/README.md) | Required anti-double-application test |
-| Escrow may acquire causal force and couple transfers | **proposed later slice** | [Transition envelope proposal](../contracts/transition-envelope-v0.md), [Roadmap M5](../../roadmap/README.md) | Exact institution and rights model remain open |
-| Substrate physics, installed institutions, resident cognition, and analytic interpretation are distinct layers | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md), [Architecture](../architecture.md) | Selected worlds may explicitly represent only the cognition needed by a mechanic |
+| Escrow may acquire causal force and couple transfers | **proposed later slice** | [Transition envelope proposal](../../openspec/specs/transition-engine/spec.md), [Roadmap M5](../../roadmap/README.md) | Exact institution and rights model remain open |
+| Substrate physics, installed institutions, resident cognition, and analytic interpretation are distinct layers | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md), [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`) | Selected worlds may explicitly represent only the cognition needed by a mechanic |
 | Agent beliefs, uncertainty, memory, and plans ordinarily remain in the resident runtime | **accepted** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | No required canonical `believes(...)` relation |
-| Provenance, possession, custody, access, control, title, beneficiary, and transfer authority should remain distinct when material | **provisional** | [Semantic binding proposal](../contracts/semantic-mechanical-binding-v0.md), [Roadmap M2 audit](../../roadmap/README.md) | Which distinctions are required by the selected scenario? |
+| Provenance, possession, custody, access, control, title, beneficiary, and transfer authority should remain distinct when material | **provisional** | [Semantic binding proposal](../../openspec/specs/semantic-binding/spec.md), [Roadmap M2 audit](../../roadmap/README.md) | Which distinctions are required by the selected scenario? |
 | M1 `owner` is bounded operational possession/control, not universal legal ownership | **accepted claim boundary** | [Reference worlds](../../reference_worlds/README.md), [Roadmap M2 audit](../../roadmap/README.md) | Later rights decomposition must not silently reinterpret old evidence |
-| Attributes need not be a new top-level ontology category | **open** | [Research synthesis](synthesis.md) | Donors may represent them as relations, qualities, functions, quantities, or components |
-| Birthplace, parenthood, citizenship, headquarters, and similar state relations require a coverage audit before adding an overlay | **open** | [Semantic binding proposal](../contracts/semantic-mechanical-binding-v0.md) | Determine whether Linguistic Core or a donor already supplies each sense/relation |
+| Attributes need not be a new top-level ontology category | **open** | Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) | Donors may represent them as relations, qualities, functions, quantities, or components |
+| Birthplace, parenthood, citizenship, headquarters, and similar state relations require a coverage audit before adding an overlay | **open** | [Semantic binding proposal](../../openspec/specs/semantic-binding/spec.md) | Determine whether Linguistic Core or a donor already supplies each sense/relation |
 
 ## Mechanics and composition
 
 | Discussion proposition | Status | Repository destination | Notes |
 | --- | --- | --- | --- |
-| Entities remain open to unrelated components while each mechanic has closed local authority | **proposed** | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) | `requires`, `optional_modifiers`, and `forbids` do not define a closed global schema |
-| Mechanics declare and enforce state-path reads and writes | **proposed** | [Mechanic profile v0](../contracts/mechanic-profile-v0.md), [Transition envelope v0](../contracts/transition-envelope-v0.md) | Broad valid JSON is not an authority boundary |
-| Mechanics propose effects rather than mutate during validation | **proposed** | [Transition envelope v0](../contracts/transition-envelope-v0.md) | Inspired by AE2 failure and Cybernetic Influence V3 boundary |
+| Entities remain open to unrelated components while each mechanic has closed local authority | **proposed** | [Mechanic profile v0](../../openspec/specs/mechanic-installation/spec.md) | `requires`, `optional_modifiers`, and `forbids` do not define a closed global schema |
+| Mechanics declare and enforce state-path reads and writes | **proposed** | [Mechanic profile v0](../../openspec/specs/mechanic-installation/spec.md), [Transition envelope v0](../../openspec/specs/transition-engine/spec.md) | Broad valid JSON is not an authority boundary |
+| Mechanics propose effects rather than mutate during validation | **proposed** | [Transition envelope v0](../../openspec/specs/transition-engine/spec.md) | Inspired by AE2 failure and Cybernetic Influence V3 boundary |
 | Offline mechanics agents may produce declarative packages or executable source | **accepted direction** | [Decision 003](../decisions/003-semantic-mechanical-boundary.md) | Installation requires scope, interaction evidence, limitations, and profile freezing |
-| Every mechanic package states representation depth and invalid questions | **proposed** | [Mechanic profile v0](../contracts/mechanic-profile-v0.md) | Exact, stochastic, empirical, scripted, external, and bounded model-mediated forms may share an interface |
-| Declared enforcement coverage is compiler-checkable | **proposed** | [Architecture](../architecture.md), [Mechanic profile v0](../contracts/mechanic-profile-v0.md) | It covers only what the author declared |
-| Global causal closure cannot generally be proven from declarations | **accepted risk** | [Architecture](../architecture.md), [Research synthesis](synthesis.md) | Missing truck, fuel, berth, customs, or labor dependencies are the canonical donor example |
+| Every mechanic package states representation depth and invalid questions | **proposed** | [Mechanic profile v0](../../openspec/specs/mechanic-installation/spec.md) | Exact, stochastic, empirical, scripted, external, and bounded model-mediated forms may share an interface |
+| Declared enforcement coverage is compiler-checkable | **proposed** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), [Mechanic profile v0](../../openspec/specs/mechanic-installation/spec.md) | It covers only what the author declared |
+| Global causal closure cannot generally be proven from declarations | **accepted risk** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) | Missing truck, fuel, berth, customs, or labor dependencies are the canonical donor example |
 | Causal closure should be an assay with residual-risk reporting | **proposed** | [Roadmap M4](../../roadmap/README.md) | Combine semantic inspection, dependency comparison, write-overlap analysis, and adversarial interactions |
-| Interaction complexity is potentially combinatorial rather than one mechanic per predicate | **accepted motivation** | [Strategy ledger](world-substrate-strategy-session.md), [Research synthesis](synthesis.md) | The empirical question is whether agent teams can grow coherent coverage faster than integration risk grows |
-| The sealed-pot interaction is the reference physical coherence example | **research example** | [Architecture](../architecture.md), [Strategy ledger](world-substrate-strategy-session.md) | Heat, pressure, strength, damage, containment, and flow can be locally valid yet globally inconsistent |
-| Duration-bearing activities should remain represented when elapsed time/interruption matters | **proposed** | [Architecture](../architecture.md), [multi-timescale execution](multi-timescale-execution-2026-09.md) | Completion must recheck current canonical state; exact activity schema waits for a concrete target-world need |
-| Cadence/timescale and fidelity are independent modeling dimensions | **accepted** | [Architecture](../architecture.md), [multi-timescale execution](multi-timescale-execution-2026-09.md) | Small timesteps do not imply higher validity or realism |
+| Interaction complexity is potentially combinatorial rather than one mechanic per predicate | **accepted motivation** | Strategy ledger (retired 2026-11-09; `git show 42a82f8:docs/research/world-substrate-strategy-session.md`), Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) | The empirical question is whether agent teams can grow coherent coverage faster than integration risk grows |
+| The sealed-pot interaction is the reference physical coherence example | **research example** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), Strategy ledger (retired 2026-11-09; `git show 42a82f8:docs/research/world-substrate-strategy-session.md`) | Heat, pressure, strength, damage, containment, and flow can be locally valid yet globally inconsistent |
+| Duration-bearing activities should remain represented when elapsed time/interruption matters | **proposed** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), [multi-timescale execution](../architecture/arc42.md#time-and-cadence) (the note itself is retired; `git show 75f32bb:docs/research/multi-timescale-execution-2026-09.md`) | Completion must recheck current canonical state; exact activity schema waits for a concrete target-world need |
+| Cadence/timescale and fidelity are independent modeling dimensions | **accepted** | [Architecture](../architecture/arc42.md) (the retired `docs/architecture.md`; `git show 9cefeee:docs/architecture.md`), [multi-timescale execution](../architecture/arc42.md#time-and-cadence) (the note itself is retired; `git show 75f32bb:docs/research/multi-timescale-execution-2026-09.md`) | Small timesteps do not imply higher validity or realism |
 
 ## Roadmap traceability
 
@@ -106,15 +106,15 @@ The roadmap remains authoritative for ordering. Earlier slice sequences in the s
 
 | Donor | Preserved research record | Principal retained lesson | Code adopted? |
 | --- | --- | --- | --- |
-| Dwarf Fortress research report | [Research synthesis](synthesis.md), [source dispositions](../source-dispositions.md) | Shared persistent objects/processes, content composition, mixed simulation resolution/cadence | No |
-| Castaway | [Research synthesis](synthesis.md) and M1 evidence | Persistent shared objects and composed physical mechanics | Bounded M1 path only |
-| Linguistic Core | [Strategy ledger](world-substrate-strategy-session.md), [Research synthesis](synthesis.md) | Semantic senses and roles need explicit mechanical binding | Pinned semantic subset, not inferred mechanics |
-| Agent Ecology 2 | [Targeted review](agent-ecology2-review.md) | Rights distinctions, installed institutions, premature-effect failure, singular commit | No |
-| Agent Ecology and Agent Ecology 3 | [Strategy ledger](world-substrate-strategy-session.md) | Hardcoded social policy is not emergence; broad architectures can conceal conflicting authority | No |
+| Dwarf Fortress research report | Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`), [source dispositions](../architecture/arc42.md) (the retired `docs/source-dispositions.md`; `git show 9cefeee:docs/source-dispositions.md`) | Shared persistent objects/processes, content composition, mixed simulation resolution/cadence | No |
+| Castaway | Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) and M1 evidence | Persistent shared objects and composed physical mechanics | Bounded M1 path only |
+| Linguistic Core | Strategy ledger (retired 2026-11-09; `git show 42a82f8:docs/research/world-substrate-strategy-session.md`), Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) | Semantic senses and roles need explicit mechanical binding | Pinned semantic subset, not inferred mechanics |
+| Agent Ecology 2 | Targeted review (retired 2026-11-09; `git show 8b9c1f9:docs/research/agent-ecology2-review.md`) | Rights distinctions, installed institutions, premature-effect failure, singular commit | No |
+| Agent Ecology and Agent Ecology 3 | Strategy ledger (retired 2026-11-09; `git show 42a82f8:docs/research/world-substrate-strategy-session.md`) | Hardcoded social policy is not emergence; broad architectures can conceal conflicting authority | No |
 | Cybernetic Influence V3/V2/original | [Lineage review](cybernetic-influence-lineage-review.md) | Canonical intent/patch/commit, local bounded authority, derived macro-levels, explicit closure gap | No |
-| Data Contracts | [Strategy ledger](world-substrate-strategy-session.md), [Research synthesis](synthesis.md) | Explicit compositional boundaries and compact observability | No |
-| Collective Competence | [Strategy ledger](world-substrate-strategy-session.md), [Research synthesis](synthesis.md) | Do not double-count mechanism, capability, dynamics, and outcome | No |
-| Dynamical Laboratory | [Research synthesis](synthesis.md) | Perturbation and representation comparisons belong after executable worlds | No |
+| Data Contracts | Strategy ledger (retired 2026-11-09; `git show 42a82f8:docs/research/world-substrate-strategy-session.md`), Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) | Explicit compositional boundaries and compact observability | No |
+| Collective Competence | Strategy ledger (retired 2026-11-09; `git show 42a82f8:docs/research/world-substrate-strategy-session.md`), Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) | Do not double-count mechanism, capability, dynamics, and outcome | No |
+| Dynamical Laboratory | Research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`) | Perturbation and representation comparisons belong after executable worlds | No |
 
 ## Rejected directions
 
@@ -138,7 +138,7 @@ The roadmap remains authoritative for ordering. Earlier slice sequences in the s
 
 ## Research records
 
-- [World Substrate theory and strategy session](world-substrate-strategy-session.md)
-- [Agent Ecology 2 targeted review](agent-ecology2-review.md)
+- World Substrate theory and strategy session (retired 2026-11-09; `git show 42a82f8:docs/research/world-substrate-strategy-session.md`)
+- Agent Ecology 2 targeted review (retired 2026-11-09; `git show 8b9c1f9:docs/research/agent-ecology2-review.md`)
 - [Cybernetic Influence lineage review](cybernetic-influence-lineage-review.md)
-- [Current research synthesis](synthesis.md)
+- Current research synthesis (retired 2026-11-09; `git show 75f32bb:docs/research/synthesis.md`)

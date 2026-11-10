@@ -1127,7 +1127,7 @@ Q = [
   "short": "A non-authoritative estimate as a rule input",
   "question": "A live Jev probe answered typed maintenance estimates without changing state (evidence/jev/maintenance-estimator-probe-v0.json:299), and Decision 005 keeps Jev available but off the critical path (docs/decisions/005-native-waltzman-delivery.md:86). May a rule cite such an estimate as an input, and under what contract?",
   "blocks": "Any world whose rules need a bounded estimate (time to repair, a likelihood) that no installed mechanic computes.",
-  "resolves_with": "Deferred until one described world needs an estimate no mechanic computes; that counterexample earns it. The contract would then be a recorded, non-authoritative input, like the skill roll's recorded dice, never consequence authority.",
+  "resolves_with": "Deferred until one described world needs an estimate no mechanic computes; that counterexample earns it. The contract would then be a recorded, non-authoritative input, like the skill roll's recorded dice, never consequence authority: a learned or estimated value never becomes canonical state or consequence authority without an installed representation or transition rule, a rule that uses an estimate records the estimate and its model version as event evidence, and approximate affordance ranking never silently drops a valid action (carried from the retired Jev exploration note).",
   "owner": "agent",
   "status": "open",
   "sources": [

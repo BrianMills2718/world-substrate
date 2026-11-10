@@ -1,2 +1,2 @@
 limit: 180
-reason: "Plans with their /goal launchers, audits, contracts, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from docs/catalog.md or docs/index.md."
+reason: "Active plans with their /goal launchers, cited audits, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from docs/catalog.md or docs/index.md."

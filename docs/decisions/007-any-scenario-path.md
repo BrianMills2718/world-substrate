@@ -13,7 +13,7 @@ Governs: RULE-FROZEN-PROFILE, spikes/any-scenario-2026-10
 
 ## Context
 
-The goal is a demo for Rand Waltzman in which he describes any situation in plain words and watches it play out. The current path cannot reach "any" soon. Every outcome needs an approved rule written in advance, and a rule the authoring AI forgets (patients can die) silently never happens. Five weeks of native work produced one situation shape (Decision 005, `docs/contracts/native-coordination-authoring-v0.md`).
+The goal is a demo for Rand Waltzman in which he describes any situation in plain words and watches it play out. The current path cannot reach "any" soon. Every outcome needs an approved rule written in advance, and a rule the authoring AI forgets (patients can die) silently never happens. Five weeks of native work produced one situation shape (Decision 005, `openspec/specs/native-coordination/spec.md`).
 
 Brian raised two objections on 2026-10-07:
 
@@ -94,11 +94,13 @@ Dropped:
 
 ## Observed (2026-10-07, proof of concept)
 
-Evidence: `docs/plans/any_scenario_poc.md` (Current State), PRs #131–#133, and `spikes/any-scenario-2026-10/evidence/`. The four conditions under "Wrong when":
+Evidence: the retired plan `docs/plans/any_scenario_poc.md` (`git show 222e73d:docs/plans/any_scenario_poc.md`, Current State), PRs #131–#133, and `spikes/any-scenario-2026-10/evidence/`. The four conditions under "Wrong when":
 
 - **Mid-run rules mostly failing: borderline.** On the final truck run, 2 of 3 game-master proposals failed conservation and became rulings. The third (a tow) passed and resolved. Three proposals is too few to judge.
 - **Contradictory same-seed rules: not tested.** Only one game-master run was made under the final checks.
 - **An existing system covering layers 1–3: not found** (landscape check above).
 - **The extreme-conditions check failing to flag the omitted death rule: fired, then fixed.** The open AI review missed it in one run. The closed-question version (expected consequence, majority of 3) flagged it in two runs, and an outflow-coverage check also catches it deterministically.
+
+Its conditions C1-C6 were all met on 2026-10-07 (spend $3.93 of $5). Reachability used a guided simulation, not ENHSP, because PDDL2.1 cannot express World Substrate processes. The AI driver never chose to skip the station, so the run-dry case used a recorded condition change (station fuel 0). Sensing by distance is open.
 
 Separately, the rule language limits what the path can model. A process changes only its own entity, and there is no randomness. These limits, not the attempt-over-time loop, were the main blockers to richer worlds.

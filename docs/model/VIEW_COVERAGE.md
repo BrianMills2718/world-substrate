@@ -111,7 +111,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G6. Approval is a request flag, not a record
 
-- **Model:** approval is the gate between proposal and execution (Decision 006, `docs/architecture.md` "Causal authoring and installation").
+- **Model:** approval is the gate between proposal and execution (Decision 006, `docs/architecture.md` "Causal authoring and installation", retired 2026-11-09 into [arc42](../architecture/arc42.md); `git show 9cefeee:docs/architecture.md`).
 - **Code:** the server refuses `/run` and `/compare-native-coordination` unless the body says `approved: true` (`world_builder_service.py:957-962`, `:998-1000`); both pages send the literal `approved:true` (`world_builder_home.html:581`, `world_builder_app.js:304`, `:319`). Nothing records who approved which causal model when; the run log has the request flag and a `world_fingerprint` of bundle + model (`:330`), which is the closest substitute.
 - **Reproduced: partly.** The local run log rows from the G2 run carry `request.approved = true` and nothing else about approval. No request was sent without a UI approval (that the server accepts one follows from the code above but was not exercised).
 
@@ -145,7 +145,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 ### G10. The two living-scene renderers place the same actor differently
 
 - **Observation:** on the unmodified fixture `neutral-render-projection-v0.json` + `neutral-render-profile-v1.json`, frame 2 (activity start): `render_living_scene.py` moves actor-a into the activity ring at `(50%, 32%)`; `render_composed_living_scene.py` leaves actor-a at its move-to point `(20%, 28%)`.
-- **Reproduced: yes** (same Playwright probe as G9). Which placement is intended is not documented; the [Living Scene v1 contract](../contracts/living-scene-v1.md) is the place to settle it.
+- **Reproduced: yes** (same Playwright probe as G9). Which placement is intended is not documented; the [living-scene spec](../../openspec/specs/living-scene/spec.md) is the place to settle it.
 
 - **Fixed 2026-10-06.** Root cause: each renderer had its own `actorPositions`; `render_living_scene.py` applied only the current frame's `actor.move_to` (an actor jumped home on the next frame), while `render_composed_living_scene.py` replayed every earlier move and let it override an active activity's ring. Both now embed one rule (`src/world_substrate/living_scene_layout.py`): moves persist, an active activity gathers its participants, a move in the current frame wins. On the fixture both renderers now put actor-a at the move-to point in frame 1 and in the activity ring in frame 2 (Playwright). Test: `tests/test_living_scene_layout.py`.
 

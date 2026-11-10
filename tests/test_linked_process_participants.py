@@ -1,4 +1,4 @@
-"""Linked participants for processes (docs/plans/linked_process_participants.md, checks L1 and L2).
+"""Linked participants for processes (docs/plans/linked_process_participants.md, retired 2026-11-09; git show 43e1dca:docs/plans/linked_process_participants.md; checks L1 and L2).
 
 A process may name participants resolved from its own entity `it` (ownership, an entity_ref field, or shared
 location). Its effects on them commit in the same single Engine event, under the same write-scope enforcement.

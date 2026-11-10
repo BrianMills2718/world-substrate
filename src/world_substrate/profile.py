@@ -1,6 +1,6 @@
 """Mechanic packages, installation validation, and frozen profiles.
 
-Implements docs/contracts/mechanic-profile-v0.md. A package is the reviewable
+Implements openspec/specs/mechanic-installation/spec.md. A package is the reviewable
 unit an offline mechanics agent authors; installation validates the declared
 contract and freezes a profile identity before a run.
 

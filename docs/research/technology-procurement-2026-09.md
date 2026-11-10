@@ -48,7 +48,7 @@ This is a **deferred provider pattern, not a new World Substrate subsystem or ro
 
 ## Scheduling
 
-SimPy may own simulated clock advancement, event ordering, timeouts, and waking process coroutines. It must not become a parallel source of resource truth or consequence authority. A SimPy wakeup produces a World Substrate process attempt; the installed process mechanic still checks canonical state and the Engine still commits or refuses the transition. The target is one canonical simulation timeline supporting independently timed processes and duration-bearing activities; render time, cognition cadence, and analysis cadence remain separate. See [multi-timescale execution](multi-timescale-execution-2026-09.md).
+SimPy may own simulated clock advancement, event ordering, timeouts, and waking process coroutines. It must not become a parallel source of resource truth or consequence authority. A SimPy wakeup produces a World Substrate process attempt; the installed process mechanic still checks canonical state and the Engine still commits or refuses the transition. The target is one canonical simulation timeline supporting independently timed processes and duration-bearing activities; render time, cognition cadence, and analysis cadence remain separate. See [multi-timescale execution](../architecture/arc42.md#time-and-cadence) (the note itself is retired; `git show 75f32bb:docs/research/multi-timescale-execution-2026-09.md`).
 
 ## Graph inspection
 

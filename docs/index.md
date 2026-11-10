@@ -71,10 +71,9 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
   [declared-laws cold review](planning/declared-laws/cold-review.md).
 - [Attempt-from-belief design page](plans/attempt-from-belief/index.html) (deployed with the pages).
 
-Finished or superseded plans and their `/goal` launchers are not yet retired; they are listed in the
-[catalog of older documents](catalog.md). The
-[arc42 provenance section](architecture/arc42.md#provenance-of-carried-forward-material) names the
-research and audit notes whose current facts arc42 now carries.
+Finished and superseded plans and their `/goal` launchers were retired on 2026-11-09; the
+[arc42 provenance section](architecture/arc42.md#provenance-of-retired-material) lists every retired
+plan, audit, research note and architecture page with its successor and the commit that restores it.
 
 ## 6. Research and reviews kept as references
 
@@ -170,10 +169,11 @@ Every run reported as evidence is a folder with `run-log.jsonl` and a `TRACE_REA
 - [Waltzman stakeholder promotion (2026-09-09)](../evidence/waltzman/public-promotion-2026-09-09.md)
 - [M1 freshwater review](../evidence/m1/freshwater-v0.md)
 
-## Older documents awaiting retirement
+## Older documents
 
-The [catalog of older documents](catalog.md) links every older audit, contract, plan and note that
-is still in the repository but no longer part of the reading order above. None has been retired yet.
-Each will be retired only after its current facts are confirmed to live in arc42, a spec or the
-roadmap; the retiring commit will name the former path, the reason, the successor and the last
-commit that held it, and `git show <commit>:<path>` will restore it.
+The [catalog of older documents](catalog.md) links the older audits, notes and records still in the
+repository but not in the reading order above (kept because code, tests, the lessons page or the open
+questions cite them). The superseded architecture pages, the contracts and the finished plans, audits
+and research notes were retired on 2026-11-09; the
+[arc42 provenance section](architecture/arc42.md#provenance-of-retired-material) names each one's
+successor and last commit, and `git show <commit>:<path>` restores it.

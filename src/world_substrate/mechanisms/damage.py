@@ -1,6 +1,6 @@
 """Overheat damage: an adjacent mechanic authored offline for the M3 experiment.
 
-Authored against docs/contracts/mechanic-profile-v0.md as a reviewable package
+Authored against openspec/specs/mechanic-installation/spec.md as a reviewable package
 plus its executable rule. It is a content-adjacent extension, not a new
 subsystem: every component it touches (`material.heat_limit_c`,
 `material.overheat_damage_per_tick`, `thermal.temperature_c`,

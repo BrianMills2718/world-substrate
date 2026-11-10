@@ -4,7 +4,7 @@ status: active
 reviewed_through: 2026-09-04
 authority_refs:
   - ./m7-authoring-rate.md
-  - ../contracts/mechanic-profile-v0.md
+  - ../../openspec/specs/mechanic-installation/spec.md
   - ../../roadmap/README.md
 ---
 

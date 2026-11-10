@@ -4,7 +4,7 @@ status: active
 reviewed_through: 2026-09-04
 authority_refs:
   - ../decisions/003-semantic-mechanical-boundary.md
-  - ../contracts/mechanic-profile-v0.md
+  - ../../openspec/specs/mechanic-installation/spec.md
   - ./m3-overheat-authoring-experiment.md
   - ../../roadmap/README.md
 ---
