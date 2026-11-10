@@ -160,7 +160,8 @@
         "resource": "scripts/scaffold_world.py:45",
         "world-design": "scripts/generate_world_bundle.py:53",
         "rules-review": "scripts/review_rules.py:75",
-        "run-stop": "scripts/run_stop.py:65"
+        "run-stop": "scripts/run_stop.py:65",
+        "consequence-report": "scripts/consequence_report.py:67"
       }
     },
     "diagrams": {

@@ -133,7 +133,7 @@ Hard constraints:
 | Natural-language World Builder | live since 2026-10-05 | one box, Create simulation, live play, share links |
 | Concordia residents | live since 2026-10-16 | AI residents through an established framework |
 | Open attempts | S1 and S2 built; S3 not built | own-words attempts; same-moment knock-on effects; skill rolls next |
-| AI judge ([plan](../docs/plans/ai_judge.md)) | J0 built 2026-11-10; J1 to J3 and J5 next; J4 exploration only | knock-on chains of any length; an AI judge (Concordia's game master) rules only on what no rule covers, from the engine's consequence report |
+| AI judge ([plan](../docs/plans/ai_judge.md)) | J0 and J1 built 2026-11-10; J2, J3 and J5 next; J4 exploration only | knock-on chains of any length; an AI judge (Concordia's game master) rules only on what no rule covers, from the engine's consequence report |
 | Declared laws | S1 to S3 built; S4 under way; S5 follows the plain-version comparison (Q60) | worlds declare laws, the engine keeps them, a second model reviews the rules |
 | AI judge | draft plan, direction approved 2026-11-09; build started 2026-11-10 (J0) | the engine works out every knock-on effect and blocker; a judge rules only on gaps, its rulings become checked rules ([plan](../docs/plans/ai_judge.md)) |
 | Estimate rules | draft plan 2026-11-10; nothing built | a rule's outcome can depend on a chance Jev estimates from named facts, rolled, recorded and replayed without Jev; only slice E4 (judge-proposed estimate rules) waits for the judge's J3 ([plan](../docs/plans/estimate_rules.md)) |
