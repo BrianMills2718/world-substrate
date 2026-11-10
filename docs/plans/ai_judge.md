@@ -51,9 +51,8 @@ conflict_surfaces:
 
 Planning package: docs/planning/ai-judge/planning-package.json
 
-**Status:** complete draft, pending Brian's review. Not adopted; nothing is built. Its planning package and review
-page are built once the documentation cleanup (branch `docs/cleanup-2026-11-09`) has merged, because both read the
-repository-wide package that the cleanup rewrites.
+**Status:** complete draft; Brian approved its direction on 2026-11-09 ("i approve", after Decided 5). Not
+adopted; nothing is built.
 
 ## Why
 
@@ -164,7 +163,8 @@ Writing "only Alice can log in" as a constraint would make social engineering im
 
 What the earlier Cybernetic Influence work (v3) already settled, to reuse rather than re-derive (searched
 2026-11-09; the original chat discussion was not found in the chat archive, and v1 and v2 survive only as Drive
-archives, so these come from v3's code and docs):
+archives, so these come from v3's code and docs; paths below are in the `cybernetic_influence_v3`
+repository):
 
 - It kept four things apart: identity proof, normative permission, technical availability, and the physical
   outcome (`docs/archive/plans/005-physical-access-generalization.md:20-26`); "software enforcement differs from
