@@ -2,7 +2,7 @@
  "schema_version": "1.0",
  "record_type": "planning_package",
  "repository": "BrianMills2718/world-substrate",
- "subject_revision": "1dea4d62d004f9471ba4f81a61fd3771276acfad",
+ "subject_revision": "5e98aeeb55d82e28da03860c8f0c3bde2a32013f",
  "request": "Brian 2026-11-09 \"i approve\" (to: docs/plans/ai_judge.md, an AI judge fed by automatic propagation, after Decided 5); the plan's 'Planning package:' line names this file",
  "parts": {
   "checks": {
