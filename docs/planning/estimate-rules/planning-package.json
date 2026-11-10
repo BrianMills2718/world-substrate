@@ -8,7 +8,79 @@
   "checks": {
    "status": "present",
    "path": "docs/planning/estimate-rules/checks.txt",
-   "results": []
+   "results": [
+    {
+     "name": "durable documents (arc42)",
+     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
+     "exit_status": 1,
+     "counts": {
+      "findings": 12
+     },
+     "tracked_by": "Q77",
+     "note": "12 findings in documents this plan does not touch (docs/architecture/arc42.md goal fields and headings; 4 system-model rules marked stale); the same 12 on origin/main 43663e9 itself."
+    },
+    {
+     "name": "project navigation",
+     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
+     "exit_status": 0,
+     "counts": {
+      "findings": 0
+     }
+    },
+    {
+     "name": "repository format",
+     "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
+     "exit_status": 0,
+     "counts": {
+      "compliant": 1,
+      "of": 1
+     }
+    },
+    {
+     "name": "trace reads",
+     "command": "python3 scripts/check_trace_reads.py --root evidence",
+     "exit_status": 0,
+     "counts": {
+      "runs": 33,
+      "problems": 0
+     }
+    },
+    {
+     "name": "wiki and Markdown cap",
+     "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+     "exit_status": 1,
+     "counts": {
+      "md_files": 153,
+      "exception_limit": 180,
+      "more_than_two_links_deep": 13,
+      "not_linked_from_entry": 6,
+      "durable_findings": 12
+     },
+     "tracked_by": "Q77",
+     "note": "Also exits 1 on origin/main 43663e9 (151 files, 7 not linked, 13 deep, 12 durable findings); this change adds 2 Markdown files (the plan and its cold review), both linked from docs/index.md, and links the ai-judge cold review that was unlinked on main."
+    },
+    {
+     "name": "doc reachability",
+     "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
+     "exit_status": 0,
+     "counts": {
+      "reachable": 124,
+      "unreachable": 0
+     }
+    },
+    {
+     "name": "project check (tests, system model, docs)",
+     "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
+     "note": "counts from its line 'Neutral runtime tests: 884 passed, 2 skipped, 222 subtests passed' (pytest-xdist), run on commit e2ea3d5 of this change; ship reruns it on the merged commit",
+     "exit_status": 0,
+     "counts": {
+      "tests_run": 884,
+      "failed": 0,
+      "skipped": 2,
+      "subtests_passed": 222
+     }
+    }
+   ]
   },
   "open_questions": {
    "status": "present",
@@ -245,7 +317,7 @@
    "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/estimate-rules/review-page/"
   },
   "cold_review": {
-   "status": "absent",
+   "status": "missing",
    "path": "docs/planning/estimate-rules/cold-review.md"
   }
  },
