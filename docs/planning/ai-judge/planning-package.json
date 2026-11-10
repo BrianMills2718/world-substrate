@@ -17,7 +17,7 @@
       "findings": 12
      },
      "tracked_by": "Q77",
-     "note": "12 findings in documents this plan does not touch (docs/architecture/arc42.md goal fields and headings; 4 system-model rules whose owner files changed in a comment-only commit); the same 12 on origin/main 0dcbcd6 itself."
+     "note": "12 findings in documents this plan does not own (docs/architecture/arc42.md goal fields and headings; 4 system-model rules whose owner files the run-stop slices changed); the 4 rules J0's files own were re-read and restamped in docs/model/trace.yaml."
     },
     {
      "name": "project navigation",
@@ -50,31 +50,31 @@
      "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
      "exit_status": 1,
      "counts": {
-      "md_files": 144,
+      "md_files": 160,
       "exception_limit": 180,
       "more_than_two_links_deep": 13,
-      "not_linked_from_entry": 0,
+      "not_linked_from_entry": 10,
       "durable_findings": 12
      },
      "tracked_by": "Q77",
-     "note": "Also exits 1 on origin/main 0dcbcd6 (143 files within the exception limit, 13 deep, 12 durable findings); this change adds docs/plans/ai_judge.md's revision and no new Markdown file."
+     "note": "The 10 not linked are archived OpenSpec changes (listed in .doc-reachability-ignore, which this check does not read) and older audits and research notes; this change adds no new Markdown file and links the J0 trace reads and the ai-judge cold review from docs/index.md."
     },
     {
      "name": "doc reachability",
      "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
      "exit_status": 0,
      "counts": {
-      "reachable": 121,
+      "reachable": 127,
       "unreachable": 0
      }
     },
     {
      "name": "project check (tests, system model, docs)",
      "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
-     "note": "counts from its line 'Neutral runtime tests: 862 passed, 2 skipped, 222 subtests passed' (pytest-xdist); run on the working tree of this change with the package and page present (its broken-link check needs them)",
+     "note": "counts from its line 'Neutral runtime tests: 891 passed, 2 skipped, 222 subtests passed' (pytest-xdist); run on commit 6dc7d37 of this change",
      "exit_status": 0,
      "counts": {
-      "tests_run": 862,
+      "tests_run": 891,
       "failed": 0,
       "skipped": 2,
       "subtests_passed": 222

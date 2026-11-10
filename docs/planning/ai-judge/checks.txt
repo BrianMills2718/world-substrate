@@ -1,4 +1,4 @@
-Checks run 2026-11-09 on branch plan/ai-judge (based on origin/main 0dcbcd6), working tree of the revision commit; the durable-document and wiki-cap failures below are the same on origin/main 0dcbcd6 itself (tracked by Q77).
+Checks run 2026-11-10 on branch feat/judge-j0-live, commit 6dc7d37 (based on origin/main d89a446, J0 merged and live). The durable-document and Markdown-cap failures below are in documents and archives this plan does not own (tracked by Q77): arc42 goal fields and headings, four system-model rules whose owner files the run-stop slices changed, and archived OpenSpec changes and older audits not linked from the wiki.
 
 == durable documents (arc42): python3 $COMPANY_PLANNING/scripts/durable_docs_check.py --repo . --arc42
 FINDING GOAL-FIELD role=goal id=Thesis file=docs/architecture/arc42.md: 'Thesis' is missing or placeholder
@@ -9,11 +9,11 @@ FINDING ARC42-HEADING role=goal id=Introduction and Goals file=docs/architecture
 FINDING ARC42-HEADING role=goal id=Requirements Overview file=docs/architecture/arc42.md: arc42 sub-heading 'Requirements Overview' missing (use not_applicable: <reason> under it if it does not apply)
 FINDING ARC42-HEADING role=goal id=Quality Goals file=docs/architecture/arc42.md: arc42 sub-heading 'Quality Goals' missing (use not_applicable: <reason> under it if it does not apply)
 FINDING ARC42-EXTENSION-LABEL role=goal id=North star file=docs/architecture/arc42.md: 'North star' is an AES extension and must be labelled '(AES extension)'
-FINDING STALE role=system_model id=RULE-FROZEN-PROFILE file=scripts/run_authored_world.py: owner changed in 1 commit(s) after the rule was last reviewed (096c129d0); re-read the rule and set reviewed_at
-FINDING STALE role=system_model id=RULE-APPROVAL-BEFORE-RUN file=scripts/world_builder_service.py: owner changed in 1 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
-FINDING STALE role=system_model id=RULE-BUDGET-FAILS-CLOSED file=scripts/world_builder_service.py: owner changed in 1 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
-FINDING STALE role=system_model id=RULE-DURABLE-RUN-RECORD file=scripts/world_builder_service.py: owner changed in 1 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
-durable-docs: mode=repo repo=/home/brian/code2/worktrees/ws-plan-ai-judge findings=12 (ARC42-EXTENSION-LABEL=1, ARC42-HEADING=3, GOAL-FIELD=2, GOAL-NO-CTX-004=1, GOAL-NO-LINEAGE=1, STALE=4), exit 1
+FINDING STALE role=system_model id=RULE-FROZEN-PROFILE file=scripts/run_authored_world.py: owner changed in 5 commit(s) after the rule was last reviewed (096c129d0); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-APPROVAL-BEFORE-RUN file=scripts/world_builder_service.py: owner changed in 5 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-BUDGET-FAILS-CLOSED file=scripts/world_builder_service.py: owner changed in 5 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-DURABLE-RUN-RECORD file=scripts/world_builder_service.py: owner changed in 5 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
+durable-docs: mode=repo repo=/home/brian/code2/worktrees/ws-judge-j0b findings=12 (ARC42-EXTENSION-LABEL=1, ARC42-HEADING=3, GOAL-FIELD=2, GOAL-NO-CTX-004=1, GOAL-NO-LINEAGE=1, STALE=4), exit 1
 exit 1
 
 == project navigation: python3 $COMPANY_PLANNING/scripts/validate_project_navigation.py .
@@ -26,22 +26,27 @@ RESULT repo-format compliant=1 of=1 exit=0
 exit 0
 
 == trace reads: python3 scripts/check_trace_reads.py --root evidence
-RESULT runs=33 problems=0
+RESULT runs=38 problems=0
 exit 0
 
 == wiki and Markdown cap: python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD
-EXCEPTION    144/180  BrianMills2718/world-substrate  -- Active plans with their /goal launchers, cited audits, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from docs/catalog.md or docs/index.md.
-UNREACHABLE    13  BrianMills2718/world-substrate  -- 0 reader docs not linked from wiki/index.md, 13 more than 2 links deep (e.g. docs/VISUAL_FEEDBACK.md, docs/audits/kitchen-contested-world.md, docs/audits/m3-overheat-authoring-experiment.md)
+EXCEPTION    160/180  BrianMills2718/world-substrate  -- Active plans with their /goal launchers, cited audits, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from docs/catalog.md or docs/index.md.
+UNREACHABLE    23  BrianMills2718/world-substrate  -- 10 reader docs not linked from wiki/index.md, 13 more than 2 links deep (e.g. openspec/changes/archive/2026-11-10-configurable-run-stop/proposal.md, openspec/changes/archive/2026-11-10-configurable-run-stop/specs/world-builder-page/spec.md, openspec/changes/archive/2026-11-10-configurable-run-stop/tasks.md)
 DURABLE    12  BrianMills2718/world-substrate  -- 12 durable-document findings (e.g. GOAL-FIELD role=goal id=Thesis file=docs/architecture/arc42.md: 'Thesis' is missing or placeholder; GOAL-FIELD role=goal id=Thesis disproof file=docs/architecture/arc42.md: 'Thesis disproof' is missing or placeholder)
-REPO  BrianMills2718/world-substrate  md=144  cap=exception  reach=orphans(13)  layout=undeclared(0)  durable=findings(12)
+REPO  BrianMills2718/world-substrate  md=160  cap=exception  reach=orphans(23)  layout=undeclared(0)  durable=findings(12)
 md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=0 orphans=1 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=0 findings=1 undeclared=0   exit 1
 exit 1
 
 == doc reachability: python3 /home/brian/code2/workspace/scripts/doc_reachability.py .
-doc-reachability: 121 reachable, 0 unreachable, 121 tracked .md files
+doc-reachability: 127 reachable, 0 unreachable, 127 tracked .md files
 exit 0
 
 == project check (tests, system model, docs): uv run ... python scripts/check_project.py (working tree of this change)
 World Substrate project check passed.
-Neutral runtime tests: 862 passed, 2 skipped, 222 subtests passed in 54.77s
+Neutral runtime tests: 891 passed, 2 skipped, 222 subtests passed in 64.85s (0:01:04)
+Passed-tree stamp: 4b114f203500
+Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
+Planning path: README.md -> roadmap/README.md -> active slice
+Pinned source records checked: 16
+Donor checkout verification skipped (use --with-donors to enable).
 exit 0
