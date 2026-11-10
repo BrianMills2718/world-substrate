@@ -1,0 +1,155 @@
+{
+ "what": "The plain version's accepted sawmill rule (buy-cedar-logs) run through the existing deterministic test run, then one 3-log attempt. No model call.",
+ "source_world": "evidence/declared-laws/s2-pencil-2/run-log.jsonl line 1 (result.bundle, result.causal_model) plus the rule in pencil-sawmill-buys-logs.json",
+ "script": "evidence/ai-judge/plain-baseline/sawmill_test_run.py",
+ "scripted_test_run": {
+  "turns": 12,
+  "accepted_actions": 46,
+  "buy_cedar_logs_moves": [
+   {
+    "turn": 2,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 3,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 4,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 5,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 6,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 7,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 8,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 9,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 10,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 11,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   },
+   {
+    "turn": 12,
+    "actor": "sawmill",
+    "logger": "logger",
+    "quantity": 1,
+    "changed": true
+   }
+  ],
+  "quantities_tried": [
+   1
+  ],
+  "law_breaches": [
+   {
+    "rule_id": "saw-slats",
+    "law_id": "cedar-total",
+    "law": "Cedar is cut from the standing forest into logs.",
+    "found": "saw-slats changed the world's total cedar by -1; only cut-cedar may change it"
+   }
+  ],
+  "never_offered_keys": [
+   "assemble-pencils",
+   "book-pencil-shipment",
+   "buy-pencil",
+   "deliver-pencil-shipment",
+   "pack-pencils"
+  ],
+  "flags_buy_cedar_logs": false
+ },
+ "offered_to_sawmill": [
+  {
+   "action": {
+    "actor": "sawmill",
+    "kind": "buy-cedar-logs",
+    "base_revision": 0,
+    "controller": "unselected",
+    "logger": "logger",
+    "quantity": 1
+   },
+   "ok": true,
+   "reason": null
+  }
+ ],
+ "three_log_attempt": {
+  "submitted": {
+   "actor": "sawmill",
+   "kind": "buy-cedar-logs",
+   "logger": "logger",
+   "quantity": 3
+  },
+  "status": "accepted",
+  "failed_checks": [],
+  "before": {
+   "logger": {
+    "logs": 3,
+    "cash": 10000
+   },
+   "sawmill": {
+    "logs": 0,
+    "cash": 10000
+   }
+  },
+  "after": {
+   "logger": {
+    "logs": 0,
+    "cash": 10010
+   },
+   "sawmill": {
+    "logs": 3,
+    "cash": 9990
+   }
+  },
+  "logs_moved": 3,
+  "cash_paid": 10,
+  "price_per_log": 10
+ },
+ "finding": "The scripted test run tried quantities [1] only and flagged nothing on buy-cedar-logs. The 3-log attempt was accepted: 3 logs moved for 10 coins (3 x 10 = 30 expected). No deterministic check flags the single-price charge; the rules check catches malformed rules only."
+}

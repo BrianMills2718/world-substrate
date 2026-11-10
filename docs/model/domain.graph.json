@@ -435,7 +435,7 @@
    "id": "consequence-report",
    "label": "Consequence report",
    "kind": "Theory",
-   "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: the facts the attempt touches and which checks of nearby installed rules pass or fail. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+   "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
   },
   {
    "id": "judge-ruling",
@@ -1109,7 +1109,7 @@
    "id": "e106",
    "source": "consequence-report",
    "target": "check",
-   "label": "pass 1 reads nearby"
+   "label": "pass 1 lists"
   },
   {
    "id": "e107",

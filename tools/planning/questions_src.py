@@ -1331,9 +1331,9 @@ Q = [
   "status": "resolved",
   "evidence": "Measured 2026-11-09 from saved worlds. The largest, evidence/waltzman-tasks-slice2/c1r21, is 143,430 characters (bundle 34,863, rules 79,457, largest state 29,110), about 42,200 tokens at the 3.40 characters per token measured on the three plain-baseline calls (evidence/ai-judge/plain-baseline/). One chain step (event plus parent) averages 340 characters over 2,081 steps in saved runs, so a 5,000-step chain is about 500,000 tokens: too large. Answer: the judge gets the whole world plus the test run's net changes (at most the state, about 8,600 tokens), blockers, chain length and stopping point, about 53,000 tokens worst case ($0.006 at $0.10/M input, $0.50/M output); the full chain stays in the run record. The earlier '786 links' figure had no source and is dropped.",
   "sources": [
-   "docs/plans/ai_judge.md:458",
-   "docs/plans/ai_judge.md:299",
-   "docs/plans/ai_judge.md:396"
+   "docs/plans/ai_judge.md:490",
+   "docs/plans/ai_judge.md:309",
+   "docs/plans/ai_judge.md:406"
   ],
   "touches": [
    "consequence-report",
@@ -1349,8 +1349,8 @@ Q = [
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/ai_judge.md:462",
-   "docs/plans/ai_judge.md:144"
+   "docs/plans/ai_judge.md:494",
+   "docs/plans/ai_judge.md:153"
   ],
   "touches": [
    "judge-ruling",
@@ -1366,8 +1366,8 @@ Q = [
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/ai_judge.md:465",
-   "docs/plans/ai_judge.md:195"
+   "docs/plans/ai_judge.md:497",
+   "docs/plans/ai_judge.md:204"
   ],
   "touches": [
    "norm",
@@ -1399,10 +1399,10 @@ Q = [
   "resolves_with": "Argument from the engine code: what discover() computes without a rule, and what a dry run of a proposed rule on a copy of the world gives.",
   "owner": "agent",
   "status": "resolved",
-  "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 1). The judge works in two passes. Pass 1: the engine computes what needs no new rule, the facts the attempt touches and which checks of nearby installed rules pass or fail (engine.discover's 'blocked' rows, already recorded as blocked_by_rules, scripts/run_authored_world.py:601-634). The judge proposes a ruling written as a rule. Pass 2: the engine runs the rules check and test-runs the proposed rule on a copy of the world, giving the consequence report (net changes, blockers, chain length and stopping point); the judge confirms, revises once or withdraws; only then is the rule installed and the attempt settled through it. An attempt an installed rule covers but whose check fails is refused by the engine with no judge call (A3). Plan: docs/plans/ai_judge.md, Canonical example.",
+  "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 1). The judge works in two passes. Pass 1: the engine computes what needs no new rule, from a fixed selection: engine.discover (src/world_substrate/engine.py:380-440) for the person acting and for each person the attempt names, with each move's checks, plus the current values of the entities the attempt names. discover lists only the moves of the person asked, so the port's 'sign release: blocked, inspected is false' comes from Rosa's page, not Vik's (cold review 2 of 2026-11-09, finding 3); today's runs record a few blocked rows per resident as blocked_by_rules (scripts/run_authored_world.py:601-634), not tied to an attempt. The judge proposes a ruling written as a rule. Pass 2: the engine runs the rules check and test-runs the proposed rule on a copy of the world, giving the consequence report (net changes, blockers, chain length and stopping point); the judge confirms, revises once or withdraws; only then is the rule installed and the attempt settled through it. An attempt an installed rule covers but whose check fails is refused by the engine with no judge call (A3). Plan: docs/plans/ai_judge.md, Canonical example.",
   "sources": [
-   "docs/plans/ai_judge.md:90",
-   "docs/plans/ai_judge.md:111",
+   "docs/plans/ai_judge.md:91",
+   "docs/plans/ai_judge.md:117",
    "src/world_substrate/engine.py:1005"
   ],
   "touches": [
@@ -1423,7 +1423,7 @@ Q = [
   "status": "resolved",
   "evidence": "Settled by reading and 3 real rulings (2026-11-09). The language is action-mechanic/v0 (src/world_substrate/action_authoring.py); its expression kinds are literal, action field, participant, entity id, owner reference and event id (action_authoring.py:893-927), with no arithmetic between two values. The three plain-baseline rulings (evidence/ai-judge/plain-baseline/rules-check.json) went through validate_bundle and CausalModel.from_dict: the cafe rule was rejected (a field named 'from' is not an identifier), the shop rule was rejected (participants must exactly name entity_ref fields), and the sawmill rule was accepted but charges one price for 3 logs because price times quantity cannot be written. Answer: the language expresses transfers guarded by checks; it cannot multiply two values or require another person's agreement, which is routed to that person (Decided 4). A ruling the check rejects after one revision is refused with 'no rule could express this' and recorded as a language gap.",
   "sources": [
-   "docs/plans/ai_judge.md:135",
+   "docs/plans/ai_judge.md:144",
    "src/world_substrate/action_authoring.py:893",
    "evidence/ai-judge/plain-baseline/rules-check.json"
   ],
@@ -1443,8 +1443,8 @@ Q = [
   "status": "resolved",
   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). The proposed rule is held, not installed; the attempt waits as pending and changes nothing; later identical attempts join the same pending ruling. On Approve the rule installs and each pending attempt settles through it; on Reject each is refused, naming the rejected ruling. The earlier wording, where a ruling settled its own attempt with nothing installed, was an outcome with no rule and is withdrawn.",
   "sources": [
-   "docs/plans/ai_judge.md:146",
-   "docs/plans/ai_judge.md:157"
+   "docs/plans/ai_judge.md:155",
+   "docs/plans/ai_judge.md:166"
   ],
   "touches": [
    "midrun-setting",
@@ -1462,7 +1462,7 @@ Q = [
   "status": "resolved",
   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). Each saved run records the reaction limit it ran under; replay uses the recorded value (a record with none ran under 32), so old runs replay unchanged and new runs use the new setting. The refusal status 'reaction_limit' is written into the commands (src/world_substrate/engine.py:1005); tests/test_open_attempt.py:466-501 checks that refusal and is kept, run against the recorded limit.",
   "sources": [
-   "docs/plans/ai_judge.md:313",
+   "docs/plans/ai_judge.md:323",
    "tests/test_open_attempt.py:466",
    "src/world_substrate/engine.py:1153"
   ],
