@@ -474,7 +474,7 @@ window.MAPS = {
     "id": "run-stop",
     "label": "Run stop setting",
     "kind": "Substrate",
-    "explain": "A per-world setting saved with the world (run_stop): stop once nothing is changing after N quiet rounds or never for being quiet, plus optional limits, a number of rounds (max_rounds) and this run's recorded AI spending (max_spend_usd); checked after each round, the run stops at whichever fires first and records why (Q12; Brian, 2026-11-10). Code: scripts/run_stop.py:101."
+    "explain": "A per-world setting saved with the world (run_stop): stop once nothing is changing after N quiet rounds or never for being quiet, plus optional limits, a number of rounds (max_rounds) and this run's recorded AI spending (max_spend_usd); checked after each round, the run stops at whichever fires first and records why (Q12; Brian, 2026-11-10). Code: scripts/run_stop.py:65."
    },
    {
     "id": "stopping-point",

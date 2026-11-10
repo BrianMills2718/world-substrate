@@ -278,7 +278,7 @@ call per round, 46 rounds (the Waltzman run of 2026-10-23, `evidence/waltzman-ta
 tokens × $0.10/M + 150 output tokens × $0.50/M, gpt-6-luna, no cached share) = about $0.07 per run. Cheaper trigger,
 chosen (inferred by agent): ask only after a round in which a field people's moves can change actually changed
 (`scripts/run_stop.py` already fingerprints those fields each round), since an unchanged world cannot newly reach a
-stopping point; in the Waltzman run that skips the quiet rounds and costs less.
+stopping point; in the Waltzman run that skips the quiet rounds and costs less. A stopping point that depends on something no move changes (a clock, elapsed rounds) would never be asked under that trigger, so J5 also asks once every 6 quiet rounds as a backstop; the round limit remains the hard stop.
 
 ## Acceptance checks
 
