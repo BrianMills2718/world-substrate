@@ -1,4 +1,85 @@
-# Cold review, repo planning package, round 9
+# Cold review: repo planning package (round 3), 2026-11-10
+
+Reviewer: planning-compliance reviewer, given the round-2 report (verdict revise, at 0c09c1d).
+Reviewed revision: 32860542557cf2698a05669b4b29b5041a7e1818
+(Confirmed with `git rev-parse HEAD` in `/home/brian/code2/worktrees/ws-estimate-plan`. The tree was clean. No file was edited.)
+
+Scope: the repository package. In the estimate-rules diff I judged only what it changes here: Q63, Q82 to Q88, the domain concepts and the review page data. The estimate-rules plan and its own package are out of scope.
+
+## Validator
+
+I ran `validate_planning_package.py --repo . docs/planning/planning-package.json`. It exited 1.
+
+- Parts: 9 of 10 ok, 0 failing, 1 pending (`investigation`).
+- Substance: 6 of 12 ok, 0 failing, 6 pending. The pending ones are checks required only of a new or full_method repository.
+- Citations: 245 file citations and 23 other sources resolved.
+- Domain model: 64 implemented, 15 dashed; the plan names 18 concepts.
+- Metamodel: 29 types, all mapped onto `scientific-hypergraph@7b0638fe0aef`.
+- Coverage: 6 of 7 requirements covered; the seventh is about the planning process.
+- The only FAIL is freshness: "reviewed at c99cbc704c5a, 19 plan files changed since". Recording this report fixes it. Nothing else fails.
+
+## Previous findings (round 2)
+
+1. **Checks did not reproduce: fixed.** I reran the recorded commands read-only at 3286054. A diff from 4b5bda9 to HEAD touched only check records, the Q77 text, the manifest, page data and `questions_src.py`, so the counts carry over.
+
+| Check | Recorded | Reran |
+| --- | --- | --- |
+| Project check (`check_project.py`, with the recorded `uv` command) | 891 passed, 2 skipped, exit 0 | 891 passed, 2 skipped, 222 subtests, exit 0 |
+| Trace reads | 38 runs, 0 problems | 38 runs, 0 problems |
+| Repository format (`repo_format.py`) | compliant 1 of 1, exit 0 | compliant 1 of 1, exit 0 |
+| Wiki and Markdown cap (`md_file_cap.py --ref HEAD`) | exit 1, 162 files, 28 unreachable (10 not linked, 18 deep), 16 durable | same, exit 1 |
+| Durable documents (`durable_docs_check.py --arc42`) | 16 findings, exit 1 | 16 findings (8 arc42 and goal, 8 STALE), exit 1 |
+
+   Both failing checks carry `tracked_by: Q77`. `checks.txt` matches the manifest.
+2. **Q15 answered but open: fixed.** It is now `resolved` with evidence: `repo_format.py` reports compliant 1 of 1, and the cited files exist. The `tracked_by: Q15` on the repository-format row is gone.
+3. **Q77 stale counts: fixed.** Q77 now gives 28 unreachable documents, 16 findings and the eight STALE rule names. All of these match my reruns. The J0 trace reads are linked from `docs/catalog.md:192-198`, all five. Q77 says honestly that they remain more than two links deep.
+4. **Estimate-rules cold review pending (note): out of scope.** It is reviewed separately.
+5. **Weak code anchors for `contention` and `test-run` (note): not fixed here. I accept deferring it.**
+
+- `tools/planning/domain_src.py:29` (`contention`) still anchors to `scripts/run_authored_world.py:740`, which is the scripted-choice line in the blocked-row loop.
+- `tools/planning/domain_src.py:35` (`test-run`) still anchors to `scripts/world_builder_service.py:1797`, which is a comment in the retry handler.
+- Both anchors resolve, so the validator passes. Pull request #363 (`origin/feat/judge-j0-live`) exists and re-anchors these lines, so editing them here would only create a conflict.
+- It stays a note. It must be closed when #363 merges.
+
+6. **Estimate-rules plan citations (note):** out of scope.
+7. **Page names the old reviewed revision (note):** the builder run after this review is recorded will fix that.
+
+## Review of the whole package
+
+- **Open questions:**
+  - Q63 quotes Brian and cites lines that say what it claims.
+  - Q82 and Q83 each name a decision their result would change. The probe's coarse answers do not settle them, and no argument or counterexample in the repository does. The tests are justified.
+  - Q85 and Q86 are labelled as not blocking E1 or the plan.
+  - Q87's evidence is an argument from construction (the stand-in estimator keeps the free run free). Its citations were not each opened at the line level.
+  - Q88 names a decision: whether E2's instructions prefer declared bands.
+  - I found no answered question marked open among Q63 and Q82 to Q88.
+- **Domain concepts and page data:** the validator resolves citations and the concept count (64 implemented and 15 dashed, with 79 concepts and 134 relations). The estimate-rules concepts are marked theory or dashed.
+- **Q77 remains a real open problem and is correctly open.** The 28 unreachable files and 16 durable findings fail on origin/main too, and the question names the fix route. This is not a finding against this package.
+
+## Findings
+
+1. **note, `tools/planning/domain_src.py:29` and `:35` (and the manifest's implemented map):** the anchors for `contention` and `test-run` are still weak. They are deferred to #363 by agreement. Re-anchor by symbol when #363 merges.
+2. **note, `docs/planning/estimate-rules/cold-review.md`:** the estimate-rules package must be reviewed before its adoption.
+3. **note, `proposals/planning-package/review-page/data.js`:** it names the previous reviewed revision until the builder reruns.
+4. **note, repository `README`/package fields:** several package fields (`investigation`, plan cost basis, plain baseline, stage effects, stops, spectrum) are absent. The validator treats them as not required of this repository (first commit 2026-08-31, `full_method` not set). That could change if the repository is later judged new or full_method.
+
+No blocking findings.
+
+## Judgments I was unsure about
+
+- I did not render the review page in a browser, so draw quality and link resolution are unchecked beyond the files existing and the validator's checks.
+- I did not re-read the acceptance `asked_by` quotes. The stored coverage (6 of 7) came through the validator and was not independently re-derived this round.
+- I did not verify each OpenSpec scenario against code.
+- I opened the `contention` and `test-run` anchors but did not re-open every domain citation. The validator confirmed that cited files and lines exist.
+- I judged the estimate-rules questions only for being open, real and not answered in the repository.
+
+Verdict: pass
+
+## Earlier reviews of this package
+
+The reviews below came before 2026-11-10. They are kept as they were, oldest first.
+
+## Earlier review: round 9, 2026-10-26
 
 Reviewer: `company-planning:planning-compliance-reviewer` subagent, 2026-10-26, given the round-8 report.
 Reviewed revision: f8dc6daa76de3c84e195d1027cdde126d7de354c (round 9; superseded by the 2026-10-28 re-review below)
@@ -22,7 +103,6 @@ Unsure about: nothing material. The reviewer did not run `check_project.py` (as 
 
 Verdict: pass
 
-
 ## Re-review, 2026-10-28 (declared-laws round 3)
 
 Reviewer: `company-planning:planning-compliance-reviewer` subagent, reviewing all three packages together. Reviewed revision: 3e376db030b31925f7a3b9f8c6d8806e06e17b9a. The full report is in `docs/planning/declared-laws/cold-review.md`.
@@ -31,7 +111,6 @@ Reviewer: `company-planning:planning-compliance-reviewer` subagent, reviewing al
 - **Regression:** none found.
 
 Verdict: pass
-
 
 ## Re-review, 2026-10-30 (people-world laws, rounds 4 and 5)
 
@@ -49,6 +128,7 @@ Round 4 returned revise with six blocking findings, all fixed in 0948968:
 Round 5 checked those fixes: validator 9 of 9 parts ok, 139 citations resolved, the package fresh, coverage 6 of 7 requirements (the seventh is about the planning process). Its notes are applied in the commit that records this review: Q49 cites the table rows (lines 13 and 18), Q48 says what keeps it open, and the page's A1 and A5 rows show the shared-link steps.
 
 Carried notes, not blocking:
+
 - The open-attempt package is out of date.
 - A1 and A5 use a plain list, not the router's linked table (recorded in A1).
 - "about $2 and two days" (`declared_laws.md:388`) has no source.
@@ -79,6 +159,7 @@ Verdict: pass
 I found nothing that needs to block this round. The package checks out at subject revision c99cbc7. The validator fails only on the cold-review record, which still points at f824249, and recording this review fixes that.
 
 **The previous report could not be read.** The file holds only a stdin warning and no report text, and the repository's `cold-review.md` has no entry for the efa3d0d review. So I worked out the two earlier findings from the fix commit, which describes them as "the cold review's two findings":
+
 - **Finding 1, the 2026-11-04 Waltzman rebuild (s4-waltzman-3) kept rules its own review flagged: fixed.** The new Q55, the trace read, Q45, Q50 and step S3 of `docs/plans/declared_laws.md` now all say it.
   - I checked the record itself. Review call 23042 says `max_postponements` starts at 0, "so the decision can never be delayed". Row 1 of `run-log.jsonl` shows that finding and one try with no rewrite.
   - The code matches: the 80-second limit (`PEOPLE_REWRITE_BY_S`) is at `world_builder_service.py:266`, the check at `:2254`, and the $1.30 budget at `:94`.
@@ -86,6 +167,7 @@ I found nothing that needs to block this round. The package checks out at subjec
 - **Finding 2, code citations pointing at shifted line numbers: fixed.** I opened 20 of the re-anchored lines. Each lands on the function or line it names, for example `_world_fingerprint` at `:384`, `_approval_record` at `:421`, `_assemble_share` at `:603`, `build_engine` at `:71`, `said_on_retry` at `:815-816` and `?run=` at `world_builder_home.html:1272`.
 
 **Validator:** exit 1.
+
 - Parts: 9 of 10 ok, 0 failing, 1 pending.
 - Substance checks: 5 of 8 ok, 1 failing, 2 pending; 157 file citations resolve.
 - Initiative and spectrum checks: 0 of 4 ok, 4 pending (not required until 2026-11-12).
@@ -94,12 +176,14 @@ I found nothing that needs to block this round. The package checks out at subjec
 - The one failure is the expected one: the cold review read f824249.
 
 **Rerun checks:** both match `checks.txt`.
+
 - Trace reads (`check_trace_reads.py --root evidence`): 33 runs, 0 problems, exit 0.
 - Markdown cap (`md_file_cap.py --repo . --ref HEAD`): 174 files, 0 unreachable, exit 0.
 
 **Review page:** I rendered it headless. It loads with no script errors and shows c99cbc7. Q55 appears on the Open questions and Next plan tabs, and acceptance criteria A1 to A7 are on the Next plan tab. The diagrams are drawn on the page, not linked. The repository is owned by `BrianMills2718`, so the hive.brianmills.dev address is allowed.
 
 ### Notes (not blocking)
+
 1. **Q55, `docs/planning/open-questions.json` (Q55 `resolves_with`):** it calls the time limit "the likely cause", but the code settles it. In the loop at `world_builder_service.py:2251-2256`, every other way out is ruled out:
    - the "good enough" exit needs no review findings, and this try had two;
    - the "second try" exit needs `attempt == 1`, and this was the first try (`attempt` counts from 0, `:2117`);
@@ -111,6 +195,7 @@ I found nothing that needs to block this round. The package checks out at subjec
 4. **`docs/model/open-questions.graph.json:163`:** the Q55 text ends with a double period ("path..").
 
 ### What I was unsure about
+
 - I inferred the earlier findings from commit messages because their text was lost. If that report had other findings, I have not checked them here.
 - I did not rerun the full project check, render the served copy of the page, or recheck acceptance router records and model mappings that did not change in this diff.
 
