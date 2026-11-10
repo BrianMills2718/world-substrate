@@ -289,6 +289,12 @@
    "explain": "Blocks: J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).."
   },
   {
+   "id": "Q77",
+   "label": "Q77: Wiki cap check fails on main",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether the wiki-compliance check passes again for every package in this repository.."
+  },
+  {
    "id": "affordance",
    "label": "Affordance (offered move)",
    "kind": "Concept",
@@ -503,6 +509,12 @@
    "label": "Independent rules review",
    "kind": "Concept",
    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds."
+  },
+  {
+   "id": "run-log",
+   "label": "Run log",
+   "kind": "Concept",
+   "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads."
   },
   {
    "id": "run-loop",
@@ -1201,6 +1213,12 @@
    "id": "Q76-world-law",
    "source": "Q76",
    "target": "world-law",
+   "label": "bears on"
+  },
+  {
+   "id": "Q77-run-log",
+   "source": "Q77",
+   "target": "run-log",
    "label": "bears on"
   }
  ],

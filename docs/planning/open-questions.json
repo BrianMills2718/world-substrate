@@ -1439,6 +1439,22 @@
     "credential-holder",
     "world-law"
    ]
+  },
+  {
+   "id": "Q77",
+   "short": "Wiki cap check fails on main",
+   "question": "The wiki and Markdown cap check (md_file_cap.py --repo . --ref HEAD) exits 1 on origin/main 9cefeee: 207 Markdown files against the repository's exception limit of 180, and 77 documents more than two links deep from the entry point (for example docs/VISUAL_FEEDBACK.md, docs/architecture.md). It exited 0 on 2026-11-06 (docs/planning/checks.txt). Should documents be retired or linked closer, or the exception limit raised with a reason?",
+   "blocks": "Whether the wiki-compliance check passes again for every package in this repository.",
+   "resolves_with": "Argument: read the 77 deep documents and the catalog; retire or relink by the documentation rules (docs/AGENTS.md), or raise the limit with its reason if every file is a required run record. No run needed.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/planning/ai-judge/checks.txt:21",
+    "docs/planning/checks.txt:21"
+   ],
+   "touches": [
+    "run-log"
+   ]
   }
  ]
 }
