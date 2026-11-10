@@ -45,6 +45,17 @@ unless the world model itself represents coordinates.
 
 Source: inferred by agent (scene profile v0)
 
+#### Scenario: Who owns what in a replay
+
+- **WHEN** a replay is built from a trace, a reference-world model and a scene profile
+- **THEN** the retained trace owns actions, reasoning, order and progress facts, causal outcomes and terminal status, the model may supply entity identity, labels, categories, initial component values and initial ownership, and the profile owns only presentation (geometry, asset selection, action-to-motion mappings, visual state transforms and milestone labels)
+- **AND** assets carry no causal meaning on their own
+
+#### Scenario: A burner placed in the north
+
+- **WHEN** a profile places a burner in the north of the screen while the canonical world says only `location_id: kitchen`
+- **THEN** the position is illustrative, unless the world model itself represents coordinates
+
 ### Requirement: Wire shape
 
 `schema_version` is `world-substrate-scene-profile/v0`.
@@ -75,6 +86,21 @@ output so the generated replay remains a single file.
 
 Source: inferred by agent (scene profile v0)
 
+#### Scenario: A valid scene profile
+
+- **WHEN** a profile has `schema_version` `world-substrate-scene-profile/v0`, a `world` naming the trace world it may render, and `assets`, `actors`, `stations`, `entities`, `action_visuals`, `state_styles`, `progress_assets` and `moment_rules` as described
+- **THEN** it loads, and it may also give an optional `world_model` (resolved relative to the profile), `station_precedence_states` and scene title, theme and autoplay fields
+
+#### Scenario: A profile for another world
+
+- **WHEN** a profile's `world` does not match the trace's world
+- **THEN** building frames fails with an error
+
+#### Scenario: Image assets
+
+- **WHEN** an asset is an image with a profile-relative path
+- **THEN** the generated replay embeds it as a data URI, so the replay remains a single file
+
 ### Requirement: Action projection
 
 An `action_visuals` entry may currently declare:
@@ -98,6 +124,22 @@ Unknown action kinds remain visible in the trace/reasoning surface but have no
 spatial projection until the profile maps them.
 
 Source: inferred by agent (scene profile v0)
+
+#### Scenario: A mapped action moves things
+
+- **WHEN** an accepted action's kind has an `action_visuals` entry with a `label_template`, `item_field`, an `actor_target`, `ownership` of `take` or `release`, `set_state` or `item_target`
+- **THEN** the frame fills the label from the action's fields and moves the actor, the item and its presentation state as declared
+
+#### Scenario: One action changes two entities
+
+- **WHEN** an `action_visuals` entry lists `state_effects` of the form `{entity_field, set_state}`
+- **THEN** each named visual entity takes its state after the accepted action, so one causal action can change more than one entity without a single fake visual owner
+- **AND** a `state_effects` entry that names an unknown visual entity is refused with "unknown visual entity"
+
+#### Scenario: An unmapped action kind
+
+- **WHEN** a trace contains an action kind the profile does not map
+- **THEN** it stays visible in the trace and reasoning surface and has no spatial projection
 
 ### Requirement: Station item layout
 
@@ -126,6 +168,22 @@ the previous single-anchor path unchanged.
 
 Source: inferred by agent (scene profile v0)
 
+#### Scenario: Slots and overflow
+
+- **WHEN** a station declares `item_layout` with `slots` (coordinates relative to the station rectangle, `[0, 0]` top-left and `[1, 1]` bottom-right) and an `overflow` of `grid` or `anchor`
+- **THEN** placed entities take slots in stable scene-profile entity order, and the remainder is laid out on a deterministic grid (`grid`) or sent to the station's ordinary item anchor (`anchor`)
+- **AND** with one slot `[0.25, 0.5]` and three placed entities, the first sits at the slot and all three get distinct positions
+
+#### Scenario: A slot outside 0 to 1
+
+- **WHEN** a slot coordinate is outside `0..1`
+- **THEN** the profile is rejected with an error naming "relative 0..1 coordinates"
+
+#### Scenario: Layout is presentation only
+
+- **WHEN** a station has an `item_layout`, or has none
+- **THEN** it asserts no canonical coordinates, attachment geometry or physical collision, and a profile without `item_layout` uses the earlier single-anchor path unchanged
+
 ### Requirement: Moment projection
 
 v0 supports these trace-derived predicates:
@@ -139,6 +197,12 @@ v0 supports these trace-derived predicates:
 The predicate is generic; the profile chooses the item and human-facing label.
 
 Source: inferred by agent (scene profile v0)
+
+#### Scenario: A trace-derived moment is labeled
+
+- **WHEN** a trace matches one of `retry_unavailable`, `filled_release`, `take_after_release` or `all_progress_filled`
+- **THEN** the replay shows the moment under the human-facing label and selected item the profile chose
+- **AND** the predicates themselves are generic, such as a retry that followed another actor making the original plan unavailable, or all represented progress records being complete
 
 ### Requirement: Generation
 
@@ -154,6 +218,12 @@ The kitchen compatibility command remains available, but it is only a thin
 wrapper selecting `reference_worlds/kitchen/scene-profile-v0.json`.
 
 Source: inferred by agent (scene profile v0)
+
+#### Scenario: Rendering a replay
+
+- **WHEN** `python scripts/render_scene_replay.py <trace.json> --profile <scene-profile.json> --output <replay.html>` is run
+- **THEN** it writes a read-only 2D replay HTML built from the profile and the trace
+- **AND** the kitchen compatibility command is only a thin wrapper selecting `reference_worlds/kitchen/scene-profile-v0.json`
 
 ### Requirement: Profile bootstrapping
 
@@ -193,6 +263,18 @@ illustrative presentation choices.
 
 Source: inferred by agent (scene profile v0)
 
+#### Scenario: A draft is bootstrapped from its inputs
+
+- **WHEN** `scripts/bootstrap_scene_profile.py` is given a world model, a trace and the explicit asset catalog
+- **THEN** it infers only facts those inputs support (trace actors, entity ids and labels, catalog asset bindings, station candidates, initial `actor:*` ownership, actor-to-goal links, and action fields whose values consistently name visual entities or stations; for Kitchen the `cook` action's item field is `item` and its station field `burner`)
+- **AND** it does not invent screen coordinates or treat an action name as evidence for motion or state, and records unresolved choices under `bootstrap.todos`, so a draft may be reviewable without being renderable yet
+
+#### Scenario: A review overlay completes the profile
+
+- **WHEN** a presentation-only review overlay is passed with `--review` and `--require-complete`
+- **THEN** unresolved geometry or unreviewed action projection is refused, and a complete result passes the generic scene profile loader and renderer
+- **AND** the overlay carries no causal authority
+
 ### Requirement: Profile bootstrapping: Optional presentation auto-layout
 
 `--auto-layout` fills missing actor homes, station rectangles/anchors, and
@@ -224,6 +306,16 @@ visual state paths, progress assets, canonical station roles, and optional
 assert or change a world fact.
 
 Source: inferred by agent (scene profile v0)
+
+#### Scenario: Auto-layout fills only what is missing
+
+- **WHEN** `--auto-layout` runs after the review overlay is merged
+- **THEN** it fills missing actor homes, station rectangles and anchors, and entity homes with deterministic `role-grid-v0` geometry, never overwrites reviewed coordinates, and records every generated path under `bootstrap.auto_layout.proposed_geometry` and the version under `bootstrap.auto_layout.algorithm`
+
+#### Scenario: Auto-layout does not approve motion
+
+- **WHEN** all geometry has been proposed by auto-layout
+- **THEN** unreviewed action projection remains a bootstrap TODO, and the coordinates are illustrative and not read back into canonical world state
 
 ### Requirement: Profile bootstrapping: Explicit action-presentation bindings
 
@@ -280,6 +372,33 @@ full profile payload, a 36%/33% reduction in scene-specific review content.
 
 Source: inferred by agent (scene profile v0)
 
+#### Scenario: A binding is keyed by the exact action kind
+
+- **WHEN** the catalog has an `action_visual_bindings` entry for an exact action kind id, with a `projection` and optional `complete: true`
+- **THEN** its `$item_field` and `$station_field` placeholders are resolved only if the retained trace shows a unique field whose values are represented visual entities or stations, and the applied binding is recorded in `bootstrap.declared_action_bindings`
+- **AND** an action renamed to a lookalike (`pick_up_like`) gets no projection and stays a TODO
+
+#### Scenario: A placeholder cannot be resolved
+
+- **WHEN** a binding's placeholder has no matching field in the trace (a `drink` binding asking for `$station_field` on Castaway)
+- **THEN** the failure is recorded in `bootstrap.binding_resolution_errors`, the action stays unresolved, and review is required
+
+#### Scenario: A reviewed projection beats the catalog
+
+- **WHEN** a reviewed action projection and a catalog default both exist for an action
+- **THEN** the reviewed one is applied to the neutral trace-inferred shape rather than merged over the catalog's ownership, target or state effects
+
+#### Scenario: Actor moves toward an entity
+
+- **WHEN** a projection uses `actor_target.entity_field`
+- **THEN** the renderer moves the actor toward the current visual home or station of the entity named by that action field, which implies no canonical coordinates and changes no ownership by itself
+- **AND** auto-layout initial placement follows an entity's first relevant action only, so a later target cannot leak into the opening scene
+
+#### Scenario: The acceptance fixtures reproduce
+
+- **WHEN** the Kitchen and Castaway reviewed bootstraps run
+- **THEN** they reproduce the existing profiles exactly apart from bootstrap provenance, and each review file is under 70 percent of its profile's size (the spec's measured figures are about 64 and 67 percent)
+
 ### Requirement: Implemented evidence
 
 Workshop is the greenfield zero-review proof: bootstrap, generic item layout,
@@ -299,6 +418,13 @@ Greenhouse), and the `water` binding uses `state_effects` to set the plant
 no Kitchen, Castaway, or Workshop entity ids.
 
 Source: inferred by agent (scene profile v0)
+
+#### Scenario: Worlds replay through the generic path
+
+- **WHEN** the Workshop, Castaway, Kitchen, a synthetic lab and Greenhouse are bootstrapped and replayed
+- **THEN** Workshop, Castaway, Kitchen and Greenhouse each generate a zero-review default replay through the generic renderer (Kitchen's beside its byte-identical polished flagship), and the synthetic lab exercises a custom `scan` action
+- **AND** Greenhouse needs no Greenhouse code: its `water` binding uses `state_effects` to set the plant to `watered` and the can back to `empty`
+- **AND** tests verify image-asset embedding and that the generic renderer contains no Kitchen, Castaway or Workshop entity ids
 
 ### Requirement: Limits
 
@@ -322,8 +448,24 @@ or semantic authority.
 
 Source: inferred by agent (scene profile v0)
 
+#### Scenario: A question beyond v0
+
+- **WHEN** someone wants 3D, a trace that is not a `world-substrate-contested-run/v3` trace, game-engine presentation, arbitrary-code action projection, semantic assembly geometry, or richer presentation derived from the full Linguistic Core binding graph
+- **THEN** v0 does not provide it
+- **AND** spatial geometry stays presentation-only unless coordinates are canonical state, and new action families stay TODOs until explicitly declared, so presentation code does not acquire causal or semantic authority
+
 ### Requirement: Fresh-world presentation wins over the shared catalog (current code)
 
 When a freshly authored world declares presentation, its declarations win over the shared asset catalog: bootstrap removes catalog bindings that collide with entities the world defines and turns an authored category asset into an exact entity binding (`scripts/run_authored_world.py:1036-1048`). This rule came out of the Repair Bay live proof.
 
 Source: inferred by agent (Repair Bay live proof; code read on 2026-11-09)
+
+#### Scenario: A fresh world reuses a catalog entity id
+
+- **WHEN** a freshly authored world defines an entity whose id (such as `bo`) is also an exact binding in the shared asset catalog
+- **THEN** bootstrap removes the colliding catalog binding for that entity, so the world does not inherit another world's presentation identity
+
+#### Scenario: An authored category asset
+
+- **WHEN** a world declares a `category_assets` entry for a category one of its entities has
+- **THEN** bootstrap turns it into an exact binding for that entity, so broader shared component-value defaults cannot override it

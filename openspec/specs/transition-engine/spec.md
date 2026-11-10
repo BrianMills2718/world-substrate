@@ -47,6 +47,11 @@ A world contains:
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: A world holds one canonical record
+
+- **WHEN** a world is created
+- **THEN** it contains its `world_id`, `revision` and integer `tick`, its entity records and relation records indexed by stable ID, its active process records, actor knowledge and observation records, accepted and rejected command records, causal events, and pinned content, rule and engine identities
+
 ### Requirement: Core: Records: Entity
 
 An entity declares:
@@ -59,6 +64,12 @@ An entity declares:
 Components are explicit contracts, not an unconstrained prose bag. The first vertical needs identity, location, ownership, material, mass, container, liquid, temperature, condition, heat-source, and process-attachment components.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
+
+#### Scenario: An entity is declared with explicit components
+
+- **WHEN** an entity is declared
+- **THEN** it has a stable ID and category IDs, component records with typed values, location and ownership relations where they apply, and provenance linking its content definition to the source pack
+- **AND** its components are explicit contracts, not an unconstrained prose bag
 
 ### Requirement: Core: Records: Rule
 
@@ -77,6 +88,11 @@ Every action or process rule declares:
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: A rule declares its contract
+
+- **WHEN** an action or process rule is defined
+- **THEN** it declares a stable rule ID and version, its kind, required categories and components, read and write paths, preconditions, effect function, sources, sinks or conserved quantities, timing, emitted event schema and explicit unsupported boundaries
+
 ### Requirement: Core: Records: Action
 
 A typed action contains:
@@ -92,6 +108,12 @@ Natural-language text may accompany an action as explanation but is never execut
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: Prose is never executable
+
+- **WHEN** an actor submits a typed action with its actor ID, action kind, object references, validated parameters, base world revision and controller identity
+- **THEN** the engine treats those fields as the action
+- **AND** natural-language text that accompanies it is explanation only and is never executable input
+
 ### Requirement: Core: Records: Event
 
 Each causal event records:
@@ -105,6 +127,11 @@ Each causal event records:
 - resulting state hash.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
+
+#### Scenario: An event records its transition
+
+- **WHEN** a transition is recorded
+- **THEN** its causal event holds the event ID, tick, world revision and rule ID and version, the cause (command or process), the checks and their results, the exact read and write references, before and after values or bounded deltas, the source, sink or conservation ledger where relevant, and the resulting state hash
 
 ### Requirement: Core: Transition kernel
 
@@ -165,6 +192,28 @@ validated the M1 maturity claim.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: An accepted action commits atomically
+
+- **WHEN** an action is accepted
+- **THEN** its state changes and causal events commit together, and only the registered rule the action selects, or a due registered process during `advance`, calculates a material state transition
+
+#### Scenario: A refused action changes nothing material
+
+- **WHEN** an action is rejected, invalid, stale or unsupported (for example an overfill, or a base revision that is out of date)
+- **THEN** the material entity, relation and process projection of the world is unchanged
+- **AND** the rejection record may still be appended to the canonical journal, separating evidence of an attempt from effects on the modeled world
+
+#### Scenario: Observation is lossy and consequence-free
+
+- **WHEN** two actors observe the same canonical world
+- **THEN** each receives an actor-authorized projection that may differ, and `observe` and `discover` own no alternate state and calculate no consequences
+
+#### Scenario: Replay reproduces the run
+
+- **WHEN** recorded commands and pinned identities are replayed
+- **THEN** replay consumes no policy decisions and reproduces the same final state, events and hashes
+- **AND** `Engine.advance()` checks registered processes step by step through their `due(world)` hooks, without a scheduled future-event queue or multiple canonical clocks
+
 ### Requirement: Core: Engine operations: Discover
 
 `discover(actor, query, cursor, limit) -> ActionPage`
@@ -173,6 +222,12 @@ The engine instantiates registered rules against actor-authorized local state. R
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: Discovery lists what can be done
+
+- **WHEN** an actor calls `discover(actor, query, cursor, limit)`
+- **THEN** the engine instantiates registered rules against actor-authorized local state and returns executable typed actions, blocked hints with reasons, and bounded navigation
+- **AND** discovery does not advance time
+
 ### Requirement: Core: Engine operations: Apply
 
 `apply(action) -> ActionResult`
@@ -180,6 +235,11 @@ Source: inferred by agent (core contract v0, written for the M1 Castaway freshwa
 The engine checks the action kind, base revision, actor authority, references, and rule preconditions against canonical state. It commits all changes and events atomically or commits none.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
+
+#### Scenario: An action is checked and committed or refused
+
+- **WHEN** `apply(action)` is called
+- **THEN** the engine checks the action kind, base revision, actor authority, references and rule preconditions against canonical state, and commits all changes and events atomically or none
 
 ### Requirement: Core: Engine operations: Causal event fields
 
@@ -237,6 +297,28 @@ declared scope raises `ScopeViolation` and `advance` restores the whole tick.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: Every event names its bearer, binding and observation
+
+- **WHEN** an event is recorded
+- **THEN** `causal_bearer` is `{kind: "actor", id, controller}` for an attempt or `{kind: "process", id: <rule_id>, controller: null}` for a process
+- **AND** `semantic_binding` and `observation` are present, and are an explicit `null` when there is no binding, no observer (a process) or an actor who cannot observe, so "there was no observer" is distinguishable from "not recorded"
+
+#### Scenario: A result has one of six statuses
+
+- **WHEN** an action is applied
+- **THEN** its status is `accepted`, `precondition_failed` (a registered action whose guard fails), `stale_revision`, `invalid_action` (a malformed envelope or parameters), `unsupported_action` (a valid envelope whose kind has no registered rule) or `scope_violation`, and none invokes an LLM consequence generator
+
+#### Scenario: A rule writes outside its declared scope
+
+- **WHEN** an applicable rule runs and its changes reach state paths it never declared in `write_paths`
+- **THEN** the status is `scope_violation`, the candidate world is discarded so the rule's own entitled writes do not commit either, and the failing check names every undeclared path
+- **AND** an action's placeholder binds only to an entity the attempt itself references, so a correctly shaped path cannot reach a third party, while `revision` is engine-owned and exempt
+
+#### Scenario: A process writes outside its declared scope
+
+- **WHEN** a process writes outside its declared scope
+- **THEN** it raises `ScopeViolation` and `advance` restores the whole tick
+
 ### Requirement: Core: Engine operations: Advance
 
 `advance(steps=1) -> TickResult`
@@ -245,6 +327,11 @@ The world clock advances deterministically. Due processes execute in a documente
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: The clock moves and processes run
+
+- **WHEN** `advance(steps=1)` is called
+- **THEN** the world clock advances deterministically, due processes execute in a documented order or through explicit conflict resolution, and every process change emits causal evidence
+
 ### Requirement: Core: Engine operations: Observe
 
 `observe(actor) -> ActorObservation`
@@ -252,6 +339,12 @@ Source: inferred by agent (core contract v0, written for the M1 Castaway freshwa
 The observation contains authorized state, received information, recent actor-visible events, relevant definitions, and an affordance-page entry point. It excludes remote or private state unless a rule delivered it.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
+
+#### Scenario: An observation excludes the remote and the private
+
+- **WHEN** `observe(actor)` is called
+- **THEN** the observation contains authorized state, received information, recent actor-visible events, relevant definitions and an affordance-page entry point
+- **AND** it excludes remote or private state unless a rule delivered it
 
 ### Requirement: Core: Engine operations: Snapshot and replay
 
@@ -275,6 +368,18 @@ material hash and complete event sequence with the retained outputs.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: A snapshot holds material state only
+
+- **WHEN** `World.snapshot()` is called
+- **THEN** it returns a JSON-serializable `world-substrate-snapshot/v1` object with the complete canonical material state, including the engine ID, content ID and rule-version map, and without commands or events
+- **AND** `World.from_snapshot()` accepts only that version and reconstructs canonical state with empty history, optionally using a world-local component-type map that overrides same-named global registrations for that load only
+
+#### Scenario: Commands are replayed from a snapshot
+
+- **WHEN** `Engine.replay_commands(initial_snapshot, commands, registry, component_types=None)` runs
+- **THEN** it starts from the loaded snapshot and re-applies the recorded accepted, rejected, invalid and advance commands without policy calls, using a registry that matches the snapshot's rule-version map
+- **AND** evidence compares the reconstructed final material hash and complete event sequence with the retained outputs
+
 ### Requirement: Core: Implementation traceability obligation
 
 Each implemented M1 rule must connect its stable rule ID and version to its
@@ -283,6 +388,11 @@ retained observation, and any adapted donor source. A contract entry or diagram
 without that consumer path is proposed design, not an adopted capability.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
+
+#### Scenario: A rule without a consumer path
+
+- **WHEN** an M1 rule or a diagram entry cannot be connected to its stable rule ID and version, declared read and write paths, engine operation, positive and negative checks, retained observation and any adapted donor source
+- **THEN** it counts as proposed design, not an adopted capability
 
 ### Requirement: Core: Canonical freshwater probe
 
@@ -315,11 +425,22 @@ Required observations:
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
 
+#### Scenario: The freshwater run
+
+- **WHEN** the probe starts with two actors, one clay vessel, a separate drinking cup, one finite fresh-water source containing pathogens and one fire with finite fuel and heat power, and the recorded choices are played (fill, attach to the fire, advance until boiling, detach and cool, pour into the cup, drink, take and give the vessel)
+- **THEN** water and fuel are deducted from their sources, salt, pathogens, heat and volume change only through declared rules, and the same vessel identity persists through every system
+- **AND** ongoing processes run without a new policy decision, a rejected overfill and an unsupported pressure action are atomic, and exact replay produces the same events and final hash
+
 ### Requirement: Core: First-slice exclusions
 
 The v0 contract does not require pressure, arbitrary natural-language action execution, continuous geometry, organizations, economics, seeded randomness, a browser UI, or a general authoring conversation.
 
 Source: inferred by agent (core contract v0, written for the M1 Castaway freshwater extraction under Decision 001, decided by the user on 2026-08-31; Decision 002, accepted 2026-09-02, keeps exact replay to the M1 seam; the decider of Decision 002 is not recorded)
+
+#### Scenario: Something outside the first slice
+
+- **WHEN** a world needs pressure, arbitrary natural-language action execution, continuous geometry, organizations, economics, seeded randomness, a browser UI or a general authoring conversation
+- **THEN** the v0 contract does not require it
 
 ### Requirement: Transition envelope: Pipeline
 
@@ -335,6 +456,11 @@ actor/process observation
 ```
 
 Source: inferred by agent (transition envelope contract v0, applying Decision 003, accepted 2026-09-02; the decider of Decision 003 is not recorded)
+
+#### Scenario: One path from observation to trace
+
+- **WHEN** an actor or process acts
+- **THEN** the transition passes in order through observation, semantic sense and role binding, local mechanic selection, applicability and authorization, proposed effects, resource and invariant validation, one commit or refusal, and the causal trace
 
 ### Requirement: Transition envelope: Requirements
 
@@ -354,6 +480,24 @@ This is not a requirement for universal ACID transactions. Independent actions m
 
 Source: inferred by agent (transition envelope contract v0, applying Decision 003, accepted 2026-09-02; the decider of Decision 003 is not recorded)
 
+#### Scenario: Hooks are read-only and the coordinator owns history
+
+- **WHEN** discovery, applicability checks, declared consequences, process progress or process triggers run
+- **THEN** the coordinator invokes them against detached world state and treats a mutation as an authority violation, and effect application also receives detached state
+- **AND** `revision`, command records and causal events are coordinator-owned, so rule code cannot advance the revision or append or rewrite history
+
+#### Scenario: Coupled effects commit together or refuse together
+
+- **WHEN** several effects belong to one claimed causal transition
+- **THEN** the coordinator validates all of them before committing any, then attaches the accepted command and event history itself
+- **AND** a refusal leaves canonical state unchanged, except for separately modeled causal events whose occurrence is independent of the refused transition
+
+#### Scenario: A successful commit is recorded
+
+- **WHEN** a transition commits
+- **THEN** it records the accepted operations, relevant checks, commit order and resulting persistent state identity, and derived interpretations may observe the committed history but cannot reapply its effects
+- **AND** this is not universal ACID: independent actions may commit independently
+
 ### Requirement: Transition envelope: Examples
 
 Two voluntary gives are independent transitions. Robin may give a spear and Friday may renege on giving coconuts. A derived `exchange` view can recognize the reciprocal history but cannot transfer either asset again.
@@ -363,6 +507,21 @@ An installed escrow release is one institutionally coupled transition. Asset rel
 A pressure check may propose vessel damage, capability revocation, fluid release, and relation handoff as one coupled transition when the selected mechanics profile defines them as consequences of the same rupture.
 
 Source: inferred by agent (transition envelope contract v0, applying Decision 003, accepted 2026-09-02; the decider of Decision 003 is not recorded)
+
+#### Scenario: Two gives are independent
+
+- **WHEN** Robin gives a spear and Friday reneges on giving coconuts
+- **THEN** they are two independent transitions, and a derived `exchange` view can recognize the reciprocal history but cannot transfer either asset again
+
+#### Scenario: An escrow release is one transition
+
+- **WHEN** an installed escrow release moves an asset, a payment and the escrow state
+- **THEN** they pass validation and commit together or refuse together
+
+#### Scenario: A rupture is one coupled transition
+
+- **WHEN** a pressure check proposes vessel damage, capability revocation, fluid release and relation handoff, and the selected mechanics profile defines them as consequences of the same rupture
+- **THEN** they are proposed as one coupled transition
 
 ### Requirement: Read scope (proposed, not built): Why writes were easy and reads are not
 
@@ -375,6 +534,12 @@ is byte-identical, so no amount of state comparison can recover the fact. The
 read has to be observed while it happens or not at all.
 
 Source: inferred by agent (a proposed design; nobody has approved building it)
+
+#### Scenario: A write leaves a trace, a read does not
+
+- **WHEN** a rule writes a path it never declared
+- **THEN** diffing `material_dict()` before and after, as `Engine.apply` does on a cloned world, finds the changed path and reports a `scope_violation`
+- **AND** when a rule only reads `vessel.condition.value`, the world is byte-identical afterwards, so no state comparison can recover the read and it has to be observed while it happens
 
 ### Requirement: Read scope (proposed, not built): Mechanism: a recording proxy at the rule boundary
 
@@ -400,6 +565,12 @@ claim a measurement instead of a guess.
 
 Source: inferred by agent (a proposed design; nobody has approved building it)
 
+#### Scenario: The proposed recording proxy
+
+- **WHEN** the proposal is built, and `Engine` passes a rule a proxy wrapping `World`
+- **THEN** the proxy records every attribute and key access as a dotted path, the recorded paths are compared against `rule.read_paths` with the same placeholder matching `_path_permitted` uses for writes, and undeclared reads become a finding or a refusal
+- **AND** this is not in the repository; the prototype existed only to measure the cost
+
 ### Requirement: Read scope (proposed, not built): Measured cost
 
 Isolated `rule.checks()` on the transfer world, 2000 repetitions, best of three,
@@ -420,6 +591,12 @@ twenty affordances pays it twenty times before an actor does anything.
 
 Source: inferred by agent (a proposed design; nobody has approved building it)
 
+#### Scenario: The prototype's measured overhead
+
+- **WHEN** `rule.checks()` was timed on the transfer world, 2000 repetitions, best of three, warmed
+- **THEN** it took 8.5 microseconds per call plain (16.9 ms total) and 92.0 microseconds through the recording proxy (184.1 ms total), an overhead of 10.9 times
+- **AND** the prototype recorded 71 distinct read paths over a 30-action trace, 64 of them entity-level field reads, which is affordable in a verification pass and not in a run loop
+
 ### Requirement: Read scope (proposed, not built): Recommended staging
 
 1. **Recording, off by default.** A `--verify-reads` mode for probes, tests and
@@ -434,6 +611,12 @@ Do not make it always-on. The project's own tool-loading default is that a
 capability not needed in most runs should not be paid for in every run.
 
 Source: inferred by agent (a proposed design; nobody has approved building it)
+
+#### Scenario: Recording first, refusing later
+
+- **WHEN** read-scope enforcement is built
+- **THEN** stage one is a `--verify-reads` recording mode, off by default, for probes, tests and the mechanic installer, which reports undeclared reads as findings and changes no behaviour
+- **AND** stage two refuses only after a full trace under stage one reports nothing and only behind an explicit flag, and it is never always-on
 
 ### Requirement: Read scope (proposed, not built): What it still cannot see
 
@@ -464,6 +647,12 @@ Source: inferred by agent (a proposed design; nobody has approved building it)
 
 Source: inferred by agent (a proposed design; nobody has approved building it)
 
+#### Scenario: Reads the proxy would miss
+
+- **WHEN** a rule reads through an unproxied reference (a raw object passed to a module-level helper), reads a field only on a branch the run did not take, or calls a bulk projection such as `as_dict()` or `dataclasses.asdict()`
+- **THEN** the proposed proxy would not catch it, would not cover it, or would see every field of the component, respectively
+- **AND** a process's recorded paths name every entity it touched while its declaration names `<x>`, so reads by processes lose precision, and an incomplete proxy (one with `__len__` but not `__bool__`) can itself change a rule's behaviour
+
 ### Requirement: Read scope (proposed, not built): Relationship to the existing assay
 
 `assay.assay_undeclared_component_reads` attacks the same gap statically, by
@@ -474,3 +663,9 @@ proxy can catch a read through indirection the assay cannot name. Neither is
 sufficient, which is the same shape as the three interaction assays.
 
 Source: inferred by agent (a proposed design; nobody has approved building it)
+
+#### Scenario: The proxy and the assay complement each other
+
+- **WHEN** both the proposed proxy and `assay.assay_undeclared_component_reads` are available
+- **THEN** the assay can flag a read on a branch no test exercises, and the proxy can catch a read through indirection the assay cannot name
+- **AND** neither is sufficient alone

@@ -41,6 +41,17 @@ represent them. They do not imply a resident belief state.
 
 Source: inferred by agent (information and delivery v0, applying Decision 003, accepted 2026-09-02). Same-moment reactions get a causal parent under Decision 009: Brian, 2026-10-26: "i approve"
 
+#### Scenario: An item and its delivery are recorded as world facts
+
+- **WHEN** a selected world represents a message and its delivery
+- **THEN** the information item records its content, `source_id`, `channel_id`, `visibility` (`direct` or `public`), an optional topic, an optional `derived_from_info_id`, and whether it is active
+- **AND** the delivery records the item, recipient, channel, status (`pending`, `delivered` or `observed`) and, when available, the canonical tick at delivery
+
+#### Scenario: A record is not a belief
+
+- **WHEN** an information item or delivery exists in canonical state
+- **THEN** it is a world fact only because the world chose to represent it, and it implies no belief state in any resident
+
 ### Requirement: Observation rule
 
 For actor-local observation:
@@ -58,6 +69,28 @@ Ari message becomes visible to Ari only after the communication mechanic
 commits.
 
 Source: inferred by agent (information and delivery v0, applying Decision 003, accepted 2026-09-02). Same-moment reactions get a causal parent under Decision 009: Brian, 2026-10-26: "i approve"
+
+#### Scenario: A direct recipient waits for delivery
+
+- **WHEN** a direct item has a delivery to Mara with status `pending`
+- **THEN** Mara's observation contains neither the item nor its delivery record
+- **AND** once the delivery is `delivered` or `observed`, both appear in her observation
+
+#### Scenario: A source and a public item
+
+- **WHEN** an actor is the represented source of an item, or the item is public and active
+- **THEN** the source can inspect its own item even before delivery, and every local actor can see the public active item
+
+#### Scenario: Unrelated actors see nothing
+
+- **WHEN** a direct item exists in canonical state and an actor is neither its source nor a recipient whose delivery is `delivered` or `observed`
+- **THEN** that actor's observation does not contain the item or the delivery
+
+#### Scenario: The Waltzman fixture delivers asymmetrically
+
+- **WHEN** a system briefing is delivered to Mara and, later, Mara sends a represented message to Ari
+- **THEN** Mara sees the briefing and its delivery record while Ari does not
+- **AND** Ari sees Mara's message and its delivery only after the communication mechanic commits,, and Selene does not see them
 
 ### Requirement: Causality rule
 
@@ -78,6 +111,22 @@ to hard ancestry.
 
 Source: inferred by agent (information and delivery v0, applying Decision 003, accepted 2026-09-02). Same-moment reactions get a causal parent under Decision 009: Brian, 2026-10-26: "i approve"
 
+#### Scenario: Information context is not causal parentage
+
+- **WHEN** an engine event retains `information_context` from the actor's bounded observation
+- **THEN** the context means only that the information was represented in the actor's context
+- **AND** the event carries no `causal_parent_event_ids` unless its rule declared them (the Waltzman start-meeting event lists three messages in `information_context` and has no `causal_parent_event_ids`)
+
+#### Scenario: A rule declares its causal parents
+
+- **WHEN** a rule opts into `DeclaresCausalParents` or `DeclaresProcessCausalParents` and names retained event IDs because it mechanically consumes them
+- **THEN** the Engine stores those IDs as `causal_parent_event_ids`, separately from `information_context`
+
+#### Scenario: Timing and prompt inclusion are not enough
+
+- **WHEN** a message came before an action in time or was included in the actor's prompt
+- **THEN** that alone does not make the message a hard causal ancestor of the action
+
 ### Requirement: Current limits
 
 v0 does not generically model channel latency, probabilistic delivery,
@@ -87,8 +136,30 @@ real world needs those distinctions.
 
 Source: inferred by agent (information and delivery v0, applying Decision 003, accepted 2026-09-02). Same-moment reactions get a causal parent under Decision 009: Brian, 2026-10-26: "i approve"
 
+#### Scenario: A world needs more than v0 models
+
+- **WHEN** a world needs channel latency, probabilistic delivery, corruption, belief revision, deception detection, audience groups, information expiration or arbitrary provenance graphs
+- **THEN** v0 does not model them generically
+- **AND** the contract is extended only when a real world needs those distinctions
+
 ### Requirement: Same-moment reactions cite their cause (current code)
 
 A same-moment knock-on reaction cites as its hard causal parent the latest event of the same moment it reacts to (`Engine._settle`, `src/world_substrate/engine.py:938-972`). A moment that would need more than 32 reactions (`REACTION_LIMIT`, `engine.py:1153`) or a reaction that would break a declared law is refused whole.
 
 Source: Decision 009, Brian, 2026-10-26: "i approve"
+
+#### Scenario: A reaction names the event it reacts to
+
+- **WHEN** a same-moment knock-on reaction fires
+- **THEN** `Engine._settle` records as its hard causal parent the latest event of that moment that changed its entity, else the triggering event (in the glass-chain test, the fall cites the push, the break cites the fall, and the spill and crash-sound each cite the break)
+
+#### Scenario: A moment needs too many reactions
+
+- **WHEN** a moment would need more than 32 reactions (`REACTION_LIMIT`)
+- **THEN** the whole moment is refused with status `reaction_limit` and the failed check "Knock-on effects settle within 32 reactions"
+- **AND** the world is left as it was, with the refusal as the only event added
+
+#### Scenario: A reaction would break a declared law
+
+- **WHEN** a reaction would break a declared law
+- **THEN** the whole moment is refused with status `law_breach`
