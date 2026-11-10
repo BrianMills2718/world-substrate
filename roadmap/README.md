@@ -233,13 +233,9 @@ Open pull requests: none on 2026-11-09 (`gh pr list --state open`).
 
 ## Human decisions
 
-Answered (kept as the record): World Substrate is the one canonical project (001); observability required, exact replay not (002); meaning does not imply effects, and richer Linguistic Core roles do not move mechanics upstream (003, 2026-09-12 review); own causal reality and borrow commodity machinery (004); converge the next Waltzman release on native World Substrate (005, 2026-09-18); hold at the governed-rules layer (006, 2026-10-05); describe any scenario (007); build worlds in an agent harness (008); same-moment effects are rule semantics (009, 2026-10-26); Create simulation is the approval (2026-10-15); Concordia hosts residents; gpt-6-luna is the default model, sol only when sharing with Waltzman (2026-10-16); adopt the open-attempt plan (2026-10-25) and the declared-laws plan (2026-10-28); believability is the off-the-shelf people agents' job, no metric, tuned once everything else runs well (Q50, 2026-11-09).
+Answered (kept as the record): World Substrate is the one canonical project (001); observability required, exact replay not (002); meaning does not imply effects, and richer Linguistic Core roles do not move mechanics upstream (003, 2026-09-12 review); own causal reality and borrow commodity machinery (004); converge the next Waltzman release on native World Substrate (005, 2026-09-18); hold at the governed-rules layer (006, 2026-10-05); describe any scenario (007); build worlds in an agent harness (008); same-moment effects are rule semantics (009, 2026-10-26); Create simulation is the approval (2026-10-15); Concordia hosts residents; gpt-6-luna is the default model, sol only when sharing with Waltzman (2026-10-16); adopt the open-attempt plan (2026-10-25) and the declared-laws plan (2026-10-28); believability is the off-the-shelf people agents' job, no metric, tuned once everything else runs well (Q50, 2026-11-09); when a run stops is a per-world setting, "stop condition should be configurable" (Q12, 2026-11-10; built in PR #356: stop once nothing is changing after 6 quiet rounds by default, or always run every round).
 
-Open, each in the [open questions ledger](../docs/planning/open-questions.json) with what it blocks:
-
-| Question | What it decides |
-| --- | --- |
-| Q12 | whether a people-world run stops once the decision is settled and nothing changes |
+Open: none awaiting Brian. Each question, open or answered, is in the [open questions ledger](../docs/planning/open-questions.json) with what it blocks.
 
 Q16, Q17, Q60 and Q70 were settled by the agent on 2026-11-09 (technical calls, or settled by Brian's plain-version rule); the ledger records each.
 
@@ -247,7 +243,7 @@ Q16, Q17, Q60 and Q70 were settled by the agent on 2026-11-09 (technical calls, 
 
 Refresh this roadmap when:
 
-- Brian answers Q12;
+- Brian answers a new question in the ledger;
 - a declared-laws or open-attempt slice lands, or a hand-written build check is retired;
 - the agent harness reaches the live path;
 - a hardening item lands;

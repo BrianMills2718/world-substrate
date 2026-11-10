@@ -164,7 +164,9 @@ would settle it, its owner and sources. The ones that shape the next work:
 
 1. **Q60 (agent, settled 2026-11-09 by Brian's plain-version rule):** compare today's generated people-world
    rules with one model given the whole scenario, before S5's paid builds or more people-world repair.
-2. **Q12 (Brian):** whether a run stops by itself once the decision is settled and nothing changes.
+2. **Q12 (Brian, answered 2026-11-10):** "stop condition should be configurable". Each world now has a
+   "When to stop a run" setting (stop once nothing is changing after 6 quiet rounds by default, or always run
+   every round), built in PR #356 (`scripts/run_stop.py`).
 3. **Q14:** the Decision 008 harness exists but the live service does not use it.
 4. **Q34:** declared read scopes are not enforced.
 5. **Q45, Q48, Q49:** retiring hand-written build checks once declared laws cover them; laws that are
