@@ -624,15 +624,29 @@ def _mark_refused_world_changes(transcript: list[dict[str, Any]], engine_events:
                 event["refused"] = refused[event["event_id"]]
 
 
-def _mark_old_share_refusals(record: dict[str, Any]) -> None:
+def _mark_old_share_refusals(record: dict[str, Any]) -> bool:
     """A share link made before J0 kept its rounds without the refusal mark; while its runs are still in the run log
     (the same recent days a share is assembled from), opening it reads the refusals from their engine events. Shares
-    made since are marked when made (`refusals_marked`)."""
+    made since are marked when made (`refusals_marked`). Returns True when every run of the share was read, so the
+    marks are complete and can be stored with the share (`_open_share`)."""
     if record.get("refusals_marked"):
-        return
-    trace_ids = tuple(sorted(r["trace_id"] for r in record.get("runs") or [] if r.get("trace_id")))
-    events = [e for row in _logged_entries(set(trace_ids)).values() for e in (row.get("result") or {}).get("engine_events") or []]
+        return False
+    trace_ids = {r["trace_id"] for r in record.get("runs") or [] if r.get("trace_id")}
+    logged = _logged_entries(trace_ids)
+    events = [e for row in logged.values() for e in (row.get("result") or {}).get("engine_events") or []]
     _mark_refused_world_changes(record.get("rounds") or [], events)
+    return bool(trace_ids) and set(logged) == trace_ids
+
+
+def _open_share(share_id: str) -> dict[str, Any] | None:
+    """A stored share as the page opens it. An old share whose runs are all still in the run log gets its refusal
+    marks written into the stored record once, so the link keeps showing them after those log days leave the share
+    window (`SHARE_LOOKBACK_DAYS`; cold review of #363, B1)."""
+    record = _load_share(share_id)
+    if record is not None and _mark_old_share_refusals(record):
+        record["refusals_marked"] = True
+        _update_share(share_id, record)
+    return record
 
 
 def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dict[str, Any]:
@@ -751,6 +765,19 @@ def _save_share(client: str, record: dict[str, Any]) -> str | None:
                        gzip.compress(json.dumps(record, separators=(",", ":")).encode())))
             db.commit()
             return share_id
+        finally:
+            db.close()
+
+
+def _update_share(share_id: str, record: dict[str, Any]) -> None:
+    """Rewrite one stored share's record in place (its id, date and client stay)."""
+    import gzip
+    with _SHARE_LOCK:
+        db = _share_connect()
+        try:
+            db.execute("UPDATE shares SET record = ? WHERE id = ?",
+                       (gzip.compress(json.dumps(record, separators=(",", ":")).encode()), share_id))
+            db.commit()
         finally:
             db.close()
 
@@ -1435,12 +1462,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.OK, {"ok": True, "runs": rows})
             return
         if path.startswith("/share/"):
-            record = _load_share(path[len("/share/"):])
+            record = _open_share(path[len("/share/"):])
             if record is None:
                 self._error(HTTPStatus.NOT_FOUND, "That shared run does not exist (check the link).")
                 return
             _plain_old_checks(record["rounds"])
-            _mark_old_share_refusals(record)
             self._json(HTTPStatus.OK, {"ok": True, **record, **_share_picture(record)})
             return
         if path.startswith("/jobs/"):

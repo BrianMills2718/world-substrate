@@ -159,3 +159,37 @@ def test_a_share_link_made_before_j0_shows_the_refusal_when_opened(tmp_path, mon
               "rounds": [{"turn": 1, "world_events": [{"event_id": "r1-e00002", "changes": []}]}]}
     service._mark_old_share_refusals(marked)
     assert "refused" not in marked["rounds"][0]["world_events"][0]
+
+
+@pytest.mark.req("transition-engine/a-run-saved-under-the-old-limit-replays-under-it")
+def test_an_old_share_keeps_its_refusal_once_its_runs_leave_the_run_log(tmp_path, monkeypatch):
+    """Opening an old share while its runs are in the run log writes the refusal into the stored share, so the link
+    still shows it after those log days pass out of the share window (cold review of #363, B1)."""
+    import json
+
+    from scripts import world_builder_service as service
+
+    label = "Knock-on effects settle within 32 reactions"
+    trace_id = "world-builder-live/run/old"
+    row = {"trace_id": trace_id, "status": 200, "path": "/run", "result": {"engine_events": [
+        {"event_id": "r1-e00002", "status": "reaction_limit", "checks": [{"label": label, "ok": False}]}]}}
+    log = tmp_path / "logs"
+    log.mkdir()
+    (log / "runs_2026-11-10.jsonl").write_text(json.dumps(row) + "\n")
+    monkeypatch.setenv("WORLD_BUILDER_RUN_LOG_DIR", str(log))
+    monkeypatch.setenv("WORLD_BUILDER_SHARE_DB", str(tmp_path / "shares.sqlite"))
+    record = {"created": "2026-11-10T00:00:00Z", "runs": [{"trace_id": trace_id}], "rounds": [
+        {"turn": 1, "world_events": [{"event_id": "r1-e00002", "rule_id": "wind-topples-the-first", "changes": []}]}]}
+    share_id = service._save_share("client", record)
+    opened = service._open_share(share_id)
+    assert opened["rounds"][0]["world_events"][0]["refused"] == label
+    # Three more days of runs: the run that held the refusal is no longer read, and the share still says so.
+    for day in ("11", "12", "13"):
+        (log / f"runs_2026-11-{day}.jsonl").write_text("")
+    (log / "runs_2026-11-10.jsonl").unlink()
+    later = service._open_share(share_id)
+    assert later["refusals_marked"] is True
+    assert later["rounds"][0]["world_events"][0]["refused"] == label
+    # A share whose runs are already gone from the log is left as stored: nothing is marked that was not read.
+    gone = service._save_share("client", {**record, "runs": [{"trace_id": "world-builder-live/run/gone"}]})
+    assert "refusals_marked" not in service._open_share(gone)

@@ -369,8 +369,8 @@
   "cold_review": {
    "status": "present",
    "path": "docs/planning/ai-judge/cold-review.md",
-   "verdict": "pass",
-   "reviewed_revision": "fcdd8a20c2d6c9c24cbf3fa1d6575b65730e4dc0"
+   "verdict": "revise",
+   "reviewed_revision": "a863097f680904b03383a268041469d377086031"
   }
  },
  "note": "This is the plan's own package, named by docs/plans/ai_judge.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws and open-attempt packages (all rebuilt by tools/planning/). The plan's six new concepts are in the domain model as 'In documents only' (planned, not implemented); its uncertainties U1-U3 are Q74-Q76 (Q74 resolved by measurement), and the agent's technical calls made in answer to the 2026-11-09 cold review are resolved questions Q78 (two-pass judge), Q79 (rule language gap), Q80 (wait mode) and Q81 (replay under the recorded limit). The plain baseline was run (3 calls, $0.0061, evidence/ai-judge/plain-baseline/). The acceptance criteria cite the run page's own router record, docs/planning/ai-judge/router/run-page.recommendation.json. Checks were rerun for this package into docs/planning/ai-judge/checks.txt; the repository-wide docs/planning/checks.txt is left as its own package recorded it."
