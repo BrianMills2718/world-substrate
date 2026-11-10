@@ -1702,11 +1702,13 @@ Q = [
   "blocks": "J3's install path and the plan's cost basis; not J2, which is built on Concordia's EventResolution and does not use the spike's rule writer.",
   "resolves_with": "A free read of rules_written_mid_run in the two summary.json files (spikes/any-scenario-2026-10/evidence/waltzman/run, .../waltzman-spec/run2/run) and of midrun.py's install step before J3 starts; the 27 rules run through the current rules check as a free replay.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
+  "evidence": "Read 2026-11-10 (J3). The spike's _install (midrun.py) registers a compiled action in the running registry (engine.registry.register_action) for each declared action not already there; J3 reuses that one step (scripts/rulings.py Rulebook.install, after the World Builder's rules check on the world as it is now, plus updating the world's recorded rule versions) and does not reuse the spike's rule writer or its keep-or-drop check. rules_written_mid_run holds 27 attempts: 3 in waltzman/run (all status ruling, written_mid_run false, nothing installed) and 24 in waltzman-spec/run2 (18 ruling, 6 invalid_action with a rule installed): 6 of 27 installed, 21 dropped by the spike's check (baseline_blocking against blocking findings). Not done: running the 27 rules through today's rules check as a free replay; they are written for the spike's worlds and the question of how many pass is not what J3 needs.",
   "sources": [
    "docs/decisions/007-any-scenario-path.md",
    "docs/model/ODD.md",
-   "docs/plans/ai_judge.md"
+   "docs/plans/ai_judge.md",
+   "spikes/any-scenario-2026-10/midrun.py"
   ],
   "touches": [
    "judge-ruling",
@@ -1728,6 +1730,73 @@ Q = [
   ],
   "touches": [
    "judge-ruling"
+  ]
+ },
+ {
+  "id": "Q92",
+  "short": "A ruling can move goods at a price far from the world's price and nothing flags it",
+  "question": "The J2 cold review (docs/planning/ai-judge/cold-review.md, item 7) found the sawmill ruling moved 3 logs for 1 coin against a world price of 10 and nothing flagged it. Since J3 a confirmed ruling like that is installed (or held) as a rule. In 18 live tries on the lumberyard world (tests/judge_worlds.py lumberyard; run on the J3 branch before it shipped) the judge wrote rules with literal totals or a free payment field that pass the rules check and the test run but do not tie the payment to the posted price. Should the rules check or the judge's review compare what a ruling moves with the prices the world states, and which of the two catches it?",
+  "blocks": "Trust in installed rulings that move goods or coins; not the J3 mechanism, which installs only what passed the rules check and the test run.",
+  "resolves_with": "Run the saved sawmill ruling and the lumberyard rulings through a candidate comparison of moved values against stored price fields and read how many it flags and how many it flags wrongly; or a Brian decision that the owner's Approve is the check.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/planning/ai-judge/cold-review.md",
+   "docs/plans/ai_judge.md",
+   "evidence/ai-judge/j2/sawmill/TRACE_READ.md"
+  ],
+  "touches": [
+   "judge-ruling",
+   "ruling-rule"
+  ]
+ },
+ {
+  "id": "Q93",
+  "short": "The language gap never happened on price times quantity",
+  "question": "The plan expected a price-times-quantity ruling to be refused as 'no rule could express this' because the rule language has no multiplication. In 18 live tries on the lumberyard world the judge never wrote a rule the rules check rejected: it wrote literal numbers or a free payment parameter, or withdrew, or said no rule was needed. The language-gap path works (tests/test_judge_rulings.py with a scripted judge) but has no live example. Is a gap rarer than the plan assumed, does A4's third case need a world where no literal can stand in for the arithmetic, or should a withdrawal that names the missing arithmetic count as a gap?",
+  "blocks": "A4's third case (a ruling the language cannot express listed as a language gap) as a live saved run.",
+  "resolves_with": "Brian's reading of whether a scripted-judge saved run is an acceptable demonstration of the gap path, or a world and attempt found by reading the 18 tries' judge records for one where a literal cannot stand in.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/plans/ai_judge.md",
+   "docs/planning/ai-judge/acceptance-criteria.json"
+  ],
+  "touches": [
+   "ruling-rule"
+  ]
+ },
+ {
+  "id": "Q94",
+  "short": "A later offer joins an installed rule only when the judge wrote the giver's move",
+  "question": "The plan's example rule is the giver's move ('a person may hand coins they hold to a person at the same place'). In live runs the judge wrote either that (hand-over-coins: a second trader's later offer was decided by the rule with the judge not asked) or the receiver's acceptance (accept-coin-offer: a second trader's later offer was read as unmatched and the judge was asked again, producing a second near-duplicate rule). Should a rule the judge writes for an offer be steered to the giver's move, or should an offer to the same person be read against the receiver's rule?",
+  "blocks": "How reliably A4's 'decided by rule, judge not asked' shows on a second trader (the cold review's item 8 saw the same split).",
+  "resolves_with": "Reading the interpreter's reading of the second offer in the default-case tries and the judge's two rule shapes; then either a line in the judge's steps (Brian's call whether that is our own judge prompt, Q91) or an interpreter change.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/planning/ai-judge/cold-review.md",
+   "docs/plans/ai_judge.md"
+  ],
+  "touches": [
+   "judge-ruling",
+   "ruling-rule"
+  ]
+ },
+ {
+  "id": "Q95",
+  "short": "The engine's own replay of a run that installed a rule mid-round",
+  "question": "Engine.replay of a round that installs a rule mid-round fails because the world's recorded rule versions change when the rule is installed. The live path never calls it (a shared run replays from its recorded rounds, and each round continues from a sealed snapshot with the installed rules sealed beside it), so no saved run is affected. Does anything need the engine to replay a run that installed rulings, and if so should the event log record the install?",
+  "blocks": "Nothing that exists; any future audit or export that replays a judged run through Engine.replay.",
+  "resolves_with": "Search for callers of Engine.replay on run records and decide whether an install event belongs in the event log; a test that replays a judged run.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "src/world_substrate/engine.py",
+   "scripts/rulings.py"
+  ],
+  "touches": [
+   "ruling-rule"
   ]
  }
 ]

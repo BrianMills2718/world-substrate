@@ -37,7 +37,7 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
 | [scene-replay](../openspec/specs/scene-replay/spec.md) | the presentation contract between a saved trace and its replay |
 | [native-coordination](../openspec/specs/native-coordination/spec.md) | the native Waltzman coordination vertical, comparison and diagnostics |
 | [world-builder-page](../openspec/specs/world-builder-page/spec.md) | Brian's rules for the World Builder page, with the feedback log |
-| [ai-judge](../openspec/specs/ai-judge/spec.md) | the AI judge for attempts no rule covers: its consequence report (pass 1 and pass 2) and the judge itself, Concordia's game master (J2) |
+| [ai-judge](../openspec/specs/ai-judge/spec.md) | the AI judge for attempts no rule covers: its consequence report (pass 1 and pass 2), the judge itself, Concordia's game master (J2), and a checked ruling becoming a rule, installed or held for approval (J3) |
 
 ## 3. The system as a checked model
 

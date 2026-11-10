@@ -57,7 +57,9 @@ Planning package: docs/planning/ai-judge/planning-package.json
 **Status:** adopted. Brian approved its direction on 2026-11-09 ("i approve", after Decided 5) and building it on
 2026-11-10 ("yes if ti si planned out and you have no quesitons for me"). J0 built 2026-11-10 (no knock-on cap;
 PR #362, live at `d89a446`; saved runs in `evidence/ai-judge/j0/`, live share links in
-`evidence/ai-judge/j0/live-shares.json`); J1, J2, J3 and J5 are next; J4 stays exploration.
+`evidence/ai-judge/j0/live-shares.json`); J1 and J2 built 2026-11-10 (J2: PR #367, live at `b8d26b5`); J3 built
+2026-11-10 (a checked ruling becomes a rule, installed at once or held for the owner's approval; saved runs in
+`evidence/ai-judge/j3/`); J5 is next; J4 stays exploration.
 
 ## Why
 
@@ -245,8 +247,11 @@ and norms as breakable rules with consequences only when someone acts on them.
   effects for uncovered attempts (`docs/plans/open_attempt.md`, Decisions). Brian's 2026-11-09 approval above
   replaces it with a narrower judge: rulings on constraints only, which become checked rules.
 - **Approval comes before a run.** Pressing Create simulation is the approval (RULE-APPROVAL-BEFORE-RUN,
-  `docs/model/ODD.md` 8.7); in the World Builder no rule is installed mid-run today. The spike path did install
-  rules mid-run (Prior art, Decision 007, ODD 8.19). Slice J3 changes this for the World Builder (Decided 5).
+  `docs/model/ODD.md` 8.7); until J3 the World Builder installed no rule mid-run. The spike path did install
+  rules mid-run (Prior art, Decision 007, ODD 8.19). Slice J3 (built 2026-11-10) changes this for the World Builder
+  (Decided 5): under "Approved by Create" a checked ruling is installed as a rule of the running engine (the world's
+  own rules and fingerprint stay as approved; installed rules are sealed run state), and under "Wait for my approval"
+  nothing is installed until the owner presses Approve.
 
 ## Requirements
 
@@ -349,7 +354,7 @@ traced run.
 | J0 | Remove the 32-reaction cap; keep once-per-pair-per-moment; each saved run records the limit it ran under and replay uses it | fully specifiable now | A1, A7 |
 | J1 | Consequence report: pass 1 (`engine.discover` for the person acting and each person the attempt names, plus the named entities' current values) and pass 2 (a proposed rule test-run on a copy of the world: its net changes, blockers, chain length and stopping point, with the full chain in the run record) | specified by design: pass 1's selection is defined, but which named people and entities an attempt yields depends on the interpreter's reading, and no run has produced a pass 1 page yet | A2 (data) |
 | J2 | Judge: turn on Concordia's `EventResolution` for unmatched attempts, given the whole world plus pass 1; it proposes a rule, reads the pass 2 report, then confirms, revises once or withdraws; choices go to the person | conditional on J1 | A2, A3, A5 |
-| J3 | Ruling to rule: install the confirmed rule (or hold it with the attempt pending, per the world's setting); refuse with "no rule could express this" and record a language gap when the rules check rejects it | conditional on J2 | A4 |
+| J3 | Ruling to rule: install the confirmed rule (or hold it with the attempt pending, per the world's setting); refuse with "no rule could express this" and record a language gap when the rules check rejects it | built 2026-11-10 (`scripts/rulings.py`; `openspec/specs/ai-judge`) | A4 |
 | J4 | Credentials as facts and norms as breakable rules (Ostrom's grammar) | exploration required | A6 |
 | J5 | Stopping point in plain words: `run_stop.stop_when`, assessed by the judge after each round, stopping with `reason: stopping_point` through the existing stop check | conditional on J2 | A8 |
 
@@ -431,7 +436,10 @@ for every model call. No new cross-project capability.
   `spikes/any-scenario-2026-10/evidence/waltzman/run/summary.json`, 24 in `.../waltzman-spec/run2/run/summary.json`)
   and about $0.10 per attempt (the comment in `midrun.py`). It was a spike, not in the World Builder. J2 does not reuse its
   rule writer (R7: the judge is Concordia's component, conditioned on pass 1 and pass 2, which the spike lacks);
-  J3 looks first at its install step and its keep-or-drop record (Q90).
+  J3 read its install step and keep-or-drop record (Q90, 2026-11-10): the spike's `_install` registers a compiled action in
+  the running registry, the step J3 reuses (`Rulebook.install`, after the World Builder's rules check on the world as it is
+  now); its rule writer and its keep-or-drop check are not reused. Of the 27 rule-writing attempts in the two saved
+  runs, 6 were installed (all in `waltzman-spec/run2`) and 21 ended as a plain ruling with nothing installed.
 - Crawford and Ostrom (1995), "A Grammar of Institutions": a rule is Attributes, Deontic, aIm, Conditions, Or
   else. Its split between a norm (no "or else") and a rule (an "or else" someone enforces) matches the
   constraint, decision and norm split above. J4 starts from it and from Institutional Grammar 2.0 (Frantz and
@@ -551,7 +559,10 @@ run's `max_budget`.
   supplies two components (the world and the consequence report) and steps that each ask one typed question. Read
   as: no judge agent or component of ours; the question text is configuration. Brian may read Decision 006
   differently; if so, the steps are the part to remove.
-- **U5 (agent, open, Q90):** what the spike's 27 mid-run rules show, and whether J3 reuses its install step.
+- **U5 (agent, resolved 2026-11-10, Q90):** what the spike's 27 mid-run rules show, and whether J3 reuses its install step.
+  Read free from `rules_written_mid_run` in the two `summary.json` files and `midrun.py`: 6 installed, 21 dropped; J3 reuses
+  the install step only. Not done: running the 27 rules through today's rules check as a free replay (they are written
+  for the spike's worlds, not these).
 - **U3 (agent):** how to represent a breakable norm and a credential holder in the declaration language.
   Settled by prior art first (Ostrom's grammar, Institutional Grammar 2.0, v3); a design step opens J4.
 
