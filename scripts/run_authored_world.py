@@ -19,6 +19,7 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from scripts import attempts
+from scripts import consequence_report
 from scripts import run_stop as run_stop_rule
 from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
@@ -928,9 +929,16 @@ def run_world(
             if actor in readings:
                 row["attempt"] = {"text": beliefs[actor].get("attempt"), "reading": readings[actor]}
                 if (did or {}).get("kind") == open_attempt.UNMATCHED_KIND:
+                    # The consequence report's pass 1 (ai-judge plan J1): what the engine works out with no new rule,
+                    # for the person trying and each person the words name. An unmatched attempt changes nothing, so
+                    # the world now is the world it was tried in.
+                    named = did.get("names") or ([did["asks"]] if did.get("asks") else [])
+                    row["consequence"] = {"pass_one": consequence_report.pass_one(engine, actor, named, people=actors)}
                     unmatched.append({"round": turn + turn_offset, "actor": actor, "attempt": did.get("attempt"),
                                       "nearest_kind": did.get("nearest_kind"), "why": did.get("why"),
-                                      **({"asks": did["asks"]} if did.get("asks") in actors else {})})
+                                      **({"asks": did["asks"]} if did.get("asks") in actors else {}),
+                                      **({"names": list(did["names"])} if did.get("names") else {}),
+                                      "event_id": row["event_id"]})
             rows[actor] = row
         round_no = turn + turn_offset
         starting: dict[str, list[dict[str, Any]]] = {}
