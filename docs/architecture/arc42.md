@@ -427,7 +427,6 @@ Each item has an entry in [the open questions ledger](../planning/open-questions
 - A mechanic exception is rolled back and re-raised, not recorded as a refusal event (`engine.py:785-788`).
 - The law fingerprint omits the compiler version (`profile.py:266-279`).
 - No lockfile or `pyproject.toml`; the project check pins its tools on the command line.
-- The hosted workflow `.github/workflows/native-coordination-linux.yml` conflicts with the workspace rule against relying on GitHub Actions.
 - Concurrency semantics between concurrent deliberation and contended writes are undefined; indexing and observation selection at scale are unmeasured.
 
 ## 12. Glossary
