@@ -192,12 +192,40 @@ def pass_two(bundle: dict[str, Any], causal_value: dict[str, Any], engine: Engin
     }
 
 
-def summary(report: dict[str, Any]) -> dict[str, Any]:
-    """The report without the full chain: what the judge reads. The chain stays in the run record."""
-    out = deepcopy(report)
-    if isinstance(out.get("test_run"), dict):
-        out["test_run"].pop("chain", None)
+GROUP_OVER = 40  # more net changes than this are read grouped (a 5,000-step chain changes 5,000 fields)
+
+
+def grouped(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Net changes grouped: the fields that went from the same value to the same value on the same things become
+    one row naming the things, the fields and how many changes it stands for, in the order changes first appear."""
+    by_change: dict[tuple[str, str], tuple[Any, Any, dict[str, list[str]]]] = {}
+    for row in rows:
+        key = (repr(row["before"]), repr(row["after"]))
+        by_change.setdefault(key, (row["before"], row["after"], {}))[2].setdefault(row["path"], []).append(row["entity"])
+    out: list[dict[str, Any]] = []
+    for before, after, paths in by_change.values():
+        by_things: dict[tuple[str, ...], list[str]] = {}
+        for path, things in paths.items():
+            by_things.setdefault(tuple(things), []).append(path)
+        for things, fields in by_things.items():
+            out.append({"things": list(things), "fields": fields, "before": before, "after": after,
+                        "changes": len(things) * len(fields)})
     return out
 
 
-__all__ = ["net_changes", "pass_one", "pass_two", "rules_check", "summary", "with_rule"]
+def summary(report: dict[str, Any]) -> dict[str, Any]:
+    """The report without the full chain: what the judge reads. The chain stays in the run record. More than
+    GROUP_OVER net changes are given grouped (`grouped`), with their count."""
+    out = deepcopy(report)
+    run = out.get("test_run")
+    if isinstance(run, dict):
+        run.pop("chain", None)
+        changes = run.get("net_changes") or []
+        if len(changes) > GROUP_OVER:
+            run["net_changes"] = grouped(changes)
+            run["net_changes_grouped"] = True
+            run["net_change_count"] = len(changes)
+    return out
+
+
+__all__ = ["grouped", "net_changes", "pass_one", "pass_two", "rules_check", "summary", "with_rule"]

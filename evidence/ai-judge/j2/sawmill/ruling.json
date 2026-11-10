@@ -1,0 +1,1236 @@
+{
+ "what": "J2 ruling on the saved sawmill case (docs/plans/ai_judge.md A5): the sawmill offers to pay the Oregon logger for its\nthree cedar logs and asks for them to be transferred. Plan A5: a ruling that would move another person's goods on the\nbuyer's move alone goes to that person as an offer instead. One judge run (paid, llm_client), no other model call.\n\nThe world is rebuilt exactly as the attempt found it: the saved build (evidence/declared-laws/s2-pencil-2/run-log.jsonl\nline 1), the state at the end of round 3 (line 4, final_snapshot), then round 4's three moves made before the\nsawmill's (line 5, r4-e00001, r4-e00003, r4-e00005, resubmitted as recorded). Output: ruling.json beside this.",
+ "trace_id": "world-substrate/ai-judge-j2/sawmill/7b1f6246acc1401eb31498b89dab05f2",
+ "revision": 14,
+ "replayed": [
+  {
+   "actor": "graphite-mine",
+   "kind": "mine-graphite",
+   "status": "accepted"
+  },
+  {
+   "actor": "lead-works",
+   "kind": "make-leads",
+   "status": "accepted"
+  },
+  {
+   "actor": "logger",
+   "kind": "cut-cedar",
+   "status": "accepted"
+  }
+ ],
+ "named": [],
+ "state": {
+  "sawmill": {
+   "cash": 10000,
+   "logs": 0,
+   "slats": 0,
+   "graphite": 0,
+   "clay": 1000,
+   "leads": 0,
+   "paint": 1000,
+   "erasers": 1000,
+   "ferrules": 1000,
+   "pencils": 0,
+   "boxes": 1000,
+   "packed_pencils": 0,
+   "price": 10
+  },
+  "logger": {
+   "cash": 10000,
+   "logs": 4,
+   "slats": 0,
+   "graphite": 0,
+   "clay": 1000,
+   "leads": 0,
+   "paint": 1000,
+   "erasers": 1000,
+   "ferrules": 1000,
+   "pencils": 0,
+   "boxes": 1000,
+   "packed_pencils": 0,
+   "price": 10
+  }
+ },
+ "pass_one": {
+  "actor": "sawmill",
+  "named": [],
+  "moves": {
+   "sawmill": {
+    "available": [
+     {
+      "action_id": "af23c638269c",
+      "action": {
+       "actor": "sawmill",
+       "kind": "saw-slats",
+       "base_revision": 14,
+       "controller": "unselected",
+       "logger": "logger",
+       "quantity": 1
+      },
+      "checks": [
+       {
+        "label": "Actor exists",
+        "ok": true,
+        "actual": null,
+        "required": null
+       },
+       {
+        "label": "the one acting is allowed to make this move",
+        "ok": true,
+        "actual": null,
+        "required": null
+       },
+       {
+        "label": "the logger named exists",
+        "ok": true,
+        "actual": null,
+        "required": null
+       },
+       {
+        "label": "the logger named is the right kind of thing for this move",
+        "ok": true,
+        "actual": null,
+        "required": null
+       },
+       {
+        "label": "The quantity is positive",
+        "ok": true,
+        "actual": 1,
+        "required": 0
+       },
+       {
+        "label": "The logger has enough logs",
+        "ok": true,
+        "actual": 4,
+        "required": 1
+       }
+      ]
+     }
+    ],
+    "blocked": []
+   }
+  },
+  "values": {
+   "sawmill": {
+    "label": "Cedar sawmill",
+    "categories": [
+     "actor",
+     "sawmill",
+     "business"
+    ],
+    "location": "oregon",
+    "components": {
+     "business": {
+      "cash": 10000,
+      "logs": 0,
+      "slats": 0,
+      "graphite": 0,
+      "clay": 1000,
+      "leads": 0,
+      "paint": 1000,
+      "erasers": 1000,
+      "ferrules": 1000,
+      "pencils": 0,
+      "boxes": 1000,
+      "packed_pencils": 0,
+      "price": 10
+     }
+    }
+   }
+  }
+ },
+ "ruling": {
+  "by": "the world's game master (Concordia's EventResolution)",
+  "model": "openrouter/openai/gpt-6-luna",
+  "trace_id": "world-substrate/ai-judge-j2/sawmill/7b1f6246acc1401eb31498b89dab05f2",
+  "whose_choice": "logger",
+  "ruling": "A paid transfer of the logger\u2019s logs is not covered by an installed rule. It requires a rule for transferring logs and cash, and the logger\u2019s choice on the offer; the payment amount must be specified before this exchange can be test-run.",
+  "reasoning": "The offer would change both businesses\u2019 inventories and cash if accepted, but no installed move covers that exchange. Since the logger must choose whether to accept and the offer gives no payment amount, the exchange cannot yet be fully specified as a test move.",
+  "facts": [
+   "sawmill is in Oregon and has business.logs = 0 and business.cash = 10000.",
+   "logger is in Oregon and has business.logs = 4 and business.cash = 10000.",
+   "The attempted saw-slats move is available, but it would turn the logger's logs into slats; it does not transfer logs or cash.",
+   "No installed rule covers selling or transferring logs for payment.",
+   "The event specifies three logs but does not specify the payment amount."
+  ],
+  "blockers": [
+   "The logger has enough logs for the requested three, but the purchase terms lack a stated payment amount.",
+   "The existing saw-slats rule is not a rule for a sale or handover of logs."
+  ],
+  "world_chars": 27985,
+  "world_revision": 14,
+  "outcome": "confirmed",
+  "why": "Pass 2 accepted the logger\u2019s sell-cedar-logs move with no blockers, transferring 3 logs to the sawmill and 1 cash from the sawmill to the logger. The seller is the actor, so the move represents the logger\u2019s own decision to accept the offer.",
+  "revised": true,
+  "rule": {
+   "action": {
+    "kind": "sell-cedar-logs",
+    "description": "The logger decides to sell cedar logs to a named sawmill for an agreed amount.",
+    "fields": [
+     {
+      "name": "buyer",
+      "type": "entity_ref"
+     },
+     {
+      "name": "quantity",
+      "type": "integer"
+     },
+     {
+      "name": "amount",
+      "type": "integer"
+     }
+    ]
+   },
+   "mechanic": {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "sell-cedar-logs",
+    "version": "1",
+    "action_kind": "sell-cedar-logs",
+    "rationale": "A logger may choose to sell available logs to a sawmill for an agreed payment; the exchange occurs only on the logger's decision move.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "logger"
+     ],
+     "components": [
+      "business"
+     ]
+    },
+    "participants": {
+     "buyer": {
+      "categories": [
+       "actor",
+       "sawmill"
+      ],
+      "components": [
+       "business"
+      ]
+     }
+    },
+    "parameters": {
+     "quantity": [
+      1
+     ],
+     "amount": [
+      1
+     ]
+    },
+    "checks": [
+     {
+      "label": "The quantity is positive",
+      "left": {
+       "action_field": "quantity"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The payment is positive",
+      "left": {
+       "action_field": "amount"
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     },
+     {
+      "label": "The logger has enough logs",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.business.logs"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "label": "The sawmill can afford the agreed payment",
+      "left": {
+       "participant": {
+        "name": "buyer",
+        "path": "components.business.cash"
+       }
+      },
+      "op": "gte",
+      "right": {
+       "action_field": "amount"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.business.logs",
+      "op": "subtract",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.business.logs",
+      "op": "add",
+      "value": {
+       "action_field": "quantity"
+      }
+     },
+     {
+      "participant": "buyer",
+      "path": "components.business.cash",
+      "op": "subtract",
+      "value": {
+       "action_field": "amount"
+      }
+     },
+     {
+      "participant": "actor",
+      "path": "components.business.cash",
+      "op": "add",
+      "value": {
+       "action_field": "amount"
+      }
+     }
+    ],
+    "limits": [
+     "The logger's sale decision is required; this move does not compel acceptance of an offer made by another person."
+    ],
+    "tests": [
+     "Refuse if the quantity or payment is not positive, the logger lacks the logs, or the sawmill cannot pay.",
+     "On the logger's sale move, transfer the stated logs and payment between logger and sawmill."
+    ],
+    "semantic_bindings": [
+     "actor is the logger making the sale decision",
+     "buyer is the named sawmill"
+    ]
+   }
+  },
+  "move": {
+   "actor": "logger",
+   "kind": "sell-cedar-logs",
+   "buyer": "sawmill",
+   "quantity": 3,
+   "amount": 1
+  },
+  "tests": [
+   {
+    "rule": {
+     "action": {
+      "kind": "buy-cedar-logs",
+      "description": "Offer payment to the named logger for a stated quantity of cedar logs and transfer the logs and payment if accepted.",
+      "fields": [
+       {
+        "name": "logger",
+        "type": "entity_ref"
+       },
+       {
+        "name": "quantity",
+        "type": "integer"
+       },
+       {
+        "name": "amount",
+        "type": "integer"
+       }
+      ]
+     },
+     "mechanic": {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "buy-cedar-logs",
+      "version": "1",
+      "action_kind": "buy-cedar-logs",
+      "rationale": "A log sale transfers the stated quantity of logs from the logger to the sawmill and the stated payment from the sawmill to the logger; the logger decides whether to accept the offer.",
+      "actor_selector": {
+       "categories": [
+        "actor",
+        "sawmill"
+       ],
+       "components": [
+        "business"
+       ]
+      },
+      "participants": {
+       "logger": {
+        "categories": [
+         "actor",
+         "logger"
+        ],
+        "components": [
+         "business"
+        ]
+       }
+      },
+      "parameters": {
+       "quantity": [
+        3
+       ],
+       "amount": [
+        1
+       ]
+      },
+      "checks": [
+       {
+        "label": "The quantity is positive",
+        "left": {
+         "action_field": "quantity"
+        },
+        "op": "gt",
+        "right": {
+         "literal": 0
+        }
+       },
+       {
+        "label": "The logger has enough logs",
+        "left": {
+         "participant": {
+          "name": "logger",
+          "path": "components.business.logs"
+         }
+        },
+        "op": "gte",
+        "right": {
+         "action_field": "quantity"
+        }
+       },
+       {
+        "label": "The sawmill can afford the payment",
+        "left": {
+         "participant": {
+          "name": "actor",
+          "path": "components.business.cash"
+         }
+        },
+        "op": "gte",
+        "right": {
+         "action_field": "amount"
+        }
+       }
+      ],
+      "effects": [
+       {
+        "participant": "logger",
+        "path": "components.business.logs",
+        "op": "subtract",
+        "value": {
+         "action_field": "quantity"
+        }
+       },
+       {
+        "participant": "actor",
+        "path": "components.business.logs",
+        "op": "add",
+        "value": {
+         "action_field": "quantity"
+        }
+       },
+       {
+        "participant": "actor",
+        "path": "components.business.cash",
+        "op": "subtract",
+        "value": {
+         "action_field": "amount"
+        }
+       },
+       {
+        "participant": "logger",
+        "path": "components.business.cash",
+        "op": "add",
+        "value": {
+         "action_field": "amount"
+        }
+       }
+      ],
+      "limits": [
+       "The logger's acceptance is a separate choice; this move's effects apply only if accepted.",
+       "The payment amount is stated in the offer; no market price for logs is represented."
+      ],
+      "tests": [
+       "Refuse if the logger lacks the requested logs or the sawmill lacks the offered cash.",
+       "On acceptance, transfer the stated logs and payment; on refusal, neither changes."
+      ],
+      "semantic_bindings": [
+       "logger is the seller and holder of the logs",
+       "actor is the sawmill buyer"
+      ]
+     }
+    },
+    "move": {
+     "actor": "sawmill",
+     "kind": "buy-cedar-logs"
+    },
+    "rules_check": {
+     "ok": true
+    },
+    "test_run": {
+     "move": {
+      "actor": "sawmill",
+      "kind": "buy-cedar-logs"
+     },
+     "from_revision": 14,
+     "status": "invalid_action",
+     "net_changes": [],
+     "blockers": [
+      {
+       "rule_id": "system.action-envelope",
+       "it": "sawmill",
+       "after": null,
+       "failed": [
+        {
+         "check": "Valid action envelope",
+         "actual": [
+          "invalid buy-cedar-logs payload: buy-cedar-logs action fields must be ['actor', 'amount', 'base_revision', 'controller', 'kind', 'logger', 'quantity']"
+         ],
+         "required": "registered typed action or structurally valid unsupported action"
+        }
+       ]
+      }
+     ],
+     "chain_length": 0,
+     "stopping_point": {
+      "kind": "refused",
+      "status": "invalid_action",
+      "after_step": 0,
+      "failed": [
+       {
+        "check": "Valid action envelope",
+        "actual": [
+         "invalid buy-cedar-logs payload: buy-cedar-logs action fields must be ['actor', 'amount', 'base_revision', 'controller', 'kind', 'logger', 'quantity']"
+        ],
+        "required": "registered typed action or structurally valid unsupported action"
+       }
+      ],
+      "blocker": {
+       "rule_id": "system.action-envelope",
+       "it": "sawmill",
+       "after": null,
+       "failed": [
+        {
+         "check": "Valid action envelope",
+         "actual": [
+          "invalid buy-cedar-logs payload: buy-cedar-logs action fields must be ['actor', 'amount', 'base_revision', 'controller', 'kind', 'logger', 'quantity']"
+         ],
+         "required": "registered typed action or structurally valid unsupported action"
+        }
+       ]
+      }
+     },
+     "chain": [
+      {
+       "event_id": "e00004",
+       "causal_bearer": {
+        "kind": "claimed_actor",
+        "id": "sawmill",
+        "controller": "judge:test-run"
+       },
+       "semantic_binding": null,
+       "observation": {
+        "world_id": "pencil-supply-chain-live",
+        "revision": 14,
+        "tick": 0,
+        "actor_id": "sawmill",
+        "entities": {
+         "cedar-forest": {
+          "entity_id": "cedar-forest",
+          "label": "Cedar forest",
+          "category_ids": [
+           "forest"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "cedar-forest",
+          "last_cause_event_id": "e00003",
+          "components": {
+           "forest": {
+            "standing_cedar": 99996
+           }
+          }
+         },
+         "logger": {
+          "entity_id": "logger",
+          "label": "Oregon logger",
+          "category_ids": [
+           "actor",
+           "logger",
+           "business"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "logger",
+          "last_cause_event_id": "e00003",
+          "components": {
+           "business": {
+            "cash": 10000,
+            "logs": 4,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 1000,
+            "leads": 0,
+            "paint": 1000,
+            "erasers": 1000,
+            "ferrules": 1000,
+            "pencils": 0,
+            "boxes": 1000,
+            "packed_pencils": 0,
+            "price": 10
+           }
+          }
+         },
+         "oregon": {
+          "entity_id": "oregon",
+          "label": "Oregon cedar forest",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "oregon"
+         },
+         "pennsylvania": {
+          "entity_id": "pennsylvania",
+          "label": "Pennsylvania pencil factory",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "pennsylvania"
+         },
+         "sawmill": {
+          "entity_id": "sawmill",
+          "label": "Cedar sawmill",
+          "category_ids": [
+           "actor",
+           "sawmill",
+           "business"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "sawmill",
+          "components": {
+           "business": {
+            "cash": 10000,
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 1000,
+            "leads": 0,
+            "paint": 1000,
+            "erasers": 1000,
+            "ferrules": 1000,
+            "pencils": 0,
+            "boxes": 1000,
+            "packed_pencils": 0,
+            "price": 10
+           }
+          }
+         },
+         "shops": {
+          "entity_id": "shops",
+          "label": "Shops across the country",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "shops"
+         },
+         "sri-lanka": {
+          "entity_id": "sri-lanka",
+          "label": "Sri Lanka graphite mine",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "sri-lanka"
+         }
+        }
+       },
+       "tick": 0,
+       "world_revision": 14,
+       "rule_id": "system.action-envelope",
+       "rule_version": "1",
+       "cause": "c00004",
+       "status": "invalid_action",
+       "checks": [
+        {
+         "label": "Valid action envelope",
+         "ok": false,
+         "actual": [
+          "invalid buy-cedar-logs payload: buy-cedar-logs action fields must be ['actor', 'amount', 'base_revision', 'controller', 'kind', 'logger', 'quantity']"
+         ],
+         "required": "registered typed action or structurally valid unsupported action"
+        }
+       ],
+       "declared_read_paths": [],
+       "declared_write_paths": [],
+       "changes": [],
+       "hash_before": "d6e6a2b3b97e0edd06be74234457d710e92b825d43f8ce4d5c16ad12f4b7e2c0",
+       "hash_after": "d6e6a2b3b97e0edd06be74234457d710e92b825d43f8ce4d5c16ad12f4b7e2c0"
+      }
+     ]
+    }
+   },
+   {
+    "rule": {
+     "action": {
+      "kind": "sell-cedar-logs",
+      "description": "The logger decides to sell cedar logs to a named sawmill for an agreed amount.",
+      "fields": [
+       {
+        "name": "buyer",
+        "type": "entity_ref"
+       },
+       {
+        "name": "quantity",
+        "type": "integer"
+       },
+       {
+        "name": "amount",
+        "type": "integer"
+       }
+      ]
+     },
+     "mechanic": {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "sell-cedar-logs",
+      "version": "1",
+      "action_kind": "sell-cedar-logs",
+      "rationale": "A logger may choose to sell available logs to a sawmill for an agreed payment; the exchange occurs only on the logger's decision move.",
+      "actor_selector": {
+       "categories": [
+        "actor",
+        "logger"
+       ],
+       "components": [
+        "business"
+       ]
+      },
+      "participants": {
+       "buyer": {
+        "categories": [
+         "actor",
+         "sawmill"
+        ],
+        "components": [
+         "business"
+        ]
+       }
+      },
+      "parameters": {
+       "quantity": [
+        1
+       ],
+       "amount": [
+        1
+       ]
+      },
+      "checks": [
+       {
+        "label": "The quantity is positive",
+        "left": {
+         "action_field": "quantity"
+        },
+        "op": "gt",
+        "right": {
+         "literal": 0
+        }
+       },
+       {
+        "label": "The payment is positive",
+        "left": {
+         "action_field": "amount"
+        },
+        "op": "gt",
+        "right": {
+         "literal": 0
+        }
+       },
+       {
+        "label": "The logger has enough logs",
+        "left": {
+         "participant": {
+          "name": "actor",
+          "path": "components.business.logs"
+         }
+        },
+        "op": "gte",
+        "right": {
+         "action_field": "quantity"
+        }
+       },
+       {
+        "label": "The sawmill can afford the agreed payment",
+        "left": {
+         "participant": {
+          "name": "buyer",
+          "path": "components.business.cash"
+         }
+        },
+        "op": "gte",
+        "right": {
+         "action_field": "amount"
+        }
+       }
+      ],
+      "effects": [
+       {
+        "participant": "actor",
+        "path": "components.business.logs",
+        "op": "subtract",
+        "value": {
+         "action_field": "quantity"
+        }
+       },
+       {
+        "participant": "buyer",
+        "path": "components.business.logs",
+        "op": "add",
+        "value": {
+         "action_field": "quantity"
+        }
+       },
+       {
+        "participant": "buyer",
+        "path": "components.business.cash",
+        "op": "subtract",
+        "value": {
+         "action_field": "amount"
+        }
+       },
+       {
+        "participant": "actor",
+        "path": "components.business.cash",
+        "op": "add",
+        "value": {
+         "action_field": "amount"
+        }
+       }
+      ],
+      "limits": [
+       "The logger's sale decision is required; this move does not compel acceptance of an offer made by another person."
+      ],
+      "tests": [
+       "Refuse if the quantity or payment is not positive, the logger lacks the logs, or the sawmill cannot pay.",
+       "On the logger's sale move, transfer the stated logs and payment between logger and sawmill."
+      ],
+      "semantic_bindings": [
+       "actor is the logger making the sale decision",
+       "buyer is the named sawmill"
+      ]
+     }
+    },
+    "move": {
+     "actor": "logger",
+     "kind": "sell-cedar-logs",
+     "buyer": "sawmill",
+     "quantity": 3,
+     "amount": 1
+    },
+    "rules_check": {
+     "ok": true
+    },
+    "test_run": {
+     "move": {
+      "actor": "logger",
+      "kind": "sell-cedar-logs",
+      "buyer": "sawmill",
+      "quantity": 3,
+      "amount": 1
+     },
+     "from_revision": 14,
+     "status": "accepted",
+     "net_changes": [
+      {
+       "entity": "logger",
+       "path": "components.business.cash",
+       "before": 10000,
+       "after": 10001
+      },
+      {
+       "entity": "logger",
+       "path": "components.business.logs",
+       "before": 4,
+       "after": 1
+      },
+      {
+       "entity": "sawmill",
+       "path": "components.business.cash",
+       "before": 10000,
+       "after": 9999
+      },
+      {
+       "entity": "sawmill",
+       "path": "components.business.logs",
+       "before": 0,
+       "after": 3
+      }
+     ],
+     "blockers": [],
+     "chain_length": 0,
+     "stopping_point": {
+      "kind": "settled",
+      "after_step": 0
+     },
+     "chain": [
+      {
+       "event_id": "e00004",
+       "causal_bearer": {
+        "kind": "actor",
+        "id": "logger",
+        "controller": "judge:test-run"
+       },
+       "semantic_binding": null,
+       "observation": {
+        "world_id": "pencil-supply-chain-live",
+        "revision": 14,
+        "tick": 0,
+        "actor_id": "logger",
+        "entities": {
+         "cedar-forest": {
+          "entity_id": "cedar-forest",
+          "label": "Cedar forest",
+          "category_ids": [
+           "forest"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "cedar-forest",
+          "last_cause_event_id": "e00003",
+          "components": {
+           "forest": {
+            "standing_cedar": 99996
+           }
+          }
+         },
+         "logger": {
+          "entity_id": "logger",
+          "label": "Oregon logger",
+          "category_ids": [
+           "actor",
+           "logger",
+           "business"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "logger",
+          "last_cause_event_id": "e00003",
+          "components": {
+           "business": {
+            "cash": 10000,
+            "logs": 4,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 1000,
+            "leads": 0,
+            "paint": 1000,
+            "erasers": 1000,
+            "ferrules": 1000,
+            "pencils": 0,
+            "boxes": 1000,
+            "packed_pencils": 0,
+            "price": 10
+           }
+          }
+         },
+         "oregon": {
+          "entity_id": "oregon",
+          "label": "Oregon cedar forest",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "oregon"
+         },
+         "pennsylvania": {
+          "entity_id": "pennsylvania",
+          "label": "Pennsylvania pencil factory",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "pennsylvania"
+         },
+         "sawmill": {
+          "entity_id": "sawmill",
+          "label": "Cedar sawmill",
+          "category_ids": [
+           "actor",
+           "sawmill",
+           "business"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "sawmill",
+          "components": {
+           "business": {
+            "cash": 10000,
+            "logs": 0,
+            "slats": 0,
+            "graphite": 0,
+            "clay": 1000,
+            "leads": 0,
+            "paint": 1000,
+            "erasers": 1000,
+            "ferrules": 1000,
+            "pencils": 0,
+            "boxes": 1000,
+            "packed_pencils": 0,
+            "price": 10
+           }
+          }
+         },
+         "shops": {
+          "entity_id": "shops",
+          "label": "Shops across the country",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "shops"
+         },
+         "sri-lanka": {
+          "entity_id": "sri-lanka",
+          "label": "Sri Lanka graphite mine",
+          "category_ids": [
+           "place"
+          ],
+          "location": {
+           "location_id": "oregon"
+          },
+          "source_pack_id": "world-substrate-pencil-supply-chain@1",
+          "source_entity_id": "sri-lanka"
+         }
+        }
+       },
+       "tick": 0,
+       "world_revision": 15,
+       "rule_id": "sell-cedar-logs",
+       "rule_version": "1",
+       "cause": "c00004",
+       "status": "accepted",
+       "checks": [
+        {
+         "label": "Base revision is current",
+         "ok": true,
+         "actual": 14,
+         "required": 14
+        },
+        {
+         "label": "Actor exists",
+         "ok": true,
+         "actual": null,
+         "required": null
+        },
+        {
+         "label": "the one acting is allowed to make this move",
+         "ok": true,
+         "actual": null,
+         "required": null
+        },
+        {
+         "label": "the buyer named exists",
+         "ok": true,
+         "actual": null,
+         "required": null
+        },
+        {
+         "label": "the buyer named is the right kind of thing for this move",
+         "ok": true,
+         "actual": null,
+         "required": null
+        },
+        {
+         "label": "The quantity is positive",
+         "ok": true,
+         "actual": 3,
+         "required": 0
+        },
+        {
+         "label": "The payment is positive",
+         "ok": true,
+         "actual": 1,
+         "required": 0
+        },
+        {
+         "label": "The logger has enough logs",
+         "ok": true,
+         "actual": 4,
+         "required": 3
+        },
+        {
+         "label": "The sawmill can afford the agreed payment",
+         "ok": true,
+         "actual": 10000,
+         "required": 1
+        }
+       ],
+       "declared_read_paths": [
+        "entities.<actor>.category_ids",
+        "entities.<actor>.components.business",
+        "entities.<actor>.components.business.cash",
+        "entities.<actor>.components.business.logs",
+        "entities.<buyer>.category_ids",
+        "entities.<buyer>.components.business",
+        "entities.<buyer>.components.business.cash",
+        "entities.<buyer>.components.business.logs"
+       ],
+       "declared_write_paths": [
+        "entities.<actor>.components.business.cash",
+        "entities.<actor>.components.business.logs",
+        "entities.<actor>.last_cause_event_id",
+        "entities.<buyer>.components.business.cash",
+        "entities.<buyer>.components.business.logs",
+        "entities.<buyer>.last_cause_event_id"
+       ],
+       "changes": [
+        {
+         "path": "entities.logger.components.business.cash",
+         "before": 10000,
+         "after": 10001
+        },
+        {
+         "path": "entities.logger.components.business.logs",
+         "before": 4,
+         "after": 1
+        },
+        {
+         "path": "entities.logger.last_cause_event_id",
+         "before": "e00003",
+         "after": "e00004"
+        },
+        {
+         "path": "entities.sawmill.components.business.cash",
+         "before": 10000,
+         "after": 9999
+        },
+        {
+         "path": "entities.sawmill.components.business.logs",
+         "before": 0,
+         "after": 3
+        },
+        {
+         "path": "entities.sawmill.last_cause_event_id",
+         "before": null,
+         "after": "e00004"
+        },
+        {
+         "path": "revision",
+         "before": 14,
+         "after": 15
+        }
+       ],
+       "hash_before": "a1f975f55669b9933937b103e35f95502f777ef9f1757803d3cf0da77b310e7d",
+       "hash_after": "ce070dd57ecae29def60db53b88d0110f1e39aefa8c51c8576075d8f3751096d"
+      }
+     ]
+    }
+   }
+  ],
+  "steps": [
+   {
+    "step": "propose",
+    "answer": {
+     "facts": [
+      "sawmill is in Oregon and has business.logs = 0 and business.cash = 10000.",
+      "logger is in Oregon and has business.logs = 4 and business.cash = 10000.",
+      "The attempted saw-slats move is available, but it would turn the logger's logs into slats; it does not transfer logs or cash.",
+      "No installed rule covers selling or transferring logs for payment.",
+      "The event specifies three logs but does not specify the payment amount."
+     ],
+     "blockers": [
+      "The logger has enough logs for the requested three, but the purchase terms lack a stated payment amount.",
+      "The existing saw-slats rule is not a rule for a sale or handover of logs."
+     ],
+     "whose_choice": "logger",
+     "ruling": "A paid transfer of the logger\u2019s logs is not covered by an installed rule. It requires a rule for transferring logs and cash, and the logger\u2019s choice on the offer; the payment amount must be specified before this exchange can be test-run.",
+     "proposed_rule": "{\"action\":{\"kind\":\"buy-cedar-logs\",\"description\":\"Offer payment to the named logger for a stated quantity of cedar logs and transfer the logs and payment if accepted.\",\"fields\":[{\"name\":\"logger\",\"type\":\"entity_ref\"},{\"name\":\"quantity\",\"type\":\"integer\"},{\"name\":\"amount\",\"type\":\"integer\"}]},\"mechanic\":{\"schema_version\":\"world-substrate-action-mechanic/v0\",\"mechanic_id\":\"buy-cedar-logs\",\"version\":\"1\",\"action_kind\":\"buy-cedar-logs\",\"rationale\":\"A log sale transfers the stated quantity of logs from the logger to the sawmill and the stated payment from the sawmill to the logger; the logger decides whether to accept the offer.\",\"actor_selector\":{\"categories\":[\"actor\",\"sawmill\"],\"components\":[\"business\"]},\"participants\":{\"logger\":{\"categories\":[\"actor\",\"logger\"],\"components\":[\"business\"]}},\"parameters\":{\"quantity\":[3],\"amount\":[1]},\"checks\":[{\"label\":\"The quantity is positive\",\"left\":{\"action_field\":\"quantity\"},\"op\":\"gt\",\"right\":{\"literal\":0}},{\"label\":\"The logger has enough logs\",\"left\":{\"participant\":{\"name\":\"logger\",\"path\":\"components.business.logs\"}},\"op\":\"gte\",\"right\":{\"action_field\":\"quantity\"}},{\"label\":\"The sawmill can afford the payment\",\"left\":{\"participant\":{\"name\":\"actor\",\"path\":\"components.business.cash\"}},\"op\":\"gte\",\"right\":{\"action_field\":\"amount\"}}],\"effects\":[{\"participant\":\"logger\",\"path\":\"components.business.logs\",\"op\":\"subtract\",\"value\":{\"action_field\":\"quantity\"}},{\"participant\":\"actor\",\"path\":\"components.business.logs\",\"op\":\"add\",\"value\":{\"action_field\":\"quantity\"}},{\"participant\":\"actor\",\"path\":\"components.business.cash\",\"op\":\"subtract\",\"value\":{\"action_field\":\"amount\"}},{\"participant\":\"logger\",\"path\":\"components.business.cash\",\"op\":\"add\",\"value\":{\"action_field\":\"amount\"}}],\"limits\":[\"The logger's acceptance is a separate choice; this move's effects apply only if accepted.\",\"The payment amount is stated in the offer; no market price for logs is represented.\"],\"tests\":[\"Refuse if the logger lacks the requested logs or the sawmill lacks the offered cash.\",\"On acceptance, transfer the stated logs and payment; on refusal, neither changes.\"],\"semantic_bindings\":[\"logger is the seller and holder of the logs\",\"actor is the sawmill buyer\"]}}",
+     "test_move": "",
+     "reasoning": "The offer would change both businesses\u2019 inventories and cash if accepted, but no installed move covers that exchange. Since the logger must choose whether to accept and the offer gives no payment amount, the exchange cannot yet be fully specified as a test move."
+    },
+    "document_chars": 29972,
+    "consequence": "Pass 1, before any rule exists (the moves and checks open to the person trying and to each person named, and the named things' current values):\n{\n \"actor\": \"sawmill\",\n \"named\": [],\n \"moves\": {\n  \"sawmill\": {\n   \"available\": [\n    {\n     \"action_id\": \"af23c638269c\",\n     \"action\": {\n      \"actor\": \"sawmill\",\n      \"kind\": \"saw-slats\",\n      \"base_revision\": 14,\n      \"controller\": \"unselected\",\n      \"logger\": \"logger\",\n      \"quantity\": 1\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the logger named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the logger named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"The quantity is positive\",\n       \"ok\": true,\n       \"actual\": 1,\n       \"required\": 0\n      },\n      {\n       \"label\": \"The logger has enough logs\",\n       \"ok\": true,\n       \"actual\": 4,\n       \"required\": 1\n      }\n     ]\n    }\n   ],\n   \"blocked\": []\n  }\n },\n \"values\": {\n  \"sawmill\": {\n   \"label\": \"Cedar sawmill\",\n   \"categories\": [\n    \"actor\",\n    \"sawmill\",\n    \"business\"\n   ],\n   \"location\": \"oregon\",\n   \"components\": {\n    \"business\": {\n     \"cash\": 10000,\n     \"logs\": 0,\n     \"slats\": 0,\n     \"graphite\": 0,\n     \"clay\": 1000,\n     \"leads\": 0,\n     \"paint\": 1000,\n     \"erasers\": 1000,\n     \"ferrules\": 1000,\n     \"pencils\": 0,\n     \"boxes\": 1000,\n     \"packed_pencils\": 0,\n     \"price\": 10\n    }\n   }\n  }\n }\n}"
+   },
+   {
+    "step": "review",
+    "answer": {
+     "decision": "revise",
+     "why": "The proposed rule passed its rules check, but the test run was refused by system.action-envelope: the move lacked the required action fields, so it made no changes. The logger must decide whether to sell; the rule should transfer the logs and payment only on the logger's own sale move.",
+     "revised_rule": "{\"action\":{\"kind\":\"sell-cedar-logs\",\"description\":\"The logger decides to sell cedar logs to a named sawmill for an agreed amount.\",\"fields\":[{\"name\":\"buyer\",\"type\":\"entity_ref\"},{\"name\":\"quantity\",\"type\":\"integer\"},{\"name\":\"amount\",\"type\":\"integer\"}]},\"mechanic\":{\"schema_version\":\"world-substrate-action-mechanic/v0\",\"mechanic_id\":\"sell-cedar-logs\",\"version\":\"1\",\"action_kind\":\"sell-cedar-logs\",\"rationale\":\"A logger may choose to sell available logs to a sawmill for an agreed payment; the exchange occurs only on the logger's decision move.\",\"actor_selector\":{\"categories\":[\"actor\",\"logger\"],\"components\":[\"business\"]},\"participants\":{\"buyer\":{\"categories\":[\"actor\",\"sawmill\"],\"components\":[\"business\"]}},\"parameters\":{\"quantity\":[1],\"amount\":[1]},\"checks\":[{\"label\":\"The quantity is positive\",\"left\":{\"action_field\":\"quantity\"},\"op\":\"gt\",\"right\":{\"literal\":0}},{\"label\":\"The payment is positive\",\"left\":{\"action_field\":\"amount\"},\"op\":\"gt\",\"right\":{\"literal\":0}},{\"label\":\"The logger has enough logs\",\"left\":{\"participant\":{\"name\":\"actor\",\"path\":\"components.business.logs\"}},\"op\":\"gte\",\"right\":{\"action_field\":\"quantity\"}},{\"label\":\"The sawmill can afford the agreed payment\",\"left\":{\"participant\":{\"name\":\"buyer\",\"path\":\"components.business.cash\"}},\"op\":\"gte\",\"right\":{\"action_field\":\"amount\"}}],\"effects\":[{\"participant\":\"actor\",\"path\":\"components.business.logs\",\"op\":\"subtract\",\"value\":{\"action_field\":\"quantity\"}},{\"participant\":\"buyer\",\"path\":\"components.business.logs\",\"op\":\"add\",\"value\":{\"action_field\":\"quantity\"}},{\"participant\":\"buyer\",\"path\":\"components.business.cash\",\"op\":\"subtract\",\"value\":{\"action_field\":\"amount\"}},{\"participant\":\"actor\",\"path\":\"components.business.cash\",\"op\":\"add\",\"value\":{\"action_field\":\"amount\"}}],\"limits\":[\"The logger's sale decision is required; this move does not compel acceptance of an offer made by another person.\"],\"tests\":[\"Refuse if the quantity or payment is not positive, the logger lacks the logs, or the sawmill cannot pay.\",\"On the logger's sale move, transfer the stated logs and payment between logger and sawmill.\"],\"semantic_bindings\":[\"actor is the logger making the sale decision\",\"buyer is the named sawmill\"]}}",
+     "revised_test_move": "{\"actor\":\"logger\",\"kind\":\"sell-cedar-logs\",\"buyer\":\"sawmill\",\"quantity\":3,\"amount\":1}"
+    },
+    "document_chars": 31738,
+    "consequence": "Pass 1, before any rule exists (the moves and checks open to the person trying and to each person named, and the named things' current values):\n{\n \"actor\": \"sawmill\",\n \"named\": [],\n \"moves\": {\n  \"sawmill\": {\n   \"available\": [\n    {\n     \"action_id\": \"af23c638269c\",\n     \"action\": {\n      \"actor\": \"sawmill\",\n      \"kind\": \"saw-slats\",\n      \"base_revision\": 14,\n      \"controller\": \"unselected\",\n      \"logger\": \"logger\",\n      \"quantity\": 1\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the logger named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the logger named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"The quantity is positive\",\n       \"ok\": true,\n       \"actual\": 1,\n       \"required\": 0\n      },\n      {\n       \"label\": \"The logger has enough logs\",\n       \"ok\": true,\n       \"actual\": 4,\n       \"required\": 1\n      }\n     ]\n    }\n   ],\n   \"blocked\": []\n  }\n },\n \"values\": {\n  \"sawmill\": {\n   \"label\": \"Cedar sawmill\",\n   \"categories\": [\n    \"actor\",\n    \"sawmill\",\n    \"business\"\n   ],\n   \"location\": \"oregon\",\n   \"components\": {\n    \"business\": {\n     \"cash\": 10000,\n     \"logs\": 0,\n     \"slats\": 0,\n     \"graphite\": 0,\n     \"clay\": 1000,\n     \"leads\": 0,\n     \"paint\": 1000,\n     \"erasers\": 1000,\n     \"ferrules\": 1000,\n     \"pencils\": 0,\n     \"boxes\": 1000,\n     \"packed_pencils\": 0,\n     \"price\": 10\n    }\n   }\n  }\n }\n}\n\nPass 2, the test run of your proposed rule (rules check, then the rule run on a copy of the world as it is now; nothing is installed):\n{\n \"move\": {\n  \"actor\": \"sawmill\",\n  \"kind\": \"buy-cedar-logs\"\n },\n \"rules_check\": {\n  \"ok\": true\n },\n \"test_run\": {\n  \"move\": {\n   \"actor\": \"sawmill\",\n   \"kind\": \"buy-cedar-logs\"\n  },\n  \"from_revision\": 14,\n  \"status\": \"invalid_action\",\n  \"net_changes\": [],\n  \"blockers\": [\n   {\n    \"rule_id\": \"system.action-envelope\",\n    \"it\": \"sawmill\",\n    \"after\": null,\n    \"failed\": [\n     {\n      \"check\": \"Valid action envelope\",\n      \"actual\": [\n       \"invalid buy-cedar-logs payload: buy-cedar-logs action fields must be ['actor', 'amount', 'base_revision', 'controller', 'kind', 'logger', 'quantity']\"\n      ],\n      \"required\": \"registered typed action or structurally valid unsupported action\"\n     }\n    ]\n   }\n  ],\n  \"chain_length\": 0,\n  \"stopping_point\": {\n   \"kind\": \"refused\",\n   \"status\": \"invalid_action\",\n   \"after_step\": 0,\n   \"failed\": [\n    {\n     \"check\": \"Valid action envelope\",\n     \"actual\": [\n      \"invalid buy-cedar-logs payload: buy-cedar-logs action fields must be ['actor', 'amount', 'base_revision', 'controller', 'kind', 'logger', 'quantity']\"\n     ],\n     \"required\": \"registered typed action or structurally valid unsupported action\"\n    }\n   ],\n   \"blocker\": {\n    \"rule_id\": \"system.action-envelope\",\n    \"it\": \"sawmill\",\n    \"after\": null,\n    \"failed\": [\n     {\n      \"check\": \"Valid action envelope\",\n      \"actual\": [\n       \"invalid buy-cedar-logs payload: buy-cedar-logs action fields must be ['actor', 'amount', 'base_revision', 'controller', 'kind', 'logger', 'quantity']\"\n      ],\n      \"required\": \"registered typed action or structurally valid unsupported action\"\n     }\n    ]\n   }\n  }\n }\n}"
+   },
+   {
+    "step": "final",
+    "answer": {
+     "decision": "confirm",
+     "why": "Pass 2 accepted the logger\u2019s sell-cedar-logs move with no blockers, transferring 3 logs to the sawmill and 1 cash from the sawmill to the logger. The seller is the actor, so the move represents the logger\u2019s own decision to accept the offer.",
+     "revised_rule": "",
+     "revised_test_move": ""
+    },
+    "document_chars": 31028,
+    "consequence": "Pass 1, before any rule exists (the moves and checks open to the person trying and to each person named, and the named things' current values):\n{\n \"actor\": \"sawmill\",\n \"named\": [],\n \"moves\": {\n  \"sawmill\": {\n   \"available\": [\n    {\n     \"action_id\": \"af23c638269c\",\n     \"action\": {\n      \"actor\": \"sawmill\",\n      \"kind\": \"saw-slats\",\n      \"base_revision\": 14,\n      \"controller\": \"unselected\",\n      \"logger\": \"logger\",\n      \"quantity\": 1\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the logger named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the logger named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"The quantity is positive\",\n       \"ok\": true,\n       \"actual\": 1,\n       \"required\": 0\n      },\n      {\n       \"label\": \"The logger has enough logs\",\n       \"ok\": true,\n       \"actual\": 4,\n       \"required\": 1\n      }\n     ]\n    }\n   ],\n   \"blocked\": []\n  }\n },\n \"values\": {\n  \"sawmill\": {\n   \"label\": \"Cedar sawmill\",\n   \"categories\": [\n    \"actor\",\n    \"sawmill\",\n    \"business\"\n   ],\n   \"location\": \"oregon\",\n   \"components\": {\n    \"business\": {\n     \"cash\": 10000,\n     \"logs\": 0,\n     \"slats\": 0,\n     \"graphite\": 0,\n     \"clay\": 1000,\n     \"leads\": 0,\n     \"paint\": 1000,\n     \"erasers\": 1000,\n     \"ferrules\": 1000,\n     \"pencils\": 0,\n     \"boxes\": 1000,\n     \"packed_pencils\": 0,\n     \"price\": 10\n    }\n   }\n  }\n }\n}\n\nPass 2, the test run of your revised rule (rules check, then the rule run on a copy of the world as it is now; nothing is installed):\n{\n \"move\": {\n  \"actor\": \"logger\",\n  \"kind\": \"sell-cedar-logs\",\n  \"buyer\": \"sawmill\",\n  \"quantity\": 3,\n  \"amount\": 1\n },\n \"rules_check\": {\n  \"ok\": true\n },\n \"test_run\": {\n  \"move\": {\n   \"actor\": \"logger\",\n   \"kind\": \"sell-cedar-logs\",\n   \"buyer\": \"sawmill\",\n   \"quantity\": 3,\n   \"amount\": 1\n  },\n  \"from_revision\": 14,\n  \"status\": \"accepted\",\n  \"net_changes\": [\n   {\n    \"entity\": \"logger\",\n    \"path\": \"components.business.cash\",\n    \"before\": 10000,\n    \"after\": 10001\n   },\n   {\n    \"entity\": \"logger\",\n    \"path\": \"components.business.logs\",\n    \"before\": 4,\n    \"after\": 1\n   },\n   {\n    \"entity\": \"sawmill\",\n    \"path\": \"components.business.cash\",\n    \"before\": 10000,\n    \"after\": 9999\n   },\n   {\n    \"entity\": \"sawmill\",\n    \"path\": \"components.business.logs\",\n    \"before\": 0,\n    \"after\": 3\n   }\n  ],\n  \"blockers\": [],\n  \"chain_length\": 0,\n  \"stopping_point\": {\n   \"kind\": \"settled\",\n   \"after_step\": 0\n  }\n }\n}"
+   }
+  ],
+  "calls": [
+   {
+    "kind": "propose",
+    "model": "openrouter/openai/gpt-6-luna",
+    "task": "world-substrate-judge",
+    "trace_id": "world-substrate/ai-judge-j2/sawmill/7b1f6246acc1401eb31498b89dab05f2",
+    "cost_usd": 0.00162905
+   },
+   {
+    "kind": "review",
+    "model": "openrouter/openai/gpt-6-luna",
+    "task": "world-substrate-judge",
+    "trace_id": "world-substrate/ai-judge-j2/sawmill/7b1f6246acc1401eb31498b89dab05f2",
+    "cost_usd": 0.001540375
+   },
+   {
+    "kind": "final",
+    "model": "openrouter/openai/gpt-6-luna",
+    "task": "world-substrate-judge",
+    "trace_id": "world-substrate/ai-judge-j2/sawmill/7b1f6246acc1401eb31498b89dab05f2",
+    "cost_usd": 0.0010971
+   }
+  ],
+  "cost_usd": 0.004266525
+ }
+}
