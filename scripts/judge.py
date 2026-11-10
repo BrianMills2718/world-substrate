@@ -17,7 +17,8 @@ The order (docs/plans/ai_judge.md, Canonical example):
 3. **Review**: confirm, revise once, or withdraw. A revision gets its own pass 2, then a last answer: confirm or
    withdraw. A ruling whose rules check rejects it and whose one revision is rejected too is a language gap.
 
-Nothing is installed here: J2 records the ruling; J3 installs it (or holds it, per the world's setting). The model
+Nothing is installed here: this module records the ruling; `scripts/rulings.py` (J3) installs it, or holds it for the
+owner's approval, per the world's setting. The model
 rules review is not run on judge rulings: J2 measured it on the saved sawmill case, where it did not flag the
 single-price charge (evidence/ai-judge/j2/sawmill-review/review.json), so per the plan it is dropped.
 

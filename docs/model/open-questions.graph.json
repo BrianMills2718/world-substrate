@@ -283,10 +283,28 @@
    "explain": "Blocks: Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.."
   },
   {
-   "id": "Q90",
-   "label": "Q90: Reuse or replace the spike's mid-run rule writing",
+   "id": "Q92",
+   "label": "Q92: A ruling can move goods at a price far from the world's price and nothing flags it",
    "kind": "AgentQuestion",
-   "explain": "Blocks: J3's install path and the plan's cost basis; not J2, which is built on Concordia's EventResolution and does not use the spike's rule writer.."
+   "explain": "Blocks: Trust in installed rulings that move goods or coins; not the J3 mechanism, which installs only what passed the rules check and the test run.."
+  },
+  {
+   "id": "Q93",
+   "label": "Q93: The language gap never happened on price times quantity",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: A4's third case (a ruling the language cannot express listed as a language gap) as a live saved run.."
+  },
+  {
+   "id": "Q94",
+   "label": "Q94: A later offer joins an installed rule only when the judge wrote the giver's move",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: How reliably A4's 'decided by rule, judge not asked' shows on a second trader (the cold review's item 8 saw the same split).."
+  },
+  {
+   "id": "Q95",
+   "label": "Q95: The engine's own replay of a run that installed a rule mid-round",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Nothing that exists; any future audit or export that replays a judged run through Engine.replay.."
   },
   {
    "id": "affordance",
@@ -416,8 +434,7 @@
    "id": "judge-ruling",
    "label": "Judge ruling",
    "kind": "Concept",
-   "dashed": true,
-   "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice."
+   "explain": "Plan ai-judge J2 (built 2026-11-10): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice."
   },
   {
    "id": "law-check",
@@ -443,13 +460,6 @@
    "label": "Mechanisms library",
    "kind": "Concept",
    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
-  },
-  {
-   "id": "midrun-setting",
-   "label": "Mid-run rulings setting",
-   "kind": "Concept",
-   "dashed": true,
-   "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule)."
   },
   {
    "id": "norm",
@@ -518,6 +528,12 @@
    "label": "Independent rules review",
    "kind": "Concept",
    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds."
+  },
+  {
+   "id": "ruling-rule",
+   "label": "Ruling-origin rule",
+   "kind": "Concept",
+   "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap."
   },
   {
    "id": "run-log",
@@ -1256,15 +1272,39 @@
    "label": "bears on"
   },
   {
-   "id": "Q90-judge-ruling",
-   "source": "Q90",
+   "id": "Q92-judge-ruling",
+   "source": "Q92",
    "target": "judge-ruling",
    "label": "bears on"
   },
   {
-   "id": "Q90-midrun-setting",
-   "source": "Q90",
-   "target": "midrun-setting",
+   "id": "Q92-ruling-rule",
+   "source": "Q92",
+   "target": "ruling-rule",
+   "label": "bears on"
+  },
+  {
+   "id": "Q93-ruling-rule",
+   "source": "Q93",
+   "target": "ruling-rule",
+   "label": "bears on"
+  },
+  {
+   "id": "Q94-judge-ruling",
+   "source": "Q94",
+   "target": "judge-ruling",
+   "label": "bears on"
+  },
+  {
+   "id": "Q94-ruling-rule",
+   "source": "Q94",
+   "target": "ruling-rule",
+   "label": "bears on"
+  },
+  {
+   "id": "Q95-ruling-rule",
+   "source": "Q95",
+   "target": "ruling-rule",
    "label": "bears on"
   }
  ],
