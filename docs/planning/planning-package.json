@@ -154,7 +154,8 @@
         "law-check": "src/world_substrate/laws.py:36",
         "resource": "scripts/scaffold_world.py:45",
         "world-design": "scripts/generate_world_bundle.py:53",
-        "rules-review": "scripts/review_rules.py:92"
+        "rules-review": "scripts/review_rules.py:92",
+        "run-stop": "scripts/run_stop.py:65"
       }
     },
     "diagrams": {
