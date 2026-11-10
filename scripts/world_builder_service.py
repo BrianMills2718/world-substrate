@@ -39,6 +39,7 @@ from scripts.people_world import about_people, declare_people_laws, keep_until_s
 from scripts.run_authored_world import (MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, recorded_trace,
                                         refused_check, render_run, run_world)
 from scripts.run_stop import DEFAULT_RUN_STOP, MAX_QUIET_ROUNDS, parse_run_stop
+from scripts import rulings as rulings_mod
 from scripts.run_native_coordination import run_native_coordination
 from scripts.review_rules import MISSING as MISSING_RULE, review_rules
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -409,7 +410,7 @@ def _canon(value: Any) -> Any:
     return value
 
 
-def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None) -> str:
+def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None, rulings: Any = None) -> str:
     """Issue #127 (G11): a keyed hash of the world state a round ended in, under these exact rules.
 
     The browser holds the state between live rounds; a continued round must bring back one this
@@ -417,9 +418,11 @@ def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None
     The first round's approval record is sealed with it (#122), so it cannot be swapped either.
     """
     key = (_owner_password() or "world-builder").encode()
-    canonical = json.dumps(_canon({"snapshot": snapshot, "bundle": bundle, "causal_model": causal,
-                                  "approval": approval}),
-                           sort_keys=True, separators=(",", ":"))
+    # The run's judge rulings (ai-judge plan J3) are sealed with it, so a list the server did not send is refused; a
+    # run with none is sealed exactly as before.
+    sealed = {"snapshot": snapshot, "bundle": bundle, "causal_model": causal, "approval": approval,
+              **({"rulings": rulings} if rulings else {})}
+    canonical = json.dumps(_canon(sealed), sort_keys=True, separators=(",", ":"))
     return hmac.new(key, canonical.encode(), "sha256").hexdigest()
 
 
@@ -437,7 +440,7 @@ def _approval_record(*, bundle: Any, causal: Any, trace: dict[str, Any]) -> dict
 
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
     keep = ("description", "world_kind", "run_stop", "run_spent_usd", "policy", "turns", "turn_offset", "approved",
-            "execution_mode", "async")
+            "execution_mode", "async", "judge_rulings", "decisions")
     out = {k: body[k] for k in keep if k in body}
     if path == "/readout":
         out["run_trace_ids"] = body.get("run_trace_ids")
@@ -484,6 +487,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "world_def": value.get("world_def"),
             "world_kind": value.get("world_kind"),
             "run_stop": value.get("run_stop"),
+            "judge_rulings": value.get("judge_rulings"),
             "people": value.get("people"),
             "briefs": value.get("briefs"),
         }
@@ -506,6 +510,9 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             **({"stop_history": trace["stop_history"]} if "stop_history" in trace else {}),
             # The run's recorded AI spending so far, when its stop setting has a spending limit.
             **({"run_spent_usd": trace["run_spent_usd"]} if "run_spent_usd" in trace else {}),
+            # The judge's rulings of this run after the round, installed or held (ai-judge plan J3).
+            **({"rulings": trace["rulings"]} if trace.get("rulings") else {}),
+            **({"judge_rulings": trace["judge_rulings"]} if "judge_rulings" in trace else {}),
             "approval": value.get("approval"),
         }
     if path == "/clarify":
@@ -715,6 +722,7 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
             "world_def": built.get("world_def"),
             "world_kind": built.get("world_kind"),
             **({"run_stop": built["run_stop"]} if built.get("run_stop") else {}),
+            **({"judge_rulings": built["judge_rulings"]} if built.get("judge_rulings") else {}),
             "people": built.get("people"),
             "briefs": built.get("briefs"),
             "dry_run": built.get("dry_run"),
@@ -1695,12 +1703,15 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         # When a run of this world stops by itself (Q12; Brian, 2026-11-10: "stop condition should be
         # configurable"), saved with the world like world_def. A new world stops once nothing is changing.
         run_stop = parse_run_stop(body.get("run_stop"), default=DEFAULT_RUN_STOP)
+        # Whether the judge's checked rulings install during a run or wait for approval (ai-judge plan J3, Decided 5),
+        # saved with the world like world_def.
+        judge_rulings = rulings_mod.parse_mode(body.get("judge_rulings"))
         if world_def == "auto":
             world_def = self._world_def(client, description)
             if world_def is None:
                 return
         if world_def == "people":
-            self._generate_people_world(client, description, run_stop=run_stop)
+            self._generate_people_world(client, description, run_stop=run_stop, judge_rulings=judge_rulings)
             return
         world_kind = body.get("world_kind") or "task"
         if world_kind not in WORLD_KINDS:
@@ -2139,6 +2150,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "description": description,
                 "world_kind": world_kind,
                 "run_stop": run_stop,
+                "judge_rulings": judge_rulings,
                 "not_modeled": not_modeled,
                 "bundle": bundle,
                 "causal_model": causal,
@@ -2169,7 +2181,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         return "people" if people else "things"
 
     def _generate_people_world(self, client: str, description: str,
-                               run_stop: dict[str, Any] | None = None) -> None:
+                               run_stop: dict[str, Any] | None = None,
+                               judge_rulings: str = rulings_mod.DEFAULT_MODE) -> None:
         """Description -> people with goals, beliefs and information -> exact rules (scripts/people_world.py).
 
         Always an ongoing world. AI members choose the moves, each reading their own brief; a scripted dry run
@@ -2378,6 +2391,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "world_def": "people",
                 "world_kind": "ongoing",
                 "run_stop": run_stop or dict(DEFAULT_RUN_STOP),
+                "judge_rulings": judge_rulings,
                 "not_modeled": built["not_modeled"],
                 "bundle": bundle,
                 "causal_model": causal,
@@ -2594,7 +2608,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             seal = body.get("continue_seal")
             if not isinstance(seal, str) or not hmac.compare_digest(
                     seal.encode(), _snapshot_seal(continue_from, body.get("bundle"), causal,
-                                                  body.get("approval")).encode()):
+                                                  body.get("approval"), body.get("rulings")).encode()):
                 raise ValueError("This world cannot carry on: the state sent back does not match the last round "
                                  "this server ran under these rules. Press Start over.")
         turn_offset = body.get("turn_offset", 0)
@@ -2632,6 +2646,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         underway = body.get("underway") if continue_from is not None else None
         # The world's stop setting (scripts/run_stop.py). A world saved without one runs every round, as before.
         run_stop = parse_run_stop(body.get("run_stop"))
+        # The judge's rulings (ai-judge plan J3): the world's setting, the rulings so far (sealed above, so only a
+        # continued round has them) and the owner's Approve or Reject of held ones, applied as this round starts.
+        judge_rulings = rulings_mod.parse_mode(body.get("judge_rulings"))
+        rulings = rulings_mod.parse_rulings(body.get("rulings")) if continue_from is not None else []
+        decisions = rulings_mod.parse_decisions(body.get("decisions"))
         stop_history = body.get("stop_history") if continue_from is not None else None
         if stop_history is not None and (
             not isinstance(stop_history, list) or len(stop_history) > MAX_QUIET_ROUNDS + 1
@@ -2674,7 +2693,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # Residents say what they try in their own words (docs/plans/open_attempt.md).
                         open_attempts=policy == "resident", run_stop=run_stop, stop_history=stop_history,
                         # Concordia's game master rules on each attempt no installed rule covers (ai-judge plan J2).
-                        judge=policy == "resident",
+                        judge=policy == "resident", rulings=rulings, judge_rulings=judge_rulings, decisions=decisions,
                         run_spent_usd=float(run_spent), spent=lambda: _trace_cost(trace_id),
                     )
                     trace_cost = _trace_cost(trace_id)
@@ -2693,7 +2712,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             )
             daily_cost = None
         if execution_mode == "authored_world":
-            replay = render_run(bundle, trace, compiled)
+            # The picture is drawn from the world as it ended the round: its own rules and the installed rulings.
+            replay = render_run(validate_bundle(rulings_mod.effective(bundle, causal, trace.get("rulings") or [])[0]),
+                                trace, compiled)
         # Issue #122 (G6): who approved which frozen rules, when. Made on the first round;
         # continued rounds carry it back under the seal checked above.
         approval = body.get("approval") if continue_from is not None else _approval_record(bundle=body.get("bundle"),
@@ -2716,7 +2737,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "causal_review": compiled.as_review(),
                 "replay_html": replay,
                 # The next continued round must send this back with final_snapshot (#127).
-                "snapshot_seal": _snapshot_seal(trace.get("final_snapshot"), body.get("bundle"), causal, approval),
+                "snapshot_seal": _snapshot_seal(trace.get("final_snapshot"), body.get("bundle"), causal, approval,
+                                                trace.get("rulings")),
                 "approval": approval,
                 "cost_usd": trace.get("cost_usd", 0.0),
                 "daily_cost_usd": daily_cost,

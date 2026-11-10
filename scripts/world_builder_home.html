@@ -75,6 +75,14 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .judge h3{font-size:15px;margin:10px 0 4px}.judge h3:first-child{margin-top:0}
 .judge ul{margin:2px 0 6px;padding-left:18px}.judge li{margin:2px 0}
 .judge .by{color:var(--muted);font-size:13px}.judge .stop-blocked{color:var(--warn)}
+.rulings{display:grid;gap:8px;margin:0 0 14px;font-size:14px;line-height:1.45}
+.rulings h3{font-size:15px;margin:0}
+.ruling{border:2px solid var(--ok);border-radius:8px;padding:8px 12px;overflow-wrap:anywhere}
+.ruling.held{border-color:var(--warn);border-style:dashed}
+.ruling.rejected,.ruling.language_gap,.ruling.withdrawn{border-color:var(--grey);border-style:dashed}
+.ruling ul{margin:4px 0 0;padding-left:18px}
+.ruling .row{margin-top:8px;gap:8px}
+.ruling .ruling-note{color:var(--muted);font-size:13px;margin:4px 0 0}
 details.picture{margin-top:10px}
 details.picture>summary{cursor:pointer;font-weight:600;padding:6px 0}
 iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius:10px;background:#fff}
@@ -188,6 +196,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
             <input type="number" id="stop-rounds" min="1" max="500" step="1" value="40" title="How many rounds to play before the run stops (1 to 500)" aria-label="Rounds before stopping"> rounds</label>
           <label class="small" title="Also stop once the AI calls of this run have cost this much, as recorded for each call ($0.01 to $100). It is checked before each round, so the round under way finishes and can go a little over. Play runs more rounds anyway."><input type="checkbox" id="stop-spend-on" aria-label="Stop at a spending limit"> Stop when this run has spent $<input type="number" id="stop-spend" min="0.01" max="100" step="0.01" value="0.50" title="The most this run may spend on AI, in dollars ($0.01 to $100)" aria-label="Spending limit in dollars"></label>
         </fieldset>
+        <label class="small" title="What happens when the world’s game master rules on an attempt no rule covers and its ruling passes the rules check and the test run. Approved by Create: the new rule is installed at once and later identical attempts are decided by it, judge not asked. Wait for my approval: the rule is held, the attempts that need it wait as pending, and you press Approve or Reject on the run page. Saved with the world, so a shared run keeps it.">Judge rulings during a run
+          <select id="judge-rulings" title="Approved by Create installs a checked ruling as a rule at once. Wait for my approval holds it until you press Approve or Reject on the run page.">
+            <option value="create" selected>Approved by Create</option>
+            <option value="wait">Wait for my approval</option>
+          </select></label>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
         <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
       </div>
@@ -251,6 +264,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <p class="small muted" id="live-status" role="status"></p>
     <div id="stuck-note"></div>
     <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
+    <div class="rulings" id="rulings-panel" hidden aria-label="The judge’s rulings in this run"></div>
     <details class="picture" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
     <p id="picture-note" hidden></p>
     <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
@@ -639,7 +653,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     timer = setInterval(() => { $("elapsed").textContent = Math.round((Date.now() - started) / 1000) + " s"; }, 500);
     renderSteps([{ state: "doing", step: "Sending your description", at_s: 0 }]);
     try {
-      const data = await apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value, run_stop: runStop() }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
+      const data = await apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value, run_stop: runStop(), judge_rulings: $("judge-rulings").value }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
       if (gen !== buildGen) return;
       renderReview(data);
       // Pressing Create simulation is the approval (2026-10-15); the rules stay one click away.
@@ -682,19 +696,24 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       text = `Round ${a.turn}: the rules would not let ${labelFor(a.actor)} ` + parts.join("; nor ") + ".";
       t.className = "tick held";
     } else {
-      const kind = a.row.status === "accepted" ? "accepted" : a.row.wanted ? "refused" : "waited";
+      const disp = (a.row.judge || {}).disposition || {}, ruled = a.row.status === "pending_ruling" || a.row.status === "refused_ruling";
+      const kind = (a.row.status === "accepted" || settledByRule(a.row)) ? "accepted"
+        : (a.row.status === "pending_ruling" || disp.status === "held") ? "waited" : a.row.wanted ? "refused" : "waited";
       t.className = "tick " + kind;
       const who = labelFor(a.actor), act = a.row.wanted ? words(a.row.wanted.kind) : "";
-      if (kind === "accepted") text = `Round ${a.turn}: ${who} — ${act}. Allowed: every check held.`;
+      const said = (a.row.attempt && a.row.attempt.text) || "", rid = a.row.ruling ? a.row.ruling.id : "";
+      if (a.row.wanted && a.row.wanted.kind === "unmatched-attempt" && a.row.judge) text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” No installed rule covers these words, so the world’s game master ruled on it: ${judgeLine(a.row.judge)}`;
+      else if (a.row.status === "pending_ruling") text = `Round ${a.turn}: ${who} tried: “${said}” It means the same move as the held ruling ${rid}, so it joined that ruling. Pending: waiting for your approval. Nothing changed, and the judge was not asked again.`;
+      else if (a.row.status === "refused_ruling") text = `Round ${a.turn}: ${who} tried: “${said}” Refused, because the ruling ${rid} it needs was rejected. Nothing changed, and the judge was not asked again.`;
+      else if (kind === "accepted") text = `Round ${a.turn}: ${who} — ${act}. Allowed: every check held.`;
       else if (kind === "waited") text = `Round ${a.turn}: ${who} waited — none of the rules allowed anything for them right then.`;
-      else if (a.row.wanted.kind === "unmatched-attempt" && a.row.judge) text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” No installed rule covers these words, so the world’s game master ruled on it: ${judgeLine(a.row.judge)}`;
       else if (a.row.wanted.kind === "unmatched-attempt") text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” The system could not match these words to a move, so the rules never judged it.`;
       else if (a.row.status === "reaction_limit") text = `Round ${a.turn}: ${who} tried to ${act}. refused: ` + a.row.refused_because.map(plainCheck).join("; ") + ". Nothing changed.";
       else if ((a.row.refused_because || []).length) text = `Round ${a.turn}: ${who} tried to ${act}. Refused, because this check was false: ` + a.row.refused_because.map((r) => typeof r === "string" ? r : r.label || JSON.stringify(r)).join("; ");
       else text = `Round ${a.turn}: ${who} wanted to ${act}, but someone else acted first in the same round and it was no longer possible.`;
-      if (kind === "waited" && a.row.belief) text = `Round ${a.turn}: ${who} chose to wait.`;
+      if (kind === "waited" && a.row.belief && !ruled && !disp.status) text = `Round ${a.turn}: ${who} chose to wait.`;
       // An attempt an installed rule matched is decided by that rule; the judge is asked only when none does (A3).
-      if (a.row.attempt && a.row.wanted && a.row.wanted.kind !== "unmatched-attempt") text += " Decided by rule, judge not asked.";
+      if (a.row.attempt && a.row.wanted && a.row.wanted.kind !== "unmatched-attempt" && !ruled) text += " Decided by rule, judge not asked.";
       // Concordia residents say what they believed and what they expected the move to change.
       if (a.row.belief) text += ` They believed: ${a.row.belief}` + (a.row.expects ? ` They expected: ${a.row.expects}` : "");
     }
@@ -709,13 +728,29 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
 
   // The judge's ruling on an attempt no installed rule covers (ai-judge plan J2, A2 and A5): what it was given first,
-  // its ruling, the rule it proposed with that rule's test run, and its answer. J2 records a ruling; it installs nothing.
+  // its ruling, the rule it proposed with that rule's test run, and its answer. From J3 a confirmed ruling becomes a rule
+  // (installed at once, or held until the owner answers); a run saved before that only recorded it.
+  function dispositionLine(j) {
+    const d = j.disposition;
+    if (!d) return " (Recorded only: this run was made before rulings became rules, so nothing was installed.)";
+    const id = d.ruling_id ? ` ${d.ruling_id}` : "";
+    if (d.status === "installed") {
+      return ` It passed the rules check and the test run, and is installed as rule${id}: later identical attempts are decided by the rule, judge not asked.`
+        + (d.settled ? (d.settled.status === "accepted" ? " The engine then carried the move out: every check of the rule held."
+          : ` The engine then refused the move: ${(d.settled.refused_because || []).join("; ") || "a check of the rule was false"}. Nothing changed.`) : "");
+    }
+    if (d.status === "held") return ` The rule${id} is held. Pending: waiting for your approval. Nothing has changed.`;
+    if (d.status === "refused") return ` The rule${id} was not installed: ${d.reason || "the rules check refused it now"}. Nothing changed.`;
+    if (d.status === "language_gap") return ` Listed as a language gap${id ? ` (${id.trim()})` : ""}: the world’s rules language has no way to say it. Nothing changed.`;
+    if (d.status === "withdrawn") return ` Nothing was installed${id ? ` (${id.trim()})` : ""}.`;
+    return "";
+  }
   function judgeLine(j) {
     const to = j.whose_choice ? ` The words went to ${labelFor(j.whose_choice)}, whose choice it is.` : "";
     const said = {
-      confirmed: `it proposed a rule, test-ran it and confirmed it${j.revised ? " after one revision" : ""} (recorded, not installed yet).`,
-      withdrawn: "it proposed a rule, test-ran it and withdrew it.",
-      language_gap: "no rule could express this.",
+      confirmed: `it proposed a rule, test-ran it and confirmed it${j.revised ? " after one revision" : ""}.` + dispositionLine(j),
+      withdrawn: "it proposed a rule, test-ran it and withdrew it." + dispositionLine(j),
+      language_gap: "no rule could express this." + (j.disposition ? dispositionLine(j) : ""),
       no_rule: "nothing about what the world allows was in question, so it proposed no rule.",
       failed: "the judge could not rule (its call failed).",
     }[j.outcome] || String(j.outcome || "");
@@ -750,7 +785,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const h = (text) => { const e = document.createElement("h3"); e.textContent = text; return e; };
     const p = (text, cls) => { const e = document.createElement("p"); e.textContent = text; if (cls) e.className = cls; e.style.margin = "2px 0"; return e; };
     const ul = (lines, cls) => { const e = document.createElement("ul"); lines.forEach((x) => { const li = document.createElement("li"); li.textContent = x; if (cls && cls(x)) li.className = cls(x); e.append(li); }); return e; };
-    out.push(p(`By ${j.by || "the world’s game master"}. ` + judgeLine(j)));
+    out.push(p(`By ${j.by || "the world’s game master"}. ` + ((line) => line.charAt(0).toUpperCase() + line.slice(1))(judgeLine(j))));
     const one = (row.consequence || {}).pass_one;
     if (one) {
       out.push(h("What the judge was given first"));
@@ -784,7 +819,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       out.push(p("Where it stopped: " + stopLine(run), (run.stopping_point || {}).kind === "blocked" || (run.stopping_point || {}).kind === "refused" ? "stop-blocked" : ""));
     });
     if (j.tests && j.tests.length) { out.push(h("Its answer")); out.push(p(`${words(j.outcome || "")}${j.why ? ": " + j.why : ""}`)); }
-    out.push(p("Recorded, not installed yet: a confirmed rule does not change this run.", "by"));
+    const d = j.disposition || {};
+    out.push(p(!j.disposition ? "Recorded only: this run was made before rulings became rules, so the rule was not installed."
+      : d.status === "installed" ? `Installed as rule ${d.ruling_id}, after the rules check and the test run. From now on the installed rules alone decide what this world allows.`
+      : d.status === "held" ? `Held as rule ${d.ruling_id}: nothing is installed until the owner presses Approve on the run page.`
+      : d.status === "language_gap" ? "No rule could express this, so none is installed and nothing about this world changed."
+      : "Nothing was installed.", "by"));
     return out;
   }
 
@@ -796,13 +836,19 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   //   refused:  a person tried a move and it did not go through.
   //   held:     the rules held back one or more moves from a person that round
   //             (they were never allowed to try them); one per person per round.
+  // A judged attempt whose new rule the engine then carried out (ruling to rule, ai-judge plan J3).
+  const settledByRule = (row) => Boolean(row && row.judge && row.judge.disposition && row.judge.disposition.settled && row.judge.disposition.settled.status === "accepted");
   function countRound(turn) {
     const c = { allowed: 0, refused: 0, held: 0 };
     Object.values(turn.actors || {}).forEach((row) => {
-      if (row.status === "accepted") c.allowed++;
+      // Ruling to rule (J3): an attempt waiting on a held ruling is neither allowed nor refused yet; it counts when the
+      // owner's answer settles it. A judged attempt its new rule carried out counts as allowed.
+      if (row.status === "accepted" || settledByRule(row)) c.allowed++;
+      else if (row.status === "pending_ruling" || ((row.judge || {}).disposition || {}).status === "held") { /* waiting */ }
       else if (row.wanted) c.refused++;
       if ((row.blocked_by_rules || []).length) c.held++;
     });
+    (turn.ruling_events || []).forEach((e) => { if (e.result === "accepted") c.allowed++; else if (e.result === "refused") c.refused++; });
     return c;
   }
 
@@ -896,10 +942,29 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     });
   }
 
+  // What the judge's rulings did this round (ai-judge plan J3): a rule installed, a ruling held, a gap listed, and the
+  // owner's Approve or Reject settling the attempts that waited.
+  function rulingNotes(turn) {
+    const notes = [];
+    Object.entries(turn.actors || {}).forEach(([actor, row]) => {
+      const d = (row.judge || {}).disposition;
+      if (d && d.status === "installed" && !d.joined) notes.push(`${d.ruling_id} installed as a new rule (${labelFor(actor)}’s try)`);
+      else if (d && d.status === "held") notes.push(`${d.ruling_id} held for the owner’s approval (${labelFor(actor)}’s try waits)`);
+      else if (d && d.status === "language_gap") notes.push(`no rule could express ${labelFor(actor)}’s try (language gap ${d.ruling_id})`);
+      if (row.status === "pending_ruling") notes.push(`${labelFor(actor)}’s try joined the held ruling ${row.ruling.id} and waits`);
+      if (row.status === "refused_ruling") notes.push(`${labelFor(actor)}’s try was refused: ruling ${row.ruling.id} was rejected`);
+    });
+    (turn.ruling_events || []).forEach((e) => {
+      if (!e.actor) { notes.push(e.ignored ? `no held ruling ${e.ruling_id} to answer` : `${e.ruling_id} ${e.installed ? "approved and installed" : String(e.decision || "answered")}`); return; }
+      notes.push(`${labelFor(e.actor)}’s waiting try: ${e.result === "accepted" ? "allowed, through the new rule" : e.result === "refused" ? "refused, naming " + e.ruling_id : e.result === "routed" ? "went to " + labelFor(e.to) : "the rule is in force"}`);
+    });
+    return notes;
+  }
   function roundSentence(turn) {
     const parts = [];
     Object.entries(turn.actors || {}).forEach(([actor, row]) => {
       if (row.status === "accepted" && row.did) parts.push(`${labelFor(actor)}: ${words(row.did.kind)}`);
+      else if (settledByRule(row)) parts.push(`${labelFor(actor)}: ${words(((row.judge.rule || {}).action || {}).kind || "a move under the new rule")}`);
     });
     // A change the world tried by itself that was refused whole says so (ai-judge plan A7).
     const refused = {};
@@ -907,6 +972,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const by = (turn.world_changes || []).map((rule) => refused[rule] ? `${words(rule)} (refused: ${plainCheck(refused[rule])}; nothing changed)` : words(rule));
     let text = parts.length ? parts.join(" · ") : "Nobody could do anything.";
     if (by.length) text += ` · By itself: ${by.join(", ")}`;
+    const notes = rulingNotes(turn);
+    if (notes.length) text += ` · ${notes.join(" · ")}`;
     return text;
   }
 
@@ -1107,6 +1174,69 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       : "Before round 1. Select a box to see its state.";
   }
 
+  // Ruling to rule (ai-judge plan J3): every ruling of the run as the last round ended, with Approve and Reject for a held
+  // one. The owner's answer is sent with the next round and applied as it starts; nothing settles without an installed rule.
+  const RULING_STATE = { pending: "pending: waiting for your approval", accepted: "allowed, through the rule", refused: "refused",
+    routed: "went to the person whose choice it is", installed: "the rule is in force" };
+  function rulingTitle(r) {
+    const what = r.description || (r.kind ? words(r.kind) : "a new rule");
+    const gap = r.status === "language_gap" ? ` (“${(r.origin || {}).attempt || ""}”)` : "";
+    return `${r.id}: ${what}${gap}`;
+  }
+  function renderRulings() {
+    const box = $("rulings-panel"); box.innerHTML = "";
+    const last = live.rounds.length ? live.rounds[live.rounds.length - 1] : null;
+    const list = (last && last.rulings) || [];
+    box.hidden = !list.length;
+    if (!list.length) return;
+    const h = document.createElement("h3"); h.textContent = "Rulings in this run"; box.append(h);
+    list.forEach((r) => {
+      const div = document.createElement("div"); div.className = "ruling " + r.status;
+      const head = document.createElement("div");
+      const b = document.createElement("strong");
+      b.textContent = rulingTitle(r) + " — ";
+      const state = {
+        installed: `installed, passed the rules check and test run (round ${r.installed_round}). Later identical attempts are decided by the rule, judge not asked.`
+          + (r.decision === "approved" ? " The owner approved it." : ""),
+        held: "held, not installed: nothing has changed. Attempts that need it are pending: waiting for your approval.",
+        rejected: r.decision && r.decision !== "rejected" ? r.decision + "." : "rejected by the owner. Attempts that needed it are refused, naming this ruling.",
+        language_gap: `no rule could express this. Listed as a language gap${r.error ? " (the rules check said: " + r.error + ")" : ""}.`,
+        withdrawn: "the judge withdrew it, so nothing is installed.",
+      }[r.status] || r.status;
+      head.append(b, state);
+      div.append(head);
+      if ((r.attempts || []).length) {
+        const ul = document.createElement("ul");
+        r.attempts.forEach((a) => { const li = document.createElement("li"); li.textContent = a.by_rule
+          ? `${labelFor(a.actor)}, round ${a.round}: decided by rule, judge not asked (${a.state === "accepted" ? "allowed" : "refused"})`
+          : `${labelFor(a.actor)}, round ${a.round}: ${RULING_STATE[a.state] || a.state}`; ul.append(li); });
+        if (r.attempts_omitted) { const li = document.createElement("li"); li.textContent = `and ${count(r.attempts_omitted)} more decided by the rule`; ul.append(li); }
+        div.append(ul);
+      }
+      if (r.status === "held" && !live.replay) {
+        const queued = (live.decisions || []).find((d) => d.id === r.id);
+        if (queued) {
+          const note = document.createElement("p"); note.className = "ruling-note";
+          note.textContent = queued.decision === "approve" ? "Approved. It takes effect as the next round starts." : "Rejected. It takes effect as the next round starts.";
+          div.append(note);
+        } else {
+          const row = document.createElement("div"); row.className = "row";
+          const yes = document.createElement("button"); yes.type = "button"; yes.className = "primary"; yes.textContent = "Approve";
+          yes.title = "Install this rule. As the next round starts, each waiting attempt is settled through it and the engine alone decides the result.";
+          const no = document.createElement("button"); no.type = "button"; no.className = "secondary"; no.textContent = "Reject";
+          no.title = "Do not install this rule. As the next round starts, each waiting attempt is refused, naming this ruling. Nothing in the world changes.";
+          const answer = (decision) => {
+            live.decisions = (live.decisions || []).concat([{ id: r.id, decision }]);
+            if (!live.playing && !live.finished) play(); else renderLive();
+          };
+          yes.addEventListener("click", () => answer("approve")); no.addEventListener("click", () => answer("reject"));
+          row.append(yes, no); div.append(row);
+        }
+      }
+      box.append(div);
+    });
+  }
+
   function renderLive() {
     const t = live.totals, n = live.rounds.length;
     const last = n ? live.rounds[n - 1].turn : 0;
@@ -1137,6 +1267,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     });
     renderStrip(live.rounds.slice(-STRIP_ROUNDS));
     renderUnderway(live.rounds.slice(-FEED_ROUNDS));
+    renderRulings();
     // Busy but stuck: name anyone who has not changed anything for a while.
     const stuck = Object.entries(live.lastChanged).filter(([, at]) => last - at >= STUCK_ROUNDS);
     const note = $("stuck-note"); note.innerHTML = "";
@@ -1170,9 +1301,17 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     // What this run has spent so far, as recorded by the server, so a spending limit counts the whole run.
     if (request.run_stop && request.run_stop.max_spend_usd != null && live.snapshot && live.spent != null) request.run_spent_usd = live.spent;
     if (live.memory) request.resident_memory = live.memory;
+    // Ruling to rule (ai-judge plan J3): the setting travels with the world; the run's rulings come back sealed with the
+    // snapshot, and the owner's Approve or Reject answers are applied as the next round starts.
+    if (world.judge_rulings) request.judge_rulings = world.judge_rulings;
+    if (live.snapshot && (live.rulings || []).length) request.rulings = live.rulings;
+    const sentDecisions = (live.decisions || []).slice();
+    if (live.snapshot && sentDecisions.length) request.decisions = sentDecisions.map((d) => ({ id: d.id, decision: d.decision }));
     if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
     // AI rounds take a few seconds and go through a job.
-    return apiJob("/run", request, 1000);
+    const run = await apiJob("/run", request, 1000);
+    run.sentDecisions = sentDecisions;
+    return run;
   }
 
   async function playLoop() {
@@ -1199,6 +1338,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         const rounds = run.trace.transcript || [];
         live.snapshot = run.trace.final_snapshot; live.seal = run.snapshot_seal; live.approval = run.approval; live.lastTurn = run.summary.last_turn;
         if (run.trace.resident_memory) live.memory = run.trace.resident_memory;
+        live.rulings = run.trace.rulings || [];
+        live.decisions = (live.decisions || []).filter((d) => !(run.sentDecisions || []).includes(d));
         live.underway = run.trace.underway || [];
         live.stopHistory = run.trace.stop_history || null;
         if (run.trace.run_spent_usd != null) live.spent = run.trace.run_spent_usd;
@@ -1225,7 +1366,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       const refusedByItself = (turn.world_changes || []).filter((rule) => refusedRules.has(rule)).length;
       live.totals.byItself += (turn.world_changes || []).length - refusedByItself;
       live.totals.refused += refusedByItself; live.totals.refusedByItself += refusedByItself;
-      const happened = Object.values(turn.actors || {}).some((r) => r.status === "accepted") || (turn.world_changes || []).length > 0;
+      const happened = Object.values(turn.actors || {}).some((r) => r.status === "accepted" || settledByRule(r)) || (turn.world_changes || []).length > 0
+        || (turn.ruling_events || []).some((e) => e.installed || e.result === "accepted");
       live.quiet = happened ? 0 : live.quiet + 1;
       live.sincePlay++;
       Object.entries(turn.actors || {}).forEach(([actor, row]) => {
@@ -1296,7 +1438,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const recorded = (options && options.rounds) || (world.shared && world.shared.rounds) || null;
     live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: recorded ? recorded.slice() : [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
              totals: { allowed: 0, refused: 0, held: 0, byItself: 0, refusedByItself: 0 }, finished: false, endsAt: null, why: "",
-             sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded, recorded };
+             sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded, recorded, rulings: [], decisions: [] };
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
     $("share-btn").hidden = live.replay;

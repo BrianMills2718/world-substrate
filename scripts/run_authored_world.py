@@ -20,6 +20,7 @@ sys.path.insert(0, str(REPO / "src"))
 
 from scripts import attempts
 from scripts import consequence_report
+from scripts import rulings as rulings_mod
 from scripts import run_stop as run_stop_rule
 from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
@@ -612,6 +613,9 @@ def run_world(
     spent: Callable[[], float] | None = None,
     reaction_limit: int | None = None,
     judge: bool = False,
+    rulings: list[dict[str, Any]] | None = None,
+    judge_rulings: str = rulings_mod.DEFAULT_MODE,
+    decisions: list[dict[str, str]] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
@@ -625,6 +629,11 @@ def run_world(
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     # New runs have no cap on knock-on effects (Decision 009 as amended, ai-judge plan J0); the limit is recorded
     # in the run record either way, so a replay uses the one the run ran under.
+    # Ruling to rule (ai-judge plan J3): the rulings of this run so far, installed ones added to the world's own rules.
+    # The world's bundle and rules as the visitor approved them stay what a shared run is identified by.
+    book = rulings_mod.Rulebook(bundle, causal_value, rulings, judge_rulings) if judge else None
+    if book is not None:
+        bundle, causal_value = book.bundle, book.causal
     engine, causal_model, profile_id = build_engine(bundle, causal_value, reaction_limit=reaction_limit)
     bookkeeping = bookkeeping_fields(causal_model)
     live = live_fields(causal_model)
@@ -660,8 +669,24 @@ def run_world(
                               memory=resident_memory, open_attempts=open_attempts)
     # Open attempts (docs/plans/open_attempt.md): what each person says they try is read into one typed move against
     # the installed rules' kinds; a reading that fits none goes in as an unmatched attempt and changes nothing.
-    signatures = mark_only_fillers(engine, causal_model, open_attempt.signatures_for(bundle, causal_model.mechanics)) \
-        if open_attempts else []
+    def read_signatures() -> list[dict[str, Any]]:
+        # What an attempt can be read as: the installed rules' kinds and, under "Wait for my approval", the kinds of
+        # held and rejected rulings too, so a later identical attempt joins the held ruling (ai-judge plan J3).
+        shown_bundle, shown_causal = book.shadow() if book is not None else (bundle, causal_value)
+        shown = causal_model if shown_causal is causal_value else CausalModel.from_dict(
+            shown_causal, bundle=validate_bundle(shown_bundle))
+        return mark_only_fillers(engine, shown, open_attempt.signatures_for(shown_bundle, shown.mechanics))
+
+    signatures = read_signatures() if open_attempts else []
+
+    def refresh_rules() -> None:
+        """A ruling was installed: the world's rules, and what is read from them, are the effective ones now."""
+        nonlocal bundle, causal_value, causal_model, bookkeeping, live, signatures
+        bundle, causal_value = book.bundle, book.causal
+        causal_model = CausalModel.from_dict(causal_value, bundle=validate_bundle(bundle))
+        bookkeeping, live = bookkeeping_fields(causal_model), live_fields(causal_model)
+        signatures = read_signatures() if open_attempts else []
+
     readings: dict[str, dict[str, Any]] = {}
     unmatched: list[dict[str, Any]] = []
     beliefs: dict[str, dict[str, Any]] = {}
@@ -703,6 +728,86 @@ def run_world(
         return spend_seen[0]
 
     stopped = run_stop_rule.limit_check(run_stop, turn_offset, spent_so_far())
+    # Ruling to rule (ai-judge plan J3). `round_blocked` collects the knock-on steps a failed check stopped this round.
+    round_blocked: list[dict[str, Any]] = []
+
+    def settle_by_rule(round_no: int, move: dict[str, Any]) -> dict[str, Any]:
+        """An attempt that needs no one else's choice, settled through its installed rule: the engine alone commits it
+        or refuses it by the rule's own checks."""
+        outcome = engine.submit({**{k: v for k, v in move.items() if k not in ("base_revision", "controller")},
+                                 "base_revision": engine.world.revision, "controller": f"live:{policy}:ruling"})
+        round_blocked.extend(outcome.get("blocked_reactions") or [])
+        event = outcome.get("event") or {}
+        accepted = outcome["status"] == "accepted"
+        return {"status": outcome["status"], "event_id": _run_event_id(round_no, event.get("event_id")),
+                "changes": _state_changes(event) if accepted else [],
+                "refused_because": [] if accepted else [
+                    c["label"] for c in event.get("checks", [])
+                    if not c.get("ok") and c.get("label") != "Base revision is current"]}
+
+    def label_of(entity_id: str) -> str:
+        return engine.world.entities[entity_id].label
+
+    def reach(round_no: int, actor: str, attempt: str, person: str, note: str) -> None:
+        """The attempt needs another person's choice (Decided 4): their own resident is asked, in the words tried."""
+        residents.observe(actor, f"Round {round_no}: {note} Your words reach {label_of(person)}, who decides what to do.")
+        residents.observe(person, f"Round {round_no}: {label_of(actor)} asked you, in their words: \"{attempt}\"")
+
+    def decide(round_no: int, choices: list[dict[str, str]]) -> list[dict[str, Any]]:
+        """The owner's Approve or Reject of held rulings, applied as the round starts (ai-judge plan J3, Decided 5).
+        Approve installs the rule through the rules check and settles each waiting attempt through it; Reject
+        refuses each, naming the ruling. Nothing settles without an installed rule."""
+        events: list[dict[str, Any]] = []
+        for choice in choices:
+            ruling = book.get(choice["id"])
+            if ruling is None or ruling["status"] != rulings_mod.HELD:
+                events.append({"ruling_id": choice["id"], "decision": choice["decision"],
+                               "ignored": "there is no held ruling with that id"})
+                continue
+            waiting = [a for a in ruling["attempts"] if a["state"] == "pending"]
+            approved = choice["decision"] == "approve"
+            failed = None
+            if approved:
+                installed = book.install(engine, ruling, round_no)
+                if installed["ok"]:
+                    refresh_rules()
+                    ruling["decision"] = "approved"
+                else:
+                    failed = str(installed.get("error"))
+                    ruling["status"], ruling["decision"] = rulings_mod.REJECTED, f"approved, but the rules check refused it now: {failed}"
+            else:
+                ruling["status"], ruling["decision"] = rulings_mod.REJECTED, "rejected"
+            events.append({"ruling_id": ruling["id"], "decision": ruling["decision"],
+                           "installed": ruling["status"] == rulings_mod.INSTALLED})
+            for item in waiting:
+                actor, attempt = item["actor"], item["attempt"]
+                result: dict[str, Any] = {"ruling_id": ruling["id"], "actor": actor, "attempt": attempt,
+                                          "origin_event_id": item["event_id"]}
+                person = ruling.get("whose_choice")
+                if ruling["status"] != rulings_mod.INSTALLED:
+                    item["state"] = "refused"
+                    result.update(result="refused", why=f"the ruling {ruling['id']} ({ruling.get('description') or ruling['kind']}) was "
+                                  + ("rejected" if failed is None else f"refused by the rules check: {failed}"))
+                    residents.observe(actor, f"Round {round_no}: you tried to {attempt}; it was refused, because the new rule "
+                                      f"the game master proposed for it ({ruling['id']}) was not approved. Nothing changed.")
+                elif person in actors and person != actor:
+                    item["state"] = "routed"
+                    result.update(result="routed", to=person)
+                    reach(round_no, actor, attempt, person, f"The new rule for your try ({ruling['id']}) was approved.")
+                elif item.get("move") and item["move"].get("actor") == actor:
+                    settled = settle_by_rule(round_no, item["move"])
+                    item["state"] = "accepted" if settled["status"] == "accepted" else "refused"
+                    result.update(result=item["state"], **settled)
+                    residents.observe(actor, f"Round {round_no}: you tried to {attempt}; the new rule {ruling['id']} was approved and the "
+                                      f"engine {'carried it out' if item['state'] == 'accepted' else 'refused it'}"
+                                      + ("." if item["state"] == "accepted" else f" ({'; '.join(settled['refused_because'])[:160]}).")) 
+                else:
+                    item["state"] = "installed"
+                    result.update(result="installed")
+                    residents.observe(actor, f"Round {round_no}: the new rule {ruling['id']} for your try was approved; it is in force now.")
+                events.append(result)
+        return events
+
     for turn in range(1, max_turns + 1):
         if stopped is not None:
             break
@@ -710,6 +815,9 @@ def run_world(
             break
         revision = engine.world.revision
         events_seen = len(engine.world.events)
+        round_blocked = []
+        ruling_events = decide(turn + turn_offset, decisions or []) if book is not None and turn == 1 else []
+        revision = engine.world.revision
         intents: dict[str, dict[str, Any] | None] = {}
         reasons: dict[str, str] = {}
         blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
@@ -832,7 +940,6 @@ def run_world(
         order = actors[shift:] + actors[:shift]
         rows: dict[str, Any] = {}
         # Knock-on steps a failed check stopped this round (ai-judge plan J0), from each move and the world's own turn.
-        round_blocked: list[dict[str, Any]] = []
         # Unmatched attempts the judge rules on after everyone's move (ai-judge plan J2), each with the world as it was
         # when it was tried.
         to_judge: list[tuple[str, dict[str, Any], Engine]] = []
@@ -852,7 +959,14 @@ def run_world(
                 if actor in readings:
                     rows[actor]["attempt"] = {"text": beliefs[actor].get("attempt"), "reading": readings[actor]}
                 continue
-            outcome = engine.submit({**wanted, "controller": f"live:{policy}"})
+            # An attempt read as the kind of a held or rejected ruling does not reach the engine (J3): it joins the held
+            # ruling and waits, or is refused naming the rejected one. The judge is not asked again.
+            waiting = book.covering(str(wanted.get("kind"))) if book is not None else None
+            if waiting is not None:
+                outcome = {"status": "pending_ruling" if waiting["status"] == rulings_mod.HELD else "refused_ruling",
+                           "event": {"checks": []}}
+            else:
+                outcome = engine.submit({**wanted, "controller": f"live:{policy}"})
             did = wanted
             retried = False
             said_retry = None
@@ -934,6 +1048,24 @@ def run_world(
             }
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
+            if waiting is not None:
+                held = waiting["status"] == rulings_mod.HELD
+                row["event_id"] = f"r{turn + turn_offset}-pending-{actor}"
+                row["ruling"] = {"id": waiting["id"], "state": waiting["status"]}
+                if not held:
+                    row["refused_because"] = [f"the ruling {waiting['id']} ({waiting.get('description') or waiting['kind']}) was rejected"]
+                book.attempt(waiting, actor=actor, attempt=str((beliefs.get(actor) or {}).get("attempt") or ""),
+                             event_id=row["event_id"], round_no=turn + turn_offset, state="pending" if held else "refused",
+                             move={k: v for k, v in wanted.items() if k not in ("base_revision", "controller")})
+            elif book is not None and actor in readings and did is not None and did.get("kind") != open_attempt.UNMATCHED_KIND:
+                # A later attempt an installed ruling's rule covers: the engine decides it by that rule and the judge is
+                # not asked; the ruling lists it ("decided by rule, judge not asked", plan A4).
+                decided_by = book.has_kind(str(did.get("kind")))
+                if decided_by is not None and decided_by["status"] == rulings_mod.INSTALLED:
+                    book.attempt(decided_by, actor=actor, attempt=str((beliefs.get(actor) or {}).get("attempt") or ""),
+                                 event_id=row["event_id"], round_no=turn + turn_offset,
+                                 state="accepted" if outcome["status"] == "accepted" else "refused",
+                                 move=None, by_rule=True)
             if actor in readings:
                 row["attempt"] = {"text": beliefs[actor].get("attempt"), "reading": readings[actor]}
                 if (did or {}).get("kind") == open_attempt.UNMATCHED_KIND:
@@ -964,12 +1096,65 @@ def run_world(
                             "cost_usd": 0.0}
 
             with ThreadPoolExecutor(max_workers=len(to_judge)) as pool:
-                rulings = list(pool.map(lambda job: contextvars.copy_context().run(_rule_on, job), to_judge))
-            for (who, row, _), ruling in zip(to_judge, rulings):
+                judged = list(pool.map(lambda job: contextvars.copy_context().run(_rule_on, job), to_judge))
+            for (who, row, _), ruling in zip(to_judge, judged):
                 row["judge"] = ruling
                 cost += float(ruling.get("cost_usd") or 0.0)
                 listed = next(u for u in unmatched if u["event_id"] == row["event_id"])
                 listed["judge"] = {k: ruling.get(k) for k in ("outcome", "whose_choice", "ruling")}
+            # Ruling to rule (J3): each confirmed ruling becomes a rule, installed now or held for the owner's approval.
+            for who, row, _ in to_judge if book is not None else []:
+                ruling, attempt_text = row["judge"], str(row["did"].get("attempt"))
+                round_here = turn + turn_offset
+                kind = {"language_gap": rulings_mod.LANGUAGE_GAP, "withdrawn": rulings_mod.WITHDRAWN}.get(ruling.get("outcome"))
+                if kind is not None:
+                    entry = book.new(status=kind, round_no=round_here, actor=who, attempt=attempt_text,
+                                     event_id=row["event_id"], record=ruling)
+                    book.attempt(entry, actor=who, attempt=attempt_text, event_id=row["event_id"], round_no=round_here,
+                                 state="refused", move=None)
+                    ruling["disposition"] = {"status": kind, "ruling_id": entry["id"],
+                                             **({"reason": rulings_mod.NO_RULE, "error": entry.get("error")}
+                                                if kind == rulings_mod.LANGUAGE_GAP else {})}
+                    continue
+                if ruling.get("outcome") != "confirmed" or not ruling.get("rule"):
+                    continue
+                entry = book.has_kind(rulings_mod.kind_of(ruling["rule"]))
+                disposition: dict[str, Any] = {}
+                if entry is None:
+                    entry = book.new(status=rulings_mod.HELD, round_no=round_here, actor=who, attempt=attempt_text,
+                                     event_id=row["event_id"], record=ruling)
+                    if book.mode == rulings_mod.CREATE:
+                        installed = book.install(engine, entry, round_here)
+                        if installed["ok"]:
+                            refresh_rules()
+                        else:
+                            entry["status"], entry["why"] = rulings_mod.WITHDRAWN, "the rules check refused it now: " + str(installed["error"])
+                            disposition = {"status": "refused", "ruling_id": entry["id"], "reason": entry["why"]}
+                else:
+                    disposition["joined"] = True
+                if disposition.get("status") == "refused":
+                    book.attempt(entry, actor=who, attempt=attempt_text, event_id=row["event_id"], round_no=round_here,
+                                 state="refused", move=None)
+                elif entry["status"] == rulings_mod.HELD:
+                    disposition.update(status="held", ruling_id=entry["id"])
+                    book.attempt(entry, actor=who, attempt=attempt_text, event_id=row["event_id"], round_no=round_here,
+                                 state="pending", move=ruling.get("move"))
+                else:
+                    disposition.update(status="installed", ruling_id=entry["id"])
+                    move = ruling.get("move") or {}
+                    person = ruling.get("whose_choice")
+                    if person in actors and person != who:
+                        state = "routed"
+                    elif move.get("actor") == who:
+                        settled = settle_by_rule(round_here, move)
+                        disposition["settled"] = settled
+                        state = "accepted" if settled["status"] == "accepted" else "refused"
+                        row["changed"] = bool(row.get("changed") or settled["changes"])
+                    else:
+                        state = "installed"
+                    book.attempt(entry, actor=who, attempt=attempt_text, event_id=row["event_id"], round_no=round_here,
+                                 state=state, move=move)
+                ruling["disposition"] = disposition
         round_no = turn + turn_offset
         starting: dict[str, list[dict[str, Any]]] = {}
         for actor in actors:
@@ -999,7 +1184,27 @@ def run_world(
                 asked = (row.get("did") or {}).get("asks")
                 if asked not in actors:
                     asked = (row.get("judge") or {}).get("whose_choice")
-                if (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and asked in actors:
+                disposition = (row.get("judge") or {}).get("disposition") or {}
+                said = f"Round {turn + turn_offset}: you believed: {row['belief']} "
+                if row.get("status") in ("pending_ruling", "refused_ruling"):
+                    # Read as the kind of a held or rejected ruling (J3): the judge was not asked again.
+                    note = (f"You tried to {row['attempt']['text']}; it is waiting for the world's owner to approve the "
+                            f"new rule {row['ruling']['id']} it needs. Nothing has happened yet."
+                            if row["status"] == "pending_ruling" else
+                            f"You tried to {row['attempt']['text']}; it was refused, because the new rule {row['ruling']['id']} "
+                            "it needs was not approved. Nothing changed.")
+                    residents.observe(actor, said + note)
+                elif (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and disposition.get("status") == "held":
+                    residents.observe(actor, said + f"You tried to {row['did']['attempt']}; the game master proposed a new rule "
+                                      f"for it ({disposition['ruling_id']}), which waits for the world's owner to approve it. "
+                                      "Nothing has happened yet.")
+                elif (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and disposition.get("settled"):
+                    done = disposition["settled"]
+                    residents.observe(actor, said + f"You tried to {row['did']['attempt']}; the game master made a new rule for it "
+                                      f"({disposition['ruling_id']}) and the engine "
+                                      + ("carried it out." if done["status"] == "accepted"
+                                         else f"refused it ({'; '.join(done['refused_because'])[:160]}). Nothing changed."))
+                elif (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and asked in actors:
                     # A request to another person changes nothing in the world; its words reach the one asked, who
                     # decides what to do (evidence/declared-laws/unmatched-replay: 12 of 17 unread tries were these).
                     residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You said: "
@@ -1008,6 +1213,8 @@ def run_world(
                     requests.append((asked, f"Round {turn + turn_offset + 1}: {engine.world.entities[actor].label} "
                                      f"asked you, in their words: \"{row['did']['attempt']}\""))
                     row["asked"] = asked
+                elif (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and disposition.get("status") == "language_gap":
+                    residents.observe(actor, said + f"You tried to {row['did']['attempt']}; {rulings_mod.NO_RULE}, so nothing came of it.")
                 elif (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND:
                     # Nothing in the world answers this kind of try yet (Q22 default: it changes nothing).
                     residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} You tried to "
@@ -1075,6 +1282,10 @@ def run_world(
                                                     "ended_by", "ended_with")} for t in underway_now],
                 "committed_first": order[0],
                 "actors": rows,
+                # Ruling to rule (J3): every ruling of this run and its state as the round ended, and what the owner's
+                # Approve or Reject settled as the round began.
+                **({"rulings": book.public()} if book is not None and book.rulings else {}),
+                **({"ruling_events": ruling_events} if ruling_events else {}),
                 "progress": {},
             }
         )
@@ -1087,7 +1298,8 @@ def run_world(
         if run_stop:
             world_now = engine.world.material_dict()
             history.append(run_stop_rule.history_entry(world_now, stop_fields,
-                                                       any(row.get("changed") for row in rows.values())))
+                                                       any(row.get("changed") for row in rows.values())
+                                                       or any(e.get("changes") for e in ruling_events)))
             del history[:-(run_stop_rule.MAX_QUIET_ROUNDS + 1)]
             stopped = (run_stop_rule.limit_check(run_stop, turn + turn_offset, spent_so_far())
                        or run_stop_rule.check(run_stop, history, run_stop_rule.decision_status(world_now),
@@ -1191,6 +1403,11 @@ def run_world(
         if watch_spend:
             # Sent back with the next one-round request, so the spending limit counts the whole live run.
             trace["run_spent_usd"] = round(spend_seen[0], 6)
+    if book is not None:
+        # The rulings of this run, sent back with the next round under the server's seal (J3); null setting = default.
+        trace["judge_rulings"] = book.mode
+        if book.rulings:
+            trace["rulings"] = book.rulings
     # Open tasks, sent back with the next round so live play keeps following them.
     trace["underway"] = [{k: t[k] for k in sorted(attempts.TASK_KEYS)} for t in open_tasks]
     return trace, engine, causal_model
