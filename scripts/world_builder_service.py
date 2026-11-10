@@ -37,6 +37,7 @@ from scripts.native_coordination_authoring import (
 from scripts.native_coordination_comparison import with_approval_threshold
 from scripts.people_world import about_people, declare_people_laws, keep_until_settled, prepare_people_world, unfinished_hedges, write_people_rules
 from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, recorded_trace, render_run, run_world
+from scripts.run_stop import DEFAULT_RUN_STOP, MAX_QUIET_ROUNDS, parse_run_stop
 from scripts.run_native_coordination import run_native_coordination
 from scripts.review_rules import MISSING as MISSING_RULE, review_rules
 from scripts.scaffold_world import BundleError, validate_bundle
@@ -431,7 +432,8 @@ def _approval_record(*, bundle: Any, causal: Any, trace: dict[str, Any]) -> dict
 
 
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
-    keep = ("description", "world_kind", "policy", "turns", "turn_offset", "approved", "execution_mode", "async")
+    keep = ("description", "world_kind", "run_stop", "policy", "turns", "turn_offset", "approved", "execution_mode",
+            "async")
     out = {k: body[k] for k in keep if k in body}
     if path == "/readout":
         out["run_trace_ids"] = body.get("run_trace_ids")
@@ -477,6 +479,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             # What a shared run shows beside its rounds (increment 5 of the retired best-of-all-worlds goal, git show e332eb7:docs/plans/best-of-all-worlds.goal.md).
             "world_def": value.get("world_def"),
             "world_kind": value.get("world_kind"),
+            "run_stop": value.get("run_stop"),
             "people": value.get("people"),
             "briefs": value.get("briefs"),
         }
@@ -493,6 +496,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "transcript": trace.get("transcript"),
             # Where the world ended up, so the next live round (or a later replay) starts from it.
             "final_snapshot": trace.get("final_snapshot"),
+            # The world's last few states for its stop setting (scripts/run_stop.py); only when it has one.
+            **({"stop_history": trace["stop_history"]} if "stop_history" in trace else {}),
             "approval": value.get("approval"),
         }
     if path == "/clarify":
@@ -644,6 +649,7 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
             "description": (build or {}).get("request", {}).get("description"),
             "world_def": built.get("world_def"),
             "world_kind": built.get("world_kind"),
+            **({"run_stop": built["run_stop"]} if built.get("run_stop") else {}),
             "people": built.get("people"),
             "briefs": built.get("briefs"),
             "dry_run": built.get("dry_run"),
@@ -655,7 +661,10 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
         "rounds": rounds,
         "runs": [{"trace_id": r["trace_id"], "mover": r["result"].get("mover"), "policy": r["request"].get("policy"),
                   "first_turn": (r["result"].get("summary") or {}).get("first_turn"),
-                  "last_turn": (r["result"].get("summary") or {}).get("last_turn"), "cost_usd": r.get("cost_usd")}
+                  "last_turn": (r["result"].get("summary") or {}).get("last_turn"), "cost_usd": r.get("cost_usd"),
+                  # Why the run stopped by itself, when its world has a stop setting (scripts/run_stop.py).
+                  **({"stopped": r["result"]["summary"]["stopped"]}
+                     if "stopped" in (r["result"].get("summary") or {}) else {})}
                  for r in runs],
         "world_fingerprint": fingerprint,
     }
@@ -1603,12 +1612,15 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         world_def = body.get("world_def") or "things"
         if world_def not in WORLD_DEFS:
             raise ValueError(f"world_def must be one of {list(WORLD_DEFS)}")
+        # When a run of this world stops by itself (Q12; Brian, 2026-11-10: "stop condition should be
+        # configurable"), saved with the world like world_def. A new world stops once nothing is changing.
+        run_stop = parse_run_stop(body.get("run_stop"), default=DEFAULT_RUN_STOP)
         if world_def == "auto":
             world_def = self._world_def(client, description)
             if world_def is None:
                 return
         if world_def == "people":
-            self._generate_people_world(client, description)
+            self._generate_people_world(client, description, run_stop=run_stop)
             return
         world_kind = body.get("world_kind") or "task"
         if world_kind not in WORLD_KINDS:
@@ -2046,6 +2058,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "ok": True,
                 "description": description,
                 "world_kind": world_kind,
+                "run_stop": run_stop,
                 "not_modeled": not_modeled,
                 "bundle": bundle,
                 "causal_model": causal,
@@ -2075,7 +2088,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         self._progress("done", "A world of people, each with their own goals" if people else "A world of things and steps", why)
         return "people" if people else "things"
 
-    def _generate_people_world(self, client: str, description: str) -> None:
+    def _generate_people_world(self, client: str, description: str,
+                               run_stop: dict[str, Any] | None = None) -> None:
         """Description -> people with goals, beliefs and information -> exact rules (scripts/people_world.py).
 
         Always an ongoing world. AI members choose the moves, each reading their own brief; a scripted dry run
@@ -2283,6 +2297,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "description": description,
                 "world_def": "people",
                 "world_kind": "ongoing",
+                "run_stop": run_stop or dict(DEFAULT_RUN_STOP),
                 "not_modeled": built["not_modeled"],
                 "bundle": bundle,
                 "causal_model": causal,
@@ -2535,6 +2550,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         # Tasks still under way from the previous round (trace.underway, #128). They are only records of who
         # started what; run_world keeps one only while the sealed world state still shows it under way.
         underway = body.get("underway") if continue_from is not None else None
+        # The world's stop setting (scripts/run_stop.py). A world saved without one runs every round, as before.
+        run_stop = parse_run_stop(body.get("run_stop"))
+        stop_history = body.get("stop_history") if continue_from is not None else None
+        if stop_history is not None and (
+            not isinstance(stop_history, list) or len(stop_history) > MAX_QUIET_ROUNDS + 1
+            or not all(isinstance(k, str) and len(k) <= 64 for k in stop_history)
+        ):
+            raise ValueError(f"stop_history must be up to {MAX_QUIET_ROUNDS + 1} short state keys")
         model = _requested_model(body)
         trace_id = _new_trace_id("run")
         if execution_mode == "native_coordination":
@@ -2562,7 +2585,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
                         briefs=briefs, resident_memory=resident_memory, underway=underway,
                         # Residents say what they try in their own words (docs/plans/open_attempt.md).
-                        open_attempts=policy == "resident",
+                        open_attempts=policy == "resident", run_stop=run_stop, stop_history=stop_history,
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
@@ -2575,6 +2598,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 bundle, causal, policy=policy, model_name=model,
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
                 start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent, underway=underway,
+                run_stop=run_stop, stop_history=stop_history,
             )
             daily_cost = None
         if execution_mode == "authored_world":

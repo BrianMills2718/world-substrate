@@ -10,6 +10,8 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+
 import scripts.native_coordination_authoring as coordination
 import scripts.world_builder_service as service
 from world_substrate.action_authoring import CausalModel
@@ -582,6 +584,57 @@ class WorldBuilderServiceTests(unittest.TestCase):
             status, _ = self.post("/generate-world", {"description": "orchard", "world_kind": "endless"})
         self.assertEqual(status, 422)
         world.assert_not_called()
+
+    @pytest.mark.req("world-builder-page/the-create-page-offers-when-to-stop-a-run")
+    def test_a_new_world_saves_its_stop_setting_defaulting_to_six_quiet_rounds(self):
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, default = self.post("/generate-world", {"description": "an orchard"})
+            self.assertEqual(status, 200, default)
+            status, chosen = self.post("/generate-world", {"description": "an orchard",
+                                                           "run_stop": {"mode": "every_round"}})
+            self.assertEqual(status, 200, chosen)
+        self.assertEqual(default["run_stop"], {"mode": "quiet", "quiet_rounds": 6})
+        self.assertEqual(chosen["run_stop"], {"mode": "every_round"})
+        with patch.object(service, "generate_world_bundle") as world:
+            status, _ = self.post("/generate-world", {"description": "orchard",
+                                                      "run_stop": {"mode": "quiet", "quiet_rounds": 0}})
+        self.assertEqual(status, 422)
+        world.assert_not_called()
+
+    @pytest.mark.req("world-builder-page/a-run-stops-after-n-quiet-rounds")
+    def test_one_round_requests_carry_the_quiet_count_and_say_why_they_stopped(self):
+        causal = json.loads(json.dumps(CAUSAL))
+        causal["terminal"] = None
+        causal["processes"] = [{
+            "process_id": "frost", "rationale": "Frost spoils fruit, but this orchard never freezes.",
+            "selector": {"categories": ["fruit"], "components": ["fruit"]},
+            "checks": [{"label": "the fruit is frozen",
+                        "left": {"participant": {"name": "it", "path": "components.fruit.stage"}},
+                        "op": "eq", "right": {"literal": "frozen"}}],
+            "effects": [{"participant": "it", "path": "components.fruit.stage", "op": "set",
+                         "value": {"literal": "spoiled"}}],
+        }]
+        stop = {"mode": "quiet", "quiet_rounds": 2}
+        body = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1, "run_stop": stop}
+        status, run = self.post("/run", body)
+        self.assertEqual(status, 200, run)
+        for _ in range(4):
+            if run["summary"]["stopped"]["reason"] == "quiet_rounds":
+                break
+            status, run = self.post("/run", {**body, "continue_from": run["trace"]["final_snapshot"],
+                                             "continue_seal": run["snapshot_seal"], "approval": run["approval"],
+                                             "turn_offset": run["summary"]["last_turn"],
+                                             "stop_history": run["trace"]["stop_history"]})
+            self.assertEqual(status, 200, run)
+        self.assertEqual(run["summary"]["stopped"]["round"], 3)
+        self.assertEqual(run["summary"]["stopped"]["why"], "Stopped at round 3: nothing had changed for 2 rounds.")
+        # A world saved without the setting runs every round and records nothing new.
+        status, plain = self.post("/run", {**body, "run_stop": None, "turns": 4})
+        self.assertEqual(status, 200, plain)
+        self.assertNotIn("stopped", plain["summary"])
+        self.assertNotIn("stop_history", plain["trace"])
 
     def test_keep_going_continues_from_the_final_snapshot(self):
         causal = self._ongoing_causal()
