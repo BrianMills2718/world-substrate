@@ -182,7 +182,7 @@ a{color:var(--have)}
 <tr><td>project check (tests, system model, docs)</td><td>tests run 801, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>wiki and Markdown cap</td><td>md files 157, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 39 open, 42 resolved</h3>
+<h3 class="sub">Open questions: 44 open, 42 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -211,7 +211,7 @@ a{color:var(--have)}
 <tr><td><b>Q59</b> Does the people path transfer to a different situation</td><td>agent</td><td>Whether &#x27;describe any scenario&#x27; (Decision 007) holds beyond decision-with-concerns situations; feeds Q60.</td></tr>
 <tr><td><b>Q61</b> Outside vocabularies never evaluated</td><td>agent</td><td>Whether the run log&#x27;s causal fields, the derived scopes and the project&#x27;s causal claims use an outside vocabulary or stay project-specific.</td></tr>
 <tr><td><b>Q62</b> Meaning coverage beyond the six bound moves</td><td>agent</td><td>Adding any overlay term beyond the six bound M1 move kinds, and binding generated move kinds to a meaning.</td></tr>
-<tr><td><b>Q63</b> A non-authoritative estimate as a rule input</td><td>agent</td><td>Any world whose rules need a bounded estimate (time to repair, a likelihood) that no installed mechanic computes.</td></tr>
+<tr><td><b>Q63</b> A non-authoritative estimate as a rule input</td><td>agent</td><td>The estimate-rules plan (docs/plans/estimate_rules.md) and its first slice E1; any world whose rules need a chance or amount that no installed mechanic computes.</td></tr>
 <tr><td><b>Q64</b> Meaning is looked up by bare move name</td><td>agent</td><td>Whether an event&#x27;s semantic_binding and mechanic id can be trusted to describe the rule that actually ran.</td></tr>
 <tr><td><b>Q65</b> The bundle schema refuses declared laws</td><td>agent</td><td>Any outside tool or test that validates a declared-laws bundle against the published schema.</td></tr>
 <tr><td><b>Q66</b> The read-scope status fact is a constant</td><td>agent</td><td>Whether the status check is evidence about read scopes or only about the spec&#x27;s text; Q34.</td></tr>
@@ -224,6 +224,11 @@ a{color:var(--have)}
 <tr><td><b>Q75</b> Constraint question or someone&#x27;s choice</td><td>agent</td><td>J2&#x27;s routing step and A5 (Rosa&#x27;s own resident decides accept or refuse).</td></tr>
 <tr><td><b>Q76</b> How to write norms and credential holders</td><td>agent</td><td>J4&#x27;s design and A6 (the password fixture: Mallory phishes Alice&#x27;s password, is logged in, and the breach has consequences only after an observer acts).</td></tr>
 <tr><td><b>Q77</b> Wiki cap and durable-document checks fail on main</td><td>agent</td><td>Whether the wiki-compliance and durable-document checks pass again for every package in this repository.</td></tr>
+<tr><td><b>Q82</b> Does Jev&#x27;s chance follow the facts</td><td>agent</td><td>Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.</td></tr>
+<tr><td><b>Q83</b> Declared reads or the whole world</td><td>agent</td><td>The estimate block&#x27;s reads field (E1), the cache key and the rule that an estimate never reads the attempt&#x27;s wording.</td></tr>
+<tr><td><b>Q84</b> A chance that someone notices</td><td>agent</td><td>Slice E5 and the port part of A5.</td></tr>
+<tr><td><b>Q85</b> Jev latency in worlds with many chances</td><td>agent</td><td>Worlds with many estimate rules after E1; not E1 itself.</td></tr>
+<tr><td><b>Q86</b> Jev for the plain-words stopping point</td><td>agent</td><td>Nothing in the estimate-rules plan; an option for the judge plan&#x27;s J5.</td></tr>
 </tbody></table></div>
 <h3 class="sub">Diagrams</h3>
 <ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
@@ -231,10 +236,10 @@ a{color:var(--have)}
 <!-- package:end -->
 <!-- maps:start -->
 <h2>The maps behind the plan</h2>
-<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 73 ideas, 120 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
+<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 79 ideas, 134 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (39 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (44 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->

@@ -1,0 +1,253 @@
+{
+ "schema_version": "1.0",
+ "record_type": "planning_package",
+ "repository": "BrianMills2718/world-substrate",
+ "subject_revision": "43663e94018ef206d41ca6731c750f376165a65c",
+ "request": "Brian 2026-11-10 \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\", then \"i approve\" to planning it now in parallel with the AI judge build; the plan docs/plans/estimate_rules.md names this file on its 'Planning package:' line",
+ "parts": {
+  "checks": {
+   "status": "present",
+   "path": "docs/planning/estimate-rules/checks.txt",
+   "results": []
+  },
+  "open_questions": {
+   "status": "present",
+   "path": "docs/planning/open-questions.json"
+  },
+  "system_model": {
+   "status": "present",
+   "path": "docs/model/ODD.md",
+   "executes_typed_rules": true,
+   "basis": "src/world_substrate/engine.py:582",
+   "metamodel": {
+    "path": "docs/model/metamodel.graph.json",
+    "glossary": "docs/model/METAMODEL.md",
+    "maps_onto": {
+     "repository": "BrianMills2718/scientific-hypergraph",
+     "revision": "7b0638fe0aef41c772bb181996516f98be479597",
+     "mapping": "docs/model/metamodel-mapping.json"
+    }
+   }
+  },
+  "domain_model": {
+   "status": "present",
+   "path": "docs/model/domain.graph.json",
+   "glossary": "docs/model/DOMAIN.md",
+   "implemented": {
+    "world": "src/world_substrate/model.py:382",
+    "engine": "src/world_substrate/engine.py:198",
+    "event": "src/world_substrate/engine.py:529",
+    "move": "src/world_substrate/action_authoring.py:49",
+    "process": "src/world_substrate/engine.py:829",
+    "compiler": "src/world_substrate/action_authoring.py:456",
+    "policy": "src/world_substrate/policy.py:50",
+    "sense": "src/world_substrate/semantic.py:15",
+    "profile": "src/world_substrate/profile.py:266",
+    "write-scope": "src/world_substrate/engine.py:88",
+    "causal-trace": "src/world_substrate/engine.py:529",
+    "world-kind": "scripts/world_builder_service.py:113",
+    "builder": "scripts/world_builder_service.py",
+    "approval": "scripts/world_builder_service.py:418",
+    "fingerprint": "scripts/world_builder_service.py:381",
+    "information": "src/world_substrate/information.py:57",
+    "run-loop": "scripts/run_authored_world.py:347",
+    "contention": "scripts/run_authored_world.py:563",
+    "resident": "scripts/concordia_residents.py:44",
+    "task": "scripts/attempts.py:17",
+    "notice": "scripts/attempts.py:234",
+    "build": "scripts/world_builder_service.py:1541",
+    "rules-retry": "scripts/world_builder_service.py:263",
+    "test-run": "scripts/world_builder_service.py:1610",
+    "run-log": "scripts/world_builder_service.py:524",
+    "readout": "scripts/run_readout.py:125",
+    "scene-replay": "scripts/render_scene_replay.py:398",
+    "share": "scripts/world_builder_service.py:598",
+    "budget": "scripts/world_builder_service.py:51",
+    "people-world": "scripts/people_world.py:364",
+    "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
+    "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
+    "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
+    "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
+    "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
+    "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
+    "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
+    "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
+    "rollout": "spikes/any-scenario-2026-10/compile_spec.py:436",
+    "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
+    "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
+    "gen-rules": "scripts/people_world.py:251",
+    "waltzman-ref": "reference_worlds/waltzman/components.py:11",
+    "affordance": "src/world_substrate/engine.py:352",
+    "check": "src/world_substrate/rules.py:48",
+    "attempt": "src/world_substrate/attempt.py:149",
+    "attempt-reading": "src/world_substrate/attempt.py:81",
+    "unmatched-attempt": "src/world_substrate/attempt.py:25",
+    "observation": "src/world_substrate/engine.py:235",
+    "place-way": "scripts/generate_world_bundle.py:96",
+    "projection": "src/world_substrate/projection.py:44",
+    "causal-parent": "src/world_substrate/rules.py:383",
+    "exchange": "src/world_substrate/exchange.py:68",
+    "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
+    "kitchen": "reference_worlds/kitchen/mechanics.py",
+    "mechanic": "src/world_substrate/action_authoring.py:456",
+    "entity-component": "src/world_substrate/model.py:223",
+    "knock-on-now": "src/world_substrate/engine.py:938",
+    "world-law": "scripts/scaffold_world.py:45",
+    "law-check": "src/world_substrate/laws.py:36",
+    "resource": "scripts/scaffold_world.py:45",
+    "world-design": "scripts/generate_world_bundle.py:53",
+    "rules-review": "scripts/review_rules.py:92",
+    "run-stop": "scripts/run_stop.py:65"
+   }
+  },
+  "diagrams": {
+   "status": "present",
+   "items": [
+    {
+     "path": "docs/model/ODD.md",
+     "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
+    },
+    {
+     "path": "docs/model/domain.graph.json",
+     "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
+    },
+    {
+     "path": "docs/model/open-questions.graph.json",
+     "question": "Which concepts carry the unsettled questions, and whose call is each?"
+    },
+    {
+     "path": "docs/model/metamodel.graph.json",
+     "question": "What kinds of things can any world's rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?"
+    }
+   ]
+  },
+  "plan": {
+   "status": "present",
+   "path": "docs/plans/estimate_rules.md",
+   "relies_on": [
+    "estimate-rule",
+    "estimator",
+    "recorded-estimate",
+    "recorded-draw",
+    "skill-roll",
+    "run-seed",
+    "process",
+    "move",
+    "check",
+    "knock-on-now",
+    "causal-trace",
+    "event",
+    "engine",
+    "compiler",
+    "write-scope",
+    "profile",
+    "resident",
+    "information",
+    "run-log",
+    "share",
+    "gen-rules",
+    "build",
+    "stopping-point"
+   ],
+   "cost_basis": {
+    "steps": [
+     {
+      "step": "Jev estimate (new, E1: one call per distinct question and inputs per run, on a cache miss)",
+      "cost_per_run_usd": 0.00084,
+      "calls_per_run": 30,
+      "basis": "measured",
+      "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Calls: at most 30 per sawmill run (one chance question a day for 30 days; fewer with the per-run cache), 30 x $0.0000279 = $0.00084."
+     },
+     {
+      "step": "plain-version comparison, gpt-6-luna variant (E1, once)",
+      "cost_per_run_usd": 0.0013,
+      "calls_per_run": 10,
+      "basis": "computed",
+      "computation": {
+       "calls": 10,
+       "input_tokens_per_call": 800,
+       "input_usd_per_mtok": 0.1,
+       "cached_share": 0,
+       "cached_usd_per_mtok": 0.1,
+       "output_tokens_per_call": 100,
+       "output_usd_per_mtok": 0.5
+      },
+      "evidence": "Tokens: about 800 input (the question, the two declared fields and instructions; guess from the Jev probe's 645-token prompt) and 100 output. Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing (openrouter, checked 2026-11-05). 10 cases (docs/plans/estimate_rules.md, Plain baseline)."
+     },
+     {
+      "step": "plain-version comparison, Jev variants (E1, once: declared reads and whole world)",
+      "cost_per_run_usd": 0.0062,
+      "calls_per_run": 20,
+      "basis": "guess",
+      "evidence": "10 declared-reads calls at the measured $0.0000279 = $0.00028; 10 whole-world calls guessed at up to 10 times the tokens, so up to $0.000279 each = $0.0028; rounded up to $0.0062 to allow a larger world. Replaced by the measured llm-cost total after E1."
+     },
+     {
+      "step": "rules writer (existing call, E2: also writes estimate rules)",
+      "cost_per_run_usd": 0.0021,
+      "calls_per_run": 1,
+      "basis": "measured",
+      "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call, median 11,551 input and 1,574 output tokens, 0% cached. Estimate rules add a few lines to its output; no new call."
+     }
+    ],
+    "cheapest_design": "Cheapest design that still does the job: a chance formula written into the rule by the rules writer (p = 0.03 x days since service) costs nothing per run, but the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own, and the curve would be the rules writer's guess fixed at build time. Jev costs under $0.001 per 30-day run with the per-run cache (one call per distinct question and inputs), reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache (inferred by agent, 2026-11-10). The binding constraint is latency, not cost: 0.43 s mean per Jev call (measured, ~/projects/data/llm_observability.db, 2026-11-10), about 13 s for 30 calls (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
+   },
+   "plain_baseline": {
+    "kind": "planned",
+    "answer_path": "Jev's estimate of a chance (later a pick or an amount) from the world's facts, used by an estimate rule",
+    "when": "E1, before the live sawmill run: the same model (Jev) given the whole world state instead of the declared fields, side by side with Jev given the declared fields and gpt-6-luna given the declared fields, on 10 cases; no Jev call is made for planning (Brian's brief, 2026-11-10)",
+    "cases": [
+     "blade, 0 days since service, load 14",
+     "blade, 3 days since service, load 14",
+     "blade, 6 days since service, load 14",
+     "blade, 9 days since service, load 14",
+     "blade, 12 days since service, load 14",
+     "blade, 0 days since service after a failure, load 0",
+     "blade, 3 days since service, load 4",
+     "blade, 6 days since service, load 4",
+     "blade, 9 days since service, load 4",
+     "blade, 12 days since service, load 4"
+    ]
+   },
+   "stage_effects": [
+    {
+     "stage": "declared reads: Jev shown only the fields the rule declares, not the whole world (E1)",
+     "gap": "the plain version (whole world) could let unrelated facts or a resident's words move the chance, and makes the cache key the whole world, so nothing is reused; whether declared reads change Jev's answer is untested until E1's comparison (Q83)",
+     "status": "untested"
+    },
+    {
+     "stage": "per-run cache: one Jev call per distinct question and inputs (E1)",
+     "gap": "not an answer-quality stage: it removes repeat calls with identical inputs; its effect on cost and time is measured in E1",
+     "status": "untested"
+    },
+    {
+     "stage": "draw against the estimate instead of using the estimate as the outcome (E1)",
+     "gap": "used directly, a probability becomes a truth claim (the retired Jev note's anti-pattern, 'P(fire)=0.81 -> fire=true'), so a world fails every day above a threshold and never below it; shown by argument, untested on a run until E1",
+     "status": "untested"
+    }
+   ],
+   "stops": {
+    "searched": [
+     "brian-positions (~/code/inquiry-graph/tools/brian_positions.py \"jev estimate probability rule\" --top 10, 2026-11-10): Jev use cases and 'really heavy use of jev throguhout aes' (2026-09-20), no stop",
+     "git log -i --grep=jev on origin/main 43663e9: 69cc0b6 (exploration note), 95060c7, 9cefeee, 0dcbcd6 (note retired into Q63); no stop",
+     "docs/decisions/005-native-waltzman-delivery.md:86 (Jev off the critical path for that release): a release-scope consequence, not a stop on estimate rules",
+     "docs/plans/ai_judge.md and docs/plans/open_attempt.md Decisions"
+    ],
+    "found": []
+   }
+  },
+  "acceptance": {
+   "status": "present",
+   "path": "docs/planning/estimate-rules/acceptance-criteria.json"
+  },
+  "review_page": {
+   "status": "present",
+   "path": "proposals/estimate-rules/review-page/index.html",
+   "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/estimate-rules/review-page/"
+  },
+  "cold_review": {
+   "status": "absent",
+   "path": "docs/planning/estimate-rules/cold-review.md"
+  }
+ },
+ "note": "This is the plan's own package, named by docs/plans/estimate_rules.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws, open-attempt and ai-judge packages (all rebuilt by tools/planning/build.py, which now also rebuilds every review page). The plan's four new concepts (estimate-rule, estimator, recorded-estimate, recorded-draw) are in the domain model as 'In documents only' (planned, not implemented). Q63 is reopened with Brian's 2026-11-10 words and answered by the plan; its uncertainties are Q82-Q86 (all agent-owned) and the existing Q33 (the run seed, shared with the skill roll). No paid call was made for planning: the plain-version comparison and a 10-call Jev probe (about $0.0003) are E1's first steps. The acceptance criteria cite this plan's own run-page router record, docs/planning/estimate-rules/router/run-page.recommendation.json. Checks were run for this package into docs/planning/estimate-rules/checks.txt."
+}

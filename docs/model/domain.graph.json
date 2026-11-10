@@ -478,6 +478,30 @@
    "label": "Plain-words stopping point",
    "kind": "Theory",
    "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting. Code: none yet."
+  },
+  {
+   "id": "estimate-rule",
+   "label": "Estimate rule",
+   "kind": "Theory",
+   "explain": "Plan estimate-rules E1 (planned, not implemented): a process or move whose outcome depends on a chance (later a pick or an amount) that Jev estimates from fields the rule declares; it declares a fixed question, its reads, the answer type, the model, a required fallback (refuse or a declared value) and the effects for each result. Code: none yet."
+  },
+  {
+   "id": "estimator",
+   "label": "Estimator",
+   "kind": "Theory",
+   "explain": "Plan estimate-rules E1 (planned, not implemented): what the engine asks for an estimate; live it is llm_client.call_decisions on Jev (one retry, then the rule's fallback), in a replay it reads the recorded estimates and stops with 'no recorded estimate' rather than call Jev; one call per distinct question and inputs per run. Code: none yet."
+  },
+  {
+   "id": "recorded-estimate",
+   "label": "Recorded estimate",
+   "kind": "Theory",
+   "explain": "Plan estimate-rules E1 (planned, not implemented): on the event, the question, the declared inputs and their values, Jev's answer, the model version returned, the trace id, the cost and whether it was reused from the run's cache; evidence, never world state (Q63). Code: none yet."
+  },
+  {
+   "id": "recorded-draw",
+   "label": "Recorded draw",
+   "kind": "Theory",
+   "explain": "Plans estimate-rules E1 and open-attempt S3 (planned, not implemented): a number drawn from hash(run seed, event id, rule id) and recorded on the event; an estimate rule's chance becomes an outcome only through it, and a replay reads it. Code: none yet."
   }
  ],
  "edges": [
@@ -1224,6 +1248,66 @@
    "source": "norm",
    "target": "observation",
    "label": "has consequences through"
+  },
+  {
+   "id": "e124",
+   "source": "estimate-rule",
+   "target": "process",
+   "label": "is a kind of"
+  },
+  {
+   "id": "e125",
+   "source": "estimate-rule",
+   "target": "estimator",
+   "label": "asks"
+  },
+  {
+   "id": "e126",
+   "source": "estimator",
+   "target": "recorded-estimate",
+   "label": "writes"
+  },
+  {
+   "id": "e127",
+   "source": "estimate-rule",
+   "target": "recorded-draw",
+   "label": "decides by"
+  },
+  {
+   "id": "e128",
+   "source": "recorded-draw",
+   "target": "run-seed",
+   "label": "comes from"
+  },
+  {
+   "id": "e129",
+   "source": "recorded-estimate",
+   "target": "causal-trace",
+   "label": "recorded in"
+  },
+  {
+   "id": "e130",
+   "source": "recorded-draw",
+   "target": "causal-trace",
+   "label": "recorded in"
+  },
+  {
+   "id": "e131",
+   "source": "estimate-rule",
+   "target": "knock-on-now",
+   "label": "sets off"
+  },
+  {
+   "id": "e132",
+   "source": "skill-roll",
+   "target": "recorded-draw",
+   "label": "also uses"
+  },
+  {
+   "id": "e133",
+   "source": "estimate-rule",
+   "target": "resident",
+   "label": "never decides for"
   }
  ],
  "layout": {

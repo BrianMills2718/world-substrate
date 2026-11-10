@@ -469,6 +469,42 @@ window.MAPS = {
     "label": "Mid-run rulings setting",
     "kind": "Theory",
     "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule). Code: none yet."
+   },
+   {
+    "id": "run-stop",
+    "label": "Run stop setting",
+    "kind": "Substrate",
+    "explain": "A per-world setting saved with the world (run_stop): stop once nothing is changing after N quiet rounds or never for being quiet, plus optional limits, a number of rounds (max_rounds) and this run's recorded AI spending (max_spend_usd); checked after each round, the run stops at whichever fires first and records why (Q12; Brian, 2026-11-10). Code: scripts/run_stop.py:65."
+   },
+   {
+    "id": "stopping-point",
+    "label": "Plain-words stopping point",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting. Code: none yet."
+   },
+   {
+    "id": "estimate-rule",
+    "label": "Estimate rule",
+    "kind": "Theory",
+    "explain": "Plan estimate-rules E1 (planned, not implemented): a process or move whose outcome depends on a chance (later a pick or an amount) that Jev estimates from fields the rule declares; it declares a fixed question, its reads, the answer type, the model, a required fallback (refuse or a declared value) and the effects for each result. Code: none yet."
+   },
+   {
+    "id": "estimator",
+    "label": "Estimator",
+    "kind": "Theory",
+    "explain": "Plan estimate-rules E1 (planned, not implemented): what the engine asks for an estimate; live it is llm_client.call_decisions on Jev (one retry, then the rule's fallback), in a replay it reads the recorded estimates and stops with 'no recorded estimate' rather than call Jev; one call per distinct question and inputs per run. Code: none yet."
+   },
+   {
+    "id": "recorded-estimate",
+    "label": "Recorded estimate",
+    "kind": "Theory",
+    "explain": "Plan estimate-rules E1 (planned, not implemented): on the event, the question, the declared inputs and their values, Jev's answer, the model version returned, the trace id, the cost and whether it was reused from the run's cache; evidence, never world state (Q63). Code: none yet."
+   },
+   {
+    "id": "recorded-draw",
+    "label": "Recorded draw",
+    "kind": "Theory",
+    "explain": "Plans estimate-rules E1 and open-attempt S3 (planned, not implemented): a number drawn from hash(run seed, event id, rule id) and recorded on the event; an estimate rule's chance becomes an outcome only through it, and a replay reads it. Code: none yet."
    }
   ],
   "edges": [
@@ -1170,27 +1206,111 @@ window.MAPS = {
    },
    {
     "id": "e116",
+    "source": "run-stop",
+    "target": "run-loop",
+    "label": "ends"
+   },
+   {
+    "id": "e117",
+    "source": "budget",
+    "target": "run-stop",
+    "label": "is separate from"
+   },
+   {
+    "id": "e118",
+    "source": "stopping-point",
+    "target": "run-stop",
+    "label": "one condition of"
+   },
+   {
+    "id": "e119",
+    "source": "judge-ruling",
+    "target": "stopping-point",
+    "label": "same game master assesses"
+   },
+   {
+    "id": "e120",
     "source": "credential-holder",
     "target": "entity-component",
     "label": "is kept in"
    },
    {
-    "id": "e117",
+    "id": "e121",
     "source": "credential-holder",
     "target": "information",
     "label": "can change by"
    },
    {
-    "id": "e118",
+    "id": "e122",
     "source": "norm",
     "target": "world-law",
     "label": "is not a"
    },
    {
-    "id": "e119",
+    "id": "e123",
     "source": "norm",
     "target": "observation",
     "label": "has consequences through"
+   },
+   {
+    "id": "e124",
+    "source": "estimate-rule",
+    "target": "process",
+    "label": "is a kind of"
+   },
+   {
+    "id": "e125",
+    "source": "estimate-rule",
+    "target": "estimator",
+    "label": "asks"
+   },
+   {
+    "id": "e126",
+    "source": "estimator",
+    "target": "recorded-estimate",
+    "label": "writes"
+   },
+   {
+    "id": "e127",
+    "source": "estimate-rule",
+    "target": "recorded-draw",
+    "label": "decides by"
+   },
+   {
+    "id": "e128",
+    "source": "recorded-draw",
+    "target": "run-seed",
+    "label": "comes from"
+   },
+   {
+    "id": "e129",
+    "source": "recorded-estimate",
+    "target": "causal-trace",
+    "label": "recorded in"
+   },
+   {
+    "id": "e130",
+    "source": "recorded-draw",
+    "target": "causal-trace",
+    "label": "recorded in"
+   },
+   {
+    "id": "e131",
+    "source": "estimate-rule",
+    "target": "knock-on-now",
+    "label": "sets off"
+   },
+   {
+    "id": "e132",
+    "source": "skill-roll",
+    "target": "recorded-draw",
+    "label": "also uses"
+   },
+   {
+    "id": "e133",
+    "source": "estimate-rule",
+    "target": "resident",
+    "label": "never decides for"
    }
   ],
   "layout": {
@@ -1377,7 +1497,7 @@ window.MAPS = {
     "id": "Q63",
     "label": "Q63: A non-authoritative estimate as a rule input",
     "kind": "AgentQuestion",
-    "explain": "Blocks: Any world whose rules need a bounded estimate (time to repair, a likelihood) that no installed mechanic computes.."
+    "explain": "Blocks: The estimate-rules plan (docs/plans/estimate_rules.md) and its first slice E1; any world whose rules need a chance or amount that no installed mechanic computes.."
    },
    {
     "id": "Q64",
@@ -1450,6 +1570,36 @@ window.MAPS = {
     "label": "Q77: Wiki cap and durable-document checks fail on main",
     "kind": "AgentQuestion",
     "explain": "Blocks: Whether the wiki-compliance and durable-document checks pass again for every package in this repository.."
+   },
+   {
+    "id": "Q82",
+    "label": "Q82: Does Jev's chance follow the facts",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.."
+   },
+   {
+    "id": "Q83",
+    "label": "Q83: Declared reads or the whole world",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: The estimate block's reads field (E1), the cache key and the rule that an estimate never reads the attempt's wording.."
+   },
+   {
+    "id": "Q84",
+    "label": "Q84: A chance that someone notices",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Slice E5 and the port part of A5.."
+   },
+   {
+    "id": "Q85",
+    "label": "Q85: Jev latency in worlds with many chances",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Worlds with many estimate rules after E1; not E1 itself.."
+   },
+   {
+    "id": "Q86",
+    "label": "Q86: Jev for the plain-words stopping point",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Nothing in the estimate-rules plan; an option for the judge plan's J5.."
    },
    {
     "id": "affordance",
@@ -1531,6 +1681,20 @@ window.MAPS = {
     "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write."
    },
    {
+    "id": "estimate-rule",
+    "label": "Estimate rule",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan estimate-rules E1 (planned, not implemented): a process or move whose outcome depends on a chance (later a pick or an amount) that Jev estimates from fields the rule declares; it declares a fixed question, its reads, the answer type, the model, a required fallback (refuse or a declared value) and the effects for each result."
+   },
+   {
+    "id": "estimator",
+    "label": "Estimator",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan estimate-rules E1 (planned, not implemented): what the engine asks for an estimate; live it is llm_client.call_decisions on Jev (one retry, then the rule's fallback), in a replay it reads the recorded estimates and stops with 'no recorded estimate' rather than call Jev; one call per distinct question and inputs per run."
+   },
+   {
     "id": "event",
     "label": "Event",
     "kind": "Concept",
@@ -1554,6 +1718,12 @@ window.MAPS = {
     "kind": "Concept",
     "dashed": true,
     "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
+   },
+   {
+    "id": "information",
+    "label": "Information item",
+    "kind": "Concept",
+    "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered."
    },
    {
     "id": "judge-ruling",
@@ -1631,6 +1801,13 @@ window.MAPS = {
     "explain": "One AI summary of a run whose every cited event id is checked against the run."
    },
    {
+    "id": "recorded-estimate",
+    "label": "Recorded estimate",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan estimate-rules E1 (planned, not implemented): on the event, the question, the declared inputs and their values, Jev's answer, the model version returned, the trace id, the cost and whether it was reused from the run's cache; evidence, never world state (Q63)."
+   },
+   {
     "id": "resident",
     "label": "Resident",
     "kind": "Concept",
@@ -1684,6 +1861,13 @@ window.MAPS = {
     "kind": "Concept",
     "dashed": true,
     "explain": "Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it."
+   },
+   {
+    "id": "stopping-point",
+    "label": "Plain-words stopping point",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting."
    },
    {
     "id": "support",
@@ -2132,6 +2316,18 @@ window.MAPS = {
     "label": "bears on"
    },
    {
+    "id": "Q63-estimate-rule",
+    "source": "Q63",
+    "target": "estimate-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q63-recorded-estimate",
+    "source": "Q63",
+    "target": "recorded-estimate",
+    "label": "bears on"
+   },
+   {
     "id": "Q64-sense",
     "source": "Q64",
     "target": "sense",
@@ -2279,6 +2475,72 @@ window.MAPS = {
     "id": "Q77-run-log",
     "source": "Q77",
     "target": "run-log",
+    "label": "bears on"
+   },
+   {
+    "id": "Q82-estimate-rule",
+    "source": "Q82",
+    "target": "estimate-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q82-estimator",
+    "source": "Q82",
+    "target": "estimator",
+    "label": "bears on"
+   },
+   {
+    "id": "Q83-estimate-rule",
+    "source": "Q83",
+    "target": "estimate-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q83-estimator",
+    "source": "Q83",
+    "target": "estimator",
+    "label": "bears on"
+   },
+   {
+    "id": "Q84-estimate-rule",
+    "source": "Q84",
+    "target": "estimate-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q84-information",
+    "source": "Q84",
+    "target": "information",
+    "label": "bears on"
+   },
+   {
+    "id": "Q84-resident",
+    "source": "Q84",
+    "target": "resident",
+    "label": "bears on"
+   },
+   {
+    "id": "Q85-estimator",
+    "source": "Q85",
+    "target": "estimator",
+    "label": "bears on"
+   },
+   {
+    "id": "Q85-run-loop",
+    "source": "Q85",
+    "target": "run-loop",
+    "label": "bears on"
+   },
+   {
+    "id": "Q86-stopping-point",
+    "source": "Q86",
+    "target": "stopping-point",
+    "label": "bears on"
+   },
+   {
+    "id": "Q86-estimator",
+    "source": "Q86",
+    "target": "estimator",
     "label": "bears on"
    }
   ],
