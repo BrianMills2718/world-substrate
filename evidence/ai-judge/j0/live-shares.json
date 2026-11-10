@@ -1,0 +1,73 @@
+{
+ "what": "J0 runs saved as share links on the live World Builder, each a free scripted run (cost 0) of a test world from tests/knock_on_worlds.py, posted with the scratch helper post_live.py; page lines read from the live page with Playwright on 2026-11-10 after the deploy line \"live page matches d89a446b0567; backend: d89a446b0567\".",
+ "acceptance": {
+  "A1": [
+   "NQ0Slg2LMrms",
+   "gv6uHVQMYRr1",
+   "Um6gKNtlkIiE"
+  ],
+  "A7": [
+   "OWjUKGkZzOtr",
+   "f-Eyu2sx7-q_"
+  ]
+ },
+ "runs": [
+  {
+   "name": "fifty chains",
+   "share_id": "NQ0Slg2LMrms",
+   "trace_id": "world-builder-live/run/ac0231106cc34690a65827ea4076adb5",
+   "made_on": "d89a446 (J0 live)",
+   "reaction_limit": null,
+   "page_lines": [
+    "Knock-on effects of r1-e00001 (pull lever): 5,000 steps run, 5,000 with a cause, no refusal"
+   ],
+   "url": "https://brianmills.dev/world-builder/?run=NQ0Slg2LMrms"
+  },
+  {
+   "name": "loop",
+   "share_id": "gv6uHVQMYRr1",
+   "trace_id": "world-builder-live/run/22295a41dc684dae8e070458eeb2f01c",
+   "made_on": "d89a446 (J0 live)",
+   "reaction_limit": null,
+   "page_lines": [
+    "Knock-on effects of r1-e00001 (pull lever): 40 steps run, 40 with a cause, no refusal"
+   ],
+   "url": "https://brianmills.dev/world-builder/?run=gv6uHVQMYRr1"
+  },
+  {
+   "name": "truck without fuel",
+   "share_id": "Um6gKNtlkIiE",
+   "trace_id": "world-builder-live/run/6a2ea08b15bd4925bdc844e8b613c8a6",
+   "made_on": "d89a446 (J0 live)",
+   "reaction_limit": null,
+   "page_lines": [
+    "Knock-on effects of r1-e00001 (pull lever): 40 steps run, 40 with a cause, no refusal, 1 blocked",
+    "blocked: truck leaves (truck) did not happen: “the truck has fuel” was not true (it was 0). Nothing followed from it. After r1-e00041"
+   ],
+   "url": "https://brianmills.dev/world-builder/?run=Um6gKNtlkIiE"
+  },
+  {
+   "name": "wind chain, under J0",
+   "share_id": "f-Eyu2sx7-q_",
+   "trace_id": "world-builder-live/run/783a08e0820841db9cf67827d490c9e0",
+   "made_on": "d89a446 (J0 live)",
+   "reaction_limit": null,
+   "page_lines": [
+    "Knock-on effects of r1-e00002 (wind topples the first): 39 steps run, 39 with a cause, no refusal"
+   ],
+   "url": "https://brianmills.dev/world-builder/?run=f-Eyu2sx7-q_"
+  },
+  {
+   "name": "wind chain, saved before J0",
+   "share_id": "OWjUKGkZzOtr",
+   "trace_id": "world-builder-live/run/450012f8732b4b2bb0373b70ff677b8a",
+   "made_on": "43663e9 (before J0)",
+   "reaction_limit": "absent from the record, so 32",
+   "page_lines": [
+    "Round 1: Sam: pull · By itself: wind topples the first (refused: knock-on effects did not settle within 32 steps (the limit this run ran under); nothing changed)"
+   ],
+   "url": "https://brianmills.dev/world-builder/?run=OWjUKGkZzOtr"
+  }
+ ],
+ "local_saved_runs": "the same worlds' run-log.jsonl and TRACE_READ.md are in evidence/ai-judge/j0/<run>/"
+}

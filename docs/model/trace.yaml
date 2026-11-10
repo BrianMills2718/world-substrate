@@ -51,11 +51,12 @@ rules:
   - id: RULE-ATOMIC-COMMIT-OR-REFUSAL
     statement: >-
       A transition either commits every write and increments the world revision once, or is refused
-      (malformed envelope, stale revision, knock-on effects past the reaction limit, a step that breaks a
-      declared law) with the material hash
+      (malformed envelope, stale revision, knock-on effects past the reaction limit the run records (32 for a
+      run saved before J0 of the AI judge plan; new runs have none), a step that breaks a declared law) with the
+      material hash
       unchanged and the refusal recorded.
     owner: src/world_substrate/engine.py
-    reviewed_at: 75c0a2b9ab0adfdaf7e6cc4f3468e36bbcdcd261  # re-read 2026-10-28 (declared-laws S2; restamped to the squash merge, same content): a law breach is a new refusal on the same paths (_reject, _refuse_round), the world restored before it is recorded; tests below
+    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362): the reaction-limit refusal now applies only under a recorded limit (Engine(reaction_limit=...)), still through _refuse_round with the world restored; a blocked knock-on step is recorded without writing anything; tests below plus tests/test_knock_on_unbounded.py
     checks:
       - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
       - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
@@ -73,7 +74,7 @@ rules:
       A rule or process may write only the components it declared; reaching undeclared state refuses the
       action or stops the tick with nothing changed, and the refusal replays identically.
     owner: src/world_substrate/engine.py
-    reviewed_at: 75c0a2b9ab0adfdaf7e6cc4f3468e36bbcdcd261  # re-read 2026-10-28 (declared-laws S2; restamped to the squash merge, same content): the law check runs after the scope checks, which are unchanged; a process scope breach still raises (tests/test_laws.py::test_a_scope_breach_by_a_process_still_raises)
+    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362): J0 changed how many reactions a moment may run and what is recorded, not the scope checks in _apply_process, which still run on every write
     checks:
       - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
       - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
@@ -85,7 +86,7 @@ rules:
     statement: >-
       Precondition checks and process due-tests only read; one that writes is refused and the tick is rolled back.
     owner: src/world_substrate/engine.py
-    reviewed_at: 75c0a2b9ab0adfdaf7e6cc4f3468e36bbcdcd261  # re-read 2026-10-28 (declared-laws S2; restamped to the squash merge, same content): S2 adds the law check after commit-side scope checks; checks and due-tests still run read-only on detached views
+    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362): the new near_misses (blocked knock-on steps) only compares check values on the moment's view and returns rows; checks and due-tests still run read-only
     checks:
       - tests/test_rule_authority.py::test_checks_are_refused_if_they_write
       - tests/test_rule_authority.py::test_due_cannot_write_and_the_tick_is_rolled_back
@@ -96,7 +97,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
-    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
+    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362: adds near_misses, a read-only check of blocked knock-on steps; derived authority and effect-path rejection unchanged)
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation

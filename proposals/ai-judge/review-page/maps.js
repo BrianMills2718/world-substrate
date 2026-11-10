@@ -36,37 +36,37 @@ window.MAPS = {
     "id": "world",
     "label": "World",
     "kind": "Substrate",
-    "explain": "The one canonical world during a run: entities with typed components, a tick and a revision. Code: src/world_substrate/model.py:382."
+    "explain": "The one canonical world during a run: entities with typed components, a tick and a revision. Code: src/world_substrate/model.py:424."
    },
    {
     "id": "engine",
     "label": "Engine",
     "kind": "Substrate",
-    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:198."
+    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:222."
    },
    {
     "id": "event",
     "label": "Event",
     "kind": "Substrate",
-    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:529."
+    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:572."
    },
    {
     "id": "move",
     "label": "Move (action)",
     "kind": "Substrate",
-    "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:49."
+    "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:50."
    },
    {
     "id": "process",
     "label": "Process",
     "kind": "Substrate",
-    "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:829."
+    "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:1095."
    },
    {
     "id": "compiler",
     "label": "Compiler",
     "kind": "Substrate",
-    "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:456."
+    "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:440."
    },
    {
     "id": "policy",
@@ -84,25 +84,25 @@ window.MAPS = {
     "id": "profile",
     "label": "Frozen mechanic profile",
     "kind": "Substrate",
-    "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. Code: src/world_substrate/profile.py:266."
+    "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. Code: src/world_substrate/profile.py:249."
    },
    {
     "id": "write-scope",
     "label": "Declared write scope",
     "kind": "Substrate",
-    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:88."
+    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:136."
    },
    {
     "id": "causal-trace",
     "label": "Causal trace",
     "kind": "Substrate",
-    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:529."
+    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:572."
    },
    {
     "id": "world-kind",
     "label": "World kind",
     "kind": "Substrate",
-    "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:116."
+    "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:121."
    },
    {
     "id": "builder",
@@ -114,13 +114,13 @@ window.MAPS = {
     "id": "approval",
     "label": "Approval record",
     "kind": "Substrate",
-    "explain": "A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. Code: scripts/world_builder_service.py:421."
+    "explain": "A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. Code: scripts/world_builder_service.py:426."
    },
    {
     "id": "fingerprint",
     "label": "World fingerprint",
     "kind": "Substrate",
-    "explain": "A short hash of the bundle and rules that ties builds, rounds and shares to one world. Code: scripts/world_builder_service.py:384."
+    "explain": "A short hash of the bundle and rules that ties builds, rounds and shares to one world. Code: scripts/world_builder_service.py:389."
    },
    {
     "id": "information",
@@ -132,13 +132,13 @@ window.MAPS = {
     "id": "run-loop",
     "label": "Run loop",
     "kind": "Substrate",
-    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:714."
+    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:700."
    },
    {
     "id": "contention",
     "label": "Lost race",
     "kind": "Substrate",
-    "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:740."
+    "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:850."
    },
    {
     "id": "resident",
@@ -162,55 +162,55 @@ window.MAPS = {
     "id": "build",
     "label": "Build",
     "kind": "Substrate",
-    "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1591."
+    "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1635."
    },
    {
     "id": "rules-retry",
     "label": "Rules retry",
     "kind": "Substrate",
-    "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s. Code: scripts/world_builder_service.py:266."
+    "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s. Code: scripts/world_builder_service.py:110."
    },
    {
     "id": "test-run",
     "label": "Scripted test run",
     "kind": "Substrate",
-    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1797."
+    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1844."
    },
    {
     "id": "run-log",
     "label": "Run log",
     "kind": "Substrate",
-    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:556."
+    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:542."
    },
    {
     "id": "readout",
     "label": "Readout",
     "kind": "Substrate",
-    "explain": "One AI summary of a run whose every cited event id is checked against the run. Code: scripts/run_readout.py:125."
+    "explain": "One AI summary of a run whose every cited event id is checked against the run. Code: scripts/run_readout.py:113."
    },
    {
     "id": "scene-replay",
     "label": "Scene replay",
     "kind": "Substrate",
-    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:398."
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:449."
    },
    {
     "id": "share",
     "label": "Share link and replay",
     "kind": "Substrate",
-    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:603."
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:638."
    },
    {
     "id": "budget",
     "label": "Daily allowance",
     "kind": "Substrate",
-    "explain": "Visitor $3/day, owner $5/day; spend fails closed. Code: scripts/world_builder_service.py:51."
+    "explain": "Visitor $3/day, owner $5/day; spend fails closed. Code: scripts/world_builder_service.py:57."
    },
    {
     "id": "people-world",
     "label": "People world",
     "kind": "Family",
-    "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:364."
+    "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:474."
    },
    {
     "id": "communicate",
@@ -306,7 +306,7 @@ window.MAPS = {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Substrate",
-    "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:352."
+    "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:395."
    },
    {
     "id": "check",
@@ -318,25 +318,25 @@ window.MAPS = {
     "id": "attempt",
     "label": "Attempt (in own words)",
     "kind": "Substrate",
-    "explain": "What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. Code: src/world_substrate/attempt.py:149."
+    "explain": "What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. Code: src/world_substrate/attempt.py:221."
    },
    {
     "id": "attempt-reading",
     "label": "Attempt reading",
     "kind": "Substrate",
-    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:81."
+    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:92."
    },
    {
     "id": "unmatched-attempt",
     "label": "Unmatched attempt",
     "kind": "Substrate",
-    "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer. Code: src/world_substrate/attempt.py:25."
+    "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer. Code: src/world_substrate/attempt.py:34."
    },
    {
     "id": "observation",
     "label": "Observation",
     "kind": "Substrate",
-    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:235."
+    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:278."
    },
    {
     "id": "place-way",
@@ -348,7 +348,7 @@ window.MAPS = {
     "id": "knock-on-now",
     "label": "Knock-on that runs now",
     "kind": "Substrate",
-    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:938."
+    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, which is what ends every chain; new runs have no other cap (J0 of the AI judge plan), a step a failed check stops is recorded with its blocker, and a run recorded before J0 replays under its old cap of 32. Code: src/world_substrate/engine.py:964."
    },
    {
     "id": "skill-roll",
@@ -390,13 +390,13 @@ window.MAPS = {
     "id": "mechanic",
     "label": "Installed mechanic",
     "kind": "Substrate",
-    "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. Code: src/world_substrate/action_authoring.py:456."
+    "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. Code: src/world_substrate/action_authoring.py:515."
    },
    {
     "id": "entity-component",
     "label": "Entity and component",
     "kind": "Substrate",
-    "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. Code: src/world_substrate/model.py:223."
+    "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. Code: src/world_substrate/model.py:247."
    },
    {
     "id": "run-seed",
@@ -432,7 +432,7 @@ window.MAPS = {
     "id": "rules-review",
     "label": "Independent rules review",
     "kind": "Substrate",
-    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:92."
+    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:75."
    },
    {
     "id": "consequence-report",

@@ -64,9 +64,10 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
   [/goal launcher](plans/open-attempt.goal.md). S1 and S2 built; S3 (skill rolls) not built.
 - [Plan: worlds declare their own laws](plans/declared_laws.md) and its
   [/goal launcher](plans/declared-laws.goal.md). S1 to S3 built; S4 under way; S5 follows the plain-version comparison (Q60).
-- [Plan: an AI judge fed by automatic propagation](plans/ai_judge.md) (draft, direction approved
-  2026-11-09; nothing built), its package
-  [planning/ai-judge/planning-package.json](planning/ai-judge/planning-package.json) and
+- [Plan: an AI judge fed by automatic propagation](plans/ai_judge.md) (adopted; building approved
+  2026-11-10; J0 built and live), its package
+  [planning/ai-judge/planning-package.json](planning/ai-judge/planning-package.json),
+  [cold review](planning/ai-judge/cold-review.md) and
   [review page](../proposals/ai-judge/review-page/index.html).
 - Planning package: [planning-package.json](planning/planning-package.json),
   [open questions](planning/open-questions.json) (generated from `tools/planning/questions_src.py`),
@@ -107,6 +108,15 @@ plan, audit, research note and architecture page with its successor and the comm
 
 Every run reported as evidence is a folder with `run-log.jsonl` and a `TRACE_READ.md`
 (`scripts/check_trace_reads.py` enforces it). Newest work first.
+
+**AI judge plan**
+
+- J0, knock-on effects with no cap: [fifty chains of a hundred links](../evidence/ai-judge/j0/fifty-chains/TRACE_READ.md),
+  [a loop that ends](../evidence/ai-judge/j0/loop/TRACE_READ.md),
+  [a step blocked by a truck with no fuel](../evidence/ai-judge/j0/truck-without-fuel/TRACE_READ.md),
+  [a run refused at the old limit of 32](../evidence/ai-judge/j0/wind-chain-old-limit/TRACE_READ.md),
+  [the same world with no cap](../evidence/ai-judge/j0/wind-chain-now/TRACE_READ.md);
+  live share links in [live-shares.json](../evidence/ai-judge/j0/live-shares.json)
 
 **Declared-laws plan**
 
