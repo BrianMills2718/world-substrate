@@ -1,0 +1,106 @@
+{
+ "id": "world-builder-run-page-estimate-rules",
+ "title": "Run page: chance events, what Jev was asked, the roll and what followed",
+ "concern": "For one run, on each chance event: what question the rule asked Jev, which facts it read with their values, what Jev answered (or that it failed and which fallback was used), what the roll was, whether the answer was reused, and which knock-on steps followed; and did a replay reproduce every outcome with no Jev call?",
+ "stakeholder": "Brian, and a drop-in visitor to the World Builder",
+ "intent": [
+  "inspect",
+  "troubleshoot",
+  "trace"
+ ],
+ "informationStructure": [
+  "table",
+  "hierarchy",
+  "document"
+ ],
+ "tasks": [
+  "inspect",
+  "compare",
+  "trace"
+ ],
+ "entities": [
+  "day (round)",
+  "chance event",
+  "question",
+  "fact read",
+  "estimate",
+  "roll",
+  "outcome",
+  "knock-on step",
+  "fallback",
+  "person's choice"
+ ],
+ "relationships": [
+  "asked-about",
+  "read",
+  "answered",
+  "rolled-against",
+  "caused",
+  "reused-from",
+  "decided-by"
+ ],
+ "relationshipEnds": [
+  {
+   "relationship": "asked-about",
+   "from": "chance event",
+   "to": "question"
+  },
+  {
+   "relationship": "read",
+   "from": "question",
+   "to": "fact read"
+  },
+  {
+   "relationship": "answered",
+   "from": "estimate",
+   "to": "question"
+  },
+  {
+   "relationship": "rolled-against",
+   "from": "roll",
+   "to": "estimate"
+  },
+  {
+   "relationship": "caused",
+   "from": "outcome",
+   "to": "knock-on step"
+  },
+  {
+   "relationship": "reused-from",
+   "from": "estimate",
+   "to": "estimate"
+  },
+  {
+   "relationship": "decided-by",
+   "from": "outcome",
+   "to": "person's choice"
+  }
+ ],
+ "scale": {
+  "items": 300,
+  "density": "medium"
+ },
+ "interaction": {
+  "mode": "exploratory",
+  "dynamics": "interactive"
+ },
+ "audience": {
+  "expertise": "novice",
+  "frequency": "occasional",
+  "domainFamiliarity": "novice",
+  "notationFamiliarity": "novice",
+  "visualizationLiteracy": "mixed"
+ },
+ "constraints": {
+  "realtime": false,
+  "provenance": true,
+  "allowAggregation": true
+ },
+ "representationRole": "analytic",
+ "abstractionLevel": "detailed",
+ "successCriteria": [
+  "Each chance event reads as one line first: the chance, where it came from (Jev, reused, or the rule's fallback), the roll and the outcome, so a 30-day run can be scanned without opening rows.",
+  "Any chance event opens to the question, the facts read with their values, the model version and trace id, and the knock-on steps it caused, each citing its cause.",
+  "A fallback or a missing record is shown in orange with the words 'estimate unavailable' or 'no recorded estimate'."
+ ]
+}

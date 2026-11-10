@@ -1,0 +1,159 @@
+{
+ "schema_version": "1.0",
+ "record_type": "acceptance_criteria",
+ "outcome": "Certain types of rules and constraints in a world propagate based on Jev, not only the judge's: a rule's outcome can depend on a chance (later a pick among the rule's options or an amount from its list) that Jev estimates during the run from facts the rule names; the engine rolls against it, the estimate and roll are recorded and shown, the rule's effects and every knock-on effect follow as for any rule, a replay reproduces it with no Jev call, a Jev failure uses the rule's declared fallback visibly, the rules writer can write such rules from a description, and people's own choices are never estimated.",
+ "asked_by": [
+  {
+   "who": "Brian",
+   "date": "2026-11-10",
+   "words": "im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev",
+   "source": "quoted in docs/plans/estimate_rules.md (Why); he then approved planning it now ('i approve'), recorded in the session log ~/projects/data/logs/session-log/4ce7ad71-f4fe-47a3-89db-ba2ba19f15b9.md"
+  }
+ ],
+ "entries": [
+  {
+   "id": "A1",
+   "criterion": "A rule's outcome propagates based on Jev: each day the sawmill's blade rule asks Jev for today's chance of failure from the two facts it names, the engine rolls against it, the run page shows the chance, its source, the roll and the outcome, and on a failure the usual knock-on effects follow, each citing the failure; the same facts asked again in the run reuse the answer; the sawyer's servicing is her own choice with no estimate attached.",
+   "grounded_in": [
+    "Brian 2026-11-10 (Why): \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\"; requirements R1, R2, R5, R6, R9"
+   ],
+   "demonstration": [
+    "On the World Builder, open the saved run \"sawmill blade\" (30 days, run live with Jev).",
+    "Scan the day rows, then open a day the blade failed.",
+    "Follow the steps after the failure to their causes.",
+    "Find a later day whose facts match an earlier day and open it.",
+    "Open a day on which Mara serviced the blade."
+   ],
+   "expected": "A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded) and opens to the question, the two facts with their values, the model version and the trace id; the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.",
+   "failure_example": "Broken: a failure with no roll shown, a failure whenever the chance is above some value, facts in what Jev read that the rule did not name, Jev asked twice for the same facts, or a chance attached to Mara's decision. Working: every chance event shows chance, source, roll and outcome, and knock-on steps cite it.",
+   "representation": {
+    "view": "composite-linked-view: the run page's day rows, one line per chance event (chance, source, roll, outcome), opening to the question, the facts read, the model version and trace id, and the knock-on steps it caused",
+    "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Saved run written by slice E1 under evidence/estimate-rules/e1-sawmill/ with run-log.jsonl and TRACE_READ.md (planned).",
+    "Today no rule uses randomness: docs/plans/open_attempt.md:124; the rule language has no estimate: src/world_substrate/action_authoring.py:893-927."
+   ]
+  },
+  {
+   "id": "A2",
+   "criterion": "A replay reproduces every chance outcome from the record and never calls Jev; a record with an estimate missing stops visibly instead of asking Jev.",
+   "grounded_in": [
+    "Q63 contract (a recorded, non-authoritative input like the skill roll's recorded dice); goal boundary \"saved worlds still replay unchanged\"; requirements R3, R9"
+   ],
+   "demonstration": [
+    "Press Replay on the saved run \"sawmill blade\".",
+    "Compare its days and outcomes with the original run and read the replay's summary line.",
+    "Open the saved run \"sawmill blade, estimate removed\" (one recorded estimate deleted) and replay it."
+   ],
+   "expected": "The replay shows the same 30 days and outcomes and \"replayed from the record: 0 Jev calls\"; the damaged copy stops at the day with the missing estimate and says \"no recorded estimate for this event\".",
+   "failure_example": "Broken: any day differs, any Jev call is made during replay, or the damaged copy asks Jev or carries on silently. Working: same days, 0 Jev calls, and a named stop for the missing record.",
+   "representation": {
+    "view": "composite-linked-view: the run page in replay, with its summary line (replayed from the record, Jev calls 0) and the stop line in orange",
+    "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Replay of recorded commands: src/world_substrate/engine.py:1095-1130; recorded model replies: scripts/replay_build.py:23-49 (Unrecorded).",
+    "Saved runs and test tests/test_estimate_replay.py (planned, E1)."
+   ]
+  },
+  {
+   "id": "A3",
+   "criterion": "When Jev fails twice, the rule's declared fallback applies (a declared chance, or refusing the moment), and the run page says so; there is no silent default.",
+   "grounded_in": [
+    "arc42 section 8 (docs/architecture/arc42.md:292): a missing authority refuses visibly unless the world profile defines the fallback; measured 6.6% Jev failure rate; requirements R4, R9"
+   ],
+   "demonstration": [
+    "Open the saved run \"sawmill blade, Jev down\" (estimator forced to fail).",
+    "Open any day's chance event.",
+    "Open the saved run of the same world with the rule's fallback set to refuse."
+   ],
+   "expected": "\"estimate unavailable after 2 tries: used the rule's fallback 0.1\" in orange on each day, and the run goes on; with refuse, the day's moment is refused with \"estimate unavailable\" and nothing changed that day.",
+   "failure_example": "Broken: a day decided with a chance nobody declared, a failed call not shown, or a partial change on a refused day. Working: the fallback named in orange, or a whole-moment refusal named \"estimate unavailable\".",
+   "representation": {
+    "view": "composite-linked-view: the chance event's line with the fallback in orange and the failed calls listed when opened",
+    "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Measured failures: 1,330 of 20,001 Jev calls (745 RuntimeError, 585 URLError) in ~/projects/data/llm_observability.db, read 2026-11-10.",
+    "Saved runs written by slice E1 (planned)."
+   ]
+  },
+  {
+   "id": "A4",
+   "criterion": "The World Builder's rules writer writes estimate rules (a type of rule that propagates based on Jev) from a plain description, and the rules check rejects one with no fallback.",
+   "grounded_in": [
+    "Brian 2026-11-10: \"certain types of rules/contstatins that progagte base don jev\"; requirements R7, R9"
+   ],
+   "demonstration": [
+    "On the World Builder, describe \"a bakery whose oven sometimes fails, more often the longer since it was cleaned\" and press Create simulation.",
+    "Open \"See how it works\" and find the oven rule.",
+    "Open the run's day rows.",
+    "Open the build record's rules-check list."
+   ],
+   "expected": "\"See how it works\" shows the oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; the run shows oven-failure rows as in A1; the build record shows any draft without a fallback rejected with \"estimate rule needs a fallback\".",
+   "failure_example": "Broken: no chance rule at all, an oven that fails on a fixed day, or an installed estimate rule with no fallback. Working: a chance rule in plain words with its fallback, and A1-style rows in the run.",
+   "representation": {
+    "view": "composite-linked-view: the World Builder's \"See how it works\" rule view beside the run page's day rows",
+    "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Rules writer task world-substrate-mechanic-authoring (llm-cost, 68 calls, median $0.0021); slice E2 (planned)."
+   ]
+  },
+  {
+   "id": "A5",
+   "criterion": "An estimate reads only the facts its rule names and never decides what a person chooses: Jev never sees the attempt's wording or a resident's reasoning, and in the port the chance only decides whether the harbourmaster notices; what he does after is his own choice.",
+   "grounded_in": [
+    "The judge plan's Decided 4 (another person's choice is a decision, not a rule); the skill roll's rule \"only the skill path is read\" (docs/plans/open_attempt.md:194); requirements R5, R9"
+   ],
+   "demonstration": [
+    "In the saved run \"sawmill blade\", open what Jev read for any day.",
+    "In the saved port run (E5), open the harbourmaster's row after Vik's hand-over.",
+    "Open what he did next."
+   ],
+   "expected": "The sawmill's Jev input holds only days since service and load. The port row reads \"noticed (chance 0.4, roll 0.17)\" (the run's own numbers), and his next act is his own move with his reason, with no chance attached.",
+   "failure_example": "Broken: Jev's input holds anything else (a resident's words, the whole world), or a chance decides what he does. Working: only the named facts, and his act is his own.",
+   "representation": {
+    "view": "composite-linked-view: the chance event opened to the exact input Jev received, and the person's next move with its reason",
+    "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Sawmill part: slice E1; port part: slice E5 after the design step Q84 (planned)."
+   ]
+  },
+  {
+   "id": "A6",
+   "criterion": "Picks among a rule's declared options and amounts from its declared values work like chance rolls: drawn by Jev's probabilities, never the most likely option every time, and never a value the rule did not declare.",
+   "grounded_in": [
+    "Decided 2 (three kinds matching Jev's three answer types); requirements R8, R9"
+   ],
+   "demonstration": [
+    "Open the saved run in which the blade's failure mode is picked and the repair time is an amount (1, 2 or 4 days).",
+    "Open a failure day's two rows.",
+    "Follow the repair counter on the days after."
+   ],
+   "expected": "\"failure mode: chipped tooth (Jev: chipped 0.6, cracked 0.3, bent 0.1; roll 0.41)\" and \"repair takes 2 days (Jev: 1 day 0.2, 2 days 0.5, 4 days 0.3; roll 0.55)\" (the run's own numbers), and the repair counter uses 2 days.",
+   "failure_example": "Broken: always the most likely option, a number of days the rule did not declare, or no probabilities shown. Working: each pick shows every option's probability and the roll, and the effect uses the drawn value.",
+   "representation": {
+    "view": "composite-linked-view: the chance event line for a pick or amount, opening to every option's probability and the roll",
+    "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Slice E3 (planned), built when a described world needs it."
+   ]
+  }
+ ]
+}
