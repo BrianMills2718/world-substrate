@@ -1194,19 +1194,23 @@
   {
    "id": "Q63",
    "short": "A non-authoritative estimate as a rule input",
-   "question": "A live Jev probe answered typed maintenance estimates without changing state (evidence/jev/maintenance-estimator-probe-v0.json:299), and Decision 005 keeps Jev available but off the critical path (docs/decisions/005-native-waltzman-delivery.md:86). May a rule cite such an estimate as an input, and under what contract?",
-   "blocks": "Any world whose rules need a bounded estimate (time to repair, a likelihood) that no installed mechanic computes.",
-   "resolves_with": "Deferred until one described world needs an estimate no mechanic computes; that counterexample earns it. The contract would then be a recorded, non-authoritative input, like the skill roll's recorded dice, never consequence authority: a learned or estimated value never becomes canonical state or consequence authority without an installed representation or transition rule, a rule that uses an estimate records the estimate and its model version as event evidence, and approximate affordance ranking never silently drops a valid action (carried from the retired Jev exploration note).",
+   "question": "Brian reopened this on 2026-11-10: \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\" (then \"i approve\" to planning it now). A live Jev probe answered typed maintenance estimates without changing state (evidence/jev/maintenance-estimator-probe-v0.json:299), and Decision 005 keeps Jev available but off the critical path (docs/decisions/005-native-waltzman-delivery.md:86). May a rule cite such an estimate as an input, and under what contract?",
+   "blocks": "The estimate-rules plan (docs/plans/estimate_rules.md) and its first slice E1; any world whose rules need a chance or amount that no installed mechanic computes.",
+   "resolves_with": "Answered by argument in docs/plans/estimate_rules.md (Decided 1-7); closes when slice E1 lands and its acceptance checks A1-A3 pass. The contract carried from the retired Jev note and kept: an estimate is a recorded, non-authoritative input, like the skill roll's recorded dice; it never becomes canonical state or consequence authority by itself, only through an installed rule that declares its question, reads, answer type, model, a required fallback and its outcomes, and turns a chance into an outcome by a recorded draw from the run seed (never a threshold); the event records the estimate, its inputs and the model version; replay reads the record and never calls Jev; approximate ranking never silently drops a valid action.",
    "owner": "agent",
    "status": "open",
    "sources": [
+    "docs/plans/estimate_rules.md:122",
     "evidence/jev/maintenance-estimator-probe-v0.json:299",
     "docs/decisions/005-native-waltzman-delivery.md:86",
-    "scripts/run_jev_estimator_probe.py"
+    "scripts/run_jev_estimator_probe.py",
+    "git show 0dcbcd6^:docs/research/jev-world-modeling-exploration-2026-09.md"
    ],
    "touches": [
     "mechanic",
-    "skill-roll"
+    "skill-roll",
+    "estimate-rule",
+    "recorded-estimate"
    ]
   },
   {
@@ -1540,6 +1544,91 @@
     "knock-on-now",
     "run-log",
     "causal-trace"
+   ]
+  },
+  {
+   "id": "Q82",
+   "short": "Does Jev's chance follow the facts",
+   "question": "In the sawmill example, does Jev's chance that the blade fails today rise with days since service, or is it flat or coarse? The existing probe's chance answers were coarse (0.6, 0.55) and its choice probabilities were 0 or 1 (evidence/jev/maintenance-estimator-probe-v0.json).",
+   "blocks": "Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.",
+   "resolves_with": "One probe: 10 Jev calls for days 0-10 at load 14 (about $0.0003, measured per-call cost $0.0000279 from llm-cost estimate --task feedback-collector.triage --model jev), run as E1's first step. If flat, E1 reports it and the rule's question or reads change before the live run.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/estimate_rules.md:405",
+    "evidence/jev/maintenance-estimator-probe-v0.json"
+   ],
+   "touches": [
+    "estimate-rule",
+    "estimator"
+   ]
+  },
+  {
+   "id": "Q83",
+   "short": "Declared reads or the whole world",
+   "question": "Should Jev see only the fields an estimate rule declares (days since service, load) or the whole world, as the plain-version rule would start from?",
+   "blocks": "The estimate block's reads field (E1), the cache key and the rule that an estimate never reads the attempt's wording.",
+   "resolves_with": "E1's side-by-side comparison on 10 cases: Jev with the declared reads, Jev with the whole world, and gpt-6-luna with the declared reads (under $0.01, computed in docs/plans/estimate_rules.md 'LLM call boundary and cost'). Declared reads stand unless the whole world is shown better.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/estimate_rules.md:385",
+    "docs/plans/open_attempt.md:194"
+   ],
+   "touches": [
+    "estimate-rule",
+    "estimator"
+   ]
+  },
+  {
+   "id": "Q84",
+   "short": "A chance that someone notices",
+   "question": "How should a chance decide whether an observation reaches a person (the harbourmaster noticing a hand-over), given that information delivery is not a field write?",
+   "blocks": "Slice E5 and the port part of A5.",
+   "resolves_with": "A short design step opening E5: an estimate on the delivery of an information item (src/world_substrate/information.py:57), recorded like any estimate; what the person does after stays their resident's choice.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/estimate_rules.md:108",
+    "src/world_substrate/information.py:57"
+   ],
+   "touches": [
+    "estimate-rule",
+    "information",
+    "resident"
+   ]
+  },
+  {
+   "id": "Q85",
+   "short": "Jev latency in worlds with many chances",
+   "question": "Jev's mean latency is 0.43 s (measured in ~/projects/data/llm_observability.db, 2026-11-10). A sawmill run asks at most 30 times (about 13 s); a world with many estimate rules could ask thousands of times. Does sequential asking fit the run-time targets?",
+   "blocks": "Worlds with many estimate rules after E1; not E1 itself.",
+   "resolves_with": "E1's measured run times; add parallel asking within one moment only if a run shows it is needed.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/estimate_rules.md:287"
+   ],
+   "touches": [
+    "estimator",
+    "run-loop"
+   ]
+  },
+  {
+   "id": "Q86",
+   "short": "Jev for the plain-words stopping point",
+   "question": "The judge plan's J5 asks the judge after a changed round whether a plain-words stopping point is reached (about $0.0016 per call, gpt-6-luna). A Jev chance question over the world state would cost about 1/50 of that. Should J5 use Jev?",
+   "blocks": "Nothing in the estimate-rules plan; an option for the judge plan's J5.",
+   "resolves_with": "The judge plan's call when J5 is built: Jev answers a probability that J5 would turn into stop or not, and Jev has not been shown to read a whole world's state well; J5 can test it on its own saved runs.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/estimate_rules.md:377",
+    "docs/plans/ai_judge.md:263"
+   ],
+   "touches": [
+    "stopping-point",
+    "estimator"
    ]
   }
  ]

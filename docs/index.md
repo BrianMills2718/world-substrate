@@ -68,11 +68,17 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
   2026-11-09; nothing built), its package
   [planning/ai-judge/planning-package.json](planning/ai-judge/planning-package.json) and
   [review page](../proposals/ai-judge/review-page/index.html).
+- [Plan: estimate rules](plans/estimate_rules.md) (draft 2026-11-10, planning approved; nothing built): rules whose
+  outcome depends on a chance Jev estimates during a run, recorded and replayed without Jev. Its package
+  [planning/estimate-rules/planning-package.json](planning/estimate-rules/planning-package.json) and
+  [review page](../proposals/estimate-rules/review-page/index.html).
 - Planning package: [planning-package.json](planning/planning-package.json),
   [open questions](planning/open-questions.json) (generated from `tools/planning/questions_src.py`),
   [checks](planning/checks.txt), [cold review](planning/cold-review.md). Per plan:
   [open-attempt cold review](planning/open-attempt/cold-review.md),
-  [declared-laws cold review](planning/declared-laws/cold-review.md).
+  [declared-laws cold review](planning/declared-laws/cold-review.md),
+  [ai-judge cold review](planning/ai-judge/cold-review.md),
+  [estimate-rules cold review](planning/estimate-rules/cold-review.md).
 - [Attempt-from-belief design page](plans/attempt-from-belief/index.html) (deployed with the pages).
 
 Finished and superseded plans and their `/goal` launchers were retired on 2026-11-09; the

@@ -135,6 +135,8 @@ Hard constraints:
 | Open attempts | S1 and S2 built; S3 not built | own-words attempts; same-moment knock-on effects; skill rolls next |
 | AI judge ([plan](../docs/plans/ai_judge.md)) | J0 built 2026-11-10; J1 to J3 and J5 next; J4 exploration only | knock-on chains of any length; an AI judge (Concordia's game master) rules only on what no rule covers, from the engine's consequence report |
 | Declared laws | S1 to S3 built; S4 under way; S5 follows the plain-version comparison (Q60) | worlds declare laws, the engine keeps them, a second model reviews the rules |
+| AI judge | draft plan, direction approved 2026-11-09; build started 2026-11-10 (J0) | the engine works out every knock-on effect and blocker; a judge rules only on gaps, its rulings become checked rules ([plan](../docs/plans/ai_judge.md)) |
+| Estimate rules | draft plan 2026-11-10; nothing built | a rule's outcome can depend on a chance Jev estimates from named facts, rolled, recorded and replayed without Jev; only slice E4 (judge-proposed estimate rules) waits for the judge's J3 ([plan](../docs/plans/estimate_rules.md)) |
 | Hardening | queued | law fingerprint with compiler version, role-bound scopes, visible discovery overflow, recorded mechanic exceptions, locking |
 | Persistence and second-domain proof | later | saved user worlds beyond share links; proof beyond Waltzman |
 
@@ -143,6 +145,7 @@ Hard constraints:
 1. **Declared laws S4** ([plan](../docs/plans/declared_laws.md)): let declared laws and the rules review retire the hand-written build checks. Done so far: free replay of every saved world (`scripts/check_saved_worlds.py`), fixes from the S4 live builds (one-way moves kept #309, places and owners shown to the reviewer #310, fields only one thing can fill #312, people worlds get laws and review #314, every kept people try reviewed #317, trades named from one side #319, the round told to each person #320 and #323). Not yet done: retiring any hand-written check (Q45).
 2. **Declared laws S5**: live builds of four varied descriptions in parallel. Follows the plain-version comparison (Q60, settled 2026-11-09 by Brian's plain-version rule); one Waltzman rebuild ran on 2026-11-04 on his yes for that build (`evidence/declared-laws/s4-waltzman-3/`).
 3. **Open attempts S3** ([plan](../docs/plans/open_attempt.md)): seeded, recorded skill rolls on action mechanics, with the roll's skill path in derived reads (Q33, Q40).
+4. **Estimate rules E1** ([plan](../docs/plans/estimate_rules.md)): chance rolls on Jev's estimate, sharing the skill roll's run seed (Q33); whichever of S3 and E1 lands first builds the seed. Brian approved planning it on 2026-11-10.
 
 ### Hardening queue
 

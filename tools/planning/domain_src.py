@@ -84,6 +84,10 @@ NODES = [
  ('midrun-setting', 'Mid-run rulings setting', 'Theory', "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule).", 'docs/plans/ai_judge.md:155', '—'),
  ('run-stop', 'Run stop setting', 'Substrate', "A per-world setting saved with the world (run_stop): stop once nothing is changing after N quiet rounds or never for being quiet, plus optional limits, a number of rounds (max_rounds) and this run's recorded AI spending (max_spend_usd); checked after each round, the run stops at whichever fires first and records why (Q12; Brian, 2026-11-10).", 'openspec/specs/world-builder-page/spec.md', 'scripts/run_stop.py:65'),
  ('stopping-point', 'Plain-words stopping point', 'Theory', "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting.", 'docs/plans/ai_judge.md:263', '—'),
+ ('estimate-rule', 'Estimate rule', 'Theory', "Plan estimate-rules E1 (planned, not implemented): a process or move whose outcome depends on a chance (later a pick or an amount) that Jev estimates from fields the rule declares; it declares a fixed question, its reads, the answer type, the model, a required fallback (refuse or a declared value) and the effects for each result.", 'docs/plans/estimate_rules.md:143', '—'),
+ ('estimator', 'Estimator', 'Theory', "Plan estimate-rules E1 (planned, not implemented): what the engine asks for an estimate; live it is llm_client.call_decisions on Jev (one retry, then the rule's fallback), in a replay it reads the recorded estimates and stops with 'no recorded estimate' rather than call Jev; one call per distinct question and inputs per run.", 'docs/plans/estimate_rules.md:169', '—'),
+ ('recorded-estimate', 'Recorded estimate', 'Theory', "Plan estimate-rules E1 (planned, not implemented): on the event, the question, the declared inputs and their values, Jev's answer, the model version returned, the trace id, the cost and whether it was reused from the run's cache; evidence, never world state (Q63).", 'docs/plans/estimate_rules.md:122', '—'),
+ ('recorded-draw', 'Recorded draw', 'Theory', "Plans estimate-rules E1 and open-attempt S3 (planned, not implemented): a number drawn from hash(run seed, event id, rule id) and recorded on the event; an estimate rule's chance becomes an outcome only through it, and a replay reads it.", 'docs/plans/estimate_rules.md:165', '—'),
 ]
 EDGES = [
  ('engine', 'world', 'changes'),
@@ -210,4 +214,14 @@ EDGES = [
  ('credential-holder', 'information', 'can change by'),
  ('norm', 'world-law', 'is not a'),
  ('norm', 'observation', 'has consequences through'),
+ ('estimate-rule', 'process', 'is a kind of'),
+ ('estimate-rule', 'estimator', 'asks'),
+ ('estimator', 'recorded-estimate', 'writes'),
+ ('estimate-rule', 'recorded-draw', 'decides by'),
+ ('recorded-draw', 'run-seed', 'comes from'),
+ ('recorded-estimate', 'causal-trace', 'recorded in'),
+ ('recorded-draw', 'causal-trace', 'recorded in'),
+ ('estimate-rule', 'knock-on-now', 'sets off'),
+ ('skill-roll', 'recorded-draw', 'also uses'),
+ ('estimate-rule', 'resident', 'never decides for'),
 ]

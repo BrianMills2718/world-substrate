@@ -173,11 +173,15 @@ would settle it, its owner and sources. The ones that shape the next work:
    The same setting now also takes "Stop after N rounds" and "Stop when this run has spent $X" (the cost llm_client
    recorded for the run's calls, checked before each round), each optional; the run stops at whichever fires first.
    The plain-words stopping point waits for the judge ([AI judge plan](../plans/ai_judge.md), R11, A8).
-3. **Q14:** the Decision 008 harness exists but the live service does not use it.
-4. **Q34:** declared read scopes are not enforced.
-5. **Q45, Q48, Q49:** retiring hand-written build checks once declared laws cover them; laws that are
+3. **Q63 (agent, reopened 2026-11-10):** Brian: "i can see there being a way where we have certain types of
+   rules/contstatins that progagte base don jev". Answered by the [estimate rules plan](../plans/estimate_rules.md):
+   a rule asks Jev a fixed question about named facts, the engine rolls against the answer, both are recorded, and
+   replay never calls Jev; its first slice's own steps settle Q82-Q85.
+4. **Q14:** the Decision 008 harness exists but the live service does not use it.
+5. **Q34:** declared read scopes are not enforced.
+6. **Q45, Q48, Q49:** retiring hand-written build checks once declared laws cover them; laws that are
    wrong for their world; builds that declare no payment law.
-6. Hardening carried from the architecture review: law fingerprints without a compiler version,
+7. Hardening carried from the architecture review: law fingerprints without a compiler version,
    write-scope placeholders not bound to one action role, the 256-move discovery cap truncating silently,
    and mechanic exceptions not recorded as refusals ([arc42 section 11](../architecture/arc42.md#11-risks-and-technical-debt)).
 
@@ -211,7 +215,7 @@ state.
 - <https://brianmills.dev/world-builder/build/>: the advanced form editor.
 - <https://brianmills.dev/waltzman/>: the donor-backed Waltzman demo, kept as fallback.
 - <https://brianmills.dev/world-substrate-visualization/>: the 2026-09 synthetic prototype, design evidence only.
-- Review pages for the planning packages: `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt,declared-laws}/review-page/`.
+- Review pages for the planning packages: `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt,declared-laws,ai-judge,estimate-rules}/review-page/`.
 - `evidence/renders/waltzman-demo-v0.html`, `evidence/renders/kitchen-spatial-replay-v1.html` and
   `evidence/renders/greenhouse-zero-review-v0.html`: retained reference replays.
 

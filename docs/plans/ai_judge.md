@@ -281,6 +281,8 @@ chosen (inferred by agent): ask only after a round in which a field people's mov
 (`scripts/run_stop.py` already fingerprints those fields each round), since an unchanged world cannot newly reach a
 stopping point; in the Waltzman run that skips the quiet rounds and costs less. A stopping point that depends on something no move changes (a clock, elapsed rounds) would never be asked under that trigger, so J5 also asks once every 6 quiet rounds as a backstop; the round limit remains the hard stop.
 
+A cheaper option for this check, a Jev chance question at about 1/50 of the cost, is recorded in [the estimate rules plan](estimate_rules.md) (Q86); the choice stays with J5.
+
 ## Acceptance checks
 
 Each is judged on the run page, from the full trace of the run it names, not its outcome alone. The steps and

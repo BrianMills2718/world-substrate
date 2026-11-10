@@ -1,5 +1,6 @@
 """Build the planning package model files from domain_src.py and questions_src.py: docs/model/domain.graph.json,
-docs/model/DOMAIN.md, docs/planning/open-questions.json and docs/model/open-questions.graph.json.
+docs/model/DOMAIN.md, docs/planning/open-questions.json and docs/model/open-questions.graph.json, then rebuild every
+review page from them (the repository package page and each plan page), so no page is left stale.
 
   python3 tools/planning/build.py
 """
@@ -49,3 +50,9 @@ lines += ["## Where the sources disagree", "",
  ""]
 open(R + 'docs/model/DOMAIN.md', 'w').write("\n".join(lines))
 print("nodes", len(g['nodes']), "edges", len(g['edges']), "questions", len(Q), "open", sum(q['status']=='open' for q in Q), "map nodes", len(qm['nodes']))
+# review pages: each builder reads the files written above; run each in its own process (they set module globals)
+import subprocess
+HERE = R + 'tools/planning/'
+for page in ('build_review_page.py', 'build_open_attempt_page.py', 'build_declared_laws_page.py',
+             'build_ai_judge_page.py', 'build_estimate_rules_page.py'):
+    subprocess.run([sys.executable, HERE + page], check=True)
