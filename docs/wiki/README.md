@@ -64,6 +64,7 @@ world needs them.
 | What a world is made of, built versus theory | [Domain model](../model/DOMAIN.md), [metamodel](../model/METAMODEL.md) |
 | What the project does not yet know | [Open questions](../planning/open-questions.json), [planning package](../planning/planning-package.json) |
 | Open attempts, knock-on effects, skill rolls | [Open-attempt plan](../plans/open_attempt.md): S1 and S2 built, S3 not built |
+| An AI judge for what no rule covers; chains of any length | [AI judge plan](../plans/ai_judge.md): J0 built 2026-11-10 (no knock-on cap, blocked steps shown); J1 to J3 and J5 next; J4 exploration only |
 | Worlds declare their own laws | [Declared-laws plan](../plans/declared_laws.md): S1 to S3 built, S4 under way, S5 follows the plain-version comparison (Q60) |
 | Waltzman lineage against the general simulator vision | [Lineage review, 2026-11-07](../audits/waltzman-lineage-review-2026-11-07.md) (recommendations not adopted) |
 | Prior art for attempts, affordances, knock-on effects | [Flexible simulator prior art](../research/flexible-simulator-prior-art-2026-10.md) |
@@ -88,7 +89,8 @@ The full glossary is [arc42 section 12](../architecture/arc42.md#12-glossary). T
   left unmatched; an unmatched attempt changes nothing except a request to another person, which is
   passed on to that person (#326).
 - **Same-moment knock-on effect:** a `timing: immediately` process that reacts inside the same commit, in
-  waves of at most 32 reactions ([Decision 009](../decisions/009-same-moment-knock-on-effects.md)).
+  waves; each (process, entity) pair fires once per moment and there is no other cap since the AI judge plan's J0
+  (2026-11-10; runs recorded before it replay under 32) ([Decision 009](../decisions/009-same-moment-knock-on-effects.md)).
 - **Task under way:** a move that only starts a duration-bearing activity; later rounds' processes finish
   it or stop it part-way, from what is true then (`scripts/attempts.py`; read in
   [c1r24](../../evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md)).

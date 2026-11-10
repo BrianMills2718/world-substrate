@@ -1020,9 +1020,14 @@ class Engine:
                 ids = sorted({b["it"] for b in bindings})
                 fired.update((process.rule_id, i) for i in ids)
                 step_parents: dict[str, set[str]] = {}
+                step_via: dict[str, set[str]] = {}
                 for b in bindings:
-                    step_parents.setdefault(b["it"], set()).add(
-                        _moment_parent(moment, [last_cause.get(e) for e in b.values()]))
+                    parent = _moment_parent(moment, [last_cause.get(e) for e in b.values()])
+                    step_parents.setdefault(b["it"], set()).add(parent)
+                    # The things this step reads that the parent event changed: the run page opens a step to the
+                    # parent's step on that thing.
+                    step_via.setdefault(b["it"], set()).update(
+                        e for e in b.values() if isinstance(e, str) and last_cause.get(e) == parent)
                 parents = sorted(set().union(*step_parents.values()))
                 if reuse_view:
                     candidate, before, reuse_view = view, view_before, False
@@ -1043,7 +1048,8 @@ class Engine:
                 # Marks the event as a knock-on effect and which wave of its moment it ran in.
                 event["reaction_wave"] = wave_no
                 # One step per entity the reaction ran on, each naming the event of this moment that led to it.
-                event["reaction_steps"] = [{"it": i, "caused_by": sorted(step_parents[i])} for i in ids]
+                event["reaction_steps"] = [
+                    {"it": i, "caused_by": sorted(step_parents[i]), "via": sorted(step_via[i])} for i in ids]
                 reactions.append(event)
                 moment.append(event["event_id"])
                 if self.reaction_limit is not None and len(reactions) > self.reaction_limit:

@@ -18,7 +18,7 @@ A rich world comes from **shared persistent state, semantic grounding, and insta
 
 Where the code stands against that reason (2026-11-09):
 
-- **Propagation exists.** A change that follows at once runs as a knock-on process, in waves inside the same moment ([Decision 009](../decisions/009-same-moment-knock-on-effects.md)). The cap is 32 reactions per moment (`REACTION_LIMIT`, `src/world_substrate/engine.py`), and a moment that passes it is refused whole. Slower effects run once per round.
+- **Propagation exists.** A change that follows at once runs as a knock-on process, in waves inside the same moment ([Decision 009](../decisions/009-same-moment-knock-on-effects.md)). Each (process, entity) pair fires at most once per moment, so every chain ends; new runs have no other cap, every step names the step that caused it, and a step a failed check stops is recorded with its blocker (AI judge plan J0, 2026-11-10). Each run records the limit it ran under and replays under it; runs recorded before J0 ran under 32 (`LEGACY_REACTION_LIMIT`, `src/world_substrate/engine.py`). Slower effects run once per round.
 - **Blockers reach only the person who tried.** A refused move tells that person which check failed. It does not name the earlier change behind the failure.
 - **There is no AI judge.** The Concordia game master is kept off (`scripts/concordia_residents.py`, module docstring). An attempt outside the rulebook changes nothing, apart from a request to another person, which is passed on to that person.
 
@@ -216,7 +216,7 @@ The diagram source is [model.c4](model.c4) (LikeC4); its arrows follow each modu
 | Block | Code | Responsibility | Spec |
 | --- | --- | --- | --- |
 | Canonical model | `src/world_substrate/model.py` | `World`, entities with an open typed component registry, material hash and revision; `owner_ref` | [transition-engine](../../openspec/specs/transition-engine/spec.md) |
-| Engine | `src/world_substrate/engine.py`, `rules.py` | discover, apply, advance; write-scope enforcement; same-moment settling (`_settle`, `REACTION_LIMIT` 32); causal events | transition-engine |
+| Engine | `src/world_substrate/engine.py`, `rules.py` | discover, apply, advance; write-scope enforcement; same-moment settling (`_settle`, no cap; recorded limit replayed, 32 for older runs); causal events | transition-engine |
 | Open attempts | `src/world_substrate/attempt.py` | a person's own words read into one typed move, or an unmatched attempt that changes nothing | transition-engine; ODD 11.3 |
 | Declared laws | `src/world_substrate/laws.py` | a world's own laws checked at every commit; a breaching step is refused | world-authoring-bundle |
 | Rule compiler | `src/world_substrate/action_authoring.py` | compile a causal model into rules and processes with derived authority; discovery cap 256 | [causal-model-authoring](../../openspec/specs/causal-model-authoring/spec.md) |
@@ -443,7 +443,7 @@ Each item has an entry in [the open questions ledger](../planning/open-questions
 | Causal bearer | the represented actor, process, institution, disposition or input whose presence changes possible transitions |
 | Semantic binding | a profile over a pinned Linguistic Core sense and roles, plus specialization, causal class, bearer, mechanic id and interpretation limits |
 | Open attempt | a person's own words for what they try, read into one typed move or kept as an unmatched attempt that changes nothing |
-| Same-moment knock-on | an `immediately` process that reacts inside the same moment, up to 32 reactions |
+| Same-moment knock-on | an `immediately` process that reacts inside the same moment, each (process, entity) pair at most once |
 | Task under way | a move that starts a duration-bearing activity that later rounds' processes advance and end |
 | Declared law | a world's own law, checked at every commit; a breaching step is refused and names the law |
 | `owner_ref` | custody, not title |

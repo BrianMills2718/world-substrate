@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from typing import Any
 
-LINK_SELECTOR = {"categories": ["link"], "components": ["link"]}
+LINK_SELECTOR = {"categories": [], "components": ["link"]}
 
 
 def _lit(value: Any) -> dict[str, Any]:
@@ -77,7 +77,8 @@ def _falls_after_prev(process_id: str = "falls-after-the-one-before", selector: 
 
 
 def _link(entity_id: str, prev: str, categories: list[str] | None = None) -> dict[str, Any]:
-    return {"id": entity_id, "label": entity_id, "categories": categories or ["chain", "link"], "location": "yard",
+    # Kept short (no place, one category): the 5,000-link world is sent whole to the service's /run.
+    return {"id": entity_id, "label": entity_id, "categories": categories or ["chain"],
             "components": {"link": {"fallen": False, "prev": prev}}}
 
 
@@ -120,7 +121,7 @@ def loop(size: int = 40) -> tuple[dict[str, Any], dict[str, Any]]:
     # The lever trips d1 directly: d1 counts as the lever here.
     lever = rules["mechanics"][0]
     lever["participants"] = {"thing": {"categories": ["first"], "components": ["link"]}}
-    bundle["entities"][3]["categories"] = ["chain", "link", "first"]
+    bundle["entities"][3]["categories"] = ["chain", "first"]
     return bundle, rules
 
 
@@ -159,4 +160,29 @@ def truck_without_fuel(length: int = 40) -> tuple[dict[str, Any], dict[str, Any]
     return bundle, rules
 
 
-WORLDS = {"fifty-chains": fifty_chains, "loop": loop, "truck-without-fuel": truck_without_fuel}
+def wind_chain(length: int = 40) -> tuple[dict[str, Any], dict[str, Any]]:
+    """A row of dominoes by a window: each round the wind topples the first if it stands, and each falls once the
+    one before it has fallen. Made before J0, a run of it was refused whole at the old limit of 32 (A7)."""
+    bundle = _base("wind-chain", "Wind chain",
+                   f"A row of {length} dominoes stands by a window. Each round the wind knocks over the first one if "
+                   "it is standing, and each domino falls once the one before it has fallen. Sam can pull a lever.")
+    prev = "lever"
+    for n in range(1, length + 1):
+        bundle["entities"].append(_link(f"w{n}", prev))
+        prev = f"w{n}"
+    bundle["entities"][3]["categories"] = ["window"]
+    rules = _rules([
+        {"process_id": "wind-topples-the-first", "rationale": "The wind knocks over the domino by the window.",
+         "selector": {"categories": ["window"], "components": ["link"]}, "timing": "each_round",
+         "participants": {},
+         "checks": [{"label": "it is still standing",
+                     "left": {"participant": {"name": "it", "path": "components.link.fallen"}}, "op": "eq",
+                     "right": _lit(False)}],
+         "effects": [{"participant": "it", "path": "components.link.fallen", "op": "set", "value": _lit(True)}]},
+        _falls_after_prev(),
+    ])
+    return bundle, rules
+
+
+WORLDS = {"fifty-chains": fifty_chains, "loop": loop, "truck-without-fuel": truck_without_fuel,
+          "wind-chain": wind_chain}

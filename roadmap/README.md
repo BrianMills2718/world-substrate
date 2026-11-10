@@ -3,7 +3,7 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-11-09
+reviewed_through: 2026-11-10
 ---
 
 # World Substrate living roadmap
@@ -69,7 +69,7 @@ State, not narrative. Code paths are the evidence; the [arc42 building blocks](.
 - A world's declared laws are checked at every commit; a step that breaks one is refused and names the law (`src/world_substrate/laws.py`). People worlds declare laws too (#314).
 - An independent rules review by a model of another family (chosen as gemini-3.1-pro-preview in `evidence/declared-laws/s3-review-choice/`; the route is `openrouter/google/gemini-4-argon` since #341, `scripts/review_rules.py:18`) runs on every kept try; an unreviewed try ranks below every reviewed one.
 - Open attempts (S1): an interpreter reads a resident's words into one typed move or leaves it unmatched; an unmatched attempt changes nothing except a request to another person, which is delivered to that person (#326).
-- Same-moment knock-on effects (S2): `timing: immediately` processes settle in waves inside the one commit, at most 32 reactions (`REACTION_LIMIT`, `src/world_substrate/engine.py`); a moment over the cap is refused whole.
+- Same-moment knock-on effects (S2): `timing: immediately` processes settle in waves inside the one commit. Since the AI judge plan's J0 (2026-11-10) there is no cap: each (process, entity) pair fires once per moment, so 50 chains of 100 links finish in one moment; every step names its cause, a step a failed check stops is shown with its blocker, and runs recorded before J0 replay under their old cap of 32.
 - Residents run on Concordia since 2026-10-16 (`scripts/concordia_residents.py`); the Concordia game master is off, so there is no AI judge.
 - The Decision 008 agent harness (`scripts/world_harness.py`) exists but the live service does not call it (Q14).
 - The people-world path imports code from `spikes/any-scenario-2026-10/` at run time (`scripts/people_world.py:26,76-77`).
@@ -133,6 +133,7 @@ Hard constraints:
 | Natural-language World Builder | live since 2026-10-05 | one box, Create simulation, live play, share links |
 | Concordia residents | live since 2026-10-16 | AI residents through an established framework |
 | Open attempts | S1 and S2 built; S3 not built | own-words attempts; same-moment knock-on effects; skill rolls next |
+| AI judge ([plan](../docs/plans/ai_judge.md)) | J0 built 2026-11-10; J1 to J3 and J5 next; J4 exploration only | knock-on chains of any length; an AI judge (Concordia's game master) rules only on what no rule covers, from the engine's consequence report |
 | Declared laws | S1 to S3 built; S4 under way; S5 follows the plain-version comparison (Q60) | worlds declare laws, the engine keeps them, a second model reviews the rules |
 | Hardening | queued | law fingerprint with compiler version, role-bound scopes, visible discovery overflow, recorded mechanic exceptions, locking |
 | Persistence and second-domain proof | later | saved user worlds beyond share links; proof beyond Waltzman |
