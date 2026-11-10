@@ -24,7 +24,7 @@
     "Find a later day whose facts match an earlier day and open it.",
     "Open a day on which Mara serviced the blade."
    ],
-   "expected": "A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded; Jev is the estimating model, the roll the run's own random number) and opens to the question, the two facts with their values, the model version and the trace id (a link to the full recorded call); the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.",
+   "expected": "A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded; Jev is the estimating model, the roll the run's own random number) and opens to the question, the two facts with their values, the model version (which dated release of Jev answered) and the trace id (a link to the full recorded call); the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.",
    "failure_example": "Broken: a failure with no roll shown, a failure whenever the chance is above some value, facts in what Jev read that the rule did not name, Jev asked twice for the same facts, or a chance attached to Mara's decision. Working: every chance event shows chance, source, roll and outcome, and knock-on steps cite it.",
    "representation": {
     "view": "composite-linked-view: the run page's day rows, one line per chance event (chance, source, roll, outcome), opening to the question, the facts read, the model version and trace id, and the knock-on steps it caused",
@@ -44,9 +44,9 @@
     "Q63 contract (a recorded, non-authoritative input like the skill roll's recorded dice); goal boundary \"saved worlds still replay unchanged\"; requirements R3, R9"
    ],
    "demonstration": [
-    "Press Replay on the saved run \"sawmill blade\".",
+    "Press Replay on the saved run \"sawmill blade\" (a replay rebuilds the run from its saved record).",
     "Compare its days and outcomes with the original run and read the replay's summary line.",
-    "Open the saved run \"sawmill blade, estimate removed\" (one recorded estimate deleted) and replay it."
+    "Open the saved run \"sawmill blade, estimate removed\" (a copy with one of Jev's recorded answers deleted) and replay it."
    ],
    "expected": "The replay shows the same 30 days and outcomes and \"replayed from the record: 0 Jev calls\"; the damaged copy stops at the day with the missing estimate and says \"no recorded estimate for this event\".",
    "failure_example": "Broken: any day differs, any Jev call is made during replay, or the damaged copy asks Jev or carries on silently. Working: same days, 0 Jev calls, and a named stop for the missing record.",
@@ -68,7 +68,7 @@
     "arc42 section 8 (docs/architecture/arc42.md:292): a missing authority refuses visibly unless the world profile defines the fallback; measured 6.6% Jev failure rate; requirements R4, R9"
    ],
    "demonstration": [
-    "Open the saved run \"sawmill blade, Jev down\" (estimator forced to fail).",
+    "Open the saved run \"sawmill blade, Jev down\" (a test run made with Jev unreachable, so every call fails).",
     "Open any day's chance event.",
     "Open the saved run of the same world with the rule's fallback set to refuse."
    ],
@@ -111,7 +111,7 @@
   },
   {
    "id": "A5",
-   "criterion": "An estimate reads only the facts its rule names and never decides what a person chooses: Jev never sees the attempt's wording or a resident's reasoning, and in the port the chance only decides whether the harbourmaster notices; what he does after is his own choice.",
+   "criterion": "An estimate reads only the facts its rule names and never decides what a person chooses: Jev never sees the attempt's wording (what a person said they try) or a resident's reasoning (the AI person's own thinking), and in the port the chance only decides whether the harbourmaster notices; what he does after is his own choice.",
    "grounded_in": [
     "The judge plan's Decided 4 (another person's choice is a decision, not a rule); the skill roll's rule \"only the skill path is read\" (docs/plans/open_attempt.md:194); requirements R5, R9"
    ],

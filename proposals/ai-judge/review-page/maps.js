@@ -1356,12 +1356,6 @@ window.MAPS = {
     "explain": "Blocks: when the harness replaces the fixed build calls and the rules retry (Q1) on the live path."
    },
    {
-    "id": "Q15",
-    "label": "Q15: Repository format files not yet added",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: whether the repo-format check passes."
-   },
-   {
     "id": "Q26",
     "label": "Q26: Run page hides own-words attempts",
     "kind": "AgentQuestion",
@@ -1600,6 +1594,12 @@ window.MAPS = {
     "label": "Q86: Jev for the plain-words stopping point",
     "kind": "AgentQuestion",
     "explain": "Blocks: Nothing in the estimate-rules plan; an option for the judge plan's J5.."
+   },
+   {
+    "id": "Q88",
+    "label": "Q88: Do declared chances match Jev's",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.."
    },
    {
     "id": "affordance",
@@ -2541,6 +2541,24 @@ window.MAPS = {
     "id": "Q86-estimator",
     "source": "Q86",
     "target": "estimator",
+    "label": "bears on"
+   },
+   {
+    "id": "Q88-estimate-rule",
+    "source": "Q88",
+    "target": "estimate-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q88-estimator",
+    "source": "Q88",
+    "target": "estimator",
+    "label": "bears on"
+   },
+   {
+    "id": "Q88-gen-rules",
+    "source": "Q88",
+    "target": "gen-rules",
     "label": "bears on"
    }
   ],
