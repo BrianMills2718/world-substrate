@@ -16,6 +16,10 @@ An attempt no installed rule covers commits no event, and knock-on effects start
   full chain: what a judge reads (plan, "LLM call boundary and cost": a 5,000-step chain is about 500,000 tokens).
 
 Nothing here calls a model or changes the real world: pass 1 reads it, pass 2 runs on a copy.
+
+Implements: ai-judge/pass-1-reports-what-installed-rules-compute-for-the-people-an-attempt-involves
+Implements: ai-judge/pass-2-test-runs-a-proposed-rule-on-a-copy-of-the-world
+Implements: ai-judge/a-proposed-rule-goes-through-the-world-builder-s-rules-check
 """
 from __future__ import annotations
 
