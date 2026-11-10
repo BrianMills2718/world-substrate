@@ -20,6 +20,11 @@ Source: Brian, 2026-10-05: "it should open on a landing page with a tutorial."
 
 Current state: since 2026-10-15 the landing page is the one-box page of the requirement "One box and one Create simulation button"; the step tutorial was removed then (feedback log, 2026-10-15).
 
+#### Scenario: A visitor opens the World Builder
+
+- **WHEN** a visitor opens `/world-builder/`
+- **THEN** the landing page is shown, not the form editor
+
 ### Requirement: Natural-language building
 
 Building is done through natural language; the form editor is an advanced route.
@@ -29,6 +34,12 @@ Where it is enforced: `/generate-world`; landing page links `build/` as "Advance
 Router heuristic: `describe-first-creation-surface`.
 
 Source: Brian, 2026-10-05: "the build thing i would have no idea how to do. building should be done through natural language"
+
+#### Scenario: A world is built from a description
+
+- **WHEN** a visitor types what should happen and presses Create simulation
+- **THEN** the world is built from that description through `/generate-world`
+- **AND** the form editor is reached only through the Advanced editor link
 
 ### Requirement: A failed build says what to try
 
@@ -40,6 +51,11 @@ Router heuristic: existing: `every-label-explains-itself`.
 
 Source: Cold first-visit review, 2026-10-05
 
+#### Scenario: A build fails
+
+- **WHEN** a build fails
+- **THEN** the page says in plain words what went wrong and what to try next
+
 ### Requirement: Unrepresentable parts are listed
 
 Parts of a description the simulator cannot represent are listed, not dropped silently.
@@ -49,6 +65,12 @@ Where it is enforced: `not_modeled` from `scripts/generate_world_bundle.py`.
 Router heuristic: none (project-specific).
 
 Source: Cold first-visit review, 2026-10-05 ("before noon" disappeared)
+
+#### Scenario: Part of a description cannot be represented
+
+- **WHEN** a description contains something the simulator cannot represent (for example "before noon")
+- **THEN** that part is listed as not modelled
+- **AND** it is not dropped silently
 
 ### Requirement: Refusals are shown per person per round
 
@@ -60,6 +82,12 @@ Router heuristic: existing: `density-budget`, `every-mark-opens-its-subject`.
 
 Source: Cold first-visit review, 2026-10-05 (headline promised refusals; none visible); 39 squares judged noisy
 
+#### Scenario: The rules refuse a move
+
+- **WHEN** the rules refuse a person's move in a run
+- **THEN** the run shows the refusal and its reason
+- **AND** refusals are grouped one square per person per round
+
 ### Requirement: Rule checks read as plain English
 
 Rule checks read as plain English with the things' names, never jargon.
@@ -70,6 +98,12 @@ Router heuristic: existing: `every-label-explains-itself`.
 
 Source: Cold first-visit review, 2026-10-05 ("ownership context", "Actor is available")
 
+#### Scenario: A rule check is shown
+
+- **WHEN** the page shows a rule check
+- **THEN** it reads as plain English with the things' names
+- **AND** it uses no internal jargon such as "ownership context"
+
 ### Requirement: Surprise world and clarifying dialogue
 
 Offer "I'm feeling lucky" (one click to a surprise world, built and run) and a dialogue where the AI helps flesh out and clarify the idea.
@@ -79,6 +113,13 @@ Where it is enforced: `/surprise`, `/clarify` (`scripts/world_dialogue.py`); lan
 Router heuristic: `describe-first-creation-surface` (extend).
 
 Source: Brian, 2026-10-05: "there should be an \"im feeling lucky\" option as well as a dialogue option where the ai helps flesh out and clarify"
+
+#### Scenario: A visitor wants help with an idea
+
+- **WHEN** a visitor chooses I'm feeling lucky
+- **THEN** one click builds and runs a surprise world
+- **WHEN** a visitor chooses the dialogue
+- **THEN** the AI asks questions that flesh out and clarify the idea before building
 
 ### Requirement: Worlds are continuous, not only tasks
 
@@ -92,6 +133,12 @@ Source: Brian, 2026-10-05: "it is stopping in the world i built at least in 4 tu
 
 Current state: ongoing and open were merged into one choice, Keeps running, on 2026-10-06, and the world kind sits behind Options since 2026-10-15; Keeps running is the default (feedback log, 2026-10-06 and 2026-10-15).
 
+#### Scenario: A visitor picks the kind of world
+
+- **WHEN** a visitor opens Options
+- **THEN** they can choose a task to finish or a world that keeps running
+- **AND** a world that keeps running can be continued with Keep going rather than ending after a few rounds
+
 ### Requirement: Owner budget override
 
 The owner can always override the budget with a password.
@@ -101,6 +148,11 @@ Where it is enforced: `X-World-Builder-Owner` + `WORLD_BUILDER_OWNER_PASSWORD`; 
 Router heuristic: none (project-specific).
 
 Source: Brian, 2026-10-05: "i always want to be able to put in a password to override the budget"
+
+#### Scenario: The owner overrides the budget
+
+- **WHEN** the daily budget is spent and the owner gives the owner password
+- **THEN** the request runs on the separate owner allowance
 
 ### Requirement: Every control has a tooltip
 
@@ -112,6 +164,12 @@ Router heuristic: existing, was broken here: `every-label-explains-itself`.
 
 Source: Brian, 2026-10-06: "we should always have tool tips. i dont know the difference between build my world, and describe my world"
 
+#### Scenario: A visitor points at a control
+
+- **WHEN** a visitor hovers over, or long-presses, any button, link, text box, choice card or runtime chip
+- **THEN** a tooltip explains it
+- **AND** choices that look alike say plainly how they differ
+
 ### Requirement: Secondary pages link home
 
 Every secondary page links back to the landing page.
@@ -121,6 +179,11 @@ Where it is enforced: home links in Play and the advanced editor.
 Router heuristic: existing: `navigation-holds-only-live-views`.
 
 Source: Cold first-visit review, 2026-10-05
+
+#### Scenario: A visitor is on a secondary page
+
+- **WHEN** a visitor is on Play or the advanced editor
+- **THEN** a link takes them back to the landing page
 
 ### Requirement: Never red against green
 
@@ -132,6 +195,12 @@ Router heuristic: existing.
 
 Source: Brian's standing preference (red-green colorblind)
 
+#### Scenario: The page shows allowed and refused
+
+- **WHEN** the page marks something allowed or refused
+- **THEN** allowed is solid blue and refused is orange dashed with a word
+- **AND** red is never set against green
+
 ### Requirement: One box and one Create simulation button
 
 The landing page is one box and one Create simulation button; pressing it is the approval and the run starts. Everything else (world kind, AI moves, the dialogue, I'm feeling lucky, example runs, the editor, owner access) sits behind Options or More.
@@ -141,6 +210,13 @@ Where it is enforced: `scripts/world_builder_home.html`; `tests/test_world_build
 Router heuristic: existing: `one-primary-action` (UI UX Pro Max, Impeccable distill).
 
 Source: Brian, 2026-10-15: "it should just basically be a screen to type in what you want and then i button to create simulation"; "i approve" (run without a review stop)
+
+#### Scenario: A visitor lands on the page
+
+- **WHEN** a visitor lands on the page
+- **THEN** they see one box and one Create simulation button
+- **AND** pressing it starts the build and run with no further approval
+- **AND** everything else sits behind Options or More
 
 ### Requirement: A run stops once nothing is changing
 
