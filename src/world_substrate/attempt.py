@@ -44,7 +44,7 @@ def interpreter_schema(signatures: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["kind", "fields", "nearest_kind", "asks", "why"],
+        "required": ["kind", "fields", "nearest_kind", "asks", "names", "why"],
         "properties": {
             "kind": {"type": "string", "enum": kinds + [WAIT_KIND, NONE],
                      "description": "The action kind this attempt is, 'wait' for doing nothing, or 'none' if no kind fits."},
@@ -66,6 +66,9 @@ def interpreter_schema(signatures: list[dict[str, Any]]) -> dict[str, Any]:
                              "description": "When kind is 'none', the closest kind; otherwise the chosen kind."},
             "asks": {"type": "string", "description": "When the person asks, tells or orders someone else to do "
                      "something rather than doing it themself, the entity id of the one asked; otherwise 'none'."},
+            "names": {"type": "array", "items": {"type": "string"},
+                      "description": "The entity id of every person or thing in the world the attempt's words name, "
+                      "the person themself left out; empty if it names none."},
             "why": {"type": "string", "description": "One sentence on which words decided the kind."},
         },
     }
@@ -94,16 +97,26 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
     """Check the model's reading against the world's kinds and entities.
 
     Returns {"kind", "fields", "quoted_spans", "nearest_kind", "why"} for a matched move, {"kind": "wait", ...} for a
-    wait, or {"unmatched": True, "nearest_kind", "why"} when no kind fits or the reading does not fit the world (an
-    unknown entity, a missing field, words not in the attempt). An unmatched reading also carries "asks", the entity
-    the attempt asks to act, when the reader named one that is in the world and is not the speaker. Never says whether
-    the move will work.
+    wait, or {"unmatched": True, "nearest_kind", "why", "names"} when no kind fits or the reading does not fit the
+    world (an unknown entity, a missing field, words not in the attempt). An unmatched reading also carries "asks",
+    the entity the attempt asks to act, when the reader named one that is in the world and is not the speaker, and
+    "names", every entity in the world its words name other than the speaker (the consequence report's pass 1 reads
+    them). Never says whether the move will work.
     """
     reading = _read(value, attempt, signatures, entity_ids, actor)
+    if not reading.get("unmatched"):
+        return reading
     asks = str(value.get("asks") or NONE) if isinstance(value, dict) else NONE
-    if reading.get("unmatched") and asks in entity_ids and asks != actor:
-        return {**reading, "asks": asks}
-    return reading
+    asks = asks if asks in entity_ids and asks != actor else None
+    # Who and what the words name, for the consequence report's pass 1 (ai-judge plan J1): only ids in the world,
+    # never the speaker, each once; the one asked is always among them. A reply recorded before `names` existed
+    # names only the one asked.
+    raw = value.get("names") if isinstance(value, dict) and isinstance(value.get("names"), list) else []
+    names: list[str] = []
+    for eid in [asks] + [str(n) for n in raw]:
+        if eid and eid in entity_ids and eid != actor and eid not in names:
+            names.append(eid)
+    return {**reading, **({"asks": asks} if asks else {}), "names": names}
 
 
 def _read(value: object, attempt: str, signatures: list[dict[str, Any]], entity_ids: set[str],
@@ -203,7 +216,8 @@ def envelope(reading: dict[str, Any], *, actor: str, attempt: str, base_revision
     if reading.get("unmatched"):
         return {**head, "kind": UNMATCHED_KIND, "attempt": attempt,
                 "nearest_kind": reading.get("nearest_kind"), "why": reading.get("why"),
-                **({"asks": reading["asks"]} if reading.get("asks") else {})}
+                **({"asks": reading["asks"]} if reading.get("asks") else {}),
+                **({"names": list(reading["names"])} if reading.get("names") else {})}
     return {**head, "kind": reading["kind"], **reading["fields"]}
 
 

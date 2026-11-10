@@ -123,7 +123,9 @@ class OpenAttemptTests(unittest.TestCase):
         self.assertEqual(rows[2]["refused_because"], [])
         self.assertEqual(trace["summary"]["unmatched_attempts"], [
             {"round": 3, "actor": "sam", "attempt": ATTEMPTS[2], "nearest_kind": "none",
-             "why": "no kind is about weather"}])
+             "why": "no kind is about weather", "event_id": rows[2]["event_id"]}])
+        # Its pass 1 (ai-judge plan J1): it names no one, so only Sam's own moves and values.
+        self.assertEqual(list(rows[2]["consequence"]["pass_one"]["moves"]), ["sam"])
         self.assertTrue(any("nothing came of it" in n for n in trace["resident_memory"]["sam"]))
         self.assertIsNone(rows[3]["did"])
         self.assertEqual(rows[3]["attempt"]["reading"]["kind"], "wait")

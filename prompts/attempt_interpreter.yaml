@@ -1,5 +1,5 @@
 name: world_substrate_attempt_interpreter
-version: "1.2"
+version: "1.3"
 description: >
   Reads one person's own sentence of what they physically try and names the
   world action kind it is, with a value and the exact words for each field.
@@ -42,6 +42,9 @@ messages:
       - Only when the kind is "none" and they ask, tell or order someone
         else to do something rather than doing it themself, asks is the
         entity id of the one asked. Otherwise asks is "none".
+      - names lists the id of every person or thing in the entity list
+        that the attempt's words name, leaving out the person themself;
+        it is [] when the words name none.
   - role: user
     content: |
       Person: {{ actor_id }}
