@@ -144,7 +144,7 @@ Source: inferred by agent (information and delivery v0, applying Decision 003, a
 
 ### Requirement: Same-moment reactions cite their cause (current code)
 
-A same-moment knock-on reaction SHALL cite as its hard causal parent the latest event of the same moment it reacts to (`Engine._settle`, `src/world_substrate/engine.py:964`), and each of its steps SHALL name the step that caused it (`reaction_steps`: `it`, `caused_by`, `via`). New runs have no cap on a moment's reactions: each (process, entity) pair fires at most once per moment, so every chain ends. A run recorded with a limit (records made before the AI judge plan's J0 ran under 32, `LEGACY_REACTION_LIMIT`, `engine.py:155`) replays under it, and a moment over that limit, or a reaction that would break a declared law, is refused whole.
+A same-moment knock-on reaction SHALL cite as its hard causal parent the latest event of the same moment it reacts to (`Engine._settle`, `src/world_substrate/engine.py:964`), and each of its steps SHALL name the step that caused it (`reaction_steps`: `it`, `caused_by`, `via`). New runs have no cap on a moment's reactions: each (process, entity) pair fires at most once per moment, so every chain ends. A knock-on step that a failed check stopped SHALL be recorded with its blocker (`blocked_reactions`: the rule, the thing, the step it came after, the failed check and its value), and nothing follows from it. A run recorded with a limit (records made before the AI judge plan's J0 ran under 32, `LEGACY_REACTION_LIMIT`, `engine.py:155`) replays under it, and a moment over that limit, or a reaction that would break a declared law, is refused whole.
 
 Source: Decision 009, Brian, 2026-10-26: "i approve"; the cap removed by the AI judge plan's J0 (Brian, 2026-11-09: "50 things could propagate down a causal chain 100 links deep"; build approved 2026-11-10)
 
@@ -157,6 +157,11 @@ Source: Decision 009, Brian, 2026-10-26: "i approve"; the cap removed by the AI 
 
 - **WHEN** one move sets off chains of knock-on effects in one moment
 - **THEN** each step's record names the step that caused it (`caused_by`) and the linked things it came through (`via`), with no cap on how many steps the moment has
+
+#### Scenario: A stopped step is recorded with its blocker
+
+- **WHEN** a knock-on step's rule has a check that reads the changed thing and holds, and another check fails (a loaded truck with fuel 0)
+- **THEN** the step does not happen, and the round's `blocked_reactions` names the rule, the thing, the step it came after, and the failed check with its value
 
 #### Scenario: A moment needs too many reactions
 
