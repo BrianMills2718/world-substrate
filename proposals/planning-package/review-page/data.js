@@ -161,7 +161,8 @@ window.PAGE_DATA = {
      "resource": "scripts/scaffold_world.py:45",
      "world-design": "scripts/generate_world_bundle.py:53",
      "rules-review": "scripts/review_rules.py:75",
-     "run-stop": "scripts/run_stop.py:65"
+     "run-stop": "scripts/run_stop.py:65",
+     "consequence-report": "scripts/consequence_report.py:67"
     }
    },
    "diagrams": {
@@ -1900,6 +1901,28 @@ window.PAGE_DATA = {
     "estimator",
     "gen-rules"
    ]
+  },
+  {
+   "id": "Q89",
+   "short": "Are estimate rules inside Decision 006",
+   "question": "An estimate rule puts a seeded draw and an injected Jev call inside Engine.apply's commit. Decision 006 forbids engine, scheduler or cognition capability of World Substrate's own and sends 'stochastic activation or parameter sweeps' to Mesa. Q27 held that whether new control flow in engine.py is that forbidden capability is Brian's call, not settled by agent argument; he allowed the same-moment fixpoint as rule semantics (Decision 009). Does an estimate rule need a ruling of its own?",
+   "blocks": "Slice E1 (the estimate inside the commit) if the answer were that it is forbidden engine capability.",
+   "resolves_with": "Argument from Decision 006's wording, Decision 009's ruling and the skill roll the open-attempt plan already put in the engine.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by argument (inferred by agent, 2026-11-10, after the estimate-rules cold review's note N5). No new ruling is needed, for four reasons. (1) Decision 006's 'stochastic activation' is about who acts and when (Mesa's random activation order); an estimate rule changes neither: processes still run when the run loop runs them and people still act in their own turns. (2) It adds no loop, clock or scheduler: inside one existing commit, one rule's outcome branch is chosen by a recorded value, as a check already chooses between a rule's outcome and its 'otherwise'; that is the same kind of rule semantics Decision 009 allowed, and less control flow than the fixpoint it allowed. (3) The open-attempt plan already puts a seeded draw in the engine (the skill roll, seed = hash(run_seed, event_id), Q33); the estimate shares that draw and its record and adds one injected input, the chance, recorded as event evidence like the dice (the Q63 contract). (4) The Jev call is not cognition: it never decides what a person does (requirement R5); people's choices stay with the Concordia residents. Brian asked for this feature on 2026-11-10 (rules and constraints that propagate based on Jev) and approved planning it. Q27 differs because the fixpoint's question was new control flow in the engine with no precedent; here Decision 009 is the precedent. If Brian reads Decision 006 more strictly, the fallback is to host the draw in Concordia's game master outside the commit, which would split a rule's outcome from its knock-on effects; he can reopen this question.",
+   "sources": [
+    "docs/decisions/006-governed-rules-layer-scope.md:25",
+    "docs/decisions/009-same-moment-knock-on-effects.md:26",
+    "docs/plans/open_attempt.md:192",
+    "docs/plans/estimate_rules.md:315",
+    "docs/plans/estimate_rules.md:530"
+   ],
+   "touches": [
+    "estimate-rule",
+    "engine",
+    "knock-on-now"
+   ]
   }
  ],
  "domain": {
@@ -2338,8 +2361,8 @@ window.PAGE_DATA = {
    {
     "id": "consequence-report",
     "label": "Consequence report",
-    "kind": "Theory",
-    "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+    "kind": "Substrate",
+    "explain": "What the engine works out for an attempt no rule covers, in two passes (ai-judge J1, built 2026-11-10). Pass 1, with no new rule (pass_one): engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of everyone and everything named; each run records it on every unmatched attempt (consequence.pass_one). The names come from the interpreter's reading (names). Pass 2 (pass_two): a proposed rule goes through the World Builder's rules check, then is test-run on a copy of the world as it is, giving its net changes, blockers, chain length and stopping point; the full chain stays in the report and summary() leaves it out for the judge. Code: scripts/consequence_report.py:67."
    },
    {
     "id": "judge-ruling",

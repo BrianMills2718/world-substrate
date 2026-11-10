@@ -2,7 +2,7 @@
  "schema_version": "1.0",
  "record_type": "planning_package",
  "repository": "BrianMills2718/world-substrate",
- "subject_revision": "1aaa16aab2188b44aea3c9353897eaa3e1e9f016",
+ "subject_revision": "eefcb164db6f77732b3d64b0f813de3cb8a06901",
  "request": "Brian 2026-11-10 \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\", then \"i approve\" to planning it now in parallel with the AI judge build; the plan docs/plans/estimate_rules.md names this file on its 'Planning package:' line",
  "parts": {
   "checks": {
@@ -171,7 +171,8 @@
     "resource": "scripts/scaffold_world.py:45",
     "world-design": "scripts/generate_world_bundle.py:53",
     "rules-review": "scripts/review_rules.py:75",
-    "run-stop": "scripts/run_stop.py:65"
+    "run-stop": "scripts/run_stop.py:65",
+    "consequence-report": "scripts/consequence_report.py:67"
    }
   },
   "diagrams": {
@@ -187,7 +188,7 @@
     },
     {
      "path": "docs/model/open-questions.graph.json",
-     "question": "Which concepts carry this plan's questions (Q63, Q82-Q88, Q33), and whose call is each?"
+     "question": "Which concepts carry this plan's open questions (Q63, Q82-Q86, Q88 and the shared Q33), and whose call is each? (The map shows open questions only; resolved Q87 and Q89 are in the questions table.)"
     }
    ]
   },
@@ -221,7 +222,11 @@
     "fingerprint",
     "attempt",
     "observation",
-    "rules-review"
+    "rules-review",
+    "test-run",
+    "run-loop",
+    "budget",
+    "scene-replay"
    ],
    "cost_basis": {
     "steps": [
@@ -231,6 +236,54 @@
       "calls_per_run": 30,
       "basis": "measured",
       "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Calls: at most 30 per sawmill run (one chance question a day for 30 days; fewer with the per-run cache), 30 x $0.0000279 = $0.00084; the one retry on the measured 6.6% of failed calls adds about $0.00006."
+     },
+     {
+      "step": "Concordia residents (existing call, E1 live run: A1 needs Mara's own move and reason)",
+      "cost_per_run_usd": 0.045,
+      "calls_per_run": 240,
+      "basis": "computed",
+      "computation": {
+       "calls": 240,
+       "input_tokens_per_call": 1256,
+       "input_usd_per_mtok": 0.1,
+       "cached_share": 0,
+       "cached_usd_per_mtok": 0.1,
+       "output_tokens_per_call": 124,
+       "output_usd_per_mtok": 0.5
+      },
+      "evidence": "Calls: two people over 30 days at 4 resident calls per person per day = 240. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. With Waltzman-sized prompts (evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: residents 2,761 input and 223 output tokens, $0.000388 per call; interpreter 3,231 and 242, $0.000444) the residents cost $0.093 and the interpreter $0.035, and the whole E1 run about $0.13, which is the run cap (docs/plans/estimate_rules.md, LLM call boundary and cost)."
+     },
+     {
+      "step": "attempt interpreter (existing call, E1 live run)",
+      "cost_per_run_usd": 0.0107,
+      "calls_per_run": 80,
+      "basis": "computed",
+      "computation": {
+       "calls": 80,
+       "input_tokens_per_call": 993,
+       "input_usd_per_mtok": 0.1,
+       "cached_share": 0,
+       "cached_usd_per_mtok": 0.1,
+       "output_tokens_per_call": 68,
+       "output_usd_per_mtok": 0.5
+      },
+      "evidence": "Calls: two people over 30 days at 1.33 interpreter calls per person per day (12 per 9 person-rounds) = 80. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. Residents, interpreter, readout and Jev together: about $0.057 per run, so the E1 run is about $0.06 for two people over 30 days."
+     },
+     {
+      "step": "run readout (existing call, E1 live run, once)",
+      "cost_per_run_usd": 0.0003,
+      "calls_per_run": 1,
+      "basis": "computed",
+      "computation": {
+       "calls": 1,
+       "input_tokens_per_call": 1523,
+       "input_usd_per_mtok": 0.1,
+       "cached_share": 0,
+       "cached_usd_per_mtok": 0.1,
+       "output_tokens_per_call": 309,
+       "output_usd_per_mtok": 0.5
+      },
+      "evidence": "Tokens: the readout call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing."
      },
      {
       "step": "plain-version comparison, gpt-6-luna variant (E1, once)",
@@ -332,5 +385,5 @@
    "reviewed_revision": "32860542557cf2698a05669b4b29b5041a7e1818"
   }
  },
- "note": "This is the plan's own package, named by docs/plans/estimate_rules.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws, open-attempt and ai-judge packages (all rebuilt by tools/planning/build.py, which now also rebuilds every review page). The plan's four new concepts (estimate-rule, estimator, recorded-estimate, recorded-draw) are in the domain model as 'In documents only' (planned, not implemented). Q63 is reopened with Brian's 2026-11-10 words and answered by the plan; its uncertainties are Q82-Q86 and Q88 (open, all agent-owned), Q87 (what the free test run does with a chance and how Jev spend is counted, resolved by argument) and the existing Q33 (the run seed, shared with the skill roll). No paid call was made for planning: the plain-version comparison (four variants, up to $0.0065) and a 10-call Jev probe (about $0.0003) are E1's first steps. The system model and domain model blocks are copied from the repository package docs/planning/planning-package.json, whose implemented map is the current one. Diagrams: this package lists the container view (ODD section 3, drawn on its page with the estimator added), the domain map and the open-questions map, all drawn on its page. The metamodel graph is left out of this package on purpose: it shows kinds that are built, and the estimate block and the recorded draw are planned, so they are added to docs/model/METAMODEL.md, ODD.md and metamodel.graph.json by slice E1 when they exist; the repository package's page draws the current metamodel. Replay by recorded commands (Engine.replay_commands, src/world_substrate/engine.py:1182) has no node of its own in the domain model: a new built concept must carry a code location in every package's implemented map, including the ai-judge package, which this plan does not edit; the plan cites the code directly (Current truth). The acceptance criteria cite this plan's own run-page router record, docs/planning/estimate-rules/router/run-page.recommendation.json. Checks were run for this package into docs/planning/estimate-rules/checks.txt."
+ "note": "This is the plan's own package, named by docs/plans/estimate_rules.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws, open-attempt and ai-judge packages (all rebuilt by tools/planning/build.py, which now also rebuilds every review page). The plan's four new concepts (estimate-rule, estimator, recorded-estimate, recorded-draw) are in the domain model as 'In documents only' (planned, not implemented). Q63 is reopened with Brian's 2026-11-10 words and answered by the plan; its uncertainties are Q82-Q86 and Q88 (open, all agent-owned), Q87 (what the free test run does with a chance and how Jev spend is counted, resolved by argument), Q89 (why estimate rules stay inside Decision 006 as Decision 009 reads it, resolved by agent argument after Q27's precedent; Brian can reopen it) and the existing Q33 (the run seed, shared with the skill roll). No paid call was made for planning: the plain-version comparison (four variants, up to $0.0065) and a 10-call Jev probe (about $0.0003) are E1's first steps. The system model and domain model blocks are copied from the repository package docs/planning/planning-package.json, whose implemented map is the current one. Diagrams: this package lists the container view (ODD section 3, drawn on its page with the estimator added), the domain map and the open-questions map, all drawn on its page. The metamodel graph is left out of this package on purpose: it shows kinds that are built, and the estimate block and the recorded draw are planned, so they are added to docs/model/METAMODEL.md, ODD.md and metamodel.graph.json by slice E1 when they exist; the repository package's page draws the current metamodel. Replay by recorded commands (Engine.replay_commands, src/world_substrate/engine.py:1182) has no node of its own in the domain model: a new built concept must carry a code location in every package's implemented map, including the ai-judge package, which this plan does not edit; the plan cites the code directly (Current truth). The acceptance criteria cite this plan's own run-page router record, docs/planning/estimate-rules/router/run-page.recommendation.json. Checks were run for this package into docs/planning/estimate-rules/checks.txt."
 }
