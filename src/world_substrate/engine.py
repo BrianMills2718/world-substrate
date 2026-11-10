@@ -149,6 +149,14 @@ def _scope_violations(
     )
 
 
+# Decision 009 as first accepted (2026-10-26): at most this many knock-on reactions per moment, more refused the
+# moment. Amended 2026-11-10 (ai-judge plan J0): new runs have no cap; a run record that names no limit ran under
+# this one, and replays under it.
+LEGACY_REACTION_LIMIT = 32
+# Blocked knock-on steps kept per moment (a record of near misses, not a cap on the chain).
+MAX_BLOCKED_STEPS = 50
+
+
 def _rule_world(world: World) -> World:
     """Detached material state for rule code, with engine-owned history hidden.
 
@@ -170,11 +178,11 @@ def _rule_mutations(before: dict[str, Any], world: World) -> list[str]:
     return sorted(paths)
 
 
-def _engine_owned_mutations(before: dict[str, Any], world: World) -> list[str]:
+def _engine_owned_mutations(before: dict[str, Any], world: World, after: dict[str, Any] | None = None) -> list[str]:
     """Writes a rule may never propose, even inside its declared state scope."""
     paths = {
         change["path"]
-        for change in differences(before, world.material_dict())
+        for change in differences(before, after if after is not None else world.material_dict())
         if change["path"] in ENGINE_OWNED_PATHS
     }
     if world.commands:
@@ -235,12 +243,18 @@ class Engine:
             return None
         return self.observe(actor)
 
-    def __init__(self, world: World, registry: RuleRegistry):
+    def __init__(self, world: World, registry: RuleRegistry, *, reaction_limit: int | None = None):
         world.validate()
         if world.rule_versions != registry.versions():
             raise ValueError("world rule versions do not match the executable registry")
+        if reaction_limit is not None and (type(reaction_limit) is not int or reaction_limit < 1):
+            raise ValueError("reaction_limit must be a positive integer or None")
         self.world = world
         self.registry = registry
+        # Decision 009 (amended by the ai-judge plan, J0): None means no cap; a moment's knock-on effects are bounded
+        # by the once-per-(process, entity) rule alone. A run saved under the old cap replays with the cap it
+        # recorded (LEGACY_REACTION_LIMIT when it recorded none), so its refusals replay as refusals.
+        self.reaction_limit = reaction_limit
         self._component_types = _world_component_types(world)
         self._initial_snapshot = world.snapshot()
 
@@ -252,6 +266,7 @@ class Engine:
         copy = Engine.__new__(Engine)
         copy.world = deepcopy(self.world, {id(self.world.commands): [], id(self.world.events): []})
         copy.registry = self.registry
+        copy.reaction_limit = self.reaction_limit
         copy._component_types = self._component_types
         copy._initial_snapshot = self._initial_snapshot
         return copy
@@ -783,10 +798,13 @@ class Engine:
         prior = self.world
         self.world = candidate
         try:
-            reactions = self._settle(event, command_id)
+            settled = self._settle(event, command_id)
         except Exception:
             self.world = prior
             raise
+        reactions, blocked = settled, []
+        if not isinstance(settled, dict):
+            reactions, blocked = settled
         if isinstance(reactions, dict):
             # Knock-on effects would not settle, or one broke a law: the whole moment
             # is refused, so neither the attempt nor any reaction commits (no partial mutation).
@@ -800,13 +818,15 @@ class Engine:
                 command_id,
                 event_id,
                 "reaction_limit",
-                checks + [_reaction_limit_check()],
+                checks + [_reaction_limit_check(self.reaction_limit)],
                 before,
                 observation,
             )
         result: dict[str, Any] = {"status": "accepted", "event": event}
         if reactions:
             result["reactions"] = reactions
+        if blocked:
+            result["blocked_reactions"] = blocked
         return result
 
     def _reject(
@@ -850,6 +870,7 @@ class Engine:
         if type(steps) is not int or steps < 1:
             raise ValueError("steps must be a positive integer")
         produced: list[dict[str, Any]] = []
+        blocked_all: list[dict[str, Any]] = []
         for _ in range(steps):
             saved = self.world.clone()
             command_id = _identifier("c", len(self.world.commands) + 1)
@@ -892,16 +913,21 @@ class Engine:
                             )
                         if event is not None:
                             produced.append(event)
-                            reactions = self._settle(event, command_id)
-                            if isinstance(reactions, dict):
+                            settled = self._settle(event, command_id)
+                            if isinstance(settled, dict):
                                 return self._refuse_round(
-                                    saved, command_id, process, reactions["status"], reactions["check"]
+                                    saved, command_id, process, settled["status"], settled["check"]
                                 )
+                            reactions, blocked = settled
                             produced.extend(reactions)
+                            blocked_all.extend(blocked)
             except Exception:
                 self.world = saved
                 raise
-        return {"status": "accepted", "events": produced}
+        result: dict[str, Any] = {"status": "accepted", "events": produced}
+        if blocked_all:
+            result["blocked_reactions"] = blocked_all
+        return result
 
     def _refuse_round(
         self,
@@ -928,7 +954,7 @@ class Engine:
         if status == "law_breach":
             event = self._event(**common, status="law_breach", checks=[check])
         else:
-            event = self._event(**common, status="reaction_limit", checks=[_reaction_limit_check()])
+            event = self._event(**common, status="reaction_limit", checks=[_reaction_limit_check(self.reaction_limit)])
         self.world.commands.append(
             {"command_id": command_id, "op": "advance", "steps": 1, "status": status}
         )
@@ -937,18 +963,24 @@ class Engine:
 
     def _settle(
         self, trigger: dict[str, Any], command_id: str
-    ) -> list[dict[str, Any]] | dict[str, Any]:
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]] | dict[str, Any]:
         """Run knock-on effects of a committed event until nothing more is due.
 
         Waves: every immediate process is asked, on the state the last wave left,
         which entities are due; those are then applied in the registry's fixed
         order. Each (process, entity) pair fires at most once per moment, so a
-        reaction cannot feed itself. Each reaction cites as its hard causal parent
-        the event of this moment that last changed its entity, else the trigger.
-        Returns a refusal record ``{status, check}`` instead when more
-        than REACTION_LIMIT reactions would happen (``reaction_limit``) or a
-        reaction would break a declared law (``law_breach``); the caller then
-        refuses the whole moment.
+        reaction cannot feed itself, and the number of (process, entity) pairs
+        bounds the chain however long it is (Decision 009, amended 2026-11-10).
+        Each reaction cites as its hard causal parent the event of this moment that
+        last changed its entity, else the trigger, and lists each entity it ran on
+        with that entity's own parent (``reaction_steps``).
+        Returns ``(reactions, blocked)``: ``blocked`` lists the knock-on steps this
+        moment set off that a failed check stopped (a process whose binding reads
+        something this moment changed, with a check that held and one that failed),
+        each with the step that led to it. Returns a refusal record ``{status, check}``
+        instead when a reaction limit is set and more reactions would happen
+        (``reaction_limit``) or a reaction would break a declared law
+        (``law_breach``); the caller then refuses the whole moment.
         """
         processes = [p for p in self.registry.processes() if _is_immediate(p)]
         reactions: list[dict[str, Any]] = []
@@ -960,9 +992,13 @@ class Engine:
         while processes:
             wave_no += 1
             wave: list[tuple[ProcessRule, list[dict[str, str]]]] = []
+            # One detached view per wave for every process's due check: each check is guarded read-only, so the
+            # view is unchanged after it, and the wave's first process reuses it as its candidate (a 5,000-step
+            # moment copies the world once per wave, not three times).
+            view = _rule_world(self.world)
+            view_before = view.material_dict()
             for process in processes:
-                view = _rule_world(self.world)
-                before = view.material_dict()
+                before = view_before
                 bindings = self._readonly_call(
                     view,
                     before,
@@ -979,14 +1015,20 @@ class Engine:
                 entity_id: entity.last_cause_event_id
                 for entity_id, entity in self.world.entities.items()
             }
+            reuse_view = True
             for process, bindings in wave:
                 ids = sorted({b["it"] for b in bindings})
                 fired.update((process.rule_id, i) for i in ids)
-                parents = sorted(
-                    {_moment_parent(moment, [last_cause.get(e) for e in b.values()]) for b in bindings}
-                )
-                candidate = _rule_world(self.world)
-                before = candidate.material_dict()
+                step_parents: dict[str, set[str]] = {}
+                for b in bindings:
+                    step_parents.setdefault(b["it"], set()).add(
+                        _moment_parent(moment, [last_cause.get(e) for e in b.values()]))
+                parents = sorted(set().union(*step_parents.values()))
+                if reuse_view:
+                    candidate, before, reuse_view = view, view_before, False
+                else:
+                    candidate = _rule_world(self.world)
+                    before = candidate.material_dict()
                 try:
                     event = self._apply_process(
                         process, command_id, candidate, before, entity_ids=ids, parents=parents
@@ -1000,11 +1042,49 @@ class Engine:
                     continue
                 # Marks the event as a knock-on effect and which wave of its moment it ran in.
                 event["reaction_wave"] = wave_no
+                # One step per entity the reaction ran on, each naming the event of this moment that led to it.
+                event["reaction_steps"] = [{"it": i, "caused_by": sorted(step_parents[i])} for i in ids]
                 reactions.append(event)
                 moment.append(event["event_id"])
-                if len(reactions) > REACTION_LIMIT:
-                    return {"status": "reaction_limit", "check": _reaction_limit_check()}
-        return reactions
+                if self.reaction_limit is not None and len(reactions) > self.reaction_limit:
+                    return {"status": "reaction_limit", "check": _reaction_limit_check(self.reaction_limit)}
+        return reactions, self._blocked_steps(processes, moment, fired)
+
+    def _blocked_steps(
+        self, processes: list[ProcessRule], moment: list[str], fired: set[tuple[str, str]]
+    ) -> list[dict[str, Any]]:
+        """Knock-on steps this moment set off that a failed check stopped (nothing commits for them).
+
+        A step counts as set off when its binding reads an entity some event of this moment changed and one of
+        its checks held; it is blocked when another check failed. Each names the event that led to it."""
+        if len(moment) < 1:
+            return []
+        changed = {
+            entity_id for entity_id, entity in self.world.entities.items()
+            if entity.last_cause_event_id in moment
+        }
+        if not changed:
+            return []
+        out: list[dict[str, Any]] = []
+        for process in processes:
+            near = getattr(process, "near_misses", None)
+            if near is None:
+                continue
+            view = _rule_world(self.world)
+            before = view.material_dict()
+            misses = self._readonly_call(
+                view, before, process.rule_id, "due", lambda near=near, view=view: near(view, changed))
+            for miss in misses:
+                if (process.rule_id, miss["binding"]["it"]) in fired:
+                    continue
+                parent = _moment_parent(
+                    moment, [self.world.entities[e].last_cause_event_id for e in miss["binding"].values()
+                             if e in self.world.entities])
+                out.append({"rule_id": process.rule_id, "it": miss["binding"]["it"], "binding": miss["binding"],
+                            "failed": miss["failed"], "after": parent})
+                if len(out) >= MAX_BLOCKED_STEPS:
+                    return out
+        return out
 
     def _apply_process(
         self,
@@ -1040,17 +1120,18 @@ class Engine:
             process.apply_with_event_id(candidate, event_id)
         else:
             process.apply(candidate)
-        authority_violations = _engine_owned_mutations(before, candidate)
+        proposed = candidate.material_dict()
+        authority_violations = _engine_owned_mutations(before, candidate, proposed)
         if authority_violations:
             raise ScopeViolation(
                 f"process {process.rule_id} wrote engine-owned state or history: "
                 f"{authority_violations}"
             )
-        if candidate.material_dict() == before:
+        if proposed == before:
             return None
         candidate.revision += 1
         candidate.validate()
-        after = candidate.material_dict()
+        after = {**proposed, "revision": candidate.revision}
         violations = _scope_violations(
             differences(before, after), process.write_paths, None
         )
@@ -1099,13 +1180,18 @@ class Engine:
         commands: object,
         registry: RuleRegistry,
         component_types: dict[str, type] | None = None,
+        reaction_limit: int | None = LEGACY_REACTION_LIMIT,
     ) -> Engine:
-        """Rebuild an engine using only a loaded snapshot, commands, and registry."""
+        """Rebuild an engine using only a loaded snapshot, commands, and registry.
+
+        ``reaction_limit`` is the limit the recorded run ran under (``recorded_reaction_limit``); commands recorded
+        with no limit named ran under the old cap of 32, so that is the default."""
         if not isinstance(commands, list):
             raise TypeError("replay commands must be an array")
         replayed = cls(
             World.from_snapshot(initial_snapshot, component_types=component_types),
             registry,
+            reaction_limit=reaction_limit,
         )
         for index, command in enumerate(commands, start=1):
             if not isinstance(command, dict):
@@ -1136,6 +1222,7 @@ class Engine:
             commands=recorded,
             registry=self.registry,
             component_types=self._component_types,
+            reaction_limit=self.reaction_limit,
         )
         expected = self.world.material_hash()
         actual = replayed.world.material_hash()
@@ -1149,8 +1236,15 @@ class Engine:
         }
 
 
-# Decision 009: at most this many knock-on reactions per moment; more refuses the moment.
-REACTION_LIMIT = 32
+
+def recorded_reaction_limit(record: dict[str, Any]) -> int | None:
+    """The reaction limit a saved run ran under: its recorded ``reaction_limit`` (null means none), else 32."""
+    if "reaction_limit" in record:
+        value = record["reaction_limit"]
+        if value is not None and (type(value) is not int or value < 1):
+            raise ValueError("recorded reaction_limit must be a positive integer or null")
+        return value
+    return LEGACY_REACTION_LIMIT
 
 
 def _is_immediate(process: ProcessRule) -> bool:
@@ -1163,12 +1257,12 @@ def _moment_parent(moment: list[str], causes: list[str | None]) -> str:
     return moment[max(in_moment)] if in_moment else moment[0]
 
 
-def _reaction_limit_check() -> Check:
+def _reaction_limit_check(limit: int | None) -> Check:
     return Check(
-        f"Knock-on effects settle within {REACTION_LIMIT} reactions",
+        f"Knock-on effects settle within {limit} reactions",
         False,
-        f"more than {REACTION_LIMIT}",
-        REACTION_LIMIT,
+        f"more than {limit}",
+        limit,
     )
 
 

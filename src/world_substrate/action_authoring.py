@@ -369,6 +369,38 @@ class CompiledProcessMechanic:
     def due(self, world: World) -> bool:
         return bool(self._matching(world))
 
+    def near_misses(self, world: World, changed: set[str]) -> list[dict[str, Any]]:
+        """Bindings set off by a change but stopped by a check (knock-on blockers, ai-judge plan J0).
+
+        A binding counts when one of its entities is in ``changed``, a check reading a changed entity held, and
+        another check failed; each comes with its failed checks and the values they saw."""
+        out: list[dict[str, Any]] = []
+        for entity_id in sorted(world.entities):
+            entity = world.entities[entity_id]
+            if not _selector_matches(entity, self.declared.selector):
+                continue
+            for participants in _link_bindings(world, entity_id, self.declared.participants):
+                touched = {name for name, eid in participants.items() if eid in changed}
+                if not touched:
+                    continue
+                held_on_change, failed = False, []
+                for row in self.declared.checks:
+                    left = right = None
+                    try:
+                        left = _resolve_expr(row["left"], world, {}, participants, None)
+                        right = _resolve_expr(row["right"], world, {}, participants, None)
+                        ok = _compare(left, row["op"], right)
+                    except (KeyError, TypeError, ValueError, ActionDeclarationError):
+                        ok = False
+                    refs = (_expr_refs(row["left"]) or set()) | (_expr_refs(row["right"]) or set())
+                    if ok and refs & touched:
+                        held_on_change = True
+                    if not ok:
+                        failed.append({"label": row["label"], "actual": left, "required": right, "op": row["op"]})
+                if held_on_change and failed:
+                    out.append({"binding": dict(participants), "failed": failed})
+        return out
+
     def due_bindings(self, world: World) -> list[dict[str, str]]:
         """The participant bindings this process would act on now (each has `it`)."""
         return self._matching(world)

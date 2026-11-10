@@ -295,11 +295,12 @@ def process_timings() -> list[str]:
 
 
 def reaction_limit() -> int:
+    """The limit a record that names none ran under (Decision 009 as amended: new runs have none)."""
     for node in ast.walk(_parse(ENGINE)):
-        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "REACTION_LIMIT" for t in node.targets):
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "LEGACY_REACTION_LIMIT" for t in node.targets):
             assert isinstance(node.value, ast.Constant) and type(node.value.value) is int
             return node.value.value
-    raise AssertionError("REACTION_LIMIT not found")
+    raise AssertionError("LEGACY_REACTION_LIMIT not found")
 
 
 def load_model() -> dict[str, Any]:
@@ -375,7 +376,8 @@ class SystemModelMatchesCode(unittest.TestCase):
         # open_attempt S2: the process `timing` field and the per-moment reaction limit.
         knock_on = self.model["knock_on_effects"]
         self.assertEqual(knock_on["timings"], process_timings(), "PROCESS_TIMINGS differs from the model")
-        self.assertEqual(knock_on["reaction_limit"], reaction_limit(), "REACTION_LIMIT differs from the model")
+        self.assertEqual(knock_on["reaction_limit"], "none", "new runs have no reaction limit (Decision 009 as amended)")
+        self.assertEqual(knock_on["legacy_reaction_limit"], reaction_limit(), "LEGACY_REACTION_LIMIT differs from the model")
 
     def test_world_kinds_name_declared_paths(self) -> None:
         paths = {p["name"] for p in self.model["producing_paths"]}

@@ -219,6 +219,30 @@ BUILTIN_COMPONENT_TYPES: dict[str, type] = {
 _BUILTIN_COMPONENT_NAMES = frozenset(BUILTIN_COMPONENT_TYPES)
 
 
+_PRIMITIVES = (str, int, float, bool, type(None))
+
+
+def _plain_dict(value: Any) -> dict[str, Any]:
+    """``asdict`` for a state object; a flat one of plain values (most components) skips its recursive copy.
+
+    Same keys, order and values as ``asdict``: a dataclass's ``__dict__`` holds its fields in declaration order."""
+    values = getattr(value, "__dict__", None)
+    if values is not None and all(type(v) in _PRIMITIVES for v in values.values()):
+        return dict(values)
+    return asdict(value)
+
+
+def _flat_copy(value: Any, memo: dict[int, Any]) -> Any:
+    """Copy a state object of plain values without the generic deepcopy; anything else is deep-copied."""
+    values = getattr(value, "__dict__", None)
+    if values is not None and all(type(v) in _PRIMITIVES for v in values.values()):
+        new = object.__new__(type(value))
+        new.__dict__.update(values)
+        memo[id(value)] = new
+        return new
+    return deepcopy(value, memo)
+
+
 @dataclass
 class Entity:
     entity_id: str
@@ -239,6 +263,24 @@ class Entity:
     source_entity_id: str | None = None
     last_cause_event_id: str | None = None
     components: dict[str, Any] = field(default_factory=dict)
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> "Entity":
+        """A detached copy that skips the generic machinery for fields that cannot be shared mutably.
+
+        Strings, None and the tuple of category ids are immutable, so they are shared; every state object and the
+        components are deep-copied as before. A world is copied once per knock-on wave, and the generic copy of
+        each entity's nineteen fields was most of the time of a 5,000-step moment (ai-judge plan J0)."""
+        new = object.__new__(Entity)
+        memo[id(self)] = new
+        values = new.__dict__
+        for key, value in self.__dict__.items():
+            if value is None or type(value) in (str, int, bool) or key == "category_ids":
+                values[key] = value
+            elif key == "components":
+                values[key] = {name: _flat_copy(c, memo) for name, c in value.items()}
+            else:
+                values[key] = _flat_copy(value, memo)
+        return new
 
     def component(self, name: str) -> Any:
         """Return a registered component, or None."""
@@ -265,7 +307,7 @@ class Entity:
         ):
             value = getattr(self, name)
             if value is not None:
-                result[name] = asdict(value)
+                result[name] = _plain_dict(value)
         if self.source_pack_id is not None:
             result["source_pack_id"] = self.source_pack_id
         if self.source_entity_id is not None:
@@ -276,7 +318,7 @@ class Entity:
         # serialises exactly as it did before this existed.
         if self.components:
             result["components"] = {
-                name: asdict(self.components[name])
+                name: _plain_dict(self.components[name])
                 for name in sorted(self.components)
             }
         return result

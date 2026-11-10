@@ -12,7 +12,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scripts.run_authored_world import _component_types, _read_attempt, build_engine, mark_only_fillers, run_world
-from world_substrate.engine import Engine
+from world_substrate.engine import Engine, recorded_reaction_limit
 from world_substrate.model import World
 from scripts.scaffold_world import load_bundle
 from world_substrate import attempt as open_attempt
@@ -461,7 +461,9 @@ class KnockOnEffectTests(unittest.TestCase):
                 {"label": "it stands", "left": _it("components.glass.on_desk"), "op": "eq", "right": _lit(True)},
             ], [{"participant": "it", "path": "components.glass.on_desk", "op": "set", "value": _lit(False)}],
                 timing="each_round", selector={"categories": ["glass", "by-window"], "components": ["glass"]}))
-        return build_engine(bundle, rules)
+        # Run against the limit a record made before the ai-judge plan's J0 ran under (it names none, so 32): the
+        # refusal still replays as saved. New runs have no limit (tests/test_knock_on_unbounded.py).
+        return build_engine(bundle, rules, reaction_limit=recorded_reaction_limit({}))
 
     def test_a_chain_past_the_reaction_limit_is_refused_whole(self):  # A6
         engine, _, _ = self._domino_engine()
