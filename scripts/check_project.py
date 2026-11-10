@@ -195,11 +195,12 @@ STATUS_FACT_BLOCK = re.compile(
 
 
 def _parse_status_facts(text: str) -> dict[str, object]:
-    match = STATUS_FACT_BLOCK.search(text)
-    if match is None:
-        return {}
+    # A spec that folds several contracts carries one block per contract; read them all.
     facts: dict[str, object] = {}
-    for line in match.group(1).splitlines():
+    lines = [
+        line for match in STATUS_FACT_BLOCK.finditer(text) for line in match.group(1).splitlines()
+    ]
+    for line in lines:
         line = line.strip()
         if not line or line.startswith("#"):
             continue

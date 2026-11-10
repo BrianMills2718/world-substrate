@@ -194,7 +194,7 @@ class DriftIsReported(unittest.TestCase):
         failures = self.drift("semantic_bindings_bound", 1)
         self.assertTrue(failures)
         self.assertTrue(any("semantic_bindings_bound" in f for f in failures))
-        self.assertTrue(any("semantic-mechanical-binding" in f for f in failures))
+        self.assertTrue(any("semantic-binding" in f for f in failures))
 
     def test_a_wrong_boolean_is_reported(self):
         failures = self.drift("semantic_binding_on_events", False)
@@ -207,18 +207,18 @@ class DriftIsReported(unittest.TestCase):
     def test_a_broken_replay_is_reported(self):
         failures = self.drift("exact_replay_works", False)
         self.assertTrue(any("exact_replay_works" in f for f in failures))
-        self.assertTrue(any("core-v0" in f for f in failures))
+        self.assertTrue(any("transition-engine" in f for f in failures))
 
     def test_a_broken_declaration_assay_is_reported(self):
         failures = self.drift("declared_reader_assay_detects_an_overlap", False)
         self.assertTrue(
             any("declared_reader_assay_detects_an_overlap" in f for f in failures)
         )
-        self.assertTrue(any("mechanic-profile-v0" in f for f in failures))
+        self.assertTrue(any("mechanic-installation" in f for f in failures))
 
     def test_read_scope_enforcement_would_be_reported_if_it_shipped(self):
-        # transition-envelope-v0.md says reads are unenforced. If that ever
-        # becomes untrue and the contract is not updated, this is the failure.
+        # The transition-engine spec (folded from transition-envelope-v0.md) says
+        # reads are unenforced. If that ever becomes untrue and the spec is not updated, this is the failure.
         failures = self.drift("read_scopes_enforced", True)
         self.assertTrue(any("read_scopes_enforced" in f for f in failures))
 
